@@ -38,7 +38,7 @@
                     <div class="form-group form-group--flex">
                         <div class="row justify-content-between">
                             <div class="col-3">
-                                <label>#{msgs.typ}:</label>
+                                <label>#{msgs.name}:</label>
                             </div>
                             <div class="col-9">
                                 <div class="form-control form-control--select">
@@ -112,7 +112,7 @@
                                 </x:inputTextarea>
 
                                 <!-- SELECT -->
-                                <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or 
+                                <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or
                                 	Metadaten.outputType == 'vocabularyList')}">
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu
@@ -389,15 +389,24 @@
                                 <x:updateActionListener
                                     value=""
                                     property="#{Metadaten.metadatum.value}" />
-                                <f:ajax render=":pageContentCenter" />
+                                <f:ajax
+
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
+                                    render=":pageContentCenter"
+                                />
                             </button>
                             <h:commandButton
                                 id="absenden"
                                 styleClass="btn btn--gray"
                                 type="submit"
                                 action="#{Metadaten.addNewMetadata}"
-                                value="#{msgs.dieAenderungenSpeichern}"
+                                value="#{msgs.add}"
                                 role="button">
+
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
+                                    execute="@form"
+                                    render=":pageContentCenter" />
                             </h:commandButton>
                         </div>
                     </div>

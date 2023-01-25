@@ -72,7 +72,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group form-group--flex">
                         <div class="row justify-content-between">
                             <div class="col-3">
@@ -127,15 +127,23 @@
                                 jsf:immediate="true"
                                 type="button">
                                 #{msgs.abbrechen}
-                                <f:ajax render=":pageContentCenter" />
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
+                                    render=":pageContentCenter"
+                                />
                             </button>
                             <h:commandButton
                                 id="saveCorporate"
                                 styleClass="btn btn--gray"
                                 type="submit"
                                 action="#{Metadaten.addNewCorporate}"
-                                value="#{msgs.dieAenderungenSpeichern}"
+                                value="#{msgs.add}"
                                 role="button">
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
+                                    execute="@form"
+                                    render=":pageContentCenter"
+                                />
                             </h:commandButton>
                         </div>
                     </div>

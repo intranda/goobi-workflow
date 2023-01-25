@@ -88,6 +88,15 @@ public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
         return "";
     }
 
+    public Field getFieldByLabel(String label) {
+        for (Field field : this.fields) {
+            if (field.getLabel().equals(label)) {
+                return field;
+            }
+        }
+        return null;
+    }
+
     @Override
     public int compareTo(VocabRecord o) {
         return getTitle().compareTo(o.getTitle());

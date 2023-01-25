@@ -232,7 +232,7 @@
 								<intranda:menuItem
 									id="a42"
 									parentMenu="menu_administration"
-									label="#{msgs.menu_administration_plugins}"
+									label="#{msgs.plugins}"
 									action="plugins"
 									icon="fa fa-stethoscope" />
 
@@ -240,7 +240,7 @@
 								<intranda:menuItem
 									id="a53"
 									parentMenu="menu_administration"
-									label="#{msgs.vocabularyManager}"
+									label="#{msgs.intranda_administration_vocabularies}"
 									action="#{vocabularyBean.FilterKein}"
 									rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
 									icon="fa fa-database" />
@@ -293,15 +293,15 @@
 						</li>
 					</h:panelGroup>
 
-					<!-- Dropdown-Menü: "Controlling" / "Management" -->
+					<!-- Dropdown-Menü: "Statistiken" -->
 					<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
-						<li class="nav-item dropdown #{NavigationForm.parentMenu == 'menu_controlling' ? 'active' : ''} add-has-submenu-in-small-window">
-							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">#{msgs.controlling}</a>
+						<li class="nav-item dropdown #{NavigationForm.parentMenu == 'menu_statistics' ? 'active' : ''} add-has-submenu-in-small-window">
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">#{msgs.statistik}</a>
 							<ul class="dropdown-menu">
 								<intranda:menuItem
 									id="a40"
-									parentMenu="menu_controlling"
-									label="#{msgs.statistik}"
+									parentMenu="menu_statistics"
+									label="#{msgs.general}"
 									action="statistics"
 									rendered="#{LoginForm.hasRole('Statistics_General')}"
 									icon="fa fa-bar-chart" />
@@ -312,7 +312,7 @@
 										value="#{StatisticalQuestionBean.possiblePluginNames}"
 										id="plugin3">
 										<ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isStatisticsPluginAllowed(statistics)}">
-											<li class="#{NavigationForm.aktuell == 'a41' and NavigationForm.parentMenu == 'menu_controlling' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
+											<li class="#{NavigationForm.aktuell == 'a41' and NavigationForm.parentMenu == 'menu_statistics' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
 												<h:commandLink
 													action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}"
 													id="statistics"
@@ -327,7 +327,7 @@
 														value="a41" />
 													<f:setPropertyActionListener
 														target="#{NavigationForm.parentMenu}"
-														value="menu_controlling" />
+														value="menu_statistics" />
 												</h:commandLink>
 											</li>
 										</ui:fragment>

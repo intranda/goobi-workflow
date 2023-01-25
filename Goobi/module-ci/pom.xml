@@ -4,14 +4,14 @@
     <parent>
         <groupId>de.intranda.goobi.workflow</groupId>
         <artifactId>goobi-core</artifactId>
-        <version>22.10.4-SNAPSHOT</version>
+        <version>22.12.1-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
 
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core-ci</artifactId>
-    <version>22.10.4-SNAPSHOT</version>
+    <version>22.12.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
 
@@ -102,7 +102,7 @@
             <plugin>
               <groupId>org.owasp</groupId>
               <artifactId>dependency-check-maven</artifactId>
-              <version>7.1.1</version>
+              <version>7.4.4</version>
               <configuration>
               <!--failBuildOnCVSS>8.0</failBuildOnCVSS-->
               <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>

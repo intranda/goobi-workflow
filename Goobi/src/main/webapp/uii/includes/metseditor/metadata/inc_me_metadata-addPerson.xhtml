@@ -1,12 +1,12 @@
-<ui:composition 
-    xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" 
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:p="http://primefaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -60,12 +60,12 @@
                                         <f:selectItems value="#{Metadaten.addableRollen}" />
                                     </h:selectOneMenu>
                                 </div>
-                                
+
                                 <x:message for="Rolle" style="color: red" replaceIdWithLabel="true" />
                             </div>
                         </div>
                     </div>
-                
+
                     <hr />
 
                     <div class="row">
@@ -78,15 +78,22 @@
                                 jsf:immediate="true"
                                 type="button">
                                 #{msgs.abbrechen}
-                                <f:ajax render=":pageContentCenter" />
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
+                                    render=":pageContentCenter"
+                                />
                             </button>
                             <h:commandButton
                                 id="savePerson"
                                 styleClass="btn btn--gray"
                                 type="submit"
                                 action="#{Metadaten.addNewPerson}"
-                                value="#{msgs.dieAenderungenSpeichern}"
+                                value="#{msgs.add}"
                                 role="button">
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
+                                    execute="@form"
+                                    render=":pageContentCenter" />
                             </h:commandButton>
                         </div>
                     </div>
