@@ -38,8 +38,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
+import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
@@ -58,6 +62,7 @@ import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
+import org.goobi.vocabulary.VocabularyFieldValidator;
 import org.goobi.vocabulary.VocabularyUploader;
 import org.goobi.vocabulary.helper.ImportJsonVocabulary;
 import org.primefaces.event.FileUploadEvent;
@@ -121,6 +126,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     @Setter
     private String importType = "merge";
 
+    private boolean resetResultsOnNextValidation = false;
+
     private List<Definition> removedDefinitions = null;
     private transient DataFormatter dataFormatter = new DataFormatter();
 
@@ -146,7 +153,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     /**
      * method to go to the vocabulary edition area
      * 
-     * @return path to vocabulary edition arey
+     * @return path to vocabulary edition area
      */
     public String editVocabulary() {
         removedDefinitions = new ArrayList<>();
@@ -230,7 +237,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     /**
-     * method to to delete an existing vocabulay
+     * method to to delete an existing vocabulary
      * 
      * @return path to the vocabulary listing
      */
@@ -287,50 +294,18 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Save the current records. First it gets validated, if all required fields are filled and if the unique fields are unique. If this is not the
-     * case, the records and fields are marked for the user and the saving is aborted. Otherwise the records get saved
-     * 
-     * @return
+     * Stores the current vocabulary record in the database. The validation is done when the setters of the field values are called by JSF. The
+     * validation is not necessary here anymore.
      */
     public void saveRecordEdition() {
-        currentVocabRecord.setValid(true);
-        for (Field field : currentVocabRecord.getFields()) {
 
-            // If the field is a text field, the value is trimmed to avoid leading or trailing whitespaces
-            String type = field.getDefinition().getType();
-            if (type.equals("input") || type.equals("textarea") || type.equals("html")) {
-                field.setValue(field.getValue().trim());
-            }
+        VocabularyManager.saveRecord(this.currentVocabulary.getId(), this.currentVocabRecord);
 
-            field.setValidationMessage(null);
-            if (field.getDefinition().isRequired()) {
-                if (StringUtils.isBlank(field.getValue())) {
-                    currentVocabRecord.setValid(false);
-                    field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
-                }
-            }
-            if (field.getDefinition().isDistinctive() && StringUtils.isNotBlank(field.getValue())) {
-                requiredCheck: for (VocabRecord other : currentVocabulary.getRecords()) {
-                    if (!currentVocabRecord.equals(other)) {
-                        for (Field f : other.getFields()) {
-                            if (field.getDefinition().equals(f.getDefinition())) {
-                                if (field.getValue().equals(f.getValue())) {
-                                    currentVocabRecord.setValid(false);
-                                    field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
-                                    break requiredCheck;
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-
-        VocabularyManager.saveRecord(currentVocabulary.getId(), currentVocabRecord);
-        VocabRecord temp = currentVocabRecord;
-        editRecords();
-        setCurrentVocabRecord(temp);
+        // editRecords() reloads the list in the left vocabulary record menu. The id must be stored to keep the current record selected because the
+        // object reference gets lost during the reload
+        int id = this.currentVocabRecord.getId();
+        this.editRecords();
+        this.setCurrentVocabRecord(this.getVocabRecordById(id));
     }
 
     /**
@@ -523,7 +498,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     /**
-     * navigate to the excel updoad area
+     * navigate to the excel upload area
      * 
      * @return path to the excel upload area
      */
@@ -819,9 +794,87 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @param currentVocabRecord the record to use
      */
     public void setCurrentVocabRecord(VocabRecord currentVocabRecord) {
-        if (this.currentVocabRecord == null || !this.currentVocabRecord.equals(currentVocabRecord)) {
-            this.currentVocabRecord = currentVocabRecord;
+
+        // Set records to valid because validation errors are discarded
+        for (VocabRecord record : this.currentVocabulary.getRecords()) {
+            record.setValid(true);
+        }
+
+        this.currentVocabRecord = currentVocabRecord;
+    }
+
+    /**
+     * Returns the vocabulary record from the current vocabulary list with the given id. The advantage of this method in contrast to the one of the
+     * mysql-helper is that this method returns the same object and not an equal object. If the object can be found, the vocabulary record with that
+     * id is returned. Otherwise, null is returned.
+     * 
+     * @param id The id of the required vocabulary record
+     * @return The vocabulary record or null if it could not be found
+     */
+    private VocabRecord getVocabRecordById(int id) {
+        for (VocabRecord vocabulary : this.currentVocabulary.getRecords()) {
+            if (vocabulary.getId() == id) {
+                return vocabulary;
+            }
+        }
+        return null;
+    }
+
+    public void validateFieldValue(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+
+        synchronized (this) {
+            // This boolean flag is set to true when the page (and the input form) is reloaded. This makes it possible to reset the validation results on
+            // the first executed validation of the current submit-trial
+            if (this.resetResultsOnNextValidation) {
+                // Only the invalid records should be set to 'valid=false' later
+                for (VocabRecord currentRecord : this.currentVocabulary.getRecords()) {
+                    currentRecord.setValid(true);
+                }
+                this.resetResultsOnNextValidation = false;
+            }
+        }
+
+        // Collect some data about the current state of the frontend:
+        // Get information about the field that should be set:
+        java.util.Map<String, Object> map = component.getAttributes();
+
+        String label = (String) (map.get("fieldLabelForValidator"));
+        Field field = this.currentVocabRecord.getFieldByLabel(label);
+
+        String type = field.getDefinition().getType();
+        String valueThatShouldBeSet;
+        if (value == null || value.equals("null")) {
+            valueThatShouldBeSet = "";
+        } else {
+            // This is multiselect -> requires a string array
+            if (type.equals("select")) {
+                String[] array = (String[]) (value);
+                valueThatShouldBeSet = String.join("|", array);
+            } else {
+                valueThatShouldBeSet = value.toString().trim();
+            }
+        }
+
+        // Validate the currently set record:
+        boolean success =
+                VocabularyFieldValidator.validateFieldInRecords(this.currentVocabulary, this.currentVocabRecord, field, valueThatShouldBeSet);
+        if (!success) {
+            String errorMessageKey = field.getValidationMessage();
+            String translation = Helper.getTranslation(errorMessageKey);
+            FacesMessage message = new FacesMessage(translation, translation);
+            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(message);
         }
     }
 
+    /**
+     * This method is called when the vocabulary record edit-fields are displayed. This function resets the validation results when the table is
+     * reloaded. After that, the validation of all different vocabulary-record-fields can be executed independently and the union set of all results
+     * (errors) can be cached without getting cached errors of the previous validation.
+     *
+     * @param event The event object
+     */
+    public void resetValidationResults(ComponentSystemEvent event) {
+        this.resetResultsOnNextValidation = true;
+    }
 }
