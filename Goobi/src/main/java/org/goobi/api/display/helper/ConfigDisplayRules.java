@@ -177,6 +177,10 @@ public final class ConfigDisplayRules {
                                     Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
                                     if (typeList.containsKey(type.name())) {
                                         Map<String, List<Item>> currentType = typeList.get(type.name());
+                                        // TODO: The following currentType.put() call overwrites the existing metadata display rule with the same metadata-reference.
+                                        // The put call should only be executed if there is no other rule for this metadata object in the map.
+                                        // If it is already present, an error message must be displayed in the GUI and in the log because this metadata
+                                        // object seems to be defined twice.
                                         currentType.put(metadataName, listOfItems);
                                     } else {
                                         Map<String, List<Item>> currentType = new HashMap<>();
