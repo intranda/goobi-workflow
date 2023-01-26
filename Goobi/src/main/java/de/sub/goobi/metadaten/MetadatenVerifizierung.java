@@ -703,7 +703,7 @@ public class MetadatenVerifizierung {
     /**
      * individuelle konfigurierbare projektspezifische Validierung der Metadaten ================================================================
      */
-    private List<String> checkConfiguredValidationValues(DocStruct inStruct, ArrayList<String> inFehlerList, Prefs inPrefs, String language) {
+    private List<String> checkConfiguredValidationValues(DocStruct inStruct, ArrayList<String> inErrorList, Prefs inPrefs, String language) {
         /*
          * -------------------------------- Konfiguration öffnen und die Validierungsdetails auslesen --------------------------------
          */
@@ -712,11 +712,11 @@ public class MetadatenVerifizierung {
             cp = new ConfigProjects(this.myProzess.getProjekt().getTitel());
         } catch (IOException e) {
             Helper.setFehlerMeldung("[" + this.myProzess.getTitel() + "] " + "IOException", e.getMessage());
-            return inFehlerList;
+            return inErrorList;
         } catch (PatternSyntaxException exception) {
             String message = Helper.getTranslation("projectErrorConfigurationHasInvalidTitle");
             Helper.setFehlerMeldung("[" + this.myProzess.getTitel() + "] " + message + ": " + exception.getPattern());
-            return inFehlerList;
+            return inErrorList;
         }
         List<HierarchicalConfiguration> validations = cp.getList("/validate/metadata");
 
@@ -767,14 +767,14 @@ public class MetadatenVerifizierung {
                         }
                     }
                     if (!listOfFromMdts.isEmpty()) {
-                        checkCreateElementFrom(inFehlerList, listOfFromMdts, myStruct, mdt, language);
+                        checkCreateElementFrom(inErrorList, listOfFromMdts, myStruct, mdt, language);
                     }
                 } else {
-                    checkStartsEndsWith(inFehlerList, propStartswith, propEndswith, myStruct, mdt, language);
+                    checkStartsEndsWith(inErrorList, propStartswith, propEndswith, myStruct, mdt, language);
                 }
             }
         }
-        return inFehlerList;
+        return inErrorList;
     }
 
     /**
