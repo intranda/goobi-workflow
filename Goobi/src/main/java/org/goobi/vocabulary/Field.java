@@ -65,6 +65,17 @@ public class Field implements Serializable {
     @JsonIgnore
     private transient String validationMessage;
 
+    public void setValue(String value) {
+        if (this.definition != null) {
+            String type = this.definition.getType();
+            if (type.equals("input") || type.equals("textarea") || type.equals("html")) {
+                this.value = value.trim();
+                return;
+            }
+        }
+        this.value = value;
+    }
+
     /**
      * Simple getter to allow reading the current value as multi select field
      * 
