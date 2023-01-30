@@ -112,7 +112,8 @@
 									name="prozes"
 									form="#{AktuelleSchritteForm}"
 									value="#{msgs.prozessTitel}"
-									ajaxRender="processAllBox:myform" />
+									ajaxRender="processAllBox:myform" 
+									addClass="gw-table-fixed__sizeXL"/>
 
 								<!-- Custom columns -->
 								<c:forEach items="#{LoginForm.listOfCustomColumns}" var="var">
@@ -145,7 +146,8 @@
 									name="projekt"
 									form="#{AktuelleSchritteForm}"
 									value="#{msgs.projekt}"
-									ajaxRender="processAllBox:myform" />
+									ajaxRender="processAllBox:myform" 
+									addClass="gw-table-fixed__sizeM"/>
 
 								<intranda:columnheader
 									rendered="#{AktuelleSchritteForm.anzeigeAnpassen['institution']}"
@@ -182,20 +184,20 @@
 									form="#{AktuelleSchritteForm}"
 									ajaxRender="processAllBox:myform" />
 
-									<!-- Priority -->
-									<intranda:columnheader
-										value="#{msgs.prioritaet}"
-										sortable="false"
-										addClass="gw-table-fixed__priority"/>
+								<!-- Priority -->
+								<intranda:columnheader
+									value="#{msgs.prioritaet}"
+									sortable="false"
+									addClass="gw-table-fixed__sizeXS"/>
 
-									<!-- Action -->
-									<intranda:columnheader
-										id="sortStatus"
-										name="status"
-										form="#{AktuelleSchritteForm}"
-										value="#{msgs.auswahl}"
-										ajaxRender="processAllBox:myform"
-										addClass="gw-table-fixed__actions"/>
+								<!-- Action -->
+								<intranda:columnheader
+									id="sortStatus"
+									name="status"
+									form="#{AktuelleSchritteForm}"
+									value="#{msgs.auswahl}"
+									ajaxRender="processAllBox:myform"
+									addClass="gw-table-fixed__sizeXXS"/>
 								</tr>
 							</thead>
 
