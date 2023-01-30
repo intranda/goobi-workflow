@@ -39,6 +39,9 @@ The build system uses two npm packages:
 ### Usage
 
 ```sh
+# switch to correct folder
+cd ~/git/goobi-workflow/Goobi/src/main/webapp
+	
 #: Install sass, postcss (+ plugins), and bootstrap
 npm install
 

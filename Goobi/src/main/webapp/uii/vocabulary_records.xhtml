@@ -48,7 +48,7 @@
             rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
 
             <div class="row" role="main">
-                <div class="col-12 col-lg-6">
+                <div class="col-12 col-lg-6 mb-4">
 
 
                 <intranda:box
@@ -284,10 +284,9 @@
                       title="#{vocabularyBean.currentVocabRecord.title eq '' ? vocabularyBean.currentVocabulary.title : vocabularyBean.currentVocabRecord.title}"
                       icon="fa-file-o">
 
-
                             <intranda:formOutputText label="#{msgs.id}"
                                 field="#{vocabularyBean.currentVocabRecord.id}"
-                                name="recordid" fieldStyle="form-control"/>
+                                name="recordid"/>
 
                             <ui:repeat var="field" value="#{vocabularyBean.currentVocabRecord.fields}">
                                 <div class="form-group" style="">

@@ -182,10 +182,11 @@
 									form="#{AktuelleSchritteForm}"
 									ajaxRender="processAllBox:myform" />
 
-									<!-- Status -->
+									<!-- Priority -->
 									<intranda:columnheader
 										value="#{msgs.prioritaet}"
-										sortable="false" />
+										sortable="false" 
+										addClass="gw-table-fixed__priority"/>
 
 									<!-- Action -->
 									<intranda:columnheader
@@ -193,7 +194,8 @@
 										name="status"
 										form="#{AktuelleSchritteForm}"
 										value="#{msgs.auswahl}"
-										ajaxRender="processAllBox:myform" />
+										ajaxRender="processAllBox:myform" 
+										addClass="gw-table-fixed__actions"/>
 								</tr>
 							</thead>
 

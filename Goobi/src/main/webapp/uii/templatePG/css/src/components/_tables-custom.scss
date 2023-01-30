@@ -181,6 +181,10 @@
  * Fixed sized Goobi tables
  * ====================================== */
 
+.gw-table-fixed__priority{
+  --width-table-col: 100px;
+}
+
 .table-fixed__actions,
 .gw-table-fixed__actions,
 .dataTables__actions {
