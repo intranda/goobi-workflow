@@ -6,10 +6,9 @@
   "scripts": {
     "start": "npm run sass:dev",
     "css:build": "npm run sass:prod && npm run postcss:build",
-
-    "sass:dev": "SASS_PATH='node_modules/bootstrap/scss' sass --watch uii/templatePG/css/src/bootstrap.scss:/opt/digiverso/dev/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/Goobi/uii/templatePG/css/dist/bootstrap.min.css uii/templatePG/css/src/main.scss:/opt/digiverso/dev/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/Goobi/uii/templatePG/css/dist/main.min.css uii/templatePG/css/src/accessibility.scss:/opt/digiverso/dev/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/Goobi/uii/templatePG/css/dist/accessibility.css",
-    "sass:prod": "SASS_PATH='node_modules/bootstrap/scss' sass uii/templatePG/css/src/:uii/templatePG/css/dist",
-    "postcss:build": "node runPostcss"
+    "postcss:build": "node runPostcss",
+    "sass:dev": "source .sass-config && SASS_PATH=${SASS_SRC_PATH} sass --watch ${SRC_BOOTSTRAP}:${DEST_DEV_BOOTSTRAP} ${SRC_CSS_CUSTOM}:${DEST_DEV_CSS_CUSTOM} ${SRC_CSS_ACCESSIBILITY}:${DEST_DEV_CSS_ACCESSIBILITY}",
+    "sass:prod": "source .sass-config && SASS_PATH=${SASS_SRC_PATH} sass uii/templatePG/css/src/:uii/templatePG/css/dist"
   },
   "repository": {
     "type": "git",
