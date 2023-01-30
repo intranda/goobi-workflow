@@ -820,6 +820,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
         return null;
     }
 
+    public void noOperation(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+    }
+
     public void validateFieldValue(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
         synchronized (this) {
@@ -838,7 +841,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         // Get information about the field that should be set:
         java.util.Map<String, Object> map = component.getAttributes();
 
-        String label = (String) (map.get("fieldLabelForValidator"));
+        String label = (String) (map.get("idForValidator"));
         Field field = this.currentVocabRecord.getFieldByLabel(label);
 
         String type = field.getDefinition().getType();

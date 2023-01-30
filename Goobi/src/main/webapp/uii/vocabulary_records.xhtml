@@ -148,15 +148,14 @@
                                   <h:outputText value="#{record.getFieldValue(definition)}" />
                               </td>
                             </ui:repeat>
-                            <td class="gw-table__actions__container">
+                            <td>
                               <button
                                 type="button"
                                 jsf:id="switch"
                                 class="btn #{record.valid ? vocabularyBean.currentVocabRecord != record ? 'btn-blank' : 'btn-primary-400' : 'btn-hot'}"
                                 jsf:action="#{vocabularyBean.Reload}"
                                 title="#{msgs.bearbeiten}"
-                                data-bs-toggle="tooltip"
-                              >
+                                data-bs-toggle="tooltip">
                               <i class="font-size-s fa fa-pencil" />
                                 <f:setPropertyActionListener
                                   value="#{record}"
@@ -284,139 +283,63 @@
                       title="#{vocabularyBean.currentVocabRecord.title eq '' ? vocabularyBean.currentVocabulary.title : vocabularyBean.currentVocabRecord.title}"
                       icon="fa-file-o">
 
-
                             <intranda:formOutputText label="#{msgs.id}"
                                 field="#{vocabularyBean.currentVocabRecord.id}"
                                 name="recordid" fieldStyle="form-control"/>
 
                             <ui:repeat var="field" value="#{vocabularyBean.currentVocabRecord.fields}">
-                                <div class="form-group" style="">
-                                    <h:panelGroup rendered="#{field.definition.type eq 'input'}">
-                                        <div class="col-sm-3 control-label" tabindex="-1">
-                                            <h:outputLabel for="field1" value="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}">
-                                            </h:outputLabel>
-                                            <h:panelGroup rendered="#{field.definition.required}">
-                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
-                                            </h:panelGroup>
-                                        </div>
-                                        <div class="col-sm-9" style="">
-                                            <!-- Note: The field 'fieldLabelForValidator' is requested in the validateFielValue-function in the backend. -->
-                                            <h:inputText
-                                                id="field1"
-                                                forceId="true"
-                                                value="#{field.value}"
-                                                styleClass="form-control"
-                                                required="#{field.definition.required}"
-                                                rendered="#{field.definition.type eq 'input'}"
-                                                tabindex="0"
-                                                fieldLabelForValidator="#{field.label}"
-                                                validator="#{vocabularyBean.validateFieldValue}">
-                                            </h:inputText>
-                                            <h:message for="field1" showDetail="true" styleClass="help-inline font-danger" />
-                                        </div>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{field.definition.type eq 'textarea'}">
-                                        <div class="col-sm-3 control-label" tabindex="-1">
-                                            <h:outputLabel for="field2" value="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}">
-                                            </h:outputLabel>
-                                            <h:panelGroup rendered="#{field.definition.required}">
-                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
-                                            </h:panelGroup>
-                                        </div>
-                                        <div class="col-sm-9" style="">
-                                            <!-- Note: The field 'fieldLabelForValidator' is requested in the validateFielValue-function in the backend. -->
-                                            <h:inputTextarea
-                                                id="field2"
-                                                forceId="true"
-                                                value="#{field.value}"
-                                                styleClass="form-control"
-                                                required="#{field.definition.required}"
-                                                rendered="#{field.definition.type eq 'textarea'}"
-                                                tabindex="0"
-                                                fieldLabelForValidator="#{field.label}"
-                                                validator="#{vocabularyBean.validateFieldValue}">
-                                            </h:inputTextarea>
-                                            <h:message for="field2" showDetail="true" styleClass="help-inline font-danger" />
-                                        </div>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{field.definition.type eq 'select1'}">
-                                        <div class="col-sm-3 control-label" tabindex="-1">
-                                            <h:outputLabel for="field3" value="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}">
-                                            </h:outputLabel>
-                                            <h:panelGroup rendered="#{field.definition.required}">
-                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
-                                            </h:panelGroup>
-                                        </div>
-                                        <div class="col-sm-9" style="">
-                                            <!-- Note: The field 'fieldLabelForValidator' is requested in the validateFielValue-function in the backend. -->
-                                            <h:selectOneMenu
-                                                id="field3"
-                                                value="#{field.value}"
-                                                styleClass="form-control"
-                                                required="#{field.definition.required}"
-                                                rendered="#{field.definition.type eq 'select1'}"
-                                                tabindex="0"
-                                                fieldLabelForValidator="#{field.label}"
-                                                validator="#{vocabularyBean.validateFieldValue}">
-                                                <f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
-                                                <f:selectItems value="#{field.definition.selecteableValues}" />
-                                            </h:selectOneMenu>
-                                            <h:message for="field3" showDetail="true" styleClass="help-inline font-danger" />
-                                        </div>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{field.definition.type eq 'select'}">
-                                        <div class="col-sm-3 control-label" tabindex="-1">
-                                            <h:outputLabel for="field4" value="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}">
-                                            </h:outputLabel>
-                                            <h:panelGroup rendered="#{field.definition.required}">
-                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
-                                            </h:panelGroup>
-                                        </div>
-                                        <div class="col-sm-9" style="">
-                                            <!-- Note: The field 'fieldLabelForValidator' is requested in the validateFielValue-function in the backend. -->
-                                            <h:selectManyListbox
-                                                id="field4"
-                                                value="#{field.valueMultiSelect}"
-                                                styleClass="form-control"
-                                                required="#{field.definition.required}"
-                                                rendered="#{field.definition.type eq 'select'}"
-                                                tabindex="0"
-                                                fieldLabelForValidator="#{field.label}"
-                                                validator="#{vocabularyBean.validateFieldValue}">
-                                                <f:selectItems
-                                                    value="#{field.definition.selectList}"
-                                                    var="var"
-                                                    itemLabel="#{var.itemLabel}"
-                                                    itemValue="#{var.itemValue}" /><!--Are the parameters 'var', 'itemLabel' and 'itemValue' required? -->
-                                            </h:selectManyListbox>
-                                            <h:message for="field4" showDetail="true" styleClass="help-inline font-danger" />
-                                        </div>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{field.definition.type eq 'html'}">
-                                        <div class="col-sm-3 control-label" tabindex="-1">
-                                            <h:outputLabel for="field5" value="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}">
-                                            </h:outputLabel>
-                                            <h:panelGroup rendered="#{field.definition.required}">
-                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
-                                            </h:panelGroup>
-                                        </div>
-                                        <div class="col-sm-9" style="">
-                                            <!-- Note: The field 'fieldLabelForValidator' is requested in the validateFielValue-function in the backend. -->
-                                            <h:inputTextarea
-                                                id="field5"
-                                                forceId="true"
-                                                value="#{field.value}"
-                                                styleClass="editor form-control"
-                                                required="#{field.definition.required}"
-                                                rendered="#{field.definition.type eq 'html'}"
-                                                tabindex="0"
-                                                fieldLabelForValidator="#{field.label}"
-                                                validator="#{vocabularyBean.validateFieldValue}">
-                                            </h:inputTextarea>
-                                            <h:message for="field5" showDetail="true" styleClass="help-inline font-danger" />
-                                        </div>
-                                    </h:panelGroup>
-                                </div>
+                                <ui:fragment rendered="#{field.definition.type eq 'input'}">
+                                    <intranda:formInputText
+                                        name="field1"
+                                        field="#{field.value}"
+                                        required="#{field.definition.required}"
+                                        displayAsRequired="#{field.definition.required}"
+                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
+                                        validationMethod="#{vocabularyBean.validateFieldValue}"
+                                        idForValidator="#{field.label}" />
+                                </ui:fragment>
+                                <ui:fragment rendered="#{field.definition.type eq 'textarea'}">
+                                    <intranda:formInputTextArea
+                                        name="field2"
+                                        field="#{field.value}"
+                                        required="#{field.definition.required}"
+                                        displayAsRequired="#{field.definition.required}"
+                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
+                                        validationMethod="#{vocabularyBean.validateFieldValue}"
+                                        idForValidator="#{field.label}" />
+                                </ui:fragment>
+                                <ui:fragment rendered="#{field.definition.type eq 'select1'}">
+                                    <intranda:formInputDropDown
+                                        name="field3"
+                                        field="#{field.value}"
+                                        selectItems="#{field.definition.selecteableValues}"
+                                        required="#{field.definition.required}"
+                                        displayAsRequired="#{field.definition.required}"
+                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
+                                        validationMethod="#{vocabularyBean.validateFieldValue}"
+                                        idForValidator="#{field.label}" />
+                                </ui:fragment>
+                                <ui:fragment rendered="#{field.definition.type eq 'select'}">
+                                    <intranda:formInputSelectMany
+                                        name="field4"
+                                        field="#{field.valueMultiSelect}"
+                                        selectItems="#{field.definition.selectList}"
+                                        required="#{field.definition.required}"
+                                        displayAsRequired="#{field.definition.required}"
+                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
+                                        validationMethod="#{vocabularyBean.validateFieldValue}"
+                                        idForValidator="#{field.label}" />
+                                </ui:fragment>
+                                <ui:fragment rendered="#{field.definition.type eq 'html'}">
+                                    <intranda:formInputTextArea
+                                        name="field5"
+                                        field="#{field.value}"
+                                        required="#{field.definition.required}"
+                                        displayAsRequired="#{field.definition.required}"
+                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
+                                        validationMethod="#{vocabularyBean.validateFieldValue}"
+                                        idForValidator="#{field.label}" />
+                                </ui:fragment>
                             </ui:repeat>
 
                             <div class="box__actions">

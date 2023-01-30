@@ -14,20 +14,26 @@
 		<composite:attribute name="help" />
 		<composite:attribute name="selectItems" />
 		<composite:attribute name="fieldStyle" default="form-select"/>
-		<composite:attribute name="style" />
+		<composite:attribute name="style" default="" />
 		<composite:attribute name="readonly" default="false" />
 		<composite:attribute name="required" default="false" />
 		<composite:attribute name="displayAsRequired" default="false" />
 		<composite:attribute name="classLeft" default="col-12 col-md-3" />
 		<composite:attribute name="classRight" default="col-12 col-md-9" />
 		<composite:attribute name="tabindex" default="0" />
+		<composite:attribute name="useValidation" default="false" />
+		<composite:attribute
+			name="validationMethod"
+			default=""
+			method-signature="java.lang.Void action(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)" />
+		<composite:attribute name="idForValidator" default="" />
+		<!-- "idForValidator" can be requested by the validator with uiComponent.getAttributes().get("idForValidator"); -->
 	</composite:interface>
 
 	<composite:implementation>
 
 		<div class="row" style="#{cc.attrs.style}">
 			<div class="#{cc.attrs.classLeft} control-label" tabindex="-1">
-
 
 				<!-- LABEL -->
 				<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
@@ -39,11 +45,32 @@
 			</div>
 
 			<div class="#{cc.attrs.classRight}">
-				<h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}"
-					value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}" readonly="#{cc.attrs.readonly}">
+				<ui:component rendered="#{cc.attrs.useValidation}">
+				<h:selectOneMenu
+					id="#{cc.attrs.name}"
+					styleClass="#{cc.attrs.fieldStyle}"
+					value="#{cc.attrs.field}"
+					tabindex="#{cc.attrs.tabindex}"
+					readonly="#{cc.attrs.readonly}"
+					validator="#{cc.attrs.validationMethod}"
+					idForValidator="#{cc.attrs.idForValidator}">
+
 					<f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
 					<f:selectItems value="#{cc.attrs.selectItems}" />
 				</h:selectOneMenu>
+				</ui:component>
+				<ui:component rendered="#{not cc.attrs.useValidation}">
+				<h:selectOneMenu
+					id="#{cc.attrs.name}"
+					styleClass="#{cc.attrs.fieldStyle}"
+					value="#{cc.attrs.field}"
+					tabindex="#{cc.attrs.tabindex}"
+					readonly="#{cc.attrs.readonly}">
+
+					<f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
+					<f:selectItems value="#{cc.attrs.selectItems}" />
+				</h:selectOneMenu>
+				</ui:component>
 
 				<!-- Help messages, inline + warning -->
 				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">

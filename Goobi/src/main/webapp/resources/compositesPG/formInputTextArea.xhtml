@@ -1,51 +1,82 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-    <composite:interface>
-        <composite:attribute name="name" />
-        <composite:attribute name="label" />
-        <composite:attribute name="field" />
-        <composite:attribute name="help" />
-        <composite:attribute name="fieldStyle" />
-        <composite:attribute name="required" default="false" />
-        <composite:attribute name="displayAsRequired" default="false" />
-        <composite:attribute name="style" />
-        <composite:attribute name="readonly" default="false" />
-        <composite:attribute name="height" default="" />
-        <composite:attribute name="classLeft" default="col-12 col-md-3" />
-        <composite:attribute name="classRight" default="col-12 col-md-9" />
-        <composite:attribute name="tabindex" default="0" />
-    </composite:interface>
+	<composite:interface>
+		<composite:attribute name="name" />
+		<composite:attribute name="label" />
+		<composite:attribute name="field" />
+		<composite:attribute name="help" />
+		<composite:attribute name="fieldStyle" default="" />
+		<composite:attribute name="required" default="false" />
+		<composite:attribute name="displayAsRequired" default="false" />
+		<composite:attribute name="style" default="" />
+		<composite:attribute name="readonly" default="false" />
+		<composite:attribute name="height" default="" />
+		<composite:attribute name="classLeft" default="col-12 col-md-3" />
+		<composite:attribute name="classRight" default="col-12 col-md-9" />
+		<composite:attribute name="tabindex" default="0" />
+		<composite:attribute name="useValidation" default="false" />
+		<composite:attribute
+			name="validationMethod"
+			default=""
+			method-signature="java.lang.Void action(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)" />
+		<composite:attribute name="idForValidator" default="" />
+		<!-- "idForValidator" can be requested by the validator with uiComponent.getAttributes().get("idForValidator"); -->
+	</composite:interface>
 
-    <composite:implementation>
+	<composite:implementation>
 
-      <div class="row" style="#{cc.attrs.style}">
+		<div class="row" style="#{cc.attrs.style}">
 
-          <div class="#{cc.attrs.classLeft} control-label" tabindex="-1">
-          <ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-            <ui:param name="labelFor" value="#{cc.attrs.name}" />
-            <ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
-            <ui:param name="labelLabel" value="#{cc.attrs.label}" />
-          </ui:include>
-			  </div>
+			<div class="#{cc.attrs.classLeft} control-label" tabindex="-1">
+				<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
+					<ui:param name="labelFor" value="#{cc.attrs.name}" />
+					<ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
+					<ui:param name="labelLabel" value="#{cc.attrs.label}" />
+				</ui:include>
+			</div>
 
-        <div class="#{cc.attrs.classRight}">
-            <h:inputTextarea id="#{cc.attrs.name}" forceId="true" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" value="#{cc.attrs.field}"
-                required="#{cc.attrs.required}" readonly="#{cc.attrs.readonly}" tabindex="#{cc.attrs.tabindex}" pt:aria-label="#{cc.attrs.label}"/>
-            <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
-            <intranda:formHelp content="#{cc.attrs.help}" />
-        </div>
+			<div class="#{cc.attrs.classRight}">
+				<ui:component rendered="#{cc.attrs.useValidation}">
+				<h:inputTextarea
+					id="#{cc.attrs.name}"
+					styleClass="#{cc.attrs.fieldStyle} form-control metsEditorTextArea"
+					value="#{cc.attrs.field}"
+					required="#{cc.attrs.required}"
+					readonly="#{cc.attrs.readonly}"
+					tabindex="#{cc.attrs.tabindex}"
+					pt:aria-label="#{cc.attrs.label}"
+					validator="#{cc.attrs.validationMethod}"
+					idForValidator="#{cc.attrs.idForValidator}" />
+				</ui:component>
+				<ui:component rendered="#{not cc.attrs.useValidation}">
+				<h:inputTextarea
+					id="#{cc.attrs.name}"
+					styleClass="#{cc.attrs.fieldStyle} form-control metsEditorTextArea"
+					value="#{cc.attrs.field}"
+					required="#{cc.attrs.required}"
+					readonly="#{cc.attrs.readonly}"
+					tabindex="#{cc.attrs.tabindex}"
+					pt:aria-label="#{cc.attrs.label}" />
+				</ui:component>
 
-      </div> <!-- /row -->
+				<!-- Help messages, inline + warning -->
+				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
+					<ui:param name="msgFor" value="#{cc.attrs.name}" />
+					<ui:param name="helpContent" value="#{cc.attrs.help}" />
+				</ui:include>
+			</div>
 
-    </composite:implementation>
+		</div> <!-- /row -->
+
+	</composite:implementation>
 
 </ui:composition>
 
