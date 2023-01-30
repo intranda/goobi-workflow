@@ -2,7 +2,7 @@
   // Custom column widths
   .header {
     &__title {
-      --width-table-col: 300px;
+      --width-table-col: 320px;
     }
     &__ruleset,
     &__swapped,
@@ -43,5 +43,16 @@
         margin-inline-end: 2px;
       }
     }
+  }
+  // Small nested box with details on processes
+  .boxTitleDetails {
+    th:first-child,
+    th:last-child {
+      --width-table-col: 80px;
+    }
+  }
+  .list-of-goobi-scripts .badge {
+    cursor: pointer;
+    border: 0;
   }
 }

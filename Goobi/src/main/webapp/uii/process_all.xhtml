@@ -50,6 +50,7 @@
 			}
 	    </style>
 
+      <!--
 	    <script type="text/javascript">
         	function switchExpanded(id){
         		console.log("called by: "+id);
@@ -63,6 +64,7 @@
 				document.getElementById(id).setAttribute("aria-expanded", x);
         	}
         </script>
+        -->
 
 
         <main id="processAll">
@@ -413,7 +415,7 @@
                                               title="#{msgs.details}"
                                             >
 
-                                            <div class="gw-table gw-table-auto">
+                                            <div class="gw-table">
                                               <div class="gw-table__wrapper">
 
                                                 <x:dataTable
@@ -1034,7 +1036,7 @@
                                             <h:panelGroup
                                               rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() gt 1}">
                                             <div
-                                              class="btn-group"
+                                              class="dropdown-left"
 
                                               title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:
                                               (item.getProjekt().projectIsArchived ? msgs.projectIsArchived :
@@ -1042,17 +1044,14 @@
                                               )
                                               }"
                                               data-bs-toggle="tooltip">
-                                              <div class="dropdown">
                                                 <button
                                                   jsf:id="availableProjectsDropdown"
-                                                  class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-hot':'btn-primary-400'} dropdown-toggle fa pull-right"
+                                                  class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-hot':'btn-primary-400'} dropdown-toggle"
                                                   aria-haspopup="true"
                                                   aria-expanded="false"
-                                                  onclick="switchExpanded(this.id)"
-                                                  style="margin: 0; padding-left: 4px; padding-right: 4px;"
-                                                  data-toggle="dropdown"> <span class="caret"></span>
+                                                  data-bs-toggle="dropdown">
                                                 </button>
-                                                <ul class="dropdown-menu pull-right">
+                                                <ul class="dropdown-menu">
                                                   <ui:repeat
                                                     var="proj"
                                                     value="#{ProzesskopieForm.availableProjects}">
@@ -1080,7 +1079,9 @@
                                                     property="#{ProzesskopieForm.prozessVorlage}"
                                                     value="#{item}" />
                                                 </button>
+                                                <!--
                                               </div>
+                                                -->
                                             </div>
                                                       </h:panelGroup>
 
@@ -1109,7 +1110,7 @@
                                                       <h:panelGroup
                                                         rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
                                                       <div
-                                                        class="btn-group"
+                                                        class="dropdown-left"
                                                         title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:
                                                         (item.getProjekt().projectIsArchived ? msgs.projectIsArchived :
                                                         (ProzesskopieForm.isUserInProcessProject(item) ? msgs.MassenImport : msgs.nutzerNichtFuerProjektZugeordnet)
@@ -1117,14 +1118,13 @@
                                                         }"
                                                         data-bs-toggle="tooltip">
 
-                                                        <div class="dropdown">
                                                           <button
                                                             id="importProjectListDropdown"
                                                             class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-hot':'btn-primary-400'} dropdown-toggle fa"
                                                             aria-haspopup="true"
                                                             aria-expanded="false"
                                                             onclick="switchExpanded(this.id)"
-                                                            data-toggle="dropdown">
+                                                            data-bs-toggle="dropdown">
                                                           </button>
                                                           <ul class="dropdown-menu">
                                                             <ui:repeat
@@ -1161,17 +1161,15 @@
                                                               property="#{MassImportForm.template}"
                                                               value="#{item}" />
                                                           </button>
-                                                        </div>
                                                       </div>
                                                                 </h:panelGroup>
 
                                                                 <h:panelGroup
                                                                   rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Workflow_Processes_Allow_Download') or LoginForm.hasRole('Workflow_Processes_Allow_Linking'))}">
                                                                 <div
-                                                                  class="btn-group"
+                                                                  class="dropdown-left"
                                                                   title="#{msgs.additionalOptions}"
                                                                   data-bs-toggle="tooltip">
-                                                                  <div class="dropdown">
                                                                     <button
                                                                       jsf:id="additionalOptionsDropdown"
                                                                       aria-label="#{msgs.additionalOptions}"
@@ -1321,7 +1319,6 @@
                                                                       </h:panelGroup>
 
                                                                     </ul>
-                                                                  </div>
                                                                 </div>
                                                                 </h:panelGroup>
                                             </div>
@@ -1366,11 +1363,6 @@
                                     </h:form>
 
                                 </div>
-                                <!--
-                            </div>
-                        </div>
-                                -->
-
                     </intranda:box>
 
                     </div>
@@ -1387,13 +1379,35 @@
             </c:if>
 
             <script type="text/javascript">
+
+            function showGoobiScriptModal({data, modalID = undefined} = {}) {
+                console.log(1)
+                console.log(modalID)
+
+              if (!modalID) return
+                if (data.status !== "success") return
+              const mdl = new bootstrap.Modal(document.getElementById(modalID));
+              mdl.show()
+            }
+
 				window.onload = function() {
 					loadImages();
 					// load codemirror for some syntax highlighting
-					initGoobiScriptCodeMirror();
+					// initGoobiScriptCodeMirror();
 				}
 
             	var goobiScriptCodeMirror;
+
+
+        function handleGoobiScriptCodeEditor() {
+            removeGoobiScriptCodeMirror();
+            initGoobiScriptCodeMirror();
+        }
+
+                function removeGoobiScriptCodeMirror() {
+                    var codeEditors = document.querySelectorAll('.CodeMirror');
+                    codeEditors.forEach(function(editor) { editor.remove() })
+                }
 
                 function initGoobiScriptCodeMirror() {
                 	var goobiScriptTextArea = document.getElementById("goobiScriptfield");
@@ -1412,7 +1426,7 @@
                     var ajaxstatus = data.status;
                     switch ( ajaxstatus ) {
                         case "success":
-                        	if(data.source.id == "expandbutton5") {
+                        	if(data.source.id == "boxProcessesAllActions:expandbutton5") {
                         		initGoobiScriptCodeMirror();
                         	}
                             break;

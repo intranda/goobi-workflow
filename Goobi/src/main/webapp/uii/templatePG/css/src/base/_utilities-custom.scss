@@ -69,6 +69,12 @@
   hyphens: none;
 }
 
+.gw-card {
+  padding: 1.6rem;
+  border: var(--gw-border);
+  border-radius: var(--gw-border-radius);
+}
+
 /* ========================================
  * BS 5 Overrides
  * ====================================== */

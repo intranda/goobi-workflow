@@ -30,9 +30,10 @@ Goobi workflow has a high contrast mode, which is called `WCAG compliant mode`. 
 
 The build system uses two npm packages:
 
-- [sass](https://sass-lang.com/): compile `SCSS` into css.
+- [Sass](https://sass-lang.com/): compile `SCSS` into css.
 - [PostCSS](https://postcss.org/): prefix + minify css.
 
+`Sass` requires filepaths (files to watch, destinations to compile to). They are saved in `.sass-config`. In dev mode (npm start) css is compiled straight into your local tomcat instance. You might have to adjust these filepaths accordingly.
 `PostCSS` is configured an run from a separate script: `runPostcss.js`.
 
 ### Usage
