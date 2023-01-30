@@ -11,19 +11,6 @@
 
 	<composite:implementation>
 
-	<!--
-		<script type="text/javascript">
-        	function switchExpanded(id){
-				var x = document.getElementById(id).getAttribute("aria-expanded");
-				if (x == "true"){
-					x = "false"
-				} else {
-					x = "true"
-				}
-        	}
-        </script>
-				-->
-
 	<div class="btn-group">
 		<!-- remove filter from list -->
 		<button
@@ -49,10 +36,7 @@
 			<i class="fa fa-save"></i>
 		</button>
 
-		<h:panelGroup rendered="true">
-		<!--
 		<h:panelGroup rendered="#{Form.user.filters.size() gt 0}">
-		-->
 		<div class="btn-group">
 			<span data-bs-toggle="tooltip" title="#{msgs.filter}">
 				<div class="dropdown">
