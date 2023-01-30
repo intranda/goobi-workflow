@@ -16,7 +16,10 @@
 
 .btn--plusMinus {
   &:hover {
-    color: var(--clr-primary-400);
+    i,
+    span {
+      color: var(--clr-primary-400);
+    }
   }
 }
 

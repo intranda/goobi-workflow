@@ -1005,8 +1005,7 @@ a:focus, a:hover, a:active {
   }
   #navigation #navbarSupportedContent .dropdown-menu[data-bs-popper] {
     margin-top: 0;
-    left: -1px;
-    /* align dropdown + menu icon */
+    left: -1px; /* align dropdown + menu icon */
   }
 }
 .header__bottom {
@@ -1800,6 +1799,11 @@ grau: #dddddd
 }
 .btn-link:hover {
   text-decoration: underline;
+}
+
+.btn--plusMinus:hover i,
+.btn--plusMinus:hover span {
+  color: var(--clr-primary-400);
 }
 
 .nav-item .btn-link:hover {
