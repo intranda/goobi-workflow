@@ -25,7 +25,7 @@
 </ui:define>
 
 <ui:define name="content">
-<h:form id="myform" styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Projects')}">
+<h:form id="myform" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Projects')}">
 
 <main id="projectEdit" class="row">
   <div class="col-12">
@@ -35,14 +35,10 @@
       boxType="action"
       boxForm="true"
       boxPadding="false"
-      boxTitle="false"
-      >
+      boxTitle="false">
 
 
-      <intranda:boxTitle
-        title="#{myBoxTitle}"
-        icon="fa-compass"
-      >
+      <intranda:boxTitle title="#{myBoxTitle}" icon="fa-compass">
 
         <ul class="tabs">
           <li class="tab #{ProjekteForm.displayMode eq ''?'active':''}">
@@ -69,7 +65,6 @@
             <f:ajax render=":myform" execute=":myform" />
             </h:commandLink>
           </li>
-
         </ul>
 
       </intranda:boxTitle>
@@ -82,7 +77,7 @@
 
           <intranda:formInputText id="projectIdentifier" name="projectIdentifierName" label="#{msgs.project_projectIdentifier}" field="#{ProjekteForm.myProjekt.projectIdentifier}" help="#{msgs.help_project_projectIdentifier}" fieldStyle="form-control"  required="false"  />
 
-          <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{ProjekteForm.currentInstitutionID}" rendered="#{ProjekteForm.institutionsAsSelectList.size()>1}" help="#{msgs.helpProjectInstitution}" name="institutionName" selectItems="#{ProjekteForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
+          <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{ProjekteForm.currentInstitutionID}" rendered="#{ProjekteForm.institutionsAsSelectList.size()>1}" help="#{msgs.helpProjectInstitution}" name="institutionName" selectItems="#{ProjekteForm.institutionsAsSelectList}" required="true" />
 
           <!-- number of pages -->
           <intranda:formInputText id="numberImages" name="numberImagesName" label="#{msgs.numberImages}" field="#{ProjekteForm.myProjekt.numberOfPages}" help="#{msgs.helpNumberImages}" fieldStyle="form-control" required="false" />
@@ -103,10 +98,10 @@
           <h:panelGroup rendered="#{ProjekteForm.displayMode eq 'tab2'}">
 
           <!-- internes Speicherformat -->
-          <intranda:formInputDropDown id="fileFormatInternal" label="#{msgs.internesSpeicherformat}" field="#{ProjekteForm.myProjekt.fileFormatInternal}" help="#{msgs.helpInternesSpeicherformat}" name="internesSpeicherformat" selectItems="#{HelperForm.fileFormatsInternalOnly}" fieldStyle="form-control" />
+          <intranda:formInputDropDown id="fileFormatInternal" label="#{msgs.internesSpeicherformat}" field="#{ProjekteForm.myProjekt.fileFormatInternal}" help="#{msgs.helpInternesSpeicherformat}" name="internesSpeicherformat" selectItems="#{HelperForm.fileFormatsInternalOnly}" />
 
           <!-- Speicherformate für das DMS (mehrere möglich) -->
-          <intranda:formInputDropDown id="fileFormatExternal" label="#{msgs.dmsExportformat}" field="#{ProjekteForm.myProjekt.fileFormatDmsExport}" help="#{msgs.helpDmsExportformat}" name="dmsExportformat" selectItems="#{HelperForm.fileFormats}" fieldStyle="form-control" />
+          <intranda:formInputDropDown id="fileFormatExternal" label="#{msgs.dmsExportformat}" field="#{ProjekteForm.myProjekt.fileFormatDmsExport}" help="#{msgs.helpDmsExportformat}" name="dmsExportformat" selectItems="#{HelperForm.fileFormats}" />
 
           <!-- nutzt DMS-Import -->
           <intranda:formInputCheckBox id="useDms" label="#{msgs.automatischerDmsImport}" field="#{ProjekteForm.myProjekt.useDmsImport}" help="#{msgs.helpAutomatischerDmsImport}" name="automatischerDmsImport" />
