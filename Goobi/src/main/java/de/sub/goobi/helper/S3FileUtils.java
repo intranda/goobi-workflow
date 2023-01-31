@@ -325,6 +325,14 @@ public class S3FileUtils implements StorageProviderInterface {
         String folderPrefix = string2Prefix(folder);
         ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix).withDelimiter("/");
         ObjectListing listing = s3.listObjects(req);
+        List<String> commonPrefixes = listing.getCommonPrefixes();
+        List<Path> paths = new ArrayList<>();
+        if (!commonPrefixes.isEmpty()) {
+            for (String key : commonPrefixes) {
+                paths.add(key2Path(key));
+            }
+
+        }
         Set<String> objs = new HashSet<>();
         for (S3ObjectSummary os : listing.getObjectSummaries()) {
             String key = os.getKey().replace(folderPrefix, "");
@@ -347,7 +355,6 @@ public class S3FileUtils implements StorageProviderInterface {
                 }
             }
         }
-        List<Path> paths = new ArrayList<>();
         for (String key : objs) {
             paths.add(key2Path(folderPrefix + key));
         }

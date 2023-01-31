@@ -58,7 +58,7 @@ public class Definition implements Serializable {
     @NonNull
     private String language;
 
-    // field type:  "input", "textarea", "select", "html"
+    // field type:  "input", "textarea", "select", "select1", "html"
     @NonNull
     private String type;
 
