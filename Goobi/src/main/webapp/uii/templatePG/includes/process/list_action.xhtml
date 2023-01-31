@@ -20,263 +20,294 @@
   <div class="row mt-4">
     <div class="col-12">
 
-      <!--
-        <div class="box box-color orange box-bordered">
-        <div class="box-title">
-        <h3>
-        <i class="fa fa-wrench"></i>
-        <h:outputText value="#{msgs.moeglicheAktionen}" />
-        </h3>
-        </div>
-        <div class="box-content ">
-      -->
-
       <intranda:box
+        id="boxProcessesAllActions"
         boxType="success"
         icon="fa-wrench"
         title="#{msgs.moeglicheAktionen}"
         >
 
         <h:form id="actionForm" prependId="false">
-        <ul class="action-ul">
 
           <h:panelGroup rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList}">
 
           <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.paginator.totalResults > 0 }">
-          <li class="action-li">
             <!-- Upload-Schaltknopf -->
             <button
               jsf:action="#{ProzessverwaltungForm.UploadFromHomeAlle}"
               jsf:id="uploadFromHome"
-              class="btn btn-lightred"
+              class="btn btn-hot d-block mb-2"
               title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}"
               onclick="if (!confirm('#{msgs.upload}')) return false"
             >
-              <span class="margin-right-10 fa fa-cloud-upload fa-lg width-40" />
-                <h:outputText value="TEST#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" />
+              <i class="fa fa-cloud-upload" />
+              <span>
+                <h:outputText value="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" />
+              </span>
             </button>
-          </li>
+          </h:panelGroup>
+
+          <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+
+            <button onclick="toggle('possibleActions1')" jsf:id="downloadToHome" class="btn btn-success mb-2">
+              <i class="fa fa-cloud-download" />
+                <span>
+                  <h:outputText value="#{msgs.downloadInMeinHomeverzeichnis}" />
+                </span>
+                <f:ajax render="boxProcessesAllActions:expandbutton1" />
+            </button>
+
+            <h:panelGroup id="possibleActions1" layout="block" styleClass="d-flex gap-2 mb-2">
+
+              <!-- Download-Schaltknopf für Selection-->
+              <button jsf:action="#{ProzessverwaltungForm.DownloadToHomeSelection}" jsf:id="downloadToHomeSelection" class="btn" jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.download}')) return false">
+                <i class="fa fa-angle-right" />
+                <span>
+                  <h:outputText value="#{msgs.auswahl2}" />
+                </span>
+              </button>
+
+              <!-- Download-Schaltknopf für Page-->
+              <button jsf:action="#{ProzessverwaltungForm.DownloadToHomePage}" class="btn btn-blank" title="#{msgs.trefferDieserSeite}" onclick="if (!confirm('#{msgs.download}')) return false" jsf:id="downloadToHomePage">
+                <i class="fa fa-angle-right" />
+                <span>
+                  <h:outputText value="#{msgs.trefferDieserSeite}" />
+                </span>
+              </button>
+
+              <!-- Download-Schaltknopf für gesamtes Trefferset -->
+              <button jsf:action="#{ProzessverwaltungForm.DownloadToHomeHits}" class="btn btn-blank" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.download}')) return false" jsf:id="downloadToHomeAll">
+                <i class="fa fa-angle-right" />
+                <span>
+                  <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                </span>
+              </button>
+
+            </h:panelGroup>
+          </h:panelGroup>
+        </h:panelGroup>
+
+        <h:panelGroup layout="block" styleClass="mb-2" rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+
+        <button type="button" class="btn btn-blank" data-bs-toggle="collapse" data-bs-target="#possibleActions2" aria-expanded="false" aria-controls="possibleActions2">
+          <i class="fa fa-globe" />
+            <span>
+            <h:outputText value="#{msgs.metadatenFuerDMSExportieren}" />
+            </span>
+        </button>
+
+        <div id="possibleActions2" class="collapse">
+          <div class="gw-card mt-4 mb-4">
+
+          <!-- TODO: delete this warning once the root cause of the timeout problem is solved  -->
+          <div class="alert alert-warning mt-4">
+            #{msgs.timeoutWarningDMS}
+          </div>
+
+          <!-- Download-Schaltknopf für Selection-->
+          <button class="btn btn-blank" jsf:id="action6" jsf:action="#{ProzessverwaltungForm.ExportDMSSelection}" jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
+            <i class="fa fa-angle-right" />
+            <span>
+              <h:outputText value="#{msgs.auswahl2}" />
+            </span>
+          </button>
+
+          <!-- Download-Schaltknopf für Page-->
+          <button class="btn btn-blank d-block mt-4" jsf:action="#{ProzessverwaltungForm.ExportDMSPage}" title="#{msgs.trefferDieserSeite}" jsf:id="action7" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
+            <i class="fa fa-angle-right" />
+            <span>
+              <h:outputText value="#{msgs.trefferDieserSeite}" />
+            </span>
+          </button>
+
+          <!-- Download-Schaltknopf für gesamtes Trefferset -->
+          <button class="btn btn-blank d-block mt-4" jsf:action="#{ProzessverwaltungForm.ExportDMSHits}" title="#{msgs.gesamtesTrefferset}" jsf:id="action8" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
+            <i class="fa fa-angle-right" />
+            <span>
+              <h:outputText value="#{msgs.gesamtesTrefferset}" />
+            </span>
+          </button>
+
+          </div>
+        </div>
+
+        </h:panelGroup>
+
+        <div class="mb-2">
+        <h:panelGroup rendered="#{LoginForm.hasAnyGoobiScriptRole and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+
+          <div jsf:id="goobiScriptMessages" class="">
+            <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger mb-0" infoClass="alert alert-info mb-0" warnClass="alert mb-0" showDetail="true" showSummary="true" tooltip="true" styleClass="messages mb-2" />
+            <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger mb-0" infoClass="alert alert-info mb-0" warnClass="alert" styleClass="messages mb-2" />
+          </div>
+
+          <button jsf:id="expandbutton5" type="button" class="btn btn-blank" data-bs-toggle="collapse" data-bs-target="#possibleActions5" aria-expanded="false" aria-controls="possibleActions5"
+          onclick="handleGoobiScriptCodeEditor()"
+            >
+            <i class="fa fa-cogs" />
+            <span>
+              <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
+            </span>
+            <f:setPropertyActionListener
+              value="#{NavigationForm.uiStatus.goobiScript eq 'true' ? 'false' : 'true'}"
+              target="#{NavigationForm.uiStatus.goobiScript}"/>
+          </button>
+
+          <div id="possibleActions5" class="collapse">
+            <div class="gw-card mt-4 mb-4">
+
+            <div class="list-of-goobi-scripts mb-2">
+              <!-- iterate through all existing GoobiScripts -->
+              <ui:repeat var="gs" value="#{ProzessverwaltungForm.allGoobiScripts}">
+              <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('goobiscript_'.concat(gs.one))}">
+              <span class="badge badge-intranda-light pointer"
+                    onclick="goobiScriptCodeMirror.doc.setValue('#{gs.two}')">
+                #{gs.one}
+              </span>
+              </ui:fragment>
+              </ui:repeat>
+            </div>
+
+            <x:inputTextarea
+              id="goobiScriptfield"
+              pt:aria-label="goobiScriptfield"
+              forceId="true"
+              styleClass="form-control"
+              value="#{ProzessverwaltungForm.goobiScript}"
+              />
+
+            <!-- GoobiScript für selektierte Treffer der Seite -->
+            <ui:fragment rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
+            <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
+
+            <script>
+            </script>
+
+            <button
+              jsf:id="selectedModalRender"
+              class="btn btn-blank mt-2"
+              jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}"
+              pt:data-modalid="goobiScriptModal"
+              >
+              <f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="(data) => showGoobiScriptModal({data, modalID: 'boxProcessesAllActions\:goobiScriptModal'})"/>
+              <i class="fa fa-angle-right" />
+                <span>
+                  <h:outputText value="#{msgs.auswahl2}" />
+                </span>
+            </button>
+            </ui:fragment>
+
+            <!-- GoobiScript für Treffer der Seite - modal rendern  -->
+            <button
+              jsf:id="resultsModalRender"
+              type="button"
+              class="btn btn-blank d-block mt-4" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptPage}"
+              pt:data-modalid="goobiScriptModal"
+              >
+              <f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="(data) => showGoobiScriptModal({data, modalID: 'boxProcessesAllActions\:goobiScriptModal'})"/>
+
+              <i class="fa fa-angle-right" />
+                <span>
+                  <h:outputText value="#{msgs.trefferDieserSeite}" />
+                </span>
+            </button>
+
+            <!-- GoobiScript für alle Treffer - modal rendern  -->
+            <button type="button" jsf:id="allModalRender" class="btn btn-blank d-block mt-2" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptHits}" pt:data-modalid="goobiScriptModal">
+              <f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="(data) => showGoobiScriptModal({data, modalID: 'boxProcessesAllActions\:goobiScriptModal'})"/>
+              <i class="fa fa-angle-right" />
+                <span>
+                  <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                </span>
+            </button>
+            </div>
+          </div>
+
+        </h:panelGroup>
+
+        </div>
+
+        <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Download') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+          <button type="button" jsf:id="expandbutton10" class="btn btn-blank">
+            <i class="fa fa-floppy-o" />
+            <span>
+              <h:outputText value="#{msgs.saveSearchResult}" />
+            </span>
+              <f:setPropertyActionListener target="#{ProzessverwaltungForm.dispaySearchResult}" value="#{not ProzessverwaltungForm.dispaySearchResult}" />
+              <f:ajax render="@form" />
+          </button>
+
+          <h:panelGroup rendered="#{ProzessverwaltungForm.dispaySearchResult}">
+          <h:panelGroup layout="block" id="possibleActions10" styleClass="gw-card mt-2">
+
+              <x:dataTable
+                value="#{ProzessverwaltungForm.searchField}"
+                var="field"
+                rowIndexVar="id"
+                styleClass="no-borders"
+              >
+
+              <h:column>
+              <h:outputText value="#{msgs.column} #{id +1}:" />
+              </h:column>
+
+              <h:column>
+              <h:selectOneMenu pt:aria-label="#{msgs.auswahl2}" value="#{field.value}" styleClass="form-select">
+              <f:selectItems value="#{ProzessverwaltungForm.possibleItems}" var="item" itemDisabled="#{item.disabled}" itemLabel="#{item.label}" itemValue="#{item.value}" styleClass="me-2"/>
+              </h:selectOneMenu>
+              </h:column>
+
+              <h:column>
+              <button jsf:id="addFilter" class="btn btn-blank ms-2 me-2" aria-label="#{msgs.addFilter}" jsf:action="#{ProzessverwaltungForm.addField}">
+                <i class="fa fa-plus" />
+                  <f:ajax render="@form" execute="@form" />
+              </button>
+
+              <button jsf:id="removeFilter" class="btn btn-blank" aria-label="#{msgs.removeFilter}" jsf:action="#{ProzessverwaltungForm.deleteField}" jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
+                <i class="fa fa-minus" />
+                <x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
+                <f:ajax render="@form" execute="@form" />
+              </button>
+              </h:column>
+
+              </x:dataTable>
+
+
+              <button class="btn btn-blank d-block mt-2" jsf:action="#{ProzessverwaltungForm.generateResultXls}" title="#{msgs.createExcel}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                <i class="fa fa-floppy-o" />
+                <span>
+                  <h:outputText value="#{msgs.createExcel}" />
+                </span>
+              </button>
+
+
+
+              <button class="btn btn-blank d-block mt-2" jsf:action="#{ProzessverwaltungForm.generateResultDoc}" title="#{msgs.createDoc}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                <i class="fa fa-floppy-o" />
+                <span>
+                  <h:outputText value="#{msgs.createDoc}" />
+                </span>
+              </button>
+
+
+              <button class="btn btn-blank d-block mt-2" jsf:action="#{ProzessverwaltungForm.generateResultRtf}" title="#{msgs.createRtf}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                <i class="fa fa-floppy-o" />
+                <span>
+                  <h:outputText value="#{msgs.createRtf}" />
+                </span>
+              </button>
+
+              <button class="btn btn-blank d-block mt-2" jsf:action="#{ProzessverwaltungForm.generateResultAsPdf}" title="#{msgs.createPdf}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                <i class="fa fa-floppy-o" />
+                <span>
+                  <h:outputText value="#{msgs.createPdf}" />
+                </span>
+              </button>
           </h:panelGroup>
 
 
-          <h:panelGroup
-            rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+          </h:panelGroup>
 
-          <li class="action-li">
-
-            <button onclick="toggle('possibleActions1')" jsf:id="downloadToHome" class="btn btn-green">
-              <span class="margin-right-10 fa fa-cloud-download fa-lg width-40" />
-                <h:outputText value="#{msgs.downloadInMeinHomeverzeichnis}" />
-                <f:ajax render="expandbutton1" />
-            </button>
-
-            <ul id="possibleActions1" style="display: none" class="action-intent-ul">
-              <li class="action-intent-li">
-                <!-- Download-Schaltknopf für Selection-->
-                <button jsf:action="#{ProzessverwaltungForm.DownloadToHomeSelection}" jsf:id="downloadToHomeSelection" class="btn" jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.download}')) return false">
-                  <span class="margin-right-10 fa fa-angle-right" />
-                    <h:outputText value="#{msgs.auswahl2}" />
-                </button>
-              </li>
-
-              <li class="action-intent-li">
-                <!-- Download-Schaltknopf für Page-->
-                <button jsf:action="#{ProzessverwaltungForm.DownloadToHomePage}" class="btn" title="#{msgs.trefferDieserSeite}" onclick="if (!confirm('#{msgs.download}')) return false" jsf:id="downloadToHomePage">
-                  <span class="margin-right-10 fa fa-angle-right" />
-                    <h:outputText value="#{msgs.trefferDieserSeite}" />
-                </button>
-              </li>
-              <li class="action-intent-li">
-                <!-- Download-Schaltknopf für gesamtes Trefferset -->
-                <button jsf:action="#{ProzessverwaltungForm.DownloadToHomeHits}" class="btn" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.download}')) return false" jsf:id="downloadToHomeAll">
-                  <span class="margin-right-10 fa fa-angle-right" />
-                    <h:outputText value="#{msgs.gesamtesTrefferset}" />
-                </button>
-              </li>
-            </ul>
-
-          </li>
-                    </h:panelGroup>
-                    </h:panelGroup>
-
-                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                    <li class="action-li">
-                      <button type="button" jsf:id="expandbutton2" class="expandbutton" onclick="toggle('possibleActions2')">
-                        <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
-                          <h:outputText value="#{msgs.metadatenFuerDMSExportieren}" />
-                          <f:ajax render="expandbutton2" />
-                      </button>
-                      <ul id="possibleActions2" style="display: none" class="action-intent-ul">
-
-                        <li class="action-intent-li">
-                          <!-- TODO: delete this warning once the root cause of the timeout problem is solved  -->
-                          <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10" value="#{msgs.timeoutWarningDMS}" />
-                        </li>
-
-                        <li class="action-intent-li">
-                          <!-- Download-Schaltknopf für Selection-->
-                          <button class="expandbutton" jsf:id="action6" jsf:action="#{ProzessverwaltungForm.ExportDMSSelection}" jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                            <span class="btn margin-right-10 fa fa-angle-right" />
-                              <h:outputText value="#{msgs.auswahl2}" />
-                          </button>
-                        </li>
-                        <li class="action-intent-li">
-                          <!-- Download-Schaltknopf für Page-->
-                          <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.ExportDMSPage}" title="#{msgs.trefferDieserSeite}" jsf:id="action7" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                            <span class="btn margin-right-10 fa fa-angle-right" />
-                              <h:outputText value="#{msgs.trefferDieserSeite}" />
-                          </button>
-                        </li>
-                        <li class="action-intent-li">
-                          <!-- Download-Schaltknopf für gesamtes Trefferset -->
-                          <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.ExportDMSHits}" title="#{msgs.gesamtesTrefferset}" jsf:id="action8" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                            <span class="btn margin-right-10 fa fa-angle-right" />
-                              <h:outputText value="#{msgs.gesamtesTrefferset}" />
-                          </button>
-                        </li>
-                      </ul>
-                    </li>
-                              </h:panelGroup>
-                              <h:panelGroup rendered="#{LoginForm.hasAnyGoobiScriptRole and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                              <li class="action-li">
-                                <div jsf:id="goobiScriptMessages">
-                                  <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
-                                  <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
-                                </div>
-                                <button jsf:id="expandbutton5" jsf:action="#{NavigationForm.Reload}" class="button-link blue">
-                                  <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
-                                    <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
-                                    <f:setPropertyActionListener value="#{NavigationForm.uiStatus.goobiScript eq 'true' ? 'false' : 'true'}"
-                                                                 target="#{NavigationForm.uiStatus.goobiScript}"/>
-                                    <f:ajax render="actionForm"/>
-                                </button>
-                                <ui:fragment rendered="#{NavigationForm.uiStatus.goobiScript eq 'true'}">
-                                <ul id="possibleActions5" class="action-intent-ul">
-                                  <li class="action-intent-li">
-
-                                    <!-- iterate through all existing GoobiScripts -->
-                                    <ui:repeat var="gs" value="#{ProzessverwaltungForm.allGoobiScripts}">
-                                    <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('goobiscript_'.concat(gs.one))}">
-                                    <span class="badge badge-intranda-light pointer"
-                                          onclick="goobiScriptCodeMirror.doc.setValue('#{gs.two}')">
-                                      #{gs.one}
-                                    </span>
-                                    </ui:fragment>
-                                    </ui:repeat>
-                                  </li>
-
-                                  <li class="action-intent-li">
-                                    <x:inputTextarea id="goobiScriptfield" pt:aria-label="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
-                                  </li>
-                                  <li class="action-intent-li">
-                                    <!-- GoobiScript für selektierte Treffer der Seite -->
-                                    <ui:fragment rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
-                                    <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
-                                    <button jsf:id="selectedModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}" pt:data-modalid="goobiScriptModal">
-                                      <f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="renderModal"/>
-                                      <span class="btn margin-right-10 fa fa-angle-right" />
-                                        <h:outputText value="#{msgs.auswahl2}" />
-                                    </button>
-                                    </ui:fragment>
-                                  </li>
-                                  <li class="action-intent-li">
-                                    <!-- GoobiScript für Treffer der Seite - modal rendern  -->
-                                    <button jsf:id="resultsModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptPage}" pt:data-modalid="goobiScriptModal">
-                                      <f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="renderModal"/>
-                                      <span class="btn margin-right-10 fa fa-angle-right" />
-                                        <h:outputText value="#{msgs.trefferDieserSeite}" />
-                                    </button>
-                                  </li>
-                                  <li class="action-intent-li">
-                                    <!-- GoobiScript für alle Treffer - modal rendern  -->
-                                    <button jsf:id="allModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptHits}" pt:data-modalid="goobiScriptModal">
-                                      <f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="renderModal"/>
-                                      <span class="btn margin-right-10 fa fa-angle-right" />
-                                        <h:outputText value="#{msgs.gesamtesTrefferset}" />
-                                    </button>
-                                  </li>
-                                </ul>
-                                </ui:fragment>
-                              </li>
-
-                                        </h:panelGroup>
-
-                                        <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Download') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                        <li class="action-li">
-                                          <button type="button" jsf:id="expandbutton10" class="expandbutton">
-                                            <span class="btn btn-lightgrey margin-right-10 fa fa-floppy-o fa-lg width-40" />
-                                              <h:outputText value="#{msgs.saveSearchResult}" />
-                                              <f:setPropertyActionListener target="#{ProzessverwaltungForm.dispaySearchResult}" value="#{not ProzessverwaltungForm.dispaySearchResult}" />
-                                              <f:ajax render="@form" />
-                                          </button>
-
-                                          <h:panelGroup rendered="#{ProzessverwaltungForm.dispaySearchResult}">
-                                          <ul id="possibleActions10" class="action-intent-ul">
-                                            <li class="action-intent-li">
-
-                                              <x:dataTable value="#{ProzessverwaltungForm.searchField}" var="field" rowIndexVar="id">
-
-                                              <h:column>
-                                              <h:outputText value="#{msgs.column} #{id +1}:" styleClass="margin-right-5 margin-bottom-regular" />
-                                              </h:column>
-
-                                              <h:column>
-                                              <h:selectOneMenu pt:aria-label="#{msgs.auswahl2}" value="#{field.value}" styleClass="form-control margin-bottom-regular">
-                                              <f:selectItems value="#{ProzessverwaltungForm.possibleItems}" var="item" itemDisabled="#{item.disabled}" itemLabel="#{item.label}" itemValue="#{item.value}" />
-                                              </h:selectOneMenu>
-                                              </h:column>
-                                              <h:column>
-                                              <button jsf:id="addFilter" class="button-no-style" aria-label="#{msgs.addFilter}" jsf:action="#{ProzessverwaltungForm.addField}">
-                                                <span class="btn margin-left-5 fa fa-plus margin-bottom-regular" />
-                                                  <f:ajax render="@form" execute="@form" />
-                                              </button>
-
-                                              <button jsf:id="removeFilter" class="button-no-style" aria-label="#{msgs.removeFilter}" jsf:action="#{ProzessverwaltungForm.deleteField}" jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
-                                                <span class="btn fa fa-minus margin-bottom-regular" />
-                                                  <x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
-                                                  <f:ajax render="@form" execute="@form" />
-                                              </button>
-                                              </h:column>
-
-                                                  </x:dataTable>
-
-                                            </li>
-
-
-                                            <li class="action-intent-li">
-                                              <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultXls}" title="#{msgs.createExcel}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                                <span class="btn margin-right-10 fa fa-floppy-o" />
-                                                  <h:outputText value="#{msgs.createExcel}" />
-                                              </button>
-                                            </li>
-
-
-
-                                            <li class="action-intent-li">
-                                              <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultDoc}" title="#{msgs.createDoc}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                                <span class="btn margin-right-10 fa fa-floppy-o" />
-                                                  <h:outputText value="#{msgs.createDoc}" />
-                                              </button>
-                                            </li>
-
-
-                                            <li class="action-intent-li">
-                                              <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultRtf}" title="#{msgs.createRtf}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                                <span class="btn margin-right-10 fa fa-floppy-o" />
-                                                  <h:outputText value="#{msgs.createRtf}" />
-                                              </button>
-                                            </li>
-
-                                            <li class="action-intent-li">
-                                              <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultAsPdf}" title="#{msgs.createPdf}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                                <span class="btn margin-right-10 fa fa-floppy-o" />
-                                                  <h:outputText value="#{msgs.createPdf}" />
-                                              </button>
-                                            </li>
-                                          </ul>
-                                                  </h:panelGroup>
-
-                                        </li>
                                                   </h:panelGroup>
 
                                                   <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
@@ -390,23 +421,22 @@
                                                             </li>
                                                                       </h:panelGroup>
 
-        </ul>
 
         <h:panelGroup id="goobiScriptModalWrapper" prependId="false" rendered="#{LoginForm.hasAnyGoobiScriptRole and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
         <h:panelGroup styleClass="modal fade" layout="block" id="goobiScriptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" rendered="#{ProzessverwaltungForm.parsedGoobiScripts != null}">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
 
-              <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
-                <i class="fa fa-times"></i>
-              </a>
               <h4 class="modal-title" id="myModalLabel">
                 <h:outputText value="GoobiScript" />
               </h4>
+              <button type="button" class="btn text-white" title="#{msgs.cancel}" data-bs-dismiss="modal">
+                <i class="fa fa-times"></i>
+              </button>
             </div>
             <div class="modal-body">
-              <div class="text-center" style="border: 2px solid red;">
+              <div class="text-center text-hot" style="border: 2px solid;">
                 <img src="#{ProzessverwaltungForm.goobiScriptHitsImage}" style="height: 32px;"></img>
               </div><br />
               <p>#{msgs.youWantToExecuteGoobiScript}</p>
@@ -424,12 +454,28 @@
                 </a>
               -->
 
-              <button jsf:id="goobiScriptCancelButton" title="#{msgs.goobiScriptAusfuehren}" jsf:rel="tooltip" class="btn pull-left">
+              <button
+                type="button"
+                jsf:id="goobiScriptCancelButton"
+                title="#{msgs.goobiScriptAusfuehren}"
+                jsf:rel="tooltip"
+                class="btn btn-blank"
+                data-bs-dismiss="modal"
+                >
                 <h:outputText value="#{msgs.cancel} " />
               </button>
-              <button jsf:action="#{ProzessverwaltungForm.runGoobiScript}" jsf:id="goobiScriptConfirmButton" title="#{msgs.goobiScriptAusfuehren}" jsf:rel="tooltip" class="btn btn-red" onclick="preventDoubleSubmit(this);">
-                <i class="fa fa-cogs margin-right-10"></i>
-                <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
+
+              <button
+                jsf:action="#{ProzessverwaltungForm.runGoobiScript}"
+                jsf:id="goobiScriptConfirmButton"
+                title="#{msgs.goobiScriptAusfuehren}"
+                jsf:rel="tooltip"
+                class="btn btn-hot"
+                onclick="preventDoubleSubmit(this);">
+                <i class="fa fa-cogs"></i>
+                <span>
+                  <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
+                </span>
               </button>
 
             </div>
