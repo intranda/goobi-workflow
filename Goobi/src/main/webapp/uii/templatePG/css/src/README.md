@@ -33,18 +33,21 @@ The build system uses two npm packages:
 - [Sass](https://sass-lang.com/): compile `SCSS` into css.
 - [PostCSS](https://postcss.org/): prefix + minify css.
 
-`Sass` requires filepaths (files to watch, destinations to compile to). They are saved in `.sass-config`. In dev mode (npm start) css is compiled straight into your local tomcat instance. You might have to adjust these filepaths accordingly.
+`Sass` requires filepaths (scss files to watch, destinations to compile to). There are configure in `.sass-config`.
 `PostCSS` is configured an run from a separate script: `runPostcss.js`.
 
 ### Usage
 
 ```sh
+# switch to correct folder
+cd ~/git/goobi-workflow/Goobi/src/main/webapp
+	
 #: Install sass, postcss (+ plugins), and bootstrap
 npm install
 
 #: Develop: watch src and compile css into dist (sass files only)
 #: This tasks copies css into the corresponding Tomcat directory
-#: It might be necessary to adjust the file paths in `package.json`
+#: It might be necessary to adjust the file paths in `.sass-config`
 npm start
 
 #: Build: compile sass and transform css with postcss
