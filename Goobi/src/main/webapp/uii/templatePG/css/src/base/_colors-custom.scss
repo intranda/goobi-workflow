@@ -16,10 +16,10 @@ $colors: (
   "white": #ffffff,
   "black": #2a2a2a,
   action: #e8860c,
-  hot: #ba324f,
+  hot: #e51400,
   // #e51400,
   primary: #368ee0,
-  success: #198754,
+  success: #109a5a,
   info: #666666,
   blank: transparent,
   text-400: #2a2a2a,
@@ -33,15 +33,15 @@ $colors-boxes: (
   primary: var(--clr-primary-400),
   action: var(--clr-action),
   neutral: #666666,
-  hot: #ba324f,
-  success: #198754,
+  hot: #e51400,
+  success: #109a5a,
   dev: #f0f,
 );
 
 $colors-badges: (
   light-red: #e51400,
   light-blue: #368ee0,
-  light-green: #56af45,
+  light-green: #109a5a,
   light-orange: #f8a31f,
   light-purple: #8947cc,
   light-lila: #500899,
@@ -58,7 +58,7 @@ $colors-intranda-badges: (
   intranda-red: #e51400,
   intranda-orange: #f8a31f,
   intranda-blue: #368ee0,
-  intranda-green: #56af45,
+  intranda-green: #109a5a,
 );
 
 $colors-status: (

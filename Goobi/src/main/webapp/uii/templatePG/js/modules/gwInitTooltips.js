@@ -14,6 +14,7 @@ var gwInitTooltips = ( function() {
 
     function init({ scope = _defaults.scope } = {}) {
       _initTooltips(scope);
+      _initPopovers();
     }
 
     /** @description find and return all elements that have a tooltip */
@@ -38,9 +39,18 @@ var gwInitTooltips = ( function() {
       if (_debug) console.log('%c### called gwInitTooltips._initTooltips.js ###', 'color: #368ee0')
       if (_debug) console.log({ tooltipTriggers })
     }
+    
+    /** @description Initialize popovers.  */ 
+    function _initPopovers() {
+      var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+	  var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+	    return new bootstrap.Popover(popoverTriggerEl)
+      })
+    }
 
     return {
       init 
     }
 
 } )();
+

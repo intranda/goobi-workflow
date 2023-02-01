@@ -501,7 +501,7 @@
 													<!-- STATUS -->
 													<td>
 
-														<div class="progress__container">
+														<div class="progress__container mt-2">
 															<h:panelGroup rendered="#{item.fortschritt3 gt 0}"
 																data-toggle="tooltip"
 																styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-done'):('progress-bar-success'))}"
@@ -1251,11 +1251,6 @@
                             break;
                     }
                 } );
-                
-                var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-                var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-                  return new bootstrap.Popover(popoverTriggerEl)
-                })
                 
 			</script>
 		</main>
