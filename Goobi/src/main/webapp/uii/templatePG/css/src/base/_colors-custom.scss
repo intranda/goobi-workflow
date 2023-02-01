@@ -61,6 +61,16 @@ $colors-intranda-badges: (
   intranda-green: #56af45,
 );
 
+$colors-status: (
+  intranda-done: #339933,
+  intranda-open: #e8860c,
+  intranda-inwork: #ffbf21,
+  intranda-inflight: #ffbf21,
+  intranda-locked: #e51400,
+  intranda-error: #e51400,
+  intranda-deactivated: #ccc,
+);
+
 :root {
   // generate a custom property for every entry in the above maps; e.g:
   // `--clr-primary-400: #368ee0;`

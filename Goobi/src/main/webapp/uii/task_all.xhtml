@@ -229,75 +229,56 @@
 
 								<h:panelGroup styleClass="margin-top-10 block" id="auflistungIntern" rendered="#{item.panelAusgeklappt}">
 
-								<!--
-								<div class="box box-small box-color box-bordered">
-									<div class="box-title">
-										<h3>
-											<i class="fa fa-table"></i>
-											#{msgs.details}
-										</h3>
-									</div>
-
-									<div class="box-content nopadding">
-								-->
-
-								<intranda:box
-									boxType="primary"
-									boxSmall="true"
-									boxPadding="false"
-									icon="fa-table"
-									title="#{msgs.details}"
-								>
-
-
-								<div class="gw-table">
-										<h:panelGrid columns="2" class="table table-hover table-bordered">
-
-										<h:outputText value="#{msgs.titel}:" />
-										<h:outputText value="#{item.titelLokalisiert}" title="#{item.titel}"/>
-										<h:outputText value="#{msgs.bearbeitungsbeginn}:" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
-										<h:outputText value="#{item.bearbeitungsbeginnAsFormattedString}" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" >
-										<!--  <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-										</h:outputText>
-										<h:outputText value="#{msgs.zuletztBearbeitet}:" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
-										<h:outputText value="#{item.bearbeitungszeitpunktAsFormattedString}" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" >
-										<!--  <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-										</h:outputText>
-										<h:outputText value="#{msgs.letzteAktualisierungDurch}:" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
-										<h:outputText value="#{item.bearbeitungsbenutzer.nachVorname}" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
-										<h:outputText value="#{msgs.aktualisierungstyp}:" />
-										<h:outputText value="#{item.editTypeEnum.title}" />
-										<h:outputText value="#{msgs.typ}:" />
-										<h:panelGroup>
-										<h:outputText styleClass="block" value="#{msgs.metadaten}" rendered="#{item.typMetadaten}" />
-										<h:outputText styleClass="block" value="#{msgs.importMittelsFileUpload}" rendered="#{item.typImportFileUpload}" />
-										<h:outputText styleClass="block" value="#{msgs.exportDMS}" rendered="#{item.typExportDMS}" />
-										<h:outputText styleClass="block" value="#{msgs.schrittBeimAnnehmenAbschliessen}" rendered="#{item.typBeimAnnehmenAbschliessen}" />
-										<h:outputText styleClass="block" value="#{msgs.beimAnnehmenModulStarten}" rendered="#{item.typBeimAnnehmenModul}" />
-										<h:outputText styleClass="block" value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}" rendered="#{item.typBeimAnnehmenModulUndAbschliessen}" />
-										<h:outputText styleClass="block" value="#{msgs.imagesLesen}" rendered="#{item.typImagesLesen}" />
-										<h:outputText styleClass="block" value="#{msgs.imagesSchreiben}" rendered="#{item.typImagesSchreiben}" />
-										<h:outputText styleClass="block" value="#{msgs.beimAbschliessenVerifizieren}" rendered="#{item.typBeimAbschliessenVerifizieren}" />
-										<h:outputText styleClass="block" value="#{msgs.automatischerSchritt}" rendered="#{item.typAutomatisch}" />
-										<h:outputText styleClass="block" value="#{msgs.typScriptStep}" rendered="#{item.typScriptStep}" />
-										<h:outputText styleClass="block" value="#{msgs.modulSchritt}: #{item.typModulName}" rendered="#{item.typModulName!=null and item.typModulName!=''}" />
-										<h:outputText styleClass="block" value="#{msgs.stepPlugin}: #{item.stepPlugin}" rendered="#{item.stepPlugin!=null and item.stepPlugin!=''}" />
-										<h:outputText styleClass="block" value="#{msgs.validationPlugin}" rendered="#{item.validationPlugin!=null and item.validationPlugin!=''}" />
-										<h:outputText styleClass="block" value="#{msgs.timeDelayPlugin}" rendered="#{item.delayStep!=null and item.delayStep!='' and item.delayStep}" />
-										<h:outputText styleClass="block" value="#{msgs.batchStep}" rendered="#{item.batchStep}" />
-										<h:outputText styleClass="block" value="#{msgs.updateMetadataIndex}" rendered="#{item.updateMetadataIndex}" />
-										</h:panelGroup>
-
-										</h:panelGrid>
-
-									</div>
-										<!--
-								</div>
-										-->
-
-								</intranda:box>
-
-										</h:panelGroup>
+									<intranda:box
+										boxType="primary"
+										boxSmall="true"
+										boxPadding="false"
+										icon="fa-table"
+										title="#{msgs.details}">
+	
+									<div class="gw-table">
+											<h:panelGrid columns="2" class="table table-hover table-bordered">
+	
+												<h:outputText value="#{msgs.titel}:" />
+												<h:outputText value="#{item.titelLokalisiert}" title="#{item.titel}"/>
+												<h:outputText value="#{msgs.bearbeitungsbeginn}:" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+												<h:outputText value="#{item.bearbeitungsbeginnAsFormattedString}" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" >
+												<!--  <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+												</h:outputText>
+												<h:outputText value="#{msgs.zuletztBearbeitet}:" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+												<h:outputText value="#{item.bearbeitungszeitpunktAsFormattedString}" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" >
+												<!--  <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+												</h:outputText>
+												<h:outputText value="#{msgs.letzteAktualisierungDurch}:" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
+												<h:outputText value="#{item.bearbeitungsbenutzer.nachVorname}" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
+												<h:outputText value="#{msgs.aktualisierungstyp}:" />
+												<h:outputText value="#{item.editTypeEnum.title}" />
+												<h:outputText value="#{msgs.typ}:" />
+												<h:panelGroup>
+													<h:outputText styleClass="block" value="#{msgs.metadaten}" rendered="#{item.typMetadaten}" />
+													<h:outputText styleClass="block" value="#{msgs.importMittelsFileUpload}" rendered="#{item.typImportFileUpload}" />
+													<h:outputText styleClass="block" value="#{msgs.exportDMS}" rendered="#{item.typExportDMS}" />
+													<h:outputText styleClass="block" value="#{msgs.schrittBeimAnnehmenAbschliessen}" rendered="#{item.typBeimAnnehmenAbschliessen}" />
+													<h:outputText styleClass="block" value="#{msgs.beimAnnehmenModulStarten}" rendered="#{item.typBeimAnnehmenModul}" />
+													<h:outputText styleClass="block" value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}" rendered="#{item.typBeimAnnehmenModulUndAbschliessen}" />
+													<h:outputText styleClass="block" value="#{msgs.imagesLesen}" rendered="#{item.typImagesLesen}" />
+													<h:outputText styleClass="block" value="#{msgs.imagesSchreiben}" rendered="#{item.typImagesSchreiben}" />
+													<h:outputText styleClass="block" value="#{msgs.beimAbschliessenVerifizieren}" rendered="#{item.typBeimAbschliessenVerifizieren}" />
+													<h:outputText styleClass="block" value="#{msgs.automatischerSchritt}" rendered="#{item.typAutomatisch}" />
+													<h:outputText styleClass="block" value="#{msgs.typScriptStep}" rendered="#{item.typScriptStep}" />
+													<h:outputText styleClass="block" value="#{msgs.modulSchritt}: #{item.typModulName}" rendered="#{item.typModulName!=null and item.typModulName!=''}" />
+													<h:outputText styleClass="block" value="#{msgs.stepPlugin}: #{item.stepPlugin}" rendered="#{item.stepPlugin!=null and item.stepPlugin!=''}" />
+													<h:outputText styleClass="block" value="#{msgs.validationPlugin}" rendered="#{item.validationPlugin!=null and item.validationPlugin!=''}" />
+													<h:outputText styleClass="block" value="#{msgs.timeDelayPlugin}" rendered="#{item.delayStep!=null and item.delayStep!='' and item.delayStep}" />
+													<h:outputText styleClass="block" value="#{msgs.batchStep}" rendered="#{item.batchStep}" />
+													<h:outputText styleClass="block" value="#{msgs.updateMetadataIndex}" rendered="#{item.updateMetadataIndex}" />
+												</h:panelGroup>
+	
+											</h:panelGrid>
+	
+										</div>
+									</intranda:box>
+								</h:panelGroup>
 							</td>
 							<!-- ===================== Process ===================== -->
 							<td>
@@ -371,46 +352,43 @@
 					 </h:panelGroup>
 
 					 <h:panelGroup styleClass="popover-div" style="display:none;" rendered="#{true}">
-					 <ui:repeat var="intern" value="#{item.eigenschaftenList}" rendered="#{item.eigenschaftenSize!=0}" id="propList">
-					 <span class="block margin-bottom-10">
-						 <i class="btn btn-red margin-right-10 fa fa-bullhorn fa-lg width-40"></i>
-						 <h:outputText class="font-red" value="#{intern.titel}" />
-						 <h:outputText class="block margin-top-5" value="#{intern.wert}" />
-					 </span>
-					 </ui:repeat>
-						 </h:panelGroup>
+						 <ui:repeat var="intern" value="#{item.eigenschaftenList}" rendered="#{item.eigenschaftenSize!=0}" id="propList">
+							 <span class="block margin-bottom-10">
+								 <i class="btn btn-red margin-right-10 fa fa-bullhorn fa-lg width-40"></i>
+								 <h:outputText class="font-red" value="#{intern.titel}" />
+								 <h:outputText class="block margin-top-5" value="#{intern.wert}" />
+							 </span>
+						 </ui:repeat>
+					 </h:panelGroup>
 
-						 <!-- Popup -->
-						 <x:popup id="popup" closePopupOnExitingElement="true" closePopupOnExitingPopup="true" displayAtDistanceX="-320" displayAtDistanceY="-160" rendered="#{item.prioritaet gt 9}">
+					 <!-- Popup -->
+					 <x:popup id="popup" closePopupOnExitingElement="true" closePopupOnExitingPopup="true" displayAtDistanceX="-320" displayAtDistanceY="-160" rendered="#{item.prioritaet gt 9}">
 
 						 <f:facet name="popup">
-
-						 <div class="box box-small box-color red box-bordered">
-							 <div class="box-title">
-								 <h3>
-									 <i class="fa fa-bullhorn"></i>
-									 #{msgs.badgeCorrection}
-								 </h3>
+							 <div class="box box-small box-color red box-bordered">
+								 <div class="box-title">
+									 <h3>
+										 <i class="fa fa-bullhorn"></i>
+										 #{msgs.badgeCorrection}
+									 </h3>
+								 </div>
+								 <div class="box-content nopadding">
+									 <x:dataTable var="intern" style="width:400px" rendered="#{item.eigenschaftenSize!=0}" value="#{item.eigenschaftenList}" styleClass="table table-hover table-bordered">
+									 <x:column style="vertical-align: top;">
+									 <h:outputText value="#{intern.titel}:" />
+									 </x:column>
+									 <x:column style="vertical-align: top;">
+									 <h:outputText value="#{intern.wert}" />
+									 </x:column>
+									 </x:dataTable>
+								 </div>
 							 </div>
-							 <div class="box-content nopadding">
-								 <x:dataTable var="intern" style="width:400px" rendered="#{item.eigenschaftenSize!=0}" value="#{item.eigenschaftenList}" styleClass="table table-hover table-bordered">
-								 <x:column style="vertical-align: top;">
-								 <h:outputText value="#{intern.titel}:" />
-								 </x:column>
-								 <x:column style="vertical-align: top;">
-								 <h:outputText value="#{intern.wert}" />
-								 </x:column>
-								 </x:dataTable>
-
-							 </div>
-						 </div>
-
 						 </f:facet>
 						 <h:panelGroup class="badge badge-intranda-red">
-						 <i class="fa fa-bullhorn"></i>
-						 #{msgs.badgeCorrection}
+							 <i class="fa fa-bullhorn"></i>
+							 #{msgs.badgeCorrection}
 						 </h:panelGroup>
-						 </x:popup>
+					 </x:popup>
 				 </td>
 				 <!-- ===================== Action ===================== -->
 				 <td>

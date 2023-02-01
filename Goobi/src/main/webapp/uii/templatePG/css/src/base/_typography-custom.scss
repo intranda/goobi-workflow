@@ -68,3 +68,27 @@ a {
   padding-left: 0.8rem;
   padding-top: 1.2rem;
 }
+
+.font-status-done{
+	color: #339933;
+}
+
+.font-status-open{
+	color: #e8860c;
+}
+
+.font-status-inwork, .font-status-inflight{
+	color: #ffbf21;
+}
+
+.font-status-locked{
+	color: #e51400;
+}
+
+.font-status-error{
+	color: #e51400;
+}
+
+.font-status-deactivated{
+	color: #ccc;
+}
