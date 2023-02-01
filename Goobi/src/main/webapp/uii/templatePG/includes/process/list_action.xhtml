@@ -22,7 +22,7 @@
 
 							<!-- LINK PROCESSES INTO OR OUT OF HOME DIRECTORY -->
 							<h:panelGroup
-								rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList or 1 == 1}">
+								rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList}">
 								
 								<!-- LINK PROCESSES INTO HOME DIRECTORY -->
 								<h:panelGroup
@@ -266,80 +266,77 @@
 										value="#{not ProzessverwaltungForm.dispaySearchResult}" />
 									<f:ajax render="@form" />
 								</button>
-								<h:panelGroup
-									rendered="#{ProzessverwaltungForm.dispaySearchResult}">
-									<h:panelGroup layout="block" id="possibleActions10"
-										styleClass="ms-5 mt-2">
-										<x:dataTable value="#{ProzessverwaltungForm.searchField}"
-											var="field" rowIndexVar="id" styleClass="no-borders">
-											<h:column>
-												<h:outputText value="#{msgs.column} #{id +1}:" />
-											</h:column>
-											<h:column>
-												<h:selectOneMenu pt:aria-label="#{msgs.auswahl2}"
-													value="#{field.value}" styleClass="form-select">
-													<f:selectItems
-														value="#{ProzessverwaltungForm.possibleItems}" var="item"
-														itemDisabled="#{item.disabled}" itemLabel="#{item.label}"
-														itemValue="#{item.value}" styleClass="me-2" />
-												</h:selectOneMenu>
-											</h:column>
-											<h:column>
-												<button jsf:id="addFilter" class="btn btn-blank ms-2 me-2"
-													aria-label="#{msgs.addFilter}"
-													jsf:action="#{ProzessverwaltungForm.addField}">
-													<i class="fa fa-plus" />
-													<f:ajax render="@form" execute="@form" />
-												</button>
-												<button jsf:id="removeFilter" class="btn btn-blank"
-													aria-label="#{msgs.removeFilter}"
-													jsf:action="#{ProzessverwaltungForm.deleteField}"
-													jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
-													<i class="fa fa-minus" />
-													<x:updateActionListener
-														property="#{ProzessverwaltungForm.currentField}"
-														value="#{field}" />
-													<f:ajax render="@form" execute="@form" />
-												</button>
-											</h:column>
-										</x:dataTable>
-										<button class="btn d-block"
-											jsf:action="#{ProzessverwaltungForm.generateResultXls}"
-											title="#{msgs.createExcel}"
-											jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-											<i class="btn btn-blank fa fa-angle-right" />
-											<span>
-												<h:outputText value="#{msgs.createExcel}" />
-											</span>
-										</button>
-										<button class="btn d-block"
-											jsf:action="#{ProzessverwaltungForm.generateResultDoc}"
-											title="#{msgs.createDoc}"
-											jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-											<i class="btn btn-blank fa fa-angle-right" />
-											<span>
-												<h:outputText value="#{msgs.createDoc}" />
-											</span>
-										</button>
-										<button class="btn d-block"
-											jsf:action="#{ProzessverwaltungForm.generateResultRtf}"
-											title="#{msgs.createRtf}"
-											jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-											<i class="btn btn-blank fa fa-angle-right" />
-											<span>
-												<h:outputText value="#{msgs.createRtf}" />
-											</span>
-										</button>
-										<button class="btn d-block"
-											jsf:action="#{ProzessverwaltungForm.generateResultAsPdf}"
-											title="#{msgs.createPdf}"
-											jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-											<i class="btn btn-blank fa fa-angle-right" />
-											<span>
-												<h:outputText value="#{msgs.createPdf}" />
-											</span>
-										</button>
-									</h:panelGroup>
+								<h:panelGroup layout="block" id="possibleActions10"
+									styleClass="ms-5 mt-2" rendered="#{ProzessverwaltungForm.dispaySearchResult}">
+									<x:dataTable value="#{ProzessverwaltungForm.searchField}"
+										var="field" rowIndexVar="id" styleClass="no-borders">
+										<h:column>
+											<h:outputText value="#{msgs.column} #{id +1}:" />
+										</h:column>
+										<h:column>
+											<h:selectOneMenu pt:aria-label="#{msgs.auswahl2}"
+												value="#{field.value}" styleClass="form-select">
+												<f:selectItems
+													value="#{ProzessverwaltungForm.possibleItems}" var="item"
+													itemDisabled="#{item.disabled}" itemLabel="#{item.label}"
+													itemValue="#{item.value}" styleClass="me-2" />
+											</h:selectOneMenu>
+										</h:column>
+										<h:column>
+											<button jsf:id="addFilter" class="btn btn-blank ms-2 me-2"
+												aria-label="#{msgs.addFilter}"
+												jsf:action="#{ProzessverwaltungForm.addField}">
+												<i class="fa fa-plus" />
+												<f:ajax render="@form" execute="@form" />
+											</button>
+											<button jsf:id="removeFilter" class="btn btn-blank"
+												aria-label="#{msgs.removeFilter}"
+												jsf:action="#{ProzessverwaltungForm.deleteField}"
+												jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
+												<i class="fa fa-minus" />
+												<x:updateActionListener
+													property="#{ProzessverwaltungForm.currentField}"
+													value="#{field}" />
+												<f:ajax render="@form" execute="@form" />
+											</button>
+										</h:column>
+									</x:dataTable>
+									<button class="btn d-block"
+										jsf:action="#{ProzessverwaltungForm.generateResultXls}"
+										title="#{msgs.createExcel}"
+										jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+										<i class="btn btn-blank fa fa-angle-right" />
+										<span>
+											<h:outputText value="#{msgs.createExcel}" />
+										</span>
+									</button>
+									<button class="btn d-block"
+										jsf:action="#{ProzessverwaltungForm.generateResultDoc}"
+										title="#{msgs.createDoc}"
+										jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+										<i class="btn btn-blank fa fa-angle-right" />
+										<span>
+											<h:outputText value="#{msgs.createDoc}" />
+										</span>
+									</button>
+									<button class="btn d-block"
+										jsf:action="#{ProzessverwaltungForm.generateResultRtf}"
+										title="#{msgs.createRtf}"
+										jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+										<i class="btn btn-blank fa fa-angle-right" />
+										<span>
+											<h:outputText value="#{msgs.createRtf}" />
+										</span>
+									</button>
+									<button class="btn d-block"
+										jsf:action="#{ProzessverwaltungForm.generateResultAsPdf}"
+										title="#{msgs.createPdf}"
+										jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+										<i class="btn btn-blank fa fa-angle-right" />
+										<span>
+											<h:outputText value="#{msgs.createPdf}" />
+										</span>
+									</button>
 								</h:panelGroup>
 							</h:panelGroup>
 							<!-- // SAVE SEARCH RESULT -->
@@ -349,14 +346,13 @@
 								rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 								
 									<button type="button" jsf:id="expandbutton6"
-										class="btn" onclick="toggle('possibleActions6')">
+										class="btn" data-bs-toggle="collapse" data-bs-target="#possibleActions6">
 										<i class="btn btn-blank fa fa-table" />
 										<span>
 											<h:outputText value="#{msgs.anzahlMetadatenUndImagesErmitteln}" />
 										</span>
-										<f:ajax render="expandbutton6" />
 									</button>
-									<div id="possibleActions6" style="display: none">
+									<div id="possibleActions6" class="collapse">
 										<!-- Statistische Auswertung-Schaltknopf für Page-->
 										<button jsf:id="action20" class="btn ms-5 d-block"
 											jsf:action="#{ProzessverwaltungForm.CalcMetadataAndImagesSelection}"
@@ -394,14 +390,13 @@
 							<h:panelGroup
 								rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 								<button type="button" jsf:id="expandbutton7"
-									class="btn" onclick="toggle('possibleActions7')">
+									class="btn" data-bs-toggle="collapse" data-bs-target="#possibleActions7">
 									<i class="btn btn-blank fa fa-bar-chart-o" />
 									<span>
 										<h:outputText value="#{msgs.statistischeAuswertung}" />
 									</span>
-									<f:ajax render="expandbutton7" />
 								</button>
-								<div id="possibleActions7" style="display: none">
+								<div id="possibleActions7" class="collapse">
 									<!-- StatisticsStatusVolumes-->
 									<button class="btn ms-5 d-block" jsf:id="action30"
 										jsf:rendered="#{!HelperForm.anonymized}"
@@ -527,13 +522,12 @@
 												</button>
 											</div>
 											<div class="modal-body">
-												<div class="text-center text-hot" style="border: 2px solid;">
-													<img src="#{ProzessverwaltungForm.goobiScriptHitsImage}"
-														style="height: 32px;"></img>
+												<div class="text-center goobiScript-imagebox">
+													<img class="goobiScript-image" src="#{ProzessverwaltungForm.goobiScriptHitsImage}"/>
 												</div>
 												<br />
 												<p>#{msgs.youWantToExecuteGoobiScript}</p>
-												<pre>#{ProzessverwaltungForm.goobiScript}</pre>
+												<pre class="goobiScript-source">#{ProzessverwaltungForm.goobiScript}</pre>
 												<br />
 												<p>#{msgs.pleaseEnterNumberOfProcesses}</p>
 												<h:inputText id="goobiScriptPopup" styleClass="form-control"
@@ -541,7 +535,6 @@
 													validatorMessage="#{msgs.GoobiScript_input_not_valid}"
 													onkeydown="clickOnEnter(event)"
 													pt:data-onenterbutton="goobiScriptConfirmButton">
-													<!-- 		        	<f:validateLongRange minimum="1" maximum="1000"/> -->
 												</h:inputText>
 											</div>
 											<div class="modal-footer">
@@ -568,11 +561,6 @@
 							<!-- // GOOBI SCRIPT MODAL -->
 
 						</h:form>
-
-						<!--
-</div>
-</div>
--->
 
 					</intranda:box>
 
