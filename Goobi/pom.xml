@@ -610,6 +610,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.mjeanroy/exiftool-lib -->
+		<dependency>
+		    <groupId>com.github.mjeanroy</groupId>
+		    <artifactId>exiftool-lib</artifactId>
+		    <version>3.0.0</version>
+		</dependency>
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>javax.mail-api</artifactId>
