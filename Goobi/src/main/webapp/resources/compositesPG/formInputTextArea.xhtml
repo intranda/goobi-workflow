@@ -22,11 +22,10 @@
 		<composite:attribute name="classLeft" default="col-12 col-md-3" />
 		<composite:attribute name="classRight" default="col-12 col-md-9" />
 		<composite:attribute name="tabindex" default="0" />
-		<composite:attribute name="useValidation" default="false" />
 		<composite:attribute
 			name="validationMethod"
-			default=""
-			method-signature="java.lang.Void action(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)" />
+			default="null"
+			method-signature="java.lang.Object action(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)" />
 		<composite:attribute name="idForValidator" default="" />
 		<!-- "idForValidator" can be requested by the validator with uiComponent.getAttributes().get("idForValidator"); -->
 	</composite:interface>
@@ -44,7 +43,6 @@
 			</div>
 
 			<div class="#{cc.attrs.classRight}">
-				<ui:component rendered="#{cc.attrs.useValidation}">
 				<h:inputTextarea
 					id="#{cc.attrs.name}"
 					styleClass="#{cc.attrs.fieldStyle} form-control metsEditorTextArea"
@@ -55,17 +53,6 @@
 					pt:aria-label="#{cc.attrs.label}"
 					validator="#{cc.attrs.validationMethod}"
 					idForValidator="#{cc.attrs.idForValidator}" />
-				</ui:component>
-				<ui:component rendered="#{not cc.attrs.useValidation}">
-				<h:inputTextarea
-					id="#{cc.attrs.name}"
-					styleClass="#{cc.attrs.fieldStyle} form-control metsEditorTextArea"
-					value="#{cc.attrs.field}"
-					required="#{cc.attrs.required}"
-					readonly="#{cc.attrs.readonly}"
-					tabindex="#{cc.attrs.tabindex}"
-					pt:aria-label="#{cc.attrs.label}" />
-				</ui:component>
 
 				<!-- Help messages, inline + warning -->
 				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">

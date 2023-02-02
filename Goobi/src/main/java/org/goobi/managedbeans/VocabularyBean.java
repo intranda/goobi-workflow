@@ -820,9 +820,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
         return null;
     }
 
-    public void noOperation(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-    }
-
     public void validateFieldValue(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
         synchronized (this) {
