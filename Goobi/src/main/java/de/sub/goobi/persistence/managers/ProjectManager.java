@@ -94,7 +94,7 @@ public class ProjectManager implements IManager, Serializable {
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = ProjectMysqlHelper.getProjectCount(order, filter, institution);
+            num = ProjectMysqlHelper.getProjectCount( filter, institution);
         } catch (SQLException e) {
             log.error("error while getting Project hit size", e);
             throw new DAOException(e);
@@ -225,11 +225,11 @@ public class ProjectManager implements IManager, Serializable {
         }
         r.setMetsIIIFUrl(rs.getString("iiifUrl"));
         r.setMetsSruUrl(rs.getString("sruUrl"));
-
+        r.setJournal(JournalManager.getLogEntriesForProject(r.getId()));
         return r;
     }
 
-    public static ResultSetHandler<Project> resultSetToProjectHandler = new ResultSetHandler<Project>() {
+    public static final ResultSetHandler<Project> resultSetToProjectHandler = new ResultSetHandler<Project>() {
         @Override
         public Project handle(ResultSet rs) throws SQLException {
             try {
@@ -243,7 +243,7 @@ public class ProjectManager implements IManager, Serializable {
         }
     };
 
-    public static ResultSetHandler<List<Project>> resultSetToProjectListHandler = new ResultSetHandler<List<Project>>() {
+    public static final ResultSetHandler<List<Project>> resultSetToProjectListHandler = new ResultSetHandler<List<Project>>() {
         @Override
         public List<Project> handle(ResultSet rs) throws SQLException {
             List<Project> answer = new ArrayList<>();

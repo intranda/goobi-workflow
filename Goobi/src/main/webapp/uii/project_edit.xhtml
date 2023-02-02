@@ -25,10 +25,10 @@
 </ui:define>
 
 <ui:define name="content">
-<h:form id="myform" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Projects')}">
+<h:form id="myform" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Projects')}" enctype="multipart/form-data">
 
 <main id="projectEdit" class="row">
-  <div class="col-12">
+  <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-6'} mb-4">
 
 
     <intranda:box
@@ -368,7 +368,7 @@
 
                 </div>
               </div>
-                                </h:panelGroup>
+           </h:panelGroup>
         </div>
 
         <h:panelGroup rendered="#{ProjekteForm.displayMode ne 'filegroups'}">
@@ -378,9 +378,27 @@
     </intranda:box>
 
   </div>
+  <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-6'}">
+    <!-- Box for process log -->
+    <x:aliasBeansScope>
+      <x:aliasBean
+        alias="#{showBigButton}"
+        value="true" />
+      <x:aliasBean
+        alias="#{showFolderSelection}"
+        value="false" />
+      <x:aliasBean
+        alias="#{bean}"
+        value="#{ProjekteForm.myProjekt}" />
+      <f:subview id="sublog">
+        <ui:include src="templatePG/includes/journal.xhtml" />
+      </f:subview>
+    </x:aliasBeansScope>
+    <!-- // Box for process log -->
+  </div>
 </main>
 
-                                </h:form>
+</h:form>
 </ui:define>
 
 </ui:composition>
