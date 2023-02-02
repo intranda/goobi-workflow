@@ -310,6 +310,12 @@
         </script>
         <script>
      // <![CDATA[
+
+            // THIS CODE HAS BEEN REFACTORED INTO MODULES (see below)
+            // IT REMAINS FOR REFERENCE
+            // FEEL FREE TO DELETE IT, IF YOU DO NOT NEED IT ANYMORE
+
+            /*
             jsf.ajax.addOnEvent(function (data) {
                 var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                 var ajaxloader = document.getElementById("ajaxloader");
@@ -333,6 +339,7 @@
                         // NOOP.
                         $(function () {
                             $('[data-toggle="tooltip"]').tooltip();
+                            $('[data-toggle="tooltip"]').tooltip();
                             $('[data-toggle="popover"]').popover();
                             if ($('.popover.fade.right.in').length > 0) {
                                 $('.popover.fade.right.in').remove();
@@ -343,10 +350,9 @@
                             loadImages();
                         }
                         break;
+
                 }
             });
-
-
 
 
             function toggle_help(data) {
@@ -380,26 +386,41 @@
                     myButton.click();
                 }
             });
+            */
 
+            // WHAT DOES IT DO?
             window.myfaces = window.myfaces || {};
             myfaces.config = myfaces.config || {};
             //set the config part
             myfaces.config.no_portlet_env = true;
 
-
-
-            /*
-            Initialize all BS Tooltips
-            [data-bs-toggle="tooltip"] => BS5
-            [data-toggle="tooltip"] => also grab legacy tool tips
-            */
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"], [data-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-              return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
-
          // ]]>
         </script>
+
+
+        <!--Show and hide help messages-->
+        <!--toggle_help is the legacy name for this function, it is used in most views, use gwToggleHelp.init in new markup-->
+        <script src="templatePG/js/modules/gwToggleHelp.js?v=#{HelperForm.buildVersion}" />
+        <script>
+            const toggle_help = gwToggleHelp.init;
+        </script>
+
+        <!--Show and hide goobi ajax loader-->
+        <script src="templatePG/js/modules/gwAjaxLoader.js?v=#{HelperForm.buildVersion}" />
+        <script>
+            gwAjaxLoader.init();
+        </script>
+
+        <!--TOOLTIPS-->
+        <!--Initialize Bootstrap tooltips-->
+        <script src="templatePG/js/modules/gwInitTooltips.js?v=#{HelperForm.buildVersion}" />
+        <script>
+            gwInitTooltips.init();
+        </script>
+
+
+        <!--Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)-->
+        <script src="templatePG/js/modules/gwHandleTooltip.js?v=#{HelperForm.buildVersion}"></script>
 
 
     </f:view>

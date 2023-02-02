@@ -65,6 +65,30 @@
   overflow-wrap: break-word;
 }
 
+.gw-hyphens-none {
+  hyphens: none;
+}
+
+.gw-card {
+  padding: 1.6rem;
+  border: var(--gw-border);
+  border-radius: var(--gw-border-radius);
+}
+
+.goobiScript-image{
+	height: 32px;
+}
+
+.goobiScript-imagebox{
+	border: 1px solid #ced4da;
+}
+
+.goobiScript-source{
+	padding: 0.5rem; 
+	background: none repeat scroll 0 0 #eee;
+	border: 1px solid #ced4da;
+}
+
 /* ========================================
  * BS 5 Overrides
  * ====================================== */

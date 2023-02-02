@@ -115,6 +115,7 @@
   justify-content: space-between;
   align-items: center;
   margin: 1.6rem 0;
+  gap: var(--gap, 8px);
 
   // Contains search form + `show active users btn`
   form {
@@ -136,10 +137,29 @@
 
   &__option {
     background-color: var(--clr-neutral-200);
+
+    &:hover {
+      background-color: var(--clr-neutral-300);
+    }
+  }
+
+  .dropdown-item {
+    white-space: normal;
+    max-width: 32rem;
+    min-width: 24rem;
+    min-height: 2.8rem;
   }
 
   &__search-bar {
     flex: 0 1 590px;
+
+    // BS override
+    .searchfield {
+    }
+    .searchfield ~ button {
+      border-left-width: 0px;
+      margin-left: 0px !important;
+    }
 
     .input-group {
       flex-wrap: nowrap;
@@ -161,6 +181,34 @@
 /* ========================================
  * Fixed sized Goobi tables
  * ====================================== */
+
+.gw-table-fixed__sizeXXS{
+  --width-table-col: 50px;
+}
+
+.gw-table-fixed__sizeXS{
+  --width-table-col: 75px;
+}
+
+.gw-table-fixed__sizeS{
+  --width-table-col: 100px;
+}
+
+.gw-table-fixed__sizeM{
+  --width-table-col: 150px;
+}
+
+.gw-table-fixed__sizeL{
+  --width-table-col: 200px;
+}
+
+.gw-table-fixed__sizeXL{
+  --width-table-col: 250px;
+}
+
+.gw-table-fixed__sizeXXL{
+  --width-table-col: 300px;
+}
 
 .table-fixed__actions,
 .gw-table-fixed__actions,
@@ -224,4 +272,12 @@
 .table-fixed__table-wrapper,
 .table-wrapper {
   overflow-x: auto;
+}
+
+/* ========================================
+ * Tables with auto layout
+ * ====================================== */
+
+.gw-table-auto table {
+  table-layout: auto;
 }
