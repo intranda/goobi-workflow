@@ -114,6 +114,29 @@
 	border: 1px solid #ced4da;
 }
 
+
+/* ------------- Legacy statistics --------------- */
+.standardTable {
+    border: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
+    line-height: 1.42857;
+    padding: 8px;
+    vertical-align: top;
+    border-spacing: 0;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.normdataTable {
+    vertical-align: top;
+    padding: 3px;
+}
+
+.standardTable_Header, .standardTable_Column, .standardTable_ColumnRight {
+    border-top: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
+    line-height: 1.42857;
+    padding: 8px !important;
+    vertical-align: top;
+}
 /* ========================================
  * BS 5 Overrides
  * ====================================== */

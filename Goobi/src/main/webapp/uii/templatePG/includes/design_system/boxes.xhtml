@@ -32,62 +32,49 @@
 
   <h3 class="description">Box variants - boxes can be styled using the &lt;intranda:box&gt; composite</h3>
 
-	<intranda:box
-		boxType="blank"
-    boxPadding="true"
-		icon="fa-search"
-		title="#{msgs.search}"
-		>
+			<intranda:box boxType="blank" boxPadding="true" icon="fa-search"
+				title="#{msgs.search}">
 
-        <h:form
-          id="myform"
-          styleClass="form-vertical form-striped form-bordered"
-          onkeypress="submitOnEnter(event);">
-          <div class="form-group">
-            <h:outputLabel
-              styleClass="control-label "
-              value="#{msgs.nachEinemBandSuchen}:" />
-            <x:inputText
-              pt:aria-label="#{msgs.search}"
-              styleClass="form-control"
-              value="#{ProzessverwaltungForm.filter}" />
-          </div>
+				<h:form id="myform" onkeypress="submitOnEnter(event);">
+					<div class="form-group">
+						<h:outputLabel styleClass="control-label "
+							value="#{msgs.nachEinemBandSuchen}:" />
+						<x:inputText pt:aria-label="#{msgs.search}"
+							styleClass="form-control" value="#{ProzessverwaltungForm.filter}" />
+					</div>
 
-          <div class="form-group">
-            <h:outputLabel
-              styleClass="control-label "
-              value="#{msgs.anzeige}:" />
-            <div class="checkbox">
-              <label> <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showClosedProcesses}" />
-                #{msgs.showClosedProcesses}
-              </label>
-            </div>
-            <div class="checkbox">
-              <label> <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}" />
-                #{msgs.showArchivedProjects}
-              </label>
-            </div>
-          </div>
+					<div class="form-group">
+						<h:outputLabel styleClass="control-label "
+							value="#{msgs.anzeige}:" />
+						<div class="checkbox">
+							<label> <h:selectBooleanCheckbox
+									value="#{ProzessverwaltungForm.showClosedProcesses}" />
+								#{msgs.showClosedProcesses}
+							</label>
+						</div>
+						<div class="checkbox">
+							<label> <h:selectBooleanCheckbox
+									value="#{ProzessverwaltungForm.showArchivedProjects}" />
+								#{msgs.showArchivedProjects}
+							</label>
+						</div>
+					</div>
 
-          <div class="form-actions">
-            <button
-				      disabled="disabled"
-              class="btn btn-success"
-              jsf:id="absenden"
-              type="submit"
-              jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
-              <i class="fa fa-search"></i>
-              <span>#{msgs.search}</span>
-              <f:setPropertyActionListener
-                target="#{NavigationForm.aktuell}"
-                value="a22" />
-            </button>
-          </div>
-        </h:form>
+					<div class="form-actions">
+						<button disabled="disabled" class="btn btn-success"
+							jsf:id="absenden" type="submit"
+							jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+							<i class="fa fa-search"></i>
+							<span>#{msgs.search}</span>
+							<f:setPropertyActionListener target="#{NavigationForm.aktuell}"
+								value="a22" />
+						</button>
+					</div>
+				</h:form>
 
-        </intranda:box>
+			</intranda:box>
 
-         <div class="flow">
+			<div class="flow">
 
       <!-- Color switch -->
       <div class="switch">
@@ -103,7 +90,7 @@
       </div>
 
       <!-- Code block -->
-		<pre class="code--box bg-primary text-white p-3" style="border-radius: var(--border-radius)">
+		<pre class="code--box bg-neutral-500 text-white px-4" style="border-radius: var(--border-radius)">
       <code class="microlight"></code>
 		</pre>
 
@@ -116,7 +103,7 @@ const boxCode =`
 &lt;intranda:box
   boxType=&quot;{%type%}&quot;
   icon=&quot;fa-search&quot;
-  title=&quot;#{msgs.search}&quot;
+  title=&quot;#{msgs.search}&quot;&gt;
 
 &lt;!-- Your markup here --&gt;
 
@@ -180,17 +167,16 @@ document.querySelector('.switch > .btn-blank').click();
   </intranda:box>
 
     <!-- Code block -->
-		<pre class="code--box box-variant--tabs bg-primary text-white p-3" style="border-radius: var(--border-radius)">
+		<pre class="code--box box-variant--tabs bg-neutral-500 text-white px-4" style="border-radius: var(--border-radius)">
       <code class="microlight"></code>
 		</pre>
-
     <script>
       const boxCodeBoxTabs =`
 &lt;intranda:box
   boxType=&quot;{%type%}&quot;
   boxTitle=&quot;false&quot;&gt; // default: true
   title=&quot;#{msgs.search}&quot;
-  icon=&quot;fa-search&quot;
+  icon=&quot;fa-search&quot;&gt;
 
   &lt;intranda:boxTitle
     title=&quot;{#myPageTitle}&quot;
@@ -227,7 +213,7 @@ document.querySelector('.switch > .btn-blank').click();
     </intranda:box>
 
     <!-- Code block -->
-		<pre class="code--box box-variant--small bg-primary text-white p-3" style="border-radius: var(--border-radius)">
+		<pre class="code--box box-variant--small bg-neutral-500 text-white px-4" style="border-radius: var(--border-radius)">
       <code class="microlight"></code>
 		</pre>
 
@@ -236,7 +222,7 @@ document.querySelector('.switch > .btn-blank').click();
 &lt;intranda:box
   boxType=&quot;hot&quot;
   boxSmall=&quot;true&quot;&gt; // default: true
-  title=&quot;I am a slim title&quot;
+  title=&quot;I am a slim title&quot;&gt;
 
   &lt;!-- Your markup here --&gt;
 

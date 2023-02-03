@@ -1192,15 +1192,17 @@
 
 				<h:panelGroup
 					rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.paginator.list.size() gt 0}">
+					<!-- ACTION AREA -->
 					<ui:include src="templatePG/includes/process/list_action.xhtml" />
+					<!-- COUNTING AREA -->
 					<ui:include src="templatePG/includes/process/list_count.xhtml" />
-					<!--
+					<!-- STATISTICS AREA -->
                     <ui:include src="templatePG/includes/process/list_statistics.xhtml" />
-                    -->
-				</h:panelGroup>
+                </h:panelGroup>
 
 			</c:if>
 
+			<!-- JAVASCRIPT -->
 			<script type="text/javascript">
 		        function showGoobiScriptModal({data, modalID = undefined} = {}) {
 		            // console.log(1)
@@ -1253,6 +1255,8 @@
 	            });
             
 			</script>
+			<!-- // JAVASCRIPT -->
+
 		</main>
 	</ui:define>
 
