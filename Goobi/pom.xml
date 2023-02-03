@@ -237,6 +237,7 @@
             <artifactId>aws-java-sdk-sqs</artifactId>
             <version>${aws.version}</version>
         </dependency>
+        <!-- needed for wellcome exports -->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-sns</artifactId>
@@ -610,7 +611,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-		<!-- https://mvnrepository.com/artifact/com.github.mjeanroy/exiftool-lib -->
+		<!-- needed for TandemVault/MediaGraph ingests -->
 		<dependency>
 		    <groupId>com.github.mjeanroy</groupId>
 		    <artifactId>exiftool-lib</artifactId>
