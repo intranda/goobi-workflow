@@ -38,6 +38,7 @@
 			src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}"></script>
 
 		<style>
+		
 .CodeMirror {
 	border: 1px solid #ddd;
 	heigth: 50px;
@@ -636,10 +637,11 @@
 													</td>
 
 													<!-- BUTTONS -->
-													<td class="width200">
+													<td>
 
 														<div class="gw-table__actions__container">
-															<!-- Bearbeiten-Schaltknopf -->
+															
+															<!-- EDIT PROCESS -->
 															<button jsf:action="#{ProzessverwaltungForm.editProcess}"
 																jsf:id="edit" aria-label="#{msgs.bearbeiten}"
 																jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}"
@@ -657,7 +659,7 @@
 																	value="" />
 															</button>
 
-															<!-- Duplicate process template -->
+															<!-- CLONE PROCESS TEMPLATE -->
 															<button class="btn btn-blank"
 																aria-label="#{msgs.duplicateWorkflow}"
 																jsf:action="#{ProzessverwaltungForm.cloneProcess}"
@@ -674,7 +676,7 @@
 																	value="#{item}" />
 															</button>
 
-															<!-- Metadaten-Schaltknopf - Read only -->
+															<!-- METADATA EDITOR - READ ONLY -->
 															<h:commandLink styleClass="btn btn-blank"
 																action="#{Metadaten.XMLlesen}" id="action14"
 																rel="tooltip" title="#{msgs.metadatenBearbeiten}"
@@ -691,7 +693,7 @@
 																<f:param name="zurueck" value="process_all" />
 															</h:commandLink>
 
-															<!-- Metadaten-Schaltknopf - Allow writing -->
+															<!-- METADATA EDITOR - INCL. WRITE -->
 															<h:commandLink styleClass="btn btn-blank"
 																action="#{Metadaten.XMLlesen}" id="action15"
 																rel="tooltip" title="#{msgs.metadatenBearbeiten}"
@@ -735,7 +737,7 @@
 																	target="#{NavigationForm.uiStatus.mets_toc5}" />
 															</h:commandLink>
 
-															<!--  modal rendern  -->
+															<!--  METADATA MODAL FOR TEMPORARY SAVED DATA  -->
 															<h:panelGroup
 																rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and item.temporaryMetadataFiles}">
 																<a class="text_head" rel="tooltip"
@@ -823,19 +825,16 @@
 																</div>
 															</div>
 
-
-															<!-- DMS-Export-Schaltknopf -->
+															<!-- DMS-EXPORT - ENABLED -->
 															<div jsf:rel="tooltip"
 																title="#{!item.containsExportStep ? msgs.noExportTask : ''}"
-																data-bs-toggle="tooltip" class="btn btn-blank"
-																style="padding: 0;">
+																data-bs-toggle="tooltip">
 																<button jsf:action="#{ProzessverwaltungForm.ExportDMS}"
 																	jsf:id="action21"
 																	aria-label="#{!item.containsExportStep ? msgs.noExportTask : msgs.importDms}"
 																	jsf:rel="tooltip" onclick="preventDoubleSubmit(this);"
 																	title="#{msgs.importDms}" data-bs-toggle="tooltip"
-																	class="btn"
-																	style="padding-top: 1px; padding-bottom: 1px"
+																	class="btn btn-blank"
 																	jsf:disabled="#{!item.containsExportStep}"
 																	jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
 																	<i class="fa fa-globe" />
@@ -849,12 +848,12 @@
 																	value="tooltip" />
 															</div>
 
-															<!-- DMS-Export-Schaltknopf greyed -->
+															<!-- DMS-EXPORT - DISABLED -->
 															<button jsf:action="#{ProzessverwaltungForm.ExportDMS}"
 																jsf:disabled="true" jsf:rel="tooltip"
 																title="#{msgs.importDms}" data-bs-toggle="tooltip"
 																jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}"
-																class="btn">
+																class="btn btn-blank">
 																<i class="font-light fa fa-globe" />
 																<f:passThroughAttribute name="data-toggle"
 																	value="tooltip" />
@@ -863,7 +862,7 @@
 																	value="#{item}" />
 															</button>
 
-															<!-- ProzessKopie-Schaltknopf -->
+															<!-- CREATE PROCESS - ONE PROJECT -->
 															<button
 																class="btn fa fa-file-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'} button-schaltknopf"
 																jsf:action="#{ProzesskopieForm.Prepare}"
@@ -883,23 +882,37 @@
 																	value="#{item}" />
 															</button>
 
+															<!-- CREATE PROCESS - MULTIPLE PROJECTS -->
 															<h:panelGroup
 																rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() gt 1}">
-																<div class="dropdown-left"
+
+																<div data-bs-toggle="tooltip"
 																	title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:
-                                              (item.getProjekt().projectIsArchived ? msgs.projectIsArchived :
-                                              (ProzesskopieForm.isUserInProcessProject(item) ? msgs.eineKopieDieserProzessvorlageAnlegen : msgs.nutzerNichtFuerProjektZugeordnet)
-                                              )
-                                              }"
-																	data-bs-toggle="tooltip">
-																	<button jsf:id="availableProjectsDropdown"
-																		class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-hot':'btn-primary-400'} dropdown-toggle"
-																		aria-haspopup="true" aria-expanded="false"
-																		data-bs-toggle="dropdown"></button>
-																	<ul class="dropdown-menu">
-																		<ui:repeat var="proj"
+						                                              (item.getProjekt().projectIsArchived ? msgs.projectIsArchived :
+						                                              (ProzesskopieForm.isUserInProcessProject(item) ? msgs.eineKopieDieserProzessvorlageAnlegen : msgs.nutzerNichtFuerProjektZugeordnet)
+						                                              )
+						                                              }">
+						                                              
+																	<div class="btn-group position-static">
+																	  <button jsf:id="copyProcessTempalte"
+																		class="btn fa fa-file-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
+																		aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
+																		jsf:action="#{ProzesskopieForm.Prepare}"
+																		jsf:rel="tooltip">
+																		<f:passThroughAttribute name="data-toggle" value="tooltip" />
+																		<x:updateActionListener
+																			property="#{ProzesskopieForm.prozessVorlage}"
+																			value="#{item}" />
+																		</button>
+																	  
+																	  <button type="button" class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-hot':'btn-primary-400'} dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+																	    <span class="visually-hidden">Toggle Dropdown</span>
+																	  </button>
+																	  <ul class="dropdown-menu">
+																	    <ui:repeat var="proj"
 																			value="#{ProzesskopieForm.availableProjects}">
-																			<li><button jsf:id="prepare"
+																			<li>
+																				<button jsf:id="prepare"
 																					jsf:action="#{ProzesskopieForm.Prepare}"
 																					class="dropdown-item">
 																					<h:outputText value="#{proj.titel}" />
@@ -908,91 +921,82 @@
 																					<x:updateActionListener
 																						property="#{ProzesskopieForm.prozessVorlage}"
 																						value="#{item}" />
-																				</button></li>
+																				</button>
+																			</li>
 																		</ui:repeat>
-																	</ul>
-																	<button jsf:id="copyProcessTempalte"
-																		class="btn fa fa-file-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
-																		aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
-																		jsf:action="#{ProzesskopieForm.Prepare}"
-																		jsf:rel="tooltip">
-																		<f:passThroughAttribute name="data-toggle"
-																			value="tooltip" />
-																		<x:updateActionListener
-																			property="#{ProzesskopieForm.prozessVorlage}"
-																			value="#{item}" />
-																	</button>
-																	<!--
-                                              </div>
-                                                -->
+																	  </ul>
+																	</div>																	
+																	
 																</div>
 															</h:panelGroup>
 
-															<!-- MassenImport -->
+															<!-- MASS IMPORT - ONE PROJECT -->
 															<button
 																class="btn fa fa-files-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'} button-schaltknopf"
 																jsf:action="#{MassImportForm.Prepare}"
 																jsf:id="action222" jsf:rel="tooltip"
 																data-bs-toggle="tooltip"
 																title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:
-                                                        (item.getProjekt().projectIsArchived ? msgs.projectIsArchived :
-                                                        (ProzesskopieForm.isUserInProcessProject(item) ? msgs.MassenImport : msgs.nutzerNichtFuerProjektZugeordnet)
-                                                        )
-                                                        }"
+		                                                        (item.getProjekt().projectIsArchived ? msgs.projectIsArchived :
+		                                                        (ProzesskopieForm.isUserInProcessProject(item) ? msgs.MassenImport : msgs.nutzerNichtFuerProjektZugeordnet)
+		                                                        )
+		                                                        }"
 																onclick="preventDoubleSubmit(this);"
-																jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1}">
+																jsf:rendered="#{(ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1)}">
 																<f:passThroughAttribute name="data-toggle"
 																	value="tooltip" />
 																<x:updateActionListener
 																	property="#{MassImportForm.template}" value="#{item}" />
 															</button>
 
+															<!-- MASS IMPORT - MULTIPLE PROJECTS -->
 															<h:panelGroup
-																rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
-																<div class="dropdown-left"
+																rendered="#{(ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1)}">
+																<div class="dropdown-left" data-bs-toggle="tooltip"
 																	title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:
-                                                        (item.getProjekt().projectIsArchived ? msgs.projectIsArchived :
-                                                        (ProzesskopieForm.isUserInProcessProject(item) ? msgs.MassenImport : msgs.nutzerNichtFuerProjektZugeordnet)
-                                                        )
-                                                        }"
-																	data-bs-toggle="tooltip">
-
-																	<button id="importProjectListDropdown"
-																		class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-hot':'btn-primary-400'} dropdown-toggle fa"
-																		aria-haspopup="true" aria-expanded="false"
-																		onclick="switchExpanded(this.id)"
-																		data-bs-toggle="dropdown"></button>
-																	<ul class="dropdown-menu">
-																		<ui:repeat var="proj"
-																			value="#{ProzesskopieForm.availableProjects}">
-																			<li>
-																				<button jsf:action="#{MassImportForm.Prepare}"
-																					jsf:id="prepare" class="dropdown-item">
-																					<h:outputText value="#{proj.titel}" />
-																					<x:updateActionListener property="#{item.projekt}"
-																						value="#{proj}" />
-																					<x:updateActionListener
-																						property="#{item.projectId}" value="#{proj.id}" />
-																					<x:updateActionListener
-																						property="#{MassImportForm.template}"
-																						value="#{item}" />
-																				</button>
-																			</li>
-																		</ui:repeat>
-																	</ul>
-																	<button
-																		class="btn fa fa-files-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
-																		jsf:id="massImportPrepare"
-																		jsf:action="#{MassImportForm.Prepare}"
-																		jsf:rel="tooltip">
-																		<f:passThroughAttribute name="data-toggle"
-																			value="tooltip" />
-																		<x:updateActionListener
-																			property="#{MassImportForm.template}" value="#{item}" />
-																	</button>
+			                                                        (item.getProjekt().projectIsArchived ? msgs.projectIsArchived :
+			                                                        (ProzesskopieForm.isUserInProcessProject(item) ? msgs.MassenImport : msgs.nutzerNichtFuerProjektZugeordnet)
+			                                                        )
+			                                                        }">
+								
+																	<div class="btn-group position-static">
+																		<button jsf:id="massImportPrepare"
+																			class="btn fa fa-files-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
+																			aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
+																			jsf:action="#{MassImportForm.Prepare}"
+																			jsf:rel="tooltip">
+																			<f:passThroughAttribute name="data-toggle"
+																				value="tooltip" />
+																			<x:updateActionListener
+																				property="#{MassImportForm.template}" value="#{item}" />
+																		</button>
+																	
+																		<button type="button" class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-hot':'btn-primary-400'} dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+																			<span class="visually-hidden">Toggle Dropdown</span>
+																		</button>
+																		<ul class="dropdown-menu">
+																	    	<ui:repeat var="proj"
+																				value="#{ProzesskopieForm.availableProjects}">
+																				<li>
+																					<button jsf:action="#{MassImportForm.Prepare}"
+																						jsf:id="prepare" class="dropdown-item">
+																						<h:outputText value="#{proj.titel}" />
+																						<x:updateActionListener property="#{item.projekt}"
+																							value="#{proj}" />
+																						<x:updateActionListener
+																							property="#{item.projectId}" value="#{proj.id}" />
+																						<x:updateActionListener
+																							property="#{MassImportForm.template}"
+																							value="#{item}" />
+																					</button>
+																				</li>
+																			</ui:repeat>  
+																		</ul>
+																	</div>
 																</div>
 															</h:panelGroup>
 
+															<!-- ADDITIONAL OPTIONS AS DROPDOWN -->
 															<h:panelGroup
 																rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Workflow_Processes_Allow_Download') or LoginForm.hasRole('Workflow_Processes_Allow_Linking'))}">
 																<div class="dropdown-left"
@@ -1011,7 +1015,7 @@
 																		<h:panelGroup
 																			rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Linking')}">
 																			<li>
-																				<!-- Download-Schaltknopf -->
+																				<!-- DOWNLOAD INTO HOME DIRECTORY -->
 																				<button
 																					jsf:action="#{ProzessverwaltungForm.DownloadToHome}"
 																					jsf:id="action16"
@@ -1028,7 +1032,7 @@
 																				</button>
 																			</li>
 																			<li>
-																				<!-- Download-Schaltknopf -->
+																				<!-- DOWNLOAD INTO HOME DIRECTORY - FOR ADMINS -->
 																				<button
 																					jsf:action="#{ProzessverwaltungForm.DownloadToHome}"
 																					jsf:id="action17"
@@ -1046,7 +1050,7 @@
 																				</button>
 																			</li>
 																			<li>
-																				<!-- Upload-Schaltknopf -->
+																				<!-- UPLOAD FROM HOME DIRECTORY -->
 																				<button
 																					jsf:action="#{ProzessverwaltungForm.UploadFromHome}"
 																					jsf:id="action18"
@@ -1068,7 +1072,7 @@
 																		<h:panelGroup
 																			rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Download')}">
 																			<li>
-																				<!-- XML Export-Button -->
+																				<!-- DOWNLOAD LOG FILE -->
 																				<button jsf:id="ubid119"
 																					jsf:action="#{item.downloadLogFile}"
 																					onclick="preventDoubleSubmit(this);"
@@ -1080,7 +1084,7 @@
 																				</button>
 																			</li>
 																			<li>
-																				<!-- Docket Export -->
+																				<!-- DOWNLOAD DOCKET -->
 																				<button jsf:id="ubid1119"
 																					jsf:action="#{item.downloadDocket}"
 																					onclick="preventDoubleSubmit(this);"
@@ -1094,7 +1098,7 @@
 
 																			</li>
 																			<li>
-																				<!-- Mets-Download-Button -->
+																				<!-- DOWNLOAD METS FILE -->
 																				<button
 																					jsf:action="#{ProzessverwaltungForm.downloadMets}"
 																					jsf:id="action25"
@@ -1111,7 +1115,7 @@
 																				</button>
 																			</li>
 																			<li>
-																				<!-- PDF-Export-Button -->
+																				<!-- DOWNLOAD PDF FILE -->
 																				<button
 																					jsf:action="#{ProzessverwaltungForm.ExportPdf}"
 																					jsf:id="action20"
@@ -1130,7 +1134,7 @@
 																			</li>
 
 																			<li>
-																				<!-- simplified-Metadata-Export-Button -->
+																				<!-- GENERATE SIMPLIFIED METADATA -->
 																				<button
 																					jsf:action="#{ProzessverwaltungForm.generateSimplifiedMetadataFile}"
 																					jsf:id="action23"
@@ -1198,16 +1202,14 @@
 			</c:if>
 
 			<script type="text/javascript">
-
-            function showGoobiScriptModal({data, modalID = undefined} = {}) {
-                console.log(1)
-                console.log(modalID)
-
-              if (!modalID) return
-                if (data.status !== "success") return
-              const mdl = new bootstrap.Modal(document.getElementById(modalID));
-              mdl.show()
-            }
+		        function showGoobiScriptModal({data, modalID = undefined} = {}) {
+		            // console.log(1)
+		            // console.log(modalID)
+		          if (!modalID) return
+		            if (data.status !== "success") return
+		          const mdl = new bootstrap.Modal(document.getElementById(modalID));
+		          mdl.show()
+		        }
 
 				window.onload = function() {
 					loadImages();
@@ -1215,54 +1217,43 @@
 					// initGoobiScriptCodeMirror();
 				}
 
-            	var goobiScriptCodeMirror;
-
-
-        function handleGoobiScriptCodeEditor() {
-            removeGoobiScriptCodeMirror();
-            initGoobiScriptCodeMirror();
-        }
-
-                function removeGoobiScriptCodeMirror() {
-                    var codeEditors = document.querySelectorAll('.CodeMirror');
-                    codeEditors.forEach(function(editor) { editor.remove() })
-                }
-
-                function initGoobiScriptCodeMirror() {
-                	var goobiScriptTextArea = document.getElementById("goobiScriptfield");
-                	if(goobiScriptTextArea) {
-                    	goobiScriptCodeMirror = CodeMirror.fromTextArea(goobiScriptTextArea, {
-    						lineNumbers: true,
-    						mode: 'yaml'
-    					});
-                    	goobiScriptCodeMirror.on('change', editor => {
-    						document.getElementById("goobiScriptfield").innerHTML = editor.getValue();
-    				    });
-                	}
-                }
-
-                jsf.ajax.addOnEvent( function( data ) {
-                    var ajaxstatus = data.status;
-                    switch ( ajaxstatus ) {
-                        case "success":
-                        	if(data.source.id == "boxProcessesAllActions:expandbutton5") {
-                        		initGoobiScriptCodeMirror();
-                        	}
-                            break;
-                    }
-                } );
-                
+	        	var goobiScriptCodeMirror;
+			    function handleGoobiScriptCodeEditor() {
+			        removeGoobiScriptCodeMirror();
+			        initGoobiScriptCodeMirror();
+			    }
+	
+	            function removeGoobiScriptCodeMirror() {
+	                var codeEditors = document.querySelectorAll('.CodeMirror');
+	                codeEditors.forEach(function(editor) { editor.remove() })
+	            }
+	
+	            function initGoobiScriptCodeMirror() {
+	            	var goobiScriptTextArea = document.getElementById("goobiScriptfield");
+	            	if(goobiScriptTextArea) {
+	                	goobiScriptCodeMirror = CodeMirror.fromTextArea(goobiScriptTextArea, {
+							lineNumbers: true,
+							mode: 'yaml'
+						});
+	                	goobiScriptCodeMirror.on('change', editor => {
+							document.getElementById("goobiScriptfield").innerHTML = editor.getValue();
+					    });
+	            	}
+	            }
+	
+	            jsf.ajax.addOnEvent( function( data ) {
+	                var ajaxstatus = data.status;
+	                switch ( ajaxstatus ) {
+	                    case "success":
+	                    	if(data.source.id == "boxProcessesAllActions:expandbutton5") {
+	                    		initGoobiScriptCodeMirror();
+	                    	}
+	                        break;
+	                }
+	            });
+            
 			</script>
 		</main>
 	</ui:define>
 
-	<!--
-	<ui:define name="sidebar">
-		<h:form id="sidebarform">
-
-
-
-		</h:form>
-	</ui:define>
--->
 </ui:composition>
