@@ -41,9 +41,12 @@
 				<x:inputText
 					id="#{cc.attrs.name}"
 					forceId="#{cc.attrs.forceId}"
-					styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" required="#{cc.attrs.required}"
-					readonly="#{cc.attrs.readonly}" onfocus="#{cc.attrs.onfocus}" tabindex="#{cc.attrs.tabindex}"
-					>
+					styleClass="#{cc.attrs.fieldStyle}"
+					value="#{cc.attrs.field}"
+					required="#{cc.attrs.required}"
+					readonly="#{cc.attrs.readonly}"
+					onfocus="#{cc.attrs.onfocus}"
+					tabindex="#{cc.attrs.tabindex}">
 
 					<f:ajax execute="#{cc.attrs.execute}" render="#{cc.attrs.render}" event="blur"/>
 				</x:inputText>

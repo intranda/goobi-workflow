@@ -35,8 +35,13 @@
 			</div>
 
 			<div class="#{cc.attrs.classRight}" style="#{cc.attrs.styleRight}">
-					<h:selectBooleanCheckbox id="#{cc.attrs.name}" styleClass="form-check-input #{cc.attrs.fieldStyle}"
-					value="#{cc.attrs.field}" disabled="#{cc.attrs.disabled}" tabindex="#{cc.attrs.tabindex}" pt:aria-label="#{cc.attrs.label}"/>
+					<h:selectBooleanCheckbox
+						id="#{cc.attrs.name}"
+						styleClass="form-check-input #{cc.attrs.fieldStyle}"
+						value="#{cc.attrs.field}"
+						disabled="#{cc.attrs.disabled}"
+						tabindex="#{cc.attrs.tabindex}"
+						pt:aria-label="#{cc.attrs.label}" />
 
 				<!-- Help messages, inline + warning -->
 				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">

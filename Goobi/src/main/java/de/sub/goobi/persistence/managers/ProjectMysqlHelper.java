@@ -31,6 +31,8 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Institution;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -87,7 +89,7 @@ class ProjectMysqlHelper implements Serializable {
                 null, null);
     }
 
-    public static int getProjectCount(String order, String filter, Institution institution) throws SQLException {
+    public static int getProjectCount(String filter, Institution institution) throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -180,10 +182,10 @@ class ProjectMysqlHelper implements Serializable {
                         ro.getMetsDigiprovReferenceAnchor(), ro.getMetsDigiprovPresentationAnchor(), ro.getMetsPointerPath(),
                         ro.getMetsPointerPathAnchor(), ro.getMetsPurl(), ro.getMetsContentIDs(),
                         ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
-                        ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(), ro.getNumberOfVolumes(),
-                        ro.getProjectIsArchived(), ro.getMetsRightsSponsor(), ro.getMetsRightsSponsorLogo(), ro.getMetsRightsSponsorSiteURL(),
-                        ro.getMetsRightsLicense(), ro.getInstitution() != null ? ro.getInstitution().getId() : null, ro.getProjectIdentifier(),
-                        ro.getMetsIIIFUrl(), ro.getMetsSruUrl());
+                                ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(), ro.getNumberOfVolumes(),
+                                        ro.getProjectIsArchived(), ro.getMetsRightsSponsor(), ro.getMetsRightsSponsorLogo(), ro.getMetsRightsSponsorSiteURL(),
+                                        ro.getMetsRightsLicense(), ro.getInstitution() != null ? ro.getInstitution().getId() : null, ro.getProjectIdentifier(),
+                                                ro.getMetsIIIFUrl(), ro.getMetsSruUrl());
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -234,19 +236,24 @@ class ProjectMysqlHelper implements Serializable {
                         ro.getMetsDigiprovReferenceAnchor(), ro.getMetsDigiprovPresentationAnchor(), ro.getMetsPointerPath(),
                         ro.getMetsPointerPathAnchor(), ro.getMetsPurl(), ro.getMetsContentIDs(),
                         ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
-                        ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(), ro.getNumberOfVolumes(),
-                        ro.getProjectIsArchived(), ro.getMetsRightsSponsor(), ro.getMetsRightsSponsorLogo(), ro.getMetsRightsSponsorSiteURL(),
-                        ro.getMetsRightsLicense(), ro.getInstitution() != null ? ro.getInstitution().getId() : null, ro.getProjectIdentifier(),
-                        ro.getMetsIIIFUrl(), ro.getMetsSruUrl());
+                                ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(), ro.getNumberOfVolumes(),
+                                        ro.getProjectIsArchived(), ro.getMetsRightsSponsor(), ro.getMetsRightsSponsorLogo(), ro.getMetsRightsSponsorSiteURL(),
+                                        ro.getMetsRightsLicense(), ro.getInstitution() != null ? ro.getInstitution().getId() : null, ro.getProjectIdentifier(),
+                                                ro.getMetsIIIFUrl(), ro.getMetsSruUrl());
             }
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
         }
+        for (JournalEntry logEntry : ro.getJournal()) {
+            JournalManager.saveJournalEntry(logEntry);
+        }
     }
 
     public static void deleteProject(Project ro) throws SQLException {
+        JournalManager.deleteAllJournalEntries(ro.getId(), EntryType.PROJECT);
+
         if (ro.getId() != null) {
             Connection connection = null;
             try {
@@ -293,21 +300,32 @@ class ProjectMysqlHelper implements Serializable {
             for (ProjectFileGroup pfg : filegroupList) {
                 Object[] param = { StringUtils.isBlank(pfg.getName()) ? null : pfg.getName(),
                         StringUtils.isBlank(pfg.getPath()) ? null : pfg.getPath(), StringUtils.isBlank(pfg.getMimetype()) ? null : pfg.getMimetype(),
-                        StringUtils.isBlank(pfg.getSuffix()) ? null : pfg.getSuffix(), pfg.getProject().getId(),
-                        StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder(), pfg.getIgnoreMimetypes(), pfg.isUseOriginalFiles() };
+                                StringUtils.isBlank(pfg.getSuffix()) ? null : pfg.getSuffix(), pfg.getProject().getId(),
+                                        StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder(), pfg.getIgnoreMimetypes(), pfg.isUseOriginalFiles() };
                 if (pfg.getId() == null) {
-                    String sql =
-                            "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, folder, ignore_file_extensions, original_mimetypes) VALUES (?, ?, ?, ?, ?, ?,?,? )";
-
-                    Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
+                    StringBuilder sql = new StringBuilder();
+                    sql.append("INSERT INTO projectfilegroups ");
+                    sql.append("(name, path, mimetype, suffix, ProjekteID, folder, ignore_file_extensions, original_mimetypes) ");
+                    sql.append("VALUES ");
+                    sql.append("(?, ?, ?, ?, ?, ?,?,? ) ");
+                    Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                     if (id != null) {
                         pfg.setId(id);
                     }
                 } else {
-                    String sql =
-                            "UPDATE projectfilegroups SET name = ?, path = ?, mimetype = ? , suffix = ?, ProjekteID = ?, folder = ?, ignore_file_extensions=?, original_mimetypes=? WHERE ProjectFileGroupID = "
-                                    + pfg.getId();
-                    run.update(connection, sql, param);
+
+                    StringBuilder sql = new StringBuilder();
+                    sql.append("UPDATE projectfilegroups SET name = ?, ");
+                    sql.append("path = ?, ");
+                    sql.append("mimetype = ?, ");
+                    sql.append("suffix = ?, ");
+                    sql.append("ProjekteID = ?, ");
+                    sql.append("folder = ?, ");
+                    sql.append("ignore_file_extensions = ?, ");
+                    sql.append("original_mimetypes = ? ");
+                    sql.append("WHERE ProjectFileGroupID = ");
+                    sql.append(pfg.getId());
+                    run.update(connection, sql.toString(), param);
                 }
             }
         } finally {
@@ -325,7 +343,7 @@ class ProjectMysqlHelper implements Serializable {
 
             Object[] param = { StringUtils.isBlank(pfg.getName()) ? null : pfg.getName(), StringUtils.isBlank(pfg.getPath()) ? null : pfg.getPath(),
                     StringUtils.isBlank(pfg.getMimetype()) ? null : pfg.getMimetype(), StringUtils.isBlank(pfg.getSuffix()) ? null : pfg.getSuffix(),
-                    pfg.getProject().getId(), StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder() };
+                            pfg.getProject().getId(), StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder() };
             if (pfg.getId() == null) {
                 String sql = "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, folder) VALUES (?, ?, ?, ?, ?, ? )";
 
@@ -334,10 +352,16 @@ class ProjectMysqlHelper implements Serializable {
                     pfg.setId(id);
                 }
             } else {
-                String sql =
-                        "UPDATE projectfilegroups SET name = ?, path = ?, mimetype = ? , suffix = ?, ProjekteID = ?, folder = ? WHERE ProjectFileGroupID = "
-                                + pfg.getId();
-                run.update(connection, sql, param);
+                StringBuilder sql = new StringBuilder();
+                sql.append("UPDATE projectfilegroups SET name = ?, ");
+                sql.append("path = ?, ");
+                sql.append("mimetype = ?, ");
+                sql.append("suffix = ?, ");
+                sql.append("ProjekteID = ?, ");
+                sql.append("folder = ? ");
+                sql.append("WHERE ProjectFileGroupID = ");
+                sql.append(pfg.getId());
+                run.update(connection, sql.toString(), param);
             }
         } finally {
             if (connection != null) {
@@ -381,7 +405,8 @@ class ProjectMysqlHelper implements Serializable {
 
     }
 
-    public static ResultSetHandler<List<ProjectFileGroup>> resultSetToProjectFilegroupListHandler = new ResultSetHandler<List<ProjectFileGroup>>() {
+    public static final ResultSetHandler<List<ProjectFileGroup>> resultSetToProjectFilegroupListHandler =
+            new ResultSetHandler<List<ProjectFileGroup>>() {
         @Override
         public List<ProjectFileGroup> handle(ResultSet rs) throws SQLException {
             List<ProjectFileGroup> answer = new ArrayList<>();

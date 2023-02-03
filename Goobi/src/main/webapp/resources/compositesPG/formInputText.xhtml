@@ -8,18 +8,23 @@
 		<composite:attribute name="label" />
 		<composite:attribute name="field" />
 		<composite:attribute name="help" />
-		<composite:attribute name="fieldStyle" default="form-control"/>
+		<composite:attribute name="fieldStyle" default=""/>
 		<composite:attribute name="required" default="true" />
 		<composite:attribute name="displayAsRequired" default="false" />
-		<composite:attribute name="style" />
-		<composite:attribute name="styleRight" />
+		<composite:attribute name="style" default="" />
+		<composite:attribute name="styleRight" default="" />
 		<composite:attribute name="readonly" default="false" />
-		<composite:attribute name="forceId" default="true" />
 		<composite:attribute name="classLeft" default="col-12 col-md-3" />
 		<composite:attribute name="classRight" default="col-12 col-md-9" />
 		<composite:attribute name="onfocus" default="" />
 		<composite:attribute name="tabindex" default="0" />
 		<composite:attribute name="focusOnLoad" default="false" />
+		<composite:attribute
+			name="validationMethod"
+			default="null"
+			method-signature="java.lang.Object action(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)" />
+		<composite:attribute name="idForValidator" default="#{cc.attrs.name}" />
+		<!-- "idForValidator" can be requested by the validator with uiComponent.getAttributes().get("idForValidator"); -->
 	</composite:interface>
 
 	<composite:implementation>
@@ -28,45 +33,39 @@
 
 			<!-- col -->
 			<div class="#{cc.attrs.classLeft}">
-
 				<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
 					<ui:param name="labelFor" value="#{cc.attrs.name}" />
 					<ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
 					<ui:param name="labelLabel" value="#{cc.attrs.label}" />
 				</ui:include>
-
 			</div> <!-- end col -->
 
 			<!-- col -->
 			<div class="#{cc.attrs.classRight}">
 				<h:inputText
 					id="#{cc.attrs.name}"
-					forceId="#{cc.attrs.forceId}"
 					styleClass="form-control form__input #{cc.attrs.fieldStyle}"
 					value="#{cc.attrs.field}"
 					required="#{cc.attrs.required}"
 					readonly="#{cc.attrs.readonly}"
 					onfocus="#{cc.attrs.onfocus}"
 					tabindex="#{cc.attrs.tabindex}"
-				>
-
+					validator="#{cc.attrs.validationMethod}"
+					idForValidator="#{cc.attrs.idForValidator}">
 					<!-- if set, this input will be focussed on page load, if gwFocusOnLoad.init() is called
 							 (will be ignored if it is not the first input field on the page with this attribute) -->
 					<c:if test="#{cc.attrs.focusOnLoad}">
 						<f:passThroughAttribute name="data-gw-focus-on-load" value="#{cc.attrs.focusOnLoad}" />
 					</c:if>
-
 				</h:inputText>
-
 
 				<!-- Help messages, inline + warning -->
 				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
 					<ui:param name="msgFor" value="#{cc.attrs.name}" />
 					<ui:param name="helpContent" value="#{cc.attrs.help}" />
 				</ui:include>
-
-
 			</div> <!-- end col -->
+
 		</div> <!-- end row -->
 
 	</composite:implementation>

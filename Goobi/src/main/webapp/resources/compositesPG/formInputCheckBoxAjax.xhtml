@@ -26,23 +26,31 @@
 
     <composite:implementation>
         <div class="row">
-          <div class="#{cc.attrs.classLeft}">
+            <div class="#{cc.attrs.classLeft}">
 
 
-          <!-- Label -->
-          <ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-            <ui:param name="labelFor" value="#{cc.attrs.name}" />
-            <ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
-            <ui:param name="labelLabel" value="#{cc.attrs.label}" />
-          </ui:include>
+            <!-- Label -->
+            <ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
+                <ui:param name="labelFor" value="#{cc.attrs.name}" />
+                <ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
+                <ui:param name="labelLabel" value="#{cc.attrs.label}" />
+            </ui:include>
 
-          </div>
-          <div class="#{cc.attrs.classRight}">
-            <h:selectBooleanCheckbox id="#{cc.attrs.name}" styleClass="form-check-input #{cc.attrs.fieldStyle}" value="#{cc.attrs.field}">
-            <f:ajax event="#{cc.attrs.ajaxEvent}" render="#{cc.attrs.ajaxRender}" tabindex="#{cc.attrs.tabindex}" pt:aria-label="#{cc.attrs.label}"/>
-            </h:selectBooleanCheckbox>
-            <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
-            <intranda:formHelp content="#{cc.attrs.help}" />
+            </div>
+            <div class="#{cc.attrs.classRight}">
+                <h:selectBooleanCheckbox
+                    id="#{cc.attrs.name}"
+                    styleClass="form-check-input #{cc.attrs.fieldStyle}"
+                    value="#{cc.attrs.field}">
+                    <f:ajax
+                        event="#{cc.attrs.ajaxEvent}"
+                        render="#{cc.attrs.ajaxRender}"
+                        tabindex="#{cc.attrs.tabindex}"
+                        pt:aria-label="#{cc.attrs.label}" />
+                </h:selectBooleanCheckbox>
+
+                <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
+                <intranda:formHelp content="#{cc.attrs.help}" />
             </div>
         </div>
 
