@@ -10263,12 +10263,12 @@ span.badge:not(:last-child) {
   top: 0px;
 }
 
-#designSystem {
+#styleGuide {
   --flow-space: 4.8rem;
   counter-reset: heading;
 }
 
-#designSystem section {
+#styleGuide section {
   --flow-space: 1.6rem;
   --grid-size: 40rem, 1fr;
   --gap: 4rem;
@@ -10279,28 +10279,28 @@ span.badge:not(:last-child) {
   gap: var(--gap);
 }
 
-#designSystem section > h2, #designSystem section > .h2 {
+#styleGuide section > h2, #styleGuide section > .h2 {
   grid-column: 1/-1;
 }
 
-#designSystem section > h2::before, #designSystem section > .h2::before {
+#styleGuide section > h2::before, #styleGuide section > .h2::before {
   counter-increment: heading;
   content: counter(heading);
   margin-right: 1.2rem;
   color: var(--clr-primary-400);
 }
 
-#designSystem .description {
+#styleGuide .description {
   font-size: 1rem;
   color: var(--clr-primary-400);
 }
 
-#designSystem section.colors {
+#styleGuide section.colors {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--grid-size)));
 }
 
-#designSystem .switch {
+#styleGuide .switch {
   --flow-space: 1.6rem;
   display: flex;
   gap: 8px;

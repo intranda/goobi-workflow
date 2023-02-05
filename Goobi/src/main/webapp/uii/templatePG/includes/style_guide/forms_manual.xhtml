@@ -1,0 +1,329 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface />
+
+	<composite:implementation>
+
+		<!-- MANUAL FORM -->
+		<intranda:box
+			boxType="action"
+			boxForm="true"
+			boxPadding="false"
+			title="#{myPageTitle}"
+			icon="fa-edit">
+
+			<!-- INPUT ROW -->
+			<div class="row">
+
+				<!-- LABEL -->
+				<div class="col-12 col-md-3">
+					<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
+						<ui:param
+							name="labelFor"
+							value="manualFieldA" />
+						<ui:param
+							name="labelRequired"
+							value="true" />
+						<ui:param
+							name="labelLabel"
+							value="#{msgs.standort}" />
+					</ui:include>
+				</div>
+				<!-- // LABEL -->
+
+				<!-- INPUT -->
+				<div class="col-12 col-md-9">
+					<h:inputText
+						id="manualFieldA"
+						styleClass="form-control form__input"
+						value="#{LoginForm.myBenutzer.standort}"
+						required="true"
+						readonly="false"
+						tabindex="0">
+						<c:if test="false">
+							<f:passThroughAttribute
+								name="data-gw-focus-on-load"
+								value="false" />
+						</c:if>
+					</h:inputText>
+
+					<!-- Help messages, inline + warning -->
+					<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
+						<ui:param
+							name="msgFor"
+							value="#{msgs.standort}" />
+						<ui:param
+							name="helpContent"
+							value="#{msgs.helpStandort}" />
+					</ui:include>
+				</div>
+				<!-- // INPUT -->
+
+			</div>
+			<!-- INPUT ROW -->
+
+
+			<!-- SELECT ROW -->
+			<div class="row">
+
+				<!-- LABEL -->
+				<div class="col-12 col-md-3">
+					<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
+						<ui:param
+							name="labelFor"
+							value="manualFieldB" />
+						<ui:param
+							name="labelRequired"
+							value="true" />
+						<ui:param
+							name="labelLabel"
+							value="#{msgs.defaultSortField}" />
+					</ui:include>
+				</div>
+				<!-- // LABEL -->
+
+				<!-- SELECT -->
+				<div class="col-12 col-md-9">
+					<h:selectOneMenu
+						id="manualFieldB"
+						styleClass="form-select"
+						value="#{LoginForm.myBenutzer.processListDefaultSortField}"
+						tabindex="0"
+						readonly="false">
+						<f:selectItem
+							itemValue="null"
+							itemLabel="#{msgs.bitteAuswaehlen}" />
+						<f:selectItem
+							itemValue="up"
+							itemLabel="Up" />
+						<f:selectItem
+							itemValue="down"
+							itemLabel="Down" />
+					</h:selectOneMenu>
+
+					<!-- Help messages, inline + warning -->
+					<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
+						<ui:param
+							name="msgFor"
+							value="#{msgs.defaultSortField}" />
+						<ui:param
+							name="helpContent"
+							value="#{msgs.helpProcessListDefaultSortField}" />
+					</ui:include>
+				</div>
+				<!-- // SELECT -->
+
+			</div>
+			<!-- // SELECT ROW -->
+
+
+			<!-- MULTIPLE INPUT ROW -->
+			<div class="row">
+
+				<!-- LABEL -->
+				<div class="col-12 col-md-3">
+					<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
+						<ui:param
+							name="labelFor"
+							value="manualFieldC" />
+						<ui:param
+							name="labelRequired"
+							value="true" />
+						<ui:param
+							name="labelLabel"
+							value="#{msgs.vorname}" />
+					</ui:include>
+				</div>
+				<!-- // LABEL -->
+
+				<div class="col-12 col-md-9">
+
+					<div class="row col-12 border border-0">
+
+						<div class="col-6 ps-0 py-0 min-vh-0">
+
+							<!-- INPUT 1 -->
+							<h:inputText
+								id="manualFieldC"
+								styleClass="form-control form__input"
+								value="#{LoginForm.myBenutzer.vorname}"
+								required="true"
+								readonly="false"
+								tabindex="0">
+								<c:if test="false">
+									<f:passThroughAttribute
+										name="data-gw-focus-on-load"
+										value="false" />
+								</c:if>
+							</h:inputText>
+							<!-- // INPUT 1 -->
+						</div>
+						<div class="col-6 pe-0 py-0 min-vh-0">
+							<!-- INPUT 2 -->
+							<h:inputText
+								id="manualFieldD"
+								styleClass="form-control form__input"
+								value="#{LoginForm.myBenutzer.nachname}"
+								required="true"
+								readonly="false"
+								tabindex="0">
+								<c:if test="false">
+									<f:passThroughAttribute
+										name="data-gw-focus-on-load"
+										value="false" />
+								</c:if>
+							</h:inputText>
+							<!-- // INPUT 2 -->
+						</div>
+					</div>
+
+					<!-- HELP -->
+					<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
+						<ui:param
+							name="msgFor"
+							value="#{msgs.standort}" />
+						<ui:param
+							name="helpContent"
+							value="#{msgs.helpVorname}" />
+					</ui:include>
+					<!-- // HELP -->
+
+				</div>
+
+			</div>
+			<!-- MULTIPLE INPUT ROW -->
+
+
+			<!-- SELECT ONE ROW -->
+			<div class="row">
+				<div class="col-12 col-md-3">
+					<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
+						<ui:param
+							name="labelFor"
+							value="processDefaultSortOrder" />
+						<ui:param
+							name="labelRequired"
+							value="false" />
+						<ui:param
+							name="labelLabel"
+							value="#{msgs.defaultSortOrder}" />
+					</ui:include>
+				</div>
+
+				<!-- SELECT ONE -->
+				<div class="col-12 col-md-9">
+					<h:selectOneRadio
+						id="processDefaultSortOrder"
+						value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
+						disabledClass="ms-3 me-5"
+						enabledClass="ms-3 me-5">
+						<f:selectItem
+							itemLabel="#{msgs.defaultSortFieldAsc}"
+							itemValue="Asc" />
+						<f:selectItem
+							itemLabel="#{msgs.defaultSortFieldDesc}"
+							itemValue="Desc" />
+					</h:selectOneRadio>
+
+					<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
+						<ui:param
+							name="msgFor"
+							value="processDefaultSortOrder" />
+						<ui:param
+							name="helpContent"
+							value="#{msgs.helpProcessDefaultSortOrder}" />
+					</ui:include>
+				</div>
+				<!-- SELECT ONE -->
+
+			</div>
+			<!-- // SELECT ONE ROW -->
+
+
+			<!-- BUTTONS -->
+			<div class="box__actions">
+
+				<!-- Cancel -->
+				<a
+					jsf:id="cancelEdition"
+					class="btn btn-blank"
+					jsf:immediate="true"
+					jsf:action="#{BenutzerverwaltungForm.cancelEdit}">
+					<h:outputText value="#{msgs.abbrechen}" />
+				</a>
+
+				<!-- Save => should be the first btn in the form (subit on enter) -->
+				<button
+					class="btn btn-success"
+					jsf:id="absenden"
+					type="submit"
+					jsf:action="#{BenutzerverwaltungForm.Speichern}">
+					<i class="fa fa-save"></i>
+					<span>
+						<h:outputText value="#{msgs.speichern}" />
+					</span>
+				</button>
+
+				<!-- Delete -->
+				<button
+					jsf:id="deleteUser"
+					class="btn btn-hot trigger-delete"
+					onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+					jsf:action="#{BenutzerverwaltungForm.Loeschen}">
+					<i class="fa fa-trash-o"></i>
+					<span>
+						<h:outputText value="#{msgs.loeschen}" />
+					</span>
+				</button>
+
+			</div>
+			<!-- // BUTTONS -->
+
+		</intranda:box>
+		<!-- // MANUAL FORM -->
+
+		<!-- CODE -->
+		<div class="accordion-item mt-3">
+			<h2 class="accordion-header">
+				<button
+					data-bs-target="#codeForm2"
+					class="accordion-button btn btn-primary-400 collapsed"
+					type="button"
+					data-bs-toggle="collapse"
+					aria-expanded="false"
+					aria-controls="collapseOne">Code Snippet</button>
+			</h2>
+			<div
+				id="codeForm2"
+				class="accordion-collapse collapse"
+				data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+
+					<pre
+						class="code--form-actions bg-neutral-500  text-white px-4"
+						style="border-radius: var(- -border-radius)">
+						<code class="microlight">
+
+						</code>
+					</pre>
+
+				</div>
+			</div>
+		</div>
+		<!-- // CODE -->
+
+
+	</composite:implementation>
+</ui:composition>
+

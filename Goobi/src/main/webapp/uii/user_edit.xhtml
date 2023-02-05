@@ -1,800 +1,829 @@
 <ui:composition
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-  xmlns:h="http://xmlns.jcp.org/jsf/html"
-  xmlns:f="http://xmlns.jcp.org/jsf/core"
-  template="/uii/templatePG/templatePG.html"
-  xmlns:o="http://omnifaces.org/ui"
-  xmlns:of="http://omnifaces.org/functions"
-  xmlns:x="http://myfaces.apache.org/tomahawk"
-  xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-  xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-  xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-<ui:param
-  name="myPageTitle"
-  value="#{BenutzerverwaltungForm.myClass.id == null?msgs.neuenBenutzerAnlegen:msgs.benutzerBearbeiten}" />
+	<ui:param
+		name="myPageTitle"
+		value="#{BenutzerverwaltungForm.myClass.id == null?msgs.neuenBenutzerAnlegen:msgs.benutzerBearbeiten}" />
 
-  <!-- BREADCRUMBS -->
-  <ui:define name="breadcrumb">
-    <intranda:breadcrumb
-      id="index"
-      label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-      action="index" navId="a0" />
-    <intranda:breadcrumb
-      id="userAll"
-      label="#{msgs.benutzer}"
-      action="#{BenutzerverwaltungForm.paginator.returnToPreviousPage}" />
-    <intranda:breadcrumb
-      id="userEdit"
-      label="#{myPageTitle}"
-      action="user_edit" noSeparator="#{true}" />
-  </ui:define>
+	<!-- BREADCRUMBS -->
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb
+			id="index"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index"
+			navId="a0" />
+		<intranda:breadcrumb
+			id="userAll"
+			label="#{msgs.benutzer}"
+			action="#{BenutzerverwaltungForm.paginator.returnToPreviousPage}" />
+		<intranda:breadcrumb
+			id="userEdit"
+			label="#{myPageTitle}"
+			action="user_edit"
+			noSeparator="#{true}" />
+	</ui:define>
 
-  <ui:define name="info">
-  </ui:define>
+	<ui:define name="info">
+	</ui:define>
 
-  <ui:define name="content">
+	<ui:define name="content">
 
-    <h:form
-      id="myform"
-      styleClass="form-horizontal form-bordered view-users"
-      onkeypress="submitOnEnter(event);"
-      rendered="#{LoginForm.hasRole('Admin_Users')}"
-      enctype="multipart/form-data">
+		<h:form
+			id="myform"
+			styleClass="form-horizontal form-bordered view-users"
+			onkeypress="submitOnEnter(event);"
+			rendered="#{LoginForm.hasRole('Admin_Users')}"
+			enctype="multipart/form-data">
 
-      <div class="row" role="main">
+			<div
+				class="row"
+				role="main">
 
-        <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-6'} mb-4">
+				<div
+					class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-6'} mb-4">
 
-          <intranda:box
-            boxType="action"
-            boxScope="form-box edit-user"
-            boxTitle="false"
-            boxPadding="false"
-            >
+					<intranda:box
+						boxType="action"
+						boxScope="form-box edit-user"
+						boxTitle="false"
+						boxPadding="false">
 
-            <!-- TITLE BAR -->
-            <intranda:boxTitle
-              title="#{myPageTitle}"
-              icon="fa-edit"
-              >
-              <ul class="tabs #{BenutzerverwaltungForm.myClass.id == null ? 'd-none': ''}">
-                <li class="tab tab--1 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
-                  <h:commandLink
-                    id="tab1"
-                    styleClass="tab__link"
-                    action="#{NavigationForm.Reload}"
-                    value="#{msgs.details}">
-                    <f:setPropertyActionListener
-                      target="#{BenutzerverwaltungForm.displayMode}"
-                      value="" />
-                    <f:ajax
-                      render=":myform"
-                      execute=":myform" />
-                  </h:commandLink>
-                </li>
-                <li class="tab tab--2 #{BenutzerverwaltungForm.displayMode eq 'tab2'?'active':''}">
-                  <h:commandLink
-                    id="tab2"
-                    styleClass="tab__link"
-                    action="#{NavigationForm.Reload}"
-                    value="#{msgs.benutzergruppen}"
-                    disabled="#{BenutzerverwaltungForm.myClass.id == null}">
-                    <f:setPropertyActionListener
-                      target="#{BenutzerverwaltungForm.displayMode}"
-                      value="tab2" />
-                    <f:ajax
-                      render=":myform"
-                      execute=":myform" />
-                  </h:commandLink>
-                </li>
-                <li class="tab tab--3 #{BenutzerverwaltungForm.displayMode eq 'tab3'?'active':''}">
-                <h:commandLink
-                  id="tab3"
-                  styleClass="tab__link"
-                  action="#{NavigationForm.Reload}"
-                  value="#{msgs.projekte}"
-                  disabled="#{BenutzerverwaltungForm.myClass.id == null}">
-                <f:setPropertyActionListener
-                  target="#{BenutzerverwaltungForm.displayMode}"
-                  value="tab3" />
-                <f:ajax render=":myform"
-                        execute=":myform" />
-                </h:commandLink>
-              </li>
-            </ul>
-          </intranda:boxTitle>
-
-
-          <!-- CONTENT -->
-          <div class="tab-content">
-
-            <!-- TAB 1 -->
-            <div class="#{BenutzerverwaltungForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
-
-            <f:subview id="subviewTab1">
-
-              <intranda:formInputText
-                id="lastname"
-                label="#{msgs.nachname}"
-                field="#{BenutzerverwaltungForm.myClass.nachname}"
-                help="#{msgs.helpNachname}"
-                name="nachname"
-                fieldStyle="row" />
-
-              <intranda:formInputText
-                id="firstname"
-                label="#{msgs.vorname}"
-                field="#{BenutzerverwaltungForm.myClass.vorname}"
-                help="#{msgs.helpVorname}"
-                name="vorname"
-                fieldStyle="row" />
-
-              <intranda:formInputText
-              id="location"
-              label="#{msgs.standort}"
-              field="#{BenutzerverwaltungForm.myClass.standort}"
-              help="#{msgs.helpStandort}"
-              name="standort"
-              fieldStyle="row" />
-
-            <intranda:formInputDropDown
-              id="institution"
-              rendered="#{BenutzerverwaltungForm.institutionsAsSelectList.size()>1}"
-              label="#{msgs.institution}"
-              field="#{BenutzerverwaltungForm.currentInstitutionID}"
-              help="#{msgs.helpUserInstitution}"
-              name="institutionName"
-              selectItems="#{BenutzerverwaltungForm.institutionsAsSelectList}"
-              required="true" />
-
-              <div class="row">
-                <div
-                  class="col-12 col-md-3">
-                  <h:outputLabel
-                    for="loginAs"
-                    value="#{msgs.login}"
-                    title="#{msgs.requiredField}"
-                    styleClass="form__label"
-                    >
-
-                    <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
-                    <f:passThroughAttribute name="data-bs-placement" value="right" />
-                  <i class="fa fa-asterisk" />
-                  </h:outputLabel>
-                </div>
-                <div class="col-12 col-md-9">
-                  <x:inputText
-                    id="loginAs"
-                    forceId="true"
-                    styleClass="form-control"
-                    value="#{BenutzerverwaltungForm.myClass.login}"
-                    required="true"
-                    readonly="false"
-                    validatorMessage="#{msgs.loginWrongCharacter}">
-                  <f:validateRegex
-                    pattern="[a-z0-9\._-]+" />
-                  </x:inputText>
-                  <h:message
-                    for="loginAs"
-                    showDetail="true"
-                    styleClass="help-inline font-danger" />
-                  <intranda:formHelp content="#{msgs.helpLogin}" />
-                </div>
-              </div>
-
-              <div class="row">
-                <div
-                  class="col-12 col-md-3 ">
-
-                  <h:outputLabel
-                    styleClass="form__label"
-                    for="ldapGruppe"
-                    value="#{msgs.user_edit_loginType}"
-                    title="#{msgs.requiredField}">
-
-                    <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
-                    <f:passThroughAttribute name="data-bs-placement" value="right" />
+						<!-- TITLE BAR -->
+						<intranda:boxTitle
+							title="#{myPageTitle}"
+							icon="fa-edit">
+							<ul
+								class="tabs #{BenutzerverwaltungForm.myClass.id == null ? 'd-none': ''}">
+								<li
+									class="tab tab--1 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
+									<h:commandLink
+										id="tab1"
+										styleClass="tab__link"
+										action="#{NavigationForm.Reload}"
+										value="#{msgs.details}">
+										<f:setPropertyActionListener
+											target="#{BenutzerverwaltungForm.displayMode}"
+											value="" />
+										<f:ajax
+											render=":myform"
+											execute=":myform" />
+									</h:commandLink>
+								</li>
+								<li
+									class="tab tab--2 #{BenutzerverwaltungForm.displayMode eq 'tab2'?'active':''}">
+									<h:commandLink
+										id="tab2"
+										styleClass="tab__link"
+										action="#{NavigationForm.Reload}"
+										value="#{msgs.benutzergruppen}"
+										disabled="#{BenutzerverwaltungForm.myClass.id == null}">
+										<f:setPropertyActionListener
+											target="#{BenutzerverwaltungForm.displayMode}"
+											value="tab2" />
+										<f:ajax
+											render=":myform"
+											execute=":myform" />
+									</h:commandLink>
+								</li>
+								<li
+									class="tab tab--3 #{BenutzerverwaltungForm.displayMode eq 'tab3'?'active':''}">
+									<h:commandLink
+										id="tab3"
+										styleClass="tab__link"
+										action="#{NavigationForm.Reload}"
+										value="#{msgs.projekte}"
+										disabled="#{BenutzerverwaltungForm.myClass.id == null}">
+										<f:setPropertyActionListener
+											target="#{BenutzerverwaltungForm.displayMode}"
+											value="tab3" />
+										<f:ajax
+											render=":myform"
+											execute=":myform" />
+									</h:commandLink>
+								</li>
+							</ul>
+						</intranda:boxTitle>
 
 
-                  <i class="fa fa-asterisk form__required" />
-                  </h:outputLabel>
-                </div>
-                <div class="col-12 col-md-9">
-                  <h:panelGroup
-                    rendered="#{cc.attrs.onevent == null}">
-                  <h:selectOneMenu
-                    id="ldapGruppe"
-                    styleClass="form-select"
-                    value="#{BenutzerverwaltungForm.ldapGruppeAuswahl}"
-                    validator="#{BenutzerverwaltungForm.validateAuthenticationSelection}">
-                  <f:ajax
-                    event="change"
-                    render="subviewTab1:loginTypeArea" />
-                  <f:selectItems
-                    value="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}"
-                    var="var"
-                    itemLabel="#{var.itemLabel}"
-                    itemValue="#{var.itemValue}" />
-                  </h:selectOneMenu>
-                  </h:panelGroup>
-                  <h:message
-                    for="ldapGruppe"
-                    showDetail="true"
-                    styleClass="help-inline font-danger" />
-                  <intranda:formHelp content="#{msgs.helpLdapGruppe}" />
-                </div>
-              </div>
+						<!-- CONTENT -->
+						<div class="tab-content">
 
-              <h:panelGroup id="loginTypeArea">
-              <h:panelGroup
-                rendered="#{BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType == 'ldap'}">
-              <intranda:formInputText
-                id="ldapname"
-                label="#{msgs.ldaplogin}"
-                required="false"
-                field="#{BenutzerverwaltungForm.myClass.ldaplogin}"
-                help="#{msgs.helpLdaplogin}"
-                name="ldaplogin" />
-              </h:panelGroup>
-              <h:panelGroup
-                rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid' and (BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'ldap' or not BenutzerverwaltungForm.myClass.ldapGruppe.readonly)}"
-                >
-              <intranda:formInputSecretText
-                id="password"
-                label="#{msgs.passwort}"
-                required="#{not BenutzerverwaltungForm.myClass.ldapGruppe.readonly}"
-                displayAsRequired="#{not BenutzerverwaltungForm.myClass.ldapGruppe.readonly}"
-                field="#{BenutzerverwaltungForm.myClass.passwort}"
-                help="#{msgs.helpPasswort}"
-                name="passwordName" />
-              </h:panelGroup>
-              <h:panelGroup
-                id="ssoIdArea"
-                rendered="#{BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType == 'openid'}">
-              <intranda:formInputText
-                id="ssoId"
-                label="#{msgs.user_edit_ssoId}"
-                field="#{BenutzerverwaltungForm.myClass.ssoId}"
-                help="#{msgs.helpSsoId}"
-                required="false"
-                name="email"
-                fieldStyle="row" />
-              </h:panelGroup>
-              </h:panelGroup>
+							<!-- TAB 1 -->
+							<div
+								class="#{BenutzerverwaltungForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
 
-              <intranda:formInputText
-                classLeft="col-12 col-md-3"
-                id="email"
-                label="#{msgs.email}"
-                field="#{BenutzerverwaltungForm.myClass.email}"
-                help="#{msgs.helpEmail}"
-                required="false"
-                name="emailName" />
+								<f:subview id="subviewTab1">
 
-              <intranda:formInputText
-                classLeft="col-12 col-md-3"
-                id="metadataLanguage"
-                label="#{msgs.spracheFuerMetadaten}"
-                field="#{BenutzerverwaltungForm.myClass.metadatenSprache}"
-                help="#{msgs.helpSpracheFuerMetadaten}"
-                name="metadatenSprache"
-                required="false" />
+									<intranda:formInputText
+										id="lastname"
+										label="#{msgs.nachname}"
+										field="#{BenutzerverwaltungForm.myClass.nachname}"
+										help="#{msgs.helpNachname}"
+										name="nachname"
+										fieldStyle="row" />
 
-              <intranda:formInputDropDown
-                classLeft="col-12 col-md-3"
-                id="dashboard"
-                label="#{msgs.dashboard}"
-                field="#{BenutzerverwaltungForm.myClass.dashboardPlugin}"
-                help="#{msgs.helpUserDashboard}"
-                name="dashboardName"
-                selectItems="#{BenutzerverwaltungForm.myClass.availableDashboards}"
-                />
+									<intranda:formInputText
+										id="firstname"
+										label="#{msgs.vorname}"
+										field="#{BenutzerverwaltungForm.myClass.vorname}"
+										help="#{msgs.helpVorname}"
+										name="vorname"
+										fieldStyle="row" />
 
-              <ui:fragment
-                rendered="#{LoginForm.myBenutzer.superAdmin}">
-              <intranda:formInputCheckBox
-                classLeft="col-12 col-md-3"
-                id="superadmin"
-                label="#{msgs.authentication_isSuperAdmin}"
-                field="#{BenutzerverwaltungForm.myClass.superAdmin}"
-                help="#{msgs.helpAuthentication_isSuperAdmin}"
-                name="superadmin_name" />
-              </ui:fragment>
+									<intranda:formInputText
+										id="location"
+										label="#{msgs.standort}"
+										field="#{BenutzerverwaltungForm.myClass.standort}"
+										help="#{msgs.helpStandort}"
+										name="standort"
+										fieldStyle="row" />
 
-              <intranda:formInputCheckBox
-                classLeft="col-12 col-md-3"
-                id="isActive"
-                label="#{msgs.istAktiv}"
-                field="#{BenutzerverwaltungForm.myClass.active}"
-                help="#{msgs.helpIstAktiv}"
-                name="istAktiv" />
+									<intranda:formInputDropDown
+										id="institution"
+										rendered="#{BenutzerverwaltungForm.institutionsAsSelectList.size()>1}"
+										label="#{msgs.institution}"
+										field="#{BenutzerverwaltungForm.currentInstitutionID}"
+										help="#{msgs.helpUserInstitution}"
+										name="institutionName"
+										selectItems="#{BenutzerverwaltungForm.institutionsAsSelectList}"
+										required="true" />
 
-              <intranda:formInputCheckBox
-                classLeft="col-12 col-md-3"
-                id="usemassdownload"
-                label="#{msgs.massendownload}"
-                field="#{BenutzerverwaltungForm.myClass.mitMassendownload}"
-                help="#{msgs.helpMassendownload}"
-                name="massendownload"
-                style="border-bottom: 1px solid #DDDDDD;" />
+									<div class="row">
+										<div class="col-12 col-md-3">
+											<h:outputLabel
+												for="loginAs"
+												value="#{msgs.login}"
+												title="#{msgs.requiredField}"
+												styleClass="form__label">
 
-            </f:subview>
-          </div>
+												<f:passThroughAttribute
+													name="data-bs-toggle"
+													value="tooltip" />
+												<f:passThroughAttribute
+													name="data-bs-placement"
+													value="right" />
+												<i class="fa fa-asterisk" />
+											</h:outputLabel>
+										</div>
+										<div class="col-12 col-md-9">
+											<x:inputText
+												id="loginAs"
+												forceId="true"
+												styleClass="form-control"
+												value="#{BenutzerverwaltungForm.myClass.login}"
+												required="true"
+												readonly="false"
+												validatorMessage="#{msgs.loginWrongCharacter}">
+												<f:validateRegex pattern="[a-z0-9\._-]+" />
+											</x:inputText>
+											<h:message
+												for="loginAs"
+												showDetail="true"
+												styleClass="help-inline font-danger" />
+											<intranda:formHelp content="#{msgs.helpLogin}" />
+										</div>
+									</div>
 
-          <!-- TAB 2 -->
-          <div
-            class="#{BenutzerverwaltungForm.displayMode eq 'tab2' or BenutzerverwaltungForm.displayMode eq 'usergroup'?'tab-pane active':'tab-pane'}">
+									<div class="row">
+										<div class="col-12 col-md-3 ">
 
-            <!-- ===================== User groups ====================== -->
+											<h:outputLabel
+												styleClass="form__label"
+												for="ldapGruppe"
+												value="#{msgs.user_edit_loginType}"
+												title="#{msgs.requiredField}">
 
-            <div class="row">
-
-              <div class="col-12 col-md-3 ">
-
-              <h:outputLabel
-                styleClass="form__label"
-                value="#{msgs.benutzergruppen}" />
-
-              </div>
-
-              <div class="col-12 col-md-9">
-
-                <h:panelGroup
-                  rendered="#{BenutzerverwaltungForm.displayMode eq 'usergroup'}">
-
-                    <intranda:box
-                      boxType="action"
-                      boxSmall="true"
-                      boxScope="view-users__box--usergroup-1"
-                      title="#{msgs.benutzergruppen}"
-                      icon="fa-table"
-                      boxPadding="true"
-                    >
-
-                    <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
-                      <div class="gw-table__wrapper">
-
-                      <x:dataTable
-                        id="newgroups"
-                        styleClass="table table-hover dataTable table-bordered"
-                        columnClasses="align-middle"
-                        var="item"
-                        value="#{BenutzerverwaltungForm.usergroupPaginator.list}">
-
-                      <x:column styleClass="gw-table__actions">
-
-                      <div class="gw-table__actions__container align-items-center">
+												<f:passThroughAttribute
+													name="data-bs-toggle"
+													value="tooltip" />
+												<f:passThroughAttribute
+													name="data-bs-placement"
+													value="right" />
 
 
-                      <!-- Hinzufügen-Schaltknopf -->
-                      <button
-                        jsf:id="add"
-                        class="btn btn-action"
-                        title="#{msgs.uebernehmen}"
-                        jsf:rel="tooltip"
-                        jsf:action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
-                        <i
-                          class="fa fa-plus"></i>
-                        <f:param
-                          name="ID"
-                          value="#{item.id}" />
-                        <f:setPropertyActionListener
-                          target="#{BenutzerverwaltungForm.displayMode}"
-                          value="tab2" />
-                        <f:ajax
-                          render=":myform" />
-                      </button>
-                      <h:outputText value="#{item.titel}" />
-                      </div> <!-- /gw-table__actions__container -->
-                      </x:column>
-                      <x:column>
-                        <h:outputText value="#{item.institution.shortName}" />
-                      </x:column>
+												<i class="fa fa-asterisk form__required" />
+											</h:outputLabel>
+										</div>
+										<div class="col-12 col-md-9">
+											<h:panelGroup rendered="#{cc.attrs.onevent == null}">
+												<h:selectOneMenu
+													id="ldapGruppe"
+													styleClass="form-select"
+													value="#{BenutzerverwaltungForm.ldapGruppeAuswahl}"
+													validator="#{BenutzerverwaltungForm.validateAuthenticationSelection}">
+													<f:ajax
+														event="change"
+														render="subviewTab1:loginTypeArea" />
+													<f:selectItems
+														value="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}"
+														var="var"
+														itemLabel="#{var.itemLabel}"
+														itemValue="#{var.itemValue}" />
+												</h:selectOneMenu>
+											</h:panelGroup>
+											<h:message
+												for="ldapGruppe"
+												showDetail="true"
+												styleClass="help-inline font-danger" />
+											<intranda:formHelp content="#{msgs.helpLdapGruppe}" />
+										</div>
+									</div>
 
-                      </x:dataTable>
-                      </div> <!-- /gw-table__wrapper -->
-                      </div>
+									<h:panelGroup id="loginTypeArea">
+										<h:panelGroup
+											rendered="#{BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType == 'ldap'}">
+											<intranda:formInputText
+												id="ldapname"
+												label="#{msgs.ldaplogin}"
+												required="false"
+												field="#{BenutzerverwaltungForm.myClass.ldaplogin}"
+												help="#{msgs.helpLdaplogin}"
+												name="ldaplogin" />
+										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid' and (BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'ldap' or not BenutzerverwaltungForm.myClass.ldapGruppe.readonly)}">
+											<intranda:formInputSecretText
+												id="password"
+												label="#{msgs.passwort}"
+												required="#{not BenutzerverwaltungForm.myClass.ldapGruppe.readonly}"
+												displayAsRequired="#{not BenutzerverwaltungForm.myClass.ldapGruppe.readonly}"
+												field="#{BenutzerverwaltungForm.myClass.passwort}"
+												help="#{msgs.helpPasswort}"
+												name="passwordName" />
+										</h:panelGroup>
+										<h:panelGroup
+											id="ssoIdArea"
+											rendered="#{BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType == 'openid'}">
+											<intranda:formInputText
+												id="ssoId"
+												label="#{msgs.user_edit_ssoId}"
+												field="#{BenutzerverwaltungForm.myClass.ssoId}"
+												help="#{msgs.helpSsoId}"
+												required="false"
+												name="email"
+												fieldStyle="row" />
+										</h:panelGroup>
+									</h:panelGroup>
+
+									<intranda:formInputText
+										classLeft="col-12 col-md-3"
+										id="email"
+										label="#{msgs.email}"
+										field="#{BenutzerverwaltungForm.myClass.email}"
+										help="#{msgs.helpEmail}"
+										required="false"
+										name="emailName" />
+
+									<intranda:formInputText
+										classLeft="col-12 col-md-3"
+										id="metadataLanguage"
+										label="#{msgs.spracheFuerMetadaten}"
+										field="#{BenutzerverwaltungForm.myClass.metadatenSprache}"
+										help="#{msgs.helpSpracheFuerMetadaten}"
+										name="metadatenSprache"
+										required="false" />
+
+									<intranda:formInputDropDown
+										classLeft="col-12 col-md-3"
+										id="dashboard"
+										label="#{msgs.dashboard}"
+										field="#{BenutzerverwaltungForm.myClass.dashboardPlugin}"
+										help="#{msgs.helpUserDashboard}"
+										name="dashboardName"
+										selectItems="#{BenutzerverwaltungForm.myClass.availableDashboards}" />
+
+									<ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
+										<intranda:formInputCheckBox
+											classLeft="col-12 col-md-3"
+											id="superadmin"
+											label="#{msgs.authentication_isSuperAdmin}"
+											field="#{BenutzerverwaltungForm.myClass.superAdmin}"
+											help="#{msgs.helpAuthentication_isSuperAdmin}"
+											name="superadmin_name" />
+									</ui:fragment>
+
+									<intranda:formInputCheckBox
+										classLeft="col-12 col-md-3"
+										id="isActive"
+										label="#{msgs.istAktiv}"
+										field="#{BenutzerverwaltungForm.myClass.active}"
+										help="#{msgs.helpIstAktiv}"
+										name="istAktiv" />
+
+									<intranda:formInputCheckBox
+										classLeft="col-12 col-md-3"
+										id="usemassdownload"
+										label="#{msgs.massendownload}"
+										field="#{BenutzerverwaltungForm.myClass.mitMassendownload}"
+										help="#{msgs.helpMassendownload}"
+										name="massendownload"
+										style="border-bottom: 1px solid #DDDDDD;" />
+
+								</f:subview>
+							</div>
+
+							<!-- TAB 2 -->
+							<div
+								class="#{BenutzerverwaltungForm.displayMode eq 'tab2' or BenutzerverwaltungForm.displayMode eq 'usergroup'?'tab-pane active':'tab-pane'}">
+
+								<!-- ===================== User groups ====================== -->
+
+								<div class="row">
+
+									<div class="col-12 col-md-3 ">
+
+										<h:outputLabel
+											styleClass="form__label"
+											value="#{msgs.benutzergruppen}" />
+
+									</div>
+
+									<div class="col-12 col-md-9">
+
+										<h:panelGroup
+											rendered="#{BenutzerverwaltungForm.displayMode eq 'usergroup'}">
+
+											<intranda:box
+												boxType="action"
+												boxSmall="true"
+												boxScope="view-users__box--usergroup-1"
+												title="#{msgs.benutzergruppen}"
+												icon="fa-table"
+												boxPadding="true">
+
+												<div class="gw-table gw-table-fixed gw-table-fixed-no-th">
+													<div class="gw-table__wrapper">
+
+														<x:dataTable
+															id="newgroups"
+															styleClass="table table-hover dataTable table-bordered"
+															columnClasses="align-middle"
+															var="item"
+															value="#{BenutzerverwaltungForm.usergroupPaginator.list}">
+
+															<x:column styleClass="gw-table__actions">
+
+																<div
+																	class="gw-table__actions__container align-items-center">
+
+
+																	<!-- Hinzufügen-Schaltknopf -->
+																	<button
+																		jsf:id="add"
+																		class="btn btn-action"
+																		title="#{msgs.uebernehmen}"
+																		jsf:rel="tooltip"
+																		jsf:action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
+																		<i class="fa fa-plus"></i>
+																		<f:param
+																			name="ID"
+																			value="#{item.id}" />
+																		<f:setPropertyActionListener
+																			target="#{BenutzerverwaltungForm.displayMode}"
+																			value="tab2" />
+																		<f:ajax render=":myform" />
+																	</button>
+																	<h:outputText value="#{item.titel}" />
+																</div>
+																<!-- /gw-table__actions__container -->
+															</x:column>
+															<x:column>
+																<h:outputText value="#{item.institution.shortName}" />
+															</x:column>
+
+														</x:dataTable>
+													</div>
+													<!-- /gw-table__wrapper -->
+												</div>
 
 
 
-                      <div
-                        class="box__actions">
-                        <!-- Cancel-Schaltknopf -->
-                        <button
-                          jsf:id="cancel"
-                          class="btn btn-blank me-auto"
-                          jsf:action="#{NavigationForm.Reload}">
-                          <h:outputText
-                            value="#{msgs.abbrechen}" />
-                          <f:setPropertyActionListener
-                            target="#{BenutzerverwaltungForm.displayMode}"
-                            value="tab2" />
-                          <f:ajax
-                            render=":myform" />
-                        </button>
-                      <div class="dataTables__paginate">
-                        <!-- paginator -->
-                        <intranda:tablePaginator2
-                          id="groups"
-                          paginator="#{BenutzerverwaltungForm.usergroupPaginator}" />
-                        <!-- /paginator -->
-                      </div>
-                      </div> <!-- /box__actions -->
+												<div class="box__actions">
+													<!-- Cancel-Schaltknopf -->
+													<button
+														jsf:id="cancel"
+														class="btn btn-blank me-auto"
+														jsf:action="#{NavigationForm.Reload}">
+														<h:outputText value="#{msgs.abbrechen}" />
+														<f:setPropertyActionListener
+															target="#{BenutzerverwaltungForm.displayMode}"
+															value="tab2" />
+														<f:ajax render=":myform" />
+													</button>
+													<div class="dataTables__paginate">
+														<!-- paginator -->
+														<intranda:tablePaginator2
+															id="groups"
+															paginator="#{BenutzerverwaltungForm.usergroupPaginator}" />
+														<!-- /paginator -->
+													</div>
+												</div>
+												<!-- /box__actions -->
 
-                    </intranda:box> <!-- nested box end -->
+											</intranda:box>
+											<!-- nested box end -->
 
-                  </h:panelGroup>
+										</h:panelGroup>
 
 
-                  <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup'}">
+										<h:panelGroup
+											rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup'}">
 
-                  <!-- Nested box -->
-                    <intranda:box
-                      boxType="neutral"
-                      boxSmall="true"
-                      boxScope="view-users__box--usergroup-2"
-                      title="#{msgs.benutzergruppen}"
-                      icon="fa-table"
-                      boxPadding="true"
-                    >
+											<!-- Nested box -->
+											<intranda:box
+												boxType="neutral"
+												boxSmall="true"
+												boxScope="view-users__box--usergroup-2"
+												title="#{msgs.benutzergruppen}"
+												icon="fa-table"
+												boxPadding="true">
 
-                    <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
-                      <div class="gw-table__wrapper">
+												<div class="gw-table gw-table-fixed gw-table-fixed-no-th">
+													<div class="gw-table__wrapper">
 
-                        <x:dataTable
-                          id="currentGroups"
-                          styleClass="
+														<x:dataTable
+															id="currentGroups"
+															styleClass="
                           table
                           table-hover
                           dataTable
                           table-bordered
                           #{BenutzerverwaltungForm.unsubscribedGroupsExist ? '' : '-no-bb'}"
-                          columnClasses="align-middle"
-                          var="item"
-                          value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
+															columnClasses="align-middle"
+															var="item"
+															value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
 
-                          <h:column>
-                            <h:outputText value="#{item.titel}" />
-                          </h:column>
-                          <x:column>
+															<h:column>
+																<h:outputText value="#{item.titel}" />
+															</h:column>
+															<x:column>
 
-                          <div class="d-flex justify-content-between align-items-center">
+																<div
+																	class="d-flex justify-content-between align-items-center">
 
-                            <h:outputText value="#{item.institution.shortName}" />
-                            <!-- Löschen-Schaltknopf -->
-                            <button
-                              jsf:id="deleteFromGroup"
-                              class="btn btn-danger pull-right"
-                              title="#{msgs.ausGruppeLoeschen}"
-                              jsf:rel="tooltip"
-                              jsf:action="#{BenutzerverwaltungForm.AusGruppeLoeschen}">
-                              <i class="fa fa-trash-o"></i>
-                              <f:param name="ID" value="#{item.id}" />
-                              <f:ajax render=":myform" />
-                            </button>
+																	<h:outputText value="#{item.institution.shortName}" />
+																	<!-- Löschen-Schaltknopf -->
+																	<button
+																		jsf:id="deleteFromGroup"
+																		class="btn btn-danger pull-right"
+																		title="#{msgs.ausGruppeLoeschen}"
+																		jsf:rel="tooltip"
+																		jsf:action="#{BenutzerverwaltungForm.AusGruppeLoeschen}">
+																		<i class="fa fa-trash-o"></i>
+																		<f:param
+																			name="ID"
+																			value="#{item.id}" />
+																		<f:ajax render=":myform" />
+																	</button>
 
-                          </div>
+																</div>
 
-                          </x:column>
-                        </x:dataTable>
+															</x:column>
+														</x:dataTable>
 
-                      </div> <!-- /gw-table__wrapper -->
-                    </div> <!-- /gw-table -->
+													</div>
+													<!-- /gw-table__wrapper -->
+												</div>
+												<!-- /gw-table -->
 
-                    <div class="box__actions" jsf:rendered="#{BenutzerverwaltungForm.unsubscribedGroupsExist}">
-                      <!-- Neu-Schaltknopf -->
-                      <button
-                        jsf:id="addGroup"
-                        class="btn btn-neutral-600 me-auto"
-                        jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
-                        jsf:immediate="true">
-                        <i class="fa fa-plus"></i>
-                        <span><h:outputText value="#{msgs.benutzergruppenHinzufuegen}" /></span>
-                        <f:setPropertyActionListener
-                          target="#{BenutzerverwaltungForm.displayMode}"
-                          value="usergroup" />
-                        <f:ajax render=":myform" />
-                      </button>
-                    </div>
+												<div
+													class="box__actions"
+													jsf:rendered="#{BenutzerverwaltungForm.unsubscribedGroupsExist}">
+													<!-- Neu-Schaltknopf -->
+													<button
+														jsf:id="addGroup"
+														class="btn btn-neutral-600 me-auto"
+														jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
+														jsf:immediate="true">
+														<i class="fa fa-plus"></i>
+														<span>
+															<h:outputText value="#{msgs.benutzergruppenHinzufuegen}" />
+														</span>
+														<f:setPropertyActionListener
+															target="#{BenutzerverwaltungForm.displayMode}"
+															value="usergroup" />
+														<f:ajax render=":myform" />
+													</button>
+												</div>
 
-                  </intranda:box>
-
-
-                  <h:outputText
-                    styleClass="box__help help-block font-light text-neutral-600"
-                    value="#{msgs.helpBenutzergruppen}"
-                    style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"/>
-
-                  </h:panelGroup>
-
-              </div> <!-- row user groups end -->
-            </div>
-
-          </div> <!-- TAB 2 end -->
-
-          <!-- TAB 3 -->
-          <div id="t9"
-               class="#{BenutzerverwaltungForm.displayMode eq 'tab3' or BenutzerverwaltungForm.displayMode eq 'project'?'tab-pane active':'tab-pane'}">
-
-            <!-- ===================== Projects ====================== -->
-            <div
-              class="row"
-              style="border-bottom: 1px solid #DDDDDD;">
+											</intranda:box>
 
 
-              <div class="col-12 col-md-3">
-                <h:outputLabel
-                  styleClass="form__label"
-                  value="#{msgs.projekte}" />
-              </div>
+											<h:outputText
+												styleClass="box__help help-block font-light text-neutral-600"
+												value="#{msgs.helpBenutzergruppen}"
+												style="display:#{NavigationForm.showHelp ? 'block' : 'none'}" />
 
-              <div class="col-12 col-md-9">
+										</h:panelGroup>
 
-                <h:panelGroup
-                  rendered="#{BenutzerverwaltungForm.displayMode eq 'project'}">
+									</div>
+									<!-- row user groups end -->
+								</div>
 
-                <!-- Nested Box -->
-                <intranda:box
-                  boxType="action"
-                  boxSmall="true"
-                  title="#{msgs.projekte}"
-                  icon="fa-table"
-                  boxPadding="true"
-                >
+							</div>
+							<!-- TAB 2 end -->
 
-                    <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
+							<!-- TAB 3 -->
+							<div
+								id="t9"
+								class="#{BenutzerverwaltungForm.displayMode eq 'tab3' or BenutzerverwaltungForm.displayMode eq 'project'?'tab-pane active':'tab-pane'}">
 
-                      <div class="gw-table__wrapper">
-                        <x:dataTable
-                          id="newprojects"
-                          styleClass="table table-bordered table-hover"
-                          var="item"
-                          value="#{BenutzerverwaltungForm.projectPaginator.list}">
-
-                        <x:column styleClass="gw-table__actions">
-
-                        <!-- Hinzufügen-Schaltknopf -->
-                        <div class="gw-table__actions__container align-items-center">
-                          <button
-                            jsf:id="addProject"
-                            class="btn btn-action"
-                            title="#{msgs.uebernehmen}"
-                            jsf:rel="tooltip"
-                            jsf:action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
-                            <i class="fa fa-plus"></i>
-                            <f:param
-                              name="ID"
-                              value="#{item.id}" />
-                            <f:setPropertyActionListener
-                              target="#{BenutzerverwaltungForm.displayMode}"
-                              value="tab3" />
-                            <f:ajax
-                              render=":myform" />
-                          </button>
-                          <h:outputText
-                            value="#{item.titel}" />
-                        </div>
-
-                        </x:column>
-
-                        <x:column styleClass="align-middle">
-                        <h:outputText
-                          value="#{item.institution.shortName}" />
-                        </x:column>
-                        </x:dataTable>
-                      </div> <!-- /gw-table__wrapper -->
-
-                      <div
-                        class="box__actions">
-                        <!-- Cancel-Schaltknopf -->
-                        <a
-                          jsf:id="cancelProject"
-                          class="btn btn-blank me-auto"
-                          jsf:action="#{NavigationForm.Reload}">
-                          <span><h:outputText value="#{msgs.abbrechen}" /></span>
-                          <f:setPropertyActionListener
-                            target="#{BenutzerverwaltungForm.displayMode}"
-                            value="tab3" />
-                          <f:ajax
-                            render=":myform" />
-                        </a>
-                      </div>
-                      <div
-                        class="dataTables_paginate">
-                        <!-- paginator -->
-                        <intranda:tablePaginator
-                          id="projects"
-                          paginator="#{BenutzerverwaltungForm.projectPaginator}" />
-                        <!-- /paginator -->
-                      </div>
-
-                </div>
-              </intranda:box>
-
-              </h:panelGroup>
+								<!-- ===================== Projects ====================== -->
+								<div
+									class="row"
+									style="border-bottom: 1px solid #DDDDDD;">
 
 
-              <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode ne 'project'}">
+									<div class="col-12 col-md-3">
+										<h:outputLabel
+											styleClass="form__label"
+											value="#{msgs.projekte}" />
+									</div>
 
-                <!-- Nested box -->
-                <intranda:box
-                  boxType="neutral"
-                  boxSmall="true"
-                  boxScope="view-users__box--project-2"
-                  title="#{msgs.projekte}"
-                  icon="fa-table"
-                  boxPadding="true"
-                >
+									<div class="col-12 col-md-9">
 
-                  <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
-                    <div class="gw-table__wrapper">
+										<h:panelGroup
+											rendered="#{BenutzerverwaltungForm.displayMode eq 'project'}">
 
-                    <x:dataTable
-                      id="currentProjects"
-                      styleClass="
+											<!-- Nested Box -->
+											<intranda:box
+												boxType="action"
+												boxSmall="true"
+												title="#{msgs.projekte}"
+												icon="fa-table"
+												boxPadding="true">
+
+												<div class="gw-table gw-table-fixed gw-table-fixed-no-th">
+
+													<div class="gw-table__wrapper">
+														<x:dataTable
+															id="newprojects"
+															styleClass="table table-bordered table-hover"
+															var="item"
+															value="#{BenutzerverwaltungForm.projectPaginator.list}">
+
+															<x:column styleClass="gw-table__actions">
+
+																<!-- Hinzufügen-Schaltknopf -->
+																<div
+																	class="gw-table__actions__container align-items-center">
+																	<button
+																		jsf:id="addProject"
+																		class="btn btn-action"
+																		title="#{msgs.uebernehmen}"
+																		jsf:rel="tooltip"
+																		jsf:action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
+																		<i class="fa fa-plus"></i>
+																		<f:param
+																			name="ID"
+																			value="#{item.id}" />
+																		<f:setPropertyActionListener
+																			target="#{BenutzerverwaltungForm.displayMode}"
+																			value="tab3" />
+																		<f:ajax render=":myform" />
+																	</button>
+																	<h:outputText value="#{item.titel}" />
+																</div>
+
+															</x:column>
+
+															<x:column styleClass="align-middle">
+																<h:outputText value="#{item.institution.shortName}" />
+															</x:column>
+														</x:dataTable>
+													</div>
+													<!-- /gw-table__wrapper -->
+
+													<div class="box__actions">
+														<!-- Cancel-Schaltknopf -->
+														<a
+															jsf:id="cancelProject"
+															class="btn btn-blank me-auto"
+															jsf:action="#{NavigationForm.Reload}">
+															<span>
+																<h:outputText value="#{msgs.abbrechen}" />
+															</span>
+															<f:setPropertyActionListener
+																target="#{BenutzerverwaltungForm.displayMode}"
+																value="tab3" />
+															<f:ajax render=":myform" />
+														</a>
+													</div>
+													<div class="dataTables_paginate">
+														<!-- paginator -->
+														<intranda:tablePaginator
+															id="projects"
+															paginator="#{BenutzerverwaltungForm.projectPaginator}" />
+														<!-- /paginator -->
+													</div>
+
+												</div>
+											</intranda:box>
+
+										</h:panelGroup>
+
+
+										<h:panelGroup
+											rendered="#{BenutzerverwaltungForm.displayMode ne 'project'}">
+
+											<!-- Nested box -->
+											<intranda:box
+												boxType="neutral"
+												boxSmall="true"
+												boxScope="view-users__box--project-2"
+												title="#{msgs.projekte}"
+												icon="fa-table"
+												boxPadding="true">
+
+												<div class="gw-table gw-table-fixed gw-table-fixed-no-th">
+													<div class="gw-table__wrapper">
+
+														<x:dataTable
+															id="currentProjects"
+															styleClass="
                         table
                         table-hover
                         table-nomargin
                         dataTable
                         table-bordered
                         #{BenutzerverwaltungForm.unsubscribedProjectsExist ? '' : '-no-bb'}"
-                      var="item"
-                      columnClasses="align-middle"
-                      value="#{BenutzerverwaltungForm.myClass.projekte}">
+															var="item"
+															columnClasses="align-middle"
+															value="#{BenutzerverwaltungForm.myClass.projekte}">
 
-                      <h:column>
-                          <h:outputText value="#{item.titel}" />
-                      </h:column>
+															<h:column>
+																<h:outputText value="#{item.titel}" />
+															</h:column>
 
-                    <x:column>
+															<x:column>
 
-                    <div class="d-flex justify-content-between align-items-center">
+																<div
+																	class="d-flex justify-content-between align-items-center">
 
-                    <h:outputText
-                      value="#{item.institution.shortName}" />
-                    <!-- Löschen-Schaltknopf -->
-                    <button
-                      jsf:id="deleteFromProject"
-                      class="btn btn-danger pull-right"
-                      title="#{msgs.ausProjektLoeschen}"
-                      jsf:rel="tooltip"
-                      jsf:action="#{BenutzerverwaltungForm.AusProjektLoeschen}">
-                      <i class="fa fa-trash-o"></i>
-                      <f:param
-                        name="ID"
-                        value="#{item.id}" />
-                      <f:ajax
-                        render=":myform" />
-                    </button>
-                    </div>
-                    </x:column>
+																	<h:outputText value="#{item.institution.shortName}" />
+																	<!-- Löschen-Schaltknopf -->
+																	<button
+																		jsf:id="deleteFromProject"
+																		class="btn btn-danger pull-right"
+																		title="#{msgs.ausProjektLoeschen}"
+																		jsf:rel="tooltip"
+																		jsf:action="#{BenutzerverwaltungForm.AusProjektLoeschen}">
+																		<i class="fa fa-trash-o"></i>
+																		<f:param
+																			name="ID"
+																			value="#{item.id}" />
+																		<f:ajax render=":myform" />
+																	</button>
+																</div>
+															</x:column>
 
-                    </x:dataTable>
-                    </div> <!-- /gw-table__wrapper -->
-                  </div> <!-- /gw-table -->
+														</x:dataTable>
+													</div>
+													<!-- /gw-table__wrapper -->
+												</div>
+												<!-- /gw-table -->
 
-                    <div
-                      class="box__actions"
-                      jsf:rendered="#{BenutzerverwaltungForm.unsubscribedProjectsExist}"
-                    >
-                      <!-- Neu-Schaltknopf -->
-                      <button
-                        jsf:id="addToProject"
-                        class="btn btn-neutral-600 me-auto"
-                        jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
-                        jsf:immediate="true">
-                        <i class="fa fa-plus me-auto"></i>
-                        <span><h:outputText value="#{msgs.projektHinzufuegen}" /></span>
-                        <f:setPropertyActionListener
-                          target="#{BenutzerverwaltungForm.displayMode}"
-                          value="project" />
-                        <f:ajax render=":myform" />
-                      </button>
-                    </div>
+												<div
+													class="box__actions"
+													jsf:rendered="#{BenutzerverwaltungForm.unsubscribedProjectsExist}">
+													<!-- Neu-Schaltknopf -->
+													<button
+														jsf:id="addToProject"
+														class="btn btn-neutral-600 me-auto"
+														jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
+														jsf:immediate="true">
+														<i class="fa fa-plus me-auto"></i>
+														<span>
+															<h:outputText value="#{msgs.projektHinzufuegen}" />
+														</span>
+														<f:setPropertyActionListener
+															target="#{BenutzerverwaltungForm.displayMode}"
+															value="project" />
+														<f:ajax render=":myform" />
+													</button>
+												</div>
 
-                  </intranda:box>
+											</intranda:box>
 
-                  <h:outputText
-                    styleClass="box__help help-block font-light text-neutral-600"
-                    value="#{msgs.helpProjekte}"
-                    style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"/>
+											<h:outputText
+												styleClass="box__help help-block font-light text-neutral-600"
+												value="#{msgs.helpProjekte}"
+												style="display:#{NavigationForm.showHelp ? 'block' : 'none'}" />
 
-                </h:panelGroup>
+										</h:panelGroup>
 
-              </div> <!-- col-12 col-md-9 end -->
-            </div>
-          </div> <!-- TAB 3 end -->
-        </div>
+									</div>
+									<!-- col-12 col-md-9 end -->
+								</div>
+							</div>
+							<!-- TAB 3 end -->
+						</div>
 
-          <h:panelGroup
-            rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup' and BenutzerverwaltungForm.displayMode ne 'project'  and BenutzerverwaltungForm.displayMode ne 'institution'}">
+						<h:panelGroup
+							rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup' and BenutzerverwaltungForm.displayMode ne 'project'  and BenutzerverwaltungForm.displayMode ne 'institution'}">
 
-          <div class="form-actions">
+							<div class="form-actions">
 
-            <h:panelGroup
-              rendered="#{BenutzerverwaltungForm.myClass.id == null}">
+								<h:panelGroup
+									rendered="#{BenutzerverwaltungForm.myClass.id == null}">
 
-            <!-- Cancel -->
-            <h:link
-              id="cancelEdition2"
-              styleClass="btn btn-blank"
-              outcome="user_all"
-              value="#{msgs.abbrechen}" />
+									<!-- Cancel -->
+									<h:link
+										id="cancelEdition2"
+										styleClass="btn btn-blank"
+										outcome="user_all"
+										value="#{msgs.abbrechen}" />
 
-            <button
-              class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-              jsf:id="absenden2"
-              type="submit"
-              jsf:action="#{BenutzerverwaltungForm.createUser}">
-              <i class="fa fa-save margin-right-5"></i>
-              <span><h:outputText value="#{msgs.createUser}" /></span>
-            </button>
+									<button
+										class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+										jsf:id="absenden2"
+										type="submit"
+										jsf:action="#{BenutzerverwaltungForm.createUser}">
+										<i class="fa fa-save margin-right-5"></i>
+										<span>
+											<h:outputText value="#{msgs.createUser}" />
+										</span>
+									</button>
 
-          </h:panelGroup>
-
-
-          <h:panelGroup
-            rendered="#{BenutzerverwaltungForm.myClass.id != null}">
-
-            <!-- Cancel -->
-            <a
-              jsf:id="cancelEdition"
-              class="btn btn-blank"
-              jsf:immediate="true"
-              jsf:action="#{BenutzerverwaltungForm.cancelEdit}">
-              <h:outputText
-                value="#{msgs.abbrechen}" />
-            </a>
-
-            <!-- Save -->
-            <button
-              class="btn btn-success submitOnEnter"
-              jsf:id="absenden"
-              type="submit"
-              jsf:action="#{BenutzerverwaltungForm.Speichern}">
-              <i class="fa fa-save"></i>
-              <span><h:outputText value="#{msgs.speichern}" /></span>
-            </button>
-
-            <!-- Delete -->
-            <button
-              jsf:id="deleteUser"
-              class="btn btn-hot trigger-delete"
-              onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
-              jsf:action="#{BenutzerverwaltungForm.Loeschen}">
-              <i class="fa fa-trash-o"></i>
-              <span><h:outputText value="#{msgs.loeschen}" /></span>
-            </button>
-
-          </h:panelGroup>
-          </div>
-          </h:panelGroup>
+								</h:panelGroup>
 
 
-        </intranda:box>
-    </div> <!-- col end -->
+								<h:panelGroup
+									rendered="#{BenutzerverwaltungForm.myClass.id != null}">
 
-    <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-6'}">
-        <!-- process log -->
-        <x:aliasBeansScope>
-            <x:aliasBean
-                alias="#{showBigButton}"
-                value="true" />
-            <x:aliasBean
-                alias="#{showFolderSelection}"
-                value="false" />
-            <x:aliasBean
-                alias="#{bean}"
-                value="#{BenutzerverwaltungForm.myClass}" />
-            <f:subview id="sublog">
-                <ui:include src="templatePG/includes/journal.xhtml" />
-            </f:subview>
-        </x:aliasBeansScope>
-    </div>
-  </div> <!-- row end -->
+									<!-- Cancel -->
+									<a
+										jsf:id="cancelEdition"
+										class="btn btn-blank"
+										jsf:immediate="true"
+										jsf:action="#{BenutzerverwaltungForm.cancelEdit}">
+										<h:outputText value="#{msgs.abbrechen}" />
+									</a>
 
-  </h:form>
-</ui:define>
+									<!-- Save -->
+									<button
+										class="btn btn-success submitOnEnter"
+										jsf:id="absenden"
+										type="submit"
+										jsf:action="#{BenutzerverwaltungForm.Speichern}">
+										<i class="fa fa-save"></i>
+										<span>
+											<h:outputText value="#{msgs.speichern}" />
+										</span>
+									</button>
+
+									<!-- Delete -->
+									<button
+										jsf:id="deleteUser"
+										class="btn btn-hot trigger-delete"
+										onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+										jsf:action="#{BenutzerverwaltungForm.Loeschen}">
+										<i class="fa fa-trash-o"></i>
+										<span>
+											<h:outputText value="#{msgs.loeschen}" />
+										</span>
+									</button>
+
+								</h:panelGroup>
+							</div>
+						</h:panelGroup>
+
+
+					</intranda:box>
+				</div>
+				<!-- col end -->
+
+				<div
+					class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-6'}">
+					<!-- process log -->
+					<x:aliasBeansScope>
+						<x:aliasBean
+							alias="#{showBigButton}"
+							value="true" />
+						<x:aliasBean
+							alias="#{showFolderSelection}"
+							value="false" />
+						<x:aliasBean
+							alias="#{bean}"
+							value="#{BenutzerverwaltungForm.myClass}" />
+						<f:subview id="sublog">
+							<ui:include src="templatePG/includes/journal.xhtml" />
+						</f:subview>
+					</x:aliasBeansScope>
+				</div>
+			</div>
+			<!-- row end -->
+
+		</h:form>
+	</ui:define>
 </ui:composition>

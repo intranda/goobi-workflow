@@ -1,11 +1,11 @@
-#designSystem {
-  --flow-space: 4.8rem;
+#styleGuide {
+  --flow-space: 4.5rem;
   counter-reset: heading;
 
   section {
     --flow-space: 1.6rem;
     --grid-size: 40rem, 1fr;
-    --gap: 4rem;
+    --gap: 2rem;
     border: 2px solid var(--clr-neutral-200);
     padding: 1.6rem;
     display: grid;
@@ -25,8 +25,8 @@
   }
 
   .description {
-    font-size: 1rem;
-    color: var(--clr-primary-400);
+    font-size: 2rem;
+    color: var(--clr-neutral-400);
   }
   section.colors {
     display: grid;

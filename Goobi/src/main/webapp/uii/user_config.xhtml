@@ -1,41 +1,42 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    template="/uii/templatePG/templatePG.html"
-    xmlns:o="http://omnifaces.org/ui"
-    xmlns:of="http://omnifaces.org/functions"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-    xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
-    <ui:param
-        name="myPageTitle"
-        value="#{msgs.benutzerkonfiguration}" />
+	<ui:param
+		name="myPageTitle"
+		value="#{msgs.benutzerkonfiguration}" />
 
-    <ui:define name="breadcrumb">
-        <intranda:breadcrumb
-            id="index"
-            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-            action="index"
-            navId="a0" />
-        <intranda:breadcrumb
-            id="userConfig"
-            label="#{myPageTitle}"
-            action="user_config"
-            noSeparator="#{true}" />
-    </ui:define>
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb
+			id="index"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index"
+			navId="a0" />
+		<intranda:breadcrumb
+			id="userConfig"
+			label="#{myPageTitle}"
+			action="user_config"
+			noSeparator="#{true}" />
+	</ui:define>
 
-    <ui:define name="info">
-    </ui:define>
+	<ui:define name="info">
+	</ui:define>
 
-    <ui:define name="content">
-        <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
+	<ui:define name="content">
+		<script
+			src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
 
-        <!--
+		<!--
         <script type="text/javascript">
             window.onload = function() {
                 document.getElementById( 'timeoutForSession' ).focus();
@@ -43,181 +44,265 @@
         </script>
         -->
 
-        <h:form id="myform" onkeypress="submitOnEnter(event);">
-            <main class="row">
-                <div class="col-sm-12">
-					 <intranda:box
-					      boxType="action"
-					      boxForm="true"
-					      boxPadding="false"
-					      boxTitle="false">                
-                
-	                	<intranda:boxTitle title="#{myPageTitle}" icon="fa-cog">
-	               			<ul class="tabs">
-					          <li class="tab #{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6'?'active':''}">
-					            <h:commandLink id="tab1" action="#{NavigationForm.Reload}" value="#{msgs.uebersicht}">
-					            <f:setPropertyActionListener target="#{NavigationForm.uiStatus.user_config}" value="" />
-					            <f:ajax render=":myform" execute=":myform" />
-					            </h:commandLink>
-					          </li>
-					          <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab2'?'active':''}">
-					            <h:commandLink id="tab2" action="#{NavigationForm.Reload}" value="#{msgs.user_config_display_general}">
-					            <f:setPropertyActionListener target="#{NavigationForm.uiStatus.user_config}" value="tab2" />
-					            <f:ajax render=":myform" execute=":myform" />
-					            </h:commandLink>
-					          </li>
-					          <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab3'?'active':''}">
-					            <h:commandLink id="tab3" action="#{NavigationForm.Reload}" value="#{msgs.user_config_display_processes}">
-					            <f:setPropertyActionListener target="#{NavigationForm.uiStatus.user_config}" value="tab3" />
-					            <f:ajax render=":myform" execute=":myform" />
-					            </h:commandLink>
-					          </li>
-					           <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab4'?'active':''}">
-					            <h:commandLink id="tab4" action="#{NavigationForm.Reload}" value="#{msgs.user_config_display_tasks}">
-					            <f:setPropertyActionListener target="#{NavigationForm.uiStatus.user_config}" value="tab4" />
-					            <f:ajax render=":myform" execute=":myform" />
-					            </h:commandLink>
-					          </li>
-					           <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab5'?'active':''}">
-					            <h:commandLink id="tab5" action="#{NavigationForm.Reload}" value="#{msgs.user_config_metseditor}">
-					            <f:setPropertyActionListener target="#{NavigationForm.uiStatus.user_config}" value="tab5" />
-					            <f:ajax render=":myform" execute=":myform" />
-					            </h:commandLink>
-					          </li>
-					          <h:panelGroup rendered="#{NavigationForm.emailActive}">
-						          <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab6'?'active':''}">
-						            <h:commandLink id="tab6" action="#{NavigationForm.Reload}" value="#{msgs.mail_notification_user_config_mail}">
-						            <f:setPropertyActionListener target="#{NavigationForm.uiStatus.user_config}" value="tab6" />
-						            <f:ajax render=":myform" execute=":myform" />
-						            </h:commandLink>
-						          </li>
-					          </h:panelGroup>
-					        </ul>
-	               		</intranda:boxTitle>
-               
-	               		<div class="tab-content">
-	               		
-	               			<!-- TAB 1 -->
-		          			<h:panelGroup rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6'}">
-		           				<intranda:formInputText
-	                                label="#{msgs.vorname}"
-	                                id="firstname"
-	                                field="#{LoginForm.myBenutzer.vorname}"
-	                                help="#{msgs.helpVorname}"
-	                                name="vorname"
-	                                readonly="false" />
-	
-	                            <script>
-	                                gwFocusOnLoad.init('[id*="firstname"]')
-	                            </script>
-	
-	                            <intranda:formInputText
-	                                label="#{msgs.nachname}"
-	                                id="lastname"
-	                                field="#{LoginForm.myBenutzer.nachname}"
-	                                help="#{msgs.helpNachname}"
-	                                name="nachname"
-	                                readonly="false" />
-	
-	                            <intranda:formInputText
-	                                label="#{msgs.standort}"
-	                                id="location"
-	                                field="#{LoginForm.myBenutzer.standort}"
-	                                help="#{msgs.helpStandort}"
-	                                name="standort"
-	                                required="false"
-	                                readonly="true" />
-	
-	                            <intranda:formInputText
-	                                label="#{msgs.email}"
-	                                id="email"
-	                                field="#{LoginForm.myBenutzer.email}"
-	                                help="#{msgs.helpEmail}"
-	                                required="false"
-	                                name="emailName"/>
-	
+		<h:form
+			id="myform"
+			onkeypress="submitOnEnter(event);">
+			<main class="row">
+				<div class="col-sm-12">
+					<intranda:box
+						boxType="action"
+						boxForm="true"
+						boxPadding="false"
+						boxTitle="false">
+
+						<intranda:boxTitle
+							title="#{myPageTitle}"
+							icon="fa-cog">
+							<ul class="tabs">
+								<li
+									class="tab #{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6'?'active':''}">
+									<h:commandLink
+										id="tab1"
+										action="#{NavigationForm.Reload}"
+										value="#{msgs.uebersicht}">
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.user_config}"
+											value="" />
+										<f:ajax
+											render=":myform"
+											execute=":myform" />
+									</h:commandLink>
+								</li>
+								<li
+									class="tab #{NavigationForm.uiStatus.user_config eq 'tab2'?'active':''}">
+									<h:commandLink
+										id="tab2"
+										action="#{NavigationForm.Reload}"
+										value="#{msgs.user_config_display_general}">
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.user_config}"
+											value="tab2" />
+										<f:ajax
+											render=":myform"
+											execute=":myform" />
+									</h:commandLink>
+								</li>
+								<li
+									class="tab #{NavigationForm.uiStatus.user_config eq 'tab3'?'active':''}">
+									<h:commandLink
+										id="tab3"
+										action="#{NavigationForm.Reload}"
+										value="#{msgs.user_config_display_processes}">
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.user_config}"
+											value="tab3" />
+										<f:ajax
+											render=":myform"
+											execute=":myform" />
+									</h:commandLink>
+								</li>
+								<li
+									class="tab #{NavigationForm.uiStatus.user_config eq 'tab4'?'active':''}">
+									<h:commandLink
+										id="tab4"
+										action="#{NavigationForm.Reload}"
+										value="#{msgs.user_config_display_tasks}">
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.user_config}"
+											value="tab4" />
+										<f:ajax
+											render=":myform"
+											execute=":myform" />
+									</h:commandLink>
+								</li>
+								<li
+									class="tab #{NavigationForm.uiStatus.user_config eq 'tab5'?'active':''}">
+									<h:commandLink
+										id="tab5"
+										action="#{NavigationForm.Reload}"
+										value="#{msgs.user_config_metseditor}">
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.user_config}"
+											value="tab5" />
+										<f:ajax
+											render=":myform"
+											execute=":myform" />
+									</h:commandLink>
+								</li>
+								<h:panelGroup rendered="#{NavigationForm.emailActive}">
+									<li
+										class="tab #{NavigationForm.uiStatus.user_config eq 'tab6'?'active':''}">
+										<h:commandLink
+											id="tab6"
+											action="#{NavigationForm.Reload}"
+											value="#{msgs.mail_notification_user_config_mail}">
+											<f:setPropertyActionListener
+												target="#{NavigationForm.uiStatus.user_config}"
+												value="tab6" />
+											<f:ajax
+												render=":myform"
+												execute=":myform" />
+										</h:commandLink>
+									</li>
+								</h:panelGroup>
+							</ul>
+						</intranda:boxTitle>
+
+						<div class="tab-content">
+
+							<!-- TAB 1 -->
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6'}">
+								<intranda:formInputText
+									label="#{msgs.vorname}"
+									id="firstname"
+									field="#{LoginForm.myBenutzer.vorname}"
+									help="#{msgs.helpVorname}"
+									name="vorname"
+									readonly="false" />
+
+								<script>
+									gwFocusOnLoad.init('[id*="firstname"]')
+								</script>
+
+								<intranda:formInputText
+									label="#{msgs.nachname}"
+									id="lastname"
+									field="#{LoginForm.myBenutzer.nachname}"
+									help="#{msgs.helpNachname}"
+									name="nachname"
+									readonly="false" />
+
+								<intranda:formInputText
+									label="#{msgs.standort}"
+									id="location"
+									field="#{LoginForm.myBenutzer.standort}"
+									help="#{msgs.helpStandort}"
+									name="standort"
+									required="false"
+									readonly="true" />
+
+								<intranda:formInputText
+									label="#{msgs.email}"
+									id="email"
+									field="#{LoginForm.myBenutzer.email}"
+									help="#{msgs.helpEmail}"
+									required="false"
+									name="emailName" />
+
 								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param name="labelFor" value="up" />
-											<ui:param name="labelRequired" value="false" />
-											<ui:param name="labelLabel" value="#{msgs.projekte}" />
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_label.xhtml">
+											<ui:param
+												name="labelFor"
+												value="up" />
+											<ui:param
+												name="labelRequired"
+												value="false" />
+											<ui:param
+												name="labelLabel"
+												value="#{msgs.projekte}" />
 										</ui:include>
-									</div> 
-						
+									</div>
+
 									<div class="col-12 col-md-9">
 										<x:dataList
-	                                        id="up"
-	                                        var="intern"
-	                                        styleClass="form-control"
-	                                        style=" background-color: #e9ecef;cursor: not-allowed;opacity: 1; height: auto; overflow: none"
-	                                        value="#{LoginForm.myBenutzer.projekte}"
-	                                        layout="ordered list"
-	                                        rowCountVar="rowCount"
-	                                        rowIndexVar="rowIndex">
-	                                        <h:outputText value="#{intern.titel}" />
-	                                        <h:outputText
-	                                            value=","
-	                                            rendered="#{rowIndex + 1 lt rowCount}" />
-	                                    </x:dataList>
-										
-										<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param name="msgFor" value="up" />
-											<ui:param name="helpContent" value="#{msgs.helpProjects}" />
+											id="up"
+											var="intern"
+											styleClass="form-control"
+											style=" background-color: #e9ecef;cursor: not-allowed;opacity: 1; height: auto; overflow: none"
+											value="#{LoginForm.myBenutzer.projekte}"
+											layout="ordered list"
+											rowCountVar="rowCount"
+											rowIndexVar="rowIndex">
+											<h:outputText value="#{intern.titel}" />
+											<h:outputText
+												value=","
+												rendered="#{rowIndex + 1 lt rowCount}" />
+										</x:dataList>
+
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_help.xhtml">
+											<ui:param
+												name="msgFor"
+												value="up" />
+											<ui:param
+												name="helpContent"
+												value="#{msgs.helpProjects}" />
 										</ui:include>
 									</div>
 								</div>
-	
+
 								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param name="labelFor" value="ug" />
-											<ui:param name="labelRequired" value="false" />
-											<ui:param name="labelLabel" value="#{msgs.benutzergruppen}" />
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_label.xhtml">
+											<ui:param
+												name="labelFor"
+												value="ug" />
+											<ui:param
+												name="labelRequired"
+												value="false" />
+											<ui:param
+												name="labelLabel"
+												value="#{msgs.benutzergruppen}" />
 										</ui:include>
-									</div> 
-						
+									</div>
+
 									<div class="col-12 col-md-9">
 										<x:dataList
-	                                        id="ug"
-	                                        var="intern"
-	                                        styleClass="form-control"
-	                                        style=" background-color: #e9ecef;cursor: not-allowed;opacity: 1; height: auto; overflow: none"
-	                                        value="#{LoginForm.myBenutzer.benutzergruppen}"
-	                                        layout="ordered list"
-	                                        rowCountVar="rowCount"
-	                                        rowIndexVar="rowIndex">
-	                                        <h:outputText value="#{intern.titel}" />
-	                                        <h:outputText
-	                                            value=","
-	                                            rendered="#{rowIndex + 1 lt rowCount}" />
-	                                    </x:dataList>
-										
-										<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param name="msgFor" value="ug" />
-											<ui:param name="helpContent" value="#{msgs.helpUsergroups}" />
+											id="ug"
+											var="intern"
+											styleClass="form-control"
+											style=" background-color: #e9ecef;cursor: not-allowed;opacity: 1; height: auto; overflow: none"
+											value="#{LoginForm.myBenutzer.benutzergruppen}"
+											layout="ordered list"
+											rowCountVar="rowCount"
+											rowIndexVar="rowIndex">
+											<h:outputText value="#{intern.titel}" />
+											<h:outputText
+												value=","
+												rendered="#{rowIndex + 1 lt rowCount}" />
+										</x:dataList>
+
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_help.xhtml">
+											<ui:param
+												name="msgFor"
+												value="ug" />
+											<ui:param
+												name="helpContent"
+												value="#{msgs.helpUsergroups}" />
 										</ui:include>
 									</div>
 								</div>
-	                            
-	
-	                           <div class="row">
+
+
+								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param name="labelFor" value="ur" />
-											<ui:param name="labelRequired" value="false" />
-											<ui:param name="labelLabel" value="#{msgs.usergroup_assignedRoles}" />
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_label.xhtml">
+											<ui:param
+												name="labelFor"
+												value="ur" />
+											<ui:param
+												name="labelRequired"
+												value="false" />
+											<ui:param
+												name="labelLabel"
+												value="#{msgs.usergroup_assignedRoles}" />
 										</ui:include>
-									</div> 
-						
+									</div>
+
 									<div class="col-12 col-md-9">
 										<ui:repeat
-	                                        var="role"
-	                                        value="#{LoginForm.myBenutzer.allUserRoles}"
-	                                        varStatus="row">
-	                                        <h:outputText
-	                                            value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}"
-	                                            styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' :
+											var="role"
+											value="#{LoginForm.myBenutzer.allUserRoles}"
+											varStatus="row">
+											<h:outputText
+												value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}"
+												styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' :
 					                           		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
 					                           		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' :
 					                           		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' :
@@ -226,450 +311,502 @@
 					                           		fn:startsWith(role,'Task_') ? 'badge-light-orange' :
 					                           		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' :
 					                           		'badge-light-greengrey'}">
-	                                            <f:passThroughAttribute
-	                                                name="tabindex"
-	                                                value="-1" />
-	                                        </h:outputText>
-	                                    </ui:repeat>
-										
-										<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param name="msgFor" value="ur" />
-											<ui:param name="helpContent" value="#{msgs.helpUserRoles}" />
+												<f:passThroughAttribute
+													name="tabindex"
+													value="-1" />
+											</h:outputText>
+										</ui:repeat>
+
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_help.xhtml">
+											<ui:param
+												name="msgFor"
+												value="ur" />
+											<ui:param
+												name="helpContent"
+												value="#{msgs.helpUserRoles}" />
 										</ui:include>
 									</div>
 								</div>
-		           			</h:panelGroup>
-		          			
-		          			
-		          			<!-- TAB 2 -->
-		          			<h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab2'}">
-		          				<intranda:formInputText
-	                                label="#{msgs.timeoutForSession}"
-	                                id="sessionTimeout"
-	                                field="#{LoginForm.myBenutzer.sessiontimeoutInMinutes}"
-	                                help="#{msgs.helpTimeoutForSession}"
-	                                name="timeoutForSession">
-	                                <f:passThroughAttribute name="data-gw-focus-on-load" value="true" />
-	                            </intranda:formInputText>
-	
-	                            <intranda:formInputText
-	                                label="#{msgs.tabellengroesse}"
-	                                id="tableSize"
-	                                field="#{LoginForm.myBenutzer.tabellengroesse}"
-	                                help="#{msgs.helpTabellengroesse}"
-	                                name="tabellengroesse"/>
-	
-	                            <intranda:formInputTextArea
-	                                label="#{msgs.user_config_customColumns}"
-	                                id="customColumns"
-	                                field="#{LoginForm.myBenutzer.customColumns}"
-	                                help="#{msgs.help_user_config_customColumns}"
-	                                name="customColumnsName"
-	                                fieldStyle="form-control"/>
-	
-	                            <intranda:formInputTextArea
-	                                label="#{msgs.user_config_customCss}"
-	                                id="customCss"
-	                                field="#{LoginForm.myBenutzer.customCss}"
-	                                help="#{msgs.help_user_config_customCss}"
-	                                name="customCssName"
-	                                fieldStyle="form-control"/>
-	
-	                            <intranda:formInputDropDown
-	                                id="dashboard"
-	                                label="#{msgs.dashboard}"
-	                                field="#{LoginForm.myBenutzer.dashboardPlugin}"
-	                                help="#{msgs.helpUserDashboard}"
-	                                name="dashboardName"
-	                                selectItems="#{LoginForm.myBenutzer.availableDashboards}" />
-	
-	                            <intranda:formInputTextArea
-	                                label="#{msgs.user_dashboard_configuration}"
-	                                id="user_dashboard_configuration"
-	                                field="#{LoginForm.myBenutzer.dashboardConfiguration}"
-	                                help="#{msgs.help_user_dashboard_configuration}"
-	                                name="user_dashboard_configuration"
-	                                fieldStyle="form-control"/>
-	
-	                            <intranda:formInputDropDown
-	                                id="uiMode"
-	                                label="#{msgs.user_config_ui_mode}"
-	                                field="#{LoginForm.myBenutzer.uiMode}"
-	                                help="#{msgs.help_user_config_ui_mode}"
-	                                name="uiMode"
-	                                selectItems="#{LoginForm.myBenutzer.availableUiModes}" />
-	
-	                            <script>
-	                                gwFocusOnLoad.init('[id*="sessionTimeout"]');
-	                            </script>
-		          			</h:panelGroup>
-		          			
-		          			
-		          			<!-- TAB 3 -->
-		          			<h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab3'}">
-								 <intranda:formInputCheckBox
-	                                 id="displayDeactivatedProjects"
-	                                 label="#{msgs.displayDeactivatedProjects}"
-	                                 field="#{LoginForm.myBenutzer.displayDeactivatedProjects}"
-	                                 help="#{msgs.helpDisplayDeactivatedProjects}"
-	                                 name="displayDeactivatedProjectsName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 id="displayFinishedProcesses"
-	                                 label="#{msgs.displayFinishedProcesses}"
-	                                 field="#{LoginForm.myBenutzer.displayFinishedProcesses}"
-	                                 help="#{msgs.helpDisplayFinishedProcesses}"
-	                                 name="displayFinishedProcessesName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 label="#{msgs.displaySelectBoxes}"
-	                                 id="displaySelectBoxes"
-	                                 field="#{LoginForm.myBenutzer.displaySelectBoxes}"
-	                                 help="#{msgs.helpDisplaySelectBoxes}"
-	                                 name="displaySelectBoxesName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 label="#{msgs.displayIdColumn}"
-	                                 id="displayIdColumn"
-	                                 field="#{LoginForm.myBenutzer.displayIdColumn}"
-	                                 help="#{msgs.helpDisplayIdColumn}"
-	                                 name="displayIdColumnName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 id="displayBatchColumn"
-	                                 label="#{msgs.displayBatchColumn}"
-	                                 field="#{LoginForm.myBenutzer.displayBatchColumn}"
-	                                 help="#{msgs.helpDisplayBatchColumn}"
-	                                 name="displayBatchColumnName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 id="displayProcessDateColumn"
-	                                 label="#{msgs.displayProcessDateColumn}"
-	                                 field="#{LoginForm.myBenutzer.displayProcessDateColumn}"
-	                                 help="#{msgs.helpDisplayProcessDateColumn}"
-	                                 name="displayProcessDateColumnName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 id="displayProcessRulesetColumn"
-	                                 label="#{msgs.displayRulesetColumn}"
-	                                 field="#{LoginForm.myBenutzer.displayRulesetColumn}"
-	                                 help="#{msgs.helpDisplayRulesetColumn}"
-	                                 name="displayProcessRulesetColumnName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 id="displayLocksColumn"
-	                                 label="#{msgs.displayLocksColumn}"
-	                                 field="#{LoginForm.myBenutzer.displayLocksColumn}"
-	                                 help="#{msgs.helpDisplayLocksColumn}"
-	                                 name="displayLocksColumnName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 id="displaySwappingColumn"
-	                                 label="#{msgs.displaySwappingColumn}"
-	                                 field="#{LoginForm.myBenutzer.displaySwappingColumn}"
-	                                 help="#{msgs.helpDisplaySwappingColumn}"
-	                                 name="displaySwappingColumnName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 id="displayMetadataColumn"
-	                                 label="#{msgs.displayMetadataColumn}"
-	                                 field="#{LoginForm.myBenutzer.displayMetadataColumn}"
-	                                 help="#{msgs.helpDisplayMetadataColumn}"
-	                                 name="displayMetadataColumnName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 id="displayThumbColumn"
-	                                 label="#{msgs.displayThumbColumn}"
-	                                 field="#{LoginForm.myBenutzer.displayThumbColumn}"
-	                                 help="#{msgs.helpDisplayThumbColumn}"
-	                                 name="displayThumbColumnName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 id="displayGridView"
-	                                 label="#{msgs.displayGridView}"
-	                                 field="#{LoginForm.myBenutzer.displayGridView}"
-	                                 help="#{msgs.helpDisplayGridView}"
-	                                 name="displayGridViewName" />
-	
-	                             <intranda:formInputCheckBox
-	                                 id="displayInstitutionColumn"
-	                                 label="#{msgs.displayInstitutionColumn}"
-	                                 field="#{LoginForm.myBenutzer.displayInstitutionColumn}"
-	                                 help="#{msgs.helpDisplayInstitutionColumn}"
-	                                 name="displayInstitutionColumnName" />
-	
-	                             <h:panelGroup rendered="#{HelperForm.showEditionDataEnabled}">
-	                                 <intranda:formInputCheckBox
-	                                     id="displayLastEditionDate"
-	                                     label="#{msgs.displayLastEditionDate}"
-	                                     field="#{LoginForm.myBenutzer.displayLastEditionDate}"
-	                                     help="#{msgs.helpDisplayLastEditionDate}"
-	                                     name="displayLastEditionDate" />
-	                                 <intranda:formInputCheckBox
-	                                     id="displayLastEditionUser"
-	                                     label="#{msgs.displayLastEditionUser}"
-	                                     field="#{LoginForm.myBenutzer.displayLastEditionUser}"
-	                                     help="#{msgs.helpDisplayLastEditionUser}"
-	                                     name="displayLastEditionUser" />
-	                                 <intranda:formInputCheckBox
-	                                     id="displayLastEditionTask"
-	                                     label="#{msgs.displayLastEditionTask}"
-	                                     field="#{LoginForm.myBenutzer.displayLastEditionTask}"
-	                                     help="#{msgs.helpDisplayLastEditionTask}"
-	                                     name="displayLastEditionTask" />
-	
-	                             </h:panelGroup>
-	
-	                             <intranda:formInputDropDown
-	                                 label="#{msgs.defaultSortField}"
-	                                 id="processSortField"
-	                                 field="#{LoginForm.myBenutzer.processListDefaultSortField}"
-	                                 help="#{msgs.helpProcessListDefaultSortField}"
-	                                 name="processSortFieldName"
-	                                 selectItems="#{LoginForm.myBenutzer.processListColumnNames}"
-	                                 required="false" />
-	                             
-	                             
-	                             <div class="row">
+							</h:panelGroup>
+
+
+							<!-- TAB 2 -->
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config eq 'tab2'}">
+								<intranda:formInputText
+									label="#{msgs.timeoutForSession}"
+									id="sessionTimeout"
+									field="#{LoginForm.myBenutzer.sessiontimeoutInMinutes}"
+									help="#{msgs.helpTimeoutForSession}"
+									name="timeoutForSession">
+									<f:passThroughAttribute
+										name="data-gw-focus-on-load"
+										value="true" />
+								</intranda:formInputText>
+
+								<intranda:formInputText
+									label="#{msgs.tabellengroesse}"
+									id="tableSize"
+									field="#{LoginForm.myBenutzer.tabellengroesse}"
+									help="#{msgs.helpTabellengroesse}"
+									name="tabellengroesse" />
+
+								<intranda:formInputTextArea
+									label="#{msgs.user_config_customColumns}"
+									id="customColumns"
+									field="#{LoginForm.myBenutzer.customColumns}"
+									help="#{msgs.help_user_config_customColumns}"
+									name="customColumnsName"
+									fieldStyle="form-control" />
+
+								<intranda:formInputTextArea
+									label="#{msgs.user_config_customCss}"
+									id="customCss"
+									field="#{LoginForm.myBenutzer.customCss}"
+									help="#{msgs.help_user_config_customCss}"
+									name="customCssName"
+									fieldStyle="form-control" />
+
+								<intranda:formInputDropDown
+									id="dashboard"
+									label="#{msgs.dashboard}"
+									field="#{LoginForm.myBenutzer.dashboardPlugin}"
+									help="#{msgs.helpUserDashboard}"
+									name="dashboardName"
+									selectItems="#{LoginForm.myBenutzer.availableDashboards}" />
+
+								<intranda:formInputTextArea
+									label="#{msgs.user_dashboard_configuration}"
+									id="user_dashboard_configuration"
+									field="#{LoginForm.myBenutzer.dashboardConfiguration}"
+									help="#{msgs.help_user_dashboard_configuration}"
+									name="user_dashboard_configuration"
+									fieldStyle="form-control" />
+
+								<intranda:formInputDropDown
+									id="uiMode"
+									label="#{msgs.user_config_ui_mode}"
+									field="#{LoginForm.myBenutzer.uiMode}"
+									help="#{msgs.help_user_config_ui_mode}"
+									name="uiMode"
+									selectItems="#{LoginForm.myBenutzer.availableUiModes}" />
+
+								<script>
+									gwFocusOnLoad
+											.init('[id*="sessionTimeout"]');
+								</script>
+							</h:panelGroup>
+
+
+							<!-- TAB 3 -->
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config eq 'tab3'}">
+								<intranda:formInputCheckBox
+									id="displayDeactivatedProjects"
+									label="#{msgs.displayDeactivatedProjects}"
+									field="#{LoginForm.myBenutzer.displayDeactivatedProjects}"
+									help="#{msgs.helpDisplayDeactivatedProjects}"
+									name="displayDeactivatedProjectsName" />
+
+								<intranda:formInputCheckBox
+									id="displayFinishedProcesses"
+									label="#{msgs.displayFinishedProcesses}"
+									field="#{LoginForm.myBenutzer.displayFinishedProcesses}"
+									help="#{msgs.helpDisplayFinishedProcesses}"
+									name="displayFinishedProcessesName" />
+
+								<intranda:formInputCheckBox
+									label="#{msgs.displaySelectBoxes}"
+									id="displaySelectBoxes"
+									field="#{LoginForm.myBenutzer.displaySelectBoxes}"
+									help="#{msgs.helpDisplaySelectBoxes}"
+									name="displaySelectBoxesName" />
+
+								<intranda:formInputCheckBox
+									label="#{msgs.displayIdColumn}"
+									id="displayIdColumn"
+									field="#{LoginForm.myBenutzer.displayIdColumn}"
+									help="#{msgs.helpDisplayIdColumn}"
+									name="displayIdColumnName" />
+
+								<intranda:formInputCheckBox
+									id="displayBatchColumn"
+									label="#{msgs.displayBatchColumn}"
+									field="#{LoginForm.myBenutzer.displayBatchColumn}"
+									help="#{msgs.helpDisplayBatchColumn}"
+									name="displayBatchColumnName" />
+
+								<intranda:formInputCheckBox
+									id="displayProcessDateColumn"
+									label="#{msgs.displayProcessDateColumn}"
+									field="#{LoginForm.myBenutzer.displayProcessDateColumn}"
+									help="#{msgs.helpDisplayProcessDateColumn}"
+									name="displayProcessDateColumnName" />
+
+								<intranda:formInputCheckBox
+									id="displayProcessRulesetColumn"
+									label="#{msgs.displayRulesetColumn}"
+									field="#{LoginForm.myBenutzer.displayRulesetColumn}"
+									help="#{msgs.helpDisplayRulesetColumn}"
+									name="displayProcessRulesetColumnName" />
+
+								<intranda:formInputCheckBox
+									id="displayLocksColumn"
+									label="#{msgs.displayLocksColumn}"
+									field="#{LoginForm.myBenutzer.displayLocksColumn}"
+									help="#{msgs.helpDisplayLocksColumn}"
+									name="displayLocksColumnName" />
+
+								<intranda:formInputCheckBox
+									id="displaySwappingColumn"
+									label="#{msgs.displaySwappingColumn}"
+									field="#{LoginForm.myBenutzer.displaySwappingColumn}"
+									help="#{msgs.helpDisplaySwappingColumn}"
+									name="displaySwappingColumnName" />
+
+								<intranda:formInputCheckBox
+									id="displayMetadataColumn"
+									label="#{msgs.displayMetadataColumn}"
+									field="#{LoginForm.myBenutzer.displayMetadataColumn}"
+									help="#{msgs.helpDisplayMetadataColumn}"
+									name="displayMetadataColumnName" />
+
+								<intranda:formInputCheckBox
+									id="displayThumbColumn"
+									label="#{msgs.displayThumbColumn}"
+									field="#{LoginForm.myBenutzer.displayThumbColumn}"
+									help="#{msgs.helpDisplayThumbColumn}"
+									name="displayThumbColumnName" />
+
+								<intranda:formInputCheckBox
+									id="displayGridView"
+									label="#{msgs.displayGridView}"
+									field="#{LoginForm.myBenutzer.displayGridView}"
+									help="#{msgs.helpDisplayGridView}"
+									name="displayGridViewName" />
+
+								<intranda:formInputCheckBox
+									id="displayInstitutionColumn"
+									label="#{msgs.displayInstitutionColumn}"
+									field="#{LoginForm.myBenutzer.displayInstitutionColumn}"
+									help="#{msgs.helpDisplayInstitutionColumn}"
+									name="displayInstitutionColumnName" />
+
+								<h:panelGroup rendered="#{HelperForm.showEditionDataEnabled}">
+									<intranda:formInputCheckBox
+										id="displayLastEditionDate"
+										label="#{msgs.displayLastEditionDate}"
+										field="#{LoginForm.myBenutzer.displayLastEditionDate}"
+										help="#{msgs.helpDisplayLastEditionDate}"
+										name="displayLastEditionDate" />
+									<intranda:formInputCheckBox
+										id="displayLastEditionUser"
+										label="#{msgs.displayLastEditionUser}"
+										field="#{LoginForm.myBenutzer.displayLastEditionUser}"
+										help="#{msgs.helpDisplayLastEditionUser}"
+										name="displayLastEditionUser" />
+									<intranda:formInputCheckBox
+										id="displayLastEditionTask"
+										label="#{msgs.displayLastEditionTask}"
+										field="#{LoginForm.myBenutzer.displayLastEditionTask}"
+										help="#{msgs.helpDisplayLastEditionTask}"
+										name="displayLastEditionTask" />
+
+								</h:panelGroup>
+
+								<intranda:formInputDropDown
+									label="#{msgs.defaultSortField}"
+									id="processSortField"
+									field="#{LoginForm.myBenutzer.processListDefaultSortField}"
+									help="#{msgs.helpProcessListDefaultSortField}"
+									name="processSortFieldName"
+									selectItems="#{LoginForm.myBenutzer.processListColumnNames}"
+									required="false" />
+
+
+								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param name="labelFor" value="processDefaultSortOrder" />
-											<ui:param name="labelRequired" value="false" />
-											<ui:param name="labelLabel" value="#{msgs.defaultSortOrder}" />
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_label.xhtml">
+											<ui:param
+												name="labelFor"
+												value="processDefaultSortOrder" />
+											<ui:param
+												name="labelRequired"
+												value="false" />
+											<ui:param
+												name="labelLabel"
+												value="#{msgs.defaultSortOrder}" />
 										</ui:include>
-									</div> 
-						
+									</div>
+
 									<div class="col-12 col-md-9">
 										<h:selectOneRadio
-	                                         id="processDefaultSortOrder"
-	                                         value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
-	                                         disabledClass="ms-3 me-5"
-	                                         enabledClass="ms-3 me-5">
-	                                         <f:selectItem
-	                                             itemLabel="#{msgs.defaultSortFieldAsc}"
-	                                             itemValue="Asc" />
-	                                         <f:selectItem
-	                                             itemLabel="#{msgs.defaultSortFieldDesc}"
-	                                             itemValue="Desc" />
-	                                     </h:selectOneRadio>
-										
-										<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param name="msgFor" value="processDefaultSortOrder" />
-											<ui:param name="helpContent" value="#{msgs.helpProcessDefaultSortOrder}" />
+											id="processDefaultSortOrder"
+											value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
+											disabledClass="ms-3 me-5"
+											enabledClass="ms-3 me-5">
+											<f:selectItem
+												itemLabel="#{msgs.defaultSortFieldAsc}"
+												itemValue="Asc" />
+											<f:selectItem
+												itemLabel="#{msgs.defaultSortFieldDesc}"
+												itemValue="Desc" />
+										</h:selectOneRadio>
+
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_help.xhtml">
+											<ui:param
+												name="msgFor"
+												value="processDefaultSortOrder" />
+											<ui:param
+												name="helpContent"
+												value="#{msgs.helpProcessDefaultSortOrder}" />
 										</ui:include>
 									</div>
 								</div>
-								
-	                             <script>
-	                                 gwFocusOnLoad.init('[id*="displayDeactivatedProjects"]')
-	                             </script>
-	
-		          			</h:panelGroup>
-	
-	
-	               			<!-- TAB 4 -->
-		          			<h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab4'}">
-	          				    <intranda:formInputCheckBox
-	                                   label="#{msgs.hideCorrectionTasks}"
-	                                   id="hideCorrectionTasks"
-	                                   field="#{LoginForm.myBenutzer.hideCorrectionTasks}"
-	                                   help="#{msgs.helpHideCorrectionTasks}"
-	                                   name="hideCorrectionTasksName" />
-	
-	                               <script>
-	                                   gwFocusOnLoad.init('[id*="hideCorrectionTasks"]')
-	                               </script>
-	
-	                               <intranda:formInputCheckBox
-	                                   id="displayOnlySelectedTasks"
-	                                   label="#{msgs.displayOnlySelectedTasks}"
-	                                   field="#{LoginForm.myBenutzer.displayOnlySelectedTasks}"
-	                                   help="#{msgs.helpDisplayOnlySelectedTasks}"
-	                                   name="displayOnlySelectedTasksName" />
-	
-	                               <intranda:formInputCheckBox
-	                                   label="#{msgs.displayOnlyOpenTasks}"
-	                                   id="displayOnlyOpenTasks"
-	                                   field="#{LoginForm.myBenutzer.displayOnlyOpenTasks}"
-	                                   help="#{msgs.helpDisplayOnlyOpenTasks}"
-	                                   name="displayOnlyOpenTasksName" />
-	
-	                               <intranda:formInputCheckBox
-	                                   id="helpDisplayOtherTasks"
-	                                   label="#{msgs.showTasksFromOtherUsers}"
-	                                   field="#{LoginForm.myBenutzer.displayOtherTasks}"
-	                                   help="#{msgs.helpDisplayOtherTasks}"
-	                                   name="helpDisplayOtherTasksName" />
-	
-	                               <intranda:formInputCheckBox
-	                                   id="displayAutomaticTasks"
-	                                   label="#{msgs.displayAutomaticTasks}"
-	                                   field="#{LoginForm.myBenutzer.displayAutomaticTasks}"
-	                                   help="#{msgs.helpDisplayAutomaticTasks}"
-	                                   name="displayAutomaticTasksName" />
-	
-	                               <intranda:formInputDropDown
-	                                   label="#{msgs.defaultSortField}"
-	                                   id="taskSortField"
-	                                   field="#{LoginForm.myBenutzer.taskListDefaultSortingField}"
-	                                   help="#{msgs.helpTaskListDefaultSortField}"
-	                                   name="taskSortFieldName"
-	                                   selectItems="#{LoginForm.myBenutzer.taskListColumnNames}"
-	                                   required="false"/>
-	
-	
-	                               <div class="row">
+
+								<script>
+									gwFocusOnLoad
+											.init('[id*="displayDeactivatedProjects"]')
+								</script>
+
+							</h:panelGroup>
+
+
+							<!-- TAB 4 -->
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config eq 'tab4'}">
+								<intranda:formInputCheckBox
+									label="#{msgs.hideCorrectionTasks}"
+									id="hideCorrectionTasks"
+									field="#{LoginForm.myBenutzer.hideCorrectionTasks}"
+									help="#{msgs.helpHideCorrectionTasks}"
+									name="hideCorrectionTasksName" />
+
+								<script>
+									gwFocusOnLoad
+											.init('[id*="hideCorrectionTasks"]')
+								</script>
+
+								<intranda:formInputCheckBox
+									id="displayOnlySelectedTasks"
+									label="#{msgs.displayOnlySelectedTasks}"
+									field="#{LoginForm.myBenutzer.displayOnlySelectedTasks}"
+									help="#{msgs.helpDisplayOnlySelectedTasks}"
+									name="displayOnlySelectedTasksName" />
+
+								<intranda:formInputCheckBox
+									label="#{msgs.displayOnlyOpenTasks}"
+									id="displayOnlyOpenTasks"
+									field="#{LoginForm.myBenutzer.displayOnlyOpenTasks}"
+									help="#{msgs.helpDisplayOnlyOpenTasks}"
+									name="displayOnlyOpenTasksName" />
+
+								<intranda:formInputCheckBox
+									id="helpDisplayOtherTasks"
+									label="#{msgs.showTasksFromOtherUsers}"
+									field="#{LoginForm.myBenutzer.displayOtherTasks}"
+									help="#{msgs.helpDisplayOtherTasks}"
+									name="helpDisplayOtherTasksName" />
+
+								<intranda:formInputCheckBox
+									id="displayAutomaticTasks"
+									label="#{msgs.displayAutomaticTasks}"
+									field="#{LoginForm.myBenutzer.displayAutomaticTasks}"
+									help="#{msgs.helpDisplayAutomaticTasks}"
+									name="displayAutomaticTasksName" />
+
+								<intranda:formInputDropDown
+									label="#{msgs.defaultSortField}"
+									id="taskSortField"
+									field="#{LoginForm.myBenutzer.taskListDefaultSortingField}"
+									help="#{msgs.helpTaskListDefaultSortField}"
+									name="taskSortFieldName"
+									selectItems="#{LoginForm.myBenutzer.taskListColumnNames}"
+									required="false" />
+
+
+								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param name="labelFor" value="taskDefaultSortOrder" />
-											<ui:param name="labelRequired" value="false" />
-											<ui:param name="labelLabel" value="#{msgs.defaultSortOrder}" />
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_label.xhtml">
+											<ui:param
+												name="labelFor"
+												value="taskDefaultSortOrder" />
+											<ui:param
+												name="labelRequired"
+												value="false" />
+											<ui:param
+												name="labelLabel"
+												value="#{msgs.defaultSortOrder}" />
 										</ui:include>
-									</div> 
-						
+									</div>
+
 									<div class="col-12 col-md-9">
 										<h:selectOneRadio
-	                                         id="taskDefaultSortOrder"
-	                                         value="#{LoginForm.myBenutzer.taskListDefaultSortOrder}"
-	                                         disabledClass="ms-3 me-5"
-	                                         enabledClass="ms-3 me-5">
-	                                         <f:selectItem
-	                                             itemLabel="#{msgs.defaultSortFieldAsc}"
-	                                             itemValue="Asc" />
-	                                         <f:selectItem
-	                                             itemLabel="#{msgs.defaultSortFieldDesc}"
-	                                             itemValue="Desc" />
-	                                     </h:selectOneRadio>
-										
-										<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param name="msgFor" value="taskDefaultSortOrder" />
-											<ui:param name="helpContent" value="#{msgs.helpTaskDefaultSortOrder}" />
+											id="taskDefaultSortOrder"
+											value="#{LoginForm.myBenutzer.taskListDefaultSortOrder}"
+											disabledClass="ms-3 me-5"
+											enabledClass="ms-3 me-5">
+											<f:selectItem
+												itemLabel="#{msgs.defaultSortFieldAsc}"
+												itemValue="Asc" />
+											<f:selectItem
+												itemLabel="#{msgs.defaultSortFieldDesc}"
+												itemValue="Desc" />
+										</h:selectOneRadio>
+
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_help.xhtml">
+											<ui:param
+												name="msgFor"
+												value="taskDefaultSortOrder" />
+											<ui:param
+												name="helpContent"
+												value="#{msgs.helpTaskDefaultSortOrder}" />
 										</ui:include>
 									</div>
 								</div>
-								
-		          			</h:panelGroup>
-		          			
-		          			
-		          			<!-- TAB 5 -->
-		          			<h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab5'}">
-		          				<intranda:formInputText
-	                                label="#{msgs.spracheFuerMetadaten}"
-	                                id="spracheFuerMetadaten"
-	                                field="#{LoginForm.myBenutzer.metadatenSprache}"
-	                                help="#{msgs.helpSpracheFuerMetadaten}"
-	                                name="spracheFuerMetadatenName"
-	                                required="false" />
-	
-	                            <!-- <intranda:formInputText label="#{msgs.metadataSaveTime}" field="#{LoginForm.myBenutzer.metsEditorTime}" help="#{msgs.helpMetadataSaveTime}" name="metadataSaveTime" /> -->
-	
-	                            <script>
-	                                gwFocusOnLoad.init('[id*="spracheFuerMetadaten"]')
-	                            </script>
-	
-	                            <div class="row">
+
+							</h:panelGroup>
+
+
+							<!-- TAB 5 -->
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config eq 'tab5'}">
+								<intranda:formInputText
+									label="#{msgs.spracheFuerMetadaten}"
+									id="spracheFuerMetadaten"
+									field="#{LoginForm.myBenutzer.metadatenSprache}"
+									help="#{msgs.helpSpracheFuerMetadaten}"
+									name="spracheFuerMetadatenName"
+									required="false" />
+
+								<!-- <intranda:formInputText label="#{msgs.metadataSaveTime}" field="#{LoginForm.myBenutzer.metsEditorTime}" help="#{msgs.helpMetadataSaveTime}" name="metadataSaveTime" /> -->
+
+								<script>
+									gwFocusOnLoad
+											.init('[id*="spracheFuerMetadaten"]')
+								</script>
+
+								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param name="labelFor" value="metadataSaveTime" />
-											<ui:param name="labelRequired" value="true" />
-											<ui:param name="labelLabel" value="#{msgs.metadataSaveTime}" />
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_label.xhtml">
+											<ui:param
+												name="labelFor"
+												value="metadataSaveTime" />
+											<ui:param
+												name="labelRequired"
+												value="true" />
+											<ui:param
+												name="labelLabel"
+												value="#{msgs.metadataSaveTime}" />
 										</ui:include>
-									</div> 
-						
+									</div>
+
 									<div class="col-12 col-md-9">
-										 <x:inputText
-	                                        id="metadataSaveTime"
-	                                        forceId="true"
-	                                        styleClass="form-control"
-	                                        value="#{LoginForm.myBenutzer.metsEditorTime}"
-	                                        required="true">
-	                                        <f:validator validatorId="org.goobi.validator.TimeValidator" />
-	                                    </x:inputText>
-										
-										<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param name="msgFor" value="metadataSaveTime" />
-											<ui:param name="helpContent" value="#{msgs.helpMetadataSaveTime}" />
+										<x:inputText
+											id="metadataSaveTime"
+											forceId="true"
+											styleClass="form-control"
+											value="#{LoginForm.myBenutzer.metsEditorTime}"
+											required="true">
+											<f:validator validatorId="org.goobi.validator.TimeValidator" />
+										</x:inputText>
+
+										<ui:include
+											src="/uii/templatePG/includes/forms/form_help.xhtml">
+											<ui:param
+												name="msgFor"
+												value="metadataSaveTime" />
+											<ui:param
+												name="helpContent"
+												value="#{msgs.helpMetadataSaveTime}" />
 										</ui:include>
 									</div>
 								</div>
-	                          
-	                            <intranda:formInputDropDown
-	                                label="#{msgs.metadataShortcut}"
-	                                id="shortcut"
-	                                field="#{LoginForm.myBenutzer.shortcutPrefix}"
-	                                help="#{msgs.helpMetseditorShortcut}"
-	                                name="shortcutName"
-	                                selectItems="#{HelperForm.possibleShortcuts}"
-	                                required="false"/>
-	
-	                            <intranda:formInputCheckBox
-	                                label="#{msgs.mets_treeTitle}"
-	                                id="metsDisplayTitle"
-	                                field="#{LoginForm.myBenutzer.metsDisplayTitle}"
-	                                help="#{msgs.helpMetsDisplayTitle}"
-	                                name="metsDisplayTitleName" />
-	
-	                            <intranda:formInputCheckBox
-	                                id="metsLinkImage"
-	                                label="#{msgs.verlinkungDesBildesMitStrukturelement}"
-	                                field="#{LoginForm.myBenutzer.metsLinkImage}"
-	                                help="#{msgs.helpMetsLinkImage}"
-	                                name="metsLinkImageName" />
-	
-	                            <intranda:formInputCheckBox
-	                                label="#{msgs.mets_treePageNumber}"
-	                                id="metsDisplayPageAssignments"
-	                                field="#{LoginForm.myBenutzer.metsDisplayPageAssignments}"
-	                                help="#{msgs.helpMetsDisplayPageAssignments}"
-	                                name="metsDisplayPageAssignmentsName" />
-	
-	                            <intranda:formInputCheckBox
-	                                label="#{msgs.mets_treelevel}"
-	                                id="metsDisplayHierarchy"
-	                                field="#{LoginForm.myBenutzer.metsDisplayHierarchy}"
-	                                help="#{msgs.helpMetsDisplayHierarchy}"
-	                                name="metsDisplayHierarchyName" />
-	
-	                            <intranda:formInputCheckBox
-	                                label="#{msgs.mets_displayProcessID}"
-	                                id="metsDisplayProcessID"
-	                                field="#{LoginForm.myBenutzer.metsDisplayProcessID}"
-	                                help="#{msgs.helpMetsDisplayProcessID}"
-	                                name="metsDisplayProcessIDName" />
-		          			</h:panelGroup>
-		          			
-		          			
-		          			<!-- TAB 6 -->
-		          			<h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab6'}">
-		          				 <ui:include src="includes/user_config_mail_configuration.xhtml" />
-		          			</h:panelGroup>
-	          			</div>
-	                
-	                    <div class="box__actions">
-	                        <!-- Cancel -->
-	                        <h:link
-	                            id="cancel"
-	                            styleClass="btn btn-blank"
-	                            outcome="index"
-	                            value="#{msgs.abbrechen}" />
-	                            
-	                        <!-- Save -->
-	                        <button
-	                            class="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
-	                            jsf:id="absenden"
-	                            jsf:action="#{LoginForm.BenutzerkonfigurationSpeichern}">
-	                            <i class="fa fa-save"></i>
-	                            <span>
-		                            <h:outputText value="#{msgs.speichern}" />
-	                            </span>
-	                        </button>
-	                    </div>
-	    
-	               	</intranda:box>
-                       
-                </div>
-            </main>
-        </h:form>
-    </ui:define>
+
+								<intranda:formInputDropDown
+									label="#{msgs.metadataShortcut}"
+									id="shortcut"
+									field="#{LoginForm.myBenutzer.shortcutPrefix}"
+									help="#{msgs.helpMetseditorShortcut}"
+									name="shortcutName"
+									selectItems="#{HelperForm.possibleShortcuts}"
+									required="false" />
+
+								<intranda:formInputCheckBox
+									label="#{msgs.mets_treeTitle}"
+									id="metsDisplayTitle"
+									field="#{LoginForm.myBenutzer.metsDisplayTitle}"
+									help="#{msgs.helpMetsDisplayTitle}"
+									name="metsDisplayTitleName" />
+
+								<intranda:formInputCheckBox
+									id="metsLinkImage"
+									label="#{msgs.verlinkungDesBildesMitStrukturelement}"
+									field="#{LoginForm.myBenutzer.metsLinkImage}"
+									help="#{msgs.helpMetsLinkImage}"
+									name="metsLinkImageName" />
+
+								<intranda:formInputCheckBox
+									label="#{msgs.mets_treePageNumber}"
+									id="metsDisplayPageAssignments"
+									field="#{LoginForm.myBenutzer.metsDisplayPageAssignments}"
+									help="#{msgs.helpMetsDisplayPageAssignments}"
+									name="metsDisplayPageAssignmentsName" />
+
+								<intranda:formInputCheckBox
+									label="#{msgs.mets_treelevel}"
+									id="metsDisplayHierarchy"
+									field="#{LoginForm.myBenutzer.metsDisplayHierarchy}"
+									help="#{msgs.helpMetsDisplayHierarchy}"
+									name="metsDisplayHierarchyName" />
+
+								<intranda:formInputCheckBox
+									label="#{msgs.mets_displayProcessID}"
+									id="metsDisplayProcessID"
+									field="#{LoginForm.myBenutzer.metsDisplayProcessID}"
+									help="#{msgs.helpMetsDisplayProcessID}"
+									name="metsDisplayProcessIDName" />
+							</h:panelGroup>
+
+
+							<!-- TAB 6 -->
+							<h:panelGroup
+								rendered="#{NavigationForm.uiStatus.user_config eq 'tab6'}">
+								<ui:include src="includes/user_config_mail_configuration.xhtml" />
+							</h:panelGroup>
+						</div>
+
+						<div class="box__actions">
+							<!-- Cancel -->
+							<h:link
+								id="cancel"
+								styleClass="btn btn-blank"
+								outcome="index"
+								value="#{msgs.abbrechen}" />
+
+							<!-- Save -->
+							<button
+								class="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
+								jsf:id="absenden"
+								jsf:action="#{LoginForm.BenutzerkonfigurationSpeichern}">
+								<i class="fa fa-save"></i>
+								<span>
+									<h:outputText value="#{msgs.speichern}" />
+								</span>
+							</button>
+						</div>
+
+					</intranda:box>
+
+				</div>
+			</main>
+		</h:form>
+	</ui:define>
 
 </ui:composition>
