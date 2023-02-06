@@ -378,8 +378,8 @@ public class FileManipulation {
             try {
                 int index = Integer.parseInt(fileIndex);
                 filenamesToMove.add(allPages.get(index - 1).getImageName());
-            } catch (NumberFormatException e) {
-
+            } catch (NumberFormatException exception) {
+                log.error(exception);
             }
         }
         String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
@@ -387,16 +387,16 @@ public class FileManipulation {
         if (!StorageProvider.getInstance().isFileExists(fileuploadFolder)) {
             try {
                 StorageProvider.getInstance().createDirectories(fileuploadFolder);
-            } catch (IOException e) {
-                log.error(e);
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
         Path destination = Paths.get(fileuploadFolder.toString() + FileSystems.getDefault().getSeparator() + metadataBean.getMyProzess().getTitel());
         if (!StorageProvider.getInstance().isFileExists(destination)) {
             try {
                 StorageProvider.getInstance().createDirectories(destination);
-            } catch (IOException e) {
-                log.error(e);
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
 

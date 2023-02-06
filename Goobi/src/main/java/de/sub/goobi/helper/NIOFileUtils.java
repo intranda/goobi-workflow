@@ -134,7 +134,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -158,7 +158,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                     fileNames.add(path);
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException exception) {
+            log.error(exception);
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -174,7 +175,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                     fileNames.add(path);
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException exception) {
+            log.error(exception);
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -190,7 +192,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                     fileNames.add(path.getFileName().toString());
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException exception) {
+            log.error(exception);
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -206,7 +209,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                     fileNames.add(path.getFileName().toString());
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException exception) {
+            log.error(exception);
         }
         Collections.sort(fileNames);
         return fileNames;

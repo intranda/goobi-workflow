@@ -37,6 +37,7 @@ import org.goobi.production.flow.statistics.hibernate.StatQuestUsergroups;
 import org.goobi.production.flow.statistics.hibernate.StatQuestVolumeStatus;
 
 import de.sub.goobi.helper.Helper;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Enum for all statistic modes,
@@ -48,6 +49,7 @@ import de.sub.goobi.helper.Helper;
  * @version 20.10.2009
  ****************************************************************************/
 
+@Log4j2
 public enum StatisticsMode {
 
     SIMPLE_RUNTIME_STEPS("runtimeOfSteps", null, false, true, false),
@@ -77,7 +79,8 @@ public enum StatisticsMode {
 
                 question = inQuestion.getDeclaredConstructor().newInstance();
             } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException
-                    | IllegalAccessException e) {
+                    | IllegalAccessException exception) {
+                log.error(exception);
             }
         }
         this.renderIncludeLoops = renderIncludeLoops;

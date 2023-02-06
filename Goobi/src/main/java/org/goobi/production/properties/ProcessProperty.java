@@ -151,9 +151,7 @@ public class ProcessProperty implements IProperty, Serializable {
      */
 
     public void save(Step step) {
-        if (this.prozesseigenschaft != null) {
-
-        }
+        // TODO: Is this method required?
     }
 
     /*

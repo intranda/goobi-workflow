@@ -468,7 +468,7 @@ public class MassImportForm implements Serializable {
                 return "";
             }
         } // END if (testForData()) AT LINE 319
-        // missing data
+          // missing data
         else {
             Helper.setFehlerMeldung("missingData");
             return "";
@@ -751,6 +751,7 @@ public class MassImportForm implements Serializable {
             }
 
         } catch (Exception e) {
+            log.error(e);
         }
         return null;
     }

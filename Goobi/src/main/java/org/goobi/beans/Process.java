@@ -1351,7 +1351,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             method = this.getClass().getMethod(methodName);
             Object o = method.invoke(this);
             return (String) o;
-        } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+        } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException
+                | InvocationTargetException exception) {
+            log.error(exception);
         }
 
         try {
@@ -1364,8 +1366,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                     return folder;
                 }
             }
-        } catch (SwapException | IOException e) {
-
+        } catch (SwapException | IOException exception) {
+            log.error(exception);
         }
 
         return null;

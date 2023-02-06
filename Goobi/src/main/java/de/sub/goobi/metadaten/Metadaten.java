@@ -636,8 +636,8 @@ public class Metadaten implements Serializable {
                         Metadata md = new Metadata(mdt);
                         md.setValue(String.valueOf(this.pagesRTL));
                         logical.addMetadata(md);
-                    } catch (MetadataTypeNotAllowedException e) {
-
+                    } catch (MetadataTypeNotAllowedException exception) {
+                        log.error(exception);
                     }
                 }
             }
@@ -668,8 +668,8 @@ public class Metadaten implements Serializable {
                     md.setValue("");
                 }
                 this.document.getPhysicalDocStruct().addMetadata(md);
-            } catch (MetadataTypeNotAllowedException e) {
-
+            } catch (MetadataTypeNotAllowedException exception) {
+                log.error(exception);
             }
 
         }
@@ -1651,8 +1651,8 @@ public class Metadaten implements Serializable {
                         Integer value = Integer.valueOf(md.getValue());
                         currentRepresentativePage = String.valueOf(value);
                         updateRepresentativePage();
-                    } catch (Exception e) {
-
+                    } catch (Exception exception) {
+                        log.warn(exception);
                     }
                 }
             }
@@ -1667,8 +1667,8 @@ public class Metadaten implements Serializable {
                         try {
                             Boolean value = Boolean.valueOf(md.getValue());
                             this.pagesRTL = value;
-                        } catch (Exception e) {
-
+                        } catch (Exception exception) {
+                            log.warn(exception);
                         }
                     }
                 }
@@ -3499,8 +3499,8 @@ public class Metadaten implements Serializable {
         try {
             int localPageNumber = Integer.parseInt(this.pageSelectionLastPage) - this.bildNummer + 1; // a field named "pageNumber" is already declared at line 403
             setImageIndex(localPageNumber - 1);
-        } catch (Exception e) {
-
+        } catch (Exception exception) {
+            log.warn(exception);
         }
         return "";
     }

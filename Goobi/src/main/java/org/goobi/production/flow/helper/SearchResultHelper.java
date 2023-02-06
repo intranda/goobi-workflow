@@ -55,7 +55,9 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class SearchResultHelper {
 
     @Getter
@@ -225,7 +227,8 @@ public class SearchResultHelper {
         Table table = null;
         try {
             table = new Table(columnList.size());
-        } catch (BadElementException e1) {
+        } catch (BadElementException exception) {
+            log.error(exception);
         }
         if (table != null) {
             table.setBorderWidth(1);
@@ -247,7 +250,8 @@ public class SearchResultHelper {
         }
         try {
             document.add(table);
-        } catch (DocumentException e) {
+        } catch (DocumentException exception) {
+            log.error(exception);
         }
 
         document.close();

@@ -662,8 +662,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         try {
 
             outp.output(answer, outputStream);
-        } catch (IOException e) {
-
+        } catch (IOException exception) {
+            log.error(exception);
         } finally {
             if (outputStream != null) {
                 try {
@@ -699,8 +699,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         try {
 
             outp.output(answer, outputStream);
-        } catch (IOException e) {
-
+        } catch (IOException exception) {
+            log.error(exception);
         } finally {
             if (outputStream != null) {
                 try {
@@ -770,8 +770,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     nss.add(ns);
                 }
             }
-        } catch (Exception e) {
-
+        } catch (Exception exception) {
+            log.error(exception);
         }
         return nss;
 

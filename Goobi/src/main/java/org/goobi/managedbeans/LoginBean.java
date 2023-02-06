@@ -421,7 +421,8 @@ public class LoginBean implements Serializable {
                     if (System.currentTimeMillis() - StorageProvider.getInstance().getLastModifiedDate(file) > 7200000) {
                         StorageProvider.getInstance().deleteDir(file);
                     }
-                } catch (IOException e) {
+                } catch (IOException exception) {
+                    log.warn(exception);
                 }
             }
         }

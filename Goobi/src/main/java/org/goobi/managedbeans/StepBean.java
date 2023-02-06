@@ -362,7 +362,8 @@ public class StepBean extends BasicBean implements Serializable {
         try {
             mySchritt = StepManager.getStepById(mySchritt.getId());
             mySchritt.lazyLoad();
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            log.error(exception);
         }
 
         return "task_edit";
@@ -670,7 +671,8 @@ public class StepBean extends BasicBean implements Serializable {
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */
             ProcessManager.saveProcessInformation(this.mySchritt.getProzess());
-        } catch (DAOException e) {
+        } catch (DAOException exception) {
+            log.error(exception);
         }
 
         this.problemMessage = "";
@@ -770,7 +772,8 @@ public class StepBean extends BasicBean implements Serializable {
                 ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(temp);
                 myThread.startOrPutToQueue();
             }
-        } catch (DAOException e) {
+        } catch (DAOException exception) {
+            log.error(exception);
         }
 
         this.solutionMessage = "";
@@ -796,8 +799,8 @@ public class StepBean extends BasicBean implements Serializable {
     public String DownloadToHome() {
         try {
             Paths.get(this.mySchritt.getProzess().getImagesOrigDirectory(true));
-        } catch (Exception e1) {
-
+        } catch (Exception exception) {
+            log.error(exception);
         }
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = Helper.getCurrentUser();

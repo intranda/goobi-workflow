@@ -40,7 +40,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import de.sub.goobi.forms.SessionForm;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class SessionCounterFilter implements Filter {
     ServletContext servletContext;
 
@@ -58,8 +60,8 @@ public class SessionCounterFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         try {
             sf.updateSessionLastAccess(httpReq.getSession());
-        } catch (Exception e) {
-
+        } catch (Exception exception) {
+            log.warn(exception);
         }
         chain.doFilter(request, response);
     }

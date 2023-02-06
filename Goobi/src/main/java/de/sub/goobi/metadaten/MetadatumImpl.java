@@ -947,8 +947,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
             }
             return use;
-        } catch (IllegalArgumentException e) {
-
+        } catch (IllegalArgumentException exception) {
+            log.warn(exception);
         }
         return null;
     }

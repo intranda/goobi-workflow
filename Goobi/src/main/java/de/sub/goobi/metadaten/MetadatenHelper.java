@@ -815,10 +815,8 @@ public class MetadatenHelper implements Comparator<Object> {
                     ff.setPrefs(ruleset.getPreferences());
                     return ff;
                 }
-            } catch (InstantiationException e) {
-            } catch (IllegalAccessException e) {
-            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            } catch (PreferencesException e) {
+            } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchMethodException
+                    | PreferencesException | SecurityException e) {
                 log.error(e);
             }
 
@@ -836,10 +834,8 @@ public class MetadatenHelper implements Comparator<Object> {
                     ff.setPrefs(ruleset.getPreferences());
                     return ff;
                 }
-            } catch (InstantiationException e) {
-            } catch (IllegalAccessException e) {
-            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            } catch (PreferencesException e) {
+            } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchMethodException
+                    | PreferencesException | SecurityException e) {
                 log.error(e);
             }
 

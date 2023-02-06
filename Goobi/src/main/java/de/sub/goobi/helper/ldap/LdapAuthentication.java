@@ -189,14 +189,16 @@ public class LdapAuthentication {
                     try {
                         // Tear down TLS connection
                         tls.close();
-                    } catch (IOException e) {
+                    } catch (IOException exception) {
+                        log.warn(exception);
                     }
                 }
                 if (ctx != null) {
                     try {
                         // Close LDAP connection
                         ctx.close();
-                    } catch (NamingException e) {
+                    } catch (NamingException exception) {
+                        log.warn(exception);
                     }
                 }
             }
@@ -318,14 +320,16 @@ public class LdapAuthentication {
                     try {
                         // Tear down TLS connection
                         tls.close();
-                    } catch (IOException e) {
+                    } catch (IOException exception) {
+                        log.warn(exception);
                     }
                 }
                 if (ctx != null) {
                     try {
                         // Close LDAP connection
                         ctx.close();
-                    } catch (NamingException e) {
+                    } catch (NamingException exception) {
+                        log.warn(exception);
                     }
                 }
             }
@@ -511,14 +515,16 @@ public class LdapAuthentication {
                     try {
                         // Tear down TLS connection
                         tls.close();
-                    } catch (IOException e) {
+                    } catch (IOException exception) {
+                        log.warn(exception);
                     }
                 }
                 if (ctx != null) {
                     try {
                         // Close LDAP connection
                         ctx.close();
-                    } catch (NamingException e) {
+                    } catch (NamingException exception) {
+                        log.warn(exception);
                     }
                 }
             }

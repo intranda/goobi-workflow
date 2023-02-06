@@ -378,7 +378,8 @@ public class UserBean extends BasicBean implements Serializable {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException exception) {
+            log.error(exception);
         }
         return valide;
     }

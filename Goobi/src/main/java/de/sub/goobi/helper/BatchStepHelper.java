@@ -557,6 +557,7 @@ public class BatchStepHelper implements Serializable {
              */
             ProcessManager.saveProcessInformation(currentStep.getProzess());
         } catch (DAOException e) {
+            log.error(e);
         }
     }
 
@@ -680,6 +681,7 @@ public class BatchStepHelper implements Serializable {
              */
             ProcessManager.saveProcessInformation(currentStep.getProzess());
         } catch (DAOException e) {
+            log.error(e);
         }
     }
 
@@ -774,6 +776,7 @@ public class BatchStepHelper implements Serializable {
             try {
                 StepManager.saveStep(s);
             } catch (DAOException e) {
+                log.error(e);
             }
         }
         return sb.FilterAlleStart();

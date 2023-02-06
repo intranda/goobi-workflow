@@ -385,7 +385,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         if (bearbeitungsbenutzer == null && userId != null) {
             try {
                 bearbeitungsbenutzer = UserManager.getUserById(userId);
-            } catch (DAOException e) {
+            } catch (DAOException exception) {
+                log.error(exception);
             }
         }
         return this.bearbeitungsbenutzer;
@@ -687,8 +688,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         if (userId != null) {
             try {
                 bearbeitungsbenutzer = UserManager.getUserById(userId);
-            } catch (DAOException e) {
-
+            } catch (DAOException exception) {
+                log.error(exception);
             }
         }
         // Eigenschaften

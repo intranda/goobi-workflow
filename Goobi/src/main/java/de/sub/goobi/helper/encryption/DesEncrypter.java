@@ -2,6 +2,7 @@ package de.sub.goobi.helper.encryption;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
@@ -18,6 +19,9 @@ import javax.crypto.spec.PBEParameterSpec;
 
 import org.apache.commons.codec.binary.Base64;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class DesEncrypter {
     Cipher ecipher;
     Cipher dcipher;
@@ -50,11 +54,9 @@ public class DesEncrypter {
             // Create the ciphers
             this.ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             this.dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
-        } catch (InvalidAlgorithmParameterException e) {
-        } catch (InvalidKeySpecException e) {
-        } catch (NoSuchPaddingException e) {
-        } catch (NoSuchAlgorithmException e) {
-        } catch (java.security.InvalidKeyException e) {
+        } catch (InvalidAlgorithmParameterException | InvalidKeyException | InvalidKeySpecException | NoSuchAlgorithmException
+                | NoSuchPaddingException exception) {
+            log.error(exception);
         }
     }
 
@@ -74,6 +76,7 @@ public class DesEncrypter {
             // Encode bytes to base64 to get a string
             return new String(Base64.encodeBase64(enc));
         } catch (BadPaddingException | IllegalBlockSizeException exception) {
+            log.error(exception);
         }
         return null;
     }
@@ -87,8 +90,8 @@ public class DesEncrypter {
             byte[] utf8 = this.dcipher.doFinal(dec);
             // Decode using utf-8
             return new String(utf8, StandardCharsets.UTF_8);
-        } catch (BadPaddingException exception) {
-        } catch (IllegalBlockSizeException exception) {
+        } catch (BadPaddingException | IllegalBlockSizeException exception) {
+            log.error(exception);
         }
         return null;
     }

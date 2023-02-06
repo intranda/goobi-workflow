@@ -618,8 +618,7 @@ public class GetOpac {
         HttpGet opacRequest = null;
         opacRequest = new HttpGet(cat.getProtocol() + this.cat.getServerAddress() + url + this.cat.getCbs());
 
-        if (this.cat.getPort() == 80) {
-        } else {
+        if (this.cat.getPort() != 80) {
             opacRequest = new HttpGet(cat.getProtocol() + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
 
         }

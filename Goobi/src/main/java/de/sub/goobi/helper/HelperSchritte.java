@@ -127,12 +127,12 @@ public class HelperSchritte {
 
         currentStep.setBearbeitungszeitpunkt(myDate);
         try {
-            User ben = Helper.getCurrentUser();
-            if (ben != null) {
-                currentStep.setBearbeitungsbenutzer(ben);
+            User user = Helper.getCurrentUser();
+            if (user != null) {
+                currentStep.setBearbeitungsbenutzer(user);
             }
         } catch (Exception e) {
-
+            log.warn(e);
         }
         currentStep.setBearbeitungsende(myDate);
         try {

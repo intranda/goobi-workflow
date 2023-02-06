@@ -870,7 +870,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         for (User b : this.mySchritt.getBenutzerList()) {
             try {
                 myDav.UploadFromHome(b, this.mySchritt.getProzess());
-            } catch (RuntimeException e) {
+            } catch (RuntimeException exception) {
+                log.warn(exception);
             }
         }
         /* alle Benutzergruppen mit ihren Benutzern */
@@ -878,7 +879,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             for (User b : bg.getBenutzer()) {
                 try {
                     myDav.UploadFromHome(b, this.mySchritt.getProzess());
-                } catch (RuntimeException e) {
+                } catch (RuntimeException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -2044,8 +2046,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (IOException e) {
-
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
     }
@@ -2085,15 +2087,15 @@ public class ProcessBean extends BasicBean implements Serializable {
                 }
 
                 facesContext.responseComplete();
-            } catch (Exception e) {
-
+            } catch (Exception exception) {
+                log.error(exception);
             } finally {
                 try {
                     if (csvFilePrinter != null) {
                         csvFilePrinter.close();
                     }
-                } catch (IOException e) {
-
+                } catch (IOException exception) {
+                    log.error(exception);
                 }
             }
         }
@@ -2179,7 +2181,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (Exception e) {
+            } catch (Exception exception) {
+                log.error(exception);
             }
         }
     }
@@ -2206,8 +2209,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (IOException e) {
-
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
     }
@@ -2233,8 +2236,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (IOException e) {
-
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
     }
@@ -2258,8 +2261,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (IOException e) {
-
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
     }

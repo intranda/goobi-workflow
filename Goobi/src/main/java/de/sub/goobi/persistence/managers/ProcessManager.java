@@ -395,8 +395,6 @@ public class ProcessManager implements IManager, Serializable {
         if (!rs.wasNull()) {
             Batch batch = ProcessMysqlHelper.loadBatch(batchID);
             p.setBatch(batch);
-
-        } else {
         }
         p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
         String exportValidatorRs = rs.getString("exportValidator");

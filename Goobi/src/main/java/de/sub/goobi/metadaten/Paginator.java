@@ -34,11 +34,13 @@ import org.goobi.pagination.RomanNumberSequence;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.RomanNumeral;
 
 /**
  * Sets new labels to a given set of pages.
  */
+@Log4j2
 public class Paginator {
 
     public enum Mode {
@@ -329,7 +331,8 @@ public class Paginator {
             try {
                 r.setValue(paginationStartValue.toUpperCase());
                 paginationBaseValue = r.intValue();
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException exception) {
+                log.warn(exception);
             }
         }
         return paginationBaseValue;

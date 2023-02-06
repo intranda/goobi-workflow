@@ -254,7 +254,8 @@ public class UghHelper {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException exception) {
+            log.error(exception);
         }
         return inLanguage;
     }
