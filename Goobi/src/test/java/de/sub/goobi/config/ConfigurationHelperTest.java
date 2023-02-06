@@ -1113,7 +1113,7 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testIsMetsEditorValidateImages() {
-        assertFalse(ConfigurationHelper.getInstance().isMetsEditorValidateImages());
+        assertTrue(ConfigurationHelper.getInstance().isMetsEditorValidateImages());
     }
 
     @Test
