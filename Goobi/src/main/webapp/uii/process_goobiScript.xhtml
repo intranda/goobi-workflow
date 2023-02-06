@@ -1,258 +1,472 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
-	
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
 	<script type="text/javascript">
-        	function switchExpanded(id){
-        		console.log("called by: "+id);
-				var x = document.getElementById(id).getAttribute("aria-expanded"); 
-				console.log(x)
-				if (x == "true"){
-					x = "false"
-				} else {
-					x = "true"
-				}
-				document.getElementById(id).setAttribute("aria-expanded", x);
-        	}
-        </script>
-    <ui:param name="myPageTitle" value="#{msgs.goobiScriptAusfuehren}" />
+		function switchExpanded(id) {
+			console.log("called by: " + id);
+			var x = document.getElementById(id).getAttribute("aria-expanded");
+			console.log(x)
+			if (x == "true") {
+				x = "false"
+			} else {
+				x = "true"
+			}
+			document.getElementById(id).setAttribute("aria-expanded", x);
+		}
+	</script>
+	<ui:param
+		name="myPageTitle"
+		value="#{msgs.goobiScriptAusfuehren}" />
 
-    <ui:define name="title">
-        <h:outputText value="#{myPageTitle}" />
-    </ui:define>
+	<ui:define name="title">
+		<h:outputText value="#{myPageTitle}" />
+	</ui:define>
 
-    <ui:define name="breadcrumb">
-        <intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb
+			id="id2"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index"
+			navId="a0" />
 		<c:if test="#{LoginForm.hasRole('Workflow_Processes')}">
-			<intranda:breadcrumb id="processAll" label="#{msgs.aktuelleProzesse}" action="process_all" navId="a1" />
+			<intranda:breadcrumb
+				id="processAll"
+				label="#{msgs.aktuelleProzesse}"
+				action="process_all"
+				navId="a1" />
 		</c:if>
-		<intranda:breadcrumb id="processEdit" label="#{msgs.goobiScriptAusfuehren}" action="process_goobiScript" noSeparator="#{true}" />
-    </ui:define>
+		<intranda:breadcrumb
+			id="processEdit"
+			label="#{msgs.goobiScriptAusfuehren}"
+			action="process_goobiScript"
+			noSeparator="#{true}" />
+	</ui:define>
 
-    <ui:define name="info">
-		<p:poll interval="5" update="header" />
-    </ui:define>
+	<ui:define name="info">
+		<p:poll
+			interval="5"
+			update="header" />
+	</ui:define>
 
-    <ui:define name="content">
+	<ui:define name="content">
 
-		<c:if test="#{LoginForm.hasRole('Workflow_Processes') and LoginForm.hasAnyGoobiScriptRole}">
-	        <div class="row">
-	            <div class="col-sm-12">
-	                <div class="box box-color box-bordered">
-	                    <div class="box-title">
-	                        <h3>
-	                            <i class="fa fa-tasks"></i>
-	                            <h:outputText value="#{myPageTitle}" />
-	                        </h3>
-	                    </div>
-	                    <div class="box-content nopadding">
-	                    	<div class="dataTables_wrapper">
-								<div class="dataTables_length" style="margin-bottom: 10px;">
-									<h:outputText value="#{msgs.treffer}: #{SessionForm.gsm.goobiScriptResultSize}" />
-									<h:outputText value=" - #{msgs.goobiScript_showMax}: #{SessionForm.gsm.showMax}" styleClass="font-light margin-left-10" rendered="#{SessionForm.gsm.goobiScriptResultSize gt SessionForm.gsm.showMax}" />
+		<c:if
+			test="#{LoginForm.hasRole('Workflow_Processes') and LoginForm.hasAnyGoobiScriptRole}">
+			<div class="row">
+				<div class="col-sm-12">
+
+
+					<intranda:box
+						boxType="primary"
+						boxPadding="true"
+						icon="fa-tasks"
+						title="#{myPageTitle}">
+
+
+
+						<!-- TABLE WRAPPER -->
+						<div class="gw-table gw-table-fixed">
+
+							<!-- SEARCH -->
+							<div class="gw-table__search">
+
+								<!-- HITS -->
+								<div class="gw-table__search__length">
+									<h:outputText
+										value="#{msgs.treffer}: #{SessionForm.gsm.goobiScriptResultSize}" />
+									<h:outputText
+										styleClass="ms-4"
+										value=" (#{msgs.goobiScript_showMax}: #{SessionForm.gsm.showMax})"
+										rendered="#{SessionForm.gsm.goobiScriptResultSize gt SessionForm.gsm.showMax}" />
 								</div>
-								
-								<h:form id="searchform">
-								
-									<div class="btn-group font-size-s pull-right margin-right-10 margin-top-10" data-toggle="tooltip" title="#{msgs.goobiScript_limitList}">
-							            <button id="searchFormDropdown" type="button" class="btn font-size-s dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)">
-							                <i class="fa fa-table margin-right-5" />
-							                <span class="caret"></span>
-							            </button>
-							
-							            <ul class="dropdown-menu">
-							                <li>
-							                    <button jsf:action="#{NavigationForm.Reload}" jsf:id="limitResults100" class="dropdown-item">
-							                        <h:outputText value="#{msgs.goobiScript_setMaxEntries} 100" />
-							                        <x:updateActionListener property="#{SessionForm.gsm.showMax}" value="100" />
-							                    </button>
-							                </li>
-							                <li>
-							                    <button jsf:action="#{NavigationForm.Reload}" jsf:id="limitResults1000" class="dropdown-item">
-							                        <h:outputText value="#{msgs.goobiScript_setMaxEntries} 1.000" />
-							                        <x:updateActionListener property="#{SessionForm.gsm.showMax}" value="1000" />
-							                    </button>
-							                </li>
-							                <li>
-							                    <button jsf:action="#{NavigationForm.Reload}" jsf:id="limitResults10000" class="dropdown-item">
-							                        <h:outputText value="#{msgs.goobiScript_setMaxEntries} 10.000" />
-							                        <x:updateActionListener property="#{SessionForm.gsm.showMax}" value="10000" />
-							                    </button>
-							                </li>
-							                <li>
-							                    <button jsf:action="#{NavigationForm.Reload}" jsf:id="limitResults1000000" class="dropdown-item">
-							                        <h:outputText value="#{msgs.goobiScript_setMaxEntries} 1.000.000" />
-							                        <x:updateActionListener property="#{SessionForm.gsm.showMax}" value="1000000" />
-							                    </button>
-							                </li>
-							            </ul>
-							
-							        </div>
-							        
-							        <!-- Reset button -->
-									<button jsf:id="resettop" class="btn font-size-s pull-right margin-right-10 margin-top-10" jsf:action="#{SessionForm.gsm.goobiScriptResultsReset}">
-										<i class="fa fa-trash margin-right-5"></i>
-										<h:outputText value="#{msgs.goobiScript_resetList}" />
-									</button>
-							        
-        						</h:form>
+								<!-- // HITS -->
 
-								<!-- Datentabelle -->
-		                    	<h:form id="allGoobiScripts">
-		                    		<p:poll interval="120" update="gsr" />
-                                    
-									<h:dataTable id="gsr"
-										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-										var="item" value="#{SessionForm.gsm.shortGoobiScriptResults}">
-	
-										<x:column styleClass="tableColumnWidthSmall">
-											<f:facet name="header">
-												<button jsf:id="sortProcessId" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
-												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_processId} #{SessionForm.gsm.sort=='id desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='id'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
-                                            	aria-sort="#{SessionForm.gsm.sort=='id desc'? 'descending' : SessionForm.gsm.sort=='id'? 'ascending' :'none'}">
-													<h:outputText value="#{msgs.goobiScript_processId}" />
-													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'id'?'id desc':'id'}" />
-	                                            	<span
-                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'id desc'?'fa-sort-desc':SessionForm.gsm.sort=='id'?'fa-sort-asc':'fa-sort'}"></span>
-	                                            </button>
-											</f:facet>
-											<h:outputText value="#{item.processId}" />
-										</x:column>
-	
-										<x:column styleClass="tableColumnWidthMid">
-											<f:facet name="header">
-												<button jsf:id="sortProcessTitle" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
-												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_processTitle} #{SessionForm.gsm.sort=='title desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='title'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
-                                            	aria-sort="#{SessionForm.gsm.sort=='title desc'? 'descending' : SessionForm.gsm.sort=='title'? 'ascending' :'none'}">
-													<h:outputText value="#{msgs.goobiScript_processTitle}" />
-													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'title'?'title desc':'title'}" />
-	                                            	<span
-                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'title desc'?'fa-sort-desc':SessionForm.gsm.sort=='title'?'fa-sort-asc':'fa-sort'}"></span>
-	                                            </button>
-											</f:facet>
-											<h:outputText value="#{item.processTitle}" title="#{item.processTitle}" />
-										</x:column>
-										
-										<x:column styleClass="tableColumnOverflow maxWidth300">
-											<f:facet name="header">
-												<button jsf:id="sortCommand" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
-												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_command} #{SessionForm.gsm.sort=='command desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='command'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
-                                            	aria-sort="#{SessionForm.gsm.sort=='command desc'? 'descending' : SessionForm.gsm.sort=='command'? 'ascending' :'none'}">
-													<h:outputText value="#{msgs.goobiScript_command}" />
-													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'command'?'command desc':'command'}" />
-	                                            	<span
-                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'command desc'?'fa-sort-desc':SessionForm.gsm.sort=='command'?'fa-sort-asc':'fa-sort'}"></span>
-	                                            </button>
-											</f:facet>
-											<h:outputText value="#{item.command}" title="#{item.command}" />
-										</x:column>
-										
-										<x:column styleClass="tableColumnMaxWidthMid">
-											<f:facet name="header">
-												<button jsf:id="sortUser" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
-												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_user} #{SessionForm.gsm.sort=='user desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='user'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
-                                            	aria-sort="#{SessionForm.gsm.sort=='user desc'? 'descending' : SessionForm.gsm.sort=='user'? 'ascending' :'none'}">
-													<h:outputText value="#{msgs.goobiScript_user}" />
-													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'user'?'user desc':'user'}" />
-	                                            	<span
-                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'user desc'?'fa-sort-desc':SessionForm.gsm.sort=='user'?'fa-sort-asc':'fa-sort'}"></span>
-	                                            </button>
-											</f:facet>
-											<h:outputText value="#{item.username}" title="#{item.username}" />
-										</x:column>
-										
-										<x:column styleClass="tableColumnMaxWidthMid">
-											<f:facet name="header">
-												<button jsf:id="sortTimestamp" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
-												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_timestamp} #{SessionForm.gsm.sort=='timestamp desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='timestamp'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
-                                            	aria-sort="#{SessionForm.gsm.sort=='timestamp desc'? 'descending' : SessionForm.gsm.sort=='timestamp'? 'ascending' :'none'}">
-													<h:outputText value="#{msgs.goobiScript_timestamp}" />
-													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'timestamp'?'timestamp desc':'timestamp'}" />
-	                                            	<span
-                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'timestamp desc'?'fa-sort-desc':SessionForm.gsm.sort=='timestamp'?'fa-sort-asc':'fa-sort'}"></span>
-	                                            </button>
-											</f:facet>
-											<h:outputText value="#{item.formattedTimestamp}" title="#{item.formattedTimestamp}"  >
-<!-- 												<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-											</h:outputText>
-										</x:column>
-										
-										<x:column>
-											<f:facet name="header">
-												<button jsf:id="sortResultType" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
-												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_resultType} #{SessionForm.gsm.sort=='status desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='status'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
-                                            	aria-sort="#{SessionForm.gsm.sort=='status desc'? 'descending' : SessionForm.gsm.sort=='status'? 'ascending' :'none'}">
-													<h:outputText value="#{msgs.goobiScript_resultType}" />
-													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'status'?'status desc':'status'}" />
-	                                            	<span
-                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'status desc'?'fa-sort-desc':SessionForm.gsm.sort=='status'?'fa-sort-asc':'fa-sort'}"></span>
-	                                            </button>
-											</f:facet>
-											<span class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':item.resultType eq 'RUNNING'?'badge-intranda-blue':'badge-intranda-red'}">
-			                                    <i class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':item.resultType eq 'RUNNING'?'fa-play':'fa-exclamation-triangle'} margin-right-5"></i>
-			                                    #{msgs['goobiScript_status_'.concat(item.resultType)]}
-			                                </span>
-										</x:column>
-										
-										<x:column>
-											<f:facet name="header">
-												<button jsf:id="sortResultMessage" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
-												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_resultMessage} #{SessionForm.gsm.sort=='description desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='description'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
-                                            	aria-sort="#{SessionForm.gsm.sort=='description desc'? 'descending' : SessionForm.gsm.sort=='description'? 'ascending' :'none'}">
-													<h:outputText value="#{msgs.goobiScript_resultMessage}" />
-	                                            	<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'description'?'description desc':'description'}" />
-	                                            	<span
-                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'description desc'?'fa-sort-desc':SessionForm.gsm.sort=='description'?'fa-sort-asc':'fa-sort'}"></span>
-	                                            </button>
-											</f:facet>
-											<h:outputText value="#{item.resultMessage} #{item.errorText}" />
-										</x:column>
-										
-									</h:dataTable>
-								</h:form>
-								
-								<div class="dataTables_info">
-									<h:form>
-										<!-- Reset button -->
-										<button jsf:id="reset" class="btn font-size-s" jsf:action="#{SessionForm.gsm.goobiScriptResultsReset}">
-											<i class="fa fa-trash margin-right-5"></i>
-											<h:outputText value="#{msgs.goobiScript_resetList}" />
+								<!-- FILTER AREA -->
+								<div class="gw-table__filters">
+
+									<!-- LIMIT CONTENT -->
+									<h:form id="isActiveUsers">
+
+										<!-- RESET BUTTON -->
+										<button
+											jsf:id="resettop"
+											class="btn btn-blank trigger-delete me-2"
+											jsf:action="#{SessionForm.gsm.goobiScriptResultsReset}">
+											<i class="fa fa-trash-o"></i>
+											<span>
+												<h:outputText value="#{msgs.goobiScript_resetList}" />
+											</span>
 										</button>
+										<!-- // RESET BUTTON -->
+
+										<!-- DROPDOWN BUTTON -->
+										<div
+											class="d-inline"
+											title="#{msgs.goobiScript_limitList}"
+											data-bs-toggle="tooltip">
+											<button
+												jsf:id="additionalOptionsDropdown"
+												aria-label="Additional options"
+												aria-haspopup="true"
+												aria-expanded="false"
+												onclick="switchExpanded(this.id)"
+												type="button"
+												class="btn btn-blank dropdown-toggle"
+												data-bs-toggle="dropdown">
+												<i class="fa fa-table" />
+											</button>
+
+											<ul class="dropdown-menu">
+												<li>
+													<button
+														jsf:action="#{NavigationForm.Reload}"
+														jsf:id="limitResults2"
+														class="dropdown-item">
+														<span>
+															<h:outputText value="#{msgs.goobiScript_setMaxEntries} 2" />
+														</span>
+														<x:updateActionListener
+															property="#{SessionForm.gsm.showMax}"
+															value="2" />
+													</button>
+												</li>
+
+												<li>
+													<button
+														jsf:action="#{NavigationForm.Reload}"
+														jsf:id="limitResults100"
+														class="dropdown-item">
+														<span>
+															<h:outputText
+																value="#{msgs.goobiScript_setMaxEntries} 100" />
+														</span>
+														<x:updateActionListener
+															property="#{SessionForm.gsm.showMax}"
+															value="100" />
+													</button>
+												</li>
+												<li>
+													<button
+														jsf:action="#{NavigationForm.Reload}"
+														jsf:id="limitResults1000"
+														class="dropdown-item">
+														<span>
+															<h:outputText
+																value="#{msgs.goobiScript_setMaxEntries} 1.000" />
+														</span>
+														<x:updateActionListener
+															property="#{SessionForm.gsm.showMax}"
+															value="1000" />
+													</button>
+												</li>
+												<li>
+													<button
+														jsf:action="#{NavigationForm.Reload}"
+														jsf:id="limitResults10000"
+														class="dropdown-item">
+														<span>
+															<h:outputText
+																value="#{msgs.goobiScript_setMaxEntries} 10.000" />
+														</span>
+														<x:updateActionListener
+															property="#{SessionForm.gsm.showMax}"
+															value="10000" />
+													</button>
+												</li>
+												<li>
+													<button
+														jsf:action="#{NavigationForm.Reload}"
+														jsf:id="limitResults1000000"
+														class="dropdown-item">
+														<span>
+															<h:outputText
+																value="#{msgs.goobiScript_setMaxEntries} 1.000.000" />
+														</span>
+														<x:updateActionListener
+															property="#{SessionForm.gsm.showMax}"
+															value="1000000" />
+													</button>
+												</li>
+
+
+
+
+											</ul>
+										</div>
+										<!-- // DROPDOWN BUTTON -->
+
+
 									</h:form>
+									<!-- // LIMIT CONTENT -->
+
 								</div>
-								<div class="dataTables_paginate">
-									<h:form>
-									
-										<!-- Show process list with error records -->
-										<button jsf:id="list_error" class="btn font-size-s margin-right-5" style="margin-top:-7px;" jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('ERROR')}">
-											<i class="fa fa-exclamation-triangle margin-right-5"></i>
-											<h:outputText value="#{msgs.goobiScript_filterErrorProcesses}" />
-										</button>
-										
-										<!-- Show process list with waiting records -->
-										<button jsf:id="list_waiting" class="btn font-size-s margin-right-5" style="margin-top:-7px;" jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('WAITING')}">
-											<i class="fa fa-clock-o margin-right-5"></i>
-											<h:outputText value="#{msgs.goobiScript_filterWaitingProcesses}" />
-										</button>
-										
-										<!-- Show process list with successfull records -->
-										<button jsf:id="list_ok" class="btn font-size-s margin-right-5" style="margin-top:-7px;" jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('OK')}">
-											<i class="fa fa-check margin-right-5"></i>
-											<h:outputText value="#{msgs.goobiScript_filterOkProcesses}" />
-										</button>
-										
-										<!-- Download as excel button -->
-										<button jsf:id="excel" class="btn btn-blue font-size-s" style="margin-top:-7px;" jsf:action="#{SessionForm.gsm.goobiScriptResultsExcel}">
-											<i class="fa fa-file-excel-o margin-right-5"></i>
-											<h:outputText value="#{msgs.goobiScript_downloadExcel}" />
-										</button>
-									</h:form>
-								</div>
-								
+								<!-- // FILTER AREA -->
+
 							</div>
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-		</c:if> 
+							<!-- // SEARCH -->
 
-    </ui:define>
+							<!-- FORM -->
+							<h:form
+								id="myform"
+								prependId="false"
+								styleClass="table--scrollx">
+
+								<!-- TABLE -->
+								<div class="gw-table gw-table-fixed">
+
+									<div class="gw-table__wrapper">
+										<h:form id="allGoobiScripts">
+											<p:poll
+												interval="120"
+												update="gsr" />
+
+											<h:dataTable
+												id="gsr"
+												styleClass="table table-bordered table-fixed table-hover"
+												var="item"
+												value="#{SessionForm.gsm.shortGoobiScriptResults}">
+
+												<h:column headerClass="gw-table-fixed__sizeXXS">
+													<f:facet name="header">
+														<button
+															jsf:id="sortProcessId"
+															jsf:action="#{SessionForm.gsm.goobiScriptSort}"
+															class="column-header-sort"
+															aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_processId} #{SessionForm.gsm.sort=='id desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='id'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+															aria-sort="#{SessionForm.gsm.sort=='id desc'? 'descending' : SessionForm.gsm.sort=='id'? 'ascending' :'none'}">
+															<h:outputText value="#{msgs.goobiScript_processId}" />
+															<f:setPropertyActionListener
+																target="#{SessionForm.gsm.sort}"
+																value="#{SessionForm.gsm.sort eq 'id'?'id desc':'id'}" />
+															<span
+																class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'id desc'?'fa-sort-desc':SessionForm.gsm.sort=='id'?'fa-sort-asc':'fa-sort'}"></span>
+														</button>
+													</f:facet>
+													<h:outputText value="#{item.processId}" />
+												</h:column>
+
+												<h:column headerClass="gw-table-fixed__sizeXL">
+													<f:facet name="header">
+														<button
+															jsf:id="sortProcessTitle"
+															jsf:action="#{SessionForm.gsm.goobiScriptSort}"
+															class="column-header-sort"
+															aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_processTitle} #{SessionForm.gsm.sort=='title desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='title'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+															aria-sort="#{SessionForm.gsm.sort=='title desc'? 'descending' : SessionForm.gsm.sort=='title'? 'ascending' :'none'}">
+															<h:outputText value="#{msgs.goobiScript_processTitle}" />
+															<f:setPropertyActionListener
+																target="#{SessionForm.gsm.sort}"
+																value="#{SessionForm.gsm.sort eq 'title'?'title desc':'title'}" />
+															<span
+																class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'title desc'?'fa-sort-desc':SessionForm.gsm.sort=='title'?'fa-sort-asc':'fa-sort'}"></span>
+														</button>
+													</f:facet>
+													<h:outputText
+														value="#{item.processTitle}"
+														title="#{item.processTitle}" />
+												</h:column>
+
+												<h:column>
+													<f:facet name="header">
+														<button
+															jsf:id="sortCommand"
+															jsf:action="#{SessionForm.gsm.goobiScriptSort}"
+															class="column-header-sort"
+															aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_command} #{SessionForm.gsm.sort=='command desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='command'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+															aria-sort="#{SessionForm.gsm.sort=='command desc'? 'descending' : SessionForm.gsm.sort=='command'? 'ascending' :'none'}">
+															<h:outputText value="#{msgs.goobiScript_command}" />
+															<f:setPropertyActionListener
+																target="#{SessionForm.gsm.sort}"
+																value="#{SessionForm.gsm.sort eq 'command'?'command desc':'command'}" />
+															<span
+																class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'command desc'?'fa-sort-desc':SessionForm.gsm.sort=='command'?'fa-sort-asc':'fa-sort'}"></span>
+														</button>
+													</f:facet>
+													<h:outputText
+														value="#{item.command}"
+														title="#{item.command}" />
+												</h:column>
+
+												<h:column headerClass="gw-table-fixed__sizeS">
+													<f:facet name="header">
+														<button
+															jsf:id="sortUser"
+															jsf:action="#{SessionForm.gsm.goobiScriptSort}"
+															class="column-header-sort"
+															aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_user} #{SessionForm.gsm.sort=='user desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='user'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+															aria-sort="#{SessionForm.gsm.sort=='user desc'? 'descending' : SessionForm.gsm.sort=='user'? 'ascending' :'none'}">
+															<h:outputText value="#{msgs.goobiScript_user}" />
+															<f:setPropertyActionListener
+																target="#{SessionForm.gsm.sort}"
+																value="#{SessionForm.gsm.sort eq 'user'?'user desc':'user'}" />
+															<span
+																class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'user desc'?'fa-sort-desc':SessionForm.gsm.sort=='user'?'fa-sort-asc':'fa-sort'}"></span>
+														</button>
+													</f:facet>
+													<h:outputText
+														value="#{item.username}"
+														title="#{item.username}" />
+												</h:column>
+
+												<h:column headerClass="gw-table-fixed__sizeS">
+													<f:facet name="header">
+														<button
+															jsf:id="sortTimestamp"
+															jsf:action="#{SessionForm.gsm.goobiScriptSort}"
+															class="column-header-sort"
+															aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_timestamp} #{SessionForm.gsm.sort=='timestamp desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='timestamp'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+															aria-sort="#{SessionForm.gsm.sort=='timestamp desc'? 'descending' : SessionForm.gsm.sort=='timestamp'? 'ascending' :'none'}">
+															<h:outputText value="#{msgs.goobiScript_timestamp}" />
+															<f:setPropertyActionListener
+																target="#{SessionForm.gsm.sort}"
+																value="#{SessionForm.gsm.sort eq 'timestamp'?'timestamp desc':'timestamp'}" />
+															<span
+																class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'timestamp desc'?'fa-sort-desc':SessionForm.gsm.sort=='timestamp'?'fa-sort-asc':'fa-sort'}"></span>
+														</button>
+													</f:facet>
+													<h:outputText
+														value="#{item.formattedTimestamp}"
+														title="#{item.formattedTimestamp}">
+														<!-- 												<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+													</h:outputText>
+												</h:column>
+
+												<h:column headerClass="gw-table-fixed__sizeXXS">
+													<f:facet name="header">
+														<button
+															jsf:id="sortResultType"
+															jsf:action="#{SessionForm.gsm.goobiScriptSort}"
+															class="column-header-sort"
+															aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_resultType} #{SessionForm.gsm.sort=='status desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='status'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+															aria-sort="#{SessionForm.gsm.sort=='status desc'? 'descending' : SessionForm.gsm.sort=='status'? 'ascending' :'none'}">
+															<h:outputText value="#{msgs.goobiScript_resultType}" />
+															<f:setPropertyActionListener
+																target="#{SessionForm.gsm.sort}"
+																value="#{SessionForm.gsm.sort eq 'status'?'status desc':'status'}" />
+															<span
+																class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'status desc'?'fa-sort-desc':SessionForm.gsm.sort=='status'?'fa-sort-asc':'fa-sort'}"></span>
+														</button>
+													</f:facet>
+													<span
+														class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':item.resultType eq 'RUNNING'?'badge-intranda-blue':'badge-intranda-red'}">
+														<i
+															class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':item.resultType eq 'RUNNING'?'fa-play':'fa-exclamation-triangle'} margin-right-5"></i>
+														#{msgs['goobiScript_status_'.concat(item.resultType)]}
+													</span>
+												</h:column>
+
+												<h:column headerClass="gw-table-fixed__sizeM">
+													<f:facet name="header">
+														<button
+															jsf:id="sortResultMessage"
+															jsf:action="#{SessionForm.gsm.goobiScriptSort}"
+															class="column-header-sort"
+															aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_resultMessage} #{SessionForm.gsm.sort=='description desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='description'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+															aria-sort="#{SessionForm.gsm.sort=='description desc'? 'descending' : SessionForm.gsm.sort=='description'? 'ascending' :'none'}">
+															<h:outputText value="#{msgs.goobiScript_resultMessage}" />
+															<f:setPropertyActionListener
+																target="#{SessionForm.gsm.sort}"
+																value="#{SessionForm.gsm.sort eq 'description'?'description desc':'description'}" />
+															<span
+																class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'description desc'?'fa-sort-desc':SessionForm.gsm.sort=='description'?'fa-sort-asc':'fa-sort'}"></span>
+														</button>
+													</f:facet>
+													<h:outputText
+														value="#{item.resultMessage} #{item.errorText}" />
+												</h:column>
+
+											</h:dataTable>
+										</h:form>
+
+									</div>
+								</div>
+								<!-- // TABLE -->
+
+								<!-- ACTION BELOW TABLE -->
+								<div class="box__actions">
+
+									<!-- Show process list with error records -->
+									<button
+										jsf:id="list_error"
+										class="btn btn-blank me-2"
+										jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('ERROR')}">
+										<i class="fa fa-exclamation-triangle"></i>
+										<span>
+											<h:outputText
+												value="#{msgs.goobiScript_filterErrorProcesses}" />
+										</span>
+									</button>
+
+									<!-- Show process list with waiting records -->
+									<button
+										jsf:id="list_waiting"
+										class="btn btn-blank me-2"
+										jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('WAITING')}">
+										<i class="fa fa-clock-o"></i>
+										<span>
+											<h:outputText
+												value="#{msgs.goobiScript_filterWaitingProcesses}" />
+										</span>
+									</button>
+
+									<!-- Show process list with successfull records -->
+									<button
+										jsf:id="list_ok"
+										class="btn btn-blank me-2"
+										jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('OK')}">
+										<i class="fa fa-check"></i>
+										<span>
+											<h:outputText value="#{msgs.goobiScript_filterOkProcesses}" />
+										</span>
+									</button>
+
+									<!-- Download as excel button -->
+									<button
+										jsf:id="excel_download"
+										class="btn btn-primary-400 me-2"
+										jsf:action="#{SessionForm.gsm.goobiScriptResultsExcel}">
+										<i class="fa fa-file-excel-o"></i>
+										<span>
+											<h:outputText value="#{msgs.goobiScript_downloadExcel}" />
+										</span>
+									</button>
+
+									<!-- Reset -->
+									<button
+										jsf:id="resetbottom"
+										class="btn btn-blank trigger-delete"
+										jsf:action="#{SessionForm.gsm.goobiScriptResultsReset}">
+										<i class="fa fa-trash-o"></i>
+										<span>
+											<h:outputText value="#{msgs.goobiScript_resetList}" />
+										</span>
+									</button>
+
+								</div>
+								<!-- //ACTION BELOW TABLE -->
+
+							</h:form>
+							<!-- // FORM -->
+
+						</div>
+						<!-- // TABLE WRAPPER -->
+
+					</intranda:box>
+
+				</div>
+			</div>
+		</c:if>
+
+	</ui:define>
 </ui:composition>
