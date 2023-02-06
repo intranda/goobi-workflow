@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -250,7 +249,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
         setStatusProgress(100);
     }
 
-    private String createImagesParameter(Process myProzess) throws IOException, SwapException, MalformedURLException {
+    private String createImagesParameter(Process myProzess) throws IOException, SwapException {
         StringBuilder images = new StringBuilder();
         List<Path> meta = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
         ArrayList<String> filenames = new ArrayList<>();

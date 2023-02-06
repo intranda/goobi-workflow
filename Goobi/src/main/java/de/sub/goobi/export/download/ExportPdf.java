@@ -29,7 +29,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,15 +51,12 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.CreatePdfFromServletThread;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Fileformat;
 import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
@@ -71,8 +67,7 @@ public class ExportPdf extends ExportMets {
 
     @Override
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+            WriteException, DocStructHasNoTypeException, ReadException, SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -204,7 +199,7 @@ public class ExportPdf extends ExportMets {
         return true;
     }
 
-    private String createImagesParameter(Process myProzess) throws IOException, SwapException, MalformedURLException {
+    private String createImagesParameter(Process myProzess) throws IOException, SwapException {
         StringBuilder images = new StringBuilder();
         List<Path> meta = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
         ArrayList<String> filenames = new ArrayList<>();

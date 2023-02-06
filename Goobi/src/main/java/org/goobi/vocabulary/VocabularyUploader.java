@@ -25,8 +25,6 @@
  */
 package org.goobi.vocabulary;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -103,7 +101,7 @@ public class VocabularyUploader {
         return boOk;
     }
 
-    private static Vocabulary getVocabulary(String strUsername, Integer vocabId) throws URISyntaxException, JMSException {
+    private static Vocabulary getVocabulary(String strUsername, Integer vocabId) throws JMSException {
 
         String strVocabId = String.valueOf(vocabId);
 
@@ -119,7 +117,7 @@ public class VocabularyUploader {
         return vocabFromResponse(response);
     }
 
-    private static Boolean updateVocabulary(Vocabulary vocab) throws URISyntaxException, IOException, JMSException {
+    private static Boolean updateVocabulary(Vocabulary vocab) throws JMSException {
 
         String strVocabId = String.valueOf(vocab.getId());
         String strUsername = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();
@@ -143,7 +141,7 @@ public class VocabularyUploader {
         return "Basic " + Base64.getEncoder().encodeToString(strPW.getBytes());
     }
 
-    private static Boolean createNewVocabulary(Vocabulary vocab) throws IOException, URISyntaxException, JMSException {
+    private static Boolean createNewVocabulary(Vocabulary vocab) throws JMSException {
 
         String strUsername = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();
         String strAuthorization = getAuthorizationHeader();

@@ -80,11 +80,11 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
      * @throws ExportFileException
      */
 
-    public void startExport(Process p, String destination) throws FileNotFoundException, IOException {
+    public void startExport(Process p, String destination) throws IOException {
         startExport(p, new FileOutputStream(destination), null);
     }
 
-    public void startExport(Process p, Path dest) throws FileNotFoundException, IOException {
+    public void startExport(Process p, Path dest) throws IOException {
         startExport(p, new FileOutputStream(dest.toFile()), null);
     }
 

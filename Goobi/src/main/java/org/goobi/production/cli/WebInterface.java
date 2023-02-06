@@ -120,18 +120,10 @@ public class WebInterface extends HttpServlet {
             }
 
             if (command.equals("help")) {
-                if (!params.containsKey("for")) {
-                    try {
-                        generateHelp(resp, null);
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
+                if (params.containsKey("for")) {
+                    generateHelp(resp, params.get("for"));
                 } else {
-                    try {
-                        generateHelp(resp, params.get("for"));
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
+                    generateHelp(resp, null);
                 }
                 return;
             }
@@ -174,7 +166,7 @@ public class WebInterface extends HttpServlet {
         }
     }
 
-    private void generateHelp(HttpServletResponse resp, String forCommand) throws IOException {
+    private void generateHelp(HttpServletResponse resp, String forCommand) {
         StringBuilder allHelpBuilder = new StringBuilder();
         List<IPlugin> mycommands = PluginLoader.getPluginList(PluginType.Command);
         Collections.sort(mycommands, pluginComparator);

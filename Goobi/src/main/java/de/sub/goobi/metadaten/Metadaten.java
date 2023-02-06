@@ -1567,7 +1567,7 @@ public class Metadaten implements Serializable {
         } catch (SwapException e) {
             Helper.setFehlerMeldung(e);
             return Helper.getRequestParameter("zurueck");
-        } catch (ReadException | PreferencesException | IOException | DAOException e) {
+        } catch (ReadException | PreferencesException | IOException e) {
             Helper.setFehlerMeldung("Error while loading metadata", e);
             return Helper.getRequestParameter("zurueck");
         }
@@ -1585,13 +1585,12 @@ public class Metadaten implements Serializable {
      * @throws ReadException
      * @throws InterruptedException
      * @throws IOException
-     * @throws PreferencesException ============================================================ == ==
-     * @throws DAOException
+     * @throws PreferencesException
      * @throws SwapException
      * @throws WriteException
      */
 
-    public String XMLlesenStart() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
+    public String XMLlesenStart() throws ReadException, IOException, PreferencesException, SwapException {
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         enablePageArea = myPrefs.getDocStrctTypeByName("area") != null;
@@ -2099,13 +2098,7 @@ public class Metadaten implements Serializable {
      * Knoten nach oben schieben ================================================================
      */
     public String KnotenUp() {
-        try {
-            this.metahelper.KnotenUp(this.myDocStruct);
-        } catch (TypeNotAllowedAsChildException e) {
-            if (log.isDebugEnabled()) {
-                log.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
-            }
-        }
+        this.metahelper.KnotenUp(this.myDocStruct);
         return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
@@ -2113,13 +2106,7 @@ public class Metadaten implements Serializable {
      * Knoten nach unten schieben ================================================================
      */
     public String KnotenDown() {
-        try {
-            this.metahelper.KnotenDown(this.myDocStruct);
-        } catch (TypeNotAllowedAsChildException e) {
-            if (log.isDebugEnabled()) {
-                log.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
-            }
-        }
+        this.metahelper.KnotenDown(this.myDocStruct);
         return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
@@ -2477,7 +2464,7 @@ public class Metadaten implements Serializable {
         return "";
     }
 
-    public String reloadPagination() throws TypeNotAllowedForParentException, SwapException, DAOException, IOException, InterruptedException {
+    public String reloadPagination() throws TypeNotAllowedForParentException, SwapException, DAOException, IOException {
 
         DocStruct physical = document.getPhysicalDocStruct();
         if (physical != null && physical.getAllChildren() != null) {
@@ -2605,8 +2592,8 @@ public class Metadaten implements Serializable {
             } else {
                 this.pageAreaManager.setNewPageArea(pageArea);
             }
-        } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
-            log.error(e);
+        } catch (TypeNotAllowedForParentException | MetadataTypeNotAllowedException exception) {
+            log.error(exception);
         }
     }
 
@@ -3639,7 +3626,7 @@ public class Metadaten implements Serializable {
         return ocrResult;
     }
 
-    public void loadJsonAlto() throws IOException, JDOMException, SwapException, DAOException {
+    public void loadJsonAlto() throws IOException, JDOMException, SwapException {
         Path altoFile = getCurrentAltoPath();
         SimpleAlto alto = new SimpleAlto();
         if (StorageProvider.getInstance().isFileExists(altoFile)) {
@@ -3669,7 +3656,7 @@ public class Metadaten implements Serializable {
             this.loadJsonAlto();
             FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, Helper.getTranslation("savedAlto"), null);
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
-        } catch (JDOMException | IOException | SwapException | DAOException e) {
+        } catch (JDOMException | IOException | SwapException e) {
             log.error(e);
             FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_ERROR, Helper.getTranslation("errorSavingAlto"), null);
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
@@ -4761,7 +4748,7 @@ public class Metadaten implements Serializable {
             bildNummer = this.imageIndex;
             try {
                 this.loadJsonAlto();
-            } catch (IOException | JDOMException | SwapException | DAOException e) {
+            } catch (IOException | JDOMException | SwapException e) {
                 SimpleAlto alto = new SimpleAlto("Error reading ALTO, see application log for details.");
 
                 this.currentJsonAlto = new Gson().toJson(alto);

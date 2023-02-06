@@ -242,8 +242,7 @@ public class GoobiImageResource {
         return imageResource.getImage(region, size, rotation, quality, format);
     }
 
-    private ImageResource createImageResource(String processIdString, String folder, String filename)
-            throws IllegalRequestException, ContentLibException {
+    private ImageResource createImageResource(String processIdString, String folder, String filename) throws ContentLibException {
         ImageResource imageResource = new ImageResource(context, request, response, folder, filename);
         Path processFolder = metadataFolderPath.resolve(processIdString);
         imageResource.setResourceURI(createGoobiResourceURI(request, processIdString, folder, filename));

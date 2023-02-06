@@ -85,7 +85,6 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
@@ -359,7 +358,7 @@ public class StepBean extends BasicBean implements Serializable {
         return "task_edit";
     }
 
-    public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
+    public String EditStep() {
         try {
             mySchritt = StepManager.getStepById(mySchritt.getId());
             mySchritt.lazyLoad();
@@ -460,8 +459,8 @@ public class StepBean extends BasicBean implements Serializable {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                    + batchNumber + ")",
+                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                            + batchNumber + ")",
                     0, Integer.MAX_VALUE);
 
         } else {
@@ -626,7 +625,8 @@ public class StepBean extends BasicBean implements Serializable {
             se.setSchritt(temp);
             String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
 
-            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null?ben.getNachVorname(): "", LogType.ERROR, message, EntryType.PROCESS);
+            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null ? ben.getNachVorname() : "",
+                    LogType.ERROR, message, EntryType.PROCESS);
 
             JournalManager.saveJournalEntry(logEntry);
 
@@ -746,7 +746,7 @@ public class StepBean extends BasicBean implements Serializable {
                             + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                 } else {
                     seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
-                    + ": " + this.solutionMessage);
+                            + ": " + this.solutionMessage);
                 }
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);
@@ -760,7 +760,8 @@ public class StepBean extends BasicBean implements Serializable {
              */
             String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
 
-            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null?ben.getNachVorname(): "", LogType.INFO, message, EntryType.PROCESS);
+            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null ? ben.getNachVorname() : "",
+                    LogType.INFO, message, EntryType.PROCESS);
             JournalManager.saveJournalEntry(logEntry);
 
             ProcessManager.saveProcessInformation(this.mySchritt.getProzess());
@@ -808,7 +809,7 @@ public class StepBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public String UploadFromHomeAlle() throws NumberFormatException, DAOException {
+    public String UploadFromHomeAlle() throws NumberFormatException {
 
         List<String> fertigListe = this.myDav.UploadFromHomeAlle(DONEDIRECTORYNAME);
         List<String> geprueft = new ArrayList<>();
@@ -957,8 +958,6 @@ public class StepBean extends BasicBean implements Serializable {
             schrittPerParameterLaden();
         } catch (NumberFormatException e) {
             log.error(e);
-        } catch (DAOException e) {
-            log.error(e);
         }
         return this.mySchritt;
     }
@@ -1024,19 +1023,19 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     /*
-     * Parameter per Get Ã¼bergeben bekommen und entsprechen den passenden Schritt laden
+     * Parameter per Get übergeben bekommen und entsprechen den passenden Schritt laden
      */
 
     /**
      * prüfen, ob per Parameter vielleicht zunÃ¤chst ein anderer geladen werden soll
      * 
-     * @throws DAOException , NumberFormatException
+     * @throws NumberFormatException
      */
-    private void schrittPerParameterLaden() throws DAOException, NumberFormatException {
+    private void schrittPerParameterLaden() throws NumberFormatException {
         String param = Helper.getRequestParameter("myid");
         if (param != null && !param.equals("")) {
             /*
-             * wenn bisher noch keine aktuellen Schritte ermittelt wurden, dann dies jetzt nachholen, damit die Liste vollstÃ¤ndig ist
+             * wenn bisher noch keine aktuellen Schritte ermittelt wurden, dann dies jetzt nachholen, damit die Liste vollständig ist
              */
             if (this.paginator == null && Helper.getCurrentUser() != null) {
                 FilterAlleStart();

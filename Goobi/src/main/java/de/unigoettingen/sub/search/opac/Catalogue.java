@@ -75,7 +75,7 @@ public class Catalogue {
     @Setter
     private boolean verbose = false;
 
-    public Catalogue(String opac) throws IOException {
+    public Catalogue(String opac) {
         super();
 
         this.catalogue = opac;
@@ -112,7 +112,7 @@ public class Catalogue {
         }
     }
 
-    public Catalogue(String description, String serverAddress, int port, String cbs, String database) throws IOException {
+    public Catalogue(String description, String serverAddress, int port, String cbs, String database) {
         this.description = description;
         this.serverAddress = serverAddress;
         this.port = port;

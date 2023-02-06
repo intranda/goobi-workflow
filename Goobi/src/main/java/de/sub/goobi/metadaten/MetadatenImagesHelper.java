@@ -59,7 +59,6 @@ import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageInterpreter;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
 import de.unigoettingen.sub.commons.contentlib.imagelib.JpegInterpreter;
@@ -554,10 +553,8 @@ public class MetadatenImagesHelper {
      * 
      * @throws ImageManagerException
      * @throws IOException
-     * @throws ImageManipulatorException
      */
-    public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation)
-            throws ContentLibException, IOException, ImageManipulatorException {
+    public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation) throws ContentLibException, IOException {
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
         Path inPath = Paths.get(inFileName);
         URI s3URI = null;

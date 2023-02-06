@@ -30,7 +30,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -223,9 +222,6 @@ public class ExportMets {
      * @throws IOException
      * @throws PreferencesException
      * @throws WriteException
-     * @throws UghHelperException
-     * @throws ExportFileException
-     * @throws MetadataTypeNotAllowedException
      * @throws DocStructHasNoTypeException
      * @throws DAOException
      * @throws SwapException
@@ -233,8 +229,7 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+            WriteException, DocStructHasNoTypeException, ReadException, SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -580,7 +575,7 @@ public class ExportMets {
     }
 
     private void saveFinishedMetadata(Process myProzess, String targetFileName, ConfigurationHelper config, ExportFileformat mm,
-            boolean addAnchorFile) throws IOException, WriteException, PreferencesException, InterruptedException, SwapException, DAOException {
+            boolean addAnchorFile) throws IOException, WriteException, PreferencesException, SwapException {
         if (config.isExportInTemporaryFile()) {
             Path tempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), ".xml");
             String filename = tempFile.toString();
@@ -791,7 +786,7 @@ public class ExportMets {
      * @param file the file Object
      * @param object
      */
-    private void buildImageMetadata(Document doc, Path file, Element object) throws FileNotFoundException, IOException {
+    private void buildImageMetadata(Document doc, Path file, Element object) throws IOException {
 
         // obtain Dimensions of passed image
         Optional<Dimension> maybeImageDimension = getSize(file);

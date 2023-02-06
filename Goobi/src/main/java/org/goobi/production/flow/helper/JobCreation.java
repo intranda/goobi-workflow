@@ -157,7 +157,7 @@ public class JobCreation {
         return true;
     }
 
-    public static void moveFiles(Path metsfile, String basepath, Process p) throws SwapException, DAOException, IOException, InterruptedException {
+    public static void moveFiles(Path metsfile, String basepath, Process p) throws SwapException, IOException {
 
         // new folder structure for process imports
         Path importFolder = Paths.get(basepath);
