@@ -1,9 +1,9 @@
 <alto-editor>
-    <div class="row">
+    <div class="row{ this.alignRtl ? ' rightToLeft' : null}">
         <div class="col-md-6">
             <div id="bigImage" onclick={canvasOnClick} onmousemove={canvasOnClick}></div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6{ this.alignRtl ? ' alignRight': null}">
             <div class="alto-edit">
                 <div each={line in lines} class="altoline {}" >
                     <span each={word in line.words}>
@@ -51,14 +51,20 @@
     .word-marker {
         border: 2px solid red;
     }
+    .rightToLeft {
+        direction: rtl;
+    }
+    .alignRight{
+        text-align: right;
+    }
 </style>
 
 <script>
     this.on('before-mount', () => {
-    	console.log(this.opts)
     	this.msgs = this.opts.messages;
         this.lines = []; 
         console.log(opts)
+        this.alignRtl =this.opts.alignRtl;
         let altoDiv = document.querySelector(opts.altoDivSelector);
         let altoJson = altoDiv.innerText;
         this.alto = JSON.parse(altoJson);
@@ -69,7 +75,9 @@
     })
     
     this.on('mount', () => {
-    	this.initOpenseadragon()
+    	this.initOpenseadragon();
+    	this.update();
+    	
     })
     
     lockWord(e) {

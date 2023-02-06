@@ -237,6 +237,12 @@
             <artifactId>aws-java-sdk-sqs</artifactId>
             <version>${aws.version}</version>
         </dependency>
+        <!-- needed for wellcome exports -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sns</artifactId>
+            <version>${aws.version}</version>
+        </dependency>        
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
@@ -605,6 +611,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+		<!-- needed for TandemVault/MediaGraph ingests -->
+		<dependency>
+		    <groupId>com.github.mjeanroy</groupId>
+		    <artifactId>exiftool-lib</artifactId>
+		    <version>3.0.0</version>
+		</dependency>
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>javax.mail-api</artifactId>
