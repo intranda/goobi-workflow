@@ -1113,7 +1113,7 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testIsMetsEditorValidateImages() {
-        assertTrue(ConfigurationHelper.getInstance().isMetsEditorValidateImages());
+        assertFalse(ConfigurationHelper.getInstance().isMetsEditorValidateImages());
     }
 
     @Test
@@ -1147,7 +1147,7 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testIsExportValidateImages() {
-        assertTrue(ConfigurationHelper.getInstance().isExportValidateImages());
+        assertFalse(ConfigurationHelper.getInstance().isExportValidateImages());
     }
 
     @Test
@@ -1170,7 +1170,7 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testIsExportCreateUUIDsAsFileIDs() {
-        assertTrue(ConfigurationHelper.getInstance().isExportCreateUUIDsAsFileIDs());
+        assertFalse(ConfigurationHelper.getInstance().isExportCreateUUIDsAsFileIDs());
     }
 
     @Test
