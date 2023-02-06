@@ -43,14 +43,37 @@ import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import de.sub.goobi.helper.Helper;
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * This class contains several methods to request configured values from project XML files. A file can be read by using one of the constructors. To
+ * get the configured values, the getters can be used. Multiple getters for different data types are provided.
+ */
 @Log4j2
 public class ConfigProjects {
+
+    /**
+     * The subnode configuration that is used to get the nodes from the XML file
+     */
     private SubnodeConfiguration config;
 
+    /**
+     * Creates a ConfigProjects object for the default goobi_projects.xml project configuration file. The project title must be specified in the
+     * parameter. If the file does not exist, an IOException is thrown.
+     *
+     * @param projectTitle The title of the project of interest
+     * @throws IOException If the file could not be found or read successfully
+     */
     public ConfigProjects(String projectTitle) throws IOException {
         this(projectTitle, new Helper().getGoobiConfigDirectory() + "goobi_projects.xml");
     }
 
+    /**
+     * Creates a ConfigProjects object for a custom project configuration file. The path to the file and the project title must be specified in the
+     * parameters. If the file does not exist, an IOException is thrown.
+     *
+     * @param projectTitle The name of the project of interest
+     * @param configPfad The path to the file that should be read
+     * @throws IOException If the file could not be found or read successfully
+     */
     public ConfigProjects(String projectTitle, String configPfad) throws IOException {
         if (!Files.exists(Paths.get(configPfad))) {
             throw new IOException("File not found: " + configPfad);
@@ -114,9 +137,11 @@ public class ConfigProjects {
     }
 
     /**
-     * Ermitteln eines bestimmten Paramters der Konfiguration als String
-     * 
-     * @return Paramter als String
+     * Returns the String value that is configured in the projects XML file for the given parameter key. If the parameter does not exist, null is
+     * returned.
+     *
+     * @param inParameter The name of the parameter that should be searched
+     * @return The value that is configured for the parameter or null in case of no fitting parameter
      */
     public String getParamString(String inParameter) {
         try {
@@ -129,6 +154,13 @@ public class ConfigProjects {
         }
     }
 
+    /**
+     * Replaces tabulator and linebreak control sequences by whitespaces and removes all multiple whitespaces, so that there is only one whitespace
+     * left. The transformed string is returned.
+     *
+     * @param inString The string to replace the control sequences and whitespaces in
+     * @return The string without the replaced characters
+     */
     private String cleanXmlFormatedString(String inString) {
         if (inString != null) {
             inString = inString.replace("\t", " ");
@@ -141,9 +173,11 @@ public class ConfigProjects {
     }
 
     /**
-     * Ermitteln eines bestimmten Paramters der Konfiguration mit Angabe eines Default-Wertes
-     * 
-     * @return Paramter als String
+     * Returns the String value that is configured in the projects XML file for the given perameter key. If the parameter does not exist, the given
+     * default value from the second parameter is returned.
+     *
+     * @param inParameter The name of the parameter that should be searched
+     * @return The value that is configured for the parameter or the default value in case of no fitting parameter
      */
     public String getParamString(String inParameter, String inDefaultIfNull) {
         try {
@@ -157,9 +191,11 @@ public class ConfigProjects {
     }
 
     /**
-     * Ermitteln eines boolean-Paramters der Konfiguration
-     * 
-     * @return Paramter als String
+     * Returns true if the value that is configured in the projects XML file for the given parameter key is set to true, and false otherwise. If the
+     * parameter does not exist, false is returned.
+     *
+     * @param inParameter The name of the parameter that should be searched
+     * @return true If the value that is configured for the parameter is set to true or false otherwise or in case of no fitting parameter
      */
     public boolean getParamBoolean(String inParameter) {
         try {
@@ -170,9 +206,10 @@ public class ConfigProjects {
     }
 
     /**
-     * Ermitteln eines long-Paramters der Konfiguration
-     * 
-     * @return Paramter als Long
+     * Returns the long value that is configured in the projects XML file for the given parameter key. If the parameter does not exist, 0 is returned.
+     *
+     * @param inParameter The name of the parameter that should be searched
+     * @return The value that is configured for the parameter or 0 in case of no fitting parameter
      */
     public long getParamLong(String inParameter) {
         try {
@@ -184,9 +221,11 @@ public class ConfigProjects {
     }
 
     /**
-     * Ermitteln einer Liste von Paramtern der Konfiguration
-     * 
-     * @return Paramter als List
+     * Returns the values that are configured in the projects XML file for the given parameter key as a string list. If the parameter does not exist,
+     * an empty array list is returned.
+     *
+     * @param inParameter The name of the parameter that should be searched
+     * @return The list of values that are configured for the parameter or an empty array list in case of no fitting parameter
      */
     public List<String> getParamList(String inParameter) {
         try {
@@ -197,6 +236,13 @@ public class ConfigProjects {
         }
     }
 
+    /**
+     * Returns the configuration sub nodes that are configured in the projects XML file for the given XML tag as a list of hierarchical configuration
+     * objects. If no XML tag with that name exists, an empty array list is returned.
+     *
+     * @param inParameter The name of the XML node that should be searched
+     * @return The list of sub nodes that have the given name or an empty array list in case of no fitting sub nodes
+     */
     public List<HierarchicalConfiguration> getList(String inParameter) {
         try {
             return config.configurationsAt(inParameter);
