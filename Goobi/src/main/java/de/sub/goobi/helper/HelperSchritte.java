@@ -29,6 +29,7 @@ package de.sub.goobi.helper;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyManagementException;
@@ -442,7 +443,7 @@ public class HelperSchritte {
                 String respStr = "- no response body -";
                 if (resp.getEntity() != null && resp.getEntity().getContentLength() < 20000) {
                     StringWriter writer = new StringWriter();
-                    Charset encoding = Charset.forName("utf-8");
+                    Charset encoding = StandardCharsets.UTF_8;
                     if (resp.getEntity().getContentEncoding() != null) {
                         try {
                             encoding = Charset.forName(resp.getEntity().getContentEncoding().getValue());

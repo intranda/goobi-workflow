@@ -29,7 +29,7 @@ package de.sub.goobi.helper.ldap;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
@@ -588,13 +588,8 @@ public class LdapAuthentication {
                  * -------------------------------- NTLM-Passwort-Attribut ändern --------------------------------
                  */
                 BasicAttribute ntlmpassword = null;
-                try {
-                    byte[] hmm = MD4.mdfour(inNewPassword.getBytes("UnicodeLittleUnmarked"));
-                    ntlmpassword = new BasicAttribute("sambaNTPassword", LdapUser.toHexString(hmm));
-                } catch (UnsupportedEncodingException e) {
-                    // TODO: Make sure that the password isn't logged here
-                    log.error(e);
-                }
+                byte[] hmm = MD4.mdfour(inNewPassword.getBytes(StandardCharsets.UTF_16LE));
+                ntlmpassword = new BasicAttribute("sambaNTPassword", LdapUser.toHexString(hmm));
                 BasicAttribute sambaPwdLastSet = new BasicAttribute("sambaPwdLastSet", String.valueOf(System.currentTimeMillis() / 1000l));
                 mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userpassword);
                 mods[1] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, lanmgrpassword);

@@ -1,16 +1,6 @@
 package de.sub.goobi.helper.encryption;
 
-/*******************************************************************************
- * Copyright (c) 2004 BlueOxygen Technology.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the BlueOxygen Software License v1.0
- * which accompanies this distribution, and is available at
- *
- * Contributors:
- *     BlueOxygen Team - initial API and implementation
- *******************************************************************************/
-
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
@@ -75,7 +65,7 @@ public class DesEncrypter {
         }
         try {
             // Encode the string into bytes using utf-8
-            byte[] utf8 = str.getBytes("UTF8");
+            byte[] utf8 = str.getBytes(StandardCharsets.UTF_8);
             if (this.ecipher == null) {
                 Initialise(this.pass);
             }
@@ -83,7 +73,7 @@ public class DesEncrypter {
             byte[] enc = this.ecipher.doFinal(utf8);
             // Encode bytes to base64 to get a string
             return new String(Base64.encodeBase64(enc));
-        } catch (BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
+        } catch (BadPaddingException | IllegalBlockSizeException exception) {
         }
         return null;
     }
@@ -92,14 +82,13 @@ public class DesEncrypter {
     public String decrypt(String str) {
         try {
             // Decode base64 to get bytes
-            byte[] dec = Base64.decodeBase64(str.getBytes("UTF8"));
+            byte[] dec = Base64.decodeBase64(str.getBytes(StandardCharsets.UTF_8));
             // Decrypt
             byte[] utf8 = this.dcipher.doFinal(dec);
             // Decode using utf-8
-            return new String(utf8, "UTF8");
-        } catch (BadPaddingException e) {
-        } catch (IllegalBlockSizeException e) {
-        } catch (UnsupportedEncodingException e) {
+            return new String(utf8, StandardCharsets.UTF_8);
+        } catch (BadPaddingException exception) {
+        } catch (IllegalBlockSizeException exception) {
         }
         return null;
     }

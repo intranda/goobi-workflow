@@ -34,6 +34,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -216,7 +217,7 @@ public class SRUClient {
     public void testResponseResource(String fileName) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         IOUtils.copy(getClass().getResourceAsStream("/" + fileName), out);
-        testingResponseString = out.toString("UTF-8");
+        testingResponseString = out.toString(StandardCharsets.UTF_8);
     }
 
     /**
@@ -227,7 +228,7 @@ public class SRUClient {
      */
     public Document parseXml(String xmlData) {
         try {
-            byte[] bytes = xmlData.getBytes("utf-8");
+            byte[] bytes = xmlData.getBytes(StandardCharsets.UTF_8);
             ByteArrayInputStream in = new ByteArrayInputStream(bytes);
             return saxReader.build(in);
         } catch (UnsupportedEncodingException ex) {

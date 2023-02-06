@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -72,7 +73,7 @@ public class HttpClientHelper {
             }
             HttpEntity entity = response.getEntity();
             if (entity != null) {
-                return EntityUtils.toString(entity, "utf-8");
+                return EntityUtils.toString(entity, StandardCharsets.UTF_8);
             } else {
                 return null;
             }
