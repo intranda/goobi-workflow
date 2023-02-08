@@ -58,6 +58,7 @@ import org.jdom2.input.SAXBuilder;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.AdditionalField;
+import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -233,11 +234,8 @@ public class CopyProcess {
         /*--------------------------------
          * projektabhängig die richtigen Felder in der Gui anzeigen
          * --------------------------------*/
-        ConfigProjects cp = null;
-        try {
-            cp = new ConfigProjects(this.prozessVorlage.getProjekt().getTitel());
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("IOException", e.getMessage());
+        ConfigProjects cp = ProzesskopieForm.initializeConfigProjects(this.prozessVorlage.getProjekt().getTitel());
+        if (cp == null) {
             return;
         }
 
@@ -1117,13 +1115,11 @@ public class CopyProcess {
     public void CalcProzesstitel() {
         StringBuilder newTitleBuilder = new StringBuilder();
         String titeldefinition = "";
-        ConfigProjects cp = null;
-        try {
-            cp = new ConfigProjects(this.prozessVorlage.getProjekt().getTitel());
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("IOException", e.getMessage());
+        ConfigProjects cp = ProzesskopieForm.initializeConfigProjects(this.prozessVorlage.getProjekt().getTitel());
+        if (cp == null) {
             return;
         }
+
         List<HierarchicalConfiguration> processTitleList = cp.getList("createNewProcess/itemlist/processtitle");
 
         for (HierarchicalConfiguration hc : processTitleList) {
@@ -1231,11 +1227,8 @@ public class CopyProcess {
 
     public void CalcTiffheader() {
         String tifDefinition = "";
-        ConfigProjects cp = null;
-        try {
-            cp = new ConfigProjects(this.prozessVorlage.getProjekt().getTitel());
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("IOException", e.getMessage());
+        ConfigProjects cp = ProzesskopieForm.initializeConfigProjects(this.prozessVorlage.getProjekt().getTitel());
+        if (cp == null) {
             return;
         }
 

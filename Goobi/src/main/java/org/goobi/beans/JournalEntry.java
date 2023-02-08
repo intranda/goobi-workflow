@@ -64,13 +64,13 @@ public class JournalEntry implements Serializable {
      * 
      * @deprecated, use the constructor with arguments instead
      */
-    @Deprecated(since="2022-09", forRemoval=true)
+    @Deprecated(since = "2022-09", forRemoval = true)
     public JournalEntry() {
-        objectId=0;
+        objectId = 0;
         creationDate = new Date();
         userName = "";
         type = LogType.DEBUG;
-        content="";
+        content = "";
         entryType = EntryType.PROCESS;
 
     }
@@ -83,7 +83,7 @@ public class JournalEntry implements Serializable {
      * 
      * @deprecated, use the constructor with arguments instead
      */
-    @Deprecated(since="2022-09", forRemoval=true)
+    @Deprecated(since = "2022-09", forRemoval = true)
     public static JournalEntry build(Integer objectId) {
         JournalEntry le = new JournalEntry();
         le.setObjectId(objectId);
@@ -94,7 +94,7 @@ public class JournalEntry implements Serializable {
      * 
      * @deprecated, use the constructor with arguments instead
      */
-    @Deprecated(since="2022-09", forRemoval=true)
+    @Deprecated(since = "2022-09", forRemoval = true)
     public JournalEntry withCreationDate(Date date) {
         this.creationDate = date;
         return this;
@@ -104,7 +104,7 @@ public class JournalEntry implements Serializable {
      * 
      * @deprecated, use the constructor with arguments instead
      */
-    @Deprecated(since="2022-09", forRemoval=true)
+    @Deprecated(since = "2022-09", forRemoval = true)
     public JournalEntry withUsername(String userName) {
         this.userName = userName;
         return this;
@@ -114,7 +114,7 @@ public class JournalEntry implements Serializable {
      * 
      * @deprecated, use the constructor with arguments instead
      */
-    @Deprecated(since="2022-09", forRemoval=true)
+    @Deprecated(since = "2022-09", forRemoval = true)
     public JournalEntry withType(LogType type) {
         this.type = type;
         return this;
@@ -124,7 +124,7 @@ public class JournalEntry implements Serializable {
      * 
      * @deprecated, use the constructor with arguments instead
      */
-    @Deprecated(since="2022-09", forRemoval=true)
+    @Deprecated(since = "2022-09", forRemoval = true)
     public JournalEntry withContent(String content) {
         this.content = content;
         return this;
@@ -166,7 +166,8 @@ public class JournalEntry implements Serializable {
 
         PROCESS("process"),
         INSTITUTION("institution"),
-        USER("user");
+        USER("user"),
+        PROJECT("project");
 
         @Getter
         private String title;

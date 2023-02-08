@@ -85,6 +85,10 @@ public class JournalManager implements IManager, Serializable {
         return getLogEntriesForObject(id, EntryType.USER);
     }
 
+    public static List<JournalEntry> getLogEntriesForProject(Integer id) {
+        return getLogEntriesForObject(id, EntryType.PROJECT);
+    }
+
     public static List<JournalEntry> getLogEntriesForObject(Integer id, EntryType entryType) {
         try {
             return JournalMysqlHelper.getLogEntries(id, entryType);
@@ -143,5 +147,7 @@ public class JournalManager implements IManager, Serializable {
             return answer;
         }
     };
+
+
 
 }
