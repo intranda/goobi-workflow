@@ -348,12 +348,13 @@ public class ExportMets {
 
         if (config.isExportValidateImages()) {
 
-            if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").isEmpty()) {
+            String reference = "logical_physical";
+            if (topElement.getAllToReferences(reference) == null || topElement.getAllToReferences(reference).isEmpty()) {
                 if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
                     Helper.setMeldung(myProzess.getTitel()
                             + ": topstruct element does not have any referenced images yet; temporarily adding them for mets file creation");
                     for (DocStruct mySeitenDocStruct : dd.getPhysicalDocStruct().getAllChildren()) {
-                        topElement.addReferenceTo(mySeitenDocStruct, "logical_physical");
+                        topElement.addReferenceTo(mySeitenDocStruct, reference);
                     }
                 } else {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": could not find any referenced images, export aborted");
@@ -576,15 +577,17 @@ public class ExportMets {
 
     private void saveFinishedMetadata(Process myProzess, String targetFileName, ConfigurationHelper config, ExportFileformat mm,
             boolean addAnchorFile) throws IOException, WriteException, PreferencesException, SwapException {
+        String xmlEnding = ".xml";
+        String anchorEnding = "_anchor.xml";
         if (config.isExportInTemporaryFile()) {
-            Path tempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), ".xml");
+            Path tempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), xmlEnding);
             String filename = tempFile.toString();
             mm.write(filename);
             StorageProvider.getInstance().copyFile(tempFile, Paths.get(targetFileName));
 
-            Path anchorFile = Paths.get(filename.replace(".xml", "_anchor.xml"));
+            Path anchorFile = Paths.get(filename.replace(xmlEnding, anchorEnding));
             if (StorageProvider.getInstance().isFileExists(anchorFile)) {
-                StorageProvider.getInstance().copyFile(anchorFile, Paths.get(targetFileName.replace(".xml", "_anchor.xml")));
+                StorageProvider.getInstance().copyFile(anchorFile, Paths.get(targetFileName.replace(xmlEnding, anchorEnding)));
                 StorageProvider.getInstance().deleteDir(anchorFile);
             }
             StorageProvider.getInstance().deleteDir(tempFile);
@@ -595,15 +598,15 @@ public class ExportMets {
             if (addAnchorFile) {
                 //Anchor exists? Then copy that too, and place both in a zip:
                 String filename = myProzess.getMetadataFilePath();
-                Path anchorFile = Paths.get(filename.replace(".xml", "_anchor.xml"));
+                Path anchorFile = Paths.get(filename.replace(xmlEnding, anchorEnding));
                 if (StorageProvider.getInstance().isFileExists(anchorFile)) {
 
                     Path pathTarget = Paths.get(targetFileName);
-                    String anchorTarget = targetFileName.replace(".xml", "_anchor.xml");
+                    String anchorTarget = targetFileName.replace(xmlEnding, anchorEnding);
                     Path pathAnchorTarget = Paths.get(anchorTarget);
                     StorageProvider.getInstance().copyFile(anchorFile, pathAnchorTarget);
 
-                    FileOutputStream fos = new FileOutputStream(targetFileName.replace(".xml", ".zip"));
+                    FileOutputStream fos = new FileOutputStream(targetFileName.replace(xmlEnding, ".zip"));
                     ZipOutputStream out = new ZipOutputStream(fos);
 
                     writeToZip(pathTarget, out);

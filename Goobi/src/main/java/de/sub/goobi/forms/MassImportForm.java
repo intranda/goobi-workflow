@@ -258,13 +258,14 @@ public class MassImportForm implements Serializable {
             Document doc = builder.build(filename);
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */
+            String defaultValue = "default";
             List<Element> projekte = root.getChildren();
             for (Element projekt : projekte) {
                 // collect default collections
-                if ("default".equals(projekt.getName())) {
+                if (defaultValue.equals(projekt.getName())) {
                     List<Element> myCols = projekt.getChildren("DigitalCollection");
                     for (Element col : myCols) {
-                        if (col.getAttribute("default") != null && "true".equalsIgnoreCase(col.getAttributeValue("default"))) {
+                        if (col.getAttribute(defaultValue) != null && "true".equalsIgnoreCase(col.getAttributeValue(defaultValue))) {
                             digitalCollections.add(col.getText());
                         }
 
@@ -278,7 +279,7 @@ public class MassImportForm implements Serializable {
                         if (projektname.getText().equalsIgnoreCase(this.template.getProjekt().getTitel())) {
                             List<Element> myCols = projekt.getChildren("DigitalCollection");
                             for (Element col : myCols) {
-                                if (col.getAttribute("default") != null && "true".equalsIgnoreCase(col.getAttributeValue("default"))) {
+                                if (col.getAttribute(defaultValue) != null && "true".equalsIgnoreCase(col.getAttributeValue(defaultValue))) {
                                     digitalCollections.add(col.getText());
                                 }
 
