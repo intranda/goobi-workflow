@@ -27,6 +27,8 @@ package org.goobi.production.flow.statistics.enums;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.hibernate.StatQuestCorrections;
 import org.goobi.production.flow.statistics.hibernate.StatQuestProduction;
@@ -37,7 +39,6 @@ import org.goobi.production.flow.statistics.hibernate.StatQuestUsergroups;
 import org.goobi.production.flow.statistics.hibernate.StatQuestVolumeStatus;
 
 import de.sub.goobi.helper.Helper;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * Enum for all statistic modes,
@@ -49,7 +50,6 @@ import lombok.extern.log4j.Log4j2;
  * @version 20.10.2009
  ****************************************************************************/
 
-@Log4j2
 public enum StatisticsMode {
 
     SIMPLE_RUNTIME_STEPS("runtimeOfSteps", null, false, true, false),
@@ -61,6 +61,12 @@ public enum StatisticsMode {
     CORRECTIONS("errorTracking", StatQuestCorrections.class, false, false, true),
     STORAGE("storageCalculator", StatQuestStorage.class, false, false, true),
     PRODUCTION("productionStatistics", StatQuestProduction.class, false, false, true);
+
+    /**
+     * This logger field must be initialized manually because the annotation lombok.extern.log4j.Log4j2 would initialize a static LOG field. Static
+     * fields are not accessible in enum constructors because enum items are initialized before static fields.
+     */
+    private final Logger log = LogManager.getLogger(StatisticsMode.class);
 
     private IStatisticalQuestion question;
     private String title;
