@@ -116,6 +116,7 @@ public class Helper implements Serializable, ServletContextListener {
     private static final Map<String, Boolean> reloadNeededMap = new ConcurrentHashMap<>();
     private static final Map<Path, Thread> watcherMap = new ConcurrentHashMap<>();
     private static final String MESSAGES = "messages";
+    private static final String AUTOMATIC = "- automatic -";
 
     /**
      * Ermitteln eines bestimmten Paramters des Requests
@@ -226,7 +227,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     public static void addMessageToUserJournal(Integer userId, LogType type, String message) {
         LoginBean login = getLoginBean();
-        String user = "- automatic -";
+        String user = AUTOMATIC;
         if (login != null) {
             User userObject = login.getMyBenutzer();
             if (userObject != null) {
@@ -238,7 +239,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     public static void addMessageToInstitutionJournal(Integer institutionId, LogType type, String message) {
         LoginBean login = getLoginBean();
-        String user = "- automatic -";
+        String user = AUTOMATIC;
         if (login != null) {
             User userObject = login.getMyBenutzer();
             if (userObject != null) {
@@ -250,7 +251,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     public static void addMessageToProcessJournal(Integer processId, LogType type, String message) {
         LoginBean login = getLoginBean();
-        String user = "- automatic -";
+        String user = AUTOMATIC;
         if (login != null) {
             User userObject = login.getMyBenutzer();
             if (userObject != null) {

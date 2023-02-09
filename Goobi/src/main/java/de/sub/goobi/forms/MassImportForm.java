@@ -94,6 +94,8 @@ public class MassImportForm implements Serializable {
      */
     private static final long serialVersionUID = 4780655212251185461L;
 
+    private static final String docStructsGetter = "getCurrentDocStructs";
+
     @Inject
     private GoobiScriptManager goobiScriptManager;
     private ImportFormat format = null;
@@ -640,7 +642,7 @@ public class MassImportForm implements Serializable {
     public boolean getHasNextPage() {
         java.lang.reflect.Method method;
         try {
-            method = this.plugin.getClass().getMethod("getCurrentDocStructs");
+            method = this.plugin.getClass().getMethod(docStructsGetter);
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
@@ -673,7 +675,7 @@ public class MassImportForm implements Serializable {
         }
         java.lang.reflect.Method method;
         try {
-            method = this.plugin.getClass().getMethod("getCurrentDocStructs");
+            method = this.plugin.getClass().getMethod(docStructsGetter);
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
@@ -728,7 +730,7 @@ public class MassImportForm implements Serializable {
     public List<? extends DocstructElement> getDocstructs() {
         java.lang.reflect.Method method;
         try {
-            method = this.plugin.getClass().getMethod("getCurrentDocStructs");
+            method = this.plugin.getClass().getMethod(docStructsGetter);
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;

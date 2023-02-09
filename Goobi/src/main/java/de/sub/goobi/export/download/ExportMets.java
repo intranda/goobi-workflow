@@ -144,6 +144,18 @@ public class ExportMets {
     private static final String metsNamespace = "http://www.loc.gov/METS/";
     private static final String premisNamespace = "http://www.loc.gov/standards/premis/";
 
+    private static final String identifierLocal = "local";
+
+    private static final String propertyDuration = "Duration";
+    private static final String propertyBitrate = "Bitrate";
+    private static final String propertyImageWidth = "ImageWidth";
+    private static final String propertyImageHeight = "ImageHeight";
+    private static final String elementFixity = "fixity";
+    private static final String elementObjectCharacteristics = "objectCharacteristics";
+
+    private static final String SHA_1 = "SHA-1";
+    private static final String SHA_256 = "SHA-256";
+
     /**
      * DMS-Export in das Benutzer-Homeverzeichnis
      * 
@@ -399,6 +411,7 @@ public class ExportMets {
             }
         }
 
+        String metadataWarning = "Configured metadata for project name is unknown or not allowed.";
         Map<String, String> additionalMetadataMap = config.getExportWriteAdditionalMetadata();
         if (!additionalMetadataMap.isEmpty()) {
             String projectMetadataName = additionalMetadataMap.get("Project");
@@ -412,7 +425,7 @@ public class ExportMets {
                         md.setValue(myProzess.getProjekt().getTitel());
                         topElement.addMetadata(md);
                     } catch (MetadataTypeNotAllowedException e) {
-                        log.warn("Configured metadata for project name is unknown or not allowed.");
+                        log.warn(metadataWarning);
                     }
                     if (topElement.getParent() != null) {
                         try {
@@ -420,7 +433,7 @@ public class ExportMets {
                             md.setValue(myProzess.getProjekt().getTitel());
                             topElement.getParent().addMetadata(md);
                         } catch (MetadataTypeNotAllowedException e) {
-                            log.warn("Configured metadata for project name is unknown or not allowed.");
+                            log.warn(metadataWarning);
                         }
                     }
                 }
@@ -433,7 +446,7 @@ public class ExportMets {
                         md.setValue(myProzess.getProjekt().getInstitution().getLongName());
                         topElement.addMetadata(md);
                     } catch (MetadataTypeNotAllowedException e) {
-                        log.warn("Configured metadata for institution name is unknown or not allowed.");
+                        log.warn(metadataWarning);
                     }
                     if (topElement.getParent() != null) {
                         try {
@@ -441,7 +454,7 @@ public class ExportMets {
                             md.setValue(myProzess.getProjekt().getInstitution().getLongName());
                             topElement.getParent().addMetadata(md);
                         } catch (MetadataTypeNotAllowedException e) {
-                            log.warn("Configured metadata for institution name is unknown or not allowed.");
+                            log.warn(metadataWarning);
                         }
                     }
                 }
@@ -578,6 +591,7 @@ public class ExportMets {
     private void saveFinishedMetadata(Process myProzess, String targetFileName, ConfigurationHelper config, ExportFileformat mm,
             boolean addAnchorFile) throws IOException, WriteException, PreferencesException, SwapException {
         String xmlEnding = ".xml";
+        String zipEnding = ".zip";
         String anchorEnding = "_anchor.xml";
         if (config.isExportInTemporaryFile()) {
             Path tempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), xmlEnding);
@@ -606,7 +620,7 @@ public class ExportMets {
                     Path pathAnchorTarget = Paths.get(anchorTarget);
                     StorageProvider.getInstance().copyFile(anchorFile, pathAnchorTarget);
 
-                    FileOutputStream fos = new FileOutputStream(targetFileName.replace(xmlEnding, ".zip"));
+                    FileOutputStream fos = new FileOutputStream(targetFileName.replace(xmlEnding, zipEnding));
                     ZipOutputStream out = new ZipOutputStream(fos);
 
                     writeToZip(pathTarget, out);
@@ -717,7 +731,7 @@ public class ExportMets {
 
     private void buildMPEGMetadata(Document doc, Path file, Element object) throws DataFormatException, IOException {
 
-        addObjectIdentifier(doc, object, "local", file.getFileName().normalize().toString());
+        addObjectIdentifier(doc, object, identifierLocal, file.getFileName().normalize().toString());
         String duration = null;
         String bitrate = null;
         String width = null;
@@ -744,25 +758,25 @@ public class ExportMets {
         }
 
         if (duration != null) {
-            addSignificantProperty(doc, object, "Duration", duration);
+            addSignificantProperty(doc, object, propertyDuration, duration);
         }
         if (bitrate != null) {
-            addSignificantProperty(doc, object, "Bitrate", bitrate);
+            addSignificantProperty(doc, object, propertyBitrate, bitrate);
         }
         if (width != null) {
-            addSignificantProperty(doc, object, "ImageWidth", width);
+            addSignificantProperty(doc, object, propertyImageWidth, width);
         }
         if (height != null) {
-            addSignificantProperty(doc, object, "ImageHeight", height);
+            addSignificantProperty(doc, object, propertyImageHeight, height);
         }
 
-        Element objectCharacteristics = doc.createElementNS(premisNamespace, "objectCharacteristics");
+        Element objectCharacteristics = doc.createElementNS(premisNamespace, elementObjectCharacteristics);
         object.appendChild(objectCharacteristics);
         {
-            Element fixity = doc.createElementNS(premisNamespace, "fixity");
+            Element fixity = doc.createElementNS(premisNamespace, elementFixity);
             objectCharacteristics.appendChild(fixity);
             {
-                addHash(doc, file, fixity, "SHA-1");
+                addHash(doc, file, fixity, SHA_1);
             }
             addSize(doc, file, objectCharacteristics);
 
@@ -803,17 +817,17 @@ public class ExportMets {
             throw new IOException(message);
         }
         // create remaining structure for the premis block and add information
-        addObjectIdentifier(doc, object, "local", file.getFileName().normalize().toString());
-        addSignificantProperty(doc, object, "ImageHeight", Integer.toString((int) imageDimension.getHeight()));
-        addSignificantProperty(doc, object, "ImageWidth", Integer.toString((int) imageDimension.getWidth()));
+        addObjectIdentifier(doc, object, identifierLocal, file.getFileName().normalize().toString());
+        addSignificantProperty(doc, object, propertyImageHeight, Integer.toString((int) imageDimension.getHeight()));
+        addSignificantProperty(doc, object, propertyImageWidth, Integer.toString((int) imageDimension.getWidth()));
 
-        Element objectCharacteristics = doc.createElementNS(premisNamespace, "objectCharacteristics");
+        Element objectCharacteristics = doc.createElementNS(premisNamespace, elementObjectCharacteristics);
         object.appendChild(objectCharacteristics);
 
-        Element fixity = doc.createElementNS(premisNamespace, "fixity");
+        Element fixity = doc.createElementNS(premisNamespace, elementFixity);
         objectCharacteristics.appendChild(fixity);
 
-        addHash(doc, file, fixity, "SHA-256");
+        addHash(doc, file, fixity, SHA_256);
 
         addSize(doc, file, objectCharacteristics);
 
@@ -980,7 +994,7 @@ public class ExportMets {
      */
     private static String getDuration(String s) {
         String duration = null;
-        if (s.startsWith("Duration")) {
+        if (s.startsWith(propertyDuration)) {
             String[] splitString = s.split(" ");
             for (String str : splitString) {
                 if (str.matches("\\d:\\d\\d:\\d\\d")) {
@@ -1013,7 +1027,7 @@ public class ExportMets {
      */
     private static String getBitrate(String s) {
         String bitrate = null;
-        if (s.contains("Bitrate") || s.contains("Video Frame Rate")) {
+        if (s.contains(propertyBitrate) || s.contains("Video Frame Rate")) {
             String[] splitString = s.split(":");
             bitrate = splitString[1].trim();
         }
@@ -1161,16 +1175,16 @@ public class ExportMets {
     private static String getShaString(MessageDigest messageDigest, String algorithmName) throws NoSuchAlgorithmException {
         BigInteger bigInt = new BigInteger(1, messageDigest.digest());
         StringBuilder sha256 = new StringBuilder(bigInt.toString(16).toLowerCase());
-        if (algorithmName.equals("SHA-1")) {
+        if (algorithmName.equals(SHA_1)) {
             while (sha256.length() < 40) {
                 sha256.insert(0, "0");
             }
-        } else if (algorithmName.equals("SHA-256")) {
+        } else if (algorithmName.equals(SHA_256)) {
             while (sha256.length() < 64) {
                 sha256.insert(0, "0");
             }
         } else {
-            throw new NoSuchAlgorithmException("Only SHA-1 and SHA-256 supported");
+            throw new NoSuchAlgorithmException("Only " + SHA_1 + " and " + SHA_256 + " supported");
         }
         return sha256.toString();
     }
@@ -1186,16 +1200,16 @@ public class ExportMets {
      */
     private void buildPDFMetadata(Document document, Path file, Element object) throws IOException {
 
-        addObjectIdentifier(document, object, "local", file.getFileName().normalize().toString());
+        addObjectIdentifier(document, object, identifierLocal, file.getFileName().normalize().toString());
         PDDocument doc = PDDocument.load(file.toFile());
         addSignificantProperty(document, object, "PageNumber", String.valueOf(doc.getNumberOfPages()));
-        Element objectCharacteristics = document.createElementNS(premisNamespace, "objectCharacteristics");
+        Element objectCharacteristics = document.createElementNS(premisNamespace, elementObjectCharacteristics);
         object.appendChild(objectCharacteristics);
 
-        Element fixity = document.createElementNS(premisNamespace, "fixity");
+        Element fixity = document.createElementNS(premisNamespace, elementFixity);
         objectCharacteristics.appendChild(fixity);
 
-        addHash(document, file, fixity, "SHA-1");
+        addHash(document, file, fixity, SHA_1);
 
         addSize(document, file, objectCharacteristics);
 
@@ -1220,7 +1234,7 @@ public class ExportMets {
     private void buildAudioMetadata(Document doc, Path file, Element object, boolean isMp3)
             throws IOException, DataFormatException, UnsupportedAudioFileException {
 
-        addObjectIdentifier(doc, object, "local", file.getFileName().normalize().toString());
+        addObjectIdentifier(doc, object, identifierLocal, file.getFileName().normalize().toString());
 
         double duration = 0;
         String bitrate = null;
@@ -1254,22 +1268,22 @@ public class ExportMets {
         DecimalFormat numberFormat = new DecimalFormat("#.######", separator);
         // check if duration and bitrate were successfully read, else throw exception
         if (duration != 0) {
-            addSignificantProperty(doc, object, "Duration", numberFormat.format(duration));
+            addSignificantProperty(doc, object, propertyDuration, numberFormat.format(duration));
         } else {
             throw new DataFormatException("Unable to determine duration of medium " + file);
         }
         if (bitrate != null) {
-            addSignificantProperty(doc, object, "Bitrate", bitrate);
+            addSignificantProperty(doc, object, propertyBitrate, bitrate);
         } else {
             throw new DataFormatException("Unable to determine bitrate of medium " + file);
         }
-        Element objectCharacteristics = doc.createElementNS(premisNamespace, "objectCharacteristics");
+        Element objectCharacteristics = doc.createElementNS(premisNamespace, elementObjectCharacteristics);
         object.appendChild(objectCharacteristics);
 
-        Element fixity = doc.createElementNS(premisNamespace, "fixity");
+        Element fixity = doc.createElementNS(premisNamespace, elementFixity);
         objectCharacteristics.appendChild(fixity);
 
-        addHash(doc, file, fixity, "SHA-1");
+        addHash(doc, file, fixity, SHA_1);
 
         addSize(doc, file, objectCharacteristics);
 

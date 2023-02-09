@@ -48,11 +48,13 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class HttpClientHelper {
 
+    private static final String WRONG_STATUS_CODE_PREFIX = "Wrong status code: ";
+
     public static ResponseHandler<byte[]> byteArrayResponseHandler = new ResponseHandler<byte[]>() {
         @Override
         public byte[] handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
+                log.error(WRONG_STATUS_CODE_PREFIX + response.getStatusLine().getStatusCode());
                 return null;
             }
             HttpEntity entity = response.getEntity();
@@ -68,7 +70,7 @@ public class HttpClientHelper {
         @Override
         public String handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
+                log.error(WRONG_STATUS_CODE_PREFIX + response.getStatusLine().getStatusCode());
                 return null;
             }
             HttpEntity entity = response.getEntity();
@@ -84,7 +86,7 @@ public class HttpClientHelper {
         @Override
         public InputStream handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
+                log.error(WRONG_STATUS_CODE_PREFIX + response.getStatusLine().getStatusCode());
                 return null;
             }
             HttpEntity entity = response.getEntity();
