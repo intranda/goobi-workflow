@@ -18,7 +18,7 @@
         <h:form id="myform" styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Projects')}" enctype="multipart/form-data">
 
             <div class="row" role="main">
-                <div class="col-sm-6">
+                <div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-12':'col-sm-7'}">
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
                             <h2>
@@ -338,7 +338,7 @@
                     </div>
                 </div>
 
-                <div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-12':'col-sm-6'}">
+                <div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-12':'col-sm-5'}">
                     <!-- Box for process log -->
                     <x:aliasBeansScope>
                         <x:aliasBean
