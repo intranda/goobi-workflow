@@ -2347,12 +2347,12 @@ ul>li.yellow, .label-yellow {
 
 .flex-label {
 	padding-left: 6px;
-	flex-basis: 200px;
+	flex-basis: 400px;
 }
 
 .flex-value {
 	margin: 0px 15px 5px 5px;
-	flex-basis: 1500px;
+	flex-basis: 1275px;
 }
 
 .flex-justify-between {
