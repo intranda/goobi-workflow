@@ -204,39 +204,6 @@
 		<!-- JAVASCRIPT -->
 		<script
 			src="https://cdn.jsdelivr.net/npm/microlight@0.0.7/microlight.min.js"></script>
-		<script>
-			// Highlight important class names and attributes
-			function highlight(str) {
-			  const codeBlocks = document.querySelectorAll('code');
-			  const regex = new RegExp(str)
-			  const replacement = '<span class="highlight">' + str + '</span>';
-			  codeBlocks.forEach(block => {
-			    block.innerHTML = block.innerHTML.replace(regex, replacement)
-			  })
-			}
-			
-			addEventListener("load", (event) => {
-			  [
-			    'gw-table',
-			    'gw-table-fixed',
-			    'gw-table__search',
-			    'gw-table__search__length',
-			    'gw-table__filters',
-			    'gw-table__filters__option',
-			    'gw-table__filters__search-bar',
-			    'gw-table__wrapper',
-			    'gw-table-fixed__actions',
-			    'gw-table__actions__container',
-			    'box__actions',
-			    'me-auto',
-			    'boxPadding',
-			    'boxForm',
-			    'boxSmall',
-			    'boxTitle',
-			    'trigger-delete'
-			  ].forEach(str => highlight(str))
-			});
-		</script>
 		<!-- // JAVASCRIPT -->
 
 	</ui:define>

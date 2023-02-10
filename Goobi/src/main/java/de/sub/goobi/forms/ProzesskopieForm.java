@@ -424,7 +424,7 @@ public class ProzesskopieForm implements Serializable {
 
     public List<SelectItem> getProzessTemplates() {
         List<SelectItem> myProcessTemplates = new ArrayList<>();
-        String filter = " istTemplate = false AND inAuswahllisteAnzeigen = true ";
+        StringBuilder filter = new StringBuilder(" istTemplate = false AND inAuswahllisteAnzeigen = true ");
 
         /* Einschränkung auf bestimmte Projekte, wenn kein Admin */
         User aktuellerNutzer = Helper.getCurrentUser();
@@ -434,11 +434,12 @@ public class ProzesskopieForm implements Serializable {
          */
         if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
-            filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                    + aktuellerNutzer.getId() + ")";
+            filter.append(" AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ")
+                    .append(aktuellerNutzer.getId())
+                    .append(")");
         }
 
-        List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter);
+        List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter.toString());
         for (Process proz : selectList) {
             myProcessTemplates.add(new SelectItem(proz.getId(), proz.getTitel(), null));
         }
@@ -615,12 +616,12 @@ public class ProzesskopieForm implements Serializable {
 
         if (tempProcess.getEigenschaftenSize() > 0) {
             for (Processproperty pe : tempProcess.getEigenschaften()) {
-            	for (AdditionalField field : this.additionalFields) {
+                for (AdditionalField field : this.additionalFields) {
                     if (field.getTitel().equals(pe.getTitel())) {
                         field.setWert(pe.getWert());
                     }
                 }
-            	if ("digitalCollection".equals(pe.getTitel())) {
+                if ("digitalCollection".equals(pe.getTitel())) {
                     digitalCollections.add(pe.getWert());
                 }
             }
@@ -1350,7 +1351,7 @@ public class ProzesskopieForm implements Serializable {
     }
 
     public String getPluginGui() {
-        return currentCatalogue == null || currentCatalogue.getOpacPlugin() == null ? "/uii/includes/process/process_new_opac.xhtml"
+        return currentCatalogue == null || currentCatalogue.getOpacPlugin() == null ? "/uii/templatePG/includes/process/process_new_opac.xhtml"
                 : currentCatalogue.getOpacPlugin().getGui();
 
     }
@@ -1554,7 +1555,7 @@ public class ProzesskopieForm implements Serializable {
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
                 sb.append(myString.substring(1, myString.length() - 1));
-            } else if (myString.equals("$Doctype")) {
+            } else if ("$Doctype".equals(myString)) {
                 /* wenn der Doctype angegeben werden soll */
                 sb.append(this.co.getDoctypeByName(this.docType).getTifHeaderType());
             } else {
