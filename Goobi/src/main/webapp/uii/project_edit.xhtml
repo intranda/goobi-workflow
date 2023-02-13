@@ -10,10 +10,10 @@
   xmlns:x="http://myfaces.apache.org/tomahawk"
   xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
-<ui:param name="myProjectTitle" value="#{msgs.project}: #{ProjekteForm.myProjekt.titel}" />
-<ui:param name="myPageTitle" value="#{ProjekteForm.myProjekt.id == null?msgs.neuesProjektAnlegen:myProjectTitle}" />
-<ui:param name="myBoxTitle" value="#{ProjekteForm.myProjekt.id == null?msgs.neuesProjektAnlegen:msgs.projektBearbeiten}" />
-
+<ui:param name="myPageTitle" value="#{ProjekteForm.myProjekt.id == null?msgs.neuesProjektAnlegen:msgs.projektBearbeiten}" />
+<ui:param name="myProjectTitle" value="#{ProjekteForm.myProjekt.titel}" />
+<ui:param name="myEditProjectTitle" value="#{msgs.projektBearbeiten}: #{myProjectTitle}" />
+<ui:param name="myBoxTitle" value="#{ProjekteForm.myProjekt.id == null?msgs.neuesProjektAnlegen:myEditProjectTitle}" />
 
 <ui:define name="breadcrumb">
 <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
