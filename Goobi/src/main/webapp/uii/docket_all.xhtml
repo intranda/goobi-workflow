@@ -45,15 +45,15 @@
 			<x:dataTable id="dockets" styleClass="table table-hover table-bordered" var="item" value="#{DocketForm.paginator.list}">
 
 				<h:column>
-				<f:facet name="header">
-				<h:outputText value="#{msgs.docketTitle}" />
-				</f:facet>
-				<h:outputText value="#{item.name}" />
+					<f:facet name="header">
+					<h:outputText value="#{msgs.name}" />
+						</f:facet>
+					<h:outputText value="#{item.name}" />
 				</h:column>
 
 				<h:column>
 					<f:facet name="header">
-						<h:outputText value="#{msgs.docketFile}" />
+						<h:outputText value="#{msgs.filename}" />
 					</f:facet>
 					<h:outputText value="#{item.file}" />
 				</h:column>
