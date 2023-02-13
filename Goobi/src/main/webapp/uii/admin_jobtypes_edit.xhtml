@@ -1,5 +1,6 @@
 <ui:composition
 	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -11,12 +12,12 @@
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
-    <ui:param name="myPageTitle" value="#{msgs.manageAutomaticTasks}" />
+	<ui:param name="myPageTitle" value="#{JobTypesBean.currentJobType.name == null?msgs.createNewJobType:msgs.editJobType}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
         <intranda:breadcrumb id="admin_jobtypes_all" label="#{msgs.automaticTasks}" action="admin_jobtypes_all.xhtml" />
-        <intranda:breadcrumb id="admin_jobtypes_edit" label="#{msgs.editJobType}" action="admin_jobtypes_edit.xhtml" noSeparator="#{true}" />
+        <intranda:breadcrumb id="admin_jobtypes_edit" label="#{myPageTitle}" action="admin_jobtypes_edit.xhtml" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
@@ -30,7 +31,7 @@
 				<intranda:box
 					boxType="action"
 					icon="fa-gears"
-					title="#{msgs.editJobType}"
+					title="#{myPageTitle}"
 					boxScope="form-box"
 					boxPadding="false">
 
