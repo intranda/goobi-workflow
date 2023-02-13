@@ -1,5 +1,6 @@
 package org.goobi.production.flow.jobs;
 
+import java.lang.reflect.InvocationTargetException;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,11 +28,11 @@ package org.goobi.production.flow.jobs;
  */
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Set;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.goobi.vocabulary.UploadVocabJob;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -40,6 +41,7 @@ import org.quartz.SchedulerFactory;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.reflections.Reflections;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
@@ -84,12 +86,18 @@ public class JobManager implements ServletContextListener {
         Scheduler sched = schedFact.getScheduler();
         sched.start();
 
-        initializeJob(new HistoryAnalyserJob(), "dailyHistoryAnalyser", sched);
-        initializeJob(new DelayJob(), "dailyDelayJob", sched);
+        Set<Class<? extends IGoobiJob>> jobs = new Reflections().getSubTypesOf(IGoobiJob.class);
+        // TODO use cron trigger
+        for (Class<? extends IGoobiJob> jobClass : jobs) {
+            try {
+                IGoobiJob job = jobClass.getDeclaredConstructor().newInstance();
+                initializeJob(job, job.getJobName(), sched);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                    | SecurityException e) {
+                log.error(e);
+            }
 
-        initializeJob(new UploadVocabJob(), "dailyVocabJob", sched);
-
-        initializeMinutelyJob(new UploadVocabJob(), "goobiAuthorityServerUploadFrequencyInMinutes", sched);
+        }
     }
 
     /**
@@ -99,7 +107,6 @@ public class JobManager implements ServletContextListener {
      */
     private static void initializeJob(IGoobiJob goobiJob, String configuredStartTimeProperty, Scheduler sched) throws SchedulerException {
         JobDetail jobDetail = JobBuilder.newJob(goobiJob.getClass()).withIdentity(goobiJob.getJobName(), goobiJob.getJobName()).build();
-
         if (ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty) != -1) {
             long msOfToday = ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty);
             Calendar cal = Calendar.getInstance();

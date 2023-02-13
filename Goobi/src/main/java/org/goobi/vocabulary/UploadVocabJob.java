@@ -45,7 +45,7 @@ public class UploadVocabJob extends AbstractGoobiJob {
      */
     @Override
     public String getJobName() {
-        return "UploadVocabJob";
+        return "goobiAuthorityServerUploadFrequencyInMinutes";
     }
 
     @Override

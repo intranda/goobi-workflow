@@ -46,7 +46,7 @@ public class DelayJob extends AbstractGoobiJob {
 
     @Override
     public String getJobName() {
-        return "DelayJob";
+        return "dailyDelayJob";
     }
 
     @Override
@@ -70,10 +70,8 @@ public class DelayJob extends AbstractGoobiJob {
                             Helper.getTranslation("blockingDelayIsExhausted"), EntryType.PROCESS);
                     JournalManager.saveJournalEntry(logEntry);
                     new HelperSchritte().CloseStepObjectAutomatic(step);
-                } else {
-                    if (log.isTraceEnabled()) {
-                        log.trace(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
-                    }
+                } else if (log.isTraceEnabled()) {
+                    log.trace(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
                 }
             }
 
