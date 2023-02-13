@@ -51,7 +51,7 @@ public class UploadVocabJob extends AbstractGoobiJob {
     @Override
     public void execute(JobExecutionContext context) {
 
-        log.debug("Execute job: " + context.getJobDetail().getName() + " - " + context.getRefireCount());
+        log.debug("Execute job: " + context.getJobDetail().getKey() + " - " + context.getRefireCount());
 
         VocabularyManager vocabMan = new VocabularyManager();
 

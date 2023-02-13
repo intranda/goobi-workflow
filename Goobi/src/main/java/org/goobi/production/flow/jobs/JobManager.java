@@ -32,12 +32,14 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.goobi.vocabulary.UploadVocabJob;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
-import org.quartz.TriggerUtils;
+import org.quartz.TriggerBuilder;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
@@ -96,7 +98,7 @@ public class JobManager implements ServletContextListener {
      * @throws SchedulerException
      */
     private static void initializeJob(IGoobiJob goobiJob, String configuredStartTimeProperty, Scheduler sched) throws SchedulerException {
-        JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
+        JobDetail jobDetail = JobBuilder.newJob(goobiJob.getClass()).withIdentity(goobiJob.getJobName(), goobiJob.getJobName()).build();
 
         if (ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty) != -1) {
             long msOfToday = ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty);
@@ -109,9 +111,15 @@ public class JobManager implements ServletContextListener {
             int hour = cal.get(Calendar.HOUR_OF_DAY);
             int min = cal.get(Calendar.MINUTE);
 
-            Trigger trigger = TriggerUtils.makeDailyTrigger(hour, min);
-            trigger.setStartTime(new Date());
-            trigger.setName(goobiJob.getJobName() + "_trigger");
+            Trigger trigger =
+
+                    TriggerBuilder.newTrigger()
+                            .withIdentity(goobiJob.getJobName(), goobiJob.getJobName())
+
+                            .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(24))
+                            .startAt(cal.getTime())
+
+                            .build();
 
             log.info("Set the start time for daily Job '" + goobiJob.getJobName() + "' to: " + hour + ":" + min);
             sched.scheduleJob(jobDetail, trigger);
@@ -130,30 +138,20 @@ public class JobManager implements ServletContextListener {
             int intervalInMinutes = (int) ConfigurationHelper.getInstance().getJobStartTime(configuredMinutelyIntervalProperty);
 
             log.debug("Initialize job '" + goobiJob.getJobName() + "'");
-            JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
+            JobDetail jobDetail = JobBuilder.newJob(goobiJob.getClass()).withIdentity(goobiJob.getJobName(), goobiJob.getJobName()).build();
 
-            Trigger trigger = TriggerUtils.makeMinutelyTrigger(intervalInMinutes);
-            trigger.setStartTime(new Date());
-            trigger.setName(goobiJob.getJobName() + "_minute_trigger");
+            Trigger trigger =
+                    TriggerBuilder.newTrigger()
+                            .withIdentity(goobiJob.getJobName(), goobiJob.getJobName())
+
+                            .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(intervalInMinutes))
+                            .startNow()
+
+                            .build();
+
             sched.scheduleJob(jobDetail, trigger);
+
         }
-    }
-
-    /**
-     * initializes given SimpleGoobiJob at given time
-     * 
-     * @throws SchedulerException
-     */
-    @SuppressWarnings("unused")
-    private static void initializeJobNonConfigured(IGoobiJob goobiJob, int myTime, Scheduler sched) throws SchedulerException {
-        log.debug("Initialize job '" + goobiJob.getJobName() + "'");
-        JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
-
-        // hier alle 60 sek. oder so
-        Trigger trigger = TriggerUtils.makeMinutelyTrigger(myTime);
-        trigger.setStartTime(new Date());
-        trigger.setName(goobiJob.getJobName() + "_trigger");
-        sched.scheduleJob(jobDetail, trigger);
     }
 
     @Override

@@ -25,18 +25,18 @@
  */
 package io.goobi.workflow.locking;
 
-import java.util.Date;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
-import org.quartz.TriggerUtils;
+import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import lombok.extern.log4j.Log4j2;
@@ -57,12 +57,19 @@ public class LockingListener implements ServletContextListener {
             sched = schedFact.getScheduler();
             sched.start();
 
-            JobDetail jobDetail = new JobDetail("locking", null, FreeLockingJob.class);
-            Trigger trigger = TriggerUtils.makeMinutelyTrigger(30);
-            trigger.setStartTime(new Date());
-            trigger.setName("MinuteTrigger");
-            sched.scheduleJob(jobDetail, trigger);
+            FreeLockingJob goobiJob = new FreeLockingJob();
 
+            JobDetail jobDetail = JobBuilder.newJob(goobiJob.getClass()).withIdentity("FreeLockingJob", "FreeLockingJob").build();
+
+            Trigger trigger =
+                    TriggerBuilder.newTrigger()
+                            .withIdentity("FreeLockingJob", "FreeLockingJob")
+
+                            .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(30))
+                            .startNow()
+
+                            .build();
+            sched.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
             log.error(e);
 

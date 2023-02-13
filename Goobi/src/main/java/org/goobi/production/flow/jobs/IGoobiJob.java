@@ -29,13 +29,14 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public interface IGoobiJob {
+public interface IGoobiJob extends Job {
 
     /**
      * execute this {@link Job} for all database and metadata content don't overwrite this method
      * 
      * @throws JobExecutionException
      */
+    @Override
     public abstract void execute(JobExecutionContext context) throws JobExecutionException;
 
     public abstract void setIsRunning(Boolean inisRunning);

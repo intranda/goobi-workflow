@@ -81,6 +81,10 @@
         <ugh-lido.version>0.0.14</ugh-lido.version>
 
         <!-- Be careful with updates here -->
+
+        <quartz.version>2.3.2</quartz.version>
+        <cron-expression-descriptor.version>1.2.6</cron-expression-descriptor.version>
+        
         <antlr4.version>4.11.1</antlr4.version>
         <avalon-framework.version>4.2.0</avalon-framework.version>
         <h2.version>1.4.200</h2.version>
@@ -138,6 +142,8 @@
         <!-- used in goobi-plugin-step-barcode-scanner -->
         <zxing.version>3.5.1</zxing.version>
         <jsch.version>0.2.6</jsch.version>
+        
+        
     </properties>
 
 
@@ -1181,10 +1187,15 @@
             <version>${normdataimporter.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.intranda.other</groupId>
-            <artifactId>quartz-all</artifactId>
-            <version>1.6.5</version>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
         </dependency>
+        <dependency>
+            <groupId>it.burning</groupId>
+            <artifactId>cron-expression-descriptor</artifactId>
+            <version>${cron-expression-descriptor.version}</version>
+         </dependency>
         <dependency>
             <groupId>de.intranda.other</groupId>
             <artifactId>relaxngDatatype</artifactId>
