@@ -771,8 +771,8 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ProcesslistShowEditionData", false);
     }
 
-    public long getJobStartTime(String jobname) {
-        return getLocalLong(jobname, -1);
+    public String getJobStartTime(String jobname) {
+        return getLocalString(jobname, null);
     }
 
     public List<String> getDownloadColumnWhitelist() {
