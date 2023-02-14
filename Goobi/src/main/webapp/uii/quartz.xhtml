@@ -7,7 +7,7 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
     <ui:param
         name="myPageTitle"
@@ -30,144 +30,145 @@
     </ui:define>
 
     <ui:define name="content">
-        <main>
-            <div class="box box-bordered box-color">
-                <div class="box-title">
-                    <h2>
-                        <i class="fa fa-spinner"></i>
-                        <h:outputText value="#{msgs.menu_administration_quartzJobs}" />
 
-                        <!-- button to pause/resume all -->
+        <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Quartz')}">
 
-                        <button
-                            data-target="pauseButton"
-                            jsf:action="#{jobBean.pauseAllJobs}"
-                            class="btn pull-right">
-                            <i class="fa fa-pause"></i>
-                        </button>
-
-                        <button
-                            data-target="resumeButton"
-                            jsf:action="#{jobBean.resumeAllJobs}"
-                            class="btn pull-right">
-                            <i class="fa fa-play"></i>
-                        </button>
-
-                    </h2>
-                </div>
-
-                <h:form prependId="false">
-
-
-
-                    <ui:repeat
-                        var="entry"
-                        value="#{jobBean.activeJobs}">
-
-
-                        <div class="col-3 d-flex">
-                            <h:outputText value="#{msgs[entry.jobName]}" />
-                        </div>
-
-
-                    </ui:repeat>
-                    <!-- 
+            <div
+                class="row"
+                role="main">
 
 
 
 
-                        <div class="admin__quartz">
+                <div class="col-sm-12">
+                    <intranda:box
+                        boxType="primary-400"
+                        scope="form-box"
+                        boxTitle="false"
+                        padding="false">
 
-                            <div
-                                style="width: 100%;"
-                                id="new-table-adminallmessagetypes"
-                                class="admin__table-content"
-                                role="grid"
-                                aria-label="#{msg.admin__queue_types}: #{msg.aria_label__table__actions}">
-                                <div
-                                    class="row no-gutters admin__table-title"
-                                    role="row">
-                                    <div class="col-3 d-flex">Name</div>
-                                    <div class="col-3 d-flex">Group</div>
-                                    <div class="col-2 d-flex">previousFireTime</div>
-                                    <div class="col-2 d-flex">nextFireTime</div>
-                                    <div class="col-2 d-flex">actions</div>
+                        <intranda:boxTitle
+                            title="#{msgs.menu_administration_quartzJobs}"
+                            icon="fa-spinner">
 
+                            <button
+                                data-target="pauseButton"
+                                jsf:action="#{jobBean.pauseAllJobs}"
+                                class="btn pull-right">
+                                <i class="fa fa-pause"></i>
+                            </button>
+
+                            <button
+                                data-target="resumeButton"
+                                jsf:action="#{jobBean.resumeAllJobs}"
+                                class="btn pull-right">
+                                <i class="fa fa-play"></i>
+                            </button>
+
+                        </intranda:boxTitle>
+
+
+
+
+                        <div class="dataTables flow">
+                            <h:form
+                                id="myform"
+                                prependId="false"
+                                styleClass="table--scrollx">
+
+                                <div class="table-wrapper">
+                                    <table
+                                        role="grid"
+                                        id="tableUserAll"
+                                        class="table table-bordered table-fixed">
+                                        <!-- ### Columnheader row ### -->
+                                        <thead>
+                                            <tr role="row">
+                                                <intranda:columnheader
+                                                    value="#{msgs.admin__tasks__quartz_single_name}"
+                                                    sortable="false" />
+                                                <intranda:columnheader
+                                                    value="#{msgs.admin__tasks__quartz_single_last}"
+                                                    sortable="false" />
+                                                <intranda:columnheader
+                                                    value="#{msgs.admin__tasks__quartz_single_next}"
+                                                    sortable="false" />
+                                                <intranda:columnheader
+                                                    value="#{msgs.admin__tasks__quartz_single_schedule}"
+                                                    sortable="false"
+                                                    addClass="table-fixed__actions" />
+                                            </tr>
+                                        </thead>
+                                        <ui:repeat
+                                            var="entry"
+                                            value="#{jobBean.activeJobs}">
+
+                                            <tr role="row">
+                                                <td>
+                                                    <div
+                                                        class="admin__tasks-quartz-table-entry-name-wrapper"
+                                                        role="gridcell">
+                                                        <button
+                                                            jsf:action="#{jobBean.pauseJob}"
+                                                            class="btn btn--clean admin__tasks-quartz-table-pause-button">
+                                                            <i class="fa fa-pause" />
+                                                            <f:ajax
+                                                                execute="@form"
+                                                                render="quartzRowID pauseAllGroup quartzNotProcessed" />
+                                                            <f:setPropertyActionListener
+                                                                target="#{jobBean.quartzJobDetails}"
+                                                                value="#{entry}" />
+                                                        </button>
+
+                                                        <button
+                                                            jsf:action="#{jobBean.resumeJob}"
+                                                            class="btn btn--clean admin__tasks-quartz-table-play-button">
+                                                            <i class="fa fa-play" />
+                                                            <f:ajax
+                                                                execute="@form"
+                                                                render="quartzRowID pauseAllGroup quartzNotProcessed" />
+                                                            <f:setPropertyActionListener
+                                                                target="#{jobBean.quartzJobDetails}"
+                                                                value="#{entry}" />
+                                                        </button>
+
+                                                        <span class="admin__tasks-quartz-table-row-data">
+                                                            <h:outputText value="#{msgs[entry.jobName]}" />
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <button
+                                                            jsf:action="#{jobBean.triggerQuartzJob}"
+                                                            class="btn admin__table-action-link -bluelink">
+                                                            #{msgs.admin__tasks__run_once_now}
+                                                            <f:setPropertyActionListener
+                                                                target="#{jobBean.quartzJobDetails}"
+                                                                value="#{entry}" />
+                                                            <f:ajax
+                                                                execute="@form"
+                                                                render="runningTasksQueueWrapper" />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{entry.previousFireTime}" />
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{entry.nextFireTime}" />
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{entry.humanReadableCronTime}" />
+                                                </td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </table>
                                 </div>
-
-
-                                <ui:repeat
-                                    var="entry"
-                                    value="#{quartzBean.activeJobs}">
-                                    <div
-                                        class="row no-gutters admin__table-entry"
-                                        role="row">
-                                        <div class="col-3 d-flex">
-                                            <h:outputText value="#{msg[entry.jobName]}" />
-                                        </div>
-
-                                        <div
-                                            class="col-3 d-flex align-items-center"
-                                            role="gridcell">
-                                            <h:outputText value="#{entry.jobGroup}" />
-                                        </div>
-
-                                        <div
-                                            class="col-2 d-flex align-items-center"
-                                            role="gridcell">
-                                            <h:outputText value="#{entry.previousFireTime}" />
-                                        </div>
-                                        <div
-                                            class="col-2 d-flex align-items-center"
-                                            role="gridcell">
-                                            <h:outputText value="#{entry.nextFireTime}" />
-                                        </div>
-
-                                        <div
-                                            class="col-2 d-flex align-items-center align-content-center flex-wrap"
-                                            role="gridcell">
-
-                                            <h:outputText value="#{entry.paused}" />
-                                            <h:outputText value="#{entry.cronExpression}" />
-
-                                            <h:outputText value="#{entry.humanReadableCronTime}" />
-
-                                            <button
-                                                jsf:action="#{quartzBean.triggerQuartzJob}"
-                                                class="btn">
-                                                <i class="fa fa-fast-forward" />
-                                                <f:setPropertyActionListener
-                                                    target="#{quartzBean.quartzJobDetails}"
-                                                    value="#{entry}" />
-                                            </button>
-
-                                            <button
-                                                jsf:action="#{quartzBean.pauseJob}"
-                                                class="btn">
-                                                <i class="fa fa-pause" />
-                                                <f:setPropertyActionListener
-                                                    target="#{quartzBean.quartzJobDetails}"
-                                                    value="#{entry}" />
-                                            </button>
-
-                                            <button
-                                                jsf:action="#{quartzBean.resumeJob}"
-                                                class="btn">
-                                                <i class="fa fa-play" />
-                                                <f:setPropertyActionListener
-                                                    target="#{quartzBean.quartzJobDetails}"
-                                                    value="#{entry}" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </ui:repeat>
-                            </div>
+                            </h:form>
                         </div>
-                    </div>
- -->
-                </h:form>
+                    </intranda:box>
+                </div>
             </div>
-        </main>
+        </h:panelGroup>
     </ui:define>
 
 </ui:composition>

@@ -52,6 +52,7 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.reflections.Reflections;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -64,6 +65,13 @@ public class JobBean implements Serializable {
     private transient Scheduler scheduler = null;
 
     private transient Set<Class<? extends AbstractGoobiJob>> allJobTypes;
+
+    @Getter
+    private boolean paused;
+
+    @Getter
+    @Setter
+    private transient QuartzJobDetails quartzJobDetails;
 
     @Getter
     private transient List<QuartzJobDetails> activeJobs = new ArrayList<>();
@@ -125,4 +133,47 @@ public class JobBean implements Serializable {
             }
         }
     }
+
+    public void pauseAllJobs() {
+        try {
+            scheduler.pauseAll();
+            for (QuartzJobDetails details : activeJobs) {
+                details.setPaused(true);
+            }
+        } catch (SchedulerException e) {
+            log.error(e);
+        }
+        paused = true;
+    }
+
+    public void resumeAllJobs() {
+        try {
+            scheduler.resumeAll();
+            for (QuartzJobDetails details : activeJobs) {
+                details.setPaused(false);
+            }
+        } catch (SchedulerException e) {
+            log.error(e);
+        }
+        paused = false;
+    }
+
+    public void pauseJob() {
+        try {
+            scheduler.pauseJob(quartzJobDetails.getJobKey());
+            quartzJobDetails.setPaused(true);
+        } catch (SchedulerException e) {
+            log.error(e);
+        }
+    }
+
+    public void resumeJob() {
+        try {
+            scheduler.resumeJob(quartzJobDetails.getJobKey());
+            quartzJobDetails.setPaused(false);
+        } catch (SchedulerException e) {
+            log.error(e);
+        }
+    }
+
 }
