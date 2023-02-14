@@ -12,19 +12,6 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-	<script type="text/javascript">
-		function switchExpanded(id) {
-			console.log("called by: " + id);
-			var x = document.getElementById(id).getAttribute("aria-expanded");
-			console.log(x)
-			if (x == "true") {
-				x = "false"
-			} else {
-				x = "true"
-			}
-			document.getElementById(id).setAttribute("aria-expanded", x);
-		}
-	</script>
 	<ui:param
 		name="myPageTitle"
 		value="#{msgs.goobiScriptAusfuehren}" />
@@ -120,7 +107,6 @@
 												aria-label="Additional options"
 												aria-haspopup="true"
 												aria-expanded="false"
-												onclick="switchExpanded(this.id)"
 												type="button"
 												class="btn btn-blank dropdown-toggle"
 												data-bs-toggle="dropdown">
@@ -128,20 +114,6 @@
 											</button>
 
 											<ul class="dropdown-menu">
-												<li>
-													<button
-														jsf:action="#{NavigationForm.Reload}"
-														jsf:id="limitResults2"
-														class="dropdown-item">
-														<span>
-															<h:outputText value="#{msgs.goobiScript_setMaxEntries} 2" />
-														</span>
-														<x:updateActionListener
-															property="#{SessionForm.gsm.showMax}"
-															value="2" />
-													</button>
-												</li>
-
 												<li>
 													<button
 														jsf:action="#{NavigationForm.Reload}"
