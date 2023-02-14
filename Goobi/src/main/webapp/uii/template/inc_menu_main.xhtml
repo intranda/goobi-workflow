@@ -270,6 +270,15 @@
 									icon="fa fa-gears box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
+                                <!-- Quartz -->
+                                <intranda:menuItem
+                                    id="a37c"
+                                    parentMenu="menu_administration"
+                                    label="#{msgs.menu_administration_quartzJobs}"
+                                    action="quartz"
+                                    rendered="#{LoginForm.hasRole('Admin_Quartz')}"
+                                    icon="fa fa-spinner" />
+                                    
 								<!-- Plugins overview -->
 								<intranda:menuItem
 									id="a42"

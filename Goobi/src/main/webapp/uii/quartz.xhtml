@@ -1,0 +1,173 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.menu_administration_quartzJobs}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="admin"
+            label="#{msgs.menu_administration_quartzJobs}"
+            action="quartz.xhtml"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+        <main>
+            <div class="box box-bordered box-color">
+                <div class="box-title">
+                    <h2>
+                        <i class="fa fa-spinner"></i>
+                        <h:outputText value="#{msgs.menu_administration_quartzJobs}" />
+
+                        <!-- button to pause/resume all -->
+
+                        <button
+                            data-target="pauseButton"
+                            jsf:action="#{jobBean.pauseAllJobs}"
+                            class="btn pull-right">
+                            <i class="fa fa-pause"></i>
+                        </button>
+
+                        <button
+                            data-target="resumeButton"
+                            jsf:action="#{jobBean.resumeAllJobs}"
+                            class="btn pull-right">
+                            <i class="fa fa-play"></i>
+                        </button>
+
+                    </h2>
+                </div>
+
+                <h:form prependId="false">
+
+
+
+                    <ui:repeat
+                        var="entry"
+                        value="#{jobBean.activeJobs}">
+
+
+                        <div class="col-3 d-flex">
+                            <h:outputText value="#{msgs[entry.jobName]}" />
+                        </div>
+
+
+                    </ui:repeat>
+                    <!-- 
+
+
+
+
+                        <div class="admin__quartz">
+
+                            <div
+                                style="width: 100%;"
+                                id="new-table-adminallmessagetypes"
+                                class="admin__table-content"
+                                role="grid"
+                                aria-label="#{msg.admin__queue_types}: #{msg.aria_label__table__actions}">
+                                <div
+                                    class="row no-gutters admin__table-title"
+                                    role="row">
+                                    <div class="col-3 d-flex">Name</div>
+                                    <div class="col-3 d-flex">Group</div>
+                                    <div class="col-2 d-flex">previousFireTime</div>
+                                    <div class="col-2 d-flex">nextFireTime</div>
+                                    <div class="col-2 d-flex">actions</div>
+
+                                </div>
+
+
+                                <ui:repeat
+                                    var="entry"
+                                    value="#{quartzBean.activeJobs}">
+                                    <div
+                                        class="row no-gutters admin__table-entry"
+                                        role="row">
+                                        <div class="col-3 d-flex">
+                                            <h:outputText value="#{msg[entry.jobName]}" />
+                                        </div>
+
+                                        <div
+                                            class="col-3 d-flex align-items-center"
+                                            role="gridcell">
+                                            <h:outputText value="#{entry.jobGroup}" />
+                                        </div>
+
+                                        <div
+                                            class="col-2 d-flex align-items-center"
+                                            role="gridcell">
+                                            <h:outputText value="#{entry.previousFireTime}" />
+                                        </div>
+                                        <div
+                                            class="col-2 d-flex align-items-center"
+                                            role="gridcell">
+                                            <h:outputText value="#{entry.nextFireTime}" />
+                                        </div>
+
+                                        <div
+                                            class="col-2 d-flex align-items-center align-content-center flex-wrap"
+                                            role="gridcell">
+
+                                            <h:outputText value="#{entry.paused}" />
+                                            <h:outputText value="#{entry.cronExpression}" />
+
+                                            <h:outputText value="#{entry.humanReadableCronTime}" />
+
+                                            <button
+                                                jsf:action="#{quartzBean.triggerQuartzJob}"
+                                                class="btn">
+                                                <i class="fa fa-fast-forward" />
+                                                <f:setPropertyActionListener
+                                                    target="#{quartzBean.quartzJobDetails}"
+                                                    value="#{entry}" />
+                                            </button>
+
+                                            <button
+                                                jsf:action="#{quartzBean.pauseJob}"
+                                                class="btn">
+                                                <i class="fa fa-pause" />
+                                                <f:setPropertyActionListener
+                                                    target="#{quartzBean.quartzJobDetails}"
+                                                    value="#{entry}" />
+                                            </button>
+
+                                            <button
+                                                jsf:action="#{quartzBean.resumeJob}"
+                                                class="btn">
+                                                <i class="fa fa-play" />
+                                                <f:setPropertyActionListener
+                                                    target="#{quartzBean.quartzJobDetails}"
+                                                    value="#{entry}" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </ui:repeat>
+                            </div>
+                        </div>
+                    </div>
+ -->
+                </h:form>
+            </div>
+        </main>
+    </ui:define>
+
+</ui:composition>

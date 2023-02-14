@@ -218,7 +218,6 @@
 									action="queue"
 									rendered="#{LoginForm.hasRole('Admin_Queue')}"
 									icon="fa fa-spinner" />
-
 								<!-- Jobtypes -->
 								<intranda:menuItem
 									id="a37b"
@@ -227,6 +226,15 @@
 									action="admin_jobtypes_all"
 									rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
 									icon="fa fa-gears" />
+                                    
+                                <!-- Quartz -->
+                                <intranda:menuItem
+                                    id="a37c"
+                                    parentMenu="menu_administration"
+                                    label="#{msgs.menu_administration_quartzJobs}"
+                                    action="quartz"
+                                    rendered="#{LoginForm.hasRole('Admin_Quartz')}"
+                                    icon="fa fa-spinner" />
 
 								<!-- Plugins overview -->
 								<intranda:menuItem
