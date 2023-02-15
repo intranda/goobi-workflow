@@ -488,6 +488,17 @@ public class ExportMets {
         if (useOriginalFiles) {
             // check if media folder contains images
             List<Path> filesInFolder = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(false));
+            filesInFolder.sort((f1,f2) -> {
+               if(f1.getFileName().toString().contains(".") && f2.getFileName().toString().contains(".")) {
+                   return f1.getFileName().toString().compareTo(f2.getFileName().toString());
+               } else if(f1.getFileName().toString().contains(".")) {
+                   return -1;
+               } else if(f2.getFileName().toString().contains(".")) {
+                   return 1;
+               } else {
+                   return f1.getFileName().toString().compareTo(f2.getFileName().toString());
+               }
+            });
             if (!filesInFolder.isEmpty()) {
                 // compare image names with files in mets file
                 List<DocStruct> pages = dd.getPhysicalDocStruct().getAllChildren();
