@@ -38,12 +38,14 @@ import org.goobi.beans.SessionInfo;
 import de.sub.goobi.forms.SessionForm;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.Setter;
 
 // Access with http://localhost:8080/goobi/api/currentusers
 @Path("/currentusers")
 public class CurrentUsers {
 
     @Inject
+    @Setter
     private SessionForm sessionForm;
 
     /**

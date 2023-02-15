@@ -206,13 +206,14 @@
                         styleClass="form-control input"
                         style="width: auto;"
                         value="#{bean.currentFolder}"
-                        rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload'}">
+                        rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload' and showFolderSelection}">
                         <f:selectItems value="#{bean.visibleFolder}" />
                         <f:ajax render="@form" />
                     </x:selectOneMenu>
 
                     <button
                         jsf:id="adapt_display_comments"
+                        jsf:rendered="#{showFolderSelection}"
                         data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
@@ -226,6 +227,7 @@
                     <button
                         jsf:id="adapt_display_folders"
                         data-toggle="tooltip"
+                        jsf:rendered="#{showFolderSelection}"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         class="btn btn-mini pull-right margin-right-10">

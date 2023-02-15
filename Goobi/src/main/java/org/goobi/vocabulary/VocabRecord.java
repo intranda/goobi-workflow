@@ -42,6 +42,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @XmlRootElement
 public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
+
+    private static final long serialVersionUID = -1363358845851354446L;
+
     private Integer id;
     private Integer vocabularyId;
     private List<Field> fields = new ArrayList<>();
