@@ -42,11 +42,15 @@ import org.goobi.production.flow.jobs.AbstractGoobiJob;
 import org.goobi.production.flow.jobs.IGoobiJob;
 import org.goobi.production.flow.jobs.QuartzJobDetails;
 import org.quartz.CronTrigger;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.Trigger.TriggerState;
+import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.reflections.Reflections;
@@ -64,8 +68,6 @@ public class JobBean implements Serializable {
 
     private transient Scheduler scheduler = null;
 
-    private transient Set<Class<? extends AbstractGoobiJob>> allJobTypes;
-
     @Getter
     private boolean paused;
 
@@ -79,7 +81,7 @@ public class JobBean implements Serializable {
     @PostConstruct
     public void init() throws SchedulerException {
         scheduler = new StdSchedulerFactory().getScheduler();
-        allJobTypes = new Reflections().getSubTypesOf(AbstractGoobiJob.class);
+        Set<Class<? extends AbstractGoobiJob>> allJobTypes = new Reflections().getSubTypesOf(AbstractGoobiJob.class);
 
         // find all existing jobs
         for (Class<? extends IGoobiJob> jobClass : allJobTypes) {
@@ -174,6 +176,31 @@ public class JobBean implements Serializable {
         } catch (SchedulerException e) {
             log.error(e);
         }
+    }
+
+    public void triggerQuartzJob() {
+        try {
+            // execute regular quartz job
+            if (quartzJobDetails.getJobKey() != null) {
+                scheduler.triggerJob(quartzJobDetails.getJobKey());
+            } else {
+                // job is not running, so we have to create a new JobDetail and a trigger
+                JobDetail jobDetail = JobBuilder.newJob(quartzJobDetails.getJob().getClass())
+                        .withIdentity(quartzJobDetails.getJob().getJobName(), quartzJobDetails.getJob().getJobName())
+                        .build();
+
+                SimpleTrigger trigger = (SimpleTrigger) TriggerBuilder.newTrigger()
+                        .withIdentity(quartzJobDetails.getJob().getJobName(), quartzJobDetails.getJob().getJobName())
+                        .startNow()
+                        .build();
+                scheduler.scheduleJob(jobDetail, trigger);
+
+            }
+
+        } catch (SchedulerException e) {
+            log.error(e);
+        }
+
     }
 
 }

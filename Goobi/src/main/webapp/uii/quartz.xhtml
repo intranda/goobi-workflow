@@ -45,32 +45,22 @@
                         boxType="primary-400"
                         scope="form-box"
                         boxTitle="false"
-                        padding="false">
+                        padding="true">
 
                         <intranda:boxTitle
                             title="#{msgs.menu_administration_quartzJobs}"
                             icon="fa-spinner">
 
-                            <button
-                                data-target="pauseButton"
-                                jsf:action="#{jobBean.pauseAllJobs}"
-                                class="btn pull-right">
-                                <i class="fa fa-pause"></i>
-                            </button>
-
-                            <button
-                                data-target="resumeButton"
-                                jsf:action="#{jobBean.resumeAllJobs}"
-                                class="btn pull-right">
-                                <i class="fa fa-play"></i>
-                            </button>
 
                         </intranda:boxTitle>
-
-
-
-
                         <div class="dataTables flow">
+                            <div class="dataTables__search__container">
+                                <div class="dataTables__search__length">
+                                    <h:outputText value="#{msgs.admin__tasks__number_of_jobs}: #{jobBean.activeJobs.size()}" />
+                                </div>
+                                <div class="dataTables__filter-container d-flex"></div>
+                            </div>
+
                             <h:form
                                 id="myform"
                                 prependId="false"
@@ -79,7 +69,7 @@
                                 <div class="table-wrapper">
                                     <table
                                         role="grid"
-                                        id="tableUserAll"
+                                        id="tableQuartz"
                                         class="table table-bordered table-fixed">
                                         <!-- ### Columnheader row ### -->
                                         <thead>
@@ -88,10 +78,10 @@
                                                     value="#{msgs.admin__tasks__quartz_single_name}"
                                                     sortable="false" />
                                                 <intranda:columnheader
-                                                    value="#{msgs.admin__tasks__quartz_single_last}"
+                                                    value="#{msgs.admin__tasks__quartz_last}"
                                                     sortable="false" />
                                                 <intranda:columnheader
-                                                    value="#{msgs.admin__tasks__quartz_single_next}"
+                                                    value="#{msgs.admin__tasks__quartz_next}"
                                                     sortable="false" />
                                                 <intranda:columnheader
                                                     value="#{msgs.admin__tasks__quartz_single_schedule}"
@@ -109,6 +99,7 @@
                                                         class="admin__tasks-quartz-table-entry-name-wrapper"
                                                         role="gridcell">
                                                         <button
+                                                        jsf:rendered="#{entry.jobKey != null}"
                                                             jsf:action="#{jobBean.pauseJob}"
                                                             class="btn btn--clean admin__tasks-quartz-table-pause-button">
                                                             <i class="fa fa-pause" />
@@ -121,6 +112,7 @@
                                                         </button>
 
                                                         <button
+                                                        jsf:rendered="#{entry.jobKey != null}"
                                                             jsf:action="#{jobBean.resumeJob}"
                                                             class="btn btn--clean admin__tasks-quartz-table-play-button">
                                                             <i class="fa fa-play" />
@@ -162,6 +154,22 @@
                                             </tr>
                                         </ui:repeat>
                                     </table>
+                                </div>
+                                <div class="form-actions">
+                                    <button
+                                        data-target="pauseButton"
+                                        jsf:action="#{jobBean.pauseAllJobs}"
+                                        class="btn pull-right">
+                                        <i class="fa fa-pause"></i>
+                                    </button>
+
+                                    <button
+                                        data-target="resumeButton"
+                                        jsf:action="#{jobBean.resumeAllJobs}"
+                                        class="btn pull-right">
+                                        <i class="fa fa-play"></i>
+                                    </button>
+
                                 </div>
                             </h:form>
                         </div>
