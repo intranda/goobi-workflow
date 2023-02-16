@@ -1031,11 +1031,6 @@
     <language name="en">Statement of responsibility</language>
   </MetadataType>
   <!-- Subjects start -->
-  <MetadataType normdata="true">
-    <Name>Subject</Name>
-    <language name="de">Freies Schlagwort</language>
-    <language name="en">Subject</language>
-  </MetadataType>
   <MetadataType normdata="true" type="corporate">
     <Name>SubjectCorporate</Name>
     <language name="de">Körperschaftenschlagwort</language>
@@ -1882,7 +1877,6 @@
     <metadata num="*">HostInstitution</metadata>
     <metadata num="*">IssuingBody</metadata>
     <metadata num="*">LegislativeBody</metadata>
-    <metadata num="*">Subject</metadata>
     <metadata num="*">SubjectCorporate</metadata>
     <metadata num="*">SubjectForm</metadata>
     <metadata num="*">SubjectGeographic</metadata>
@@ -2029,7 +2023,6 @@
     <metadata num="*">HostInstitution</metadata>
     <metadata num="*">IssuingBody</metadata>
     <metadata num="*">LegislativeBody</metadata>
-    <metadata num="*">Subject</metadata>
     <metadata num="*">SubjectCorporate</metadata>
     <metadata num="*">SubjectForm</metadata>
     <metadata num="*">SubjectGeographic</metadata>
@@ -2174,7 +2167,6 @@
     <metadata num="*">CorporatePhotographer</metadata>
     <metadata num="*">CorporateTranslator</metadata>
     <metadata num="1o">copyrightimageset</metadata>
-    <metadata num="*">Subject</metadata>
     <metadata num="*">SubjectCorporate</metadata>
     <metadata num="*">SubjectForm</metadata>
     <metadata num="*">SubjectGeographic</metadata>
@@ -2312,7 +2304,6 @@
     <metadata num="*">HostInstitution</metadata>
     <metadata num="*">IssuingBody</metadata>
     <metadata num="*">LegislativeBody</metadata>
-    <metadata num="*">Subject</metadata>
     <metadata num="*">SubjectCorporate</metadata>
     <metadata num="*">SubjectForm</metadata>
     <metadata num="*">SubjectGeographic</metadata>
@@ -3391,17 +3382,17 @@
             ================================================================================ -->
     <PicaPlus>
       <Metadata>
-        <Name>Subject</Name>
+        <Name>SubjectTopic</Name>
         <picaMainTag>044K</picaMainTag>
         <picaSubTag>a</picaSubTag>
       </Metadata>
       <Metadata>
-        <Name>Subject</Name>
+        <Name>SubjectTopic</Name>
         <picaMainTag>041A</picaMainTag>
         <picaSubTag>a</picaSubTag>
       </Metadata>
       <Metadata>
-        <Name>Subject</Name>
+        <Name>SubjectTopic</Name>
         <picaMainTag>244Z</picaMainTag>
         <picaSubTag>a</picaSubTag>
       </Metadata>
@@ -4210,7 +4201,7 @@
       </Metadata>
       <!-- Subjects start -->
       <Metadata>
-        <Name>Subject</Name>
+        <Name>SubjectTopic</Name>
         <field>
           <fieldMainTag>653</fieldMainTag>
           <fieldSubTag>a</fieldSubTag>
@@ -6764,10 +6755,6 @@
       <!-- Corporations end -->
       <!-- Subjects start -->
       <Metadata>
-        <InternalName>Subject</InternalName>
-        <WriteXPath>./mods:mods/mods:extension/intranda:intranda/#intranda:subject</WriteXPath>
-      </Metadata>
-      <Metadata>
         <InternalName>SubjectCorporate</InternalName>
         <WriteXPath>./mods:mods/mods:subject/#mods:name[@type='corporate'][mods:role/mods:roleTerm="oth"[@authority='marcrelator'][@type='code']]</WriteXPath>
         <MainNameXPath>./mods:namePart</MainNameXPath>
@@ -6784,7 +6771,7 @@
       </Metadata>
       <Metadata>
         <InternalName>SubjectPerson</InternalName>
-        <WriteXPath>./mods:mods/mods:extension/intranda:intranda/#intranda:subjectPerson</WriteXPath>
+        <WriteXPath>./mods:mods/mods:subject/#mods:name[@type='person'][mods:role/mods:roleTerm="oth"[@authority='marcrelator'][@type='code']]</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>SubjectTopic</InternalName>
