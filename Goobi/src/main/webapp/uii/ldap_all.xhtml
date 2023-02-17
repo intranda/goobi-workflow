@@ -80,11 +80,15 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
-										<button jsf:id="edit" class="btn btn-blank" jsf:rel="tooltip" jsf:action="ldap_edit"
-											title="#{msgs.authentication_edit}">
+										<button
+											jsf:id="edit"
+											class="btn btn-blank"
+											jsf:rel="tooltip"
+											jsf:action="ldap_edit"
+											title="#{msgs.bearbeiten}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
-											<f:passThroughAttribute name="aria-label" value="#{msgs.projektBearbeiten}" />
+											<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
 											<f:setPropertyActionListener target="#{LdapGruppenForm.myLdapGruppe}" value="#{item}" />
 										</button>
 									</x:column>

@@ -66,10 +66,15 @@
 
 					<!-- Bearbeiten-Schaltknopf -->
 					<div class="gw-table-fixed__actions__btns">
-						<button jsf:id="edit" class="btn btn-blank" jsf:rel="tooltip" jsf:action="docket_edit" title="#{msgs.editDocket}">
+						<button
+							jsf:id="edit"
+							class="btn btn-blank"
+							jsf:rel="tooltip"
+							jsf:action="docket_edit"
+							title="#{msgs.bearbeiten}">
 							<i class="fa fa-pencil"></i>
 							<f:passThroughAttribute name="data-toggle" value="tooltip" />
-							<f:passThroughAttribute name="aria-label" value="#{msgs.editDocket}" />
+							<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
 							<f:setPropertyActionListener target="#{DocketForm.myDocket}" value="#{item}" />
 						</button>
 					</div>

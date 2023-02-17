@@ -65,10 +65,15 @@
 
 										<div class="gw-table__actions__container">
 											<!-- Bearbeiten-Schaltknopf -->
-											<button jsf:id="edit" class="btn btn-blank" jsf:rel="tooltip" jsf:action="ruleset_edit" title="#{msgs.regelsatzBearbeiten}">
+											<button
+												jsf:id="edit"
+												class="btn btn-blank"
+												jsf:rel="tooltip"
+												jsf:action="ruleset_edit"
+												title="#{msgs.bearbeiten}">
 												<i class="fa fa-pencil"></i>
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												<f:passThroughAttribute name="aria-label" value="#{msgs.regelsatzBearbeiten}" />
+												<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
 												<f:passThroughAttribute name="role" value="button" />
 												<f:setPropertyActionListener target="#{RegelsaetzeForm.myRegelsatz}" value="#{item}" />
 											</button>

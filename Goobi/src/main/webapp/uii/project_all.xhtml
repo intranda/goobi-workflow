@@ -100,11 +100,15 @@
 
 										<div class="gw-table__actions__container">
 											<!-- Bearbeiten-Schaltknopf -->
-											<button jsf:id="edit" class="btn btn-blank" jsf:rel="tooltip" jsf:action="project_edit">
+											<button
+												jsf:id="edit"
+												class="btn btn-blank"
+												jsf:rel="tooltip"
+												jsf:action="project_edit">
 												<i class="fa fa-pencil"></i>
-												<f:passThroughAttribute name="title" value="#{msgs.projektBearbeiten}" />
+												<f:passThroughAttribute name="title" value="#{msgs.bearbeiten}" />
 												<f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
-												<f:passThroughAttribute name="aria-label" value="#{msgs.projektBearbeiten}" />
+												<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
 												<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
 												<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
 											</button>
