@@ -126,12 +126,16 @@
 											</button>
 
 											<!-- Duplicate user group -->
-											<button jsf:action="#{BenutzergruppenForm.cloneUsergroup}" class="btn btn-blank" jsf:rel="tooltip" title="#{msgs.duplicateUsergroup}"
-													onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-													<i class="fa fa-clipboard" />
-													<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													<f:passThroughAttribute name="aria-label" value="#{msgs.duplicateUsergroup}" />
-													<x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
+											<button
+												jsf:action="#{BenutzergruppenForm.cloneUsergroup}"
+												class="btn btn-blank"
+												jsf:rel="tooltip"
+												title="#{msgs.duplicate}"
+												onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+												<i class="fa fa-clipboard" />
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												<f:passThroughAttribute name="aria-label" value="#{msgs.duplicate}" />
+												<x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
 											</button>
 										</div>
 

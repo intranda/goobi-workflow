@@ -110,10 +110,14 @@
 											</button>
 
 											<!-- Duplicate project -->
-											<button jsf:id="clone" jsf:action="#{ProjekteForm.cloneProject}" class="btn btn-blank"
-												title="#{msgs.duplicateProject}" jsf:rel="tooltip"
+											<button
+												jsf:id="clone"
+												jsf:action="#{ProjekteForm.cloneProject}"
+												class="btn btn-blank"
+												title="#{msgs.duplicate}"
+												jsf:rel="tooltip"
 												onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-												<i class="fa fa-clipboard" title="#{msgs.duplicateProject}" jsf:rel="tooltip"/>
+												<i class="fa fa-clipboard" title="#{msgs.duplicate}" jsf:rel="tooltip"/>
 												<f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
 												<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
 											</button>

@@ -661,12 +661,12 @@
 
 															<!-- CLONE PROCESS TEMPLATE -->
 															<button class="btn btn-blank"
-																aria-label="#{msgs.duplicateWorkflow}"
+																aria-label="#{msgs.duplicate}"
 																jsf:action="#{ProzessverwaltungForm.cloneProcess}"
 																jsf:rel="tooltip"
 																jsf:rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}"
 																data-bs-toggle="tooltip"
-																title="#{msgs.duplicateWorkflow}"
+																title="#{msgs.duplicate}"
 																onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 																<i class="fa fa-clipboard" />
 																<f:passThroughAttribute name="data-toggle"
