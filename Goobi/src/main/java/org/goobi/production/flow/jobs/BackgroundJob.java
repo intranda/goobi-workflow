@@ -23,82 +23,88 @@
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
 package org.goobi.production.flow.jobs;
 
-import org.goobi.production.flow.jobs.BackgroundJob.JobStatus;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import de.sub.goobi.persistence.managers.BackgroundJobManager;
-import lombok.extern.log4j.Log4j2;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * SimpleGoobiJob as basis class for all big jobs
- * 
- * @author Steffen Hankiewicz
- * @version 21.10.2009
- */
-@Log4j2
-public abstract class AbstractGoobiJob implements Job, IGoobiJob {
+public class BackgroundJob implements Serializable {
 
-    private static boolean running = false;
+    private static final long serialVersionUID = -1812771009212445425L;
 
-    protected AbstractGoobiJob() {
-    }
+    @Getter
+    @Setter
+    private Integer id;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.goobi.production.flow.jobs.IGoobiJob#execute(org.quartz.
-     * JobExecutionContext)
-     */
-    @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        if (isRunning()) {
-            log.trace("Start scheduled Job: " + getJobName());
-            if (!running) {
-                // TODO create database entry
-                setRunning(true);
-                execute();
-                BackgroundJob details = new BackgroundJob();
-                details.setJobName(getJobName());
-                details.setJobType("quartz");
-                details.setJobStatus(JobStatus.FINISH);
-                BackgroundJobManager.saveBackgroundJob(details);
-                setRunning(false);
-            }
-            log.trace("End scheduled Job: " + getJobName());
+    @Getter
+    @Setter
+    // internal job name
+    private String jobName;
+
+    @Getter
+    @Setter
+    // quartz or active mq
+    private String jobType;
+
+    @Getter
+    @Setter
+    // job status
+    private JobStatus jobStatus = JobStatus.NEW;
+
+    @Getter
+    @Setter
+    // number of attempts
+    private int retryCount = 1;
+
+    @Getter
+    @Setter
+    // last change date
+    private LocalDateTime lastUpdateTime = LocalDateTime.now();
+
+    @Getter
+    @Setter
+    // contains any additional data that is needed for execution
+    private List<BackgroundJobProperty> properties = new ArrayList<>();
+
+    public enum JobStatus {
+
+        NEW(1, "admin__tasks__status_new"),
+        WAIT(2, "admin__tasks__status_wait"),
+        PROCESSING(3, "admin__tasks__status_processing"),
+        FINISH(4, "admin__tasks__status_finished"),
+        ERROR(5, "admin__tasks__status_error");
+
+        private final int id;
+        private final String label;
+
+        private JobStatus(int id, String label) {
+            this.id = id;
+            this.label = label;
         }
-    }
 
-    @Override
-    public boolean isRunning() {
-        return running;
-    }
+        public String getLabel() {
+            return label;
+        }
 
-    @Override
-    public void setRunning(boolean inisRunning) {
-        running = inisRunning;
-    }
+        public int getId() {
+            return id;
+        }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.goobi.production.flow.jobs.IGoobiJob#getJobName()
-     */
-    @Override
-    public String getJobName() {
-        return "";
-    }
+        public static JobStatus getById(int id) {
+            for (JobStatus ms : values()) {
+                if (ms.getId() == id) {
+                    return ms;
+                }
+            }
+            return null;
+        }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.goobi.production.flow.jobs.IGoobiJob#execute()
-     */
-    @Override
-    public void execute() {
     }
 
 }

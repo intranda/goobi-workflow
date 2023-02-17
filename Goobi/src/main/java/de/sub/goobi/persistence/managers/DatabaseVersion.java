@@ -417,7 +417,6 @@ public class DatabaseVersion {
         }
     }
 
-
     private static void updateToVersion50() throws SQLException {
         if (!DatabaseVersion.checkIfColumnExists("prozesse", "exportValidator")) {
             try {
@@ -894,7 +893,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -903,15 +902,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
+                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 
@@ -1942,6 +1941,53 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection, utf8);
             runner.update(connection, index);
+        } catch (SQLException e) {
+            log.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    log.error(e);
+                }
+            }
+        }
+    }
+
+    public static void createTableForBackgroundJobs() {
+        if (!checkIfTableExists("background_job")) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE background_job ( ");
+            sb.append("id INT(11) unsigned NOT NULL AUTO_INCREMENT, ");
+            sb.append("jobname VARCHAR(255), ");
+            sb.append("jobtype VARCHAR(255), ");
+            sb.append("jobstatus INT(11), ");
+            sb.append("retrycount INT(11), ");
+            sb.append("lastAltered DATETIME, ");
+            sb.append("PRIMARY KEY (id) ); ");
+            executeStatement(sb);
+        }
+
+        if (!checkIfTableExists("background_job_properties")) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE background_job_properties ( ");
+            sb.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sb.append("job_id INT(11), ");
+            sb.append("title VARCHAR(255), ");
+            sb.append("value TEXT, ");
+            sb.append("PRIMARY KEY (id), ");
+            sb.append("KEY job_id (job_id) ");
+            sb.append("); ");
+            executeStatement(sb);
+        }
+    }
+
+    private static void executeStatement(StringBuilder sb) {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, sb.toString());
         } catch (SQLException e) {
             log.error(e);
         } finally {
