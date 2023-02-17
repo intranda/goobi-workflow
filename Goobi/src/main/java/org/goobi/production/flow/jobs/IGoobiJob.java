@@ -39,9 +39,9 @@ public interface IGoobiJob extends Job {
     @Override
     public abstract void execute(JobExecutionContext context) throws JobExecutionException;
 
-    public abstract void setIsRunning(Boolean inisRunning);
+    public abstract void setRunning(boolean inisRunning);
 
-    public abstract Boolean getIsRunning();
+    public abstract boolean isRunning();
 
     /**
      * getter for JobName

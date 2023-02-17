@@ -93,20 +93,20 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * @throws InterruptedException
      * @throws IOException
      */
-    public static Boolean updateHistory(Process inProcess) throws IOException, SwapException, DAOException {
+    public static boolean updateHistory(Process inProcess) throws IOException, SwapException, DAOException {
         boolean updated = false;
         /* storage */
-        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.storageDifference,
-                getCurrentStorageSize(Paths.get(inProcess.getProcessDataDirectory()))))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageDifference,
+                getCurrentStorageSize(Paths.get(inProcess.getProcessDataDirectory())))) {
             updated = true;
         }
 
-        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.storageWorkDifference,
-                getCurrentStorageSize(Paths.get(inProcess.getImagesTifDirectory(true)))))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageWorkDifference,
+                getCurrentStorageSize(Paths.get(inProcess.getImagesTifDirectory(true))))) {
             updated = true;
         }
-        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.storageMasterDifference,
-                getCurrentStorageSize(Paths.get(inProcess.getImagesOrigDirectory(true)))))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageMasterDifference,
+                getCurrentStorageSize(Paths.get(inProcess.getImagesOrigDirectory(true))))) {
             updated = true;
         }
 
@@ -115,23 +115,23 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
         /* imagesWork */
         Integer numberWork = StorageProvider.getInstance().getNumberOfFiles(Paths.get(inProcess.getImagesTifDirectory(true)), imageSuffixes);
-        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.imagesWorkDiff, numberWork.longValue()))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.imagesWorkDiff, numberWork.longValue())) {
             updated = true;
         }
 
         /* imagesMaster */
         Integer numberMaster = StorageProvider.getInstance().getNumberOfFiles(Paths.get(inProcess.getImagesOrigDirectory(true)), imageSuffixes);
-        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.imagesMasterDiff, numberMaster.longValue()))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.imagesMasterDiff, numberMaster.longValue())) {
             updated = true;
         }
 
         /* metadata */
-        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.metadataDiff, inProcess.getSortHelperMetadata().longValue()))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.metadataDiff, inProcess.getSortHelperMetadata().longValue())) {
             updated = true;
         }
 
         /* docstruct */
-        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.docstructDiff, inProcess.getSortHelperDocstructs().longValue()))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.docstructDiff, inProcess.getSortHelperDocstructs().longValue())) {
             updated = true;
         }
 
@@ -144,9 +144,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * @param inProcess given {@link Prozess}
      * @return true, if changes are made and have to be saved to database
      */
-    @SuppressWarnings("incomplete-switch")
-    private static Boolean updateHistoryForSteps(Process inProcess) {
-        Boolean isDirty = false;
+    private static boolean updateHistoryForSteps(Process inProcess) {
+        boolean isDirty = false;
         HistoryEvent he = null;
 
         /**
@@ -279,6 +278,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
                     }
                     break;
+                default:
+                    break;
             }
 
             // check corrections timestamp this clearly only works on past
@@ -296,7 +297,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
         // this method removes duplicate items from the history list, which
         // already happened to be there, isDirty will be automatically be set
-        if (Boolean.TRUE.equals(getHistoryEventDuplicated(inProcess))) {
+        if (getHistoryEventDuplicated(inProcess)) {
             isDirty = true;
         }
 
@@ -315,7 +316,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     private static HistoryEvent addHistoryEvent(Date timeStamp, Integer stepOrder, String stepName, HistoryEventType type, Process inProcess) {
         HistoryEvent he = new HistoryEvent(timeStamp, stepOrder, stepName, type, inProcess);
 
-        if (Boolean.FALSE.equals(getHistoryContainsEventAlready(he, inProcess))) {
+        if (!getHistoryContainsEventAlready(he, inProcess)) {
             HistoryManager.addHistoryEvent(he);
             return he;
         } else {
@@ -330,7 +331,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * @param inProcess given {@link Prozess}
      * @return true, if {@link HistoryEvent} already exists
      */
-    private static Boolean getHistoryContainsEventAlready(HistoryEvent inEvent, Process inProcess) {
+    private static boolean getHistoryContainsEventAlready(HistoryEvent inEvent, Process inProcess) {
         List<HistoryEvent> list = HistoryManager.getHistoryEvents(inProcess.getId());
         for (HistoryEvent historyItem : list) {
             if (inEvent.getId() == null || !inEvent.getId().equals(historyItem.getId())) {
@@ -365,7 +366,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * 
      * @return true if value is different and history got updated, else false
      */
-    private static Boolean updateHistoryEvent(Process inProcess, HistoryEventType inType, Long inCurrentValue) {
+    private static boolean updateHistoryEvent(Process inProcess, HistoryEventType inType, Long inCurrentValue) {
         long storedValue = getStoredValue(inProcess, inType);
         long diff = inCurrentValue - storedValue;
 
@@ -481,11 +482,11 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * @param inProcess
      * @return
      */
-    private static Boolean getHistoryEventDuplicated(Process inProcess) {
-        Boolean duplicateEventRemoved = false;
+    private static boolean getHistoryEventDuplicated(Process inProcess) {
+        boolean duplicateEventRemoved = false;
         List<HistoryEvent> list = HistoryManager.getHistoryEvents(inProcess.getId());
         for (HistoryEvent he : list) {
-            if (Boolean.TRUE.equals(getHistoryContainsEventAlready(he, inProcess))) {
+            if (getHistoryContainsEventAlready(he, inProcess)) {
                 HistoryManager.deleteHistoryEvent(he);
 
                 duplicateEventRemoved = true;
@@ -494,8 +495,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
         return duplicateEventRemoved;
     }
 
-    public static Boolean updateHistoryForProzess(Process inProc) {
-        Boolean updated = true;
+    public static boolean updateHistoryForProzess(Process inProc) {
+        boolean updated = true;
         try {
             updateHistory(inProc);
             updateHistoryForSteps(inProc);
