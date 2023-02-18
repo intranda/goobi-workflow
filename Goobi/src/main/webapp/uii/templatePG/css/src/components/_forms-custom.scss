@@ -100,3 +100,16 @@ body .ui-inputfield {
     border-color: var(--clr-primary-400);
   }
 }
+
+
+// Option buttons
+.select-radio td {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.select-radio-horizontal tr {
+  display: flex;
+  gap: 12px;
+  border-width: 0 !important;
+}

@@ -42,7 +42,7 @@
             <main id="vocabularyUpload" class="row">
                 <div class="col-12">
 
-                    <intranda:box id="vocabBox"
+                    <intranda:box id="uploadBox"
                         boxType="action"
                         title="#{myPageTitle}"
                         icon="fa-database"
@@ -67,7 +67,7 @@
                                   dragDropSupport="true"
                                   label="#{msgs.vocabularyManager_uploadExcelFileArea}"
                                   allowTypes="/(\.|\/)(xml|xls|xlsx|json)$/"
-                                  update="vocabBox:actionform vocabBox:vocabBoxActions"
+                                  update="uploadBox:actionform uploadBox:vocabBoxActions"
                                   >
                                   <f:passThroughAttribute
                                       name="aria-label"
@@ -81,16 +81,14 @@
 
                             <h:panelGroup
                                 id="actionform"
-                                layout="block"
-                            >
+                                layout="block">
 
                                 <h:form
                                     id="assignForm"
-                                    prependId="false"
-                                    styleClass="form-horizontalu">
+                                    prependId="false">
 
                                     <h:selectOneRadio id="vocabSelects"
-                                        value="#{vocabularyBean.importType}" styleClass="select-radio">
+                                        value="#{vocabularyBean.importType}" styleClass="select-radio select-radio-horizontal">
                                         <f:selectItem
                                             itemLabel="#{msgs.vocabularyManager_excelImport_removeExisting}"
                                             itemValue="remove" />

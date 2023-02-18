@@ -2103,6 +2103,52 @@ span.badge:not(:last-child) {
   font-size: var(--fs-400);
 }
 
+/* ========================================
+ * Upload button styling for primefaces
+ * ===================================== */
+body .ui-fileupload .ui-fileupload-buttonbar {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+}
+
+body .ui-fileupload-buttonbar .ui-button {
+  border-radius: 0.25rem !important;
+}
+
+body .ui-fileupload .ui-fileupload-content {
+  border: 0;
+}
+
+body .ui-button.ui-button-text-icon-left .ui-button-text {
+  padding: 0.5rem 1rem 0.5rem 1rem;
+}
+
+body .ui-messages .ui-messages-error .ui-messages-error-icon, body .ui-messages .ui-messages-error .ui-messages-fatal, body .ui-messages .ui-messages-fatal .ui-messages-error-icon, body .ui-messages .ui-messages-fatal .ui-messages-fatal {
+  display: none;
+}
+
+[id="uploadBox:upload_label"] {
+  color: #fff;
+  background-color: var(--clr-primary-400);
+}
+
+[id="uploadBox:upload_label"]:hover {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0 0);
+}
+
+.draganddroparea {
+  align-self: baseline;
+  flex: 1;
+  border: 2px dashed silver;
+  padding: 40px 8px 0 8px;
+}
+
+.ui-icon-plusthick {
+  display: none !important;
+}
+
 #styleGuide {
   --flow-space: 4.5rem;
   counter-reset: heading;
@@ -2282,42 +2328,7 @@ span.badge:not(:last-child) {
   align-items: center;
 }
 
-.draganddroparea {
-  align-self: baseline;
-  flex: 1;
-  border: 2px dashed silver;
-  padding: 40px 8px 0 8px;
-}
-
-body .ui-fileupload .ui-fileupload-buttonbar {
-  display: flex;
-  justify-content: center;
-  background: transparent;
-  border: 0;
-}
-
-body .ui-fileupload .ui-fileupload-content {
-  border: 0;
-}
-
-[id="vocabBox:upload_label"] {
-  color: #fff;
-  background-color: var(--clr-primary-400);
-}
-
-[id="vocabBox:upload_label"]:hover {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0 0);
-}
-
-.ui-icon-plusthick {
-  display: none !important;
-}
-
-body .ui-button.ui-button-text-icon-left .ui-button-text {
-  padding: 0.5rem 1rem 0.5rem 1rem;
-}
-
-[id="vocabBox:vocabSelects"] tr {
+[id="uploadBox:vocabSelects"] tr {
   display: flex;
   gap: 12px;
   border-width: 0 !important;
@@ -2460,6 +2471,77 @@ body .ui-button.ui-button-text-icon-left .ui-button-text {
 #processAll .list-of-goobi-scripts .badge {
   cursor: pointer;
   border: 0;
+}
+
+/* ========================================
+ * process_new2.xhmtl
+ * => very specific styles (high specificity)
+ * to override primefaces defaults
+ * ===================================== */
+.select-radio td {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+[id="uploadBox:folderSelection"] tr {
+  display: flex;
+  gap: 12px;
+  border-width: 0 !important;
+}
+
+[id="uploadBox:thumbnails"] > div .image-area {
+  padding-right: 15px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+
+.image-container {
+  width: 300px;
+  margin: 10px;
+  position: relative;
+  text-align: center;
+}
+
+.image {
+  max-width: 300px;
+  margin-top: 40px;
+  margin-bottom: 90px;
+}
+
+.folderselection {
+  width: 100%;
+  position: absolute;
+  bottom: 60px;
+  text-align: left;
+}
+
+.folderselectiondropdown {
+  display: inline;
+  width: 265px;
+  text-align: left;
+}
+
+.folderselectionbutton {
+  margin-left: 5px;
+  margin-top: -3px;
+  padding: 4px 9px;
+}
+
+.comment {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+}
+
+.commentField {
+  resize: none;
+  overflow: auto;
 }
 
 /*# sourceMappingURL=main.css.map */

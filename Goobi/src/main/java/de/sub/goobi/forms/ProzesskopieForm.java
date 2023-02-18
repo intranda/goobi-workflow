@@ -1350,10 +1350,17 @@ public class ProzesskopieForm implements Serializable {
         }
     }
 
+    /**
+     * Get the UI part of the opac plugin as path to let it be embedded into the process creation interface
+     *
+     * @return
+     */
     public String getPluginGui() {
-        return currentCatalogue == null || currentCatalogue.getOpacPlugin() == null ? "/uii/templatePG/includes/process/process_new_opac.xhtml"
-                : currentCatalogue.getOpacPlugin().getGui();
-
+        if (currentCatalogue == null || currentCatalogue.getOpacPlugin() == null) {
+            return "/uii/templatePG/includes/process/process_new_opac.xhtml";
+        } else {
+            return currentCatalogue.getOpacPlugin().getGui();
+        }
     }
 
     /*
@@ -1361,7 +1368,7 @@ public class ProzesskopieForm implements Serializable {
      */
 
     /**
-     * Processtitel und andere Details generieren ================================================================
+     * Processtitel und andere Details generieren
      */
     public void CalcProzesstitel() {
         String currentAuthors = "";

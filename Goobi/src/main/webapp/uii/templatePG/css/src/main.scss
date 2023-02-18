@@ -16,6 +16,7 @@
 @use "components/buttons";
 @use "components/journal";
 @use "components/tooltip-custom";
+@use "components/file-upload";
 
 // PAGES
 @use "pages/style-guide";
@@ -23,7 +24,7 @@
 @use "pages/user-group";
 @use "pages/rest-api";
 @use "pages/plugins";
-@use "pages/vocabulary-upload.scss";
 @use "pages/projects";
 @use "pages/statistics";
 @use "pages/process-all";
+@use "pages/process-new.scss";

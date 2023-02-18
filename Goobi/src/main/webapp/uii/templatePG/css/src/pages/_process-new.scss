@@ -1,0 +1,52 @@
+/* ========================================
+ * process_new2.xhmtl
+ * => very specific styles (high specificity)
+ * to override primefaces defaults
+ * ===================================== */
+
+.damageBoxThumbnails {
+	padding-right: 15px;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-content: stretch;
+	display: flex;	
+}
+
+.damageBoxThumbnailsContainer {
+	width: 300px;
+	margin: 10px;
+	position: relative;
+	text-align: center;
+}
+
+.damageBoxThumbnailsImage {
+	max-width: 300px;
+	margin-top: 40px;
+	margin-bottom: 100px;
+}
+
+.damageBoxThumbnailsFolderSelection {
+	width: 100%;
+	position: absolute;
+	bottom: 50px;
+	text-align: left;
+}
+
+.damageBoxThumbnailsFolderSelectionDropdown {
+	display: inline;
+	width: 265px;
+	text-align: left
+}
+
+.damageBoxThumbnailsComment {
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+}
+
+.damageBoxThumbnailsCommentField {
+	resize: none;
+	overflow: auto;
+}

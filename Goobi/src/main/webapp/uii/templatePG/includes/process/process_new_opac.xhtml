@@ -11,8 +11,7 @@
     </composite:interface>
 
     <composite:implementation>
-        <div class="col-8 ps-0 py-0 min-vh-0">
-            <h:outputText value="#{msgs.feld}" />
+        <div class="col-4 ps-0 py-0 min-vh-0">
             <h:selectOneMenu
                 id="feldauswahl"
                 pt:aria-label="#{msgs.feld}"
@@ -23,8 +22,9 @@
                     var="step"
                     itemLabel="#{step.label}"
                     itemValue="#{step.value}" />
-
             </h:selectOneMenu>
+        </div>
+        <div class="col-4 ps-0 py-0 min-vh-0">
             <h:inputText
                 value="#{ProzesskopieForm.opacSuchbegriff}"
                 pt:aria-label="#{msgs.sucheImOpac}"
