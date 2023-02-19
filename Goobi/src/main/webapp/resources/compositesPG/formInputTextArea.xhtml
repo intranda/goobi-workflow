@@ -18,7 +18,7 @@
 		<composite:attribute name="displayAsRequired" default="false" />
 		<composite:attribute name="style" default="" />
 		<composite:attribute name="readonly" default="false" />
-		<composite:attribute name="height" default="" />
+		<composite:attribute name="rows" default="8" />
 		<composite:attribute name="classLeft" default="col-12 col-md-3" />
 		<composite:attribute name="classRight" default="col-12 col-md-9" />
 		<composite:attribute name="tabindex" default="0" />
@@ -48,6 +48,7 @@
 					styleClass="#{cc.attrs.fieldStyle} form-control metsEditorTextArea"
 					value="#{cc.attrs.field}"
 					required="#{cc.attrs.required}"
+					rows="#{cc.attrs.rows}"
 					readonly="#{cc.attrs.readonly}"
 					tabindex="#{cc.attrs.tabindex}"
 					pt:aria-label="#{cc.attrs.label}"

@@ -102,25 +102,29 @@
 
 				</div>
 
-				<div class="box__actions">
+				
+				
+				<div class="form-actions">
 					<!-- Cancel -->
-					<h:link
-						id="cancel"
-						styleClass="btn btn-blank"
-						outcome="index"
-						value="#{msgs.abbrechen}" />
+					<a
+						jsf:id="link_blank"
+						class="btn btn-blank me-2"
+						jsf:immediate="true"
+						jsf:action="index">
+						<h:outputText value="#{msgs.abbrechen}" />
+					</a>
 
 					<!-- Save -->
 					<button
-						class="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
+						class="btn btn-success"
 						jsf:id="absenden"
+						type="submit"
 						jsf:action="ABC">
 						<i class="fa fa-save"></i>
-						<span>
-							<h:outputText value="#{msgs.speichern}" />
-						</span>
+						<span>#{msgs.speichern}</span>
 					</button>
 				</div>
+				
 
 			</intranda:box>
 		</h:form>
@@ -167,7 +171,7 @@
 						action=&quot;{NavigationForm.Reload}&quot;
 						value=&quot;Tab 1&quot;&gt;
 						&lt;f:setPropertyActionListener
-							target=&quot;#{NavigationForm.uiStatus.styleguide}&quot;
+							target=&quot;CHANGE_ME&quot;
 							value=&quot;&quot; /&gt;
 						&lt;f:ajax
 							render=&quot;:myform&quot;
@@ -181,7 +185,7 @@
 						action=&quot;{NavigationForm.Reload}&quot;
 						value=&quot;Tab 2&quot;&gt;
 						&lt;f:setPropertyActionListener
-							target=&quot;#{NavigationForm.uiStatus.styleguide}&quot;
+							target=&quot;CHANGE_ME&quot;
 							value=&quot;tab2&quot; /&gt;
 						&lt;f:ajax
 							render=&quot;:myform&quot;
@@ -195,7 +199,7 @@
 						action=&quot;{NavigationForm.Reload}&quot;
 						value=&quot;Tab 3&quot;&gt;
 						&lt;f:setPropertyActionListener
-							target=&quot;#{NavigationForm.uiStatus.styleguide}&quot;
+							target=&quot;CHANGE_ME&quot;
 							value=&quot;tab3&quot; /&gt;
 						&lt;f:ajax
 							render=&quot;:myform&quot;
@@ -233,23 +237,24 @@
 
 		&lt;/div&gt;
 
-		&lt;div class=&quot;box__actions&quot;&gt;
+		&lt;div class=&quot;form-actions&quot;&gt;
 			&lt;!-- Cancel --&gt;
-			&lt;h:link
-				id=&quot;cancel&quot;
-				styleClass=&quot;btn btn-blank&quot;
-				outcome=&quot;index&quot;
-				value=&quot;#{msgs.abbrechen}&quot; /&gt;
-
+			&lt;a
+				jsf:id=&quot;link_blank&quot;
+				class=&quot;btn btn-blank me-2&quot;
+				jsf:immediate=&quot;true&quot;
+				jsf:action=&quot;index&quot;&gt;
+				&lt;h:outputText value=&quot;#{msgs.abbrechen}&quot; /&gt;
+			&lt;/a&gt;
+		
 			&lt;!-- Save --&gt;
 			&lt;button
-				class=&quot;btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s&quot;
+				class=&quot;btn btn-success&quot;
 				jsf:id=&quot;absenden&quot;
+				type=&quot;submit&quot;
 				jsf:action=&quot;ABC&quot;&gt;
 				&lt;i class=&quot;fa fa-save&quot;&gt;&lt;/i&gt;
-				&lt;span&gt;
-					&lt;h:outputText value=&quot;#{msgs.speichern}&quot; /&gt;
-				&lt;/span&gt;
+				&lt;span&gt;#{msgs.speichern}&lt;/span&gt;
 			&lt;/button&gt;
 		&lt;/div&gt;
 

@@ -226,8 +226,7 @@
 					<h:selectOneRadio
 						id="processDefaultSortOrder"
 						value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
-						disabledClass="ms-3 me-5"
-						enabledClass="ms-3 me-5">
+						styleClass="select-radio select-radio-horizontal">
 						<f:selectItem
 							itemLabel="#{msgs.defaultSortFieldAsc}"
 							itemValue="Asc" />
@@ -397,7 +396,7 @@
 			&lt;h:selectOneMenu
 				id=&quot;manualFieldB&quot;
 				styleClass=&quot;form-select&quot;
-				value=&quot;#{LoginForm.myBenutzer.processListDefaultSortField}&quot;
+				value=&quot;CHANGE_ME&quot;
 				tabindex=&quot;0&quot;
 				readonly=&quot;false&quot;&gt;
 				&lt;f:selectItem
@@ -524,9 +523,8 @@
 		&lt;div class=&quot;col-12 col-md-9&quot;&gt;
 			&lt;h:selectOneRadio
 				id=&quot;processDefaultSortOrder&quot;
-				value=&quot;#{LoginForm.myBenutzer.processListDefaultSortOrder}&quot;
-				disabledClass=&quot;ms-3 me-5&quot;
-				enabledClass=&quot;ms-3 me-5&quot;&gt;
+				value=&quot;CHANGE_ME&quot;
+				styleClass=&quot;select-radio select-radio-horizontal&quot;&gt;
 				&lt;f:selectItem
 					itemLabel=&quot;#{msgs.defaultSortFieldAsc}&quot;
 					itemValue=&quot;Asc&quot; /&gt;

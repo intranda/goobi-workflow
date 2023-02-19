@@ -1,147 +1,209 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:jsf="http://xmlns.jcp.org/jsf">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://primefaces.org/ui">
 
-    <ui:param name="myPageTitle" value="#{msgs.MassImport}" />
+	<ui:param
+		name="myPageTitle"
+		value="#{msgs.MassImport}" />
 
-    <ui:define name="breadcrumb">
-        <intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="templates" label="#{msgs.prozessvorlagen}" action="process_all" navId="a1" />
-        <intranda:breadcrumb id="page2" label="#{msgs.MassImport}" action="process_import_2" />
-        <intranda:breadcrumb id="templateName" label="#{MassImportForm.template.titel}"  action="process_import_2" noSeparator="#{true}" />
-    </ui:define>
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb
+			id="id2"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index"
+			navId="a0" />
+		<intranda:breadcrumb
+			id="templates"
+			label="#{msgs.prozessvorlagen}"
+			action="process_all"
+			navId="a1" />
+		<intranda:breadcrumb
+			id="page2"
+			label="#{msgs.MassImport}"
+			action="process_import_2" />
+		<intranda:breadcrumb
+			id="templateName"
+			label="#{MassImportForm.template.titel}"
+			action="process_import_2"
+			noSeparator="#{true}" />
+	</ui:define>
 
-    <ui:define name="info">
-    </ui:define>
+	<ui:define name="content">
 
-    <ui:define name="content">
-        <h:form enctype="multipart/form-data" styleClass="form-horizontal form-bordered" prependId="false">
-           <style>
-.ui-progressbar {
-    background: #f6f6f6;
-}
+		<h:form
+			enctype="multipart/form-data"
+			prependId="false"
+			id="myform">
 
-.ui-progressbar-label {
-    color: black;
-}
-</style>
+			<!-- UGLY PROGRESSBAR PART -->
+			<h:panelGroup
+				style="display: none"
+				id="progressPanel">
+				<p:commandButton
+					value="Start"
+					onclick="PF('pbAjax').start();"
+					type="button"
+					widgetVar="startButton2"
+					id="progressbutton"
+					style="display: none;" />
+				<p:progressBar
+					id="primefacesprogressbar"
+					widgetVar="pbAjax"
+					ajax="true"
+					value="#{MassImportForm.progress}"
+					labelTemplate="{value}%"
+					styleClass="animated mb-3"
+					global="false">
+					<p:ajax
+						event="complete"
+						listener="#{MassImportForm.onComplete}" />
+				</p:progressBar>
 
-            <h:panelGroup style="display: none" id="progressPanel">
-                <p:commandButton value="Start" onclick="PF('pbAjax').start();" type="button" widgetVar="startButton2" id="progressbutton" style="display: none;" />
-                <p:progressBar widgetVar="pbAjax" ajax="true" value="#{MassImportForm.progress}" labelTemplate="{value}%" styleClass="animated" global="false">
-                    <p:ajax event="complete" listener="#{MassImportForm.onComplete}" />
-                </p:progressBar>
+			</h:panelGroup>
+			<script type="text/javascript">
+				function displayProgressBar() {
+					var element = document.getElementById('progressPanel');
+					if (element.style.display == 'block') {
+						element.style.display = 'none';
+					} else {
+						element.style.display = 'block';
+					}
+					document.getElementById('progressbutton').click();
+				}
 
-            </h:panelGroup>
-            <script type="text/javascript">
-                function displayProgressBar() {
-                    var element = document.getElementById('progressPanel');
-                    if (element.style.display == 'block') {
-                        element.style.display = 'none';
-                    } else {
-                        element.style.display = 'block';
-                    }
-                    document.getElementById('progressbutton').click();
-                }
-                
-                function start() {
-                    window['progress'] = setInterval(
-                            function() {
-                                var pbClient = PF('pbClient'), oldValue = pbClient.getValue(), newValue = oldValue + 10;
-                    
-                                pbClient.setValue(pbClient.getValue() + 10);
-                    
-                                if (newValue === 100) {
-                                    clearInterval(window['progress']);
-                                    
-                                }
-                            },
-                            1000);
-                }
-             </script>
-             
-            <div class="row">
-                <div class="col-sm-12">
-                    
-                        <div class="box box-color box-bordered">
-                            <div class="box-title">
-                                 <h3>
-		                            <i class="fa fa-cloud-download"></i>
-		                            <h:outputText value="#{msgs.MassImport}" />
-		                        </h3>
-                            </div>
-                            <div class="box-content nopadding">
-                                <x:dataList forceId="true" var="property" id="processProperties" value="#{MassImportForm.properties}">
+				function start() {
+					window['progress'] = setInterval(function() {
+						var pbClient = PF('pbClient'), oldValue = pbClient
+								.getValue(), newValue = oldValue + 10;
 
-                                    <h:panelGroup rendered="#{(property.type.name == 'text') or (property.type.name == 'link')}">
-                                        <intranda:formInputText id="name" label="#{property.name}" field="#{property.value}" help="#{msgs.helpProperty}"
-                                            name="inputText" fieldStyle="form-control" required="#{property.required}" />
-                                    </h:panelGroup>
+						pbClient.setValue(pbClient.getValue() + 10);
 
-                                    <h:panelGroup rendered="#{property.type.name == 'integer' || property.type.name == 'number'}">
-                                        <div class="form-group" style="">
-                                            <h:outputLabel for="number" styleClass="control-label col-sm-2" value="#{property.name}" />
-                                            <div class="col-sm-10">
-                                                <x:inputText id="number" styleClass="form-control" value="#{property.value}"
-                                                    required="#{property.required}" />
-                                                <h:message for="number" showDetail="true" styleClass="help-inline font-danger" />
-                                                <intranda:formHelp content="#{msgs.helpProperty}" />
-                                            </div>
-                                        </div>
-                                    </h:panelGroup>
+						if (newValue === 100) {
+							clearInterval(window['progress']);
 
-                                    <h:panelGroup rendered="#{(property.type.name == 'list')}">
-                                        <intranda:formInputDropDown2 id="selectMenu" label="#{property.name}" field="#{property.value}" help="#{msgs.helpProperty}"
-                                            name="selectMenu" selectItems="#{property.possibleValues}" fieldStyle="form-control"
-                                            required="#{property.required}" var="propertys" itemLabel="#{propertys}" itemValue="#{propertys}" />
-                                    </h:panelGroup>
+						}
+					}, 1000);
+				}
+			</script>
+			<!-- // UGLY PROGRESSBAR PART -->
 
-                                    <h:panelGroup rendered="#{(property.type.name == 'listmultiselect')}">
-                                        <intranda:formInputSelectMany id="selectManyMenu" label="#{property.name}" field="#{property.valueList}"
-                                            help="#{msgs.helpProperty}" name="selectManyMenu" selectItems="#{property.possibleValues}"
-                                            fieldStyle="form-control" required="#{property.required}" var="step" itemLabel="#{step}"
-                                            itemValue="#{step}" />
-                                    </h:panelGroup>
+			<div class="row">
+				<div class="col-sm-12">
 
-                                    <h:panelGroup rendered="#{(property.type.name == 'boolean')}">
-                                        <intranda:formInputCheckBox id="checkbox" label="#{property.name}" field="#{property.booleanValue}"
-                                            help="#{msgs.helpProperty}" name="checkbox" required="#{property.required}" />
-                                    </h:panelGroup>
+					<intranda:box
+						boxType="action"
+						boxForm="true"
+						boxPadding="false"
+						icon="fa-cloud-download"
+						title="#{msgs.MassImport}">
 
-                                    <h:panelGroup rendered="#{(property.type.name == 'date')}">
-                                        <intranda:formInputCalendar2 id="calendar" name="calendar" label="#{property.name}" field="#{property.dateValue}"
-                                            required="#{property.required}" />
-                                    </h:panelGroup>
+						<x:dataList
+							forceId="true"
+							var="property"
+							id="processProperties"
+							value="#{MassImportForm.properties}">
 
-                                </x:dataList>
+							<h:panelGroup
+								rendered="#{property.type.name == 'text' or property.type.name == 'link' or property.type.name == 'integer' or property.type.name == 'number' or property.type.name == 'date'}">
+								<intranda:formInputText
+									id="name"
+									label="#{property.name}"
+									field="#{property.value}"
+									help="#{msgs.helpProperty}"
+									name="inputText"
+									required="#{property.required}" />
+							</h:panelGroup>
 
-                                <div class="form-actions">
-                                    <!-- Save -->
-                                    <button class="btn btn-success pull-right font-size-s margin-bottom-most" jsf:id="absenden" jsf:action="#{MassImportForm.convertData}"  onclick="goobiWorkflowJS.progress.displayProgressBar()">
-                                        <i class="fa fa-save margin-right-5"/>
-                                        <h:outputText value="#{msgs.speichern}" />
-                                    </button>
+							<h:panelGroup rendered="#{(property.type.name == 'list')}">
+								<intranda:formInputDropDown2
+									id="selectMenu"
+									label="#{property.name}"
+									field="#{property.value}"
+									help="#{msgs.helpProperty}"
+									name="selectMenu"
+									selectItems="#{property.possibleValues}"
+									required="#{property.required}"
+									var="propertys"
+									itemLabel="#{propertys}"
+									itemValue="#{propertys}" />
+							</h:panelGroup>
 
-                                    <!-- Cancel -->
-                                    <h:link id="cancel" styleClass="btn pull-right font-size-s margin-sides-10" outcome="process_all" value="#{msgs.abbrechen}" />
+							<h:panelGroup
+								rendered="#{(property.type.name == 'listmultiselect')}">
+								<intranda:formInputSelectMany
+									id="selectManyMenu"
+									label="#{property.name}"
+									field="#{property.valueList}"
+									help="#{msgs.helpProperty}"
+									name="selectManyMenu"
+									selectItems="#{property.possibleValues}"
+									required="#{property.required}"
+									var="step"
+									itemLabel="#{step}"
+									itemValue="#{step}" />
+							</h:panelGroup>
 
-									<!-- Back -->
-                                    <h:commandLink id="back" styleClass="btn font-size-s" action="process_import_1" immediate="true">
-                                        <i class="fa fa-arrow-circle-o-left margin-right-5"/>
-                                        <h:outputText value="#{msgs.zurueck}" />
-                                    </h:commandLink>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    
-                </div>
-            </div>
-        </h:form>
+							<h:panelGroup rendered="#{(property.type.name == 'boolean')}">
+								<intranda:formInputCheckBox
+									id="checkbox"
+									label="#{property.name}"
+									field="#{property.booleanValue}"
+									help="#{msgs.helpProperty}"
+									name="checkbox"
+									required="#{property.required}" />
+							</h:panelGroup>
 
-    </ui:define>
+						</x:dataList>
 
+						<div class="form-actions">
+							<!-- Cancel -->
+							<a
+								jsf:id="link_blank"
+								class="btn btn-blank"
+								jsf:immediate="true"
+								jsf:action="process_all">
+								<h:outputText value="#{msgs.abbrechen}" />
+							</a>
+							
+							<!-- Save -->
+							<button
+								class="btn btn-success"
+								jsf:id="absenden"
+								type="submit"
+								jsf:action="#{MassImportForm.convertData}"
+								onclick="goobiWorkflowJS.progress.displayProgressBar()">
+								<i class="fa fa-save"></i>
+								<span>#{msgs.speichern}</span>
+							</button>
+							
+							<!-- Back -->
+							<button
+								class="btn btn-primary-400 trigger-delete"
+								jsf:id="next"
+								type="submit"
+								jsf:immediate="true"
+								jsf:action="process_import_1">
+								<i class="fa fa-arrow-circle-o-left"></i>
+								<span>#{msgs.zurueck}</span>
+							</button>
+
+						</div>
+					</intranda:box>
+				</div>
+			</div>
+		</h:form>
+
+	</ui:define>
 </ui:composition>
 
 

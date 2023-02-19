@@ -9,6 +9,7 @@
 		<composite:attribute name="help" />
 		<composite:attribute name="selectItems" />
 		<composite:attribute name="fieldStyle" default="form-select" />
+		<composite:attribute name="size" default="8" />
 		<composite:attribute name="style" default="" />
 		<composite:attribute name="var" default="var" />
 		<composite:attribute name="required" default="false" />
@@ -45,6 +46,7 @@
 					styleClass="#{cc.attrs.fieldStyle}"
 					value="#{cc.attrs.field}"
 					tabindex="#{cc.attrs.tabindex}"
+					size="#{cc.attrs.size}"
 					validator="#{cc.attrs.validationMethod}"
 					idForValidator="#{cc.attrs.idForValidator}">
 					<f:selectItems

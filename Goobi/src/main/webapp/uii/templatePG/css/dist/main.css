@@ -1778,6 +1778,37 @@ body .ui-inputfield:hover {
   border-color: var(--clr-primary-400);
 }
 
+.select-radio td {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.select-radio-horizontal tr {
+  display: flex;
+  gap: 12px;
+  border-width: 0 !important;
+}
+
+#primefacesprogressbar.ui-progressbar {
+  border: 1px solid #368ee0 !important;
+  height: 1.8rem !important;
+  background: white !important;
+  border-radius: 0 !important;
+}
+
+#primefacesprogressbar > div.ui-progressbar-value {
+  border: 0 none !important;
+  margin: 0 !important;
+  background: #368ee0 !important;
+  border-radius: 0 !important;
+}
+
+#primefacesprogressbar > div.ui-progressbar-label {
+  margin-top: 3px !important;
+  color: #368ee0 !important;
+}
+
 .progress__container {
   display: flex;
   max-width: 240px;
@@ -2317,23 +2348,6 @@ body .ui-messages .ui-messages-error .ui-messages-error-icon, body .ui-messages 
   }
 }
 
-/* ========================================
- * vocabulary_upload.xhmtl
- * => very specific styles (high specificity)
- * to override primefaces defaults
- * ===================================== */
-.select-radio td {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-[id="uploadBox:vocabSelects"] tr {
-  display: flex;
-  gap: 12px;
-  border-width: 0 !important;
-}
-
 #projectEdit .box-mets-filegroups td:empty {
   display: none;
 }
@@ -2478,19 +2492,7 @@ body .ui-messages .ui-messages-error .ui-messages-error-icon, body .ui-messages 
  * => very specific styles (high specificity)
  * to override primefaces defaults
  * ===================================== */
-.select-radio td {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-[id="uploadBox:folderSelection"] tr {
-  display: flex;
-  gap: 12px;
-  border-width: 0 !important;
-}
-
-[id="uploadBox:thumbnails"] > div .image-area {
+.damageBoxThumbnails {
   padding-right: 15px;
   width: 100%;
   display: flex;
@@ -2498,48 +2500,41 @@ body .ui-messages .ui-messages-error .ui-messages-error-icon, body .ui-messages 
   justify-content: flex-start;
   align-content: stretch;
   display: flex;
-  border-top: 1px solid #ddd;
 }
 
-.image-container {
+.damageBoxThumbnailsContainer {
   width: 300px;
   margin: 10px;
   position: relative;
   text-align: center;
 }
 
-.image {
+.damageBoxThumbnailsImage {
   max-width: 300px;
   margin-top: 40px;
-  margin-bottom: 90px;
+  margin-bottom: 100px;
 }
 
-.folderselection {
+.damageBoxThumbnailsFolderSelection {
   width: 100%;
   position: absolute;
-  bottom: 60px;
+  bottom: 50px;
   text-align: left;
 }
 
-.folderselectiondropdown {
+.damageBoxThumbnailsFolderSelectionDropdown {
   display: inline;
   width: 265px;
   text-align: left;
 }
 
-.folderselectionbutton {
-  margin-left: 5px;
-  margin-top: -3px;
-  padding: 4px 9px;
-}
-
-.comment {
+.damageBoxThumbnailsComment {
   width: 100%;
   position: absolute;
   bottom: 0px;
 }
 
-.commentField {
+.damageBoxThumbnailsCommentField {
   resize: none;
   overflow: auto;
 }
