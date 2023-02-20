@@ -747,10 +747,10 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
 
     public List<StringPair> getAllAdditionalSearchFilter() {
         List<StringPair> answer = new ArrayList<>();
-        answer.add(new StringPair("default", "{}"));
+        //        answer.add(new StringPair("default", "{}"));
         if (StringUtils.isNotBlank(additionalSearchFields)) {
             // for each line
-            String[] lines = additionalSearchFields.split("[\n]");
+            String[] lines = additionalSearchFields.split("[\r\n]");
             for (String line : lines) {
                 if (line.contains("=")) {
                     // split on first equals character
