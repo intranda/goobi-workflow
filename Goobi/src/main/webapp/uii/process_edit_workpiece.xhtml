@@ -1,271 +1,273 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
-    <ui:param
-        name="myPageTitle"
-        value="#{msgs.neueWerkstueckAnlegen}"
-        rendered="#{ProzessverwaltungForm.myWerkstueck.id == null}" />
-    <ui:param
-        name="myPageTitle"
-        value="#{msgs.werkstueckDetails}"
-        rendered="#{ProzessverwaltungForm.myWerkstueck.id != null}" />
+	<ui:param
+		name="myPageTitle"
+		value="#{msgs.neueWerkstueckAnlegen}"
+		rendered="#{ProzessverwaltungForm.myWerkstueck.id == null}" />
+	<ui:param
+		name="myPageTitle"
+		value="#{msgs.werkstueckDetails}"
+		rendered="#{ProzessverwaltungForm.myWerkstueck.id != null}" />
 
-    <ui:define name="breadcrumb">
-        <intranda:breadcrumb
-            id="id2"
-            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-            action="index"
-            navId="a0" />
-        <intranda:breadcrumb
-            id="processAll"
-            label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.aktuelleProzesse:msgs.prozessvorlagen}"
-            action="process_all"
-            navId="a1" />
-        <intranda:breadcrumb
-            id="processDetails"
-            label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessDetails:msgs.process_templateDetails}"
-            action="process_edit" />
-        <intranda:breadcrumb
-            id="masterpieceDetails"
-            label="#{msgs.werkstueckDetails}"
-            action="process_edit_workpiece"
-            noSeparator="#{true}" />
-    </ui:define>
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb
+			id="id2"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index"
+			navId="a0" />
+		<intranda:breadcrumb
+			id="processAll"
+			label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.aktuelleProzesse:msgs.prozessvorlagen}"
+			action="process_all"
+			navId="a1" />
+		<intranda:breadcrumb
+			id="processDetails"
+			label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessDetails:msgs.process_templateDetails}"
+			action="process_edit" />
+		<intranda:breadcrumb
+			id="masterpieceDetails"
+			label="#{msgs.werkstueckDetails}"
+			action="process_edit_workpiece"
+			noSeparator="#{true}" />
+	</ui:define>
 
-    <ui:define name="content">
-        <main>
-            <h:form
-                id="myform"
-                styleClass="form-horizontal form-bordered"
-                rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
-                <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlage'}">
+	<ui:define name="content">
+		<main>
+			<h:form
+				id="myform"
+				styleClass="form-horizontal form-bordered"
+				rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
 
+				<!-- BOX WITH TABLE FOR ID -->
+				<h:panelGroup
+					rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlage'}">
 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="box box-color box-bordered">
-                                <div class="box-title">
-                                    <h2 class="tableColumnMaxWidthExtraLong">
-                                        <i class="fa fa-list"></i>
-                                        <h:outputText value="#{msgs.werkstueckDetails}" />
-                                        <h:outputText
-                                            value="  - #{ProzessverwaltungForm.myProzess.titel}"
-                                            rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
-                                    </h2>
+					<intranda:box
+						id="details"
+						boxType="primary"
+						boxPadding="false"
+						boxTitle="false">
 
-                                    <div class="actions">
+						<intranda:boxTitle
+							title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.werkstueckDetails.concat(' -').concat(ProzessverwaltungForm.myProzess.titel) : msgs.werkstueckDetails}"
+							icon="fa-list">
 
-                                        <button
-                                            jsf:action="#{ProzessverwaltungForm.reload}"
-                                            jsf:id="editTemplate"
-                                            class="btn btn-mini"
-                                            title="#{msgs.reload}"
-                                            jsf:rel="tooltip">
-                                            <i class="fa fa-refresh"></i>
-                                        </button>
+							<div class="actions d-flex">
+								<button
+									jsf:action="#{ProzessverwaltungForm.reload}"
+									jsf:id="editTemplate"
+									class="btn d-flex align-items-center btn--title-action"
+									title="#{msgs.reload}"
+									jsf:rel="tooltip">
+									<i class="fa fa-refresh"></i>
+								</button>
 
-                                        <button
-                                            jsf:id="deleteTemplate"
-                                            title="#{msgs.loeschen}"
-                                            class="btn btn-mini"
-                                            jsf:action="#{ProzessverwaltungForm.WerkstueckLoeschen}"
-                                            jsf:rel="tooltip">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
+								<button
+									jsf:id="deleteTemplate"
+									title="#{msgs.loeschen}"
+									class="btn d-flex align-items-center btn--title-action"
+									jsf:action="#{ProzessverwaltungForm.WerkstueckLoeschen}"
+									jsf:rel="tooltip">
+									<i class="fa fa-trash-o"></i>
+								</button>
 
-                                    </div>
-                                </div>
+							</div>
+						</intranda:boxTitle>
 
-                                <div class="box-content nopadding">
-
-                                    <h:panelGrid
-                                        columns="2"
-                                        styleClass="table table-hover table-bordered">
-                                        <h:outputText value="#{msgs.id}:" />
-                                        <h:outputText value="#{ProzessverwaltungForm.myWerkstueck.id}" />
-                                    </h:panelGrid>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </h:panelGroup>
+						<h:panelGrid
+							columns="2"
+							styleClass="table table-hover table-bordered">
+							<h:outputText value="#{msgs.id}:" />
+							<h:outputText value="#{ProzessverwaltungForm.myWerkstueck.id}" />
+						</h:panelGrid>
+					</intranda:box>
+				</h:panelGroup>
+				<!-- // BOX WITH TABLE FOR ID -->
 
 
-                <!-- ++++++++++++++++     Eigenschaftentabelle      ++++++++++++++++ -->
-                <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='werkstueckeigenschaft'}">
+				<!-- BOX WITH ALL PROPERTIES AS LIST -->
+				<h:panelGroup
+					styleClass="d-block mt-3"
+					rendered="#{ProzessverwaltungForm.modusBearbeiten!='werkstueckeigenschaft'}">
 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="box box-color box-bordered">
-                                <div class="box-title">
-                                    <h3>
-                                        <i class="fa fa-list"></i>
-                                        <h:outputText value="#{msgs.eigenschaften}" />
-                                    </h3>
-                                </div>
+					<intranda:box
+						id="propertyListBox"
+						boxType="neutral"
+						boxPadding="false"
+						boxTitle="false">
 
-                                <div class="box-content nopadding">
-                                    <div class="dataTables_wrapper">
-                                        <x:dataTable
-                                            styleClass="table table-hover table-bordered"
-                                            var="item"
-                                            value="#{ProzessverwaltungForm.myWerkstueck.eigenschaftenList}"
-                                            id="items">
+						<intranda:boxTitle
+							title="#{msgs.eigenschaften}"
+							icon="fa-table">
 
-                                            <h:column>
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.titel}" />
-                                                </f:facet>
-                                                <h:outputText value="#{item.titel}" />
-                                            </h:column>
+							<div class="actions d-flex">
+								<button
+									jsf:id="newProperty"
+									class="btn d-flex align-items-center btn--title-action"
+									jsf:rel="tooltip"
+									jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftNeu}"
+									title="#{msgs.eigenschaftHinzufuegen}">
+									<i class="fa fa-plus"></i>
+									<x:updateActionListener
+										property="#{ProzessverwaltungForm.modusBearbeiten}"
+										value="werkstueckeigenschaft" />
+								</button>
+							</div>
+						</intranda:boxTitle>
 
-                                            <h:column>
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.wert}" />
-                                                </f:facet>
-                                                <h:outputText value="#{item.wert}" />
-                                            </h:column>
+						<div class="gw-table gw-table-fixed">
+							<div class="gw-table__wrapper">
+								<table
+									role="grid"
+									id="tableUserAll"
+									class="table table-bordered table-fixed table-hover">
 
-                                            <h:column>
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.auswahl}" />
-                                                </f:facet>
-                                                <!-- Bearbeiten-Schaltknopf -->
-                                                <button
-                                                    jsf:id="editProperty"
-                                                    class="btn button-schaltknopf"
-                                                    jsf:action="process_edit_workpiece"
-                                                    title="#{msgs.bearbeiten}"
-                                                    jsf:rel="tooltip">
-                                                    <i
-                                                        class="fa fa-pencil"
-                                                        title="#{msgs.bearbeiten}"></i>
-                                                    <x:updateActionListener
-                                                        property="#{ProzessverwaltungForm.myWerkstueckEigenschaft}"
-                                                        value="#{item}" />
-                                                    <x:updateActionListener
-                                                        property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                                        value="werkstueckeigenschaft" />
-                                                </button>
-                                            </h:column>
-                                        </x:dataTable>
+									<!-- COLUMNHEADER -->
+									<thead>
+										<tr role="row">
+											<intranda:columnheader
+												name="title"
+												value="#{msgs.titel}"
+												sortable="false" />
+											<intranda:columnheader
+												name="value"
+												value="#{msgs.wert}"
+												sortable="false" />
+											<intranda:columnheader
+												value="#{msgs.auswahl}"
+												sortable="false"
+												addClass="gw-table-fixed__actions" />
+										</tr>
+									</thead>
+									<!-- // COLUMNHEADER -->
 
-                                        <div class="dataTables_info">
-                                            <!-- Neu-Schaltknopf -->
-                                            <button
-                                                jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftNeu}"
-                                                jsf:id="newProperty"
-                                                class="btn btn-primary font-size-s margin-top-5"
-                                                title="#{msgs.eigenschaftHinzufuegen}">
-                                                <x:updateActionListener
-                                                    property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                                    value="werkstueckeigenschaft" />
-                                                <i class="fa fa-plus margin-right-5"></i>
-                                                <h:outputText value="#{msgs.eigenschaftHinzufuegen}" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+									<!-- CONTENT ROWS -->
+									<ui:repeat
+										var="item"
+										value="#{ProzessverwaltungForm.myWerkstueck.eigenschaftenList}"
+										varStatus="status">
+										<tr role="row">
+											<td>#{item.titel}</td>
+											<td>#{item.wert}</td>
+											<td>
+												<div class="gw-table__actions__container">
+													<button
+														jsf:id="editProperty"
+														class="btn btn-blank"
+														jsf:rel="tooltip"
+														jsf:action="process_edit_workpiece"
+														title="#{msgs.bearbeiten}">
+														<i class="fa fa-pencil"></i>
+														<x:updateActionListener
+															property="#{ProzessverwaltungForm.myWerkstueckEigenschaft}"
+															value="#{item}" />
+														<x:updateActionListener
+															property="#{ProzessverwaltungForm.modusBearbeiten}"
+															value="werkstueckeigenschaft" />
+													</button>
+												</div>
+											</td>
+										</tr>
+									</ui:repeat>
+									<!-- // CONTENT ROWS -->
 
-                        </div>
-                    </div>
+								</table>
+							</div>
+						</div>
+					</intranda:box>
+				</h:panelGroup>
+				<!-- // BOX WITH ALL PROPERTIES AS LIST -->
 
 
-                </h:panelGroup>
+				<!-- BOX WITH PROPERTIES TO EDIT -->
+				<h:panelGroup
+					styleClass="d-block mt-3"
+					rendered="#{ProzessverwaltungForm.modusBearbeiten=='werkstueckeigenschaft'}">
 
-                <!-- +++++++++++++++     Eigenschaft bearbeiten      ++++++++++++++++ -->
+					<intranda:box
+						boxType="action"
+						boxForm="true"
+						boxPadding="false"
+						title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.eigenschaftBearbeiten.concat(' - ').concat(ProzessverwaltungForm.myProzess.titel) : msgs.eigenschaftBearbeiten}"
+						icon="fa-edit">
 
-                <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='werkstueckeigenschaft'}">
+						<intranda:formInputText
+							id="title"
+							name="title"
+							label="#{msgs.titel}"
+							field="#{ProzessverwaltungForm.myWerkstueckEigenschaft.titel}"
+							help="#{msgs.helpPropertyTitle}"
+							required="true" />
+						<intranda:formInputText
+							id="value"
+							name="value"
+							label="#{msgs.wert}"
+							field="#{ProzessverwaltungForm.myWerkstueckEigenschaft.wert}"
+							help="#{msgs.helpPropertyValue}"
+							required="true" />
 
-                    <div class="box box-color box-bordered orange">
-                        <div class="box-title">
-                            <h3 class="tableColumnMaxWidthExtraLong">
-                                <i class="fa fa-table"></i>
-                                <h:outputText value="#{msgs.eigenschaftBearbeiten}" />
-                                <h:outputText
-                                    value="  - #{ProzessverwaltungForm.myProzess.titel}"
-                                    rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
-                            </h3>
-                        </div>
-                        <div class="box-content nopadding">
+						<div class="box__actions">
 
-                            <intranda:formInputText
-                                id="title"
-                                name="title"
-                                label="#{msgs.titel}"
-                                field="#{ProzessverwaltungForm.myWerkstueckEigenschaft.titel}"
-                                help="#{msgs.helpPropertyTitle}"
-                                fieldStyle="form-control"
-                                required="true" />
-                            <intranda:formInputText
-                                id="value"
-                                name="value"
-                                label="#{msgs.wert}"
-                                field="#{ProzessverwaltungForm.myWerkstueckEigenschaft.wert}"
-                                help="#{msgs.helpPropertyValue}"
-                                fieldStyle="form-control"
-                                required="true" />
+							<!-- Cancel -->
+							<button
+								jsf:id="cancelProperty"
+								class="btn btn-blank"
+								jsf:immediate="true"
+								jsf:action="#{NavigationForm.Reload}">
+								<h:outputText value="#{msgs.abbrechen}" />
+								<x:updateActionListener
+									property="#{ProzessverwaltungForm.modusBearbeiten}"
+									value="" />
+							</button>
 
-                            <h:panelGroup>
-                                <div class="form-actions">
+							<!-- Save -->
+							<button
+								class="btn btn-success"
+								jsf:id="saveProperty"
+								type="submit"
+								jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftUebernehmen}">
+								<i class="fa fa-save"></i>
+								<span>
+									<h:outputText value="#{msgs.speichern}" />
+								</span>
+								<x:updateActionListener
+									property="#{ProzessverwaltungForm.modusBearbeiten}"
+									value="" />
+							</button>
 
-                                    <!-- Save -->
-                                    <button
-                                        jsf:id="saveProperty"
-                                        class="btn btn-success pull-right font-size-s margin-bottom-most"
-                                        jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftUebernehmen}">
-                                        <i class="fa fa-save margin-right-5"></i>
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                            value="" />
-                                        <h:outputText value="#{msgs.speichern}" />
-                                    </button>
+							<!-- Delete -->
+							<button
+								jsf:id="deleteProperty"
+								class="btn btn-hot trigger-delete"
+								onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
+								jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftLoeschen}"
+								jsf:rendered="#{ProzessverwaltungForm.myWerkstueckEigenschaft.id != null}">
+								<i class="fa fa-trash-o"></i>
+								<span>
+									<h:outputText value="#{msgs.loeschen}" />
+								</span>
+								<x:updateActionListener
+									property="#{ProzessverwaltungForm.modusBearbeiten}"
+									value="" />
+							</button>
 
-                                    <button
-                                        jsf:id="cancelProperty"
-                                        class="btn margin-sides-10 font-size-s pull-right"
-                                        jsf:immediate="true"
-                                        jsf:action="#{NavigationForm.Reload}">
-                                        <h:outputText value="#{msgs.abbrechen}" />
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                            value="" />
-                                    </button>
+						</div>
+					</intranda:box>
+				</h:panelGroup>
+				<!-- BOX WITH PROPERTIES TO EDIT -->
 
-                                    <button
-                                        jsf:id="deleteProperty"
-                                        class="btn btn-danger font-size-s"
-                                        jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftLoeschen}"
-                                        onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
-                                        jsf:immediate="true"
-                                        jsf:rendered="#{ProzessverwaltungForm.myWerkstueckEigenschaft.id != null}">
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                            value="" />
-                                        <i class="fa fa-trash-o" />
-                                        #{msgs.loeschen}
-                                    </button>
-
-                                </div>
-                            </h:panelGroup>
-                        </div>
-                    </div>
-
-                </h:panelGroup>
-
-            </h:form>
-        </main>
-    </ui:define>
+			</h:form>
+		</main>
+	</ui:define>
 
 </ui:composition>

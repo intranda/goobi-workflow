@@ -269,7 +269,7 @@
 						boxType="action"
 						boxForm="true"
 						boxPadding="false"
-						title="#{msgs.eigenschaftBearbeiten}"
+						title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.eigenschaftBearbeiten.concat(' - ').concat(ProzessverwaltungForm.myProzess.titel) : msgs.eigenschaftBearbeiten}"
 						icon="fa-edit">
 
 						<intranda:formInputText
@@ -301,7 +301,7 @@
 									value="" />
 							</button>
 
-							<!-- Save => should be the first btn in the form (subit on enter) -->
+							<!-- Save -->
 							<button
 								class="btn btn-success"
 								jsf:id="saveProperty"
@@ -321,7 +321,8 @@
 								jsf:id="deleteProperty"
 								class="btn btn-hot trigger-delete"
 								onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
-								jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}">
+								jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}"
+								jsf:rendered="#{ProzessverwaltungForm.myVorlageEigenschaft.id != null}">
 								<i class="fa fa-trash-o"></i>
 								<span>
 									<h:outputText value="#{msgs.loeschen}" />
