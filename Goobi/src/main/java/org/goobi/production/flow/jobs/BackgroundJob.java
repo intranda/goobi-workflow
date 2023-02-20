@@ -31,10 +31,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.DatabaseObject;
+
 import lombok.Getter;
 import lombok.Setter;
 
-public class BackgroundJob implements Serializable {
+public class BackgroundJob implements Serializable, DatabaseObject {
 
     private static final long serialVersionUID = -1812771009212445425L;
 
@@ -105,6 +107,11 @@ public class BackgroundJob implements Serializable {
             return null;
         }
 
+    }
+
+    @Override
+    public void lazyLoad() {
+        // do nothing
     }
 
 }

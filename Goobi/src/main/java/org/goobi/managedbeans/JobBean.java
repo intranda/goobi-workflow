@@ -55,6 +55,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.reflections.Reflections;
 
+import de.sub.goobi.persistence.managers.BackgroundJobManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -78,8 +79,16 @@ public class JobBean implements Serializable {
     @Getter
     private transient List<QuartzJobDetails> activeJobs = new ArrayList<>();
 
+    @Getter
+    @Setter
+    private String searchValue;
+
+    @Getter
+    private DatabasePaginator paginator;
+
     @PostConstruct
     public void init() throws SchedulerException {
+        activeJobs.clear();
         scheduler = new StdSchedulerFactory().getScheduler();
         Set<Class<? extends AbstractGoobiJob>> allJobTypes = new Reflections().getSubTypesOf(AbstractGoobiJob.class);
 
@@ -194,13 +203,17 @@ public class JobBean implements Serializable {
                         .startNow()
                         .build();
                 scheduler.scheduleJob(jobDetail, trigger);
-
+                init();
             }
 
         } catch (SchedulerException e) {
             log.error(e);
         }
+    }
 
+    public void filterLastJobs() {
+        BackgroundJobManager manager = new BackgroundJobManager();
+        paginator = new DatabasePaginator("lastAlered desc", searchValue, manager, "");
     }
 
 }

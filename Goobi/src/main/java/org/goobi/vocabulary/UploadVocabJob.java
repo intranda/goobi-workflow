@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.goobi.beans.DatabaseObject;
 import org.goobi.production.flow.jobs.AbstractGoobiJob;
-import org.quartz.JobExecutionContext;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.VocabularyManager;
@@ -49,9 +48,7 @@ public class UploadVocabJob extends AbstractGoobiJob {
     }
 
     @Override
-    public void execute(JobExecutionContext context) {
-
-        log.debug("Execute job: " + context.getJobDetail().getKey() + " - " + context.getRefireCount());
+    public void execute() {
 
         VocabularyManager vocabMan = new VocabularyManager();
 

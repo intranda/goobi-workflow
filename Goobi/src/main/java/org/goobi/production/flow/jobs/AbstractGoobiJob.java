@@ -55,10 +55,9 @@ public abstract class AbstractGoobiJob implements Job, IGoobiJob {
      */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        if (isRunning()) {
+        if (!isRunning()) {
             log.trace("Start scheduled Job: " + getJobName());
             if (!running) {
-                // TODO create database entry
                 setRunning(true);
                 execute();
                 BackgroundJob details = new BackgroundJob();

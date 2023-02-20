@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.goobi.production.flow.jobs.BackgroundJob;
 import org.goobi.production.flow.jobs.BackgroundJobProperty;
 
@@ -64,17 +66,10 @@ class BackgroundJobsMysqlHelper implements Serializable {
             if (job.getId() == null) {
                 // insert new job
                 sql.append("INSERT INTO background_job (jobname, jobtype, jobstatus, retrycount, lastAltered) VALUES (");
-                sql.append(job.getJobName());
-                sql.append(", ");
-                sql.append(job.getJobType());
-                sql.append(", ");
-                sql.append(job.getJobStatus().getId());
-                sql.append(", ");
-                sql.append(job.getRetryCount());
-                sql.append(", ");
-                sql.append(Timestamp.valueOf(job.getLastUpdateTime()));
+                sql.append("?,?,?,?,?");
                 sql.append(") ");
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, job.getJobName(), job.getJobType(),
+                        job.getJobStatus().getId(), job.getRetryCount(), Timestamp.valueOf(job.getLastUpdateTime()));
                 if (id != null) {
                     job.setId(id);
                 }
@@ -147,6 +142,78 @@ class BackgroundJobsMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             run.execute(connection, deleteProperties, id);
             run.execute(connection, deleteJob, id);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static int getHitSize(String filter) throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT count(1) FROM background_job ");
+        if (StringUtils.isNotBlank(filter)) {
+            sb.append("WHERE jobname LIKE \"%");
+            sb.append(StringEscapeUtils.escapeSql(filter));
+            sb.append("%\"");
+        }
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static List<BackgroundJob> getList(String order, String filter, Integer start, Integer count)
+            throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT * FROM background_job ");
+
+        if (StringUtils.isNotBlank(filter)) {
+            sb.append("WHERE jobname LIKE \"%");
+            sb.append(StringEscapeUtils.escapeSql(filter));
+            sb.append("%\"");
+        }
+
+        sb.append("ORDER BY ");
+        sb.append(order);
+
+        if (start != null && count != null) {
+            sb.append(" LIMIT " + start + ", " + count);
+        }
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sb.toString(), BackgroundJobManager.resultSetToJoListbHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static List<Integer> getIdList(String filter) throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT id FROM background_job ");
+
+        if (StringUtils.isNotBlank(filter)) {
+            sb.append("WHERE jobname LIKE \"%");
+            sb.append(StringEscapeUtils.escapeSql(filter));
+            sb.append("%\"");
+        }
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

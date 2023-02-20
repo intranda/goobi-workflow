@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -24,21 +25,36 @@ public class BackgroundJobManager implements IManager, Serializable {
 
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
-        // TODO Auto-generated method stub
-        return 0;
+        try {
+            return BackgroundJobsMysqlHelper.getHitSize(filter);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 
     @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
             throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        return getJobs(order, filter, start, count);
+    }
+
+    public List<BackgroundJob> getJobs(String order, String filter, Integer start, Integer count) {
+        try {
+            return BackgroundJobsMysqlHelper.getList(order, filter, start, count);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return Collections.emptyList();
     }
 
     @Override
     public List<Integer> getIdList(String order, String filter, Institution institution) {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return BackgroundJobsMysqlHelper.getIdList(filter);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return Collections.emptyList();
     }
 
     public static BackgroundJob getBackgroundJobById(int id) {
