@@ -110,7 +110,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
      */
     @Override
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, WriteException,
-            PreferencesException, DocStructHasNoTypeException, SwapException, DAOException, TypeNotAllowedForParentException {
+            PreferencesException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
 
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
         String atsPpnBand = myProzess.getTitel();
@@ -414,7 +415,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
     }
 
     public void fulltextDownload(Process myProzess, Path benutzerHome, String atsPpnBand, final String ordnerEndung)
-            throws IOException, SwapException {
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         // download sources
         Path sources = Paths.get(myProzess.getSourceDirectory());
@@ -526,10 +527,12 @@ public class ExportDms extends ExportMets implements IExportPlugin {
      * @param zielTif
      * @param file
      * @throws IOException
+     * @throws InterruptedException
      * @throws SwapException
+     * @throws DAOException
      */
     public void copy3DObjectHelperFiles(Process myProzess, Path zielTif, Path file)
-            throws IOException, SwapException {
+            throws IOException, InterruptedException, SwapException, DAOException {
         Path tiffDirectory = Paths.get(myProzess.getImagesTifDirectory(true));
         String baseName = FilenameUtils.getBaseName(file.getFileName().toString());
         List<Path> helperFiles = StorageProvider.getInstance()

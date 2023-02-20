@@ -61,6 +61,7 @@ import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+import org.jaxen.JaxenException;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -109,14 +110,13 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @param destination the destination to write the file
      * @throws FileNotFoundException
      * @throws IOException
-     * @throws ExportFileException
      */
 
-    public void startExport(Process p, String destination) throws IOException {
+    public void startExport(Process p, String destination) throws FileNotFoundException, IOException {
         startExport(p, new FileOutputStream(destination), null);
     }
 
-    public void startExport(Process p, Path dest) throws IOException {
+    public void startExport(Process p, Path dest) throws FileNotFoundException, IOException {
         startExport(p, new FileOutputStream(dest.toFile()), null);
     }
 
@@ -484,7 +484,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 elements.add(metsElement);
             }
 
-        } catch (SwapException | IOException | JDOMException exception) {
+        } catch (SwapException | IOException | JDOMException | JaxenException exception) {
             log.error(exception);
         }
 
@@ -573,7 +573,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         return contentfiles;
     }
 
-    public List<Element> getMetsValues(String expression, Object element, List<Namespace> namespaces) {
+    public List<Element> getMetsValues(String expression, Object element, List<Namespace> namespaces) throws JaxenException {
         XPathExpression<Element> xpath = XPathFactory.instance().compile(expression, Filters.element(), null, namespaces);
         return xpath.evaluate(element);
     }
@@ -608,7 +608,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         startTransformation(p, out, filename);
     }
 
-    public void startTransformation(Process p, OutputStream out, String filename) throws XSLTransformException, IOException {
+    public void startTransformation(Process p, OutputStream out, String filename) throws ConfigurationException, XSLTransformException, IOException {
         Document doc = createDocument(p, true, true);
         XmlTransformation(out, doc, filename);
     }

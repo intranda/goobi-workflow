@@ -592,10 +592,12 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @param size The size of the desired thumbnails
      * @return The full path to thumbnail directory or null if no matching directory was found
-     * @throws SwapException
      * @throws IOException
+     * @throws InterruptedException
+     * @throws SwapException
+     * @throws DAOException
      */
-    public String getThumbsDirectory(String imageDirectory, Integer size) throws IOException, SwapException {
+    public String getThumbsDirectory(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException, DAOException {
         Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
         Optional<Integer> bestSize = dirMap.keySet().stream().filter(dirSize -> dirSize >= size).sorted().findFirst();
         if (bestSize.isPresent()) {
@@ -681,10 +683,12 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * 
      * @param imageDirectory
      * @return
+     * @throws IOException
+     * @throws InterruptedException
      * @throws SwapException
      * @throws DAOException
      */
-    public List<Integer> getThumbsSizes(String imageDirectory) throws IOException, SwapException {
+    public List<Integer> getThumbsSizes(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
         return new ArrayList<>(getThumbsDirectories(imageDirectory).keySet());
     }
 
@@ -953,7 +957,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         return getProcessDataDirectory() + "template.xml";
     }
 
-    public String getFulltextFilePath() throws IOException, SwapException {
+    public String getFulltextFilePath() throws IOException, InterruptedException, SwapException, DAOException {
         return getProcessDataDirectory() + "fulltext.xml";
     }
 
@@ -2025,7 +2029,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     //read the image comments files in the image folders, and return all of them as a list.
-    public List<ImageComment> getImageComments() throws IOException, SwapException, DAOException {
+    public List<ImageComment> getImageComments() throws IOException, InterruptedException, SwapException, DAOException {
 
         List<ImageComment> lstComments = new ArrayList<>();
 
@@ -2056,7 +2060,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         return lstComments;
     }
 
-    public List<String> getArchivedImageFolders() throws IOException, SwapException {
+    public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {
         if (this.id == null || !ConfigurationHelper.getInstance().isMetsEditorShowArchivedFolder()) {
             return new ArrayList<>();
         }

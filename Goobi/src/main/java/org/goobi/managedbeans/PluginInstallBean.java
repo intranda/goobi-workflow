@@ -47,6 +47,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.FileUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Request;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
@@ -100,7 +101,7 @@ public class PluginInstallBean implements Serializable {
     private transient Path tempDir;
 
     @PostConstruct
-    private void init() throws IOException, JDOMException {
+    private void init() throws ClientProtocolException, IOException, JDOMException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         String queryUrl = config.getPluginServerUrl();
         if (queryUrl.isBlank()) {
@@ -126,7 +127,7 @@ public class PluginInstallBean implements Serializable {
                 .collect(Collectors.groupingBy(PluginInstallInfo::getType));
     }
 
-    private Optional<String> getLatestGoobiVersionFromNexus() throws IOException, JDOMException {
+    private Optional<String> getLatestGoobiVersionFromNexus() throws ClientProtocolException, IOException, JDOMException {
         SAXBuilder saxB = XmlTools.getSAXBuilder();
         String nexusUrl = "https://nexus.intranda.com/repository/maven-public/de/intranda/goobi/workflow/goobi-core-jar/maven-metadata.xml";
         try (InputStream in = Request.Get(nexusUrl).execute().returnContent().asStream()) {
@@ -142,7 +143,7 @@ public class PluginInstallBean implements Serializable {
         }
     }
 
-    public void downloadAndInstallPlugin(PluginInstallInfo pluginInfo) throws IOException, JDOMException {
+    public void downloadAndInstallPlugin(PluginInstallInfo pluginInfo) throws ClientProtocolException, IOException, JDOMException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         PluginVersion version = pluginInfo.getVersions().get(0);
         String downloadUrl = String.format("%s/api/plugins/%s/versions/%s/goobiversions/%s/archive",

@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import javax.faces.view.ViewScoped;
@@ -173,7 +174,7 @@ public class PluginsBean implements Serializable {
         }
     }
 
-    private static PluginInfo getPluginInfo(Path pluginP, Set<String> stepPluginsInUse, boolean instantiate) throws IOException {
+    private static PluginInfo getPluginInfo(Path pluginP, Set<String> stepPluginsInUse, boolean instantiate) throws ZipException, IOException {
         final PluginInfo info = new PluginInfo();
         info.setFilename(pluginP.getFileName().toString());
         if (instantiate) {

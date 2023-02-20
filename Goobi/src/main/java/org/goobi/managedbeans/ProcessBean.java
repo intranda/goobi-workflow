@@ -2663,7 +2663,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    public boolean isFoldersArchived() throws IOException, SwapException {
+    public boolean isFoldersArchived() throws IOException, InterruptedException, SwapException, DAOException {
         Path images = Paths.get(this.myProzess.getImagesDirectory());
         try (Stream<Path> filesInImages = Files.list(images)) {
             return filesInImages.anyMatch(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".xml"));

@@ -48,6 +48,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
@@ -80,7 +81,8 @@ public class GoobiImageFolderResource {
         return ProcessManager.getProcessById(processId);
     }
 
-    private java.nio.file.Path getImagesFolder(Process process, String folder) throws IOException, SwapException, DAOException {
+    private java.nio.file.Path getImagesFolder(Process process, String folder)
+            throws ContentNotFoundException, IOException, InterruptedException, SwapException, DAOException {
         switch (folder.toLowerCase()) {
             case "master":
             case "orig":
@@ -106,7 +108,7 @@ public class GoobiImageFolderResource {
     @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
     public List<URI> getListAsJson(@Context ContainerRequestContext requestContext, @Context HttpServletRequest request,
-            @Context HttpServletResponse response) throws IOException {
+            @Context HttpServletResponse response) throws ContentLibException, IOException {
         String requestURL = request.getRequestURL().toString();
         if (!requestURL.endsWith("/")) {
             requestURL += "/";

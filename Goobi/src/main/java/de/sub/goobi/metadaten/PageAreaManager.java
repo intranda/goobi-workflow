@@ -172,7 +172,7 @@ public class PageAreaManager {
     }
 
     public DocStruct createPageArea(DocStruct page, Integer x, Integer y, Integer w, Integer h)
-            throws TypeNotAllowedForParentException, MetadataTypeNotAllowedException {
+            throws TypeNotAllowedForParentException, MetadataTypeNotAllowedException, TypeNotAllowedAsChildException {
         DocStructType dst = prefs.getDocStrctTypeByName("area");
         DocStruct pageArea = document.createDocStruct(dst);
         Metadata logicalPageNumber = new Metadata(prefs.getMetadataTypeByName("logicalPageNumber"));

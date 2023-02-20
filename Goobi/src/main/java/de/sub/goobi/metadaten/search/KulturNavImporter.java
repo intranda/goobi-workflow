@@ -226,7 +226,7 @@ public class KulturNavImporter extends JsonDataLoader {
     }
 
     // Main method for easy debugging
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String encoded = parseSearchString("Almaas OR Øyvind 1939");
         String url = SUMMARY_URL + "entityType:Person,compoundName:" + encoded;
         // Print the content of record

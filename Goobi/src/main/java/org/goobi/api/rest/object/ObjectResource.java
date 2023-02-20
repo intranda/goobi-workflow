@@ -136,7 +136,8 @@ public class ObjectResource {
     @Path("/{processId}/{foldername}/{filename}.js")
     @Produces({ "application/javascript" })
     public String getJS(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
-            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase) throws IOException, SwapException {
+            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".js";
         Process process = ProcessManager.getProcessById(processId);
@@ -167,7 +168,8 @@ public class ObjectResource {
     @Path("/{processId}/{foldername}/{filename}.xml")
     @Produces({ MediaType.TEXT_XML })
     public String getXml(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
-            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase) throws IOException, SwapException {
+            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".xml";
 
@@ -198,7 +200,8 @@ public class ObjectResource {
     @Path("/{processId}/{foldername}/images/{filename}.jpg")
     @Produces({ "image/jpeg" })
     public void getJpeg(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
-            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase) throws IOException, SwapException {
+            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".jpg";
 
@@ -234,7 +237,7 @@ public class ObjectResource {
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObject(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filename)
-            throws IOException, SwapException {
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         foldername = Paths.get(foldername).getFileName().toString();
         Process process = ProcessManager.getProcessById(processId);
@@ -271,7 +274,7 @@ public class ObjectResource {
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObjectResource(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder") String subfolder,
-            @PathParam("filename") final String filename) throws IOException, SwapException {
+            @PathParam("filename") final String filename) throws IOException, InterruptedException, SwapException, DAOException {
 
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder, filename);
@@ -296,7 +299,8 @@ public class ObjectResource {
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObjectResource(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1,
-            @PathParam("subfolder2") String subfolder2, @PathParam("filename") String filename) throws IOException, SwapException {
+            @PathParam("subfolder2") String subfolder2, @PathParam("filename") String filename)
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder1, subfolder2, filename);

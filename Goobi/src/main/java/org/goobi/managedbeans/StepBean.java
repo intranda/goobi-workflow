@@ -85,6 +85,7 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
@@ -358,7 +359,7 @@ public class StepBean extends BasicBean implements Serializable {
         return "task_edit";
     }
 
-    public String EditStep() {
+    public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
         try {
             mySchritt = StepManager.getStepById(mySchritt.getId());
             mySchritt.lazyLoad();
@@ -520,7 +521,7 @@ public class StepBean extends BasicBean implements Serializable {
         }
 
         /*
-         * -------------------------------- wenn das Resultat des Arbeitsschrittes zunÃ¤chst verifiziert werden soll, dann ggf. das Abschliessen
+         * -------------------------------- wenn das Resultat des Arbeitsschrittes zunächst verifiziert werden soll, dann ggf. das Abschliessen
          * abbrechen --------------------------------
          */
         if (this.mySchritt.isTypBeimAbschliessenVerifizieren()) {
@@ -812,7 +813,7 @@ public class StepBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public String UploadFromHomeAlle() throws NumberFormatException {
+    public String UploadFromHomeAlle() throws NumberFormatException, DAOException {
 
         List<String> fertigListe = this.myDav.UploadFromHomeAlle(DONEDIRECTORYNAME);
         List<String> geprueft = new ArrayList<>();
@@ -959,8 +960,8 @@ public class StepBean extends BasicBean implements Serializable {
     public Step getMySchritt() {
         try {
             schrittPerParameterLaden();
-        } catch (NumberFormatException e) {
-            log.error(e);
+        } catch (NumberFormatException | DAOException exception) {
+            log.error(exception);
         }
         return this.mySchritt;
     }
@@ -1030,11 +1031,12 @@ public class StepBean extends BasicBean implements Serializable {
      */
 
     /**
-     * prüfen, ob per Parameter vielleicht zunÃ¤chst ein anderer geladen werden soll
+     * prüfen, ob per Parameter vielleicht zunächst ein anderer geladen werden soll
      * 
+     * @throws DAOException
      * @throws NumberFormatException
      */
-    private void schrittPerParameterLaden() throws NumberFormatException {
+    private void schrittPerParameterLaden() throws DAOException, NumberFormatException {
         String param = Helper.getRequestParameter("myid");
         if (param != null && !param.equals("")) {
             /*

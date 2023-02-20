@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -230,18 +231,22 @@ public class ExportMets {
      * 
      * @param myProzess
      * @param zielVerzeichnis
-     * @throws InterruptedException
      * @throws IOException
+     * @throws InterruptedException
      * @throws PreferencesException
      * @throws WriteException
      * @throws DocStructHasNoTypeException
-     * @throws DAOException
-     * @throws SwapException
+     * @throws MetadataTypeNotAllowedException
+     * @throws ExportFileException
+     * @throws UghHelperException
      * @throws ReadException
+     * @throws SwapException
+     * @throws DAOException
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-            WriteException, DocStructHasNoTypeException, ReadException, SwapException, DAOException, TypeNotAllowedForParentException {
+            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -589,7 +594,7 @@ public class ExportMets {
     }
 
     private void saveFinishedMetadata(Process myProzess, String targetFileName, ConfigurationHelper config, ExportFileformat mm,
-            boolean addAnchorFile) throws IOException, WriteException, PreferencesException, SwapException {
+            boolean addAnchorFile) throws IOException, WriteException, PreferencesException, InterruptedException, SwapException, DAOException {
         String xmlEnding = ".xml";
         String zipEnding = ".zip";
         String anchorEnding = "_anchor.xml";
@@ -802,8 +807,10 @@ public class ExportMets {
      * @param doc
      * @param file the file Object
      * @param object
+     * @throws IOException
+     * @throws FileNotFoundException
      */
-    private void buildImageMetadata(Document doc, Path file, Element object) throws IOException {
+    private void buildImageMetadata(Document doc, Path file, Element object) throws FileNotFoundException, IOException {
 
         // obtain Dimensions of passed image
         Optional<Dimension> maybeImageDimension = getSize(file);

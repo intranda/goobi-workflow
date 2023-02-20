@@ -178,7 +178,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
         }
     }
 
-    public List<SelectItem> getInstitutionsAsSelectList() {
+    public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
         List<SelectItem> institutions = new ArrayList<>();
         List<Institution> temp = null;
         if (Helper.getCurrentUser().isSuperAdmin()) {

@@ -780,7 +780,7 @@ public class UserBean extends BasicBean implements Serializable {
         return lstInsts.size();
     }
 
-    public List<SelectItem> getInstitutionsAsSelectList() {
+    public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
         List<SelectItem> institutions = new ArrayList<>();
         List<Institution> temp = null;
         if (Helper.getCurrentUser().isSuperAdmin()) {

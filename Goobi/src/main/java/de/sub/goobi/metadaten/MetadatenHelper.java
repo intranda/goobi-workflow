@@ -233,7 +233,7 @@ public class MetadatenHelper implements Comparator<Object> {
 
     /* =============================================================== */
 
-    public void KnotenUp(DocStruct inStruct) {
+    public void KnotenUp(DocStruct inStruct) throws TypeNotAllowedAsChildException {
         DocStruct parent = inStruct.getParent();
         if (parent == null) {
             return;
@@ -252,7 +252,7 @@ public class MetadatenHelper implements Comparator<Object> {
 
     /* =============================================================== */
 
-    public void KnotenDown(DocStruct inStruct) {
+    public void KnotenDown(DocStruct inStruct) throws TypeNotAllowedAsChildException {
         DocStruct parent = inStruct.getParent();
         if (parent == null) {
             return;
