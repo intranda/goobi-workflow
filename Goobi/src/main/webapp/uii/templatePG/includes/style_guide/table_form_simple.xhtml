@@ -29,11 +29,9 @@
 			icon="fa-user"
 			title="#{myPageTitle}">
 
-			<div class="gw-table gw-table-fixed">
 				<h:form
 					id="someTableDataForm"
-					prependId="false"
-					styleClass="table--scrollx">
+					prependId="false">
 					<div class="gw-table gw-table-fixed">
 						<div class="gw-table__wrapper">
 							<table
@@ -98,7 +96,7 @@
 						</div>
 					</div>
 				</h:form>
-			</div>
+			
 
 		</intranda:box>
 
@@ -130,76 +128,74 @@
 			icon=&quot;fa-user&quot;
 			title=&quot;#{myPageTitle}&quot;&gt;
 
-			&lt;div class=&quot;gw-table gw-table-fixed&quot;&gt;
-				&lt;h:form
-					id=&quot;someTableDataForm&quot;
-					prependId=&quot;false&quot;
-					styleClass=&quot;table--scrollx&quot;&gt;
-					&lt;div class=&quot;gw-table gw-table-fixed&quot;&gt;
-						&lt;div class=&quot;gw-table__wrapper&quot;&gt;
-							&lt;table
-								role=&quot;grid&quot;
-								id=&quot;tableUserAll&quot;
-								class=&quot;table table-bordered table-fixed table-hover&quot;&gt;
+			&lt;h:form
+				id=&quot;someTableDataForm&quot;
+				prependId=&quot;false&quot;&gt;
+				&lt;div class=&quot;gw-table gw-table-fixed&quot;&gt;
+					&lt;div class=&quot;gw-table__wrapper&quot;&gt;
+						&lt;table
+							role=&quot;grid&quot;
+							id=&quot;tableUserAll&quot;
+							class=&quot;table table-bordered table-fixed table-hover&quot;&gt;
 
-								&lt;!-- COLUMNHEADER --&gt;
-								&lt;thead&gt;
-									&lt;tr role=&quot;row&quot;&gt;
-										&lt;intranda:columnheader
-											name=&quot;name&quot;
-											form=&quot;#{BenutzerverwaltungForm}&quot;
-											value=&quot;#{msgs.benutzer}&quot;
-											ajaxRender=&quot;allUsers:myform&quot; /&gt;
-										&lt;intranda:columnheader
-											name=&quot;login&quot;
-											form=&quot;#{BenutzerverwaltungForm}&quot;
-											value=&quot;#{msgs.login}&quot;
-											ajaxRender=&quot;allUsers:myform&quot; /&gt;
-										&lt;intranda:columnheader
-											name=&quot;location&quot;
-											form=&quot;#{BenutzerverwaltungForm}&quot;
-											value=&quot;#{msgs.standort}&quot;
-											ajaxRender=&quot;allUsers:myform&quot; /&gt;
-										&lt;intranda:columnheader
-											value=&quot;#{msgs.auswahl}&quot;
-											sortable=&quot;false&quot;
-											addClass=&quot;gw-table-fixed__actions&quot; /&gt;
-									&lt;/tr&gt;
-								&lt;/thead&gt;
-								&lt;!-- // COLUMNHEADER --&gt;
+							&lt;!-- COLUMNHEADER --&gt;
+							&lt;thead&gt;
+								&lt;tr role=&quot;row&quot;&gt;
+									&lt;intranda:columnheader
+										name=&quot;name&quot;
+										form=&quot;#{BenutzerverwaltungForm}&quot;
+										value=&quot;#{msgs.benutzer}&quot;
+										ajaxRender=&quot;allUsers:myform&quot; /&gt;
+									&lt;intranda:columnheader
+										name=&quot;login&quot;
+										form=&quot;#{BenutzerverwaltungForm}&quot;
+										value=&quot;#{msgs.login}&quot;
+										ajaxRender=&quot;allUsers:myform&quot; /&gt;
+									&lt;intranda:columnheader
+										name=&quot;location&quot;
+										form=&quot;#{BenutzerverwaltungForm}&quot;
+										value=&quot;#{msgs.standort}&quot;
+										ajaxRender=&quot;allUsers:myform&quot; /&gt;
+									&lt;intranda:columnheader
+										value=&quot;#{msgs.auswahl}&quot;
+										sortable=&quot;false&quot;
+										addClass=&quot;gw-table-fixed__actions&quot; /&gt;
+								&lt;/tr&gt;
+							&lt;/thead&gt;
+							&lt;!-- // COLUMNHEADER --&gt;
 
-								&lt;!-- CONTENT ROWS --&gt;
-								&lt;ui:repeat
-									var=&quot;item&quot;
-									value=&quot;#{users}&quot;
-									varStatus=&quot;status&quot;&gt;
-									&lt;tr role=&quot;row&quot;&gt;
-										&lt;td&gt;&lt;h:outputText
-												value=&quot;#{item[0]}&quot;
-												title=&quot;#{item[1]}&quot; /&gt;&lt;/td&gt;
-										&lt;td&gt;&lt;h:outputText value=&quot;#{item[1]}&quot; /&gt;&lt;/td&gt;
-										&lt;td&gt;&lt;h:outputText value=&quot;#{item[2]}&quot; /&gt;&lt;/td&gt;
-										&lt;td&gt;
-											&lt;div class=&quot;gw-table__actions__container&quot;&gt;
-												&lt;button
-													jsf:id=&quot;edit&quot;
-													class=&quot;btn btn-blank&quot;
-													jsf:rel=&quot;tooltip&quot;
-													jsf:action=&quot;user_edit&quot;
-													title=&quot;#{msgs.benutzerBearbeiten}&quot;&gt;
-													&lt;i class=&quot;fa fa-pencil&quot;&gt;&lt;/i&gt;
-												&lt;/button&gt;
-											&lt;/div&gt;
-										&lt;/td&gt;
-									&lt;/tr&gt;
-								&lt;/ui:repeat&gt;
-								&lt;!-- // CONTENT ROWS --&gt;
+							&lt;!-- CONTENT ROWS --&gt;
+							&lt;ui:repeat
+								var=&quot;item&quot;
+								value=&quot;#{users}&quot;
+								varStatus=&quot;status&quot;&gt;
+								&lt;tr role=&quot;row&quot;&gt;
+									&lt;td&gt;&lt;h:outputText
+											value=&quot;#{item[0]}&quot;
+											title=&quot;#{item[1]}&quot; /&gt;&lt;/td&gt;
+									&lt;td&gt;&lt;h:outputText value=&quot;#{item[1]}&quot; /&gt;&lt;/td&gt;
+									&lt;td&gt;&lt;h:outputText value=&quot;#{item[2]}&quot; /&gt;&lt;/td&gt;
+									&lt;td&gt;
+										&lt;div class=&quot;gw-table__actions__container&quot;&gt;
+											&lt;button
+												jsf:id=&quot;edit&quot;
+												class=&quot;btn btn-blank&quot;
+												jsf:rel=&quot;tooltip&quot;
+												jsf:action=&quot;user_edit&quot;
+												title=&quot;#{msgs.benutzerBearbeiten}&quot;&gt;
+												&lt;i class=&quot;fa fa-pencil&quot;&gt;&lt;/i&gt;
+											&lt;/button&gt;
+										&lt;/div&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/ui:repeat&gt;
+							&lt;!-- // CONTENT ROWS --&gt;
 
-							&lt;/table&gt;
-						&lt;/div&gt;
+						&lt;/table&gt;
 					&lt;/div&gt;
-				&lt;/h:form&gt;
-			&lt;/div&gt;
+				&lt;/div&gt;
+			&lt;/h:form&gt;
+			
 
 		&lt;/intranda:box&gt;
 						</code>
