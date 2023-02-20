@@ -67,6 +67,11 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 
 @Log4j2
 public class FileManipulation {
+
+    private static final String UNCOUNTED = "uncounted";
+    private static final String NO_FILE_SELECTED = "noFileSelected";
+    private static final String FILE_UPLOAD = "fileupload";
+
     private Metadaten metadataBean;
 
     public FileManipulation(Metadaten metadataBean) {
@@ -85,7 +90,7 @@ public class FileManipulation {
     // mode of insert (uncounted or into pagination sequence)
     @Getter
     @Setter
-    private String insertMode = "uncounted";
+    private String insertMode = UNCOUNTED;
 
     @Getter
     @Setter
@@ -122,7 +127,7 @@ public class FileManipulation {
         OutputStream outputStream = null;
         try {
             if (this.uploadedFile == null) {
-                Helper.setFehlerMeldung("noFileSelected");
+                Helper.setFehlerMeldung(NO_FILE_SELECTED);
                 return;
             }
 
@@ -243,8 +248,8 @@ public class FileManipulation {
 
                     mdTemp = new Metadata(logicalPageNoType);
 
-                    if (insertMode.equalsIgnoreCase("uncounted")) {
-                        mdTemp.setValue("uncounted");
+                    if (insertMode.equalsIgnoreCase(UNCOUNTED)) {
+                        mdTemp.setValue(UNCOUNTED);
                     } else {
                         // set new logical no. for new and old page
                         Metadata oldPageNo = oldPage.getAllMetadataByType(logicalPageNoType).get(0);
@@ -253,7 +258,7 @@ public class FileManipulation {
                             Metadata pageNoOfFollowingElement = pageList.get(index + 1).getAllMetadataByType(logicalPageNoType).get(0);
                             oldPageNo.setValue(pageNoOfFollowingElement.getValue());
                         } else {
-                            oldPageNo.setValue("uncounted");
+                            oldPageNo.setValue(UNCOUNTED);
                         }
                     }
 
@@ -270,9 +275,9 @@ public class FileManipulation {
                     DocStruct currentPage = pageList.get(index);
                     // check if element is last element
                     currentPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(index + 2));
-                    if (!insertMode.equalsIgnoreCase("uncounted")) {
+                    if (!insertMode.equalsIgnoreCase(UNCOUNTED)) {
                         if (index + 1 == pageList.size()) {
-                            currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue("uncounted");
+                            currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue(UNCOUNTED);
                         } else {
                             DocStruct followingPage = pageList.get(index + 1);
                             currentPage.getAllMetadataByType(logicalPageNoType)
@@ -368,7 +373,7 @@ public class FileManipulation {
 
     public void exportFiles() {
         if (selectedFiles == null || selectedFiles.isEmpty()) {
-            Helper.setFehlerMeldung("noFileSelected");
+            Helper.setFehlerMeldung(NO_FILE_SELECTED);
             return;
         }
         List<DocStruct> allPages = metadataBean.getDocument().getPhysicalDocStruct().getAllChildren();
@@ -383,7 +388,7 @@ public class FileManipulation {
             }
         }
         String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
-        Path fileuploadFolder = Paths.get(tempDirectory + "fileupload");
+        Path fileuploadFolder = Paths.get(tempDirectory + FILE_UPLOAD);
         if (!StorageProvider.getInstance().isFileExists(fileuploadFolder)) {
             try {
                 StorageProvider.getInstance().createDirectories(fileuploadFolder);
@@ -452,7 +457,7 @@ public class FileManipulation {
     public List<String> getAllImportFolder() {
 
         String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
-        Path fileuploadFolder = Paths.get(tempDirectory + "fileupload");
+        Path fileuploadFolder = Paths.get(tempDirectory + FILE_UPLOAD);
 
         allImportFolder = new ArrayList<>();
 
@@ -465,7 +470,7 @@ public class FileManipulation {
     public void importFiles() {
 
         if (selectedFiles == null || selectedFiles.isEmpty()) {
-            Helper.setFehlerMeldung("noFileSelected");
+            Helper.setFehlerMeldung(NO_FILE_SELECTED);
             return;
         }
         String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
@@ -478,7 +483,7 @@ public class FileManipulation {
         List<String> importedFilenames = new ArrayList<>();
         for (String importName : selectedFiles) {
             List<Path> subfolderList =
-                    StorageProvider.getInstance().listFiles(tempDirectory + "fileupload" + FileSystems.getDefault().getSeparator() + importName);
+                    StorageProvider.getInstance().listFiles(tempDirectory + FILE_UPLOAD + FileSystems.getDefault().getSeparator() + importName);
             for (Path subfolder : subfolderList) {
 
                 if (useMasterFolder) {
@@ -568,7 +573,7 @@ public class FileManipulation {
         // delete folder
 
         for (String importName : selectedFiles) {
-            Path importfolder = Paths.get(tempDirectory + "fileupload" + FileSystems.getDefault().getSeparator() + importName);
+            Path importfolder = Paths.get(tempDirectory + FILE_UPLOAD + FileSystems.getDefault().getSeparator() + importName);
             StorageProvider.getInstance().deleteDir(importfolder);
         }
         metadataBean.retrieveAllImages();

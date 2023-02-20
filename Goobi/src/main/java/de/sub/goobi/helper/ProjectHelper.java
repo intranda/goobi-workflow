@@ -42,11 +42,6 @@ import de.sub.goobi.persistence.managers.StepManager;
 
 public class ProjectHelper {
 
-    private static final String STEP_ID = "schritte.SchritteID";
-    private static final String STEP_ORDER = "schritte.reihenfolge";
-    private static final String STEP_TITLE = "schritte.titel";
-    private static final String STATUS = "Bearbeitungsstatus";
-
     /**
      * static to reduce load
      * 
@@ -73,15 +68,15 @@ public class ProjectHelper {
         totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
         totalNumberOfImages = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
 
-        List<String> stepTitleList = StepManager.getDistinctStepTitlesAndOrder(STEP_ORDER, projectFilter);
+        List<String> stepTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter);
 
         List<StepInformation> workFlow = new ArrayList<>();
 
         for (String title : stepTitleList) {
-            Double averageStepOrder =
-                    StepManager.getAverageOfFieldValue(STEP_ORDER, projectFilter + " AND " + STEP_TITLE + " = '" + title + "'", null, STEP_TITLE);
-            Long numberOfSteps =
-                    StepManager.getCountOfFieldValue(STEP_ID, projectFilter + " AND " + STEP_TITLE + " = '" + title + "'", null, STEP_TITLE);
+            Double averageStepOrder = StepManager.getAverageOfFieldValue("schritte.reihenfolge",
+                    projectFilter + " AND schritte.titel = '" + title + "'", null, "schritte.titel");
+            Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter + " AND schritte.titel = '" + title + "'",
+                    null, "schritte.titel");
 
             // in this step we only take the steps which are present in each of the workflows
             if (numberOfSteps.equals(totalNumberOfProc)) {
@@ -93,13 +88,13 @@ public class ProjectHelper {
         }
 
         List<String> stepDoneTitleList =
-                StepManager.getDistinctStepTitlesAndOrder(STEP_ORDER, projectFilter + " AND " + STATUS + " = 3");
+                StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
 
         for (String stepDoneTitle : stepDoneTitleList) {
-            Long numberOfSteps = StepManager.getCountOfFieldValue(STEP_ID,
-                    projectFilter + " AND " + STATUS + " = 3 AND " + STEP_TITLE + " = '" + stepDoneTitle + "'", null, STEP_TITLE);
+            Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID",
+                    projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
             Long numberOfImages = StepManager.getSumOfFieldValue("prozesse.sortHelperImages",
-                    projectFilter + " AND " + STATUS + " = 3 AND " + STEP_TITLE + " = '" + stepDoneTitle + "'", null, STEP_TITLE);
+                    projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
 
             // getting from the workflow collection the collection which represents step <title>
             // we only created one for each step holding the counts of processes
@@ -144,15 +139,15 @@ public class ProjectHelper {
         totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
         totalNumberOfImages = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
 
-        List<String> stepTitleList = StepManager.getDistinctStepTitlesAndOrder(STEP_ORDER, projectFilter);
+        List<String> stepTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter);
 
         List<StepInformation> workFlow = new ArrayList<>();
 
         for (String title : stepTitleList) {
-            Double averageStepOrder = StepManager.getAverageOfFieldValue(STEP_ORDER,
-                    projectFilter + " AND " + STEP_TITLE + " = '" + title + "'", null, STEP_TITLE);
-            Long numberOfSteps = StepManager.getCountOfFieldValue(STEP_ID, projectFilter + " AND " + STEP_TITLE + " = '" + title + "'",
-                    null, STEP_TITLE);
+            Double averageStepOrder = StepManager.getAverageOfFieldValue("schritte.reihenfolge",
+                    projectFilter + " AND schritte.titel = '" + title + "'", null, "schritte.titel");
+            Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter + " AND schritte.titel = '" + title + "'",
+                    null, "schritte.titel");
 
             // in this step we only take the steps which are present in each of the workflows
             if (numberOfSteps.equals(totalNumberOfProc) || notOnlyCommonFlow) {
@@ -164,13 +159,13 @@ public class ProjectHelper {
         }
 
         List<String> stepDoneTitleList =
-                StepManager.getDistinctStepTitlesAndOrder(STEP_ORDER, projectFilter + " AND " + STATUS + " = 3");
+                StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
 
         for (String stepDoneTitle : stepDoneTitleList) {
-            Long numberOfSteps = StepManager.getCountOfFieldValue(STEP_ID,
-                    projectFilter + " AND " + STATUS + " = 3 AND " + STEP_TITLE + " = '" + stepDoneTitle + "'", null, STEP_TITLE);
-            Long numberOfImages = StepManager.getSumOfFieldValue(STEP_ID,
-                    projectFilter + " AND " + STATUS + " = 3 AND " + STEP_TITLE + " = '" + stepDoneTitle + "'", null, STEP_TITLE);
+            Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID",
+                    projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
+            Long numberOfImages = StepManager.getSumOfFieldValue("schritte.SchritteID",
+                    projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
 
             // getting from the workflow collection the collection which represents step <title>
             // we only created one for each step holding the counts of processes

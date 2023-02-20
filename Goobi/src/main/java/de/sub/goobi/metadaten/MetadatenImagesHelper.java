@@ -79,6 +79,18 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 
 @Log4j2
 public class MetadatenImagesHelper {
+
+    private static final String DEFAULT_FILE_PROTOCOL = "file://";
+    private static final String WINDOWS_FILE_PROTOCOL = "file:/";
+
+    private static final String METADATA_PHYSICAL_PAGE_NUMBER = "physPageNumber";
+    private static final String METADATA_LOGICAL_PAGE_NUMBER = "logicalPageNumber";
+
+    private static DocStructType TYPE_PAGE;
+    private static DocStructType TYPE_AUDIO;
+    private static DocStructType TYPE_VIDEO;
+    private static DocStructType TYPE_3D_OBJECT;
+
     private Prefs myPrefs;
     private DigitalDocument mydocument;
     private int myLastImage = 0;
@@ -170,7 +182,7 @@ public class MetadatenImagesHelper {
 
                 @Override
                 public int compare(DocStruct o1, DocStruct o2) {
-                    MetadataType mdt = myPrefs.getMetadataTypeByName("physPageNumber");
+                    MetadataType mdt = myPrefs.getMetadataTypeByName(METADATA_PHYSICAL_PAGE_NUMBER);
                     String value1 = o1.getAllMetadataByType(mdt).get(0).getValue();
                     String value2 = o2.getAllMetadataByType(mdt).get(0).getValue();
                     Integer order1 = Integer.parseInt(value1);
@@ -209,7 +221,7 @@ public class MetadatenImagesHelper {
             currentPage.setImageName(folder.toString() + FileSystems.getDefault().getSeparator() + currentFile);
             if (log.isDebugEnabled()) {
                 log.debug("set image " + currentFile + " to docstruct "
-                        + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
+                        + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName(METADATA_PHYSICAL_PAGE_NUMBER)).get(0).getValue());
             }
         }
         return imagenames;
@@ -257,9 +269,9 @@ public class MetadatenImagesHelper {
             if (filepath == null || filepath.isEmpty()) {
                 Metadata mdForPath = new Metadata(metadataTypeForPath);
                 if (SystemUtils.IS_OS_WINDOWS) {
-                    mdForPath.setValue("file:/" + mediaFolder);
+                    mdForPath.setValue(WINDOWS_FILE_PROTOCOL + mediaFolder);
                 } else {
-                    mdForPath.setValue("file://" + mediaFolder);
+                    mdForPath.setValue(DEFAULT_FILE_PROTOCOL + mediaFolder);
                 }
                 physicaldocstruct.addMetadata(mdForPath);
             }
@@ -280,19 +292,20 @@ public class MetadatenImagesHelper {
             checkIfImagesValid(inProzess.getTitel(), folderToCheck.toString());
         }
 
-        DocStructType typePage = this.myPrefs.getDocStrctTypeByName("page");
-        DocStructType typeAudio = this.myPrefs.getDocStrctTypeByName("audio");
-        DocStructType typeVideo = this.myPrefs.getDocStrctTypeByName("video");
-        DocStructType type3dObject = this.myPrefs.getDocStrctTypeByName("object");
+        TYPE_PAGE = this.myPrefs.getDocStrctTypeByName("page");
+        TYPE_AUDIO = this.myPrefs.getDocStrctTypeByName("audio");
+        TYPE_VIDEO = this.myPrefs.getDocStrctTypeByName("video");
+        TYPE_3D_OBJECT = this.myPrefs.getDocStrctTypeByName("object");
+
         // use fallback to 'page', if additional types are not configured in ruleset
-        if (typeAudio == null) {
-            typeAudio = typePage;
+        if (TYPE_AUDIO == null) {
+            TYPE_AUDIO = TYPE_PAGE;
         }
-        if (typeVideo == null) {
-            typeVideo = typePage;
+        if (TYPE_VIDEO == null) {
+            TYPE_VIDEO = TYPE_PAGE;
         }
-        if (type3dObject == null) {
-            type3dObject = typePage;
+        if (TYPE_3D_OBJECT == null) {
+            TYPE_3D_OBJECT = TYPE_PAGE;
         }
 
         /*-------------------------------
@@ -376,37 +389,20 @@ public class MetadatenImagesHelper {
         else if (pageElementsWithoutImages.isEmpty() && !imagesWithoutPageElements.isEmpty()) {
             int currentPhysicalOrder = assignedImages.size();
             for (String newImage : imagesWithoutPageElements) {
+
                 String mimetype = NIOFileUtils.getMimeTypeFromFile(Paths.get(newImage));
-
-                DocStruct dsPage = null;
-
-                // TODO check mimetypes of all 3d object files
-
-                if (mimetype.startsWith("image")) {
-                    dsPage = this.mydocument.createDocStruct(typePage);
-                } else if (mimetype.startsWith("video") || mimetype.equals("application/mxf")) {
-                    dsPage = mydocument.createDocStruct(typeVideo);
-                } else if (mimetype.startsWith("audio")) {
-                    dsPage = mydocument.createDocStruct(typeAudio);
-                } else if (mimetype.startsWith("object")) {
-                    dsPage = mydocument.createDocStruct(type3dObject);
-                } else if (mimetype.startsWith("model")) {
-                    dsPage = mydocument.createDocStruct(type3dObject);
-                } else {
-                    // use old implementation as default
-                    dsPage = mydocument.createDocStruct(typePage);
-                }
+                DocStruct dsPage = this.createDocStruct(mimetype);
 
                 try {
                     // physical page no
                     physicaldocstruct.addChild(dsPage);
-                    MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
+                    MetadataType mdt = this.myPrefs.getMetadataTypeByName(METADATA_PHYSICAL_PAGE_NUMBER);
                     Metadata mdTemp = new Metadata(mdt);
                     mdTemp.setValue(String.valueOf(++currentPhysicalOrder));
                     dsPage.addMetadata(mdTemp);
 
                     // logical page no
-                    mdt = this.myPrefs.getMetadataTypeByName("logicalPageNumber");
+                    mdt = this.myPrefs.getMetadataTypeByName(METADATA_LOGICAL_PAGE_NUMBER);
                     mdTemp = new Metadata(mdt);
 
                     if (defaultPagination.equalsIgnoreCase("arabic")) {
@@ -426,9 +422,9 @@ public class MetadatenImagesHelper {
                     ContentFile cf = new ContentFile();
                     cf.setMimetype(mimetype);
                     if (SystemUtils.IS_OS_WINDOWS) {
-                        cf.setLocation("file:/" + mediaFolder + newImage);
+                        cf.setLocation(WINDOWS_FILE_PROTOCOL + mediaFolder + newImage);
                     } else {
-                        cf.setLocation("file://" + mediaFolder + newImage);
+                        cf.setLocation(DEFAULT_FILE_PROTOCOL + mediaFolder + newImage);
                     }
                     dsPage.addContentFile(cf);
 
@@ -449,9 +445,9 @@ public class MetadatenImagesHelper {
                     imagesWithoutPageElements.remove(0);
                     ContentFile cf = new ContentFile();
                     if (SystemUtils.IS_OS_WINDOWS) {
-                        cf.setLocation("file:/" + mediaFolder + newImageName);
+                        cf.setLocation(WINDOWS_FILE_PROTOCOL + mediaFolder + newImageName);
                     } else {
-                        cf.setLocation("file://" + mediaFolder + newImageName);
+                        cf.setLocation(DEFAULT_FILE_PROTOCOL + mediaFolder + newImageName);
                     }
                     page.addContentFile(cf);
                 } else {
@@ -468,35 +464,20 @@ public class MetadatenImagesHelper {
 
                 int currentPhysicalOrder = physicaldocstruct.getAllChildren().size();
                 for (String newImage : imagesWithoutPageElements) {
+
                     String mimetype = NIOFileUtils.getMimeTypeFromFile(Paths.get(newImage));
-                    DocStruct dsPage = null;
+                    DocStruct dsPage = this.createDocStruct(mimetype);
 
-                    // TODO check mimetypes of all 3d object files
-
-                    if (mimetype.startsWith("image")) {
-                        dsPage = this.mydocument.createDocStruct(typePage);
-                    } else if (mimetype.startsWith("video") || mimetype.equals("application/mxf")) {
-                        dsPage = mydocument.createDocStruct(typeVideo);
-                    } else if (mimetype.startsWith("audio")) {
-                        dsPage = mydocument.createDocStruct(typeAudio);
-                    } else if (mimetype.startsWith("object")) {
-                        dsPage = mydocument.createDocStruct(type3dObject);
-                    } else if (mimetype.startsWith("model")) {
-                        dsPage = mydocument.createDocStruct(type3dObject);
-                    } else {
-                        // use old implementation as default
-                        dsPage = mydocument.createDocStruct(typePage);
-                    }
                     try {
                         // physical page no
                         physicaldocstruct.addChild(dsPage);
-                        MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
+                        MetadataType mdt = this.myPrefs.getMetadataTypeByName(METADATA_PHYSICAL_PAGE_NUMBER);
                         Metadata mdTemp = new Metadata(mdt);
                         mdTemp.setValue(String.valueOf(++currentPhysicalOrder));
                         dsPage.addMetadata(mdTemp);
 
                         // logical page no
-                        mdt = this.myPrefs.getMetadataTypeByName("logicalPageNumber");
+                        mdt = this.myPrefs.getMetadataTypeByName(METADATA_LOGICAL_PAGE_NUMBER);
                         mdTemp = new Metadata(mdt);
 
                         if (defaultPagination.equalsIgnoreCase("arabic")) {
@@ -516,9 +497,9 @@ public class MetadatenImagesHelper {
                         ContentFile cf = new ContentFile();
                         cf.setMimetype(mimetype);
                         if (SystemUtils.IS_OS_WINDOWS) {
-                            cf.setLocation("file:/" + mediaFolder + newImage);
+                            cf.setLocation(WINDOWS_FILE_PROTOCOL + mediaFolder + newImage);
                         } else {
-                            cf.setLocation("file://" + mediaFolder + newImage);
+                            cf.setLocation(DEFAULT_FILE_PROTOCOL + mediaFolder + newImage);
                         }
                         dsPage.addContentFile(cf);
 
@@ -532,7 +513,7 @@ public class MetadatenImagesHelper {
             }
         }
         int currentPhysicalOrder = 1;
-        MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
+        MetadataType mdt = this.myPrefs.getMetadataTypeByName(METADATA_PHYSICAL_PAGE_NUMBER);
         if (physicaldocstruct.getAllChildren() != null) {
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
                 List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
@@ -545,6 +526,24 @@ public class MetadatenImagesHelper {
                 }
                 currentPhysicalOrder++;
             }
+        }
+    }
+
+    private DocStruct createDocStruct(String mimetype) throws TypeNotAllowedForParentException {
+        // TODO check mimetypes of all 3d object files
+        if (mimetype.startsWith("image")) {
+            return this.mydocument.createDocStruct(TYPE_PAGE);
+        } else if (mimetype.startsWith("video") || mimetype.equals("application/mxf")) {
+            return this.mydocument.createDocStruct(TYPE_VIDEO);
+        } else if (mimetype.startsWith("audio")) {
+            return this.mydocument.createDocStruct(TYPE_AUDIO);
+        } else if (mimetype.startsWith("object")) {
+            return this.mydocument.createDocStruct(TYPE_3D_OBJECT);
+        } else if (mimetype.startsWith("model")) {
+            return this.mydocument.createDocStruct(TYPE_3D_OBJECT);
+        } else {
+            // use old implementation as default
+            return this.mydocument.createDocStruct(TYPE_PAGE);
         }
     }
 

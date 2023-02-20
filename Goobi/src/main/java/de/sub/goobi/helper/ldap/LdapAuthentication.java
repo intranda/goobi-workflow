@@ -69,6 +69,12 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class LdapAuthentication {
 
+    private static final String CONTEXT_FACTORY_CLASS = "com.sun.jndi.ldap.LdapCtxFactory";
+    private static final String LDAP_VERSION = "java.naming.ldap.version";
+    private static final String AUTHENTICATION_MODE_NONE = "none";
+    private static final String AUTHENTICATION_MODE_SIMPLE = "simple";
+    private static final String UID_NUMBER = "uidNumber";
+
     public LdapAuthentication() {
 
     }
@@ -157,9 +163,9 @@ public class LdapAuthentication {
                 log.debug("use TLS for auth");
             }
             env = new Hashtable<>();
-            env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+            env.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY_CLASS);
             env.put(Context.PROVIDER_URL, inBenutzer.getLdapGruppe().getLdapUrl());
-            env.put("java.naming.ldap.version", "3");
+            env.put(LDAP_VERSION, "3");
             LdapContext ctx = null;
             StartTlsResponse tls = null;
             try {
@@ -171,7 +177,7 @@ public class LdapAuthentication {
 
                 // Authenticate via SASL EXTERNAL mechanism using client X.509
                 // certificate contained in JVM keystore
-                ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, "simple");
+                ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_MODE_SIMPLE);
                 ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, getUserDN(inBenutzer));
                 ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, inPasswort);
                 ctx.reconnect(null);
@@ -280,9 +286,9 @@ public class LdapAuthentication {
         if (inBenutzer.getLdapGruppe().isUseTLS()) {
 
             env = new Hashtable<>();
-            env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+            env.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY_CLASS);
             env.put(Context.PROVIDER_URL, inBenutzer.getLdapGruppe().getLdapUrl());
-            env.put("java.naming.ldap.version", "3");
+            env.put(LDAP_VERSION, "3");
             LdapContext ctx = null;
             StartTlsResponse tls = null;
             try {
@@ -294,7 +300,7 @@ public class LdapAuthentication {
 
                 // Authenticate via SASL EXTERNAL mechanism using client X.509
                 // certificate contained in JVM keystore
-                ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, "simple");
+                ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_MODE_SIMPLE);
                 ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
                 ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, inBenutzer.getLdapGruppe().getAdminPassword());
 
@@ -334,9 +340,9 @@ public class LdapAuthentication {
                 }
             }
         } else if (inBenutzer.getLdapGruppe().isReadDirectoryAnonymous()) {
-            env.put(Context.SECURITY_AUTHENTICATION, "none"); //NOSONAR, authentication type is dependent on configuration
+            env.put(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_MODE_NONE);
         } else {
-            env.put(Context.SECURITY_AUTHENTICATION, "simple");
+            env.put(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_MODE_SIMPLE);
             env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
             env.put(Context.SECURITY_CREDENTIALS, inBenutzer.getLdapGruppe().getAdminPassword());
 
@@ -440,7 +446,7 @@ public class LdapAuthentication {
         try {
             ctx = new InitialDirContext(env);
             Attributes attrs = ctx.getAttributes(inBenutzer.getLdapGruppe().getNextFreeUnixId());
-            Attribute la = attrs.get("uidNumber");
+            Attribute la = attrs.get(UID_NUMBER);
             rueckgabe = (String) la.get(0);
             ctx.close();
         } catch (NamingException e) {
@@ -464,11 +470,11 @@ public class LdapAuthentication {
         try {
             ctx = new InitialDirContext(env);
             Attributes attrs = ctx.getAttributes(inBenutzer.getLdapGruppe().getNextFreeUnixId());
-            Attribute la = attrs.get("uidNumber");
+            Attribute la = attrs.get(UID_NUMBER);
             String oldValue = (String) la.get(0);
             int bla = Integer.parseInt(oldValue) + 1;
 
-            BasicAttribute attrNeu = new BasicAttribute("uidNumber", String.valueOf(bla));
+            BasicAttribute attrNeu = new BasicAttribute(UID_NUMBER, String.valueOf(bla));
             ModificationItem[] mods = new ModificationItem[1];
             mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attrNeu);
             ctx.modifyAttributes(inBenutzer.getLdapGruppe().getNextFreeUnixId(), mods);
@@ -484,9 +490,9 @@ public class LdapAuthentication {
         Hashtable<String, String> env = LdapConnectionSettings(inBenutzer);
         if (inBenutzer.getLdapGruppe().isUseTLS()) {
             env = new Hashtable<>();
-            env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+            env.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY_CLASS);
             env.put(Context.PROVIDER_URL, inBenutzer.getLdapGruppe().getLdapUrl());
-            env.put("java.naming.ldap.version", "3");
+            env.put(LDAP_VERSION, "3");
             LdapContext ctx = null;
             StartTlsResponse tls = null;
             try {
@@ -498,7 +504,7 @@ public class LdapAuthentication {
 
                 // Authenticate via SASL EXTERNAL mechanism using client X.509
                 // certificate contained in JVM keystore
-                ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, "simple");
+                ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_MODE_SIMPLE);
                 ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
                 ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, inBenutzer.getLdapGruppe().getAdminPassword());
                 ctx.reconnect(null);
@@ -529,9 +535,9 @@ public class LdapAuthentication {
                 }
             }
         } else if (inBenutzer.getLdapGruppe().isReadDirectoryAnonymous()) {
-            env.put(Context.SECURITY_AUTHENTICATION, "none"); //NOSONAR, authentication type is dependent on configuration
+            env.put(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_MODE_NONE);
         } else {
-            env.put(Context.SECURITY_AUTHENTICATION, "simple");
+            env.put(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_MODE_SIMPLE);
             env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
             env.put(Context.SECURITY_CREDENTIALS, inBenutzer.getLdapGruppe().getAdminPassword());
 
@@ -619,9 +625,9 @@ public class LdapAuthentication {
     private Hashtable<String, String> LdapConnectionSettings(User inBenutzer) {
         // Set up environment for creating initial context
         Hashtable<String, String> env = new Hashtable<>(11);
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        env.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY_CLASS);
         env.put(Context.PROVIDER_URL, inBenutzer.getLdapGruppe().getLdapUrl());
-        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+        env.put(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_MODE_SIMPLE);
         /* wenn die Verbindung über ssl laufen soll */
         if (inBenutzer.getLdapGruppe().isUseSsl()) {
             String keystorepath = ConfigurationHelper.getInstance().getTruststore();

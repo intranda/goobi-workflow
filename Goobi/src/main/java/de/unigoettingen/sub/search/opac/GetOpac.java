@@ -131,7 +131,7 @@ public class GetOpac {
     // STATE (Instance variables) *****************************************
     // This is now configured inside the Catalogue class.
     // TODO: Check if this should really be query specific
-    private String dataCharacterEncoding = "iso-8859-1";
+    private String dataCharacterEncoding = URL_CHARACTER_ENCODING;
 
     @Getter
     @Setter

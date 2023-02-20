@@ -99,7 +99,12 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class XsltPreparatorDocket implements IXsltPreparator {
 
-    private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+    private static final String EXPORT_FILE = "goobi_exportXml.xml";
+    private static final String LOG_FILE = "http://www.goobi.io/logfile";
+    private static final String SCHEMA_FILE = "http://www.w3.org/2001/XMLSchema-instance";
+    private static final String XSD_ENDING = "XML-logfile.xsd";
+
+    private static Namespace xmlns = Namespace.getNamespace(LOG_FILE);
 
     private SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
@@ -178,13 +183,13 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         mainElement.setAttribute("processID", String.valueOf(process.getId()));
 
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+        Namespace xmlns = Namespace.getNamespace(LOG_FILE);
         mainElement.setNamespace(xmlns);
         // namespace declaration
         if (addNamespace) {
-            Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            Namespace xsi = Namespace.getNamespace("xsi", SCHEMA_FILE);
             mainElement.addNamespaceDeclaration(xsi);
-            Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
+            Attribute attSchema = new Attribute("schemaLocation", LOG_FILE + " " + XSD_ENDING, xsi);
             mainElement.setAttribute(attSchema);
         }
 
@@ -642,12 +647,12 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Document answer = new Document();
         Element root = new Element("processes");
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+        Namespace xmlns = Namespace.getNamespace(LOG_FILE);
 
-        Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        Namespace xsi = Namespace.getNamespace("xsi", SCHEMA_FILE);
         root.addNamespaceDeclaration(xsi);
         root.setNamespace(xmlns);
-        Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
+        Attribute attSchema = new Attribute("schemaLocation", LOG_FILE + " " + XSD_ENDING, xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {
             Document doc = createDocument(p, false, true);
@@ -679,12 +684,12 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Document answer = new Document();
         Element root = new Element("processes");
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+        Namespace xmlns = Namespace.getNamespace(LOG_FILE);
 
-        Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        Namespace xsi = Namespace.getNamespace("xsi", SCHEMA_FILE);
         root.addNamespaceDeclaration(xsi);
         root.setNamespace(xmlns);
-        Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
+        Attribute attSchema = new Attribute("schemaLocation", LOG_FILE + " " + XSD_ENDING, xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {
             Document doc = createDocument(p, false, includeImages);
@@ -727,7 +732,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         HashMap<String, String> fields = new HashMap<>();
         try {
-            Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
+            Path file = Paths.get(new Helper().getGoobiConfigDirectory() + EXPORT_FILE);
             if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
                 XMLConfiguration config = new XMLConfiguration();
                 config.setDelimiterParsingDisabled(true);
@@ -755,7 +760,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     private List<Namespace> getNamespacesFromConfig() {
         List<Namespace> nss = new ArrayList<>();
         try {
-            Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
+            Path file = Paths.get(new Helper().getGoobiConfigDirectory() + EXPORT_FILE);
             if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
                 XMLConfiguration config = new XMLConfiguration();
                 config.setDelimiterParsingDisabled(true);

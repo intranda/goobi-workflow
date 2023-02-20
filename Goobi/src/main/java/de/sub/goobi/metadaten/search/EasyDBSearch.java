@@ -50,6 +50,8 @@ import ugh.dl.Metadata;
 @Log4j2
 public class EasyDBSearch {
 
+    private static final String NUMERIC = "numeric";
+
     // enable extendend logging of requests/responses
     private boolean enableDebugging = false;
     // contains the root url of the easydb instance
@@ -146,7 +148,7 @@ public class EasyDBSearch {
                     List<Object> in = new ArrayList<>();
                     if (!esf.getOverrideValueList().isEmpty()) {
                         for (String val : esf.getOverrideValueList()) {
-                            if (esf.getFieldType().equalsIgnoreCase("numeric")) {
+                            if (esf.getFieldType().equalsIgnoreCase(NUMERIC)) {
                                 if (StringUtils.isNumeric(val)) {
                                     in.add(Integer.valueOf(val));
                                 } else {
@@ -157,7 +159,7 @@ public class EasyDBSearch {
                             }
                         }
 
-                    } else if (esf.getFieldType().equalsIgnoreCase("numeric")) {
+                    } else if (esf.getFieldType().equalsIgnoreCase(NUMERIC)) {
                         if (StringUtils.isNumeric(searchValue)) {
                             in.add(Integer.valueOf(searchValue));
                         } else {
@@ -235,43 +237,43 @@ public class EasyDBSearch {
         config.setExpressionEngine(new XPathExpressionEngine());
 
         enableDebugging = config.getBoolean("/debug", false);
-        url = config.getString("/instances/instance[./id='" + instanceId + "']/url");
-        login = config.getString("/instances/instance[./id='" + instanceId + "']/username");
-        password = config.getString("/instances/instance[./id='" + instanceId + "']/password");
+        url = config.getString(this.createInstancePath("url"));
+        login = config.getString(this.createInstancePath("username"));
+        password = config.getString(this.createInstancePath("password"));
 
         request = new EasydbSearchRequest();
-        String objectType = config.getString("/searches/search[./id='" + searchId + "']/objectType");
+        String objectType = config.getString(this.createSearchPath("objectType"));
         request.getObjecttypes().add(objectType);
-        int limit = config.getInt("/searches/search[./id='" + searchId + "']/objectsPerPage", 10);
+        int limit = config.getInt(this.createSearchPath("objectsPerPage"), 10);
         request.setLimit(limit);
 
-        List<Object> poolIds = config.getList("/searches/search[./id='" + searchId + "']/pool", null);
+        List<Object> poolIds = config.getList(this.createSearchPath("pool"), null);
         if (poolIds != null) {
 
             pool = new EasydbSearchField();
             pool.setType("in");
             pool.setBool("must");
             List<String> poolFieldList = new ArrayList<>();
-            poolFieldList.add(config.getString("/searches/search[./id='" + searchId + "']/poolField", ""));
+            poolFieldList.add(config.getString(this.createSearchPath("poolField"), ""));
             pool.setFields(poolFieldList);
             pool.setIn(poolIds);
-            pool.setFieldType(config.getString("/searches/search[./id='" + searchId + "']/poolType", "numeric"));
+            pool.setFieldType(config.getString(this.createSearchPath("poolType"), NUMERIC));
         }
 
-        List<HierarchicalConfiguration> searchConfig = config.configurationsAt("/searches/search[./id='" + searchId + "']/searchBlock");
+        List<HierarchicalConfiguration> searchConfig = config.configurationsAt(this.createSearchPath("searchBlock"));
 
         for (HierarchicalConfiguration hc : searchConfig) {
             EasydbSearchField searchField = getSearchFieldFromConfiguration(hc);
             request.getSearch().add(searchField);
         }
 
-        List<String> displayField = Arrays.asList(config.getStringArray("/searches/search[./id='" + searchId + "']/displayField"));
+        List<String> displayField = Arrays.asList(config.getStringArray(this.createSearchPath("displayField")));
         displayableFields = displayField;
 
-        labelField = config.getString("/searches/search[./id='" + searchId + "']/displayField[@label='true']");
-        identifierField = config.getString("/searches/search[./id='" + searchId + "']/displayField[@identifier='true']");
+        labelField = config.getString(this.createSearchPath("displayField[@label='true']"));
+        identifierField = config.getString(this.createSearchPath("displayField[@identifier='true']"));
 
-        List<HierarchicalConfiguration> hcl = config.configurationsAt("/searches/search[./id='" + searchId + "']/sort");
+        List<HierarchicalConfiguration> hcl = config.configurationsAt(this.createSearchPath("sort"));
         if (hcl != null) {
             for (HierarchicalConfiguration hc : hcl) {
                 EasydbSortField sortfield = new EasydbSortField();
@@ -280,6 +282,14 @@ public class EasyDBSearch {
                 request.getSort().add(sortfield);
             }
         }
+    }
+
+    private String createInstancePath(String entity) {
+        return "/instances/instance[./id='" + this.instanceId + "']/" + entity;
+    }
+
+    private String createSearchPath(String entity) {
+        return "/searches/search[./id='" + this.searchId + "']/" + entity;
     }
 
     private EasydbSearchField getSearchFieldFromConfiguration(HierarchicalConfiguration config) {
