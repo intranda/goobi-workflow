@@ -99,7 +99,7 @@
                                                         class="admin__tasks-quartz-table-entry-name-wrapper"
                                                         role="gridcell">
                                                         <button
-                                                        jsf:rendered="#{entry.jobKey != null}"
+                                                            jsf:rendered="#{entry.jobKey != null}"
                                                             jsf:action="#{jobBean.pauseJob}"
                                                             class="btn btn--clean admin__tasks-quartz-table-pause-button">
                                                             <i class="fa fa-pause" />
@@ -112,7 +112,7 @@
                                                         </button>
 
                                                         <button
-                                                        jsf:rendered="#{entry.jobKey != null}"
+                                                            jsf:rendered="#{entry.jobKey != null}"
                                                             jsf:action="#{jobBean.resumeJob}"
                                                             class="btn btn--clean admin__tasks-quartz-table-play-button">
                                                             <i class="fa fa-play" />
@@ -175,6 +175,149 @@
                         </div>
                     </intranda:box>
                 </div>
+
+
+
+                <div class="col-sm-12">
+                    <intranda:box
+                        boxType="blank"
+                        scope="form-box"
+                        boxTitle="false"
+                        padding="true">
+                        <intranda:boxTitle
+                            title="#{msgs.menu_administration_quartzHistory}"
+                            icon="fa-history">
+                        </intranda:boxTitle>
+
+                        <div class="dataTables flow">
+
+                            <!-- SEARCH -->
+                            <div class="dataTables__search__container">
+                                <div class="dataTables__search__length">
+                                    <h:outputText value="#{msgs.treffer}: #{jobBean.paginator.totalResults}" />
+                                </div>
+
+                                <div class="dataTables__filter-container d-flex">
+                                    <h:form
+                                        id="searchform"
+                                        styleClass="search-form">
+                                        <!-- Filter by search term -->
+                                        <div class="dataTables__filter -search-bar">
+                                            <div class="input-group input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-search"></i>
+                                                </span>
+                                                <h:inputText
+                                                    id="searchfield"
+                                                    styleClass="form-control searchfield"
+                                                    value="#{jobBean.filter}">
+                                                    <f:passThroughAttribute
+                                                        name="placeholder"
+                                                        value="#{msgs.filter}" />
+                                                    <f:passThroughAttribute
+                                                        name="aria-label"
+                                                        value="#{msgs.filter}" />
+                                                </h:inputText>
+                                                <button
+                                                    jsf:id="FilterAlle2"
+                                                    jsf:forceId="true"
+                                                    class="btn btn-blank"
+                                                    style="text-align: center; line-height: 100%; padding: 0px 10px"
+                                                    jsf:action="#{jobBean.filterLastJobs}">#{msgs.search}</button>
+                                            </div>
+                                            <x:commandButton
+                                                type="submit"
+                                                id="FilterAlle"
+                                                forceId="true"
+                                                style="display:none"
+                                                action="#{jobBean.FilterAlleStart}" />
+                                        </div>
+                                    </h:form>
+
+                                </div>
+
+
+                                <h:form
+                                    id="myform"
+                                    prependId="false"
+                                    styleClass="table--scrollx"
+                                    style="width: 100%;">
+
+                                    <div class="table-wrapper">
+                                        <table
+                                            role="grid"
+                                            id="tableUserAll"
+                                            class="table table-bordered table-fixed">
+                                            <!-- ### Columnheader row ### -->
+                                            <thead>
+                                                <tr role="row">
+                                                    <intranda:columnheader
+                                                        name="jobName"
+                                                        form="#{jobBean}"
+                                                        value="#{msgs.jobName}"
+                                                        ajaxRender="@form" />
+                                                        
+                                                    <intranda:columnheader
+                                                        name="jobType"
+                                                        form="#{jobBean}"
+                                                        value="#{msgs.jobType}"
+                                                        ajaxRender="@form" />
+                                                        
+                                                    <intranda:columnheader
+                                                        name="jobStatus"
+                                                        form="#{jobBean}"
+                                                        value="#{msgs.jobStatus}"
+                                                        ajaxRender="@form" />
+                                                        
+                                                    <intranda:columnheader
+                                                        name="retryCount"
+                                                        form="#{jobBean}"
+                                                        value="#{msgs.retryCount}"
+                                                        ajaxRender="@form" />
+                                                        
+                                                    <intranda:columnheader
+                                                        name="lastUpdateTime"
+                                                        form="#{jobBean}"
+                                                        value="#{msgs.lastUpdateTime}"
+                                                        ajaxRender="@form" />
+                                                </tr>
+                                            </thead>
+                                            <ui:repeat
+                                                var="item"
+                                                value="#{jobBean.paginator.list}"
+                                                varStatus="status">
+                                                <tr role="row">
+                                                    <td>
+                                                        <h:outputText value="#{item.jobName}" />
+                                                    </td>
+                                                    <td>
+                                                        <h:outputText value="#{item.jobType}" />
+                                                    </td>
+                                                    <td>
+                                                        <h:outputText value="#{item.jobStatus.label}" />
+                                                    </td>
+                                                    <td>
+                                                        <h:outputText value="#{item.retryCount}" />
+                                                    </td>
+                                                    <td>
+                                                        <h:outputText value="#{item.lastUpdateTime}" />
+                                                    </td>
+                                                </tr>
+                                            </ui:repeat>
+                                        </table>
+                                    </div>
+                                </h:form>
+
+
+                            </div>
+                        </div>
+
+
+
+                    </intranda:box>
+                </div>
+
+
             </div>
         </h:panelGroup>
     </ui:define>

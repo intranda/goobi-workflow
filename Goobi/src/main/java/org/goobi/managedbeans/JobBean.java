@@ -63,7 +63,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @WindowScoped
 @Named
-public class JobBean implements Serializable {
+public class JobBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = 7490719476585282366L;
 
@@ -79,12 +79,6 @@ public class JobBean implements Serializable {
     @Getter
     private transient List<QuartzJobDetails> activeJobs = new ArrayList<>();
 
-    @Getter
-    @Setter
-    private String searchValue;
-
-    @Getter
-    private DatabasePaginator paginator;
 
     @PostConstruct
     public void init() throws SchedulerException {
@@ -143,6 +137,8 @@ public class JobBean implements Serializable {
                 }
             }
         }
+
+        FilterAlleStart();
     }
 
     public void pauseAllJobs() {
@@ -211,9 +207,9 @@ public class JobBean implements Serializable {
         }
     }
 
-    public void filterLastJobs() {
+    public void FilterAlleStart() {
         BackgroundJobManager manager = new BackgroundJobManager();
-        paginator = new DatabasePaginator("lastAlered desc", searchValue, manager, "");
+        paginator = new DatabasePaginator("lastAltered desc", filter, manager, "");
     }
 
 }

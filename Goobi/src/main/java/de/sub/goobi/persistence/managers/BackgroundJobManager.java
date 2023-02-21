@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -97,7 +96,7 @@ public class BackgroundJobManager implements IManager, Serializable {
         }
     };
 
-    public static ResultSetHandler<List<BackgroundJob>> resultSetToJoListbHandler = new ResultSetHandler<List<BackgroundJob>>() {
+    public static final ResultSetHandler<List<BackgroundJob>> resultSetToJoListbHandler = new ResultSetHandler<List<BackgroundJob>>() {
         @Override
         public List<BackgroundJob> handle(ResultSet rs) throws SQLException {
             List<BackgroundJob> answer = new ArrayList<>();
@@ -120,7 +119,7 @@ public class BackgroundJobManager implements IManager, Serializable {
         r.setJobStatus(JobStatus.getById(rs.getInt("jobstatus")));
         Timestamp time = rs.getTimestamp("lastAltered");
         if (time != null) {
-            r.setLastUpdateTime(LocalDateTime.from(time.toInstant()));
+            r.setLastUpdateTime(time.toLocalDateTime());
         }
         r.setRetryCount(rs.getInt("retrycount"));
         r.setProperties(BackgroundJobsMysqlHelper.getAdditionalProperties(r.getId()));
