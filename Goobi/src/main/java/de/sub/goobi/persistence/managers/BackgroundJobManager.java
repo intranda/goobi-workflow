@@ -82,7 +82,17 @@ public class BackgroundJobManager implements IManager, Serializable {
         }
     }
 
-    public static ResultSetHandler<BackgroundJob> resultSetToJobHandler = new ResultSetHandler<BackgroundJob>() {
+
+    public static void clearHistory() {
+        try {
+            BackgroundJobsMysqlHelper.clearHistoryOlderThan30Days();
+        } catch (SQLException e) {
+            log.error(e);
+        }
+
+    }
+
+    public static final ResultSetHandler<BackgroundJob> resultSetToJobHandler = new ResultSetHandler<BackgroundJob>() {
         @Override
         public BackgroundJob handle(ResultSet rs) throws SQLException {
             try {
@@ -125,5 +135,4 @@ public class BackgroundJobManager implements IManager, Serializable {
         r.setProperties(BackgroundJobsMysqlHelper.getAdditionalProperties(r.getId()));
         return r;
     }
-
 }

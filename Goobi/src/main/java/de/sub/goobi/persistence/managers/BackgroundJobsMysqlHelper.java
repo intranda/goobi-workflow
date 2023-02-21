@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -169,8 +170,7 @@ class BackgroundJobsMysqlHelper implements Serializable {
         }
     }
 
-    public static List<BackgroundJob> getList(String order, String filter, Integer start, Integer count)
-            throws SQLException {
+    public static List<BackgroundJob> getList(String order, String filter, Integer start, Integer count) throws SQLException {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * FROM background_job ");
 
@@ -214,6 +214,26 @@ class BackgroundJobsMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             return run.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void clearHistoryOlderThan30Days() throws SQLException {
+        LocalDateTime now = LocalDateTime.now();
+        StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM background_job ");
+        sb.append("WHERE lastAltered < ? ");
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            List<BackgroundJob> answer =
+                    run.query(connection, sb.toString(), BackgroundJobManager.resultSetToJoListbHandler, Timestamp.valueOf(now.minusDays(30)));
+            System.out.println(answer.size());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

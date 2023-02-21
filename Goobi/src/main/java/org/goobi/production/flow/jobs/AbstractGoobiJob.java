@@ -80,24 +80,4 @@ public abstract class AbstractGoobiJob implements Job, IGoobiJob {
     public void setRunning(boolean inisRunning) {
         running = inisRunning;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.goobi.production.flow.jobs.IGoobiJob#getJobName()
-     */
-    @Override
-    public String getJobName() {
-        return "";
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.goobi.production.flow.jobs.IGoobiJob#execute()
-     */
-    @Override
-    public void execute() {
-    }
-
 }
