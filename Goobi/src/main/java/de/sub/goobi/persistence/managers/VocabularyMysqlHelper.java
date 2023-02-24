@@ -171,8 +171,7 @@ class VocabularyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            int numberOfProcessesWithTitle =
-                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle());
+            int numberOfProcessesWithTitle = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle());
             return (numberOfProcessesWithTitle == 0);
         } finally {
             if (connection != null) {
@@ -216,8 +215,8 @@ class VocabularyMysqlHelper implements Serializable {
     static void saveDefinition(Integer vocabularyId, Definition definition) throws SQLException {
         StringBuilder sql = new StringBuilder();
         if (definition.getId() == null) {
-            sql.append(
-                    "INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection, titleField) ");
+            sql.append("INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,");
+            sql.append("required ,mainEntry,distinctive,selection, titleField) ");
             sql.append("VALUES (?,?,?,?,?,?,?,?,?,?)");
         } else {
             sql.append("UPDATE vocabulary_structure ");
@@ -342,8 +341,8 @@ class VocabularyMysqlHelper implements Serializable {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
-                List<VocabRecord> records = new QueryRunner().query(connection, sql,
-                        VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
+                List<VocabRecord> records =
+                        new QueryRunner().query(connection, sql, VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
                 for (VocabRecord rec : records) {
                     // merge expected definitions with existing definitions
                     mergeRecordAndVocabulary(vocabulary, rec);
@@ -576,12 +575,19 @@ class VocabularyMysqlHelper implements Serializable {
     }
 
     private static void setDefinitionsToRecord(VocabRecord rec, Vocabulary vocabulary) {
-        for (Field field : rec.getFields()) {
-            for (Definition def : vocabulary.getStruct()) {
+        for (Definition def : vocabulary.getStruct()) {
+            boolean fieldFound = false;
+            for (Field field : rec.getFields()) {
                 if (field.getDefinitionId().equals(def.getId())) {
                     field.setDefinition(def);
+                    fieldFound = true;
                     break;
                 }
+            }
+            if (!fieldFound) {
+                Field field = new Field();
+                field.setDefinition(def);
+                rec.getFields().add(field);
             }
         }
     }
@@ -657,7 +663,7 @@ class VocabularyMysqlHelper implements Serializable {
             // order
             if (MySQLHelper.isJsonCapable()) {
                 String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
-                        + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
+                + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
                 String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
                 sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
                 if (StringUtils.isNotBlank(vocabulary.getOrder())) {
