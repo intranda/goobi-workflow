@@ -5,7 +5,7 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
     <composite:interface>
       <composite:attribute name="name" />
@@ -33,17 +33,15 @@
     <composite:implementation>
 
         <div class="row" style="#{cc.attrs.style}">
-          <div class="#{cc.attrs.classLeft} control-label" tabindex="#{cc.attrs.tabindex}">
+          
+          	<!-- LABEL -->
+          	<div class="#{cc.attrs.classLeft} control-label" tabindex="#{cc.attrs.tabindex}">
+				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
+          	</div>
+			<!-- // LABEL -->
 
-            <!-- LABEL -->
-            <ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-              <ui:param name="labelFor" value="#{cc.attrs.name}" />
-              <ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
-              <ui:param name="labelLabel" value="#{cc.attrs.label}" />
-            </ui:include>
-
-          </div>
-
+			<!-- CONTENT -->
             <div class="#{cc.attrs.classRight}">
 	            <h:panelGroup rendered="#{cc.attrs.onevent != null}">
 	            	<h:selectOneMenu id="#{cc.attrs.name}_withEvent" styleClass="#{cc.attrs.fieldStyle}" readonly="#{cc.attrs.readonly}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
@@ -61,13 +59,13 @@
 	            </h:panelGroup>
 
                 <!-- Help messages, inline + warning -->
-                <ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
-                  <ui:param name="msgFor" value="#{cc.attrs.name}" />
-                  <ui:param name="helpContent" value="#{cc.attrs.help}" />
-                </ui:include>
+                <intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
 
             </div>
+            <!-- // CONTENT -->
+            
         </div>
+        <!-- // ROW -->
 
     </composite:implementation>
 

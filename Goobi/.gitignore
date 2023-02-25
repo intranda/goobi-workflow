@@ -17,3 +17,4 @@
 *.iml
 /.DS_Store
 /.metadata
+/module-ci/

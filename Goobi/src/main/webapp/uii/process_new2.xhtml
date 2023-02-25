@@ -103,18 +103,8 @@
 							<!-- TARGET FOLDER -->
 							<div class="row">
 								<div class="col-12 col-md-3">
-									<ui:include
-										src="/uii/templatePG/includes/forms/form_label.xhtml">
-										<ui:param
-											name="labelFor"
-											value="folderSelection" />
-										<ui:param
-											name="labelRequired"
-											value="true" />
-										<ui:param
-											name="labelLabel"
-											value="#{msgs.damageDocFolderSelection}" />
-									</ui:include>
+									<intranda:formLabel label="#{msgs.damageDocFolderSelection}" 
+										labelFor="folderSelection" labelRequired="true"/>
 								</div>
 
 								<!-- SELECT ONE -->
@@ -134,15 +124,7 @@
 											update="@form"
 											render="@form" />
 									</h:selectOneRadio>
-									<ui:include
-										src="/uii/templatePG/includes/forms/form_help.xhtml">
-										<ui:param
-											name="msgFor"
-											value="folderSelection" />
-										<ui:param
-											name="helpContent"
-											value="#{msgs.helpDamageDocFolderSelection}" />
-									</ui:include>
+									<intranda:formHelp content="#{msgs.helpDamageDocFolderSelection}" msgFor="folderSelection" />
 								</div>
 								<!-- SELECT ONE -->
 
@@ -166,18 +148,8 @@
 							<!-- FILE UPLOAD -->
 							<div class="row">
 								<div class="col-12 col-md-3">
-									<ui:include
-										src="/uii/templatePG/includes/forms/form_label.xhtml">
-										<ui:param
-											name="labelFor"
-											value="uploadArea" />
-										<ui:param
-											name="labelRequired"
-											value="false" />
-										<ui:param
-											name="labelLabel"
-											value="#{msgs.damageDocFileUpload}" />
-									</ui:include>
+									<intranda:formLabel label="#{msgs.damageDocFileUpload}" 
+										labelFor="uploadArea" labelRequired="false"/>
 								</div>
 
 								<div class="col-12 col-md-9">
@@ -198,15 +170,7 @@
 										invalidFileMessage="#{ProzesskopieForm.generateFileUploadErrorMessage()}">
 									</p:fileUpload>
 
-									<ui:include
-										src="/uii/templatePG/includes/forms/form_help.xhtml">
-										<ui:param
-											name="msgFor"
-											value="uploadArea" />
-										<ui:param
-											name="helpContent"
-											value="#{msgs.helpDamageDocFileUpload}" />
-									</ui:include>
+									<intranda:formHelp content="#{msgs.helpDamageDocFileUpload}" msgFor="uploadArea" />
 								</div>
 								
 							</div>

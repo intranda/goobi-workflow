@@ -8,6 +8,7 @@
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
 	<ui:param
@@ -70,6 +71,9 @@
 									jsf:action="#{ProzessverwaltungForm.reload}"
 									title="#{msgs.reload}">
 									<i class="fa fa-refresh"></i>
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
 								</button>
 								<button
 									jsf:id="edit"
@@ -78,6 +82,9 @@
 									jsf:action="#{NavigationForm.Reload}"
 									title="#{msgs.bearbeiten}">
 									<i class="fa fa-pencil"></i>
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
 									<x:updateActionListener
 										property="#{ProzessverwaltungForm.modusBearbeiten}"
 										value="vorlage" />
@@ -89,6 +96,9 @@
 									jsf:action="#{ProzessverwaltungForm.VorlageLoeschen}"
 									title="#{msgs.loeschen}">
 									<i class="fa fa-trash-o"></i>
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
 								</button>
 							</div>
 						</intranda:boxTitle>
@@ -188,6 +198,9 @@
 									jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftNeu}"
 									title="#{msgs.eigenschaftHinzufuegen}">
 									<i class="fa fa-plus"></i>
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
 									<x:updateActionListener
 										property="#{ProzessverwaltungForm.modusBearbeiten}"
 										value="vorlageeigenschaft" />

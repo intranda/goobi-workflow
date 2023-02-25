@@ -6,7 +6,7 @@
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
 	<composite:interface>
 		<composite:attribute name="name" />
@@ -48,29 +48,29 @@
 		    allDayText: 'Ganzer Tag'
 		};
 		</script>
+		
+		<!-- ROW -->
 		<div class="row">
-
-			<!-- col -->
+			
+			<!-- LABEL -->
 			<div class="#{cc.attrs.classLeft}">
-
-				<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-					<ui:param name="labelFor" value="#{cc.attrs.name}" />
-					<ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
-					<ui:param name="labelLabel" value="#{cc.attrs.label}" />
-				</ui:include>
-
-			</div> <!-- end col -->
-
-			<div class="#{cc.attrs.classRight}">
-					<p:calendar id="#{cc.attrs.name}" value="#{cc.attrs.field}" styleClass="ff-goobi">
-            <f:passThroughAttribute name="autocomplete" value="off" />
-          </p:calendar>
-				<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger"/>
-				<intranda:formHelp content="#{cc.attrs.help}" />
+				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
 			</div>
+			<!-- // LABEL -->
+			
+			<!-- CONTENT -->
+			<div class="#{cc.attrs.classRight}">
+				<p:calendar id="#{cc.attrs.name}" value="#{cc.attrs.field}" styleClass="ff-goobi">
+		        	<f:passThroughAttribute name="autocomplete" value="off" />
+		        </p:calendar>
+				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
+			</div>
+			<!-- // CONTENT -->
 
-		</div> <!-- end row -->
-
+		</div>
+		<!-- // ROW -->
+		
 	</composite:implementation>
 </ui:composition>
 

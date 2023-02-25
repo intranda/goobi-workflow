@@ -358,18 +358,8 @@
 
 									<!-- LABEL -->
 									<div class="col-12 col-md-3">
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param
-												name="labelFor"
-												value="thirdtab_fileupload3" />
-											<ui:param
-												name="labelRequired"
-												value="true" />
-											<ui:param
-												name="labelLabel"
-												value="#{msgs.uploadImport}" />
-										</ui:include>
+										<intranda:formLabel label="#{msgs.uploadImport}" 
+											labelFor="thirdtab_fileupload3" labelRequired="true"/>
 									</div>
 									<!-- // LABEL -->
 
@@ -394,15 +384,8 @@
 										</h:panelGroup>
 
 										<!-- Help messages, inline + warning -->
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param
-												name="msgFor"
-												value="thirdtab_fileupload3" />
-											<ui:param
-												name="helpContent"
-												value="#{msgs.help_import_FileUpload}" />
-										</ui:include>
+										<intranda:formHelp content="#{msgs.help_import_FileUpload}" msgFor="thirdtab_fileupload3" />
+
 									</div>
 									<!-- // INPUT -->
 

@@ -2,7 +2,7 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
 	<composite:interface>
 		<composite:attribute name="name" />
@@ -22,18 +22,17 @@
 
 	<composite:implementation>
 
+		<!-- ROW -->
 		<div class="row" style="#{cc.attrs.style}">
 
+			<!-- LABEL -->
 			<div class="#{cc.attrs.classLeft}" tabindex="-1">
-
-				<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-					<ui:param name="labelFor" value="#{cc.attrs.name}" />
-					<ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
-					<ui:param name="labelLabel" value="#{cc.attrs.label}" />
-				</ui:include>
-
+				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
 			</div>
+			<!-- // LABEL -->
 
+			<!-- CONTENT -->
 			<div class="#{cc.attrs.classRight}" style="#{cc.attrs.styleRight}">
 					<h:selectBooleanCheckbox
 						id="#{cc.attrs.name}"
@@ -44,14 +43,12 @@
 						pt:aria-label="#{cc.attrs.label}" />
 
 				<!-- Help messages, inline + warning -->
-				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
-					<ui:param name="msgFor" value="#{cc.attrs.name}" />
-					<ui:param name="helpContent" value="#{cc.attrs.help}" />
-				</ui:include>
-
+				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
 			</div>
+			<!-- // CONTENT -->
 
-		</div> <!-- row end -->
+		</div>
+		<!-- // ROW -->
 
 	</composite:implementation>
 

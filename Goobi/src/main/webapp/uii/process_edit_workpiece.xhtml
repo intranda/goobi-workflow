@@ -70,6 +70,9 @@
 									title="#{msgs.reload}"
 									jsf:rel="tooltip">
 									<i class="fa fa-refresh"></i>
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
 								</button>
 
 								<button
@@ -79,6 +82,9 @@
 									jsf:action="#{ProzessverwaltungForm.WerkstueckLoeschen}"
 									jsf:rel="tooltip">
 									<i class="fa fa-trash-o"></i>
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
 								</button>
 
 							</div>
@@ -118,6 +124,9 @@
 									jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftNeu}"
 									title="#{msgs.eigenschaftHinzufuegen}">
 									<i class="fa fa-plus"></i>
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
 									<x:updateActionListener
 										property="#{ProzessverwaltungForm.modusBearbeiten}"
 										value="werkstueckeigenschaft" />

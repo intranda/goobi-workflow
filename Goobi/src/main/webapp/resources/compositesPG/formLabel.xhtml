@@ -7,13 +7,22 @@
     </composite:interface>
 
     <composite:implementation>
-		<div class="form__help">
-			<h:message for="#{cc.attrs.msgFor}" showDetail="true" styleClass="text-danger"/>
-			<h:outputText 
-				styleClass="help-block font-light text-neutral-600" 
-				value="#{cc.attrs.content}" 
-				style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"/>
-		</div>
+		
+		<ui:fragment rendered="#{!cc.attrs.labelRequired}">
+			<label for="#{cc.attrs.labelFor}" class="form__label">
+				#{cc.attrs.label}
+			</label>
+		</ui:fragment>
+
+		<ui:fragment rendered="#{cc.attrs.labelRequired}">
+			<label
+				for="#{cc.attrs.labelFor}"
+				class="form__label">
+				#{cc.attrs.label}
+				<span class="form__label__required" title="#{msgs.requiredField}" data-bs-toggle="tooltip" data-bs-placement="right"/>
+			</label>
+		</ui:fragment>
+		
     </composite:implementation>
 
 </ui:composition>

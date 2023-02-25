@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
 	<composite:interface>
 		<composite:attribute name="name" />
@@ -25,18 +25,17 @@
 
 	<composite:implementation>
 
+		<!-- ROW -->
 		<div class="row">
+		
+			<!-- LABEL -->
 			<div class="#{cc.attrs.classLeft}">
+				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
+			</div> 
+			<!-- // LABEL -->
 
-				<!-- LABEL -->
-			<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-				<ui:param name="labelFor" value="#{cc.attrs.name}" />
-				<ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
-				<ui:param name="labelLabel" value="#{cc.attrs.label}" />
-			</ui:include>
-
-			</div> <!-- /col (classLeft) -->
-
+			<!-- CONTENT -->
 			<div class="#{cc.attrs.classRight}">
 				<x:inputText
 					id="#{cc.attrs.name}"
@@ -52,12 +51,12 @@
 				</x:inputText>
 
 				<!-- Help messages, inline + warning -->
-				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
-					<ui:param name="msgFor" value="#{cc.attrs.name}" />
-					<ui:param name="helpContent" value="#{cc.attrs.help}" />
-				</ui:include>
+				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
 			</div>
-		</div> <!-- /row -->
+			<!-- // CONTENT -->
+			
+		</div>
+		<!-- // ROW -->
 
 	</composite:implementation>
 

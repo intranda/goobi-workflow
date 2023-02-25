@@ -192,18 +192,8 @@
 
 								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param
-												name="labelFor"
-												value="up" />
-											<ui:param
-												name="labelRequired"
-												value="false" />
-											<ui:param
-												name="labelLabel"
-												value="#{msgs.projekte}" />
-										</ui:include>
+										<intranda:formLabel label="#{msgs.projekte}" 
+											labelFor="up" labelRequired="false"/>
 									</div>
 
 									<div class="col-12 col-md-9">
@@ -222,32 +212,14 @@
 												rendered="#{rowIndex + 1 lt rowCount}" />
 										</x:dataList>
 
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param
-												name="msgFor"
-												value="up" />
-											<ui:param
-												name="helpContent"
-												value="#{msgs.helpProjects}" />
-										</ui:include>
+										<intranda:formHelp content="#{msgs.helpProjects}" msgFor="up" />
 									</div>
 								</div>
 
 								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param
-												name="labelFor"
-												value="ug" />
-											<ui:param
-												name="labelRequired"
-												value="false" />
-											<ui:param
-												name="labelLabel"
-												value="#{msgs.benutzergruppen}" />
-										</ui:include>
+										<intranda:formLabel label="#{msgs.benutzergruppen}" 
+											labelFor="ug" labelRequired="false"/>
 									</div>
 
 									<div class="col-12 col-md-9">
@@ -266,33 +238,15 @@
 												rendered="#{rowIndex + 1 lt rowCount}" />
 										</x:dataList>
 
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param
-												name="msgFor"
-												value="ug" />
-											<ui:param
-												name="helpContent"
-												value="#{msgs.helpUsergroups}" />
-										</ui:include>
+										<intranda:formHelp content="#{msgs.helpUsergroups}" msgFor="ug" />
 									</div>
 								</div>
 
 
 								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param
-												name="labelFor"
-												value="ur" />
-											<ui:param
-												name="labelRequired"
-												value="false" />
-											<ui:param
-												name="labelLabel"
-												value="#{msgs.usergroup_assignedRoles}" />
-										</ui:include>
+										<intranda:formLabel label="#{msgs.usergroup_assignedRoles}" 
+											labelFor="ur" labelRequired="false"/>
 									</div>
 
 									<div class="col-12 col-md-9">
@@ -317,15 +271,7 @@
 											</h:outputText>
 										</ui:repeat>
 
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param
-												name="msgFor"
-												value="ur" />
-											<ui:param
-												name="helpContent"
-												value="#{msgs.helpUserRoles}" />
-										</ui:include>
+										<intranda:formHelp content="#{msgs.helpUserRoles}" msgFor="ur" />
 									</div>
 								</div>
 							</h:panelGroup>
@@ -527,18 +473,8 @@
 
 								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param
-												name="labelFor"
-												value="processDefaultSortOrder" />
-											<ui:param
-												name="labelRequired"
-												value="false" />
-											<ui:param
-												name="labelLabel"
-												value="#{msgs.defaultSortOrder}" />
-										</ui:include>
+										<intranda:formLabel label="#{msgs.defaultSortOrder}" 
+											labelFor="processDefaultSortOrder" labelRequired="false"/>
 									</div>
 
 									<div class="col-12 col-md-9">
@@ -554,15 +490,8 @@
 												itemValue="Desc" />
 										</h:selectOneRadio>
 
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param
-												name="msgFor"
-												value="processDefaultSortOrder" />
-											<ui:param
-												name="helpContent"
-												value="#{msgs.helpProcessDefaultSortOrder}" />
-										</ui:include>
+										<intranda:formHelp content="#{msgs.helpProcessDefaultSortOrder}" msgFor="processDefaultSortOrder" />
+			
 									</div>
 								</div>
 
@@ -629,18 +558,8 @@
 
 								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param
-												name="labelFor"
-												value="taskDefaultSortOrder" />
-											<ui:param
-												name="labelRequired"
-												value="false" />
-											<ui:param
-												name="labelLabel"
-												value="#{msgs.defaultSortOrder}" />
-										</ui:include>
+										<intranda:formLabel label="#{msgs.defaultSortOrder}" 
+											labelFor="taskDefaultSortOrder" labelRequired="false"/>
 									</div>
 
 									<div class="col-12 col-md-9">
@@ -656,15 +575,7 @@
 												itemValue="Desc" />
 										</h:selectOneRadio>
 
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param
-												name="msgFor"
-												value="taskDefaultSortOrder" />
-											<ui:param
-												name="helpContent"
-												value="#{msgs.helpTaskDefaultSortOrder}" />
-										</ui:include>
+										<intranda:formHelp content="#{msgs.helpTaskDefaultSortOrder}" msgFor="taskDefaultSortOrder" />
 									</div>
 								</div>
 
@@ -691,18 +602,8 @@
 
 								<div class="row">
 									<div class="col-12 col-md-3">
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param
-												name="labelFor"
-												value="metadataSaveTime" />
-											<ui:param
-												name="labelRequired"
-												value="true" />
-											<ui:param
-												name="labelLabel"
-												value="#{msgs.metadataSaveTime}" />
-										</ui:include>
+										<intranda:formLabel label="#{msgs.metadataSaveTime}" 
+											labelFor="metadataSaveTime" labelRequired="true"/>
 									</div>
 
 									<div class="col-12 col-md-9">
@@ -715,15 +616,7 @@
 											<f:validator validatorId="org.goobi.validator.TimeValidator" />
 										</x:inputText>
 
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param
-												name="msgFor"
-												value="metadataSaveTime" />
-											<ui:param
-												name="helpContent"
-												value="#{msgs.helpMetadataSaveTime}" />
-										</ui:include>
+										<intranda:formHelp content="#{msgs.helpMetadataSaveTime}" msgFor="metadataSaveTime" />
 									</div>
 								</div>
 

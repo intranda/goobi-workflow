@@ -903,6 +903,53 @@ a:focus, a:hover, a:active {
 }
 
 /* ========================================
+ * Widths
+ * ====================================== */
+.gw-width1 {
+  width: 10px;
+}
+
+.gw-width2 {
+  width: 20px;
+}
+
+.gw-width3 {
+  width: 30px;
+}
+
+.gw-width4 {
+  width: 40px;
+}
+
+.gw-width5 {
+  width: 50px;
+}
+
+.gw-width6 {
+  width: 75px;
+}
+
+.gw-width7 {
+  width: 100px;
+}
+
+.gw-width8 {
+  width: 150px;
+}
+
+.gw-width9 {
+  width: 200px;
+}
+
+.gw-width10 {
+  width: 250px;
+}
+
+.gw-width11 {
+  width: 300px;
+}
+
+/* ========================================
  * BS 5 Overrides
  * ====================================== */
 .mt-2 {
@@ -926,7 +973,7 @@ a:focus, a:hover, a:active {
 }
 
 .ms-4 {
-  margin-left: 0.8rem !important;
+  margin-left: 2rem !important;
 }
 
 .me-2 {

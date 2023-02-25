@@ -359,7 +359,7 @@
 												boxScope="view-users__box--usergroup-1"
 												title="#{msgs.benutzergruppen}"
 												icon="fa-table"
-												boxPadding="true">
+												boxPadding="false">
 
 												<div class="gw-table gw-table-fixed gw-table-fixed-no-th">
 													<div class="gw-table__wrapper">
@@ -422,7 +422,7 @@
 													</button>
 													<div class="dataTables__paginate">
 														<!-- paginator -->
-														<intranda:tablePaginator2
+														<intranda:tablePaginator
 															id="groups"
 															paginator="#{BenutzerverwaltungForm.usergroupPaginator}" />
 														<!-- /paginator -->
@@ -446,7 +446,7 @@
 												boxScope="view-users__box--usergroup-2"
 												title="#{msgs.benutzergruppen}"
 												icon="fa-table"
-												boxPadding="true">
+												boxPadding="false">
 
 												<div class="gw-table gw-table-fixed gw-table-fixed-no-th">
 													<div class="gw-table__wrapper">
@@ -561,7 +561,7 @@
 												boxSmall="true"
 												title="#{msgs.projekte}"
 												icon="fa-table"
-												boxPadding="true">
+												boxPadding="false">
 
 												<div class="gw-table gw-table-fixed gw-table-fixed-no-th">
 
@@ -605,7 +605,7 @@
 													<!-- /gw-table__wrapper -->
 
 													<div class="box__actions">
-														<!-- Cancel-Schaltknopf -->
+														<!-- Cancel -->
 														<a
 															jsf:id="cancelProject"
 															class="btn btn-blank me-auto"
@@ -618,13 +618,10 @@
 																value="tab3" />
 															<f:ajax render=":myform" />
 														</a>
-													</div>
-													<div class="dataTables_paginate">
-														<!-- paginator -->
+														<!-- Paginator -->
 														<intranda:tablePaginator
 															id="projects"
 															paginator="#{BenutzerverwaltungForm.projectPaginator}" />
-														<!-- /paginator -->
 													</div>
 
 												</div>
@@ -643,7 +640,7 @@
 												boxScope="view-users__box--project-2"
 												title="#{msgs.projekte}"
 												icon="fa-table"
-												boxPadding="true">
+												boxPadding="false">
 
 												<div class="gw-table gw-table-fixed gw-table-fixed-no-th">
 													<div class="gw-table__wrapper">

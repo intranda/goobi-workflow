@@ -89,18 +89,8 @@
 
 									<!-- LABEL -->
 									<div class="col-12 col-md-3">
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param
-												name="labelFor"
-												value="opacCatalogue" />
-											<ui:param
-												name="labelRequired"
-												value="false" />
-											<ui:param
-												name="labelLabel"
-												value="#{msgs.sucheImOpac}" />
-										</ui:include>
+										<intranda:formLabel label="#{msgs.sucheImOpac}" 
+											labelFor="opacCatalogue" labelRequired="false"/>
 									</div>
 									<!-- // LABEL -->
 
@@ -144,15 +134,7 @@
 										</div>
 
 										<!-- HELP -->
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param
-												name="msgFor"
-												value="opacCatalogue" />
-											<ui:param
-												name="helpContent"
-												value="#{msgs.helpSucheImOpac}" />
-										</ui:include>
+										<intranda:formHelp content="#{msgs.helpSucheImOpac}" msgFor="opacCatalogue" />
 										<!-- // HELP -->
 
 									</div>
@@ -174,18 +156,8 @@
 
 									<!-- LABEL -->
 									<div class="col-12 col-md-3">
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param
-												name="labelFor"
-												value="templates" />
-											<ui:param
-												name="labelRequired"
-												value="false" />
-											<ui:param
-												name="labelLabel"
-												value="#{msgs.AuswaehlenAusVorhandenenProzessen}" />
-										</ui:include>
+										<intranda:formLabel label="#{msgs.AuswaehlenAusVorhandenenProzessen}" 
+											labelFor="templates" labelRequired="false"/>
 									</div>
 									<!-- // LABEL -->
 
@@ -222,15 +194,7 @@
 										</div>
 
 										<!-- HELP -->
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param
-												name="msgFor"
-												value="templates" />
-											<ui:param
-												name="helpContent"
-												value="#{msgs.helpAuswaehlenAusVorhandenenProzessen}" />
-										</ui:include>
+										<intranda:formHelp content="#{msgs.helpAuswaehlenAusVorhandenenProzessen}" msgFor="templates" />
 										<!-- // HELP -->
 
 									</div>
@@ -248,18 +212,8 @@
 								<div class="row">
 									<!-- LABEL -->
 									<div class="col-12 col-md-3">
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_label.xhtml">
-											<ui:param
-												name="labelFor"
-												value="DocType" />
-											<ui:param
-												name="labelRequired"
-												value="false" />
-											<ui:param
-												name="labelLabel"
-												value="#{msgs.publicationtype}" />
-										</ui:include>
+										<intranda:formLabel label="#{msgs.publicationtype}" 
+											labelFor="DocType" labelRequired="false"/>
 									</div>
 									<!-- // LABEL -->
 
@@ -280,15 +234,7 @@
 										</h:selectOneMenu>
 
 										<!-- Help messages, inline + warning -->
-										<ui:include
-											src="/uii/templatePG/includes/forms/form_help.xhtml">
-											<ui:param
-												name="msgFor"
-												value="DocType" />
-											<ui:param
-												name="helpContent"
-												value="#{msgs.help_import_DocType}" />
-										</ui:include>
+										<intranda:formHelp content="#{msgs.help_import_DocType}" msgFor="DocType" />
 									</div>
 									<!-- // SELECT -->
 								</div>
@@ -334,18 +280,8 @@
 
 											<!-- LABEL -->
 											<div class="col-12 col-md-3">
-												<ui:include
-													src="/uii/templatePG/includes/forms/form_label.xhtml">
-													<ui:param
-														name="labelFor"
-														value="multiselect" />
-													<ui:param
-														name="labelRequired"
-														value="#{intern.required}" />
-													<ui:param
-														name="labelLabel"
-														value="#{HelperForm.getTranslation ('import_', intern.titel)}" />
-												</ui:include>
+												<intranda:formLabel label="#{HelperForm.getTranslation ('import_', intern.titel)}" 
+													labelFor="multiselect" labelRequired="#{intern.required}"/>
 											</div>
 											<!-- // LABEL -->
 
@@ -361,16 +297,7 @@
 												</h:selectManyListbox>
 
 												<!-- Help messages, inline + warning -->
-												<ui:include
-													src="/uii/templatePG/includes/forms/form_help.xhtml">
-													<ui:param
-														name="msgFor"
-														value="multiselect" />
-													<ui:param
-														name="helpContent"
-														value="#{HelperForm.getTranslation ('help_import_', intern.titel)}" />
-												</ui:include>
-
+												<intranda:formHelp content="#{HelperForm.getTranslation ('help_import_', intern.titel)}" msgFor="multiselect" />
 											</div>
 										</div>
 									</ui:fragment>
