@@ -70,6 +70,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -488,6 +489,17 @@ public class ExportMets {
         if (useOriginalFiles) {
             // check if media folder contains images
             List<Path> filesInFolder = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(false));
+            filesInFolder.sort((f1,f2) -> {
+                String b1 = FilenameUtils.getBaseName(f1.getFileName().toString());
+                String e1 = FilenameUtils.getExtension(f1.getFileName().toString());
+                String b2 = FilenameUtils.getBaseName(f2.getFileName().toString());
+                String e2 = FilenameUtils.getExtension(f2.getFileName().toString());
+                if(StringUtils.equalsIgnoreCase(b1, b2)) {
+                    return StringUtils.isBlank(e1) ? 1 : (StringUtils.isBlank(e2) ? -1 : 0);
+                } else {
+                    return f1.getFileName().toString().compareTo(f2.getFileName().toString());
+                }
+            });
             if (!filesInFolder.isEmpty()) {
                 // compare image names with files in mets file
                 List<DocStruct> pages = dd.getPhysicalDocStruct().getAllChildren();

@@ -43,9 +43,6 @@
                         rendered="#{NavigationForm.uiStatus['toggleJournal'] == 'imageComments'}" />
                 </h3>
                 <div class="actions">
-
-
-
                     <button
                         class="btn btn-mini pull-right margin-right-10"
                         data-toggle="tooltip"
@@ -60,6 +57,7 @@
                     </button>
 
                     <button
+                        jsf:rendered="#{showFolderSelection}"
                         jsf:id="adapt_display_folders"
                         data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
@@ -213,7 +211,7 @@
                                     varStatus="row">
                                     <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
                                         <tr>
-                                            <td>
+                                            <td style="width:150px">
                                                 <h:outputText
                                                     value="#{entry.formattedCreationDate}"
                                                     styleClass="log_color_#{entry.type.title}">

@@ -141,7 +141,7 @@ public class SessionForm implements Serializable {
     private List<SessionInfo> filterRealUserSessions() {
         List<SessionInfo> realUserSessions = new ArrayList<>();
         for (int index = 0; index < this.sessions.size(); index++) {
-            if (!this.sessions.get(index).getUserName().equals(SessionForm.NOT_LOGGED_IN)) {
+            if (!SessionForm.NOT_LOGGED_IN.equals(this.sessions.get(index).getUserName())) {
                 realUserSessions.add(this.sessions.get(index));
             }
         }
@@ -155,9 +155,9 @@ public class SessionForm implements Serializable {
      * @return The SessionInfo object with that id
      */
     public SessionInfo getSessionInfoById(String id) {
-        for (int session = 0; session < this.sessions.size(); session++) {
-            if (this.sessions.get(session).getSessionId().equals(id)) {
-                return this.sessions.get(session);
+        for (SessionInfo element : this.sessions) {
+            if (element.getSessionId().equals(id)) {
+                return element;
             }
         }
         return null;
@@ -329,7 +329,7 @@ public class SessionForm implements Serializable {
             long now = System.currentTimeMillis();
             long sessionDuration = (now - loginTimestamp) / 1000;
             String counter = (index + 1) + "/" + this.sessions.size();
-            StringBuffer message = new StringBuffer();
+            StringBuilder message = new StringBuilder();
             message.append("Session " + counter);
             message.append("\n- login name:  " + userName);
             message.append("\n- browser:     " + session.getBrowserName());
@@ -340,7 +340,7 @@ public class SessionForm implements Serializable {
 
             boolean overTimeout = sessionDuration > userTimeout;
             // sessionDuration > 0 is needed to not remove the login screen while the user logs in
-            boolean loggedOut = userName.equals(LOGGED_OUT) || (userName.equals(NOT_LOGGED_IN) && sessionDuration > 0);
+            boolean loggedOut = LOGGED_OUT.equals(userName) || (NOT_LOGGED_IN.equals(userName) && sessionDuration > 0);
             boolean noAddress = session.getUserIpAddress() == null;
 
             if (overTimeout || loggedOut || noAddress) {

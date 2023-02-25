@@ -134,7 +134,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -303,7 +303,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             }
             String mimeType = getMimeTypeFromFile(path);
-            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || mimeType.equals("application/mxf")) {
+            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || "application/mxf".equals(mimeType)) {
                 return fileOk;
             }
             return false;
@@ -891,6 +891,9 @@ public class NIOFileUtils implements StorageProviderInterface {
                 case "gltf":
                 case "glb":
                     mimeType = "object/" + fileExtension;
+                    break;
+                case "epub":
+                    mimeType = "application/epub+zip";
                     break;
                 default:
                     // use a default value, if file extension is not mapped
