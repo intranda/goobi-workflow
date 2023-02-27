@@ -176,7 +176,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
         } catch (IOException exception) {
-            log.error(exception);
+            // do nothing
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -193,7 +193,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
         } catch (IOException exception) {
-            log.error(exception);
+            // do nothing
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -210,7 +210,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
         } catch (IOException exception) {
-            log.error(exception);
+            // do nothing
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -227,7 +227,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
         } catch (IOException exception) {
-            log.error(exception);
+            // do nothing
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -437,7 +437,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                             }
                         }
                     } catch (AccessDeniedException | FileNotFoundException exception) {
-                        log.error(exception);
+                        // do nothing
                     }
                     try {
                         PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
@@ -450,7 +450,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                             }
                         }
                     } catch (AccessDeniedException | FileNotFoundException exception) {
-                        log.error(exception);
+                        // do nothing
                     }
                     UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
                     if (userAttrs != null) {
