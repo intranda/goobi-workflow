@@ -224,7 +224,12 @@ public class StepBean extends BasicBean implements Serializable {
     public String FilterAlleStart() {
 
         StepManager m = new StepManager();
-        String sql = FilterHelper.criteriaBuilder(filter, false, nurOffeneSchritte, nurEigeneSchritte, hideStepsFromOtherUsers, false, true);
+        String searchValue = filter;
+        if (StringUtils.isNotBlank(additionalFilter) && StringUtils.isNotBlank(filter)) {
+            searchValue = additionalFilter.replace("{}", filter);
+        }
+
+        String sql = FilterHelper.criteriaBuilder(searchValue, false, nurOffeneSchritte, nurEigeneSchritte, hideStepsFromOtherUsers, false, true);
         if (!showAutomaticTasks) {
             sql = "typAutomatisch = false AND " + sql;
         }

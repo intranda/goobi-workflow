@@ -36,8 +36,23 @@
 			</div>
 			<x:commandButton type="submit" id="FilterAlle" forceId="true" style="display: none;" action="#{Form.FilterAlleStart}" />
 		</div>
+        <h:panelGroup
+            styleClass="dataTables_filter"
+            layout="block"
+            rendered="#{Form.user.allAdditionalSearchFilter.size() gt 0}">
+            <h:selectOneMenu
+                value="#{Form.additionalFilter}"
+                styleClass="form-control"
+                style="background: #eee; height: 28px;">
 
-		<div class="dataTables_filter">
+                <f:selectItems
+                    value="#{Form.user.allAdditionalSearchFilter}"
+                    var="sf"
+                    itemLabel="#{sf.one}"
+                    itemValue="#{sf.two}" />
+            </h:selectOneMenu>
+        </h:panelGroup>
+        <div class="dataTables_filter">
 			<div class="btn-group">
 				<span data-toggle="tooltip" title="#{msgs.filter}">
 					<h:panelGroup rendered="#{Form.user.filters.size() gt 0}">
@@ -70,7 +85,12 @@
                 <button jsf:id="saveFilter" data-toggle="tooltip" aria-label="#{msgs.save}" class="btn searchfieldbuttongroup" jsf:action="#{Form.addFilterToUser}" title="#{msgs.addFilter}">
                     <i class="fa fa-save"></i>
                 </button>
-			</div>
-		</div>
+
+
+  
+                
+            </div>
+        </div>
+            
 	</composite:implementation>
 </ui:composition>
