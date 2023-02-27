@@ -41,7 +41,7 @@ public class DelayJob extends AbstractGoobiJob {
 
     private List<Step> getListOfStepsWithDelay() {
         String filter = " delayStep = true AND stepPlugin is not NULL AND Bearbeitungsstatus = 2";
-        return StepManager.getSteps(null, filter);
+        return StepManager.getSteps(null, filter, null);
     }
 
     @Override

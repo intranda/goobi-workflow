@@ -27,7 +27,7 @@ package org.goobi.api.rest.client;
  */
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -62,9 +62,9 @@ public class BasicAuthenticationFilter implements ClientRequestFilter {
     private String getBasicAuthentication() {
         String token = username + ":" + this.password;
         try {
-            return "BASIC " + DatatypeConverter.printBase64Binary(token.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("Cannot encode token", e);
+            return "BASIC " + DatatypeConverter.printBase64Binary(token.getBytes(StandardCharsets.UTF_8));
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalStateException("Cannot encode token", exception);
         }
     }
 

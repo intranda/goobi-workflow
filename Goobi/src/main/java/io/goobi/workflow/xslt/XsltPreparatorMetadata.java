@@ -297,7 +297,8 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
         outp.setFormat(Format.getPrettyFormat());
         try {
             outp.output(answer, outputStream);
-        } catch (IOException e) {
+        } catch (IOException exception) {
+            log.error(exception);
         } finally {
             if (outputStream != null) {
                 try {

@@ -120,15 +120,15 @@ public class WebInterface extends HttpServlet {
             }
 
             if (command.equals("help")) {
-                if (!params.containsKey("for")) {
+                if (params.containsKey("for")) {
                     try {
-                        generateHelp(resp, null);
+                        generateHelp(resp, params.get("for"));
                     } catch (IOException e) {
                         log.error(e);
                     }
                 } else {
                     try {
-                        generateHelp(resp, params.get("for"));
+                        generateHelp(resp, null);
                     } catch (IOException e) {
                         log.error(e);
                     }

@@ -79,6 +79,7 @@ import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Docket;
 import org.goobi.beans.ExportValidator;
+import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
@@ -528,7 +529,13 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.statisticsManager = null;
         this.myAnzahlList = null;
         ProcessManager m = new ProcessManager();
-        String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+
+        String searchValue = filter;
+        if (StringUtils.isNotBlank(additionalFilter) && StringUtils.isNotBlank(filter)) {
+            searchValue = additionalFilter.replace("{}", filter);
+        }
+
+        String sql = FilterHelper.criteriaBuilder(searchValue, false, null, null, null, true, false);
         if ("vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
@@ -582,7 +589,12 @@ public class ProcessBean extends BasicBean implements Serializable {
         ProzesskopieForm pkf = Helper.getBeanByClass(ProzesskopieForm.class);
         pkf.clearAvailableProjects();
 
-        String sql = FilterHelper.criteriaBuilder(filter, true, null, null, null, true, false);
+        String searchValue = filter;
+        if (StringUtils.isNotBlank(additionalFilter)) {
+            searchValue = additionalFilter.replace("{}", filter);
+        }
+
+        String sql = FilterHelper.criteriaBuilder(searchValue, true, null, null, null, true, false);
 
         if (!this.showClosedProcesses && !"vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
@@ -620,8 +632,12 @@ public class ProcessBean extends BasicBean implements Serializable {
     public String FilterAlleStart() {
         this.statisticsManager = null;
         this.myAnzahlList = null;
+        String searchValue = filter;
+        if (StringUtils.isNotBlank(additionalFilter) && StringUtils.isNotBlank(filter)) {
+            searchValue = additionalFilter.replace("{}", filter);
+        }
 
-        String sql = FilterHelper.criteriaBuilder(filter, null, null, null, null, true, false);
+        String sql = FilterHelper.criteriaBuilder(searchValue, null, null, null, null, true, false);
         if ("vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
@@ -870,7 +886,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         for (User b : this.mySchritt.getBenutzerList()) {
             try {
                 myDav.UploadFromHome(b, this.mySchritt.getProzess());
-            } catch (RuntimeException e) {
+            } catch (RuntimeException exception) {
+                log.warn(exception);
             }
         }
         /* alle Benutzergruppen mit ihren Benutzern */
@@ -878,7 +895,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             for (User b : bg.getBenutzer()) {
                 try {
                     myDav.UploadFromHome(b, this.mySchritt.getProzess());
-                } catch (RuntimeException e) {
+                } catch (RuntimeException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -2044,8 +2062,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (IOException e) {
-
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
     }
@@ -2085,15 +2103,15 @@ public class ProcessBean extends BasicBean implements Serializable {
                 }
 
                 facesContext.responseComplete();
-            } catch (Exception e) {
-
+            } catch (Exception exception) {
+                log.error(exception);
             } finally {
                 try {
                     if (csvFilePrinter != null) {
                         csvFilePrinter.close();
                     }
-                } catch (IOException e) {
-
+                } catch (IOException exception) {
+                    log.error(exception);
                 }
             }
         }
@@ -2179,7 +2197,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (Exception e) {
+            } catch (Exception exception) {
+                log.error(exception);
             }
         }
     }
@@ -2206,8 +2225,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (IOException e) {
-
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
     }
@@ -2233,8 +2252,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (IOException e) {
-
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
     }
@@ -2258,8 +2277,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (IOException e) {
-
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
     }
@@ -2615,9 +2634,16 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
 
     public List<Process> getAvailableProcessTemplates() {
+        Institution inst = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            //             limit result to institution of current user
+            inst = user.getInstitution();
+        }
+
         if (availableProcessTemplates == null) {
             String sql = FilterHelper.criteriaBuilder("", true, null, null, null, true, false);
-            availableProcessTemplates = ProcessManager.getProcesses("prozesse.titel", sql);
+            availableProcessTemplates = ProcessManager.getProcesses("prozesse.titel", sql, inst);
         }
         return availableProcessTemplates;
     }

@@ -238,7 +238,8 @@ public class XsltToPdf {
         net.sf.saxon.TransformerFactoryImpl impl = new net.sf.saxon.TransformerFactoryImpl();
         try {
             return impl.newTransformer(streamSource);
-        } catch (TransformerConfigurationException e) {
+        } catch (TransformerConfigurationException exception) {
+            log.error(exception);
         }
         return null;
     }

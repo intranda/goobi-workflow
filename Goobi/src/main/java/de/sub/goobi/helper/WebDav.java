@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -252,7 +253,7 @@ public class WebDav implements Serializable {
             TiffHeader tif = new TiffHeader(inProzess);
             Path outPath = Paths.get(inProzess.getImagesDirectory() + "tiffwriter.conf");
             try (OutputStream os = StorageProvider.getInstance().newOutputStream(outPath);
-                    BufferedWriter outwriter = new BufferedWriter(new OutputStreamWriter(os, "utf-8"))) {
+                    BufferedWriter outwriter = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
                 outwriter.write(tif.getTiffAlles());
             }
         } catch (Exception e) {

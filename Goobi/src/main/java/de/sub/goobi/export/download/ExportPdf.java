@@ -197,6 +197,7 @@ public class ExportPdf extends ExportMets {
                         output.write(text);
                     }
                 } catch (IOException e1) {
+                    log.error(e1);
                 }
                 return false;
             }

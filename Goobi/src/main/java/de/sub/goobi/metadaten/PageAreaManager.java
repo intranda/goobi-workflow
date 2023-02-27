@@ -55,6 +55,11 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 @Log4j2
 public class PageAreaManager {
 
+    private static final String LOGICAL_PAGE_NUMBER = "logicalPageNumber";
+    private static final String PHYSICAL_PAGE_NUMBER = "physPageNumber";
+    private static final String UNCOUNTED = "uncounted";
+    private static final String COORDS = "_COORDS";
+
     /**
      * Internal field to keep newly created page areas to be attached to a DocStruct yet to be created
      */
@@ -101,7 +106,7 @@ public class PageAreaManager {
     }
 
     private void setCoords(DocStruct area, int x, int y, int w, int h) {
-        for (Metadata md : area.getAllMetadataByType(prefs.getMetadataTypeByName("_COORDS"))) {
+        for (Metadata md : area.getAllMetadataByType(prefs.getMetadataTypeByName(COORDS))) {
             md.setValue(x + "," + y + "," + w + "," + h);
         }
     }
@@ -116,7 +121,7 @@ public class PageAreaManager {
             pageAreas.add(newPageArea);
         }
         for (DocStruct area : pageAreas) {
-            String coordinates = MetadatenHelper.getSingleMetadataValue(area, "_COORDS").orElse(null);
+            String coordinates = MetadatenHelper.getSingleMetadataValue(area, COORDS).orElse(null);
 
             List<DocStruct> referencedLogStructs = Optional.ofNullable(area.getAllFromReferences())
                     .orElse(Collections.emptyList())
@@ -167,7 +172,7 @@ public class PageAreaManager {
 
     public String getNewPageAreaLabel() {
         return Optional.ofNullable(getNewPageArea())
-                .map(area -> Helper.getTranslation("mets_pageArea", MetadatenHelper.getSingleMetadataValue(area, "logicalPageNumber").orElse("")))
+                .map(area -> Helper.getTranslation("mets_pageArea", MetadatenHelper.getSingleMetadataValue(area, LOGICAL_PAGE_NUMBER).orElse("")))
                 .orElse("");
     }
 
@@ -175,14 +180,14 @@ public class PageAreaManager {
             throws TypeNotAllowedForParentException, MetadataTypeNotAllowedException, TypeNotAllowedAsChildException {
         DocStructType dst = prefs.getDocStrctTypeByName("area");
         DocStruct pageArea = document.createDocStruct(dst);
-        Metadata logicalPageNumber = new Metadata(prefs.getMetadataTypeByName("logicalPageNumber"));
-        logicalPageNumber.setValue(MetadatenHelper.getSingleMetadataValue(page, "logicalPageNumber").orElse(""));
+        Metadata logicalPageNumber = new Metadata(prefs.getMetadataTypeByName(LOGICAL_PAGE_NUMBER));
+        logicalPageNumber.setValue(MetadatenHelper.getSingleMetadataValue(page, LOGICAL_PAGE_NUMBER).orElse(""));
         pageArea.addMetadata(logicalPageNumber);
 
-        Metadata physPageNumber = new Metadata(prefs.getMetadataTypeByName("physPageNumber"));
-        physPageNumber.setValue(MetadatenHelper.getSingleMetadataValue(page, "physPageNumber").orElse(""));
+        Metadata physPageNumber = new Metadata(prefs.getMetadataTypeByName(PHYSICAL_PAGE_NUMBER));
+        physPageNumber.setValue(MetadatenHelper.getSingleMetadataValue(page, PHYSICAL_PAGE_NUMBER).orElse(""));
         pageArea.addMetadata(physPageNumber);
-        Metadata md = new Metadata(prefs.getMetadataTypeByName("_COORDS"));
+        Metadata md = new Metadata(prefs.getMetadataTypeByName(COORDS));
         md.setValue(x + "," + y + "," + w + "," + h);
         pageArea.addMetadata(md);
         pageArea.setDocstructType("area");
@@ -206,10 +211,10 @@ public class PageAreaManager {
     String createPhysicalPageNumberForArea(DocStruct pageAreaStruct, DocStruct page) {
         String physicalPageNumber = page.getAllMetadata()
                 .stream()
-                .filter(md -> md.getType().getName().equalsIgnoreCase("physPageNumber"))
+                .filter(md -> md.getType().getName().equalsIgnoreCase(PHYSICAL_PAGE_NUMBER))
                 .findAny()
                 .map(Metadata::getValue)
-                .orElse("uncounted");
+                .orElse(UNCOUNTED);
         List<DocStruct> pageAreas = new ArrayList<>(Optional.ofNullable(page.getAllChildren()).orElse(Collections.emptyList()));
         int indexOfArea = pageAreas.size();
         if (pageAreaStruct != null && pageAreas.contains(pageAreaStruct)) {
@@ -223,10 +228,10 @@ public class PageAreaManager {
             DocStruct page = pageAreaStruct.getParent();
             return page.getAllMetadata()
                     .stream()
-                    .filter(md -> md.getType().getName().equalsIgnoreCase("logicalPageNumber"))
+                    .filter(md -> md.getType().getName().equalsIgnoreCase(LOGICAL_PAGE_NUMBER))
                     .findAny()
                     .map(Metadata::getValue)
-                    .orElse("uncounted");
+                    .orElse(UNCOUNTED);
         } else {
             throw new IllegalArgumentException("given docStruct is not page area or has no parent");
         }

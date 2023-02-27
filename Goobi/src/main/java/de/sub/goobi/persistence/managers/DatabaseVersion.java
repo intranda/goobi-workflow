@@ -22,7 +22,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -557,7 +556,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -714,7 +714,8 @@ public class DatabaseVersion {
                 if (connection != null) {
                     try {
                         MySQLHelper.closeConnection(connection);
-                    } catch (SQLException e) {
+                    } catch (SQLException exception) {
+                        log.warn(exception);
                     }
                 }
             }
@@ -737,7 +738,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -764,7 +766,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -784,7 +787,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -810,7 +814,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -999,7 +1004,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -1034,7 +1040,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -1120,7 +1127,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -1139,7 +1147,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -1160,7 +1169,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -1178,7 +1188,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -1199,7 +1210,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -1223,7 +1235,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -1243,7 +1256,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -1264,7 +1278,8 @@ public class DatabaseVersion {
                 if (connection != null) {
                     try {
                         MySQLHelper.closeConnection(connection);
-                    } catch (SQLException e) {
+                    } catch (SQLException exception) {
+                        log.warn(exception);
                     }
                 }
             }
@@ -1303,7 +1318,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -1627,7 +1643,8 @@ public class DatabaseVersion {
         if (date == null) {
             try {
                 date = processLogGermanDateFormat.parse(dateString);
-            } catch (ParseException e) {
+            } catch (Exception exception) {
+                log.warn(exception);
             }
         }
 
@@ -2067,7 +2084,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -2103,7 +2121,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -2129,7 +2148,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -2161,7 +2181,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }
@@ -2191,7 +2212,8 @@ public class DatabaseVersion {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    log.warn(exception);
                 }
             }
         }

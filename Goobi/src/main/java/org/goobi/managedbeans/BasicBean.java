@@ -32,9 +32,7 @@ import org.goobi.beans.User;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public class BasicBean implements Serializable {
 
     private static final long serialVersionUID = 2950419497162710096L;
@@ -54,6 +52,10 @@ public class BasicBean implements Serializable {
     @Getter
     @Setter
     protected String sortierung = "";
+
+    @Getter
+    @Setter
+    protected String additionalFilter;
 
     public User getUser() {
         if (this.user == null) {

@@ -58,7 +58,10 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
 public class GoobiScript {
+
     public static final String DIRECTORY_SUFFIX = "_tif";
+
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
 
     /**
      * executes the list of GoobiScript commands for all processes that were selected
@@ -95,14 +98,14 @@ public class GoobiScript {
             // in case of a missing action parameter skip this goobiscript
             String myaction = currentScript.get("action");
             if (myaction == null || myaction.length() == 0) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Missing action!", "Please select one of the allowed commands.");
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Missing action!", "Please select one of the allowed commands.");
                 continue;
             }
 
             // in case of missing rights skip this goobiscript
             LoginBean loginForm = Helper.getLoginBean();
             if (!loginForm.hasRole("goobiscript_" + myaction) && !loginForm.hasRole("Workflow_Processes_Allow_GoobiScript")) {
-                Helper.setFehlerMeldung("goobiScriptfield", "You are not allowed to execute this GoobiScript: ", myaction);
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "You are not allowed to execute this GoobiScript: ", myaction);
                 continue;
             }
 
@@ -130,12 +133,12 @@ public class GoobiScript {
 
                         // just execute the GoobiScript now if the initialization was valid
                         if (!scriptResults.isEmpty()) {
-                            Helper.setMeldung("goobiScriptfield", "", "GoobiScript added: " + gs.getAction());
+                            Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript added: " + gs.getAction());
                             gsm.enqueueScripts(scriptResults);
                             gsm.startWork();
                         }
                     } else {
-                        Helper.setFehlerMeldung("goobiScriptfield", "Unknown action: " + myaction, " Please use one of the given below.");
+                        Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Unknown action: " + myaction, " Please use one of the given below.");
                     }
             }
         }
@@ -176,15 +179,15 @@ public class GoobiScript {
                 proz.writeMetadataFile(myRdf);
                 Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "ContentFiles updated using GoobiScript.");
                 log.info("ContentFiles updated using GoobiScript for process with ID " + proz.getId());
-                Helper.setMeldung("goobiScriptfield", "ContentFiles updated: ", proz.getTitel());
+                Helper.setMeldung(GOOBI_SCRIPTFIELD, "ContentFiles updated: ", proz.getTitel());
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
                 Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
 
             } catch (Exception e) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Error while updating content files", e);
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error while updating content files", e);
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'updateContentFiles' finished");
+        Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript 'updateContentFiles' finished");
     }
 
     /**
@@ -202,7 +205,7 @@ public class GoobiScript {
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Swapping out started using GoobiScript.");
             log.info("Swapping out started using GoobiScript for process with ID " + p.getId());
         }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'swapOut' executed.");
+        Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript 'swapOut' executed.");
     }
 
     /**
@@ -220,7 +223,7 @@ public class GoobiScript {
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Swapping in started using GoobiScript.");
             log.info("Swapping in started using GoobiScript for process with ID " + p.getId());
         }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'swapIn' executed.");
+        Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript 'swapIn' executed.");
     }
 
     /**
@@ -238,12 +241,12 @@ public class GoobiScript {
                 }
                 Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "TiffHeaderFile deleted using GoobiScript.");
                 log.info("TiffHeaderFile deleted using GoobiScript for process with ID " + proz.getId());
-                Helper.setMeldung("goobiScriptfield", "TiffHeaderFile deleted: ", proz.getTitel());
+                Helper.setMeldung(GOOBI_SCRIPTFIELD, "TiffHeaderFile deleted: ", proz.getTitel());
             } catch (Exception e) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Error while deleting TiffHeader", e);
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error while deleting TiffHeader", e);
             }
         }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'deleteTiffHeaderFile' finished.");
+        Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript 'deleteTiffHeaderFile' finished.");
     }
 
     /**
@@ -275,21 +278,21 @@ public class GoobiScript {
                 proz.writeMetadataFile(myRdf);
                 Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.");
                 log.info("ImagePath updated using GoobiScript for process with ID " + proz.getId());
-                Helper.setMeldung("goobiScriptfield", "ImagePath updated: ", proz.getTitel());
+                Helper.setMeldung(GOOBI_SCRIPTFIELD, "ImagePath updated: ", proz.getTitel());
 
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
-                Helper.setFehlerMeldung("goobiScriptfield", "DocStructHasNoTypeException", e.getMessage());
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "DocStructHasNoTypeException", e.getMessage());
             } catch (UghHelperException e) {
-                Helper.setFehlerMeldung("goobiScriptfield", "UghHelperException", e.getMessage());
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "UghHelperException", e.getMessage());
             } catch (MetadataTypeNotAllowedException e) {
-                Helper.setFehlerMeldung("goobiScriptfield", "MetadataTypeNotAllowedException", e.getMessage());
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "MetadataTypeNotAllowedException", e.getMessage());
 
             } catch (Exception e) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Error while updating imagepath", e);
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error while updating imagepath", e);
             }
 
         }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'updateImagePath' finished.");
+        Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript 'updateImagePath' finished.");
     }
 
 }
