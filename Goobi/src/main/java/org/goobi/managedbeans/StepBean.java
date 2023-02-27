@@ -47,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
@@ -377,7 +378,11 @@ public class StepBean extends BasicBean implements Serializable {
     public String TakeOverBatch() {
         // find all steps with same batch id and step status
         List<Step> currentStepsOfBatch = new ArrayList<>();
-
+        Institution institution = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            institution = user.getInstitution();
+        }
         String steptitle = this.mySchritt.getTitel();
         Integer batchNumber = null;
         if (mySchritt.getProzess().getBatch() != null) {
@@ -386,7 +391,8 @@ public class StepBean extends BasicBean implements Serializable {
         if (batchNumber != null) {
             // only steps with same title
             currentStepsOfBatch =
-                    StepManager.getSteps(null, "schritte.titel = '" + steptitle + "' and prozesse.batchID = " + batchNumber, 0, Integer.MAX_VALUE);
+                    StepManager.getSteps(null, "schritte.titel = '" + steptitle + "' and prozesse.batchID = " + batchNumber, 0, Integer.MAX_VALUE,
+                            institution);
 
         } else {
             return SchrittDurchBenutzerUebernehmen();
@@ -401,15 +407,14 @@ public class StepBean extends BasicBean implements Serializable {
         }
 
         // set current user, update dates, set symlink for each step in batch
-        User ben = Helper.getCurrentUser();
         for (Step s : currentStepsOfBatch) {
             if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum())) {
 
                 s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
                 s.setBearbeitungszeitpunkt(new Date());
-                if (ben != null) {
-                    s.setBearbeitungsbenutzer(ben);
-                    s.setUserId(ben.getId());
+                if (user != null) {
+                    s.setBearbeitungsbenutzer(user);
+                    s.setUserId(user.getId());
                 }
                 if (s.getBearbeitungsbeginn() == null) {
                     Date myDate = new Date();
@@ -455,7 +460,11 @@ public class StepBean extends BasicBean implements Serializable {
     public String BatchesEdit() {
         // find all steps with same batch id and step status
         List<Step> currentStepsOfBatch = new ArrayList<>();
-
+        Institution institution = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            institution = user.getInstitution();
+        }
         String steptitle = this.mySchritt.getTitel();
         Integer batchNumber = null;
         if (mySchritt.getProzess().getBatch() != null) {
@@ -467,7 +476,7 @@ public class StepBean extends BasicBean implements Serializable {
                     "schritte.titel = '" + steptitle
                             + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
                             + batchNumber + ")",
-                    0, Integer.MAX_VALUE);
+                    0, Integer.MAX_VALUE, institution);
 
         } else {
             return "task_edit";
@@ -584,7 +593,7 @@ public class StepBean extends BasicBean implements Serializable {
     public List<Step> getPreviousStepsForProblemReporting() {
         return StepManager.getSteps("Reihenfolge desc",
                 " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0,
-                Integer.MAX_VALUE);
+                Integer.MAX_VALUE, null);
     }
 
     public int getSizeOfPreviousStepsForProblemReporting() {
@@ -648,7 +657,7 @@ public class StepBean extends BasicBean implements Serializable {
 
             List<Step> alleSchritteDazwischen =
                     StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge <= "
-                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
 
             for (Step step : alleSchritteDazwischen) {
 
@@ -691,7 +700,7 @@ public class StepBean extends BasicBean implements Serializable {
     public List<Step> getNextStepsForProblemSolution() {
 
         return StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
-                + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
+                + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE, null);
     }
 
     public int getSizeOfNextStepsForProblemSolution() {
@@ -725,7 +734,7 @@ public class StepBean extends BasicBean implements Serializable {
              */
             List<Step> alleSchritteDazwischen =
                     StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge >= "
-                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
 
             for (Step step : alleSchritteDazwischen) {
 
@@ -829,7 +838,7 @@ public class StepBean extends BasicBean implements Serializable {
             String myID = element.substring(element.indexOf("[") + 1, element.indexOf("]")).trim();
 
             String sql = FilterHelper.criteriaBuilder("id:" + myID, false, false, false, false, false, true);
-            List<Step> stepList = StepManager.getSteps(sortList(), sql);
+            List<Step> stepList = StepManager.getSteps(sortList(), sql, null);
 
             for (Step step : stepList) {
                 if (StepStatus.INWORK.equals(step.getBearbeitungsstatusEnum())) {

@@ -47,7 +47,7 @@ public class StepManager implements IManager, Serializable {
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
-            return StepMysqlHelper.getStepCount(order, filter);
+            return StepMysqlHelper.getStepCount(order, filter, institution);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -58,13 +58,13 @@ public class StepManager implements IManager, Serializable {
     @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
             throws DAOException {
-        return getSteps(order, filter, start, count);
+        return getSteps(order, filter, start, count, institution);
     }
 
-    public static List<Step> getSteps(String order, String filter, Integer start, Integer count) {
+    public static List<Step> getSteps(String order, String filter, Integer start, Integer count, Institution institution) {
         List<Step> answer = new ArrayList<>();
         try {
-            answer = StepMysqlHelper.getSteps(order, filter, start, count);
+            answer = StepMysqlHelper.getSteps(order, filter, start, count, institution);
         } catch (SQLException e) {
             log.error("error while getting process list", e);
         }
@@ -137,9 +137,9 @@ public class StepManager implements IManager, Serializable {
         }
     }
 
-    public static int countSteps(String order, String filter) throws DAOException {
+    public static int countSteps(String order, String filter, Institution institution) throws DAOException {
         try {
-            return StepMysqlHelper.getStepCount(order, filter);
+            return StepMysqlHelper.getStepCount(order, filter, institution);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -155,9 +155,9 @@ public class StepManager implements IManager, Serializable {
         return 0;
     }
 
-    public static List<Step> getSteps(String order, String filter) {
+    public static List<Step> getSteps(String order, String filter, Institution institution) {
 
-        return getSteps(order, filter, 0, Integer.MAX_VALUE);
+        return getSteps(order, filter, 0, Integer.MAX_VALUE, institution);
     }
 
     public static List<Integer> getIDsForFilter(String filter) {
