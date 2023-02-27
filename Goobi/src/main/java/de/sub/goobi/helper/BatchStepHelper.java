@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -533,11 +532,10 @@ public class BatchStepHelper implements Serializable {
 
                 List<Step> alleSchritteDazwischen =
                         StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess().getId() + " AND Reihenfolge <= "
-                                + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+                                + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
 
-                for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
-                    Step step = iter.next();
-                    if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
+                for (Step step : alleSchritteDazwischen) {
+                    if (!StepStatus.DEACTIVATED.equals(step.getBearbeitungsstatusEnum())) {
                         step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
                     }
                     step.setCorrectionStep();
@@ -565,7 +563,7 @@ public class BatchStepHelper implements Serializable {
         List<SelectItem> answer = new ArrayList<>();
         List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc",
                 " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge < " + this.currentStep.getReihenfolge(), 0,
-                Integer.MAX_VALUE);
+                Integer.MAX_VALUE, null);
 
         for (Step s : alleVorherigenSchritte) {
             answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
@@ -580,7 +578,7 @@ public class BatchStepHelper implements Serializable {
     public List<SelectItem> getNextStepsForProblemSolution() {
         List<SelectItem> answer = new ArrayList<>();
         List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId()
-                + " AND Reihenfolge > " + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
+                + " AND Reihenfolge > " + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE, null);
 
         for (Step s : alleNachfolgendenSchritte) {
             answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
@@ -638,11 +636,10 @@ public class BatchStepHelper implements Serializable {
                  */
                 List<Step> alleSchritteDazwischen =
                         StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge >= "
-                                + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+                                + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
 
-                for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
-                    Step step = iter.next();
-                    if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
+                for (Step step : alleSchritteDazwischen) {
+                    if (!StepStatus.DEACTIVATED.equals(step.getBearbeitungsstatusEnum())) {
                         step.setBearbeitungsstatusEnum(StepStatus.DONE);
                     }
                     step.setBearbeitungsende(now);
@@ -829,8 +826,8 @@ public class BatchStepHelper implements Serializable {
 
                 for (ProcessProperty prop : processPropertyList) {
 
-                    if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED)
-                            && (prop.getValue() == null || prop.getValue().equals(""))) {
+                    if (AccessCondition.WRITEREQUIRED.equals(prop.getCurrentStepAccessCondition())
+                            && (prop.getValue() == null || "".equals(prop.getValue()))) {
                         String[] parameter = { prop.getName(), s.getProzess().getTitel() };
                         Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyEmpty", parameter));
                         error = true;

@@ -54,6 +54,7 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
@@ -441,7 +442,7 @@ public class ProzesskopieForm implements Serializable {
 
     public List<SelectItem> getProzessTemplates() {
         List<SelectItem> myProcessTemplates = new ArrayList<>();
-        String filter = " istTemplate = false AND inAuswahllisteAnzeigen = true ";
+        StringBuilder filter = new StringBuilder(" istTemplate = false AND inAuswahllisteAnzeigen = true ");
 
         /* Einschränkung auf bestimmte Projekte, wenn kein Admin */
         User aktuellerNutzer = Helper.getCurrentUser();
@@ -451,11 +452,17 @@ public class ProzesskopieForm implements Serializable {
          */
         if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
-            filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                    + aktuellerNutzer.getId() + ")";
+            filter.append(" AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ")
+                    .append(aktuellerNutzer.getId())
+                    .append(")");
+        }
+        Institution inst = null;
+        if (aktuellerNutzer != null && !aktuellerNutzer.isSuperAdmin()) {
+            //             limit result to institution of current user
+            inst = aktuellerNutzer.getInstitution();
         }
 
-        List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter);
+        List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter.toString(), inst);
         for (Process proz : selectList) {
             myProcessTemplates.add(new SelectItem(proz.getId(), proz.getTitel(), null));
         }
@@ -1567,7 +1574,7 @@ public class ProzesskopieForm implements Serializable {
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
                 sb.append(myString.substring(1, myString.length() - 1));
-            } else if (myString.equals("$Doctype")) {
+            } else if ("$Doctype".equals(myString)) {
                 /* wenn der Doctype angegeben werden soll */
                 sb.append(this.co.getDoctypeByName(this.docType).getTifHeaderType());
             } else {

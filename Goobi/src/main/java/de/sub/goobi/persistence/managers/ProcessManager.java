@@ -55,13 +55,13 @@ public class ProcessManager implements IManager, Serializable {
 
     @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) {
-        return getProcesses(order, filter, start, count);
+        return getProcesses(order, filter, start, count, institution);
     }
 
-    public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) {
+    public static List<Process> getProcesses(String order, String filter, Integer start, Integer count, Institution institution) {
         List<Process> answer = new ArrayList<>();
         try {
-            answer = ProcessMysqlHelper.getProcesses(order, filter, start, count);
+            answer = ProcessMysqlHelper.getProcesses(order, filter, start, count, institution);
         } catch (SQLException e) {
             log.error("error while getting process list", e);
         }
@@ -78,8 +78,8 @@ public class ProcessManager implements IManager, Serializable {
         return answer;
     }
 
-    public static List<Process> getProcesses(String order, String filter) {
-        return getProcesses(order, filter, 0, Integer.MAX_VALUE);
+    public static List<Process> getProcesses(String order, String filter, Institution institution) {
+        return getProcesses(order, filter, 0, Integer.MAX_VALUE, institution);
     }
 
     public static Process getProcessById(int id) {
