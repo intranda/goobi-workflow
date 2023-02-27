@@ -56,6 +56,8 @@ import ugh.dl.Prefs;
 @Data
 public class MetaCorporate implements SearchableMetadata {
 
+    private static final String SUBNAME = "subname";
+
     private Corporate corporate;
     private Prefs myPrefs;
     private Metadaten bean;
@@ -178,18 +180,21 @@ public class MetaCorporate implements SearchableMetadata {
 
         } else {
 
+            String x152 = "\\x152";
+            String x156 = "\\x156";
+
             for (NormData normdata : currentData) {
                 if (normdata.getKey().equals("NORM_IDENTIFIER")) {
                     corporate.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
                 } else if (normdata.getKey().equals("NORM_ORGANIZATION")) {
-                    mainValue = normdata.getValues().get(0).getText().replace("\\x152", "").replace("\\x156", "");
+                    mainValue = normdata.getValues().get(0).getText().replace(x152, "").replace(x156, "");
                 } else if (normdata.getKey().equals("NORM_SUB_ORGANIZATION")) {
-                    subNames.add(new NamePart("subname", normdata.getValues().get(0).getText().replace("\\x152", "").replace("\\x156", "")));
+                    subNames.add(new NamePart(SUBNAME, normdata.getValues().get(0).getText().replace(x152, "").replace(x156, "")));
                 } else if (normdata.getKey().equals("NORM_PART_ORGANIZATION")) {
                     if (partName.length() > 0) {
                         partName.append("; ");
                     }
-                    partName.append(normdata.getValues().get(0).getText().replace("\\x152", "").replace("\\x156", ""));
+                    partName.append(normdata.getValues().get(0).getText().replace(x152, "").replace(x156, ""));
                 }
             }
         }
@@ -200,7 +205,7 @@ public class MetaCorporate implements SearchableMetadata {
                 mainValue = mainValue.substring(0, mainValue.lastIndexOf(","));
             }
             if (subNames.isEmpty()) {
-                subNames.add(new NamePart("subname", ""));
+                subNames.add(new NamePart(SUBNAME, ""));
             }
             corporate.setMainName(mainValue);
             corporate.setSubNames(subNames);
@@ -253,14 +258,14 @@ public class MetaCorporate implements SearchableMetadata {
 
     public List<NamePart> getSubNames() {
         if (corporate.getSubNames().isEmpty()) {
-            corporate.addSubName(new NamePart("subname", ""));
+            corporate.addSubName(new NamePart(SUBNAME, ""));
         }
 
         return corporate.getSubNames();
     }
 
     public void addSubName() {
-        corporate.addSubName(new NamePart("subname", ""));
+        corporate.addSubName(new NamePart(SUBNAME, ""));
     }
 
     public void removeSubName(NamePart name) {

@@ -135,8 +135,8 @@ public class ObjectResource {
     @GET
     @Path("/{processId}/{foldername}/{filename}.js")
     @Produces({ "application/javascript" })
-    public String getJS(@Context HttpServletRequest request, @Context HttpServletResponse response,
-            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+    public String getJS(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
+            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
             throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".js";
@@ -167,8 +167,8 @@ public class ObjectResource {
     @GET
     @Path("/{processId}/{foldername}/{filename}.xml")
     @Produces({ MediaType.TEXT_XML })
-    public String getXml(@Context HttpServletRequest request, @Context HttpServletResponse response,
-            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+    public String getXml(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
+            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
             throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".xml";
@@ -199,8 +199,8 @@ public class ObjectResource {
     @GET
     @Path("/{processId}/{foldername}/images/{filename}.jpg")
     @Produces({ "image/jpeg" })
-    public void getJpeg(@Context HttpServletRequest request, @Context HttpServletResponse response,
-            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+    public void getJpeg(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
+            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
             throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".jpg";

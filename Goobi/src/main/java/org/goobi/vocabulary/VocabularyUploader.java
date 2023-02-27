@@ -119,7 +119,7 @@ public class VocabularyUploader {
         return vocabFromResponse(response);
     }
 
-    private static Boolean updateVocabulary(Vocabulary vocab) throws URISyntaxException, IOException, JMSException {
+    private static Boolean updateVocabulary(Vocabulary vocab) throws IOException, URISyntaxException, JMSException {
 
         String strVocabId = String.valueOf(vocab.getId());
         String strUsername = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();

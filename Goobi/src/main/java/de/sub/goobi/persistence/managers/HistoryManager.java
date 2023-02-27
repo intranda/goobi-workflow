@@ -32,6 +32,9 @@ import lombok.extern.log4j.Log4j2;
 public class HistoryManager implements Serializable {
     private static final long serialVersionUID = -6083287984702600461L;
 
+    private static final String HISTORY_EVENT_SAVE_ERROR = "Cannot save history event";
+    private static final String IMAGE_NUMBER_ERROR = "Cannot get number of images";
+
     public static List<HistoryEvent> getHistoryEvents(int id) {
 
         try {
@@ -46,7 +49,7 @@ public class HistoryManager implements Serializable {
         try {
             HistoryMysqlHelper.addHistory(myDate, order, value, type, processId);
         } catch (SQLException e) {
-            log.error("Cannot not save history event", e);
+            log.error(HISTORY_EVENT_SAVE_ERROR, e);
         }
     }
 
@@ -58,7 +61,7 @@ public class HistoryManager implements Serializable {
         try {
             HistoryMysqlHelper.updateHistoryEvent(he);
         } catch (SQLException e) {
-            log.error("Cannot not save history event", e);
+            log.error(HISTORY_EVENT_SAVE_ERROR, e);
         }
     }
 
@@ -66,7 +69,7 @@ public class HistoryManager implements Serializable {
         try {
             HistoryMysqlHelper.deleteHistoryEvent(he);
         } catch (SQLException e) {
-            log.error("Cannot not save history event", e);
+            log.error(HISTORY_EVENT_SAVE_ERROR, e);
         }
     }
 
@@ -74,7 +77,7 @@ public class HistoryManager implements Serializable {
         try {
             return HistoryMysqlHelper.getNumberOfImages(processId);
         } catch (SQLException e) {
-            log.error("Cannot get number of images", e);
+            log.error(IMAGE_NUMBER_ERROR, e);
         }
         return 0;
     }

@@ -369,7 +369,8 @@ public class StepBean extends BasicBean implements Serializable {
         try {
             mySchritt = StepManager.getStepById(mySchritt.getId());
             mySchritt.lazyLoad();
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            log.error(exception);
         }
 
         return "task_edit";
@@ -534,7 +535,7 @@ public class StepBean extends BasicBean implements Serializable {
         }
 
         /*
-         * -------------------------------- wenn das Resultat des Arbeitsschrittes zunÃ¤chst verifiziert werden soll, dann ggf. das Abschliessen
+         * -------------------------------- wenn das Resultat des Arbeitsschrittes zunächst verifiziert werden soll, dann ggf. das Abschliessen
          * abbrechen --------------------------------
          */
         if (this.mySchritt.isTypBeimAbschliessenVerifizieren()) {
@@ -685,7 +686,8 @@ public class StepBean extends BasicBean implements Serializable {
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */
             ProcessManager.saveProcessInformation(this.mySchritt.getProzess());
-        } catch (DAOException e) {
+        } catch (DAOException exception) {
+            log.error(exception);
         }
 
         this.problemMessage = "";
@@ -784,7 +786,8 @@ public class StepBean extends BasicBean implements Serializable {
                 ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(temp);
                 myThread.startOrPutToQueue();
             }
-        } catch (DAOException e) {
+        } catch (DAOException exception) {
+            log.error(exception);
         }
 
         this.solutionMessage = "";
@@ -810,8 +813,8 @@ public class StepBean extends BasicBean implements Serializable {
     public String DownloadToHome() {
         try {
             Paths.get(this.mySchritt.getProzess().getImagesOrigDirectory(true));
-        } catch (Exception e1) {
-
+        } catch (Exception exception) {
+            log.error(exception);
         }
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = Helper.getCurrentUser();
@@ -1037,19 +1040,20 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     /*
-     * Parameter per Get Ã¼bergeben bekommen und entsprechen den passenden Schritt laden
+     * Parameter per Get übergeben bekommen und entsprechen den passenden Schritt laden
      */
 
     /**
-     * prüfen, ob per Parameter vielleicht zunÃ¤chst ein anderer geladen werden soll
+     * prüfen, ob per Parameter vielleicht zunächst ein anderer geladen werden soll
      * 
-     * @throws DAOException , NumberFormatException
+     * @throws DAOException
+     * @throws NumberFormatException
      */
     private void schrittPerParameterLaden() throws DAOException, NumberFormatException {
         String param = Helper.getRequestParameter("myid");
         if (param != null && !"".equals(param)) {
             /*
-             * wenn bisher noch keine aktuellen Schritte ermittelt wurden, dann dies jetzt nachholen, damit die Liste vollstÃ¤ndig ist
+             * wenn bisher noch keine aktuellen Schritte ermittelt wurden, dann dies jetzt nachholen, damit die Liste vollständig ist
              */
             if (this.paginator == null && Helper.getCurrentUser() != null) {
                 FilterAlleStart();

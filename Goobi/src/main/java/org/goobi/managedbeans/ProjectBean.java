@@ -214,18 +214,17 @@ public class ProjectBean extends BasicBean implements Serializable {
     public String Apply() {
         // call this to make saving and deleting permanent
         log.trace("Apply wird aufgerufen...");
-        if (!checkProjectTitle()) {
-            return EMPTY_STRING;
+
+        if (checkProjectTitle()) {
+            this.commitFileGroups();
+            try {
+                ProjectManager.saveProject(this.myProjekt);
+                paginator.load();
+            } catch (DAOException e) {
+                Helper.setFehlerMeldung("could not save", e.getMessage());
+            }
         }
-        this.commitFileGroups();
-        try {
-            ProjectManager.saveProject(this.myProjekt);
-            paginator.load();
-            return EMPTY_STRING;
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("could not save", e.getMessage());
-            return EMPTY_STRING;
-        }
+        return EMPTY_STRING;
     }
 
     private boolean checkProjectTitle() {
@@ -590,8 +589,8 @@ public class ProjectBean extends BasicBean implements Serializable {
                 this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
                 this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
                 this.projectProgressData
-                .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
-                        null, null, null, true, false) + " AND prozesse.istTemplate = false ");
+                        .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
+                                null, null, null, true, false) + " AND prozesse.istTemplate = false ");
 
                 if (this.projectProgressImage == null) {
                     this.projectProgressImage = "";

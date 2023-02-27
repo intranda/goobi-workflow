@@ -29,6 +29,7 @@ package de.sub.goobi.helper;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyManagementException;
@@ -112,6 +113,8 @@ public class HelperSchritte {
     private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
     private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
 
+    private static final String HTTP_STEP = "http step";
+
     /**
      * Schritt abschliessen und dabei parallele Schritte berücksichtigen ================================================================
      */
@@ -126,12 +129,12 @@ public class HelperSchritte {
 
         currentStep.setBearbeitungszeitpunkt(myDate);
         try {
-            User ben = Helper.getCurrentUser();
-            if (ben != null) {
-                currentStep.setBearbeitungsbenutzer(ben);
+            User user = Helper.getCurrentUser();
+            if (user != null) {
+                currentStep.setBearbeitungsbenutzer(user);
             }
         } catch (Exception e) {
-
+            log.warn(e);
         }
         currentStep.setBearbeitungsende(myDate);
         try {
@@ -379,7 +382,7 @@ public class HelperSchritte {
             Fileformat ff = po.readMetadataFile();
             if (ff == null) {
                 log.info("Metadata file is not readable for process with ID " + step.getProcessId());
-                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "Metadata file is not readable",
+                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR, "Metadata file is not readable",
                         EntryType.PROCESS);
                 JournalManager.saveJournalEntry(le);
             } else {
@@ -387,7 +390,7 @@ public class HelperSchritte {
             }
         } catch (Exception e2) {
             log.info("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
-            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error reading metadata file",
+            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR, "error reading metadata file",
                     EntryType.PROCESS);
             JournalManager.saveJournalEntry(le);
         }
@@ -409,7 +412,7 @@ public class HelperSchritte {
             scsf = new SSLConnectionSocketFactory(SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(),
                     NoopHostnameVerifier.INSTANCE);
         } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e1) {
-            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR,
+            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR,
                     "error executing http request: " + e1.getMessage(), EntryType.PROCESS);
             JournalManager.saveJournalEntry(le);
             errorStep(step);
@@ -442,7 +445,7 @@ public class HelperSchritte {
                 String respStr = "- no response body -";
                 if (resp.getEntity() != null && resp.getEntity().getContentLength() < 20000) {
                     StringWriter writer = new StringWriter();
-                    Charset encoding = Charset.forName("utf-8");
+                    Charset encoding = StandardCharsets.UTF_8;
                     if (resp.getEntity().getContentEncoding() != null) {
                         try {
                             encoding = Charset.forName(resp.getEntity().getContentEncoding().getValue());
@@ -456,26 +459,26 @@ public class HelperSchritte {
                 }
                 int statusCode = resp.getStatusLine().getStatusCode();
                 if (statusCode >= 400) {
-                    JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR,
+                    JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR,
                             String.format("Server returned status code %d, response body was: '%s'", statusCode, respStr), EntryType.PROCESS);
                     JournalManager.saveJournalEntry(le);
                     errorStep(step);
                     log.error(respStr);
                     return;
                 }
-                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.INFO, respStr, EntryType.PROCESS);
+                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.INFO, respStr, EntryType.PROCESS);
                 JournalManager.saveJournalEntry(le);
                 if (step.isHttpCloseStep()) {
                     CloseStepObjectAutomatic(step);
                 }
                 log.info(respStr);
             } else {
-                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error executing http request",
+                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR, "error executing http request",
                         EntryType.PROCESS);
                 JournalManager.saveJournalEntry(le);
             }
         } catch (IOException e) {
-            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR,
+            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR,
                     "error executing http request: " + e.getMessage(), EntryType.PROCESS);
             JournalManager.saveJournalEntry(le);
             errorStep(step);

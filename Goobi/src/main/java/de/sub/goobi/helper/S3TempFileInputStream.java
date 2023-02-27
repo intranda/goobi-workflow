@@ -36,13 +36,15 @@ import java.nio.file.Path;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * This class stores the the {@link S3ObjectInputStream} into a temporary file and provides a {@link FileInputStream} to it. It is used to avoid
  * FileDescriptor leaks in the S3Object.
  * 
  * When the Stream is closed, the temporary file gets removed.
  */
-
+@Log4j2
 public class S3TempFileInputStream extends InputStream {
 
     private Path tempFile = null;
@@ -51,12 +53,14 @@ public class S3TempFileInputStream extends InputStream {
     public S3TempFileInputStream(S3ObjectInputStream stream) {
         try {
             tempFile = Files.createTempFile("s3file", ""); //NOSONAR, using temporary file is save here
-        } catch (IOException e) {
+        } catch (IOException exception) {
+            log.warn(exception);
         }
         try (OutputStream fos = Files.newOutputStream(tempFile)) {
             IOUtils.copy(stream, fos);
             inputStream = new FileInputStream(tempFile.toFile());
-        } catch (IOException e) {
+        } catch (IOException exception) {
+            log.warn(exception);
         }
     }
 

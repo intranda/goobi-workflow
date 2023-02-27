@@ -73,7 +73,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             answer = ProcessMysqlHelper.getProcessIdList(order, filter, start, count);
         } catch (SQLException e) {
-            log.error("error while getting process list", e);
+            log.error("error while getting process id list", e);
         }
         return answer;
     }
@@ -158,7 +158,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             answer = ProcessMysqlHelper.getAllProcesses();
         } catch (SQLException e) {
-            log.error("error while getting process list", e);
+            log.error("error while getting list of all processes", e);
         }
         return answer;
     }
@@ -395,8 +395,6 @@ public class ProcessManager implements IManager, Serializable {
         if (!rs.wasNull()) {
             Batch batch = ProcessMysqlHelper.loadBatch(batchID);
             p.setBatch(batch);
-
-        } else {
         }
         p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
         String exportValidatorRs = rs.getString("exportValidator");

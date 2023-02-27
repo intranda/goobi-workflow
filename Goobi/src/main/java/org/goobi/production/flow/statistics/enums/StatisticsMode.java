@@ -27,6 +27,8 @@ package org.goobi.production.flow.statistics.enums;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.hibernate.StatQuestCorrections;
 import org.goobi.production.flow.statistics.hibernate.StatQuestProduction;
@@ -60,6 +62,12 @@ public enum StatisticsMode {
     STORAGE("storageCalculator", StatQuestStorage.class, false, false, true),
     PRODUCTION("productionStatistics", StatQuestProduction.class, false, false, true);
 
+    /**
+     * This logger field must be initialized manually because the annotation lombok.extern.log4j.Log4j2 would initialize a static LOG field. Static
+     * fields are not accessible in enum constructors because enum items are initialized before static fields.
+     */
+    private final Logger log = LogManager.getLogger(StatisticsMode.class);
+
     private IStatisticalQuestion question;
     private String title;
     private Boolean renderIncludeLoops;
@@ -77,7 +85,8 @@ public enum StatisticsMode {
 
                 question = inQuestion.getDeclaredConstructor().newInstance();
             } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException
-                    | IllegalAccessException e) {
+                    | IllegalAccessException exception) {
+                log.error(exception);
             }
         }
         this.renderIncludeLoops = renderIncludeLoops;

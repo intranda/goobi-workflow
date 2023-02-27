@@ -365,7 +365,8 @@ public class CopyProcess {
                     if ("firstchild".equals(field.getDocstruct())) {
                         try {
                             myTempStruct = myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                        } catch (RuntimeException e) {
+                        } catch (RuntimeException exception) {
+                            log.error(exception);
                         }
                     }
                     if ("boundbook".equals(field.getDocstruct())) {
@@ -688,7 +689,8 @@ public class CopyProcess {
                         if (!"firstchild".equals(field.getDocstruct()) && field.getDocstruct().contains("firstchild")) {
                             try {
                                 myTempChild = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                            } catch (RuntimeException e) {
+                            } catch (RuntimeException exception) {
+                                log.error(exception);
                             }
                         }
                         if ("boundbook".equals(field.getDocstruct())) {
@@ -721,8 +723,8 @@ public class CopyProcess {
                                     md.setValue(field.getWert());
                                 }
                             }
-                        } catch (NullPointerException | UghHelperException | MetadataTypeNotAllowedException e) {
-
+                        } catch (NullPointerException | UghHelperException | MetadataTypeNotAllowedException exception) {
+                            log.error(exception);
                         }
                     } // end if ughbinding
                 } // end for

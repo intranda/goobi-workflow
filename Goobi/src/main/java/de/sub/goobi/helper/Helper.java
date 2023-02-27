@@ -116,6 +116,7 @@ public class Helper implements Serializable, ServletContextListener {
     private static final Map<String, Boolean> reloadNeededMap = new ConcurrentHashMap<>();
     private static final Map<Path, Thread> watcherMap = new ConcurrentHashMap<>();
     private static final String MESSAGES = "messages";
+    private static final String AUTOMATIC = "- automatic -";
 
     /**
      * Ermitteln eines bestimmten Paramters des Requests
@@ -226,7 +227,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     public static void addMessageToUserJournal(Integer userId, LogType type, String message) {
         LoginBean login = getLoginBean();
-        String user = "- automatic -";
+        String user = AUTOMATIC;
         if (login != null) {
             User userObject = login.getMyBenutzer();
             if (userObject != null) {
@@ -238,7 +239,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     public static void addMessageToInstitutionJournal(Integer institutionId, LogType type, String message) {
         LoginBean login = getLoginBean();
-        String user = "- automatic -";
+        String user = AUTOMATIC;
         if (login != null) {
             User userObject = login.getMyBenutzer();
             if (userObject != null) {
@@ -250,7 +251,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     public static void addMessageToProcessJournal(Integer processId, LogType type, String message) {
         LoginBean login = getLoginBean();
-        String user = "- automatic -";
+        String user = AUTOMATIC;
         if (login != null) {
             User userObject = login.getMyBenutzer();
             if (userObject != null) {
@@ -327,6 +328,7 @@ public class Helper implements Serializable, ServletContextListener {
                 msg = getString(language, meldung);
                 beschr = getString(language, beschreibung);
             } catch (RuntimeException e) {
+                log.error(e);
             }
         }
 
@@ -541,6 +543,7 @@ public class Helper implements Serializable, ServletContextListener {
                         }
 
                     } catch (Exception e) {
+                        log.error(e);
                     }
                 }
             }
@@ -588,6 +591,7 @@ public class Helper implements Serializable, ServletContextListener {
         try {
             desiredLanguage = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
         } catch (NullPointerException skip) {
+            // If this exception occurs, desiredLanguage is null and is checked in the following if block
         }
         if (desiredLanguage != null) {
             return getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
@@ -608,6 +612,7 @@ public class Helper implements Serializable, ServletContextListener {
         try {
             desiredLanguage = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
         } catch (NullPointerException skip) {
+            // If this exception occurs, desiredLanguage is null and is checked in the following if block
         }
         if (desiredLanguage != null) {
             value = getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
@@ -748,6 +753,7 @@ public class Helper implements Serializable, ServletContextListener {
                 return ret;
             }
         } catch (IllegalStateException e) {
+            log.warn(e);
         }
         // Via FacesContext
         if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getExternalContext().getContext() != null) {

@@ -26,7 +26,7 @@ package de.sub.goobi.helper.ldap;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -136,12 +136,8 @@ public class LdapUser implements DirContext {
                 log.error(e);
             }
             /* NTLM */
-            try {
-                byte[] hmm = MD4.mdfour(inPassword.getBytes("UnicodeLittleUnmarked"));
-                this.myAttrs.put("sambaNTPassword", toHexString(hmm));
-            } catch (UnsupportedEncodingException e) {
-                log.error(e);
-            }
+            byte[] hmm = MD4.mdfour(inPassword.getBytes(StandardCharsets.UTF_16LE));
+            this.myAttrs.put("sambaNTPassword", toHexString(hmm));
 
             /*
              * -------------------------------- Encryption of password und Base64-Enconding --------------------------------
@@ -184,13 +180,13 @@ public class LdapUser implements DirContext {
      * @return The LM Hash of the given password, used in the calculation of the LM Response.
      */
     public static byte[] lmHash(String password) throws Exception {
-        byte[] oemPassword = password.toUpperCase().getBytes("US-ASCII");
+        byte[] oemPassword = password.toUpperCase().getBytes(StandardCharsets.US_ASCII);
         int length = Math.min(oemPassword.length, 14);
         byte[] keyBytes = new byte[14];
         System.arraycopy(oemPassword, 0, keyBytes, 0, length);
         Key lowKey = createDESKey(keyBytes, 0);
         Key highKey = createDESKey(keyBytes, 7);
-        byte[] magicConstant = "KGS!@#$%".getBytes("US-ASCII");
+        byte[] magicConstant = "KGS!@#$%".getBytes(StandardCharsets.US_ASCII);
         Cipher des = Cipher.getInstance("DES/ECB/NoPadding"); //NOSONAR
         des.init(Cipher.ENCRYPT_MODE, lowKey);
         byte[] lowHash = des.doFinal(magicConstant);

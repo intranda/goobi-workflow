@@ -108,6 +108,11 @@ import ugh.fileformats.mets.ModsHelper;
 @Data
 @Log4j2
 public class MetadatumImpl implements Metadatum, SearchableMetadata {
+
+    private static final String DANTE = "dante";
+
+    private static final String PROCESS_PLUGIN = "ProcessPlugin";
+
     private Metadata md;
     private int identifier;
     private Prefs myPrefs;
@@ -394,8 +399,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     @Override
     public String getOutputType() {
         String type = this.myValues.getDisplayType().name();
-        if (type.toLowerCase().startsWith("dante")) {
-            return "dante";
+        if (type.toLowerCase().startsWith(DANTE)) {
+            return DANTE;
         }
         return this.myValues.getDisplayType().name();
     }
@@ -691,7 +696,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if ("URI".equals(normdata.getKey())) {
-                        md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
+                        md.setAutorityFile(DANTE, "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
                     } else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isEmpty(getLabelList())
                             && normdata.getKey().equals(field)) {
                         String value = normdata.getValues().get(0).getText();
@@ -859,7 +864,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     public void linkProcess(RestProcess rp) {
         Project p = this.getBean().getMyProzess().getProjekt();
-        XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig("ProcessPlugin");
+        XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig(PROCESS_PLUGIN);
         if (xmlConf == null) {
             return;
         }
@@ -947,8 +952,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
             }
             return use;
-        } catch (IllegalArgumentException e) {
-
+        } catch (IllegalArgumentException exception) {
+            log.warn(exception);
         }
         return null;
     }
@@ -960,7 +965,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             return;
         }
         Project p = this.getBean().getMyProzess().getProjekt();
-        XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig("ProcessPlugin");
+        XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig(PROCESS_PLUGIN);
         if (xmlConf == null) {
             return;
         }
@@ -1005,7 +1010,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             this.possibleFields = MetadataManager.getDistinctMetadataNames();
             if (StorageProvider.getInstance()
                     .isFileExists(Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder(), "plugin_ProcessPlugin.xml"))) {
-                XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig("ProcessPlugin");
+                XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig(PROCESS_PLUGIN);
                 if (xmlConf != null) {
                     HierarchicalConfiguration use = getConfigForProject(p, xmlConf);
                     if (use != null) {

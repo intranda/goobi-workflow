@@ -49,7 +49,9 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Named("SearchForm")
 @WindowScoped
 public class SearchBean implements Serializable {
@@ -129,7 +131,8 @@ public class SearchBean implements Serializable {
             for (Project p : projektList) {
                 this.projects.add(p.getTitel());
             }
-        } catch (DAOException e1) {
+        } catch (DAOException exception) {
+            log.error(exception);
         }
 
         this.masterpiecePropertyTitles.add(Helper.getTranslation("notSelected"));

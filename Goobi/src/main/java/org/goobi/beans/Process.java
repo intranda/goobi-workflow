@@ -508,7 +508,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     public String getOcrTxtDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -518,27 +518,27 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     public String getOcrPdfDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException {
@@ -592,10 +592,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @param size The size of the desired thumbnails
      * @return The full path to thumbnail directory or null if no matching directory was found
-     * @throws DAOException
-     * @throws SwapException
-     * @throws InterruptedException
      * @throws IOException
+     * @throws InterruptedException
+     * @throws SwapException
+     * @throws DAOException
      */
     public String getThumbsDirectory(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException, DAOException {
         Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
@@ -1355,7 +1355,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             method = this.getClass().getMethod(methodName);
             Object o = method.invoke(this);
             return (String) o;
-        } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+        } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException
+                | InvocationTargetException exception) {
+            log.error(exception);
         }
 
         try {
@@ -1368,8 +1370,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                     return folder;
                 }
             }
-        } catch (SwapException | IOException e) {
-
+        } catch (SwapException | IOException exception) {
+            log.error(exception);
         }
 
         return null;
@@ -1693,7 +1695,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * 
      * @return
      */
-
 
     @Override
     public Path getDownloadFolder() {

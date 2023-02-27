@@ -34,10 +34,11 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class InstitutionManager implements IManager, Serializable {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 7833749197877394841L;
+
+    private static final String INSTITUTION_ERROR = "error while getting Institutions";
+    private static final String INSTITUTION_PLUGIN_ERROR = "error while getting plugins for Institution";
 
     public static Institution getInstitutionById(int id) {
         try {
@@ -78,7 +79,7 @@ public class InstitutionManager implements IManager, Serializable {
         try {
             answer = InstitutionMysqlHelper.getInstitutions(order, filter, start, count);
         } catch (SQLException e) {
-            log.error("error while getting Institutions", e);
+            log.error(INSTITUTION_ERROR, e);
         }
         return answer;
     }
@@ -115,7 +116,7 @@ public class InstitutionManager implements IManager, Serializable {
         try {
             answer = InstitutionMysqlHelper.getAllInstitutionsAsList();
         } catch (SQLException e) {
-            log.error("error while getting Institutions", e);
+            log.error(INSTITUTION_ERROR, e);
         }
         return answer;
     }
@@ -125,7 +126,7 @@ public class InstitutionManager implements IManager, Serializable {
         try {
             answer = InstitutionMysqlHelper.getConfiguredRulesets(institutionId);
         } catch (SQLException e) {
-            log.error("error while getting Institutions", e);
+            log.error(INSTITUTION_ERROR, e);
         }
         return answer;
     }
@@ -135,7 +136,7 @@ public class InstitutionManager implements IManager, Serializable {
         try {
             answer = InstitutionMysqlHelper.getConfiguredDockets(institutionId);
         } catch (SQLException e) {
-            log.error("error while getting Institutions", e);
+            log.error(INSTITUTION_ERROR, e);
         }
         return answer;
     }
@@ -145,7 +146,7 @@ public class InstitutionManager implements IManager, Serializable {
         try {
             answer = InstitutionMysqlHelper.getConfiguredAuthentications(institutionId);
         } catch (SQLException e) {
-            log.error("error while getting Institutions", e);
+            log.error(INSTITUTION_ERROR, e);
         }
         return answer;
     }
@@ -156,7 +157,7 @@ public class InstitutionManager implements IManager, Serializable {
         try {
             answer = InstitutionMysqlHelper.getInstitutionNames();
         } catch (SQLException e) {
-            log.error("error while getting Institutions", e);
+            log.error(INSTITUTION_ERROR, e);
         }
         return answer;
     }
@@ -166,7 +167,7 @@ public class InstitutionManager implements IManager, Serializable {
         try {
             answer = InstitutionMysqlHelper.getConfiguredAdministrationPlugins(id, pluginNames);
         } catch (SQLException e) {
-            log.error("error while getting plugins for Institution", e);
+            log.error(INSTITUTION_PLUGIN_ERROR, e);
         }
         return answer;
     }
@@ -176,7 +177,7 @@ public class InstitutionManager implements IManager, Serializable {
         try {
             answer = InstitutionMysqlHelper.getConfiguredWorkflowPlugins(id, pluginNames);
         } catch (SQLException e) {
-            log.error("error while getting plugins for Institution", e);
+            log.error(INSTITUTION_PLUGIN_ERROR, e);
         }
         return answer;
     }
@@ -186,7 +187,7 @@ public class InstitutionManager implements IManager, Serializable {
         try {
             answer = InstitutionMysqlHelper.getConfiguredDashboardPlugins(id, pluginNames);
         } catch (SQLException e) {
-            log.error("error while getting plugins for Institution", e);
+            log.error(INSTITUTION_PLUGIN_ERROR, e);
         }
         return answer;
     }
@@ -196,7 +197,7 @@ public class InstitutionManager implements IManager, Serializable {
         try {
             answer = InstitutionMysqlHelper.getConfiguredStatisticsPlugins(id, pluginNames);
         } catch (SQLException e) {
-            log.error("error while getting plugins for Institution", e);
+            log.error(INSTITUTION_PLUGIN_ERROR, e);
         }
         return answer;
     }
@@ -240,7 +241,7 @@ public class InstitutionManager implements IManager, Serializable {
         r.setAllowAllDockets(rs.getBoolean("allowAllDockets"));
         r.setAllowAllAuthentications(rs.getBoolean("allowAllAuthentications"));
         r.setAllowAllPlugins(rs.getBoolean("allowAllPlugins"));
-        r.setAdditionalData (MySQLHelper.convertStringToMap(rs.getString("additional_data")));
+        r.setAdditionalData(MySQLHelper.convertStringToMap(rs.getString("additional_data")));
         r.setJournal(JournalManager.getLogEntriesForInstitution(r.getId()));
         return r;
     }

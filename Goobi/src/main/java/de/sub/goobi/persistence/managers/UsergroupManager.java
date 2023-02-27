@@ -85,7 +85,7 @@ public class UsergroupManager implements IManager, Serializable {
         try {
             answer = UsergroupMysqlHelper.getUsergroupsForUser(user);
         } catch (SQLException e) {
-            log.error("error while getting Usergroups", e);
+            log.error("error while getting Usergroups for user", e);
             throw new DAOException(e);
         }
         return answer;
@@ -204,7 +204,7 @@ public class UsergroupManager implements IManager, Serializable {
         try {
             answer = UsergroupMysqlHelper.getAllUsergroups();
         } catch (SQLException e) {
-            log.error("error while getting Usergroups", e);
+            log.error("error while getting all Usergroups", e);
         }
         return answer;
     }
