@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.regex.PatternSyntaxException;
 
 import javax.enterprise.inject.Default;
 import javax.faces.model.SelectItem;
@@ -290,15 +291,31 @@ public class ProzesskopieForm implements Serializable {
         return this.naviFirstPage;
     }
 
+    /**
+     * Tries to initialize the config projects object (the project configuration XML file). If the file could be read, the config projects object is
+     * returned. Otherwise, the error message is displayed in the GUI and null is returned.
+     *
+     * @param projectTitle The name of the project of interest
+     * @return The config projects object if the file could be read or null in case of an error
+     */
+    public static ConfigProjects initializeConfigProjects(String projectTitle) {
+        try {
+            return new ConfigProjects(projectTitle);
+        } catch (IOException ioException) {
+            Helper.setFehlerMeldung("File could not be found or read (IOException): ", ioException.getMessage());
+        } catch (PatternSyntaxException exception) {
+            String message = Helper.getTranslation("projectErrorConfigurationHasInvalidTitle");
+            Helper.setFehlerMeldung(message + ": " + exception.getPattern());
+        }
+        return null;
+    }
+
     private void readProjectConfigs() {
         /*--------------------------------
          * projektabhängig die richtigen Felder in der Gui anzeigen
          * --------------------------------*/
-        ConfigProjects cp = null;
-        try {
-            cp = new ConfigProjects(this.prozessVorlage.getProjekt().getTitel());
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("IOException", e.getMessage()); //NOSONAR
+        ConfigProjects cp = ProzesskopieForm.initializeConfigProjects(this.prozessVorlage.getProjekt().getTitel());
+        if (cp == null) {
             return;
         }
 
@@ -1387,13 +1404,11 @@ public class ProzesskopieForm implements Serializable {
         }
         StringBuilder titleBuilder = new StringBuilder();
         String titeldefinition = "";
-        ConfigProjects cp = null;
-        try {
-            cp = new ConfigProjects(this.prozessVorlage.getProjekt().getTitel());
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("IOException", e.getMessage());
+        ConfigProjects cp = ProzesskopieForm.initializeConfigProjects(this.prozessVorlage.getProjekt().getTitel());
+        if (cp == null) {
             return;
         }
+
         String replacement = "";
         List<HierarchicalConfiguration> processTitleList = cp.getList("createNewProcess/itemlist/processtitle");
 
@@ -1526,13 +1541,11 @@ public class ProzesskopieForm implements Serializable {
 
     public void CalcTiffheader() {
         String tifDefinition = "";
-        ConfigProjects cp = null;
-        try {
-            cp = new ConfigProjects(this.prozessVorlage.getProjekt().getTitel());
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("IOException", e.getMessage());
+        ConfigProjects cp = ProzesskopieForm.initializeConfigProjects(this.prozessVorlage.getProjekt().getTitel());
+        if (cp == null) {
             return;
         }
+
         tifDefinition = cp.getParamString("tifheader/" + this.docType, "intranda");
 
         /*

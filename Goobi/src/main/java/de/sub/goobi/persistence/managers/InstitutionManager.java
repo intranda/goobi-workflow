@@ -92,7 +92,7 @@ public class InstitutionManager implements IManager, Serializable {
     public int getHitSize(String order, String filter, Institution institution) {
         int num = 0;
         try {
-            num = InstitutionMysqlHelper.getInstitutionCount(order, filter);
+            num = InstitutionMysqlHelper.getInstitutionCount(filter);
         } catch (SQLException e) {
             log.error("error while getting Institution hit size", e);
         }
@@ -201,7 +201,7 @@ public class InstitutionManager implements IManager, Serializable {
         return answer;
     }
 
-    public static ResultSetHandler<Institution> resultSetToInstitutionHandler = new ResultSetHandler<Institution>() {
+    public static final ResultSetHandler<Institution> resultSetToInstitutionHandler = new ResultSetHandler<Institution>() {
         @Override
         public Institution handle(ResultSet rs) throws SQLException {
             try {
@@ -215,7 +215,7 @@ public class InstitutionManager implements IManager, Serializable {
         }
     };
 
-    public static ResultSetHandler<List<Institution>> resultSetToInstitutionListHandler = new ResultSetHandler<List<Institution>>() {
+    public static final ResultSetHandler<List<Institution>> resultSetToInstitutionListHandler = new ResultSetHandler<List<Institution>>() {
         @Override
         public List<Institution> handle(ResultSet rs) throws SQLException {
             List<Institution> answer = new ArrayList<>();

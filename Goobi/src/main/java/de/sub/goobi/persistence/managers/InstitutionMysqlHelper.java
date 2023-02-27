@@ -66,7 +66,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    static int getInstitutionCount(String order, String filter) throws SQLException {
+    static int getInstitutionCount( String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM institution");
@@ -465,7 +465,6 @@ class InstitutionMysqlHelper implements Serializable {
             }
         }
         sql.append(") AS plugins ");
-        //        (SELECT 'goobi-plugin-administration-database-export' AS pluginName UNION SELECT 'goobi-plugin-administration-upload-infrastructure' UNION SELECT 'goobi-plugin-administration-database-information') AS plugins
         sql.append("        LEFT JOIN ");
         sql.append("    institution_configuration ON object_name = pluginName ");
         sql.append("        AND object_type = '");

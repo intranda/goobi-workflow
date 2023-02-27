@@ -1,6 +1,3 @@
-package de.sub.goobi.config;
-
-import java.io.File;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -19,6 +16,8 @@ import java.io.File;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+package de.sub.goobi.config;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -757,7 +756,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isMassImportAllowed() {
-        return getLocalBoolean("massImportAllowed", false);
+        return getLocalBoolean("massImportAllowed", true);
     }
 
     public boolean isMassImportUniqueTitle() {
@@ -1025,7 +1024,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public int getNumberOfMetaBackups() {
-        return getLocalInt("numberOfMetaBackups", 0);
+        return getLocalInt("numberOfMetaBackups", 9);
     }
 
     /*
@@ -1104,7 +1103,7 @@ public class ConfigurationHelper implements Serializable {
         int size = getLocalInt("MaxImageFileSize", 4000);
         String unit = getLocalString("MaxImageFileSizeUnit", "MB");
         long factor = getMemorySizeFactor(unit);
-        return (long) (size) * factor;
+        return (size) * factor;
     }
 
     public List<Integer> getMetsEditorImageSizes() {
@@ -1144,7 +1143,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isMetsEditorValidateImages() {
-        return getLocalBoolean("MetsEditorValidateImages", true);
+        return getLocalBoolean("MetsEditorValidateImages", false);
     }
 
     public String getProcessTitleValidationRegex() {
@@ -1172,7 +1171,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isExportValidateImages() {
-        return getLocalBoolean("ExportValidateImages", true);
+        return getLocalBoolean("ExportValidateImages", false);
     }
 
     public Map<String, String> getExportWriteAdditionalMetadata() {
@@ -1197,7 +1196,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public boolean isExportCreateUUIDsAsFileIDs() {
-        return getLocalBoolean("ExportCreateUUID", true);
+        return getLocalBoolean("ExportCreateUUID", false);
     }
 
     public boolean isExportCreateTechnicalMetadata() {
