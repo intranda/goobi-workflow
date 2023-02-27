@@ -112,25 +112,6 @@
                               </f:facet>
 
                               <div class="gw-table__actions__container">
-                                <!-- edit vocabulary -->
-                                <button
-                                    jsf:id="edit"
-                                    class="btn btn-blank"
-                                    jsf:rel="tooltip"
-                                    jsf:action="#{vocabularyBean.editVocabulary}"
-                                    jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
-                                    title="#{msgs.vocabularyManager_editVocabulary}">
-                                    <i class="fa fa-cog"></i>
-                                    <f:passThroughAttribute
-                                        name="data-toggle"
-                                        value="tooltip" />
-                                    <f:passThroughAttribute
-                                        name="aria-label"
-                                        value="#{msgs.vocabularyManager_editVocabulary}" />
-                                    <f:setPropertyActionListener
-                                        target="#{vocabularyBean.currentVocabulary}"
-                                        value="#{item}" />
-                                </button>
 
                                 <!-- edit records -->
                                 <button
@@ -146,6 +127,26 @@
                                     <f:passThroughAttribute
                                         name="aria-label"
                                         value="#{msgs.vocabularyManager_editRecords}" />
+                                    <f:setPropertyActionListener
+                                        target="#{vocabularyBean.currentVocabulary}"
+                                        value="#{item}" />
+                                </button>
+
+                                <!-- edit vocabulary -->
+                                <button
+                                    jsf:id="edit"
+                                    class="btn btn-blank"
+                                    jsf:rel="tooltip"
+                                    jsf:action="#{vocabularyBean.editVocabulary}"
+                                    jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
+                                    title="#{msgs.vocabularyManager_editVocabulary}">
+                                    <i class="fa fa-cog"></i>
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:passThroughAttribute
+                                        name="aria-label"
+                                        value="#{msgs.vocabularyManager_editVocabulary}" />
                                     <f:setPropertyActionListener
                                         target="#{vocabularyBean.currentVocabulary}"
                                         value="#{item}" />
