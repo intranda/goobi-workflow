@@ -79,6 +79,7 @@ import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Docket;
 import org.goobi.beans.ExportValidator;
+import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
@@ -2615,9 +2616,16 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
 
     public List<Process> getAvailableProcessTemplates() {
+        Institution inst = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            //             limit result to institution of current user
+            inst = user.getInstitution();
+        }
+
         if (availableProcessTemplates == null) {
             String sql = FilterHelper.criteriaBuilder("", true, null, null, null, true, false);
-            availableProcessTemplates = ProcessManager.getProcesses("prozesse.titel", sql);
+            availableProcessTemplates = ProcessManager.getProcesses("prozesse.titel", sql, inst);
         }
         return availableProcessTemplates;
     }
