@@ -13,7 +13,7 @@ var gwHandleTooltip = ( function() {
       const trigger = bootstrap.Tooltip.getInstance(data.source)
       _removeTooltip(trigger);
 
-      // Resotre tooltips after ajax is done
+      // Restore tooltips after ajax is done
       if(!restore) return
         _restoreTooltip(data, selector);
 
