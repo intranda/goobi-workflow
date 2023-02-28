@@ -110,23 +110,23 @@ public class JobBean extends BasicBean implements Serializable {
                 String jobName = jobKey.getName();
                 for (QuartzJobDetails details : activeJobs) {
                     if (jobName.equals(details.getJobName())) {
-                        details.setJobKey(jobKey);
-
-                        details.setJobName(jobName);
-
-                        String jobGroup = jobKey.getGroup();
-                        details.setJobGroup(jobGroup);
-
                         //get job's trigger
                         List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
                         Trigger trigger = triggers.get(0);
                         if (trigger instanceof CronTrigger) {
+                            details.setJobKey(jobKey);
+
+                            details.setJobName(jobName);
+
+                            String jobGroup = jobKey.getGroup();
+                            details.setJobGroup(jobGroup);
+
                             CronTrigger cronTrigger = (CronTrigger) trigger;
                             String cronExpr = cronTrigger.getCronExpression();
                             details.setCronExpression(cronExpr);
-                        }
-                        if (TriggerState.PAUSED.equals(scheduler.getTriggerState(trigger.getKey()))) {
-                            details.setPaused(true);
+                            if (TriggerState.PAUSED.equals(scheduler.getTriggerState(trigger.getKey()))) {
+                                details.setPaused(true);
+                            }
                         }
 
                         Date nextFireTime = trigger.getNextFireTime();
