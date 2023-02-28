@@ -111,7 +111,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getUsersForUsergroup(usergroup);
         } catch (SQLException e) {
-            log.error("error while getting Users", e);
+            log.error("error while getting Users for user group", e);
             throw new DAOException(e);
         }
         return answer;
@@ -142,7 +142,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.addFilterToUser(userId, filterstring);
         } catch (SQLException e) {
-            log.error("Cannot not add filter to user with id " + userId, e);
+            log.error("Cannot add filter to user with id " + userId, e);
         }
 
     }
@@ -154,7 +154,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.removeFilterFromUser(userId, filterstring);
         } catch (SQLException e) {
-            log.error("Cannot not remove filter from user with id " + userId, e);
+            log.error("Cannot remove filter from user with id " + userId, e);
         }
     }
 
@@ -163,7 +163,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getFilterForUser(userId);
         } catch (SQLException e) {
-            log.error("Cannot not load filter for user with id " + userId, e);
+            log.error("Cannot load filter for user with id " + userId, e);
         }
 
         return answer;
@@ -174,7 +174,7 @@ public class UserManager implements IManager, Serializable {
         try {
             userList = UserMysqlHelper.getUserForStep(stepId);
         } catch (SQLException e) {
-            log.error("Cannot not load user for step with id " + stepId, e);
+            log.error("Cannot load user for step with id " + stepId, e);
         }
         return userList;
     }
@@ -251,6 +251,7 @@ public class UserManager implements IManager, Serializable {
         r.setStatus(User.UserStatus.getStatusByName(rs.getString("userstatus")));
         r.setAdditionalData(MySQLHelper.convertStringToMap(rs.getString("additional_data")));
         r.setJournal(JournalManager.getLogEntriesForUser(r.getId()));
+        r.setAdditionalSearchFields(rs.getString("additional_search_fields"));
         return r;
     }
 
@@ -337,7 +338,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getAllUsers();
         } catch (SQLException e) {
-            log.error("error while getting Users", e);
+            log.error("error while getting all Users", e);
         }
         return answer;
     }
@@ -347,7 +348,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getEmailConfigurationForUser(projects, id, showAllItems);
         } catch (SQLException e) {
-            log.error("error while getting Users", e);
+            log.error("error while getting email configuration for user", e);
         }
 
         return answer;
@@ -367,7 +368,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getUsersToInformByMail(stepName, projectId, stepStatus);
         } catch (SQLException e) {
-            log.error("error while getting Users", e);
+            log.error("error while getting Users for email", e);
         }
         return answer;
     }

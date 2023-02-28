@@ -178,15 +178,15 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                     gsr.setResultType(GoobiScriptResultType.ERROR);
                     gsr.setErrorText(message);
                 }
-            } catch (InterruptedException e) {
+            } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
-            } catch (DAOException | SwapException | IOException e) {
+            } catch (DAOException | SwapException | IOException exception) {
                 Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Problem occured while trying to delete process using GoobiScript.",
                         username);
                 log.error("Process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                gsr.setResultMessage("Process cannot be deleted: " + e.getMessage());
+                gsr.setResultMessage("Process cannot be deleted: " + exception.getMessage());
                 gsr.setResultType(GoobiScriptResultType.ERROR);
-                gsr.setErrorText(e.getMessage());
+                gsr.setErrorText(exception.getMessage());
             }
         }
         gsr.updateTimestamp();

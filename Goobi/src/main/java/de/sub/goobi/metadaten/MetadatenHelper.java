@@ -103,6 +103,7 @@ public class MetadatenHelper implements Comparator<Object> {
         if (inOldDocstruct.getAllMetadata() != null && !inOldDocstruct.getAllMetadata().isEmpty()) {
             for (Metadata old : inOldDocstruct.getAllMetadata()) {
                 boolean match = false;
+                String error = "Metadata " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
                 if (old.getValue() != null && !old.getValue().isEmpty()) {
                     if (newDocstruct.getAddableMetadataTypes(true) != null && !newDocstruct.getAddableMetadataTypes(true).isEmpty()) {
                         for (MetadataType mt : newDocstruct.getAddableMetadataTypes(true)) {
@@ -111,21 +112,19 @@ public class MetadatenHelper implements Comparator<Object> {
                                 break;
                             }
                         }
-                        if (!match) {
+                        if (match) {
+                            newDocstruct.addMetadata(old);
+                        } else {
                             try {
                                 newDocstruct.addMetadata(old);
                             } catch (Exception e) {
-                                Helper.setFehlerMeldung(
-                                        "Metadata " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName());
+                                Helper.setFehlerMeldung(error);
                                 return inOldDocstruct;
                             }
-                        } else {
-                            newDocstruct.addMetadata(old);
                         }
 
                     } else {
-                        Helper.setFehlerMeldung(
-                                "Metadata " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName());
+                        Helper.setFehlerMeldung(error);
                         return inOldDocstruct;
                     }
                 }
@@ -137,6 +136,7 @@ public class MetadatenHelper implements Comparator<Object> {
         if (inOldDocstruct.getAllPersons() != null && !inOldDocstruct.getAllPersons().isEmpty()) {
             for (Person old : inOldDocstruct.getAllPersons()) {
                 boolean match = false;
+                String error = "Person " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
                 if ((old.getFirstname() != null && !old.getFirstname().isEmpty()) || (old.getLastname() != null && !old.getLastname().isEmpty())) {
 
                     if (newDocstruct.getAddableMetadataTypes(true) != null && !newDocstruct.getAddableMetadataTypes(true).isEmpty()) {
@@ -146,15 +146,13 @@ public class MetadatenHelper implements Comparator<Object> {
                                 break;
                             }
                         }
-                        if (!match) {
-                            Helper.setFehlerMeldung(
-                                    "Person " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName());
-                        } else {
+                        if (match) {
                             newDocstruct.addPerson(old);
+                        } else {
+                            Helper.setFehlerMeldung(error);
                         }
                     } else {
-                        Helper.setFehlerMeldung(
-                                "Person " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName());
+                        Helper.setFehlerMeldung(error);
                         return inOldDocstruct;
                     }
                 }
@@ -163,6 +161,7 @@ public class MetadatenHelper implements Comparator<Object> {
         if (inOldDocstruct.getAllMetadataGroups() != null && !inOldDocstruct.getAllMetadataGroups().isEmpty()) {
             for (MetadataGroup mg : inOldDocstruct.getAllMetadataGroups()) {
                 boolean match = false;
+                String error = "Person " + mg.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
                 if (newDocstruct.getPossibleMetadataGroupTypes() != null && !newDocstruct.getPossibleMetadataGroupTypes().isEmpty()) {
                     for (MetadataGroupType mgt : newDocstruct.getPossibleMetadataGroupTypes()) {
                         if (mgt.getName().equals(mg.getType().getName())) {
@@ -170,15 +169,13 @@ public class MetadatenHelper implements Comparator<Object> {
                             break;
                         }
                     }
-                    if (!match) {
-                        Helper.setFehlerMeldung(
-                                "Person " + mg.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName());
-                    } else {
+                    if (match) {
                         newDocstruct.addMetadataGroup(mg);
+                    } else {
+                        Helper.setFehlerMeldung(error);
                     }
                 } else {
-                    Helper.setFehlerMeldung(
-                            "Person " + mg.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName());
+                    Helper.setFehlerMeldung(error);
                     return inOldDocstruct;
                 }
 
@@ -200,18 +197,17 @@ public class MetadatenHelper implements Comparator<Object> {
          */
         if (inOldDocstruct.getAllChildren() != null && !inOldDocstruct.getAllChildren().isEmpty()) {
             for (DocStruct old : inOldDocstruct.getAllChildren()) {
+                String error = "Child element " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
                 if (newDocstruct.getType().getAllAllowedDocStructTypes() != null && !newDocstruct.getType().getAllAllowedDocStructTypes().isEmpty()) {
 
                     if (!newDocstruct.getType().getAllAllowedDocStructTypes().contains(old.getType().getName())) {
-                        Helper.setFehlerMeldung(
-                                "Child element " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName());
+                        Helper.setFehlerMeldung(error);
                         return inOldDocstruct;
                     } else {
                         newDocstruct.addChild(old);
                     }
                 } else {
-                    Helper.setFehlerMeldung(
-                            "Child element " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName());
+                    Helper.setFehlerMeldung(error);
                     return inOldDocstruct;
                 }
             }
@@ -815,10 +811,8 @@ public class MetadatenHelper implements Comparator<Object> {
                     ff.setPrefs(ruleset.getPreferences());
                     return ff;
                 }
-            } catch (InstantiationException e) {
-            } catch (IllegalAccessException e) {
-            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            } catch (PreferencesException e) {
+            } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchMethodException
+                    | PreferencesException | SecurityException e) {
                 log.error(e);
             }
 
@@ -836,10 +830,8 @@ public class MetadatenHelper implements Comparator<Object> {
                     ff.setPrefs(ruleset.getPreferences());
                     return ff;
                 }
-            } catch (InstantiationException e) {
-            } catch (IllegalAccessException e) {
-            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            } catch (PreferencesException e) {
+            } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchMethodException
+                    | PreferencesException | SecurityException e) {
                 log.error(e);
             }
 

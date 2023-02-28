@@ -41,6 +41,7 @@ import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This class is an implementation of {@link IStatisticalQuestionLimitedTimeframe} and retrieves statistical Data about the productivity of the
@@ -52,6 +53,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
  * @author Wulf Riebensahm
  * @author Robert Sehr
  */
+@Log4j2
 public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe {
 
     private static final long serialVersionUID = 6092367530887950685L;
@@ -84,18 +86,21 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
 
         try {
             exactStepDone = FilterHelper.getStepDone(originalFilter);
-        } catch (Exception e1) {
+        } catch (Exception exception) {
+            log.error(exception);
         }
         try {
             stepname = FilterHelper.getStepDoneName(originalFilter);
-        } catch (Exception e1) {
+        } catch (Exception exception) {
+            log.error(exception);
         }
 
         // we have to build a query from scratch by reading the ID's
         List<Integer> idList = null;
         try {
             idList = ProcessManager.getIdsForFilter(sqlFilter);
-        } catch (UnsupportedOperationException e) {
+        } catch (UnsupportedOperationException exception) {
+            log.error(exception);
         }
         if (idList == null || idList.isEmpty()) {
             return null;

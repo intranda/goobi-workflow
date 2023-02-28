@@ -54,6 +54,7 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
@@ -410,7 +411,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export": //NOSONAR
                             configuredFolderNames
-                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -452,11 +453,16 @@ public class ProzesskopieForm implements Serializable {
         if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
             filter.append(" AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ")
-                    .append(aktuellerNutzer.getId())
-                    .append(")");
+            .append(aktuellerNutzer.getId())
+            .append(")");
+        }
+        Institution inst = null;
+        if (aktuellerNutzer != null && !aktuellerNutzer.isSuperAdmin()) {
+            //             limit result to institution of current user
+            inst = aktuellerNutzer.getInstitution();
         }
 
-        List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter.toString());
+        List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter.toString(), inst);
         for (Process proz : selectList) {
             myProcessTemplates.add(new SelectItem(proz.getId(), proz.getTitel(), null));
         }

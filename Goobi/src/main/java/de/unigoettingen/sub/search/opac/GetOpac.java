@@ -131,7 +131,7 @@ public class GetOpac {
     // STATE (Instance variables) *****************************************
     // This is now configured inside the Catalogue class.
     // TODO: Check if this should really be query specific
-    private String dataCharacterEncoding = "iso-8859-1";
+    private String dataCharacterEncoding = URL_CHARACTER_ENCODING;
 
     @Getter
     @Setter
@@ -618,8 +618,7 @@ public class GetOpac {
         HttpGet opacRequest = null;
         opacRequest = new HttpGet(cat.getProtocol() + this.cat.getServerAddress() + url + this.cat.getCbs());
 
-        if (this.cat.getPort() == 80) {
-        } else {
+        if (this.cat.getPort() != 80) {
             opacRequest = new HttpGet(cat.getProtocol() + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
 
         }

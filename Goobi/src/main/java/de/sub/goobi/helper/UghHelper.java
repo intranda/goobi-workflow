@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.util.List;
 
@@ -243,7 +244,7 @@ public class UghHelper {
                 filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacLanguages.txt";
             }
             try (FileInputStream fis = new FileInputStream(filename)) {
-                InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+                InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
                 try (BufferedReader in = new BufferedReader(isr)) {
                     String str;
                     while ((str = in.readLine()) != null) {
@@ -253,7 +254,8 @@ public class UghHelper {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException exception) {
+            log.error(exception);
         }
         return inLanguage;
     }
@@ -277,7 +279,7 @@ public class UghHelper {
         /* Datei zeilenweise durchlaufen und die Sprache vergleichen */
         try {
             try (FileInputStream fis = new FileInputStream(filename)) {
-                InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+                InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
                 try (BufferedReader in = new BufferedReader(isr)) {
                     String str;
                     while ((str = in.readLine()) != null) {

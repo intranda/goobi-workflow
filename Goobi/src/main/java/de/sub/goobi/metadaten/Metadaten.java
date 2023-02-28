@@ -140,10 +140,10 @@ import ugh.exceptions.WriteException;
 @Log4j2
 public class Metadaten implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 2361148967408139027L;
+
+    private static final String REDIRECT_TO_METSEDITOR = "metseditor";
+    private static final String REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT = "metseditor_timeout";
 
     @Getter
     @Setter
@@ -534,7 +534,7 @@ public class Metadaten implements Serializable {
      */
     public String AnsichtAendern() {
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout"; //NOSONAR
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -544,7 +544,7 @@ public class Metadaten implements Serializable {
         currentMetadataToPerformSearch = null;
         getMetadatum().setValue("");
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -557,7 +557,7 @@ public class Metadaten implements Serializable {
         getSelectedGroup();
 
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -568,7 +568,7 @@ public class Metadaten implements Serializable {
         this.tempPersonVorname = "";
         currentMetadataToPerformSearch = null;
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -580,7 +580,7 @@ public class Metadaten implements Serializable {
         tempCorporateSubName = null;
         tempCorporatePartName = null;
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -592,7 +592,7 @@ public class Metadaten implements Serializable {
         modeAddCorporate = false;
         getMetadatum().setValue("");
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -600,7 +600,7 @@ public class Metadaten implements Serializable {
     public String Reload() {
 
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         } else {
             try {
                 processHasNewTemporaryMetadataFiles = false;
@@ -636,8 +636,8 @@ public class Metadaten implements Serializable {
                         Metadata md = new Metadata(mdt);
                         md.setValue(String.valueOf(this.pagesRTL));
                         logical.addMetadata(md);
-                    } catch (MetadataTypeNotAllowedException e) {
-
+                    } catch (MetadataTypeNotAllowedException exception) {
+                        log.error(exception);
                     }
                 }
             }
@@ -668,8 +668,8 @@ public class Metadaten implements Serializable {
                     md.setValue("");
                 }
                 this.document.getPhysicalDocStruct().addMetadata(md);
-            } catch (MetadataTypeNotAllowedException e) {
-
+            } catch (MetadataTypeNotAllowedException exception) {
+                log.error(exception);
             }
 
         }
@@ -757,7 +757,7 @@ public class Metadaten implements Serializable {
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -785,7 +785,7 @@ public class Metadaten implements Serializable {
         MetadatenalsBeanSpeichern(this.myDocStruct);
         currentMetadata = null;
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -813,7 +813,7 @@ public class Metadaten implements Serializable {
         MetadatenalsBeanSpeichern(this.myDocStruct);
         currentCorporate = null;
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -848,7 +848,7 @@ public class Metadaten implements Serializable {
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -866,7 +866,7 @@ public class Metadaten implements Serializable {
                 log.error("Error while changing DocStructTypes: " + e);
             }
         }
-        return "metseditor";
+        return REDIRECT_TO_METSEDITOR;
     }
 
     public String addNewMetadata() {
@@ -904,7 +904,7 @@ public class Metadaten implements Serializable {
         this.tempWert = "";
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         return "";
@@ -938,7 +938,7 @@ public class Metadaten implements Serializable {
         this.modeAddCorporate = false;
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -993,7 +993,7 @@ public class Metadaten implements Serializable {
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         return "";
@@ -1014,7 +1014,7 @@ public class Metadaten implements Serializable {
             tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
             selectedMetadatum = tempMetadatumList.get(0);
         }
-        return "metseditor";
+        return REDIRECT_TO_METSEDITOR;
     }
 
     private boolean docStructIsAllowed(SelectItem[] itemList, String docstruct) {
@@ -1051,7 +1051,7 @@ public class Metadaten implements Serializable {
         this.modusHinzufuegenPerson = false;
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -1061,7 +1061,7 @@ public class Metadaten implements Serializable {
         mg.getParent().removeMetadataGroup(mg, true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -1078,7 +1078,7 @@ public class Metadaten implements Serializable {
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -1109,7 +1109,7 @@ public class Metadaten implements Serializable {
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -1125,7 +1125,7 @@ public class Metadaten implements Serializable {
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -1142,7 +1142,7 @@ public class Metadaten implements Serializable {
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -1161,7 +1161,7 @@ public class Metadaten implements Serializable {
 
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -1177,7 +1177,7 @@ public class Metadaten implements Serializable {
         }
         MetadatenalsBeanSpeichern(myDocStruct);
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return "";
     }
@@ -1576,7 +1576,7 @@ public class Metadaten implements Serializable {
 
         TreeExpand();
         this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
-        return "metseditor";
+        return REDIRECT_TO_METSEDITOR;
     }
 
     /**
@@ -1585,7 +1585,7 @@ public class Metadaten implements Serializable {
      * @throws ReadException
      * @throws InterruptedException
      * @throws IOException
-     * @throws PreferencesException ============================================================ == ==
+     * @throws PreferencesException
      * @throws DAOException
      * @throws SwapException
      * @throws WriteException
@@ -1652,8 +1652,8 @@ public class Metadaten implements Serializable {
                         Integer value = Integer.valueOf(md.getValue());
                         currentRepresentativePage = String.valueOf(value);
                         updateRepresentativePage();
-                    } catch (Exception e) {
-
+                    } catch (Exception exception) {
+                        log.warn(exception);
                     }
                 }
             }
@@ -1668,8 +1668,8 @@ public class Metadaten implements Serializable {
                         try {
                             Boolean value = Boolean.valueOf(md.getValue());
                             this.pagesRTL = value;
-                        } catch (Exception e) {
-
+                        } catch (Exception exception) {
+                            log.warn(exception);
                         }
                     }
                 }
@@ -1685,7 +1685,7 @@ public class Metadaten implements Serializable {
             // inserted to make Paginierung the starting view
             this.modusAnsicht = "Metadaten";
         }
-        return "metseditor";
+        return REDIRECT_TO_METSEDITOR;
     }
 
     private void loadCurrentImages(boolean jumpToFirstPage) {
@@ -1923,9 +1923,9 @@ public class Metadaten implements Serializable {
         this.tree3 = buildTree(inTree, inLogicalTopStruct, expandAll);
 
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
-        return "metseditor";
+        return REDIRECT_TO_METSEDITOR;
     }
 
     @SuppressWarnings("rawtypes")
@@ -2134,7 +2134,7 @@ public class Metadaten implements Serializable {
             this.tempStrukturelement.addChild(this.myDocStruct);
             MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
             this.neuesElementWohin = "1";
-            return "metseditor";
+            return REDIRECT_TO_METSEDITOR;
         } else {
             return "";
         }
@@ -2214,19 +2214,19 @@ public class Metadaten implements Serializable {
         // add element before the currently selected element
         if ("1".equals(this.neuesElementWohin)) {
             if (getAddDocStructType1() == null || "".equals(getAddDocStructType1())) {
-                return "metseditor";
+                return REDIRECT_TO_METSEDITOR;
             }
             DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType1());
             ds = this.document.createDocStruct(dst);
             if (this.myDocStruct == null) {
-                return "metseditor";
+                return REDIRECT_TO_METSEDITOR;
             }
             DocStruct parent = this.myDocStruct.getParent();
             if (parent == null) {
                 if (log.isDebugEnabled()) {
                     log.debug("the current element has no parent element"); //NOSONAR
                 }
-                return "metseditor";
+                return REDIRECT_TO_METSEDITOR;
             }
             List<DocStruct> alleDS = new ArrayList<>();
 
@@ -2258,7 +2258,7 @@ public class Metadaten implements Serializable {
                 if (log.isDebugEnabled()) {
                     log.debug("the current element has no parent element");
                 }
-                return "metseditor";
+                return REDIRECT_TO_METSEDITOR;
             }
             List<DocStruct> alleDS = new ArrayList<>();
 
@@ -2291,7 +2291,7 @@ public class Metadaten implements Serializable {
                 if (log.isDebugEnabled()) {
                     log.debug("the current element has no parent element");
                 }
-                return "metseditor";
+                return REDIRECT_TO_METSEDITOR;
             }
             List<DocStruct> alleDS = new ArrayList<>();
             alleDS.add(ds);
@@ -2605,8 +2605,8 @@ public class Metadaten implements Serializable {
             } else {
                 this.pageAreaManager.setNewPageArea(pageArea);
             }
-        } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
-            log.error(e);
+        } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException exception) {
+            log.error(exception);
         }
     }
 
@@ -2922,7 +2922,7 @@ public class Metadaten implements Serializable {
          */
         retrieveAllImages();
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         doublePage = false;
         return null;
@@ -2933,7 +2933,7 @@ public class Metadaten implements Serializable {
      */
     public String TreeExpand() {
         this.tree3.expandNodes(this.treeProperties.get("fullexpanded"));
-        return "metseditor";
+        return REDIRECT_TO_METSEDITOR;
     }
 
     /*
@@ -3412,7 +3412,7 @@ public class Metadaten implements Serializable {
      */
     public String SeitenStartUndEndeSetzen() {
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         int startPage = pageMap.getIndexPosition(pageSelectionFirstPage);
         int endPage = pageMap.getIndexPosition(pageSelectionLastPage);
@@ -3444,7 +3444,7 @@ public class Metadaten implements Serializable {
 
     public String SeitenVonChildrenUebernehmen() {
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
 
         /* alle Kinder des aktuellen DocStructs durchlaufen */
@@ -3512,8 +3512,8 @@ public class Metadaten implements Serializable {
         try {
             int localPageNumber = Integer.parseInt(this.pageSelectionLastPage) - this.bildNummer + 1; // a field named "pageNumber" is already declared at line 403
             setImageIndex(localPageNumber - 1);
-        } catch (Exception e) {
-
+        } catch (Exception exception) {
+            log.warn(exception);
         }
         return "";
     }
@@ -3546,7 +3546,7 @@ public class Metadaten implements Serializable {
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         alleSeitenAuswahl = null;
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return null;
     }
@@ -3565,7 +3565,7 @@ public class Metadaten implements Serializable {
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         this.structSeitenAuswahl = null;
         if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         return null;
     }
@@ -3893,7 +3893,7 @@ public class Metadaten implements Serializable {
         }
     }
 
-    public List<TreeNode> getStrukturBaum3() {
+    public List<HashMap<String, Object>> getStrukturBaum3() {
         if (this.tree3 != null) {
             return this.tree3.getChildrenAsList();
         } else {
@@ -3901,7 +3901,7 @@ public class Metadaten implements Serializable {
         }
     }
 
-    public List<TreeNode> getStrukturBaum3Alle() {
+    public List<HashMap<String, Object>> getStrukturBaum3Alle() {
         if (this.tree3 != null) {
             return this.tree3.getChildrenAsListAlle();
         } else {
@@ -4548,7 +4548,7 @@ public class Metadaten implements Serializable {
         }
     }
 
-    public List<TreeNode> getStruktureTreeAsTableForFilteredProcess() {
+    public List<HashMap<String, Object>> getStruktureTreeAsTableForFilteredProcess() {
         if (this.treeOfFilteredProcess != null) {
             return this.treeOfFilteredProcess.getChildrenAsListAlle();
         } else {

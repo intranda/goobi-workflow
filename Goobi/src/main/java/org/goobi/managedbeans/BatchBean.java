@@ -43,9 +43,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Batch;
+import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
+import org.goobi.beans.User;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
@@ -147,7 +149,15 @@ public class BatchBean extends BasicBean implements Serializable {
                 filterBuilder.append(")");
             }
         }
-        this.currentProcesses = ProcessManager.getProcesses(null, filterBuilder.toString(), 0, getBatchMaxSize());
+
+        Institution inst = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            //             limit result to institution of current user
+            inst = user.getInstitution();
+        }
+
+        this.currentProcesses = ProcessManager.getProcesses(null, filterBuilder.toString(), 0, getBatchMaxSize(), inst);
     }
 
     public void filterProcesses() {
@@ -160,8 +170,13 @@ public class BatchBean extends BasicBean implements Serializable {
             filter += " AND ";
         }
         filter += " istTemplate = false ";
-
-        this.currentProcesses = ProcessManager.getProcesses("prozesse.titel", filter, 0, getBatchMaxSize());
+        Institution inst = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            //             limit result to institution of current user
+            inst = user.getInstitution();
+        }
+        this.currentProcesses = ProcessManager.getProcesses("prozesse.titel", filter, 0, getBatchMaxSize(), inst);
     }
 
     public void filterBatches() {
@@ -240,6 +255,14 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public String downloadDocket() {
+
+        Institution inst = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            //             limit result to institution of current user
+            inst = user.getInstitution();
+        }
+
         if (log.isDebugEnabled()) {
             log.debug("generate docket for process list");
         }
@@ -251,7 +274,7 @@ public class BatchBean extends BasicBean implements Serializable {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() == 1) {
             docket = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0,
-                    getBatchMaxSize());
+                    getBatchMaxSize(), inst);
 
         } else {
             Helper.setFehlerMeldung("tooManyBatchesSelected");
@@ -306,7 +329,8 @@ public class BatchBean extends BasicBean implements Serializable {
                 Batch batch = this.selectedBatches.get(0);
                 for (Process p : this.selectedProcesses) {
                     p.setBatch(batch);
-                    JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
+                    JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG,
+                            "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
                     JournalManager.saveJournalEntry(logEntry);
 
                     ProcessManager.saveProcessInformation(p);
@@ -323,7 +347,8 @@ public class BatchBean extends BasicBean implements Serializable {
         for (Process p : this.selectedProcesses) {
             if (p.getBatch() != null) {
 
-                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "removed process from batch " + p.getBatch().getBatchId(), EntryType.PROCESS);
+                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG,
+                        "removed process from batch " + p.getBatch().getBatchId(), EntryType.PROCESS);
                 JournalManager.saveJournalEntry(logEntry);
 
                 p.setBatch(null);
@@ -342,7 +367,8 @@ public class BatchBean extends BasicBean implements Serializable {
                 p.setBatch(batch);
                 ProcessManager.saveProcessInformation(p);
 
-                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
+                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG,
+                        "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
                 JournalManager.saveJournalEntry(logEntry);
             }
 
@@ -351,22 +377,26 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public String editProperties() {
+        Institution inst = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            //             limit result to institution of current user
+            inst = user.getInstitution();
+        }
         if (selectedBatches.isEmpty()) {
             Helper.setFehlerMeldung("noBatchSelected");
             return "";
         } else if (this.selectedBatches.size() > 1) {
             Helper.setFehlerMeldung("tooḾanyBatchesSelected");
             return "";
+        } else if (this.selectedBatches.get(0) != null) {
+            List<Process> propertyBatch = ProcessManager.getProcesses(null,
+                    " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0, getBatchMaxSize(), inst);
+            this.batchHelper = new BatchProcessHelper(propertyBatch, selectedBatches.get(0));
+            return "batch_edit";
         } else {
-            if (this.selectedBatches.get(0) != null) {
-                List<Process> propertyBatch = ProcessManager.getProcesses(null,
-                        " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0, getBatchMaxSize());
-                this.batchHelper = new BatchProcessHelper(propertyBatch, selectedBatches.get(0));
-                return "batch_edit";
-            } else {
-                Helper.setFehlerMeldung("noBatchSelected");
-                return "";
-            }
+            Helper.setFehlerMeldung("noBatchSelected");
+            return "";
         }
     }
 

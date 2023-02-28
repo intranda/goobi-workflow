@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.JournalEntry.EntryType;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -280,6 +281,10 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
 
     @Getter
     @Setter
+    private String additionalSearchFields;
+
+    @Getter
+    @Setter
     private UserStatus status = UserStatus.ACTIVE;
 
     private List<SelectItem> availableUiModes = null;
@@ -383,16 +388,13 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     public boolean istPasswortKorrekt(String inPasswort) {
         if (inPasswort == null || inPasswort.length() == 0) {
             return false;
+        } else /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
+        if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
+            LdapAuthentication myldap = new LdapAuthentication();
+            return myldap.isUserPasswordCorrect(this, inPasswort);
         } else {
-
-            /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
-            if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
-                LdapAuthentication myldap = new LdapAuthentication();
-                return myldap.isUserPasswordCorrect(this, inPasswort);
-            } else {
-                String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
-                return this.encryptedPassword.equals(hashedPasswordBase64);
-            }
+            String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
+            return this.encryptedPassword.equals(hashedPasswordBase64);
         }
     }
 
@@ -443,7 +445,7 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
             rueckgabe = ConfigurationHelper.getInstance().getUserFolder() + this.login;
         }
 
-        if (rueckgabe.equals("")) {
+        if ("".equals(rueckgabe)) {
             return "";
         }
 
@@ -741,6 +743,24 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     @Override
     public EntryType getEntryType() {
         return EntryType.USER;
+    }
+
+    public List<StringPair> getAllAdditionalSearchFilter() {
+        List<StringPair> answer = new ArrayList<>();
+        //        answer.add(new StringPair("default", "{}"));
+        if (StringUtils.isNotBlank(additionalSearchFields)) {
+            // for each line
+            String[] lines = additionalSearchFields.split("[\r\n]");
+            for (String line : lines) {
+                if (line.contains("=")) {
+                    // split on first equals character
+                    String label = line.substring(0, line.indexOf("="));
+                    String value = line.substring(line.indexOf("=") + 1);
+                    answer.add(new StringPair(label, value));
+                }
+            }
+        }
+        return answer;
     }
 
 }
