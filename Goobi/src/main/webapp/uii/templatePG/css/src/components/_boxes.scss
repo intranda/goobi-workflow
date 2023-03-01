@@ -11,7 +11,7 @@
 
 .box {
   max-width: 100%;
-  border: 2px solid var(--clr-neutral, #ddd);
+  border: 0.15rem solid var(--clr-neutral-300);
   border-radius: var(--border-radius);
 }
 
@@ -22,8 +22,8 @@
   justify-content: space-between;
   flex-wrap: wrap;
   padding: var(--box-padding-title);
-  border-bottom: 2px solid var(--clr-neutral, #ddd);
-  background-color: var(--clr-neutral, #ddd);
+  border-bottom: 0.15rem solid var(--clr-neutral-300);
+  background-color: var(--clr-neutral-300);
 
   a,
   button {
@@ -36,7 +36,7 @@
 
   .btn--title-action {
     color: #fff;
-    border: 1px solid #fff;
+    border: 0.01rem solid #fff;
 
     i {
       color: currentColor;
@@ -50,6 +50,26 @@
       background-color: #fff;
       i {
         color: var(--bs-body-color);
+      }
+    }
+  }
+  
+  .btn--title-action-neutral {
+    color: var(--clr-neutral-600);
+    border: 0.1rem solid var(--clr-neutral-300);
+
+    i {
+      color: currentColor;
+    }
+
+    &:not(:last-child) {
+      margin-inline-end: 0.8rem;
+    }
+
+    &:hover {
+      background-color: var(--clr-neutral-600);
+      i {
+        color: #fff;
       }
     }
   }
@@ -208,7 +228,7 @@
 
 .box.box--outline {
   .box__title {
-    --box-padding-title: 8px 0 8px 10px;
+    --box-padding-title: 8px 8px 8px 10px;
     background: transparent;
     color: var(--bs-body-color);
   }

@@ -298,15 +298,14 @@
 					<!-- STATUS -->
 					<h:outputText value="#{msgs.status}:" />
 					<h:panelGroup>
-						<ul class="colors small13">
-							<li
-								class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color)}"
-								rel="tooltip"
-								title="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}">
-								<h:outputText styleClass="ms-4 mb-3"
-									value="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
-							</li>
-						</ul>
+						<div title="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}"
+							rel="tooltip"
+							data-toggle="tooltip"
+							class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color)}"/>
+						<div class="ms-2 d-inline-block align-middle">
+						<h:outputText 
+							value="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
+						</div>
 					</h:panelGroup>
 					<!-- // STATUS -->
 					
@@ -803,8 +802,8 @@
 
 					<!-- Save -->
 					<button
-						class="btn btn-success"
-						jsf:id="absenden"
+						class="btn btn-success submitOnEnter"
+						jsf:id="save"
 						type="submit"
 						jsf:action="#{ProzessverwaltungForm.SchrittUebernehmen}">
 						<i class="fa fa-save"></i>

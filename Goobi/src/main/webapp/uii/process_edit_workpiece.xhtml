@@ -44,8 +44,8 @@
 	<ui:define name="content">
 		<main>
 			<h:form
+				onkeypress="submitOnEnter(event);"
 				id="myform"
-				styleClass="form-horizontal form-bordered"
 				rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
 
 				<!-- BOX WITH TABLE FOR ID -->
@@ -241,7 +241,7 @@
 
 							<!-- Save -->
 							<button
-								class="btn btn-success"
+								class="btn btn-success submitOnEnter"
 								jsf:id="saveProperty"
 								type="submit"
 								jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftUebernehmen}">

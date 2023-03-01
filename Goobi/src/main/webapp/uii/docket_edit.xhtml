@@ -1,16 +1,33 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
-	template="/uii/templatePG/templatePG.html" xmlns:x="http://myfaces.apache.org/tomahawk"
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
-	<ui:param name="myPageTitle"
+	<ui:param
+		name="myPageTitle"
 		value="#{DocketForm.myDocket.id == null?msgs.createNewDocket:msgs.editDocket}" />
 
 	<ui:define name="breadcrumb">
-		<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-		<intranda:breadcrumb id="dockets" label="#{msgs.dockets}" action="#{DocketForm.paginator.returnToPreviousPage}" />
-		<intranda:breadcrumb id="docket" label="#{myPageTitle}" action="docket_edit" noSeparator="#{true}" />
+		<intranda:breadcrumb
+			id="index"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index"
+			navId="a0" />
+		<intranda:breadcrumb
+			id="dockets"
+			label="#{msgs.dockets}"
+			action="#{DocketForm.paginator.returnToPreviousPage}" />
+		<intranda:breadcrumb
+			id="docket"
+			label="#{myPageTitle}"
+			action="docket_edit"
+			noSeparator="#{true}" />
 	</ui:define>
 
 	<ui:define name="info">
@@ -18,67 +35,57 @@
 
 	<ui:define name="content">
 
-		<h:form id="myform" styleClass="form-horizontal form-bordered"
+		<h:form
+			id="myform"
 			onkeypress="submitOnEnter(event);"
 			rendered="#{LoginForm.hasRole('Admin_Dockets')}">
 
-			<div class="row" role="main">
+			<div
+				class="row"
+				role="main">
 				<div class="col-12">
-
-					<!--
-					<div class="box box-color orange box-bordered">
-						<div class="box-title">
-							<h2>
-								<i class="fa fa-print box-icon-fix"></i>
-								<h:outputText value="#{myPageTitle}" />
-								<h:outputText value=": #{DocketForm.myDocket.name}" rendered="#{DocketForm.myDocket.id != null}" />
-							</h2>
-						</div>
-						<div class="box-content nopadding">
-					-->
 
 					<intranda:box
 						boxType="action"
 						boxForm="true"
 						boxPadding="false"
 						title="#{myPageTitle}"
-						icon="fa-print"
-						>
+						icon="fa-print">
 
-							<intranda:formInputText
-								id="title"
-								name="titel"
-								label="#{msgs.docketTitle}"
-								focusOnLoad="true"
-								field="#{DocketForm.myDocket.name}"
-								help="#{msgs.helpDocketTitle}"
-								fieldStyle="form-control"
-								/>
+						<intranda:formInputText
+							id="title"
+							name="titel"
+							label="#{msgs.docketTitle}"
+							focusOnLoad="true"
+							field="#{DocketForm.myDocket.name}"
+							help="#{msgs.helpDocketTitle}"
+							fieldStyle="form-control" />
 
-							<intranda:formInputText
-								id="file"
-								name="filename"
-								label="#{msgs.docketFile}"
-								field="#{DocketForm.myDocket.file}"
-								help="#{msgs.helpDocketFile}"
-								fieldStyle="form-control"
-								/>
+						<intranda:formInputText
+							id="file"
+							name="filename"
+							label="#{msgs.docketFile}"
+							field="#{DocketForm.myDocket.file}"
+							help="#{msgs.helpDocketFile}"
+							fieldStyle="form-control" />
 
-							<intranda:formButtonArea
-								id="buttons"
-								form="#{DocketForm}"
-								object="#{DocketForm.myDocket.id}"
-								actionCancel="#{DocketForm.Cancel}"
-								/>
+						<intranda:formButtonArea
+							id="buttons"
+							form="#{DocketForm}"
+							object="#{DocketForm.myDocket.id}"
+							actionCancel="#{DocketForm.Cancel}" />
 
 					</intranda:box>
 
-				</div> <!-- /col -->
-			</div> <!-- /row -->
+				</div>
+				<!-- /col -->
+			</div>
+			<!-- /row -->
 		</h:form>
 
 		<!-- Focus first input field on load -->
-	    <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
+		<script
+			src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
 		<script type="text/javascript">
 			gwFocusOnLoad.init()
 		</script>

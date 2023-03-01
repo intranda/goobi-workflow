@@ -2,6 +2,7 @@
   display: flex;
   max-width: 240px;
   justify-content: center;
+  margin-top: 0.7rem;
 }
 /* These styles are taken from intranda.css
  */
@@ -28,6 +29,12 @@
   width: 13px;
   list-style: none;
 }
+
+.statusRectangle{
+  height: 16px;
+  width: 16px;
+}
+
 
 .btn.btn-very-small {
   padding: 0 7px;

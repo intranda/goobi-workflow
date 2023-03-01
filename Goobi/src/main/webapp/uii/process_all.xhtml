@@ -398,16 +398,6 @@
 														</ui:include>
 														<h:panelGroup rendered="#{item.panelAusgeklappt}">
 
-															<!--
-				                                            <div class="box box-small box-color box-bordered">
-				                                              <div class="box-title">
-				                                                <h3>
-				                                                  <i class="fa fa-list"></i> #{msgs.details}
-				                                                </h3>
-				                                              </div>
-				                                              <div class="box-content nopadding">
-				                                            -->
-
 															<intranda:box
 																boxScope="boxTitleDetails"
 																boxType="primary"
@@ -605,7 +595,7 @@
 													<!-- STATUS -->
 													<td>
 
-														<div class="progress__container mt-2">
+														<div class="progress__container">
 															<h:panelGroup
 																rendered="#{item.fortschritt3 gt 0}"
 																data-toggle="tooltip"

@@ -1,96 +1,91 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
-    <composite:interface>
-    </composite:interface>
+	<composite:interface>
+	</composite:interface>
 
-    <composite:implementation>
+	<composite:implementation>
 
-        <x:dataList
-            var="item"
-            value="#{ProzessverwaltungForm.myProzess.werkstueckeList}"
-            id="masterpieces">
+		<x:dataList
+			var="item"
+			value="#{ProzessverwaltungForm.myProzess.werkstueckeList}"
+			id="masterpieces">
 
-            <div class="row">
-                <div class="col-sm-12">
+			<div class="row">
+				<div class="col-sm-12 mt-3">
 
-                    <div class="box thin-margin box-bordered">
-                        <div class="box-title">
-                            <h3>
-                                <i class="fa fa-list"></i>
-                                <h:outputText value="#{msgs.werkstuecke}" />
-                            </h3>
+					<intranda:box
+						id="workpiece"
+						boxType="outline"
+						boxPadding="false"
+						boxTitle="false">
 
-                            <div class="actions">
-                                <button
-                                    title="#{msgs.werkstueckBearbeiten}"
-                                    jsf:action="process_edit_workpiece"
-                                    jsf:id="editMasterpiece"
-                                    aria-label="#{msgs.werkstueckBearbeiten}"
-                                    class="btn btn-mini"
-                                    jsf:rel="tooltip"
-                                    jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                                    <i class="fa fa-pencil"></i>
-                                    <f:passThroughAttribute
-                                        name="data-toggle"
-                                        value="tooltip" />
-                                    <x:updateActionListener
-                                        property="#{ProzessverwaltungForm.myWerkstueckReload}"
-                                        value="#{item}" />
-                                </button>
-                            </div>
+						<intranda:boxTitle
+							title="#{msgs.werkstuecke}"
+							icon="fa-list">
 
-                        </div>
-                        <div class="box-content nopadding">
-                            <div class="dataTables_wrapper">
-                                <x:dataTable
-                                    value="#{item.eigenschaften}"
-                                    var="prop"
-                                    styleClass="table table-hover table-bordered">
-                                    <h:column>
-                                        <span
-                                            title="{product.#{prop.titel}}"
-                                            data-toggle="tooltip"
-                                            rel="tooltip">#{prop.titel}:</span>
-                                    </h:column>
-                                    <h:column>
-                                        <h:outputText value="#{prop.wert}" />
-                                    </h:column>
-                                </x:dataTable>
+							<div class="actions d-flex">
+								<button
+									title="#{msgs.werkstueckBearbeiten}"
+									jsf:action="process_edit_workpiece"
+									jsf:id="editMasterpiece"
+									aria-label="#{msgs.werkstueckBearbeiten}"
+									class="btn d-flex align-items-center btn--title-action-neutral"
+									jsf:rel="tooltip"
+									jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+									<i class="fa fa-pencil"></i>
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
+									<x:updateActionListener
+										property="#{ProzessverwaltungForm.myWerkstueckReload}"
+										value="#{item}" />
+								</button>
+								<button
+									jsf:action="#{ProzessverwaltungForm.WerkstueckNeu}"
+									jsf:id="newMasterpiece"
+									class="btn d-flex align-items-center btn--title-action-neutral"
+									jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+									title="#{msgs.werkstueckHinzufuegen}">
+									<i class="fa fa-plus margin-right-5"></i>
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
+								</button>
+								
+							</div>
+						</intranda:boxTitle>
 
-                                <div class="dataTables_info">
-                                    <!-- Neu-Schaltknopf -->
-                                    <button
-                                        jsf:action="#{ProzessverwaltungForm.WerkstueckNeu}"
-                                        jsf:id="newMasterpiece"
-                                        class="btn btn-lightgrey font-size-s margin-top-5"
-                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-                                        title="#{msgs.werkstueckHinzufuegen}">
-                                        <i class="fa fa-plus margin-right-5"></i>
-                                        <h:outputText value="#{msgs.werkstueckHinzufuegen}" />
-                                        <f:passThroughAttribute
-                                            name="data-toggle"
-                                            value="tooltip" />
-                                    </button>
-                                </div>
-                            </div>
+						<x:dataTable
+							value="#{item.eigenschaften}"
+							var="prop"
+							styleClass="table table-hover table-bordered">
+							<h:column>
+								<span
+									title="{product.#{prop.titel}}"
+									data-toggle="tooltip"
+									rel="tooltip">#{prop.titel}:</span>
+							</h:column>
+							<h:column>
+								<h:outputText value="#{prop.wert}" />
+							</h:column>
+						</x:dataTable>
 
-                        </div>
-                    </div>
+					</intranda:box>
 
-                </div>
-            </div>
-        </x:dataList>
+				</div>
+			</div>
+		</x:dataList>
 
-    </composite:implementation>
-
+	</composite:implementation>
 </ui:composition>
 
 

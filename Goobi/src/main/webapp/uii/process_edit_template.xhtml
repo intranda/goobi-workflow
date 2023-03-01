@@ -46,6 +46,7 @@
 		<main>
 			<h:form
 				id="myform"
+				onkeypress="submitOnEnter(event);"
 				rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
 
 				<!-- BOX WITH TABLE FOR PLACE AND ID -->
@@ -155,8 +156,8 @@
 
 							<!-- Save => should be the first btn in the form (subit on enter) -->
 							<button
-								class="btn btn-success"
-								jsf:id="absenden"
+								class="btn btn-success submitOnEnter"
+								jsf:id="saveTemplateDetails"
 								type="submit"
 								jsf:action="#{ProzessverwaltungForm.VorlageUebernehmen}">
 								<i class="fa fa-save"></i>
@@ -302,7 +303,7 @@
 
 
 						<div class="box__actions">
-							<!-- Cancel -->
+							<!-- CANCEL -->
 							<button
 								jsf:id="cancelProperty"
 								class="btn btn-blank"
@@ -314,9 +315,9 @@
 									value="" />
 							</button>
 
-							<!-- Save -->
+							<!-- SAVE -->
 							<button
-								class="btn btn-success"
+								class="btn btn-success submitOnEnter"
 								jsf:id="saveProperty"
 								type="submit"
 								jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftUebernehmen}">
@@ -329,7 +330,7 @@
 									value="" />
 							</button>
 
-							<!-- Delete -->
+							<!-- DELETE -->
 							<button
 								jsf:id="deleteProperty"
 								class="btn btn-hot trigger-delete"
