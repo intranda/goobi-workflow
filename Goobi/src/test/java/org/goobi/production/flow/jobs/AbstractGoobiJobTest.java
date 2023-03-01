@@ -23,42 +23,72 @@
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package de.sub.goobi;
+package org.goobi.production.flow.jobs;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.BeforeClass;
+import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-import de.sub.goobi.config.ConfigProjectsTest;
-import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.AbstractTest;
+import de.sub.goobi.persistence.managers.BackgroundJobManager;
+import lombok.Getter;
 
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
-public abstract class AbstractTest {
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ BackgroundJobManager.class })
+public class AbstractGoobiJobTest extends AbstractTest {
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        // setup log4j configuration
-        String log4jFile = "src/test/resources/log4j2.test.xml"; // for junit tests in eclipse
+    @Before
+    public void setUp() throws Exception {
 
-        if (!Files.exists(Paths.get(log4jFile))) {
-            log4jFile = "target/test-classes/log4j2.test.xml"; // to run mvn test from cli or in jenkins
-        }
-
-        System.setProperty("log4j.configurationFile", log4jFile);
-
-        // use separate configuration files for tests
-        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString()
-                + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
-        if (!Files.exists(goobiFolder)) {
-            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
-        }
-        String goobiMainFolder = goobiFolder.getParent().getParent().toString();
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
-        ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiMainFolder + "/");
+        PowerMock.mockStatic(BackgroundJobManager.class);
+        BackgroundJobManager.saveBackgroundJob(EasyMock.anyObject(BackgroundJob.class));
+        PowerMock.replay(BackgroundJobManager.class);
     }
+
+    @Test
+    public void testIsRunning() {
+        StubJob job = new StubJob();
+        assertFalse(job.isRunning());
+        job.setRunning(true);
+        assertTrue(job.isRunning());
+        job.setRunning(false);
+        assertFalse(job.isRunning());
+    }
+
+    @Test
+    public void testExecute() throws Exception {
+        StubJob job = new StubJob();
+        assertFalse(job.isRunning());
+        assertFalse(job.isExecuted());
+        job.execute(null);
+        assertTrue(job.isExecuted());
+    }
+
+
+    private static class StubJob extends AbstractGoobiJob {
+
+        @Getter
+        private boolean executed = false;
+
+        @Override
+        public String getJobName() {
+            return "fixture";
+        }
+
+        @Override
+        public void execute() {
+            executed = true;
+        }
+
+    }
+
 }

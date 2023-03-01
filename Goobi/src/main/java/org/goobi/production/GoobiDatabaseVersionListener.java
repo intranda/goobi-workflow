@@ -32,6 +32,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
+        // do nothing
     }
 
     @Override
@@ -62,8 +63,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             try {
                 DatabaseVersion.runSql("alter table benutzer add column additional_search_fields text DEFAULT null");
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                log.error(e);
             }
         }
     }
