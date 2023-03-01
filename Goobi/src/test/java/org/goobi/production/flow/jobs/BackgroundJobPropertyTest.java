@@ -26,13 +26,43 @@
 
 package org.goobi.production.flow.jobs;
 
-import lombok.Data;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-@Data
-public class BackgroundJobProperty {
+import org.junit.Test;
 
-    private Integer id;
-    private String title;
-    private String value;
+import de.sub.goobi.AbstractTest;
 
+public class BackgroundJobPropertyTest extends AbstractTest {
+
+    @Test
+    public void testConstructor() throws Exception {
+        BackgroundJobProperty fixture = new BackgroundJobProperty();
+        assertNotNull(fixture);
+    }
+
+    @Test
+    public void testId() throws Exception {
+        BackgroundJobProperty fixture = new BackgroundJobProperty();
+        assertNull(fixture.getId());
+        fixture.setId(1);
+        assertEquals(1, fixture.getId().intValue());
+    }
+
+    @Test
+    public void testJobName() throws Exception {
+        BackgroundJobProperty fixture = new BackgroundJobProperty();
+        assertNull(fixture.getTitle());
+        fixture.setTitle("fixture");
+        assertEquals("fixture", fixture.getTitle());
+    }
+
+    @Test
+    public void testJobType() throws Exception {
+        BackgroundJobProperty fixture = new BackgroundJobProperty();
+        assertNull(fixture.getValue());
+        fixture.setValue("fixture");
+        assertEquals("fixture", fixture.getValue());
+    }
 }
