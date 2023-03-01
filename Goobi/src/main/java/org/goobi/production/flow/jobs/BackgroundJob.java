@@ -72,15 +72,15 @@ public class BackgroundJob implements Serializable, DatabaseObject {
     @Getter
     @Setter
     // contains any additional data that is needed for execution
-    private List<BackgroundJobProperty> properties = new ArrayList<>();
+    private transient List<BackgroundJobProperty> properties = new ArrayList<>();
 
     public enum JobStatus {
 
-        NEW(1, "admin__tasks__status_new"),
-        WAIT(2, "admin__tasks__status_wait"),
-        PROCESSING(3, "admin__tasks__status_processing"),
-        FINISH(4, "admin__tasks__status_finished"),
-        ERROR(5, "admin__tasks__status_error");
+        NEW(1, "jobs_status_new"),
+        WAIT(2, "jobs_status_wait"),
+        PROCESSING(3, "jobs_status_processing"),
+        FINISH(4, "jobs_status_finished"),
+        ERROR(5, "jobs_status_error");
 
         private final int id;
         private final String label;

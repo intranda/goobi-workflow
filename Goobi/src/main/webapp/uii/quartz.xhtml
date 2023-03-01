@@ -11,7 +11,7 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf">
     <ui:param
         name="myPageTitle"
-        value="#{msgs.menu_administration_quartzJobs}" />
+        value="#{msgs.jobs_quartzJobs}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
@@ -21,7 +21,7 @@
             navId="a0" />
         <intranda:breadcrumb
             id="admin"
-            label="#{msgs.menu_administration_quartzJobs}"
+            label="#{msgs.jobs_quartzJobs}"
             action="quartz.xhtml"
             noSeparator="#{true}" />
     </ui:define>
@@ -48,7 +48,7 @@
                         padding="true">
 
                         <intranda:boxTitle
-                            title="#{msgs.menu_administration_quartzJobs}"
+                            title="#{msgs.jobs_quartzJobs}"
                             icon="fa-spinner">
 
 
@@ -56,7 +56,7 @@
                         <div class="dataTables flow">
                             <div class="dataTables__search__container">
                                 <div class="dataTables__search__length">
-                                    <h:outputText value="#{msgs.admin__tasks__number_of_jobs}: #{jobBean.activeJobs.size()}" />
+                                    <h:outputText value="#{msgs.jobs_number_of_jobs}: #{jobBean.activeJobs.size()}" />
                                 </div>
                                 <div class="dataTables__filter-container d-flex"></div>
                             </div>
@@ -75,16 +75,16 @@
                                         <thead>
                                             <tr role="row">
                                                 <intranda:columnheader
-                                                    value="#{msgs.admin__tasks__quartz_single_name}"
+                                                    value="#{msgs.jobs_quartz_single_name}"
                                                     sortable="false" />
                                                 <intranda:columnheader
-                                                    value="#{msgs.admin__tasks__quartz_last}"
+                                                    value="#{msgs.jobs_quartz_last}"
                                                     sortable="false" />
                                                 <intranda:columnheader
-                                                    value="#{msgs.admin__tasks__quartz_next}"
+                                                    value="#{msgs.jobs_quartz_next}"
                                                     sortable="false" />
                                                 <intranda:columnheader
-                                                    value="#{msgs.admin__tasks__quartz_single_schedule}"
+                                                    value="#{msgs.jobs_quartz_single_schedule}"
                                                     sortable="false"
                                                     addClass="table-fixed__actions" />
                                             </tr>
@@ -132,7 +132,7 @@
                                                         <button
                                                             jsf:action="#{jobBean.triggerQuartzJob}"
                                                             class="btn admin__table-action-link -bluelink">
-                                                            #{msgs.admin__tasks__run_once_now}
+                                                            #{msgs.jobs_run_once_now}
                                                             <f:setPropertyActionListener
                                                                 target="#{jobBean.quartzJobDetails}"
                                                                 value="#{entry}" />
@@ -185,7 +185,7 @@
                         boxTitle="false"
                         padding="true">
                         <intranda:boxTitle
-                            title="#{msgs.menu_administration_quartzHistory}"
+                            title="#{msgs.jobs_quartzHistory}"
                             icon="fa-history">
                         </intranda:boxTitle>
 
@@ -254,31 +254,31 @@
                                                     <intranda:columnheader
                                                         name="jobName"
                                                         form="#{jobBean}"
-                                                        value="#{msgs.jobName}"
+                                                        value="#{msgs.jobs_jobName}"
                                                         ajaxRender="@form" />
                                                         
                                                     <intranda:columnheader
                                                         name="jobType"
                                                         form="#{jobBean}"
-                                                        value="#{msgs.jobType}"
+                                                        value="#{msgs.jobs_jobType}"
                                                         ajaxRender="@form" />
                                                         
                                                     <intranda:columnheader
                                                         name="jobStatus"
                                                         form="#{jobBean}"
-                                                        value="#{msgs.jobStatus}"
+                                                        value="#{msgs.jobs_jobStatus}"
                                                         ajaxRender="@form" />
                                                         
                                                     <intranda:columnheader
                                                         name="retryCount"
                                                         form="#{jobBean}"
-                                                        value="#{msgs.retryCount}"
+                                                        value="#{msgs.jobs_retryCount}"
                                                         ajaxRender="@form" />
                                                         
                                                     <intranda:columnheader
                                                         name="lastUpdateTime"
                                                         form="#{jobBean}"
-                                                        value="#{msgs.lastUpdateTime}"
+                                                        value="#{msgs.jobs_lastUpdateTime}"
                                                         ajaxRender="@form" />
                                                 </tr>
                                             </thead>
@@ -288,13 +288,13 @@
                                                 varStatus="status">
                                                 <tr role="row">
                                                     <td>
-                                                        <h:outputText value="#{item.jobName}" />
+                                                        <h:outputText value="#{msgs[item.jobName]}" />
                                                     </td>
                                                     <td>
                                                         <h:outputText value="#{item.jobType}" />
                                                     </td>
                                                     <td>
-                                                        <h:outputText value="#{item.jobStatus.label}" />
+                                                        <h:outputText value="#{msgs[item.jobStatus.label]}" />
                                                     </td>
                                                     <td>
                                                         <h:outputText value="#{item.retryCount}" />
