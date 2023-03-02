@@ -4,7 +4,7 @@
 
 ## What is Goobi workflow?
 
-Goobi workflow is an open-source software application for digitisation projects. It allows you to model, manage and supervise freely definable production processes and is used on a daily basis by many institutions to handle all the steps involved in creating a digital libraryor museum. These include importing data from library catalogues, scanning and content-based indexing as well as the digital presentation and delivery of results in popular standardised formats – from book to online presentation.
+Goobi workflow is an open-source software application for digitisation projects. It allows you to model, manage and supervise freely definable production processes and is used on a daily basis by many institutions to handle all the steps involved in creating a digital library or museum. These include importing data from library catalogues, scanning and content-based indexing as well as the digital presentation and delivery of results in popular standardised formats – from book to online presentation.
 
 ![Get an overview of all workflows in digitisation projects with Goobi](https://www.intranda.com/wp-content/uploads/2015/05/goobi_history_21_processes_en.png)
 
