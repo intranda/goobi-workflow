@@ -57,7 +57,9 @@ import org.reflections.Reflections;
 import de.sub.goobi.helper.FacesContextHelper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Startup
 public class GoobiScriptManager {
 
@@ -99,7 +101,8 @@ public class GoobiScriptManager {
                 IGoobiScript gs = cl.getDeclaredConstructor().newInstance();
                 actionToScriptImplMap.put(gs.getAction(), gs);
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-                    | SecurityException e) {
+                    | SecurityException exception) {
+                log.warn(exception);
             }
         }
     }
@@ -301,8 +304,8 @@ public class GoobiScriptManager {
                     out.flush();
                     facesContext.responseComplete();
                 }
-            } catch (IOException e) {
-
+            } catch (IOException exception) {
+                log.error(exception);
             }
         }
     }

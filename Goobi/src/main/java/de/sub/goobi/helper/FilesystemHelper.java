@@ -56,6 +56,13 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class FilesystemHelper {
 
+    private static final String ALTO = ".alto";
+    private static final String TXT = ".txt";
+    private static final String XML = ".xml";
+
+    private static final String LINEBREAK = "\n";
+    private static final String XML_LINEBREAK = "<br />";
+
     /**
      * Creates a directory with a name given. Under Linux a script is used to set the file system permissions accordingly. This cannot be done from
      * within java code before version 1.7.
@@ -165,14 +172,14 @@ public class FilesystemHelper {
         // TODO are different checks for local and s3 needed?
         try {
             if (!ConfigurationHelper.getInstance().useS3()) {
-                File txt = new File(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
-                File xml = new File(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
-                File alto = new File(inProcess.getOcrAltoDirectory(), ocrFile + ".xml");
+                File txt = new File(inProcess.getOcrTxtDirectory(), ocrFile + TXT);
+                File xml = new File(inProcess.getOcrXmlDirectory(), ocrFile + XML);
+                File alto = new File(inProcess.getOcrAltoDirectory(), ocrFile + XML);
                 return (txt.exists() && txt.canRead()) || (xml.exists() && xml.canRead()) || (alto.exists() && alto.canRead());
             } else {
-                Path txt = Paths.get(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
-                Path xml = Paths.get(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
-                Path alto = Paths.get(inProcess.getOcrAltoDirectory(), ocrFile + ".xml");
+                Path txt = Paths.get(inProcess.getOcrTxtDirectory(), ocrFile + TXT);
+                Path xml = Paths.get(inProcess.getOcrXmlDirectory(), ocrFile + XML);
+                Path alto = Paths.get(inProcess.getOcrAltoDirectory(), ocrFile + XML);
                 StorageProviderInterface sp = StorageProvider.getInstance();
                 return sp.isFileExists(xml) || sp.isFileExists(txt) || sp.isFileExists(alto);
             }
@@ -190,31 +197,31 @@ public class FilesystemHelper {
             Path altoFolder = Paths.get(inProcess.getOcrAltoDirectory());
             if (sp.isFileExists(textFolder)) {
                 // try to return content from txt folder
-                ocrfile = textFolder.resolve(ocrFile + ".txt");
+                ocrfile = textFolder.resolve(ocrFile + TXT);
 
                 StringBuilder response = new StringBuilder();
                 String buffer = null;
                 String encoding = getFileEncoding(ocrfile);
                 try (BufferedReader in = new BufferedReader(new InputStreamReader(sp.newInputStream(ocrfile), encoding))) {
                     while ((buffer = in.readLine()) != null) {
-                        response.append(buffer.replaceAll("(\\s+)", " ")).append("<br/>");
+                        response.append(buffer.replaceAll("(\\s+)", " ")).append(XML_LINEBREAK);
                     }
                 }
                 return response.toString();
             } else if (sp.isFileExists(altoFolder)) {
-                ocrfile = altoFolder.resolve(ocrFile + ".alto");
+                ocrfile = altoFolder.resolve(ocrFile + ALTO);
                 if (!sp.isFileExists(ocrfile)) {
-                    ocrfile = altoFolder.resolve(ocrFile + ".xml");
+                    ocrfile = altoFolder.resolve(ocrFile + XML);
                 }
                 AltoDocument alto = AltoDocument.getDocumentFromFile(ocrfile.toFile());
-                return alto.getContent().replace("\n", "<br/>");
+                return alto.getContent().replace(LINEBREAK, XML_LINEBREAK);
             } else if (sp.isFileExists(xmlFolder)) {
                 // try to return content from xml folder
-                ocrfile = xmlFolder.resolve(ocrFile + ".xml");
+                ocrfile = xmlFolder.resolve(ocrFile + XML);
                 ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
                 try (InputStream input = sp.newInputStream(ocrfile)) {
                     AltoDocument alto = converter.convertToASM(input, new Date(), ocrfile.getFileName().toString());
-                    return alto.getContent().replace("\n", "<br/>");
+                    return alto.getContent().replace(LINEBREAK, XML_LINEBREAK);
                 }
             }
 
@@ -234,7 +241,7 @@ public class FilesystemHelper {
     public static void main(String[] args) throws IOException, XMLStreamException {
         ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
         AltoDocument alto = converter.convertToASM(new File("/opt/digiverso/goobi/metadata/365/ocr/mybook_xml/00000121.xml"), new Date());
-        String result = alto.getContent().replace("\n", "<br/>");
+        String result = alto.getContent().replace(LINEBREAK, XML_LINEBREAK);
         System.out.println(result);
     }
 

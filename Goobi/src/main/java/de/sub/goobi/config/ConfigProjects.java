@@ -132,6 +132,7 @@ public class ConfigProjects {
         try {
             this.config.getBoolean("/createNewProcess/opac/@use");
         } catch (NoSuchElementException e) {
+            log.error(e);
         }
 
     }

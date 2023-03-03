@@ -99,7 +99,198 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class XsltPreparatorDocket implements IXsltPreparator {
 
-    private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+    /*
+     * Note: underscores ('_') are always used if words are separated with
+     * camelCaseNotation. If words do not have
+     * camelcasenotation, they are written without underscore.
+     */
+    private static final String ELEMENT_ADMINISTRATION_PLUGIN = "administrationPlugin";
+    private static final String ELEMENT_ASSIGNED_USER_GROUPS = "assignedUserGroups";
+    private static final String ELEMENT_ASSIGNED_USERS = "assignedUsers";
+    private static final String ELEMENT_AUTHENTICATION = "authentication";
+    private static final String ELEMENT_BATCH = "batch";
+    private static final String ELEMENT_COMMENT = "comment";
+    private static final String ELEMENT_COMMENTS = "comments";
+    private static final String ELEMENT_CONFIGURATION = "configuration";
+    private static final String ELEMENT_CONTENT = "content";
+    private static final String ELEMENT_CREATION_DATE = "creationDate";
+    private static final String ELEMENT_DASHBOARD_PLUGIN = "dashboardPlugin";
+    private static final String ELEMENT_DIGITAL_DOCUMENT = "digitalDocument";
+    private static final String ELEMENT_DIGITAL_DOCUMENTS = "digitalDocuments";
+    private static final String ELEMENT_DMS_IMPORT_ERROR_PATH = "dmsImportErrorPath";
+    private static final String ELEMENT_DMS_IMPORT_IMAGES_PATH = "dmsImportImagesPath";
+    private static final String ELEMENT_DMS_IMPORT_ROOT_PATH = "dmsImportRootPath";
+    private static final String ELEMENT_DMS_IMPORT_SUCCESS_PATH = "dmsImportSuccessPath";
+    private static final String ELEMENT_DMS_IMPORT_TIME_OUT = "dmsImportTimeOut";
+    private static final String ELEMENT_DOCKET = "docket";
+    private static final String ELEMENT_EDITION_TYPE = "editionType";
+    private static final String ELEMENT_EDITTYPE = "edittype";
+    private static final String ELEMENT_END_DATE = "endDate";
+    private static final String ELEMENT_ENTRY = "entry";
+    private static final String ELEMENT_EXPORT_CONFIGURATION = "exportConfiguration";
+    private static final String ELEMENT_FILE = "file";
+    private static final String ELEMENT_FILE_FORMAT_DMS_EXPORT = "fileFormatDmsExport";
+    private static final String ELEMENT_FILE_FORMAT_INTERNAL = "fileFormatInternal";
+    private static final String ELEMENT_FILE_GROUPS = "fileGroups";
+    private static final String ELEMENT_FILENAME = "filename";
+    private static final String ELEMENT_HISTORY = "history";
+    private static final String ELEMENT_HISTORY_EVENT = "historyEvent";
+    private static final String ELEMENT_HTTP_STEP = "httpStep";
+    private static final String ELEMENT_ID = "id";
+    private static final String ELEMENT_INSTITUTION = "institution";
+    private static final String ELEMENT_LABEL = "label";
+    private static final String ELEMENT_LOG = "log";
+    private static final String ELEMENT_METADATA = "metadata";
+    private static final String ELEMENT_METADATALIST = "metadatalist";
+    private static final String ELEMENT_METS_CONFIGURATION = "metsConfiguration";
+    private static final String ELEMENT_METS_CONTENT_IDS = "metsContentIDs";
+    private static final String ELEMENT_METS_DIGIPROV_PRESENTATION = "metsDigiprovPresentation";
+    private static final String ELEMENT_METS_DIGIPROV_PRESENTATION_ANCHOR = "metsDigiprovPresentationAnchor";
+    private static final String ELEMENT_METS_DIGIPROV_REFERENCE = "metsDigiprovReference";
+    private static final String ELEMENT_METS_DIGIPROV_REFERENCE_ANCHOR = "metsDigiprovReferenceAnchor";
+    private static final String ELEMENT_METS_INFORMATION = "metsInformation";
+    private static final String ELEMENT_METS_POINTER_PATH = "metsPointerPath";
+    private static final String ELEMENT_METS_POINTER_PATH_ANCHOR = "metsPointerPathAnchor";
+    private static final String ELEMENT_METS_PURL = "metsPurl";
+    private static final String ELEMENT_METS_RIGHTS_LICENSE = "metsRightsLicense";
+    private static final String ELEMENT_METS_RIGHTS_OWNER = "metsRightsOwner";
+    private static final String ELEMENT_METS_RIGHTS_OWNER_LOGO = "metsRightsOwnerLogo";
+    private static final String ELEMENT_METS_RIGHTS_OWNER_MAIL = "metsRightsOwnerMail";
+    private static final String ELEMENT_METS_RIGHTS_OWNER_SITE = "metsRightsOwnerSite";
+    private static final String ELEMENT_METS_RIGHTS_SPONSOR = "metsRightsSponsor";
+    private static final String ELEMENT_METS_RIGHTS_SPONSOR_LOGO = "metsRightsSponsorLogo";
+    private static final String ELEMENT_METS_RIGHTS_SPONSOR_SITE_URL = "metsRightsSponsorSiteURL";
+    private static final String ELEMENT_NAME = "name";
+    private static final String ELEMENT_ORDER = "order";
+    private static final String ELEMENT_ORIGINAL = "original";
+    private static final String ELEMENT_ORIGINALS = "originals";
+    private static final String ELEMENT_PAGES = "pages";
+    private static final String ELEMENT_PDF_GENERATION_DATE = "pdfGenerationDate";
+    private static final String ELEMENT_PRIORITY = "priority";
+    private static final String ELEMENT_PROCESS = "process";
+    private static final String ELEMENT_PROCESSES = "processes";
+    private static final String ELEMENT_PROCESSING_END_TIME = "processingEndTime";
+    private static final String ELEMENT_PROCESSING_START_TIME = "processingStartTime";
+    private static final String ELEMENT_PROCESSING_TIME = "processingTime";
+    private static final String ELEMENT_PROCESSINGSTATUS = "processingstatus";
+    private static final String ELEMENT_PROJECT = "project";
+    private static final String ELEMENT_PROJECT_FILE_GROUP = "projectFileGroup";
+    private static final String ELEMENT_PROPERTIES = "properties";
+    private static final String ELEMENT_PROPERTY = "property";
+    private static final String ELEMENT_REPRESENTATIVE = "representative";
+    private static final String ELEMENT_ROLE = "role";
+    private static final String ELEMENT_RULESET = "ruleset";
+    private static final String ELEMENT_SCRIPT_STEP = "scriptStep";
+    private static final String ELEMENT_SORTING = "sorting";
+    private static final String ELEMENT_START_DATE = "startDate";
+    private static final String ELEMENT_STATISTICS_PLUGIN = "statisticsPlugin";
+    private static final String ELEMENT_STATUS = "status";
+    private static final String ELEMENT_STEP = "step";
+    private static final String ELEMENT_STEPS = "steps";
+    private static final String ELEMENT_TASK = "task";
+    private static final String ELEMENT_TASKS = "tasks";
+    private static final String ELEMENT_TEMPLATES = "templates";
+    private static final String ELEMENT_TIME = "time";
+    private static final String ELEMENT_TITLE = "title";
+    private static final String ELEMENT_TYPE = "type";
+    private static final String ELEMENT_USER = "user";
+    private static final String ELEMENT_USERGROUP = "usergroup";
+    private static final String ELEMENT_VALUE = "value";
+    private static final String ELEMENT_VOLUMES = "volumes";
+    private static final String ELEMENT_WORKFLOW_PLUGIN = "workflowPlugin";
+    private static final String ELEMENT_WORKPIECE = "workpiece";
+    private static final String ATTRIBUTE_ACCESS_LEVEL = "accessLevel";
+    private static final String ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS = "allowAllAuthentications";
+    private static final String ATTRIBUTE_ALLOW_ALL_DOCKETS = "allowAllDockets";
+    private static final String ATTRIBUTE_ALLOW_ALL_PLUGINS = "allowAllPlugins";
+    private static final String ATTRIBUTE_ALLOW_ALL_RULESETS = "allowAllRulesets";
+    private static final String ATTRIBUTE_ARCHIVED = "archived";
+    private static final String ATTRIBUTE_ARTICLES = "articles";
+    private static final String ATTRIBUTE_BATCH_NAME = "batchName";
+    private static final String ATTRIBUTE_BATCH_STEP = "batchStep";
+    private static final String ATTRIBUTE_COMMENT = "comment";
+    private static final String ATTRIBUTE_CONTAINER = "container";
+    private static final String ATTRIBUTE_DATE = "date";
+    private static final String ATTRIBUTE_DELAY_STEP = "delayStep";
+    private static final String ATTRIBUTE_DIGITAL_DOCUMENT_ID = "digitalDocumentID";
+    private static final String ATTRIBUTE_DISPLAY_IN_PROCESS_CREATION = "displayInProcessCreation";
+    private static final String ATTRIBUTE_DMS_IMPORT_CREATE_PROCESS_FOLDER = "dmsImportCreateProcessFolder";
+    private static final String ATTRIBUTE_DOCSTRUCTS = "docstructs";
+    private static final String ATTRIBUTE_END_DATE = "endDate";
+    private static final String ATTRIBUTE_EXPORT = "export";
+    private static final String ATTRIBUTE_FILE = "file";
+    private static final String ATTRIBUTE_FILENAME = "filename";
+    private static final String ATTRIBUTE_FINALIZE_ON_ACCEPT = "finalizeOnAccept";
+    private static final String ATTRIBUTE_FOLDER = "folder";
+    private static final String ATTRIBUTE_GENERATE_DOCKET = "generateDocket";
+    private static final String ATTRIBUTE_HTTP_CLOSE_STEP = "httpCloseStep";
+    private static final String ATTRIBUTE_HTTP_ESCAPE_BODY_JSON = "httpEscapeBodyJson";
+    private static final String ATTRIBUTE_HTTP_JSON_BODY = "httpJsonBody";
+    private static final String ATTRIBUTE_HTTP_METHOD = "httpMethod";
+    private static final String ATTRIBUTE_HTTP_STEP = "httpStep";
+    private static final String ATTRIBUTE_HTTP_URL = "httpUrl";
+    private static final String ATTRIBUTE_ID = "id";
+    private static final String ATTRIBUTE_IMAGES = "images";
+    private static final String ATTRIBUTE_IS_AUTOMATIC = "isAutomatic";
+    private static final String ATTRIBUTE_LABEL = "label";
+    private static final String ATTRIBUTE_LOGIN = "login";
+    private static final String ATTRIBUTE_LONG_NAME = "longName";
+    private static final String ATTRIBUTE_MEDIA_FOLDER_EXISTS = "mediaFolderExists";
+    private static final String ATTRIBUTE_METADATA = "metadata";
+    private static final String ATTRIBUTE_MIMETYPE = "mimetype";
+    private static final String ATTRIBUTE_NAME = "name";
+    private static final String ATTRIBUTE_NUMERIC_VALUE = "numeric_value";// Attention: under_score instead of camelCase
+    private static final String ATTRIBUTE_ORIGINAL_ID = "originalID";
+    private static final String ATTRIBUTE_PATH = "path";
+    private static final String ATTRIBUTE_PROCESS_ID = "processID";
+    private static final String ATTRIBUTE_PROPERTY_IDENTIFIER = "propertyIdentifier";
+    private static final String ATTRIBUTE_READ_IMAGES = "readImages";
+    private static final String ATTRIBUTE_SCHEMA_LOCATION = "schemaLocation";
+    private static final String ATTRIBUTE_SCRIPT_NAME_1 = "scriptName1";
+    private static final String ATTRIBUTE_SCRIPT_NAME_2 = "scriptName2";
+    private static final String ATTRIBUTE_SCRIPT_NAME_3 = "scriptName3";
+    private static final String ATTRIBUTE_SCRIPT_NAME_4 = "scriptName4";
+    private static final String ATTRIBUTE_SCRIPT_NAME_5 = "scriptName5";
+    private static final String ATTRIBUTE_SCRIPT_PATH_1 = "scriptPath1";
+    private static final String ATTRIBUTE_SCRIPT_PATH_2 = "scriptPath2";
+    private static final String ATTRIBUTE_SCRIPT_PATH_3 = "scriptPath3";
+    private static final String ATTRIBUTE_SCRIPT_PATH_4 = "scriptPath4";
+    private static final String ATTRIBUTE_SCRIPT_PATH_5 = "scriptPath5";
+    private static final String ATTRIBUTE_SCRIPT_STEP = "scriptStep";
+    private static final String ATTRIBUTE_SHORT_NAME = "shortName";
+    private static final String ATTRIBUTE_START_DATE = "startDate";
+    private static final String ATTRIBUTE_STATUS = "status";
+    private static final String ATTRIBUTE_STEP_ID = "stepID";
+    private static final String ATTRIBUTE_STEP_PLUGIN = "stepPlugin";
+    private static final String ATTRIBUTE_SUFFIX = "suffix";
+    private static final String ATTRIBUTE_TEMPLATE = "template";
+    private static final String ATTRIBUTE_TYPE = "type";
+    private static final String ATTRIBUTE_UPDATE_METADATA_INDEX = "updateMetadataIndex";
+    private static final String ATTRIBUTE_URL = "url";
+    private static final String ATTRIBUTE_USE_DMS_IMPORT = "useDmsImport";
+    private static final String ATTRIBUTE_USE_HOME_DIRECTORY = "useHomeDirectory";
+    private static final String ATTRIBUTE_USE_METS_EDITOR = "useMetsEditor";
+    private static final String ATTRIBUTE_USER = "user";
+    private static final String ATTRIBUTE_VALIDATION_PLUGIN = "validationPlugin";
+    private static final String ATTRIBUTE_VALUE = "value";
+    private static final String ATTRIBUTE_VERIFY_ON_FINALIZE = "verifyOnFinalize";
+    private static final String ATTRIBUTE_WRITE_IMAGES = "writeImages";
+
+    private static final String FOLDER_MASTER = "master";
+    private static final String FOLDER_MEDIA = "media";
+    private static final String FOLDER_EXPORT = "export";
+    private static final String FOLDER_INTERN = "intern";
+
+    private static final String FILE_EXPORT_XML_XML = "goobi_exportXml.xml";
+    private static final String FILE_META_XML = "meta.xml";
+    private static final String FILE_META_ANCHOR_XML = "meta_anchor.xml";
+    private static final String FILE_LOG = "http://www.goobi.io/logfile";
+    private static final String FILE_SCHEMA = "http://www.w3.org/2001/XMLSchema-instance";
+
+    private static final String NAMESPACE_XSI = "xsi";
+    private static final String XSD_ENDING = "XML-logfile.xsd";
+
+    private static Namespace xmlns = Namespace.getNamespace(FILE_LOG);
 
     private SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
@@ -110,7 +301,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @param destination the destination to write the file
      * @throws FileNotFoundException
      * @throws IOException
-     * @throws ExportFileException
      */
 
     public void startExport(Process p, String destination) throws FileNotFoundException, IOException {
@@ -174,56 +364,56 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      */
     public Document createDocument(Process process, boolean addNamespace, boolean includeImages) {
 
-        Element mainElement = new Element("process");
+        Element mainElement = new Element(ELEMENT_PROCESS);
         Document doc = new Document(mainElement);
 
-        mainElement.setAttribute("processID", String.valueOf(process.getId()));
+        mainElement.setAttribute(ATTRIBUTE_PROCESS_ID, String.valueOf(process.getId()));
 
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+        Namespace xmlns = Namespace.getNamespace(FILE_LOG);
         mainElement.setNamespace(xmlns);
         // namespace declaration
         if (addNamespace) {
-            Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            Namespace xsi = Namespace.getNamespace(NAMESPACE_XSI, FILE_SCHEMA);
             mainElement.addNamespaceDeclaration(xsi);
-            Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
+            Attribute attSchema = new Attribute(ATTRIBUTE_SCHEMA_LOCATION, FILE_LOG + " " + XSD_ENDING, xsi);
             mainElement.setAttribute(attSchema);
         }
 
         // add some general process information
         ArrayList<Element> elements = new ArrayList<>();
-        Element processTitle = new Element("title", xmlns);
+        Element processTitle = new Element(ELEMENT_TITLE, xmlns);
         processTitle.setText(process.getTitel());
         elements.add(processTitle);
 
-        Element project = new Element("project", xmlns);
+        Element project = new Element(ELEMENT_PROJECT, xmlns);
         project.setText(process.getProjekt().getTitel());
         elements.add(project);
 
-        Element date = new Element("creationDate", xmlns);
+        Element date = new Element(ELEMENT_CREATION_DATE, xmlns);
         date.setText(String.valueOf(process.getErstellungsdatum()));
         elements.add(date);
 
-        Element pdfdate = new Element("pdfGenerationDate", xmlns);
+        Element pdfdate = new Element(ELEMENT_PDF_GENERATION_DATE, xmlns);
         pdfdate.setText(String.valueOf(new Date()));
         elements.add(pdfdate);
 
-        Element ruleset = new Element("ruleset", xmlns);
+        Element ruleset = new Element(ELEMENT_RULESET, xmlns);
         ruleset.setText(process.getRegelsatz().getDatei());
         elements.add(ruleset);
 
         // add user comments from the process log
-        Element comment = new Element("comments", xmlns);
+        Element comment = new Element(ELEMENT_COMMENTS, xmlns);
         List<JournalEntry> logEntry = process.getJournal();
         for (JournalEntry entry : logEntry) {
-            Element commentLine = new Element("comment", xmlns);
-            commentLine.setAttribute("type", entry.getType().getTitle());
+            Element commentLine = new Element(ELEMENT_COMMENT, xmlns);
+            commentLine.setAttribute(ATTRIBUTE_TYPE, entry.getType().getTitle());
             if (StringUtils.isNotBlank(entry.getUserName())) {
-                commentLine.setAttribute("user", entry.getUserName());
+                commentLine.setAttribute(ATTRIBUTE_USER, entry.getUserName());
             }
             commentLine.setText(entry.getContent());
 
             if (StringUtils.isNotBlank(entry.getFilename())) {
-                comment.setAttribute("filename", entry.getFilename());
+                comment.setAttribute(ATTRIBUTE_FILENAME, entry.getFilename());
             }
             comment.addContent(commentLine);
         }
@@ -231,17 +421,17 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         elements.add(comment);
 
         if (process.getBatch() != null) {
-            Element batch = new Element("batch", xmlns);
+            Element batch = new Element(ELEMENT_BATCH, xmlns);
             batch.setText(String.valueOf(process.getBatch().getBatchId()));
             if (StringUtils.isNotBlank(process.getBatch().getBatchName())) {
-                batch.setAttribute("batchName", process.getBatch().getBatchName());
+                batch.setAttribute(ATTRIBUTE_BATCH_NAME, process.getBatch().getBatchName());
             }
             if (process.getBatch().getStartDate() != null) {
-                batch.setAttribute("startDate", Helper.getDateAsFormattedString(process.getBatch().getStartDate()));
+                batch.setAttribute(ATTRIBUTE_START_DATE, Helper.getDateAsFormattedString(process.getBatch().getStartDate()));
             }
 
             if (process.getBatch().getEndDate() != null) {
-                batch.setAttribute("endDate", Helper.getDateAsFormattedString(process.getBatch().getEndDate()));
+                batch.setAttribute(ATTRIBUTE_END_DATE, Helper.getDateAsFormattedString(process.getBatch().getEndDate()));
             }
 
             elements.add(batch);
@@ -250,57 +440,57 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         List<Element> processProperties = new ArrayList<>();
         List<ProcessProperty> propertyList = PropertyParser.getInstance().getPropertiesForProcess(process);
         for (ProcessProperty prop : propertyList) {
-            Element property = new Element("property", xmlns);
-            property.setAttribute("propertyIdentifier", prop.getName());
+            Element property = new Element(ELEMENT_PROPERTY, xmlns);
+            property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getName());
             if (prop.getValue() != null) {
-                property.setAttribute("value", prop.getValue());
+                property.setAttribute(ATTRIBUTE_VALUE, prop.getValue());
             } else {
-                property.setAttribute("value", "");
+                property.setAttribute(ATTRIBUTE_VALUE, "");
             }
 
-            Element label = new Element("label", xmlns);
+            Element label = new Element(ELEMENT_LABEL, xmlns);
 
             label.setText(prop.getName());
             property.addContent(label);
             processProperties.add(property);
         }
         if (!processProperties.isEmpty()) {
-            Element properties = new Element("properties", xmlns);
+            Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
             properties.addContent(processProperties);
             elements.add(properties);
         }
 
         // step information
-        Element steps = new Element("steps", xmlns);
+        Element steps = new Element(ELEMENT_STEPS, xmlns);
         List<Element> stepElements = new ArrayList<>();
         for (Step s : process.getSchritteList()) {
-            Element stepElement = new Element("step", xmlns);
-            stepElement.setAttribute("stepID", String.valueOf(s.getId()));
+            Element stepElement = new Element(ELEMENT_STEP, xmlns);
+            stepElement.setAttribute(ATTRIBUTE_STEP_ID, String.valueOf(s.getId()));
 
-            Element steptitle = new Element("title", xmlns);
+            Element steptitle = new Element(ELEMENT_TITLE, xmlns);
             steptitle.setText(s.getTitel());
             stepElement.addContent(steptitle);
 
-            Element state = new Element("processingstatus", xmlns);
+            Element state = new Element(ELEMENT_PROCESSINGSTATUS, xmlns);
             state.setText(s.getBearbeitungsstatusAsString());
             stepElement.addContent(state);
 
-            Element begin = new Element("time", xmlns);
-            begin.setAttribute("type", "start time");
+            Element begin = new Element(ELEMENT_TIME, xmlns);
+            begin.setAttribute(ATTRIBUTE_TYPE, "start time");
             begin.setText(s.getBearbeitungsbeginnAsFormattedString());
             stepElement.addContent(begin);
 
-            Element end = new Element("time", xmlns);
-            end.setAttribute("type", "end time");
+            Element end = new Element(ELEMENT_TIME, xmlns);
+            end.setAttribute(ATTRIBUTE_TYPE, "end time");
             end.setText(s.getBearbeitungsendeAsFormattedString());
             stepElement.addContent(end);
 
             if (s.getBearbeitungsbenutzer() != null && s.getBearbeitungsbenutzer().getNachVorname() != null) {
-                Element user = new Element("user", xmlns);
+                Element user = new Element(ELEMENT_USER, xmlns);
                 user.setText(s.getBearbeitungsbenutzer().getNachVorname());
                 stepElement.addContent(user);
             }
-            Element editType = new Element("edittype", xmlns);
+            Element editType = new Element(ELEMENT_EDITTYPE, xmlns);
             editType.setText(s.getEditTypeEnum().getTitle());
             stepElement.addContent(editType);
 
@@ -312,34 +502,34 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         // template information
-        Element templates = new Element("originals", xmlns);
+        Element templates = new Element(ELEMENT_ORIGINALS, xmlns);
         List<Element> templateElements = new ArrayList<>();
         for (Template v : process.getVorlagenList()) {
-            Element template = new Element("original", xmlns);
-            template.setAttribute("originalID", String.valueOf(v.getId()));
+            Element template = new Element(ELEMENT_ORIGINAL, xmlns);
+            template.setAttribute(ATTRIBUTE_ORIGINAL_ID, String.valueOf(v.getId()));
 
             List<Element> templateProperties = new ArrayList<>();
             for (Templateproperty prop : v.getEigenschaftenList()) {
-                Element property = new Element("property", xmlns);
-                property.setAttribute("propertyIdentifier", prop.getTitel());
+                Element property = new Element(ELEMENT_PROPERTY, xmlns);
+                property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel());
                 if (prop.getWert() != null) {
-                    property.setAttribute("value", prop.getWert());
+                    property.setAttribute(ATTRIBUTE_VALUE, prop.getWert());
                 } else {
-                    property.setAttribute("value", "");
+                    property.setAttribute(ATTRIBUTE_VALUE, "");
                 }
 
-                Element label = new Element("label", xmlns);
+                Element label = new Element(ELEMENT_LABEL, xmlns);
 
                 label.setText(prop.getTitel());
                 property.addContent(label);
 
                 templateProperties.add(property);
                 if ("Signatur".equals(prop.getTitel())) {
-                    Element secondProperty = new Element("property", xmlns);
-                    secondProperty.setAttribute("propertyIdentifier", prop.getTitel() + "Encoded");
+                    Element secondProperty = new Element(ELEMENT_PROPERTY, xmlns);
+                    secondProperty.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel() + "Encoded");
                     if (prop.getWert() != null) {
-                        secondProperty.setAttribute("value", "vorl:" + prop.getWert());
-                        Element secondLabel = new Element("label", xmlns);
+                        secondProperty.setAttribute(ATTRIBUTE_VALUE, "vorl:" + prop.getWert());
+                        Element secondLabel = new Element(ELEMENT_LABEL, xmlns);
                         secondLabel.setText(prop.getTitel());
                         secondProperty.addContent(secondLabel);
                         templateProperties.add(secondProperty);
@@ -347,7 +537,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 }
             }
             if (!templateProperties.isEmpty()) {
-                Element properties = new Element("properties", xmlns);
+                Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
                 properties.addContent(templateProperties);
                 template.addContent(properties);
             }
@@ -359,30 +549,30 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         // digital document information
-        Element digdoc = new Element("digitalDocuments", xmlns);
+        Element digdoc = new Element(ELEMENT_DIGITAL_DOCUMENTS, xmlns);
         List<Element> docElements = new ArrayList<>();
         for (Masterpiece w : process.getWerkstueckeList()) {
-            Element dd = new Element("digitalDocument", xmlns);
-            dd.setAttribute("digitalDocumentID", String.valueOf(w.getId()));
+            Element dd = new Element(ELEMENT_DIGITAL_DOCUMENT, xmlns);
+            dd.setAttribute(ATTRIBUTE_DIGITAL_DOCUMENT_ID, String.valueOf(w.getId()));
 
             List<Element> docProperties = new ArrayList<>();
             for (Masterpieceproperty prop : w.getEigenschaftenList()) {
-                Element property = new Element("property", xmlns);
-                property.setAttribute("propertyIdentifier", prop.getTitel());
+                Element property = new Element(ELEMENT_PROPERTY, xmlns);
+                property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel());
                 if (prop.getWert() != null) {
-                    property.setAttribute("value", prop.getWert());
+                    property.setAttribute(ATTRIBUTE_VALUE, prop.getWert());
                 } else {
-                    property.setAttribute("value", "");
+                    property.setAttribute(ATTRIBUTE_VALUE, "");
                 }
 
-                Element label = new Element("label", xmlns);
+                Element label = new Element(ELEMENT_LABEL, xmlns);
 
                 label.setText(prop.getTitel());
                 property.addContent(label);
                 docProperties.add(property);
             }
             if (!docProperties.isEmpty()) {
-                Element properties = new Element("properties", xmlns);
+                Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
                 properties.addContent(docProperties);
                 dd.addContent(properties);
             }
@@ -398,13 +588,13 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             List<Element> eventElementList = new ArrayList<>(eventList.size());
 
             for (HistoryEvent event : eventList) {
-                Element element = new Element("historyEvent", xmlns);
-                element.setAttribute("id", "" + event.getId());
-                element.setAttribute("date", Helper.getDateAsFormattedString(event.getDate()));
-                element.setAttribute("type", event.getHistoryType().getTitle());
+                Element element = new Element(ELEMENT_HISTORY_EVENT, xmlns);
+                element.setAttribute(ATTRIBUTE_ID, "" + event.getId());
+                element.setAttribute(ATTRIBUTE_DATE, Helper.getDateAsFormattedString(event.getDate()));
+                element.setAttribute(ATTRIBUTE_TYPE, event.getHistoryType().getTitle());
 
                 if (event.getNumericValue() != null) {
-                    element.setAttribute("numeric_value", "" + event.getNumericValue());
+                    element.setAttribute(ATTRIBUTE_NUMERIC_VALUE, "" + event.getNumericValue());
                 }
                 if (event.getStringValue() != null) {
                     element.setText(event.getStringValue());
@@ -413,7 +603,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             }
 
             if (!eventElementList.isEmpty()) {
-                Element metadataElement = new Element("history", xmlns);
+                Element metadataElement = new Element(ELEMENT_HISTORY, xmlns);
                 metadataElement.addContent(eventElementList);
                 elements.add(metadataElement);
             }
@@ -427,20 +617,20 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 String name = md.getOne();
                 String value = md.getTwo();
                 if (StringUtils.isNotBlank(value) && StringUtils.isNotBlank(name)) {
-                    Element element = new Element("metadata", xmlns);
-                    element.setAttribute("name", name);
+                    Element element = new Element(ELEMENT_METADATA, xmlns);
+                    element.setAttribute(ATTRIBUTE_NAME, name);
                     element.addContent(value);
                     mdlist.add(element);
                 }
             }
             if (!mdlist.isEmpty()) {
-                Element metadataElement = new Element("metadatalist", xmlns);
+                Element metadataElement = new Element(ELEMENT_METADATALIST, xmlns);
                 metadataElement.addContent(mdlist);
                 elements.add(metadataElement);
             }
         }
         // METS information
-        Element metsElement = new Element("metsInformation", xmlns);
+        Element metsElement = new Element(ELEMENT_METS_INFORMATION, xmlns);
         List<Element> metadataElements = new ArrayList<>();
 
         try {
@@ -448,7 +638,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             SAXBuilder builder = XmlTools.getSAXBuilder();
             Document metsDoc = builder.build(filename);
             Document anchorDoc = null;
-            String anchorfilename = process.getMetadataFilePath().replace("meta.xml", "meta_anchor.xml");
+            String anchorfilename = process.getMetadataFilePath().replace(FILE_META_XML, FILE_META_ANCHOR_XML);
             Path anchorFile = Paths.get(anchorfilename);
             if (StorageProvider.getInstance().isFileExists(anchorFile) && StorageProvider.getInstance().isReadable(anchorFile)) {
                 anchorDoc = builder.build(anchorfilename);
@@ -460,8 +650,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             for (String key : fields.keySet()) {
                 List<Element> metsValues = getMetsValues(fields.get(key), metsDoc, namespaces);
                 for (Element element : metsValues) {
-                    Element ele = new Element("property", xmlns);
-                    ele.setAttribute("name", key);
+                    Element ele = new Element(ELEMENT_PROPERTY, xmlns);
+                    ele.setAttribute(ATTRIBUTE_NAME, key);
                     ele.addContent(element.getTextTrim());
                     metadataElements.add(ele);
                 }
@@ -472,8 +662,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 for (String key : fields.keySet()) {
                     List<Element> metsValues = getMetsValues(fields.get(key), anchorDoc, namespaces);
                     for (Element element : metsValues) {
-                        Element ele = new Element("property", xmlns);
-                        ele.setAttribute("name", key);
+                        Element ele = new Element(ELEMENT_PROPERTY, xmlns);
+                        ele.setAttribute(ATTRIBUTE_NAME, key);
                         ele.addContent(element.getTextTrim());
                         metadataElements.add(ele);
                     }
@@ -485,52 +675,52 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 elements.add(metsElement);
             }
 
-        } catch (SwapException | IOException | JDOMException | JaxenException e) {
-            log.error(e);
+        } catch (SwapException | IOException | JDOMException | JaxenException exception) {
+            log.error(exception);
         }
 
         try {
             // add the representative image
             if (includeImages) {
-                Element representative = new Element("representative", xmlns);
+                Element representative = new Element(ELEMENT_REPRESENTATIVE, xmlns);
                 Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
                 String folderName;
                 if ((repImagePath.getParent().toString() + "/").equals(process.getImagesTifDirectory(true))) {
-                    folderName = "media";
+                    folderName = FOLDER_MEDIA;
                 } else {
-                    folderName = "master";
+                    folderName = FOLDER_MASTER;
                 }
                 Image repimage = new Image(process, folderName, repImagePath.getFileName().toString(), 0, 3000);
 
-                representative.setAttribute("path", process.getRepresentativeImageAsString());
-                representative.setAttribute("url", repimage.getThumbnailUrl());
+                representative.setAttribute(ATTRIBUTE_PATH, process.getRepresentativeImageAsString());
+                representative.setAttribute(ATTRIBUTE_URL, repimage.getThumbnailUrl());
                 elements.add(representative);
 
                 // add all internal files
                 Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
-                elements.add(getContentFiles(process, "intern", pIntern.toString()));
+                elements.add(getContentFiles(process, FOLDER_INTERN, pIntern.toString()));
 
                 // add all files from export folder
-                elements.add(getContentFiles(process, "export", process.getExportDirectory()));
+                elements.add(getContentFiles(process, FOLDER_EXPORT, process.getExportDirectory()));
 
                 // add all master files
-                elements.add(getContentFiles(process, "master", process.getImagesOrigDirectory(false)));
+                elements.add(getContentFiles(process, FOLDER_MASTER, process.getImagesOrigDirectory(false)));
 
                 // add all master files
-                elements.add(getContentFiles(process, "media", process.getImagesTifDirectory(false)));
+                elements.add(getContentFiles(process, FOLDER_MEDIA, process.getImagesTifDirectory(false)));
             }
             // all log files together with their comments
-            Element logfiles = new Element("log", xmlns);
+            Element logfiles = new Element(ELEMENT_LOG, xmlns);
             for (JournalEntry entry : process.getJournal()) {
                 if (entry.getType() == LogType.FILE) {
-                    Element cf = new Element("file", xmlns);
+                    Element cf = new Element(ELEMENT_FILE, xmlns);
                     if (entry.getContent() != null) {
-                        cf.setAttribute("comment", entry.getContent());
+                        cf.setAttribute(ATTRIBUTE_COMMENT, entry.getContent());
                     }
-                    cf.setAttribute("path", entry.getFilename());
+                    cf.setAttribute(ATTRIBUTE_PATH, entry.getFilename());
                     Path imagePath = Paths.get(entry.getFilename());
-                    Image image = new Image(process, "intern", imagePath.getFileName().toString(), 0, 3000);
-                    cf.setAttribute("url", image.getThumbnailUrl());
+                    Image image = new Image(process, FOLDER_INTERN, imagePath.getFileName().toString(), 0, 3000);
+                    cf.setAttribute(ATTRIBUTE_URL, image.getThumbnailUrl());
 
                     logfiles.addContent(cf);
                 }
@@ -558,13 +748,13 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Element contentfiles = new Element(label, xmlns);
         List<Path> files = StorageProvider.getInstance().listFiles(folder, NIOFileUtils.fileFilter);
         for (Path p : files) {
-            Element cf = new Element("file", xmlns);
-            cf.setAttribute("path", p.toString());
+            Element cf = new Element(ELEMENT_FILE, xmlns);
+            cf.setAttribute(ATTRIBUTE_PATH, p.toString());
 
             Image image;
             try {
                 image = new Image(process, folder, p.getFileName().toString(), 0, 3000);
-                cf.setAttribute("url", image.getThumbnailUrl());
+                cf.setAttribute(ATTRIBUTE_URL, image.getThumbnailUrl());
                 contentfiles.addContent(cf);
             } catch (IOException | SwapException | DAOException e) {
                 log.error(e);
@@ -641,14 +831,14 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      */
     public void startExport(List<Process> processList, OutputStream outputStream, String xslt) {
         Document answer = new Document();
-        Element root = new Element("processes");
+        Element root = new Element(ELEMENT_PROCESSES);
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+        Namespace xmlns = Namespace.getNamespace(FILE_LOG);
 
-        Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        Namespace xsi = Namespace.getNamespace(NAMESPACE_XSI, FILE_SCHEMA);
         root.addNamespaceDeclaration(xsi);
         root.setNamespace(xmlns);
-        Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
+        Attribute attSchema = new Attribute(ATTRIBUTE_SCHEMA_LOCATION, FILE_LOG + " " + XSD_ENDING, xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {
             Document doc = createDocument(p, false, true);
@@ -663,8 +853,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         try {
 
             outp.output(answer, outputStream);
-        } catch (IOException e) {
-
+        } catch (IOException exception) {
+            log.error(exception);
         } finally {
             if (outputStream != null) {
                 try {
@@ -678,14 +868,14 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
     public void startExport(List<Process> processList, OutputStream outputStream, String xslt, boolean includeImages) {
         Document answer = new Document();
-        Element root = new Element("processes");
+        Element root = new Element(ELEMENT_PROCESSES);
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+        Namespace xmlns = Namespace.getNamespace(FILE_LOG);
 
-        Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        Namespace xsi = Namespace.getNamespace(NAMESPACE_XSI, FILE_SCHEMA);
         root.addNamespaceDeclaration(xsi);
         root.setNamespace(xmlns);
-        Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
+        Attribute attSchema = new Attribute(ATTRIBUTE_SCHEMA_LOCATION, FILE_LOG + " " + XSD_ENDING, xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {
             Document doc = createDocument(p, false, includeImages);
@@ -700,8 +890,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         try {
 
             outp.output(answer, outputStream);
-        } catch (IOException e) {
-
+        } catch (IOException exception) {
+            log.error(exception);
         } finally {
             if (outputStream != null) {
                 try {
@@ -728,7 +918,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         HashMap<String, String> fields = new HashMap<>();
         try {
-            Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
+            Path file = Paths.get(new Helper().getGoobiConfigDirectory() + FILE_EXPORT_XML_XML);
             if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
                 XMLConfiguration config = new XMLConfiguration();
                 config.setDelimiterParsingDisabled(true);
@@ -756,23 +946,24 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     private List<Namespace> getNamespacesFromConfig() {
         List<Namespace> nss = new ArrayList<>();
         try {
-            Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
+            Path file = Paths.get(new Helper().getGoobiConfigDirectory() + FILE_EXPORT_XML_XML);
             if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
                 XMLConfiguration config = new XMLConfiguration();
                 config.setDelimiterParsingDisabled(true);
                 config.load(file.toFile());
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
-                int count = config.getMaxIndex("namespace");
+                String namespace = "namespace";
+                int count = config.getMaxIndex(namespace);
                 for (int i = 0; i <= count; i++) {
-                    String name = config.getString("namespace(" + i + ")[@name]");
-                    String value = config.getString("namespace(" + i + ")[@value]");
+                    String name = config.getString(namespace + "(" + i + ")[@name]");
+                    String value = config.getString(namespace + "(" + i + ")[@value]");
                     Namespace ns = Namespace.getNamespace(name, value);
                     nss.add(ns);
                 }
             }
-        } catch (Exception e) {
-
+        } catch (Exception exception) {
+            log.error(exception);
         }
         return nss;
 
@@ -788,7 +979,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
     public Document createExtendedDocument(Process process) {
 
-        Element rootElement = new Element("process", xmlns);
+        Element rootElement = new Element(ELEMENT_PROCESS, xmlns);
         Document doc = new Document(rootElement);
 
         getProcessData(process, rootElement);
@@ -824,7 +1015,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             rootElement.addContent(getWorkpiecePropertyData(process));
         }
         // tasks
-        Element tasks = new Element("tasks", xmlns);
+        Element tasks = new Element(ELEMENT_TASKS, xmlns);
         rootElement.addContent(tasks);
 
         for (Step step : process.getSchritte()) {
@@ -841,175 +1032,175 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return
      */
     private Element getTaskData(Step step) {
-        Element task = new Element("task", xmlns);
+        Element task = new Element(ELEMENT_TASK, xmlns);
         // SchritteID
-        task.setAttribute("id", String.valueOf(step.getId()));
+        task.setAttribute(ATTRIBUTE_ID, String.valueOf(step.getId()));
 
         // Titel
-        Element stepName = new Element("name", xmlns);
+        Element stepName = new Element(ELEMENT_NAME, xmlns);
         stepName.setText(step.getTitel());
         task.addContent(stepName);
 
         // Prioritaet
-        Element priority = new Element("priority", xmlns);
+        Element priority = new Element(ELEMENT_PRIORITY, xmlns);
         priority.setText(String.valueOf(step.getPrioritaet()));
         task.addContent(priority);
 
         // Reihenfolge
-        Element order = new Element("order", xmlns);
+        Element order = new Element(ELEMENT_ORDER, xmlns);
         order.setText(String.valueOf(step.getReihenfolge()));
         task.addContent(order);
 
         // Bearbeitungsstatus
-        Element status = new Element("status", xmlns);
+        Element status = new Element(ELEMENT_STATUS, xmlns);
         status.setText(step.getBearbeitungsstatusAsString());
         task.addContent(status);
 
         // BearbeitungsZeitpunkt
-        Element processingTime = new Element("processingTime", xmlns);
+        Element processingTime = new Element(ELEMENT_PROCESSING_TIME, xmlns);
         processingTime.setText(step.getBearbeitungszeitpunkt() == null ? "" : dateConverter.format(step.getBearbeitungszeitpunkt()));
         task.addContent(processingTime);
 
         // BearbeitungsBeginn
-        Element processingStartTime = new Element("processingStartTime", xmlns);
+        Element processingStartTime = new Element(ELEMENT_PROCESSING_START_TIME, xmlns);
         processingStartTime.setText(step.getBearbeitungsbeginn() == null ? "" : dateConverter.format(step.getBearbeitungsbeginn()));
         task.addContent(processingStartTime);
 
         // BearbeitungsEnde
-        Element processingEndTime = new Element("processingEndTime", xmlns);
+        Element processingEndTime = new Element(ELEMENT_PROCESSING_END_TIME, xmlns);
         processingEndTime.setText(step.getBearbeitungsende() == null ? "" : dateConverter.format(step.getBearbeitungsende()));
         task.addContent(processingEndTime);
 
         // BearbeitungsBenutzerID
         if (step.getBearbeitungsbenutzer() != null) {
-            Element user = new Element("user", xmlns);
-            user.setAttribute("id", String.valueOf(step.getBearbeitungsbenutzer().getId()));
+            Element user = new Element(ELEMENT_USER, xmlns);
+            user.setAttribute(ATTRIBUTE_ID, String.valueOf(step.getBearbeitungsbenutzer().getId()));
             user.setText(step.getBearbeitungsbenutzer().getNachVorname());
-            user.setAttribute("login", step.getBearbeitungsbenutzer().getLogin());
+            user.setAttribute(ATTRIBUTE_LOGIN, step.getBearbeitungsbenutzer().getLogin());
             task.addContent(user);
         }
 
         // edittype
-        Element editionType = new Element("editionType", xmlns);
+        Element editionType = new Element(ELEMENT_EDITION_TYPE, xmlns);
         editionType.setText(String.valueOf(step.getEditTypeEnum().getValue()));
         task.addContent(editionType);
 
-        Element configuration = new Element("configuration", xmlns);
+        Element configuration = new Element(ELEMENT_CONFIGURATION, xmlns);
         task.addContent(configuration);
         // homeverzeichnisNutzen
-        configuration.setAttribute("useHomeDirectory", String.valueOf(step.getHomeverzeichnisNutzen()));
+        configuration.setAttribute(ATTRIBUTE_USE_HOME_DIRECTORY, String.valueOf(step.getHomeverzeichnisNutzen()));
         // typMetadaten
-        configuration.setAttribute("useMetsEditor", String.valueOf(step.isTypMetadaten()));
+        configuration.setAttribute(ATTRIBUTE_USE_METS_EDITOR, String.valueOf(step.isTypMetadaten()));
         // typAutomatisch
-        configuration.setAttribute("isAutomatic", String.valueOf(step.isTypAutomatisch()));
+        configuration.setAttribute(ATTRIBUTE_IS_AUTOMATIC, String.valueOf(step.isTypAutomatisch()));
         // typImagesLesen
-        configuration.setAttribute("readImages", String.valueOf(step.isTypImagesLesen()));
+        configuration.setAttribute(ATTRIBUTE_READ_IMAGES, String.valueOf(step.isTypImagesLesen()));
         // typImagesSchreiben
-        configuration.setAttribute("writeImages", String.valueOf(step.isTypImagesSchreiben()));
+        configuration.setAttribute(ATTRIBUTE_WRITE_IMAGES, String.valueOf(step.isTypImagesSchreiben()));
         // typExportDMS
-        configuration.setAttribute("export", String.valueOf(step.isTypExportDMS()));
+        configuration.setAttribute(ATTRIBUTE_EXPORT, String.valueOf(step.isTypExportDMS()));
         // typBeimAnnehmenAbschliessen
-        configuration.setAttribute("finalizeOnAccept", String.valueOf(step.isTypBeimAnnehmenAbschliessen()));
+        configuration.setAttribute(ATTRIBUTE_FINALIZE_ON_ACCEPT, String.valueOf(step.isTypBeimAnnehmenAbschliessen()));
         // typBeimAbschliessenVerifizieren
-        configuration.setAttribute("verifyOnFinalize", String.valueOf(step.isTypBeimAbschliessenVerifizieren()));
+        configuration.setAttribute(ATTRIBUTE_VERIFY_ON_FINALIZE, String.valueOf(step.isTypBeimAbschliessenVerifizieren()));
         // delayStep
-        configuration.setAttribute("delayStep", String.valueOf(step.isDelayStep()));
+        configuration.setAttribute(ATTRIBUTE_DELAY_STEP, String.valueOf(step.isDelayStep()));
         // updateMetadataIndex
-        configuration.setAttribute("updateMetadataIndex", String.valueOf(step.isUpdateMetadataIndex()));
+        configuration.setAttribute(ATTRIBUTE_UPDATE_METADATA_INDEX, String.valueOf(step.isUpdateMetadataIndex()));
         // generateDocket
-        configuration.setAttribute("generateDocket", String.valueOf(step.isGenerateDocket()));
+        configuration.setAttribute(ATTRIBUTE_GENERATE_DOCKET, String.valueOf(step.isGenerateDocket()));
         // batchStep
-        configuration.setAttribute("batchStep", String.valueOf(step.getBatchStep()));
+        configuration.setAttribute(ATTRIBUTE_BATCH_STEP, String.valueOf(step.getBatchStep()));
 
         // stepPlugin
-        configuration.setAttribute("stepPlugin", step.getStepPlugin() == null ? "" : step.getStepPlugin());
+        configuration.setAttribute(ATTRIBUTE_STEP_PLUGIN, step.getStepPlugin() == null ? "" : step.getStepPlugin());
         // validationPlugin
-        configuration.setAttribute("validationPlugin", step.getValidationPlugin() == null ? "" : step.getValidationPlugin());
+        configuration.setAttribute(ATTRIBUTE_VALIDATION_PLUGIN, step.getValidationPlugin() == null ? "" : step.getValidationPlugin());
 
-        Element script = new Element("scriptStep", xmlns);
+        Element script = new Element(ELEMENT_SCRIPT_STEP, xmlns);
         task.addContent(script);
         // typScriptStep
-        script.setAttribute("scriptStep", String.valueOf(step.isTypScriptStep()));
+        script.setAttribute(ATTRIBUTE_SCRIPT_STEP, String.valueOf(step.isTypScriptStep()));
         if (step.isTypScriptStep()) {
             // scriptName1
-            script.setAttribute("scriptName1", step.getScriptname1() == null ? "" : step.getScriptname1());
+            script.setAttribute(ATTRIBUTE_SCRIPT_NAME_1, step.getScriptname1() == null ? "" : step.getScriptname1());
             // typAutomatischScriptpfad
-            script.setAttribute("scriptPath1", step.getTypAutomatischScriptpfad() == null ? "" : step.getTypAutomatischScriptpfad());
+            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_1, step.getTypAutomatischScriptpfad() == null ? "" : step.getTypAutomatischScriptpfad());
 
             // scriptName2
-            script.setAttribute("scriptName2", step.getScriptname2() == null ? "" : step.getScriptname2());
+            script.setAttribute(ATTRIBUTE_SCRIPT_NAME_2, step.getScriptname2() == null ? "" : step.getScriptname2());
             // typAutomatischScriptpfad2
-            script.setAttribute("scriptPath2", step.getTypAutomatischScriptpfad2() == null ? "" : step.getTypAutomatischScriptpfad2());
+            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_2, step.getTypAutomatischScriptpfad2() == null ? "" : step.getTypAutomatischScriptpfad2());
             // scriptName3
-            script.setAttribute("scriptName3", step.getScriptname3() == null ? "" : step.getScriptname3());
+            script.setAttribute(ATTRIBUTE_SCRIPT_NAME_3, step.getScriptname3() == null ? "" : step.getScriptname3());
             // typAutomatischScriptpfad3
-            script.setAttribute("scriptPath3", step.getTypAutomatischScriptpfad3() == null ? "" : step.getTypAutomatischScriptpfad3());
+            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_3, step.getTypAutomatischScriptpfad3() == null ? "" : step.getTypAutomatischScriptpfad3());
             // scriptName4
-            script.setAttribute("scriptName4", step.getScriptname4() == null ? "" : step.getScriptname4());
+            script.setAttribute(ATTRIBUTE_SCRIPT_NAME_4, step.getScriptname4() == null ? "" : step.getScriptname4());
             // typAutomatischScriptpfad4
-            script.setAttribute("scriptPath4", step.getTypAutomatischScriptpfad4() == null ? "" : step.getTypAutomatischScriptpfad4());
+            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_4, step.getTypAutomatischScriptpfad4() == null ? "" : step.getTypAutomatischScriptpfad4());
             // scriptName5
-            script.setAttribute("scriptName5", step.getScriptname5() == null ? "" : step.getScriptname5());
+            script.setAttribute(ATTRIBUTE_SCRIPT_NAME_5, step.getScriptname5() == null ? "" : step.getScriptname5());
             // typAutomatischScriptpfad5
-            script.setAttribute("scriptPath5", step.getTypAutomatischScriptpfad5() == null ? "" : step.getTypAutomatischScriptpfad5());
+            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_5, step.getTypAutomatischScriptpfad5() == null ? "" : step.getTypAutomatischScriptpfad5());
         }
 
-        Element http = new Element("httpStep", xmlns);
+        Element http = new Element(ELEMENT_HTTP_STEP, xmlns);
         task.addContent(http);
         // httpStep
-        http.setAttribute("httpStep", String.valueOf(step.isHttpStep()));
+        http.setAttribute(ATTRIBUTE_HTTP_STEP, String.valueOf(step.isHttpStep()));
         if (step.isHttpStep()) {
             // httpMethod
-            http.setAttribute("httpMethod", step.getHttpMethod() == null ? "" : step.getHttpMethod());
+            http.setAttribute(ATTRIBUTE_HTTP_METHOD, step.getHttpMethod() == null ? "" : step.getHttpMethod());
             // httpUrl
-            http.setAttribute("httpUrl", step.getHttpUrl() == null ? "" : step.getHttpUrl());
+            http.setAttribute(ATTRIBUTE_HTTP_URL, step.getHttpUrl() == null ? "" : step.getHttpUrl());
             // httpJsonBody
-            http.setAttribute("httpJsonBody", step.getHttpJsonBody() == null ? "" : step.getHttpJsonBody());
+            http.setAttribute(ATTRIBUTE_HTTP_JSON_BODY, step.getHttpJsonBody() == null ? "" : step.getHttpJsonBody());
             // httpCloseStep
-            http.setAttribute("httpCloseStep", String.valueOf(step.isHttpCloseStep()));
+            http.setAttribute(ATTRIBUTE_HTTP_CLOSE_STEP, String.valueOf(step.isHttpCloseStep()));
             // httpEscapeBodyJson
-            http.setAttribute("httpEscapeBodyJson", String.valueOf(step.isHttpEscapeBodyJson()));
+            http.setAttribute(ATTRIBUTE_HTTP_ESCAPE_BODY_JSON, String.valueOf(step.isHttpEscapeBodyJson()));
         }
 
         // assigned user groups
         if (step.getBenutzergruppen() != null && !step.getBenutzergruppen().isEmpty()) {
-            Element assignedUserGroups = new Element("assignedUserGroups", xmlns);
+            Element assignedUserGroups = new Element(ELEMENT_ASSIGNED_USER_GROUPS, xmlns);
             task.addContent(assignedUserGroups);
             for (Usergroup ug : step.getBenutzergruppen()) {
-                Element userGroup = new Element("usergroup", xmlns);
-                userGroup.setAttribute("id", String.valueOf(ug.getId()));
-                userGroup.setAttribute("name", ug.getTitel());
-                userGroup.setAttribute("accessLevel", ug.getBerechtigungAsString());
+                Element userGroup = new Element(ELEMENT_USERGROUP, xmlns);
+                userGroup.setAttribute(ATTRIBUTE_ID, String.valueOf(ug.getId()));
+                userGroup.setAttribute(ATTRIBUTE_NAME, ug.getTitel());
+                userGroup.setAttribute(ATTRIBUTE_ACCESS_LEVEL, ug.getBerechtigungAsString());
                 for (String role : ug.getUserRoles()) {
-                    Element roleElement = new Element("role", xmlns);
+                    Element roleElement = new Element(ELEMENT_ROLE, xmlns);
                     roleElement.setText(role);
                     userGroup.addContent(roleElement);
                 }
                 assignedUserGroups.addContent(userGroup);
-                Element institutionElement = new Element("institution", xmlns);
+                Element institutionElement = new Element(ELEMENT_INSTITUTION, xmlns);
                 Institution inst = ug.getInstitution();
-                institutionElement.setAttribute("id", String.valueOf(inst.getId()));
-                institutionElement.setAttribute("shortName", inst.getShortName());
-                institutionElement.setAttribute("longName", inst.getLongName());
+                institutionElement.setAttribute(ATTRIBUTE_ID, String.valueOf(inst.getId()));
+                institutionElement.setAttribute(ATTRIBUTE_SHORT_NAME, inst.getShortName());
+                institutionElement.setAttribute(ATTRIBUTE_LONG_NAME, inst.getLongName());
                 userGroup.addContent(institutionElement);
             }
         }
         //  possible users
         if (step.getBenutzer() != null && !step.getBenutzer().isEmpty()) {
-            Element assignedUsers = new Element("assignedUsers", xmlns);
+            Element assignedUsers = new Element(ELEMENT_ASSIGNED_USERS, xmlns);
             task.addContent(assignedUsers);
             for (User assignedUser : step.getBenutzer()) {
-                Element assignedUserElement = new Element("user", xmlns);
-                assignedUserElement.setAttribute("id", String.valueOf(assignedUser.getId()));
+                Element assignedUserElement = new Element(ELEMENT_USER, xmlns);
+                assignedUserElement.setAttribute(ATTRIBUTE_ID, String.valueOf(assignedUser.getId()));
                 assignedUserElement.setText(assignedUser.getNachVorname());
-                assignedUserElement.setAttribute("login", assignedUser.getLogin());
+                assignedUserElement.setAttribute(ATTRIBUTE_LOGIN, assignedUser.getLogin());
                 task.addContent(assignedUserElement);
 
-                Element institutionElement = new Element("institution", xmlns);
+                Element institutionElement = new Element(ELEMENT_INSTITUTION, xmlns);
                 Institution inst = assignedUser.getInstitution();
-                institutionElement.setAttribute("id", String.valueOf(inst.getId()));
-                institutionElement.setAttribute("shortName", inst.getShortName());
-                institutionElement.setAttribute("longName", inst.getLongName());
+                institutionElement.setAttribute(ATTRIBUTE_ID, String.valueOf(inst.getId()));
+                institutionElement.setAttribute(ATTRIBUTE_SHORT_NAME, inst.getShortName());
+                institutionElement.setAttribute(ATTRIBUTE_LONG_NAME, inst.getLongName());
                 assignedUserElement.addContent(institutionElement);
             }
         }
@@ -1023,29 +1214,29 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return
      */
     private Element getWorkpiecePropertyData(Process process) {
-        Element properties = new Element("workpiece", xmlns);
+        Element properties = new Element(ELEMENT_WORKPIECE, xmlns);
 
         for (Masterpiece template : process.getWerkstueckeList()) {
             for (Masterpieceproperty property : template.getEigenschaften()) {
-                Element element = new Element("property", xmlns);
+                Element element = new Element(ELEMENT_PROPERTY, xmlns);
 
                 // werkstueckeeigenschaften.werkstueckeeigenschaftenID
-                element.setAttribute("id", String.valueOf(property.getId()));
+                element.setAttribute(ATTRIBUTE_ID, String.valueOf(property.getId()));
                 // werkstueckeeigenschaften.container
-                element.setAttribute("container", String.valueOf(property.getContainer()));
+                element.setAttribute(ATTRIBUTE_CONTAINER, String.valueOf(property.getContainer()));
 
                 // werkstueckeeigenschaften.creationDate
-                Element propertyCreationDate = new Element("creationDate", xmlns);
+                Element propertyCreationDate = new Element(ELEMENT_CREATION_DATE, xmlns);
                 propertyCreationDate.setText(dateConverter.format(property.getCreationDate()));
                 element.addContent(propertyCreationDate);
 
                 // werkstueckeeigenschaften.Titel
-                Element propertyName = new Element("name", xmlns);
+                Element propertyName = new Element(ELEMENT_NAME, xmlns);
                 propertyName.setText(property.getTitel());
                 element.addContent(propertyName);
 
                 // werkstueckeeigenschaften.WERT
-                Element propertyValue = new Element("value", xmlns);
+                Element propertyValue = new Element(ELEMENT_VALUE, xmlns);
                 propertyValue.setText(property.getWert());
                 element.addContent(propertyValue);
             }
@@ -1060,29 +1251,29 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return
      */
     private Element getTemplatePropertyData(Process process) {
-        Element properties = new Element("templates", xmlns);
+        Element properties = new Element(ELEMENT_TEMPLATES, xmlns);
 
         for (Template template : process.getVorlagenList()) {
             for (Templateproperty property : template.getEigenschaften()) {
-                Element element = new Element("property", xmlns);
+                Element element = new Element(ELEMENT_PROPERTY, xmlns);
 
                 // vorlageneigenschaften.vorlageneigenschaftenID
-                element.setAttribute("id", String.valueOf(property.getId()));
+                element.setAttribute(ATTRIBUTE_ID, String.valueOf(property.getId()));
                 // vorlageneigenschaften.container
-                element.setAttribute("container", String.valueOf(property.getContainer()));
+                element.setAttribute(ATTRIBUTE_CONTAINER, String.valueOf(property.getContainer()));
 
                 // vorlageneigenschaften.creationDate
-                Element propertyCreationDate = new Element("creationDate", xmlns);
+                Element propertyCreationDate = new Element(ELEMENT_CREATION_DATE, xmlns);
                 propertyCreationDate.setText(dateConverter.format(property.getCreationDate()));
                 element.addContent(propertyCreationDate);
 
                 // vorlageneigenschaften.Titel
-                Element propertyName = new Element("name", xmlns);
+                Element propertyName = new Element(ELEMENT_NAME, xmlns);
                 propertyName.setText(property.getTitel());
                 element.addContent(propertyName);
 
                 // vorlageneigenschaften.WERT
-                Element propertyValue = new Element("value", xmlns);
+                Element propertyValue = new Element(ELEMENT_VALUE, xmlns);
                 propertyValue.setText(property.getWert());
                 element.addContent(propertyValue);
             }
@@ -1097,28 +1288,28 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return
      */
     private Element getProcessPropertyData(Process process) {
-        Element properties = new Element("properties", xmlns);
+        Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
 
         for (Processproperty property : process.getEigenschaften()) {
-            Element element = new Element("property", xmlns);
+            Element element = new Element(ELEMENT_PROPERTY, xmlns);
 
             // prozesseeigenschaften.prozesseeigenschaftenID
-            element.setAttribute("id", String.valueOf(property.getId()));
+            element.setAttribute(ATTRIBUTE_ID, String.valueOf(property.getId()));
             //                prozesseeigenschaften.container
-            element.setAttribute("container", String.valueOf(property.getContainer()));
+            element.setAttribute(ATTRIBUTE_CONTAINER, String.valueOf(property.getContainer()));
 
             // prozesseeigenschaften.creationDate
-            Element propertyCreationDate = new Element("creationDate", xmlns);
+            Element propertyCreationDate = new Element(ELEMENT_CREATION_DATE, xmlns);
             propertyCreationDate.setText(dateConverter.format(property.getCreationDate()));
             element.addContent(propertyCreationDate);
 
             // prozesseeigenschaften.Titel
-            Element propertyName = new Element("name", xmlns);
+            Element propertyName = new Element(ELEMENT_NAME, xmlns);
             propertyName.setText(property.getTitel());
             element.addContent(propertyName);
 
             // prozesseeigenschaften.WERT
-            Element propertyValue = new Element("value", xmlns);
+            Element propertyValue = new Element(ELEMENT_VALUE, xmlns);
             propertyValue.setText(property.getWert());
             element.addContent(propertyValue);
             properties.addContent(element);
@@ -1133,36 +1324,36 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return
      */
     private Element getJournalData(Process process) {
-        Element journal = new Element("log", xmlns);
+        Element journal = new Element(ELEMENT_LOG, xmlns);
 
         for (JournalEntry entry : process.getJournal()) {
-            Element entryElement = new Element("entry", xmlns);
+            Element entryElement = new Element(ELEMENT_ENTRY, xmlns);
             // processlog.id
-            entryElement.setAttribute("id", String.valueOf(entry.getId()));
+            entryElement.setAttribute(ATTRIBUTE_ID, String.valueOf(entry.getId()));
             // processlog.content
-            Element content = new Element("content", xmlns);
+            Element content = new Element(ELEMENT_CONTENT, xmlns);
             entryElement.addContent(content);
             content.setText(entry.getContent());
             // processlog.creationDate
-            Element entryCreationDate = new Element("creationDate", xmlns);
+            Element entryCreationDate = new Element(ELEMENT_CREATION_DATE, xmlns);
             if (entry.getCreationDate() != null) {
                 entryCreationDate.setText(dateConverter.format(entry.getCreationDate()));
             }
             entryElement.addContent(entryCreationDate);
             // processlog.type
-            Element entryType = new Element("type", xmlns);
+            Element entryType = new Element(ELEMENT_TYPE, xmlns);
             entryType.setText(entry.getType().getTitle());
             entryElement.addContent(entryType);
             // processlog.userName
             if (StringUtils.isNotBlank(entry.getUserName())) {
-                Element entryUserName = new Element("user", xmlns);
+                Element entryUserName = new Element(ELEMENT_USER, xmlns);
                 entryUserName.setText(entry.getUserName());
                 entryElement.addContent(entryUserName);
             }
 
             // processlog.filename
             if (StringUtils.isNotBlank(entry.getFilename())) {
-                Element thirdContent = new Element("filename", xmlns);
+                Element thirdContent = new Element(ELEMENT_FILENAME, xmlns);
                 entryElement.addContent(thirdContent);
                 thirdContent.setText(entry.getFilename());
             }
@@ -1178,270 +1369,271 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return
      */
     private Element getProjectData(Process process) {
-        Element project = new Element("project", xmlns);
+        Element project = new Element(ELEMENT_PROJECT, xmlns);
 
         // projekte.ProjekteID
-        Element projectId = new Element("id", xmlns);
+        Element projectId = new Element(ELEMENT_ID, xmlns);
         projectId.setText(String.valueOf(process.getProjekt().getId()));
         project.addContent(projectId);
 
         // projekte.Titel
-        Element projectTitle = new Element("title", xmlns);
+        Element projectTitle = new Element(ELEMENT_TITLE, xmlns);
         projectTitle.setText(process.getProjekt().getTitel());
         project.addContent(projectTitle);
 
         // projekte.fileFormatInternal
-        Element fileFormatInternal = new Element("fileFormatInternal", xmlns);
+        Element fileFormatInternal = new Element(ELEMENT_FILE_FORMAT_INTERNAL, xmlns);
         fileFormatInternal.setText(process.getProjekt().getFileFormatInternal());
         project.addContent(fileFormatInternal);
 
         // projekte.fileFormatDmsExport
-        Element fileFormatDmsExport = new Element("fileFormatDmsExport", xmlns);
+        Element fileFormatDmsExport = new Element(ELEMENT_FILE_FORMAT_DMS_EXPORT, xmlns);
         fileFormatDmsExport.setText(process.getProjekt().getFileFormatDmsExport());
         project.addContent(fileFormatDmsExport);
 
         // projekte.startDate
-        Element projectStartDate = new Element("startDate", xmlns);
+        Element projectStartDate = new Element(ELEMENT_START_DATE, xmlns);
         projectStartDate.setText(dateConverter.format(process.getProjekt().getStartDate()));
         project.addContent(projectStartDate);
 
         // projekte.endDate
-        Element projectEndDate = new Element("endDate", xmlns);
+        Element projectEndDate = new Element(ELEMENT_END_DATE, xmlns);
         projectEndDate.setText(dateConverter.format(process.getProjekt().getEndDate()));
         project.addContent(projectEndDate);
 
         //  projekte.numberOfPages
-        Element projectNumberOfPages = new Element("pages", xmlns);
+        Element projectNumberOfPages = new Element(ELEMENT_PAGES, xmlns);
         projectNumberOfPages.setText(String.valueOf(process.getProjekt().getNumberOfPages()));
         project.addContent(projectNumberOfPages);
 
         // projekte.numberOfPages
-        Element projectNumberOfVolumes = new Element("volumes", xmlns);
+        Element projectNumberOfVolumes = new Element(ELEMENT_VOLUMES, xmlns);
         projectNumberOfVolumes.setText(String.valueOf(process.getProjekt().getNumberOfVolumes()));
         project.addContent(projectNumberOfVolumes);
 
         // projekte.projectIsArchived
-        project.setAttribute("archived", String.valueOf(process.getProjekt().getProjectIsArchived()));
+        project.setAttribute(ATTRIBUTE_ARCHIVED, String.valueOf(process.getProjekt().getProjectIsArchived()));
 
         // export configuration
-        Element exportConfiguration = new Element("exportConfiguration", xmlns);
+        Element exportConfiguration = new Element(ELEMENT_EXPORT_CONFIGURATION, xmlns);
 
         // column projekte.useDmsImport
-        exportConfiguration.setAttribute("useDmsImport", String.valueOf(process.getProjekt().isUseDmsImport()));
+        exportConfiguration.setAttribute(ATTRIBUTE_USE_DMS_IMPORT, String.valueOf(process.getProjekt().isUseDmsImport()));
 
         // projekte.dmsImportTimeOut
-        Element dmsImportTimeOut = new Element("dmsImportTimeOut", xmlns);
+        Element dmsImportTimeOut = new Element(ELEMENT_DMS_IMPORT_TIME_OUT, xmlns);
         dmsImportTimeOut.setText(String.valueOf(process.getProjekt().getDmsImportTimeOut()));
         exportConfiguration.addContent(dmsImportTimeOut);
 
         // projekte.dmsImportRootPath
-        Element dmsImportRootPath = new Element("dmsImportRootPath", xmlns);
+        Element dmsImportRootPath = new Element(ELEMENT_DMS_IMPORT_ROOT_PATH, xmlns);
         dmsImportRootPath
-        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt().getDmsImportRootPath());
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt().getDmsImportRootPath());
         exportConfiguration.addContent(dmsImportRootPath);
 
         // projekte.dmsImportImagesPath
-        Element dmsImportImagesPath = new Element("dmsImportImagesPath", xmlns);
+        Element dmsImportImagesPath = new Element(ELEMENT_DMS_IMPORT_IMAGES_PATH, xmlns);
         dmsImportImagesPath
-        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt().getDmsImportImagesPath());
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt().getDmsImportImagesPath());
         exportConfiguration.addContent(dmsImportImagesPath);
 
         // projekte.dmsImportSuccessPath
-        Element dmsImportSuccessPath = new Element("dmsImportSuccessPath", xmlns);
+        Element dmsImportSuccessPath = new Element(ELEMENT_DMS_IMPORT_SUCCESS_PATH, xmlns);
         dmsImportSuccessPath
-        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt().getDmsImportSuccessPath());
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt().getDmsImportSuccessPath());
         exportConfiguration.addContent(dmsImportSuccessPath);
 
         // projekte.dmsImportErrorPath
-        Element dmsImportErrorPath = new Element("dmsImportErrorPath", xmlns);
+        Element dmsImportErrorPath = new Element(ELEMENT_DMS_IMPORT_ERROR_PATH, xmlns);
         dmsImportErrorPath
-        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt().getDmsImportErrorPath());
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt().getDmsImportErrorPath());
         exportConfiguration.addContent(dmsImportErrorPath);
 
         // projekte.dmsImportCreateProcessFolder
-        exportConfiguration.setAttribute("dmsImportCreateProcessFolder", String.valueOf(process.getProjekt().isDmsImportCreateProcessFolder()));
+        exportConfiguration.setAttribute(ATTRIBUTE_DMS_IMPORT_CREATE_PROCESS_FOLDER,
+                String.valueOf(process.getProjekt().isDmsImportCreateProcessFolder()));
 
         project.addContent(exportConfiguration);
 
         // mets configuration
-        Element metsConfiguration = new Element("metsConfiguration", xmlns);
+        Element metsConfiguration = new Element(ELEMENT_METS_CONFIGURATION, xmlns);
 
         // projekte.metsRightsOwner
-        Element metsRightsOwner = new Element("metsRightsOwner", xmlns);
+        Element metsRightsOwner = new Element(ELEMENT_METS_RIGHTS_OWNER, xmlns);
         metsRightsOwner.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwner()) ? "" : process.getProjekt().getMetsRightsOwner());
         metsConfiguration.addContent(metsRightsOwner);
 
         // projekte.metsRightsOwnerLogo
-        Element metsRightsOwnerLogo = new Element("metsRightsOwnerLogo", xmlns);
+        Element metsRightsOwnerLogo = new Element(ELEMENT_METS_RIGHTS_OWNER_LOGO, xmlns);
         metsRightsOwnerLogo
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt().getMetsRightsOwnerLogo());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt().getMetsRightsOwnerLogo());
         metsConfiguration.addContent(metsRightsOwnerLogo);
 
         // projekte.metsRightsOwnerSite
-        Element metsRightsOwnerSite = new Element("metsRightsOwnerSite", xmlns);
+        Element metsRightsOwnerSite = new Element(ELEMENT_METS_RIGHTS_OWNER_SITE, xmlns);
         metsRightsOwnerSite
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt().getMetsRightsOwnerSite());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt().getMetsRightsOwnerSite());
         metsConfiguration.addContent(metsRightsOwnerSite);
 
         // projekte.metsRightsOwnerMail
-        Element metsRightsOwnerMail = new Element("metsRightsOwnerMail", xmlns);
+        Element metsRightsOwnerMail = new Element(ELEMENT_METS_RIGHTS_OWNER_MAIL, xmlns);
         metsRightsOwnerMail
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt().getMetsRightsOwnerMail());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt().getMetsRightsOwnerMail());
         metsConfiguration.addContent(metsRightsOwnerMail);
 
         // projekte.metsDigiprovReference
-        Element metsDigiprovReference = new Element("metsDigiprovReference", xmlns);
+        Element metsDigiprovReference = new Element(ELEMENT_METS_DIGIPROV_REFERENCE, xmlns);
         metsDigiprovReference
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt().getMetsDigiprovReference());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt().getMetsDigiprovReference());
         metsConfiguration.addContent(metsDigiprovReference);
 
         // projekte.metsDigiprovPresentation
-        Element metsDigiprovPresentation = new Element("metsDigiprovPresentation", xmlns);
+        Element metsDigiprovPresentation = new Element(ELEMENT_METS_DIGIPROV_PRESENTATION, xmlns);
         metsDigiprovPresentation.setText(
                 StringUtils.isBlank(process.getProjekt().getMetsDigiprovPresentation()) ? "" : process.getProjekt().getMetsDigiprovPresentation());
         metsConfiguration.addContent(metsDigiprovPresentation);
 
         // projekte.metsDigiprovReferenceAnchor
-        Element metsDigiprovReferenceAnchor = new Element("metsDigiprovReferenceAnchor", xmlns);
+        Element metsDigiprovReferenceAnchor = new Element(ELEMENT_METS_DIGIPROV_REFERENCE_ANCHOR, xmlns);
         metsDigiprovReferenceAnchor.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReferenceAnchor()) ? ""
                 : process.getProjekt().getMetsDigiprovReferenceAnchor());
         metsConfiguration.addContent(metsDigiprovReferenceAnchor);
 
         // projekte.metsDigiprovPresentationAnchor
-        Element metsDigiprovPresentationAnchor = new Element("metsDigiprovPresentationAnchor", xmlns);
+        Element metsDigiprovPresentationAnchor = new Element(ELEMENT_METS_DIGIPROV_PRESENTATION_ANCHOR, xmlns);
         metsDigiprovPresentationAnchor.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovPresentationAnchor()) ? ""
                 : process.getProjekt().getMetsDigiprovPresentationAnchor());
         metsConfiguration.addContent(metsDigiprovPresentationAnchor);
 
         // projekte.metsPointerPath
-        Element metsPointerPath = new Element("metsPointerPath", xmlns);
+        Element metsPointerPath = new Element(ELEMENT_METS_POINTER_PATH, xmlns);
         metsPointerPath.setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPath()) ? "" : process.getProjekt().getMetsPointerPath());
         metsConfiguration.addContent(metsPointerPath);
 
         // projekte.metsPointerPathAnchor
-        Element metsPointerPathAnchor = new Element("metsPointerPathAnchor", xmlns);
+        Element metsPointerPathAnchor = new Element(ELEMENT_METS_POINTER_PATH_ANCHOR, xmlns);
         metsPointerPathAnchor
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt().getMetsPointerPathAnchor());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt().getMetsPointerPathAnchor());
         metsConfiguration.addContent(metsPointerPathAnchor);
 
         // projekte.metsPurl
-        Element metsPurl = new Element("metsPurl", xmlns);
+        Element metsPurl = new Element(ELEMENT_METS_PURL, xmlns);
         metsPurl.setText(StringUtils.isBlank(process.getProjekt().getMetsPurl()) ? "" : process.getProjekt().getMetsPurl());
         metsConfiguration.addContent(metsPurl);
 
         // projekte.metsContentIDs
-        Element metsContentIDs = new Element("metsContentIDs", xmlns);
+        Element metsContentIDs = new Element(ELEMENT_METS_CONTENT_IDS, xmlns);
         metsContentIDs.setText(StringUtils.isBlank(process.getProjekt().getMetsContentIDs()) ? "" : process.getProjekt().getMetsContentIDs());
         metsConfiguration.addContent(metsContentIDs);
 
         // projekte.metsRightsSponsor
-        Element metsRightsSponsor = new Element("metsRightsSponsor", xmlns);
+        Element metsRightsSponsor = new Element(ELEMENT_METS_RIGHTS_SPONSOR, xmlns);
         metsRightsSponsor
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt().getMetsRightsSponsor());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt().getMetsRightsSponsor());
         metsConfiguration.addContent(metsRightsSponsor);
 
         // projekte.metsRightsSponsorLogo
-        Element metsRightsSponsorLogo = new Element("metsRightsSponsorLogo", xmlns);
+        Element metsRightsSponsorLogo = new Element(ELEMENT_METS_RIGHTS_SPONSOR_LOGO, xmlns);
         metsRightsSponsorLogo
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt().getMetsRightsSponsorLogo());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt().getMetsRightsSponsorLogo());
         metsConfiguration.addContent(metsRightsSponsorLogo);
 
         // projekte.metsRightsSponsorSiteURL
-        Element metsRightsSponsorSiteURL = new Element("metsRightsSponsorSiteURL", xmlns);
+        Element metsRightsSponsorSiteURL = new Element(ELEMENT_METS_RIGHTS_SPONSOR_SITE_URL, xmlns);
         metsRightsSponsorSiteURL.setText(
                 StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorSiteURL()) ? "" : process.getProjekt().getMetsRightsSponsorSiteURL());
         metsConfiguration.addContent(metsRightsSponsorSiteURL);
 
         // projekte.metsRightsLicense
-        Element metsRightsLicense = new Element("metsRightsLicense", xmlns);
+        Element metsRightsLicense = new Element(ELEMENT_METS_RIGHTS_LICENSE, xmlns);
         metsRightsLicense
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt().getMetsRightsLicense());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt().getMetsRightsLicense());
         metsConfiguration.addContent(metsRightsLicense);
         project.addContent(metsConfiguration);
 
         //   filegroups
 
         if (!process.getProjekt().getFilegroups().isEmpty()) {
-            Element fileGroups = new Element("fileGroups", xmlns);
+            Element fileGroups = new Element(ELEMENT_FILE_GROUPS, xmlns);
             project.addContent(fileGroups);
             for (ProjectFileGroup filegroup : process.getProjekt().getFilegroups()) {
-                Element projectFileGroup = new Element("projectFileGroup", xmlns);
+                Element projectFileGroup = new Element(ELEMENT_PROJECT_FILE_GROUP, xmlns);
                 // projectfilegroups.ProjectFileGroupID
-                projectFileGroup.setAttribute("id", String.valueOf(filegroup.getId()));
+                projectFileGroup.setAttribute(ATTRIBUTE_ID, String.valueOf(filegroup.getId()));
                 // projectfilegroups.folder
-                projectFileGroup.setAttribute("folder", StringUtils.isBlank(filegroup.getFolder()) ? "" : filegroup.getFolder());
+                projectFileGroup.setAttribute(ATTRIBUTE_FOLDER, StringUtils.isBlank(filegroup.getFolder()) ? "" : filegroup.getFolder());
                 // projectfilegroups.mimetype
-                projectFileGroup.setAttribute("mimetype", StringUtils.isBlank(filegroup.getMimetype()) ? "" : filegroup.getMimetype());
+                projectFileGroup.setAttribute(ATTRIBUTE_MIMETYPE, StringUtils.isBlank(filegroup.getMimetype()) ? "" : filegroup.getMimetype());
                 // projectfilegroups.name
-                projectFileGroup.setAttribute("name", StringUtils.isBlank(filegroup.getName()) ? "" : filegroup.getName());
+                projectFileGroup.setAttribute(ATTRIBUTE_NAME, StringUtils.isBlank(filegroup.getName()) ? "" : filegroup.getName());
                 // projectfilegroups.path
-                projectFileGroup.setAttribute("path", StringUtils.isBlank(filegroup.getPath()) ? "" : filegroup.getPath());
+                projectFileGroup.setAttribute(ATTRIBUTE_PATH, StringUtils.isBlank(filegroup.getPath()) ? "" : filegroup.getPath());
                 // projectfilegroups.suffix
-                projectFileGroup.setAttribute("suffix", StringUtils.isBlank(filegroup.getSuffix()) ? "" : filegroup.getSuffix());
+                projectFileGroup.setAttribute(ATTRIBUTE_SUFFIX, StringUtils.isBlank(filegroup.getSuffix()) ? "" : filegroup.getSuffix());
 
                 fileGroups.addContent(projectFileGroup);
             }
         }
 
-        Element institutionElement = new Element("institution", xmlns);
+        Element institutionElement = new Element(ELEMENT_INSTITUTION, xmlns);
         Institution inst = process.getProjekt().getInstitution();
-        institutionElement.setAttribute("id", String.valueOf(inst.getId()));
-        institutionElement.setAttribute("shortName", inst.getShortName());
-        institutionElement.setAttribute("longName", inst.getLongName());
+        institutionElement.setAttribute(ATTRIBUTE_ID, String.valueOf(inst.getId()));
+        institutionElement.setAttribute(ATTRIBUTE_SHORT_NAME, inst.getShortName());
+        institutionElement.setAttribute(ATTRIBUTE_LONG_NAME, inst.getLongName());
         if (inst.isAllowAllAuthentications()) {
-            institutionElement.setAttribute("allowAllAuthentications", "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, "true");
         } else {
-            institutionElement.setAttribute("allowAllAuthentications", "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, "false");
             for (InstitutionConfigurationObject ico : inst.getAllowedAuthentications()) {
-                Element type = new Element("authentication", xmlns);
+                Element type = new Element(ELEMENT_AUTHENTICATION, xmlns);
                 type.setText(ico.getObject_name());
                 institutionElement.addContent(type);
             }
         }
 
         if (inst.isAllowAllDockets()) {
-            institutionElement.setAttribute("allowAllDockets", "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, "true");
         } else {
-            institutionElement.setAttribute("allowAllDockets", "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, "false");
             for (InstitutionConfigurationObject ico : inst.getAllowedDockets()) {
-                Element type = new Element("docket", xmlns);
+                Element type = new Element(ELEMENT_DOCKET, xmlns);
                 type.setText(ico.getObject_name());
                 institutionElement.addContent(type);
             }
         }
         //inst.isAllowAllPlugins()
         if (inst.isAllowAllPlugins()) {
-            institutionElement.setAttribute("allowAllPlugins", "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, "true");
         } else {
-            institutionElement.setAttribute("allowAllPlugins", "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, "false");
             for (InstitutionConfigurationObject ico : inst.getAllowedAdministrationPlugins()) {
-                Element type = new Element("administrationPlugin", xmlns);
+                Element type = new Element(ELEMENT_ADMINISTRATION_PLUGIN, xmlns);
                 type.setText(ico.getObject_name());
                 institutionElement.addContent(type);
             }
             for (InstitutionConfigurationObject ico : inst.getAllowedWorkflowPlugins()) {
-                Element type = new Element("workflowPlugin", xmlns);
+                Element type = new Element(ELEMENT_WORKFLOW_PLUGIN, xmlns);
                 type.setText(ico.getObject_name());
                 institutionElement.addContent(type);
             }
             for (InstitutionConfigurationObject ico : inst.getAllowedDashboardPlugins()) {
-                Element type = new Element("dashboardPlugin", xmlns);
+                Element type = new Element(ELEMENT_DASHBOARD_PLUGIN, xmlns);
                 type.setText(ico.getObject_name());
                 institutionElement.addContent(type);
             }
             for (InstitutionConfigurationObject ico : inst.getAllowedStatisticsPlugins()) {
-                Element type = new Element("statisticsPlugin", xmlns);
+                Element type = new Element(ELEMENT_STATISTICS_PLUGIN, xmlns);
                 type.setText(ico.getObject_name());
                 institutionElement.addContent(type);
             }
 
         }
         if (inst.isAllowAllRulesets()) {
-            institutionElement.setAttribute("allowAllRulesets", "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, "true");
         } else {
-            institutionElement.setAttribute("allowAllRulesets", "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, "false");
             for (InstitutionConfigurationObject ico : inst.getAllowedRulesets()) {
-                Element type = new Element("ruleset", xmlns);
+                Element type = new Element(ELEMENT_RULESET, xmlns);
                 type.setText(ico.getObject_name());
                 institutionElement.addContent(type);
             }
@@ -1458,10 +1650,10 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @param process
      */
     private Element getDocketData(Process process) {
-        Element docket = new Element("docket", xmlns);
-        docket.setAttribute("id", String.valueOf(process.getDocket().getId()));
-        docket.setAttribute("name", process.getDocket().getName());
-        docket.setAttribute("file", process.getDocket().getFile());
+        Element docket = new Element(ELEMENT_DOCKET, xmlns);
+        docket.setAttribute(ATTRIBUTE_ID, String.valueOf(process.getDocket().getId()));
+        docket.setAttribute(ATTRIBUTE_NAME, process.getDocket().getName());
+        docket.setAttribute(ATTRIBUTE_FILE, process.getDocket().getFile());
         return docket;
     }
 
@@ -1471,12 +1663,12 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @param process
      */
     private Element getBatchData(Process process) {
-        Element batch = new Element("batch", xmlns);
-        batch.setAttribute("id", String.valueOf(process.getBatch().getBatchId()));
-        batch.setAttribute("label", process.getBatch().getBatchLabel() == null ? "" : process.getBatch().getBatchLabel());
-        batch.setAttribute("name", process.getBatch().getBatchName() == null ? "" : process.getBatch().getBatchName());
-        batch.setAttribute("startDate", process.getBatch().getStartDateAsString() == null ? "" : process.getBatch().getStartDateAsString());
-        batch.setAttribute("endDate", process.getBatch().getEndDateAsString() == null ? "" : process.getBatch().getEndDateAsString());
+        Element batch = new Element(ELEMENT_BATCH, xmlns);
+        batch.setAttribute(ATTRIBUTE_ID, String.valueOf(process.getBatch().getBatchId()));
+        batch.setAttribute(ATTRIBUTE_LABEL, process.getBatch().getBatchLabel() == null ? "" : process.getBatch().getBatchLabel());
+        batch.setAttribute(ATTRIBUTE_NAME, process.getBatch().getBatchName() == null ? "" : process.getBatch().getBatchName());
+        batch.setAttribute(ATTRIBUTE_START_DATE, process.getBatch().getStartDateAsString() == null ? "" : process.getBatch().getStartDateAsString());
+        batch.setAttribute(ATTRIBUTE_END_DATE, process.getBatch().getEndDateAsString() == null ? "" : process.getBatch().getEndDateAsString());
         return batch;
     }
 
@@ -1488,53 +1680,53 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      */
     private void getProcessData(Process process, Element processElement) {
         // prozesse.ProzesseID
-        processElement.setAttribute("id", String.valueOf(process.getId()));
+        processElement.setAttribute(ATTRIBUTE_ID, String.valueOf(process.getId()));
         // prozesse.IstTemplate
-        processElement.setAttribute("template", String.valueOf(process.isIstTemplate()));
+        processElement.setAttribute(ATTRIBUTE_TEMPLATE, String.valueOf(process.isIstTemplate()));
 
         // prozesse.ProzesseID
-        Element processID = new Element("id", xmlns);
+        Element processID = new Element(ELEMENT_ID, xmlns);
         processID.setText(String.valueOf(process.getId()));
         processElement.addContent(processID);
 
         // prozesse.Titel
-        Element processTitle = new Element("title", xmlns);
+        Element processTitle = new Element(ELEMENT_TITLE, xmlns);
         processTitle.setText(process.getTitel());
         processElement.addContent(processTitle);
 
         // prozesse.erstellungsdatum
-        Element creationDate = new Element("creationDate", xmlns);
+        Element creationDate = new Element(ELEMENT_CREATION_DATE, xmlns);
         creationDate.setText(dateConverter.format(process.getErstellungsdatum()));
         processElement.addContent(creationDate);
 
         //  prozesse.MetadatenKonfigurationID
-        Element ruleset = new Element("ruleset", xmlns);
-        ruleset.setAttribute("id", String.valueOf(process.getRegelsatz().getId()));
-        ruleset.setAttribute("name", process.getRegelsatz().getTitel());
-        ruleset.setAttribute("filename", process.getRegelsatz().getDatei());
+        Element ruleset = new Element(ELEMENT_RULESET, xmlns);
+        ruleset.setAttribute(ATTRIBUTE_ID, String.valueOf(process.getRegelsatz().getId()));
+        ruleset.setAttribute(ATTRIBUTE_NAME, process.getRegelsatz().getTitel());
+        ruleset.setAttribute(ELEMENT_FILENAME, process.getRegelsatz().getDatei());
         processElement.addContent(ruleset);
 
         // prozesse.inAuswahllisteAnzeigen
-        processElement.setAttribute("displayInProcessCreation", String.valueOf(process.isInAuswahllisteAnzeigen()));
+        processElement.setAttribute(ATTRIBUTE_DISPLAY_IN_PROCESS_CREATION, String.valueOf(process.isInAuswahllisteAnzeigen()));
 
-        Element sorting = new Element("sorting", xmlns);
+        Element sorting = new Element(ELEMENT_SORTING, xmlns);
         // prozesse.sortHelperStatus
-        sorting.setAttribute("status", process.getSortHelperStatus());
+        sorting.setAttribute(ATTRIBUTE_STATUS, process.getSortHelperStatus());
 
         // prozesse.sortHelperImages
-        sorting.setAttribute("images", String.valueOf(process.getSortHelperImages()));
+        sorting.setAttribute(ATTRIBUTE_IMAGES, String.valueOf(process.getSortHelperImages()));
 
         // prozesse.sortHelperArticles
-        sorting.setAttribute("articles", String.valueOf(process.getSortHelperArticles()));
+        sorting.setAttribute(ATTRIBUTE_ARTICLES, String.valueOf(process.getSortHelperArticles()));
 
         // prozesse.sortHelperDocstructs
-        sorting.setAttribute("docstructs", String.valueOf(process.getSortHelperDocstructs()));
+        sorting.setAttribute(ATTRIBUTE_DOCSTRUCTS, String.valueOf(process.getSortHelperDocstructs()));
 
         // prozesse.sortHelperMetadata
-        sorting.setAttribute("metadata", String.valueOf(process.getSortHelperMetadata()));
+        sorting.setAttribute(ATTRIBUTE_METADATA, String.valueOf(process.getSortHelperMetadata()));
 
         // prozesse.mediaFolderExists
-        sorting.setAttribute("mediaFolderExists", String.valueOf(process.isMediaFolderExists()));
+        sorting.setAttribute(ATTRIBUTE_MEDIA_FOLDER_EXISTS, String.valueOf(process.isMediaFolderExists()));
         processElement.addContent(sorting);
     }
 

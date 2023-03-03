@@ -58,7 +58,8 @@ public class ViafSearch {
 
     private List<String> relations;
 
-    private static final String VIAF_URL = "http://www.viaf.org/viaf/search?query=";
+    private static final String VIAF_URL = "http://www.viaf.org/viaf/";
+    private static final String VIAF_SEARCH_URL = VIAF_URL + "search?query=";
     // search request object, contains the search parameter, displayable fields,
     private ViafSearchRequest viafSearchRequest = new ViafSearchRequest();
     // selected authority record
@@ -120,7 +121,7 @@ public class ViafSearch {
 
         viafSearchRequest.setDisplayableTags(visibleTagList);
 
-        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, viafSearchRequest,
+        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_SEARCH_URL, viafSearchRequest,
                 sorting ? "" : "&sortKeys=holdingscount", "&httpAccept=application/xml", "&recordSchema=info:srw/schema/1/marcxml-v1.1");
         if (clusterRecords == null || clusterRecords.isEmpty()) {
             records = null;
@@ -149,7 +150,7 @@ public class ViafSearch {
             }
 
             if (!names.isEmpty()) {
-                md.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
+                md.setAutorityFile("viaf", VIAF_URL, currentDatabase.getMarcRecordUrl());
                 md.setValue(names.get(0));
             }
         }
@@ -176,7 +177,7 @@ public class ViafSearch {
             }
 
             if (!names.isEmpty()) {
-                p.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
+                p.setAutorityFile("viaf", VIAF_URL, currentDatabase.getMarcRecordUrl());
                 p.addAuthorityUriToMap("viaf-cluster", currentCluster);
                 p.addAuthorityUriToMap("viaf", currentDatabase.getMarcRecordUrl());
                 mainValue = names.get(0);
@@ -239,7 +240,7 @@ public class ViafSearch {
                 } else {
                     corporate.setPartName(null);
                 }
-                corporate.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
+                corporate.setAutorityFile("viaf", VIAF_URL, currentDatabase.getMarcRecordUrl());
                 corporate.addAuthorityUriToMap("viaf-cluster", currentCluster);
                 corporate.addAuthorityUriToMap("viaf", currentDatabase.getMarcRecordUrl());
             }

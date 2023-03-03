@@ -33,6 +33,8 @@ import java.util.GregorianCalendar;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
+import org.goobi.beans.Institution;
+import org.goobi.beans.User;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -153,8 +155,14 @@ public class StatisticsBean implements Serializable {
 
     private int getAnzahlAktuelleSchritte(boolean inOffen, boolean inBearbeitet, boolean inHideStepsFromOtherUsers) {
         String filter = FilterHelper.limitToUserAssignedSteps(inOffen, inBearbeitet, inHideStepsFromOtherUsers);
+        Institution institution = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            institution = user.getInstitution();
+        }
+
         try {
-            return StepManager.countSteps(null, filter);
+            return StepManager.countSteps(null, filter, institution);
         } catch (DAOException e) {
             log.error(e);
         }

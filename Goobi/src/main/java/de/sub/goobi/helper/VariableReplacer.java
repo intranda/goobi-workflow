@@ -249,20 +249,22 @@ public class VariableReplacer {
                 ocrPlaintextPath = ocrPlaintextPath.substring(0, ocrPlaintextPath.length() - FileSystems.getDefault().getSeparator().length())
                         .replace("\\", "/");
             }
+            String defaultFileProtocol = "file://";
+            String windowsFileProtocol = "file:/";
             if (SystemUtils.IS_OS_WINDOWS) {
-                inString = pTifUrl.matcher(inString).replaceAll("file:/" + tifpath);
+                inString = pTifUrl.matcher(inString).replaceAll(windowsFileProtocol + tifpath);
             } else {
-                inString = pTifUrl.matcher(inString).replaceAll("file://" + tifpath);
+                inString = pTifUrl.matcher(inString).replaceAll(defaultFileProtocol + tifpath);
             }
             if (SystemUtils.IS_OS_WINDOWS) {
-                inString = pOrigurl.matcher(inString).replaceAll("file:/" + origpath);
+                inString = pOrigurl.matcher(inString).replaceAll(windowsFileProtocol + origpath);
             } else {
-                inString = pOrigurl.matcher(inString).replaceAll("file://" + origpath);
+                inString = pOrigurl.matcher(inString).replaceAll(defaultFileProtocol + origpath);
             }
             if (SystemUtils.IS_OS_WINDOWS) {
-                inString = pImageUrl.matcher(inString).replaceAll("file:/" + imagepath);
+                inString = pImageUrl.matcher(inString).replaceAll(windowsFileProtocol + imagepath);
             } else {
-                inString = pImageUrl.matcher(inString).replaceAll("file://" + imagepath);
+                inString = pImageUrl.matcher(inString).replaceAll(defaultFileProtocol + imagepath);
             }
 
             inString = pS3TifPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(tifpath));

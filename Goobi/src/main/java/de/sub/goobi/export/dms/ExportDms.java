@@ -109,9 +109,9 @@ public class ExportDms extends ExportMets implements IExportPlugin {
      * @throws TypeNotAllowedForParentException
      */
     @Override
-    public boolean startExport(Process myProzess, String inZielVerzeichnis)
-            throws IOException, InterruptedException, WriteException, PreferencesException, DocStructHasNoTypeException,
-            MetadataTypeNotAllowedException, ExportFileException, UghHelperException, SwapException, DAOException, TypeNotAllowedForParentException {
+    public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, WriteException,
+            PreferencesException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
 
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
         String atsPpnBand = myProzess.getTitel();

@@ -41,7 +41,7 @@ public class DelayJob extends AbstractGoobiJob {
 
     private List<Step> getListOfStepsWithDelay() {
         String filter = " delayStep = true AND stepPlugin is not NULL AND Bearbeitungsstatus = 2";
-        return StepManager.getSteps(null, filter);
+        return StepManager.getSteps(null, filter, null);
     }
 
     @Override
@@ -70,10 +70,8 @@ public class DelayJob extends AbstractGoobiJob {
                             Helper.getTranslation("blockingDelayIsExhausted"), EntryType.PROCESS);
                     JournalManager.saveJournalEntry(logEntry);
                     new HelperSchritte().CloseStepObjectAutomatic(step);
-                } else {
-                    if (log.isTraceEnabled()) {
-                        log.trace(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
-                    }
+                } else if (log.isTraceEnabled()) {
+                    log.trace(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
                 }
             }
 

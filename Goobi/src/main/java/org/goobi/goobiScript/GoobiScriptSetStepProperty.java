@@ -163,8 +163,6 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
                     if (property.equalsIgnoreCase("ImportFileUpload")) {
                         s.setTypImportFileUpload(Boolean.parseBoolean(value));
                     }
-                    if (property.equalsIgnoreCase("")) {
-                    }
                     if (property.equalsIgnoreCase("acceptandclose")) {
                         s.setTypBeimAnnehmenAbschliessen(Boolean.parseBoolean(value));
                     }

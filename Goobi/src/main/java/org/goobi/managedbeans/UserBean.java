@@ -30,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -367,7 +368,7 @@ public class UserBean extends BasicBean implements Serializable {
                 + FileSystems.getDefault().getSeparator() + "goobi_loginBlacklist.txt";
         /* Datei zeilenweise durchlaufen und die auf ungültige Zeichen vergleichen */
         try {
-            try (FileInputStream fis = new FileInputStream(filename); InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+            try (FileInputStream fis = new FileInputStream(filename); InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
                     BufferedReader in = new BufferedReader(isr);) {
                 String str;
                 while ((str = in.readLine()) != null) {
@@ -377,7 +378,8 @@ public class UserBean extends BasicBean implements Serializable {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException exception) {
+            log.error(exception);
         }
         return valide;
     }

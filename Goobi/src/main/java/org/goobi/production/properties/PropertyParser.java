@@ -395,8 +395,7 @@ public class PropertyParser {
 
         // add 'eigenschaft' to all ProcessProperties
         for (ProcessProperty pp : properties) {
-            if (pp.getProzesseigenschaft() == null) {
-            } else {
+            if (pp.getProzesseigenschaft() != null) {
                 plist.remove(pp.getProzesseigenschaft());
             }
         }

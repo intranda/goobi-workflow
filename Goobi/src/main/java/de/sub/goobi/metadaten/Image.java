@@ -80,6 +80,8 @@ public @Data class Image {
     private static final String PLACEHOLDER_URL_AUDIO = "/uii/template/img/goobi_placeholder_audio_large.png?version=1";
     private static final String PLACEHOLDER_URL_NOTFOUND = "/uii/template/img/goobi_placeholder_notFound_large.png?version=1";
 
+    private static final String FILE_TYPE_NOT_IMPLEMENTED_ERROR = "Filetype handling not implemented at ";
+
     /**
      * The image format of the thumbnail urls. 'jpeg' per default
      */
@@ -172,7 +174,7 @@ public @Data class Image {
         } else if (Type.audio.equals(this.type) || Type.video.equals(this.type) || Type.unknown.equals(this.type)) {
             this.objectUrl = createMediaUrl(process, imageFolderName, filename);
         } else {
-            throw new IOException("Filetype handling not implemented at " + this.imagePath);
+            throw new IOException(FILE_TYPE_NOT_IMPLEMENTED_ERROR + this.imagePath);
         }
         createThumbnailUrls(thumbnailSize != null ? thumbnailSize : ConfigurationHelper.getInstance().getMetsEditorThumbnailSize(), process,
                 imageFolderName, filename);
@@ -204,7 +206,7 @@ public @Data class Image {
         } else if (Type.video.equals(this.type)) {
             this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_VIDEO;
         } else {
-            throw new IOException("Filetype handling not implemented at " + this.imagePath);
+            throw new IOException(FILE_TYPE_NOT_IMPLEMENTED_ERROR + this.imagePath);
         }
     }
 
@@ -245,7 +247,7 @@ public @Data class Image {
         } else if (Type.video.equals(this.type)) {
             this.thumbnailUrl = PLACEHOLDER_URL_VIDEO;
         } else {
-            throw new IllegalStateException("Filetype handling not implemented at " + this.imagePath);
+            throw new IllegalStateException(FILE_TYPE_NOT_IMPLEMENTED_ERROR + this.imagePath);
         }
     }
 
@@ -277,7 +279,7 @@ public @Data class Image {
         } else if (Type.video.equals(this.type)) {
             this.thumbnailUrl = PLACEHOLDER_URL_VIDEO;
         } else {
-            throw new IllegalStateException("Filetype handling not implemented at " + this.imagePath);
+            throw new IllegalStateException(FILE_TYPE_NOT_IMPLEMENTED_ERROR + this.imagePath);
         }
     }
 

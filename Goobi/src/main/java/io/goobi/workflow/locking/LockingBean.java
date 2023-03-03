@@ -57,6 +57,9 @@ public class LockingBean implements Serializable {
 
     private static final long serialVersionUID = -6246637509604524723L;
 
+    private static final String USER = "user";
+    private static final String TIMESTAMP = "timestamp";
+
     private static Map<String, Map<String, String>> lockedSessions = new HashMap<>();
 
     public Map<String, Map<String, String>> getLockedSessions() {
@@ -75,9 +78,9 @@ public class LockingBean implements Serializable {
     public static boolean lockObject(String objectId, String userName) {
         if (lockedSessions.containsKey(objectId)) {
             Map<String, String> map = lockedSessions.get(objectId);
-            String otherUser = map.get("user");
+            String otherUser = map.get(USER);
             if (otherUser.equals(userName)) {
-                map.put("timestamp", String.valueOf(System.currentTimeMillis()));
+                map.put(TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                 return true;
             } else {
                 return false;
@@ -85,8 +88,8 @@ public class LockingBean implements Serializable {
 
         }
         Map<String, String> map = new HashMap<>();
-        map.put("user", userName);
-        map.put("timestamp", String.valueOf(System.currentTimeMillis()));
+        map.put(USER, userName);
+        map.put(TIMESTAMP, String.valueOf(System.currentTimeMillis()));
         lockedSessions.put(objectId, map);
         return true;
     }
@@ -115,7 +118,7 @@ public class LockingBean implements Serializable {
         // call it during edition
         if (lockedSessions.containsKey(objectId)) {
             Map<String, String> map = lockedSessions.get(objectId);
-            map.put("timestamp", String.valueOf(System.currentTimeMillis()));
+            map.put(TIMESTAMP, String.valueOf(System.currentTimeMillis()));
         }
     }
 
@@ -148,7 +151,7 @@ public class LockingBean implements Serializable {
             Map<String, Map<String, String>> copyOfMap = new HashMap<>(lockedSessions);
             for (Entry<String, Map<String, String>> entry : copyOfMap.entrySet()) {
                 Map<String, String> map = entry.getValue();
-                long timestamp = Long.parseLong(map.get("timestamp"));
+                long timestamp = Long.parseLong(map.get(TIMESTAMP));
                 if (timestamp < System.currentTimeMillis() - 30 * 60 * 1000) {
                     lockedSessions.remove(entry.getKey());
                 }

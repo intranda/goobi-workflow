@@ -79,6 +79,23 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class NIOFileUtils implements StorageProviderInterface {
 
+    private static final String REGEX_3DS = "\\.3[dD][sS]";
+    private static final String REGEX_BIN = "\\.[bB][iI][nN]";
+    private static final String REGEX_FBX = "\\.[fF][bB][xX]";
+    private static final String REGEX_GIF = "\\.[gG][iI][fF]";
+    private static final String REGEX_GLB = "\\.[gG][lL][bB]";
+    private static final String REGEX_GLTF = "\\.[gG][lL][tT][fF]";
+    private static final String REGEX_JP2 = "\\.[jJ][pP][2]";
+    private static final String REGEX_JPEG = "\\.[jJ][pP][eE]?[gG]";
+    private static final String REGEX_MTL = "\\.[mM][tT][lL]?";
+    private static final String REGEX_PNG = "\\.[pP][nN][gG]";
+    private static final String REGEX_OBJ = "\\.[oO][bB][jJ]?";
+    private static final String REGEX_PLY = "\\.[pP][lL][yY]";
+    private static final String REGEX_STL = "\\.[sS][tT][lL]";
+    private static final String REGEX_TIFF = "\\.[tT][iI][fF][fF]?";
+    private static final String REGEX_X3D = "\\.[xX]3[dD]";
+    private static final String REGEX_XML = "\\.[xX][mM][lL]";
+
     public static final CopyOption[] STANDARD_COPY_OPTIONS = //NOSONAR
             new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES };
 
@@ -134,7 +151,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -158,7 +175,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                     fileNames.add(path);
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException exception) {
+            // do nothing
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -174,7 +192,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                     fileNames.add(path);
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException exception) {
+            // do nothing
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -190,7 +209,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                     fileNames.add(path.getFileName().toString());
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException exception) {
+            // do nothing
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -206,7 +226,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                     fileNames.add(path.getFileName().toString());
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException exception) {
+            // do nothing
         }
         Collections.sort(fileNames);
         return fileNames;
@@ -215,15 +236,15 @@ public class NIOFileUtils implements StorageProviderInterface {
     public static boolean checkImageType(String name) {
         boolean fileOk = false;
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
+        if (name.matches(prefix + REGEX_TIFF)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
+        } else if (name.matches(prefix + REGEX_JPEG)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
+        } else if (name.matches(prefix + REGEX_JP2)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
+        } else if (name.matches(prefix + REGEX_PNG)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
+        } else if (name.matches(prefix + REGEX_GIF)) {
             fileOk = true;
         }
         return fileOk;
@@ -232,21 +253,21 @@ public class NIOFileUtils implements StorageProviderInterface {
     public static boolean check3DType(String name) {
         boolean fileOk = false;
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        if (name.matches(prefix + "\\.[Oo][bB][jJ]?")) {
+        if (name.matches(prefix + REGEX_OBJ)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.[pP][lL][yY]")) {
+        } else if (name.matches(prefix + REGEX_PLY)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.[sS][tT][lL]")) {
+        } else if (name.matches(prefix + REGEX_STL)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.[fF][bB][xX]")) {
+        } else if (name.matches(prefix + REGEX_FBX)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.3[dD][sS]")) {
+        } else if (name.matches(prefix + REGEX_3DS)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
+        } else if (name.matches(prefix + REGEX_X3D)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
+        } else if (name.matches(prefix + REGEX_GLTF)) {
             fileOk = true;
-        } else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
+        } else if (name.matches(prefix + REGEX_GLB)) {
             fileOk = true;
         }
         return fileOk;
@@ -270,23 +291,23 @@ public class NIOFileUtils implements StorageProviderInterface {
             String prefix = ConfigurationHelper.getInstance().getImagePrefix();
             String name = path.getFileName().toString();
             boolean fileOk = false;
-            if (name.matches(prefix + "\\.[Oo][bB][jJ]?")) {
+            if (name.matches(prefix + REGEX_OBJ)) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][lL][yY]")) {
+            } else if (name.matches(prefix + REGEX_PLY)) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.[sS][tT][lL]")) {
+            } else if (name.matches(prefix + REGEX_STL)) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.[fF][bB][xX]")) {
+            } else if (name.matches(prefix + REGEX_FBX)) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.3[dD][sS]")) {
+            } else if (name.matches(prefix + REGEX_3DS)) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
+            } else if (name.matches(prefix + REGEX_X3D)) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
+            } else if (name.matches(prefix + REGEX_GLTF)) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
+            } else if (name.matches(prefix + REGEX_GLB)) {
                 fileOk = true;
-            } else if (name.matches(prefix + "\\.[Xx][Mm][Ll]")) {
+            } else if (name.matches(prefix + REGEX_XML)) {
                 fileOk = true;
             }
             return fileOk;
@@ -303,7 +324,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             }
             String mimeType = getMimeTypeFromFile(path);
-            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || mimeType.equals("application/mxf")) {
+            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || "application/mxf".equals(mimeType)) {
                 return fileOk;
             }
             return false;
@@ -325,17 +346,17 @@ public class NIOFileUtils implements StorageProviderInterface {
             if (baseName.equals(mainFileBaseName)) {
                 String prefix = ConfigurationHelper.getInstance().getImagePrefix();
                 String name = path.getFileName().toString();
-                if (name.matches(prefix + "\\.[mM][tT][lL]?")) {
+                if (name.matches(prefix + REGEX_MTL)) {
                     fileOk = true;
-                } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
+                } else if (name.matches(prefix + REGEX_JPEG)) {
                     fileOk = true;
-                } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
+                } else if (name.matches(prefix + REGEX_PNG)) {
                     fileOk = true;
-                } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
+                } else if (name.matches(prefix + REGEX_X3D)) {
                     fileOk = true;
-                } else if (name.matches(prefix + "\\.[Bb][Ii][Nn]")) {
+                } else if (name.matches(prefix + REGEX_BIN)) {
                     fileOk = true;
-                } else if (name.matches(prefix + "\\.[xX][mM][lL]")) {
+                } else if (name.matches(prefix + REGEX_XML)) {
                     fileOk = true;
                 }
             }
@@ -416,7 +437,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                             }
                         }
                     } catch (AccessDeniedException | FileNotFoundException exception) {
-                        log.error(exception);
+                        // do nothing
                     }
                     try {
                         PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
@@ -429,7 +450,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                             }
                         }
                     } catch (AccessDeniedException | FileNotFoundException exception) {
-                        log.error(exception);
+                        // do nothing
                     }
                     UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
                     if (userAttrs != null) {
@@ -592,7 +613,7 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     /**
-     * Deletes all files and subdirectories under dir. But not the dir itself @throws
+     * Deletes all files and subdirectories under dir. But not the dir itself
      */
     @Override
     public boolean deleteInDir(Path dir) {
@@ -891,6 +912,9 @@ public class NIOFileUtils implements StorageProviderInterface {
                 case "gltf":
                 case "glb":
                     mimeType = "object/" + fileExtension;
+                    break;
+                case "epub":
+                    mimeType = "application/epub+zip";
                     break;
                 default:
                     // use a default value, if file extension is not mapped

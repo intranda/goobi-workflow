@@ -60,6 +60,10 @@ public class JwtHelper {
 
     private static final long rotationDuration = 1000l * 60l * 60l * 24l; //24 hours
 
+    private static final String JWT_NOT_DEFINED =
+            "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties";
+    private static final String DEAULT_ISSUER = "Goobi";
+
     /**
      * creates a rotated token. Rotation is done by appending a timestamp
      * 
@@ -97,15 +101,14 @@ public class JwtHelper {
 
     private static DecodedJWT verifyTokenWithRotationTime(String token, String secret, long lastRotationTime) {
         Algorithm algorithm = Algorithm.HMAC256(secret + lastRotationTime);
-        JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
+        JWTVerifier verifier = JWT.require(algorithm).withIssuer(DEAULT_ISSUER).build();
         return verifier.verify(token);
     }
 
     public static String createToken(Map<String, String> map, Date expiryDate) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
-            throw new ConfigurationException(
-                    "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
+            throw new ConfigurationException(JWT_NOT_DEFINED);
         }
         if (map == null || map.isEmpty()) {
             throw new ConfigurationException("Could not generate token from an empty map.");
@@ -113,7 +116,7 @@ public class JwtHelper {
 
         Algorithm algorithm = createSigningAlgorithm(secret);
 
-        Builder tokenBuilder = JWT.create().withIssuer("Goobi");
+        Builder tokenBuilder = JWT.create().withIssuer(DEAULT_ISSUER);
         for (String key : map.keySet()) {
             tokenBuilder = tokenBuilder.withClaim(key, map.get(key));
         }
@@ -128,8 +131,7 @@ public class JwtHelper {
     public static boolean validateToken(String token, Map<String, String> map) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
-            throw new ConfigurationException(
-                    "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
+            throw new ConfigurationException(JWT_NOT_DEFINED);
         }
 
         if (map == null || map.isEmpty()) {
@@ -165,8 +167,7 @@ public class JwtHelper {
     public static DecodedJWT verifyTokenAndReturnClaims(String token) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
-            throw new ConfigurationException(
-                    "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
+            throw new ConfigurationException(JWT_NOT_DEFINED);
         }
         return verifyToken(token, secret, System::currentTimeMillis);
     }
@@ -181,13 +182,12 @@ public class JwtHelper {
     public static String createChangeStepToken(Step step) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
-            throw new ConfigurationException(
-                    "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
+            throw new ConfigurationException(JWT_NOT_DEFINED);
         }
         Algorithm algorithm = createSigningAlgorithm(secret);
         Date expiryDate = new DateTime().plusHours(37).toDate();
         return JWT.create()
-                .withIssuer("Goobi")
+                .withIssuer(DEAULT_ISSUER)
                 .withClaim("stepId", step.getId())
                 .withClaim("changeStepAllowed", true)
                 .withExpiresAt(expiryDate)
@@ -206,13 +206,12 @@ public class JwtHelper {
     public static String createApiToken(String pathRegex, String[] methods) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
-            throw new ConfigurationException(
-                    "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
+            throw new ConfigurationException(JWT_NOT_DEFINED);
         }
         Algorithm algorithm = createSigningAlgorithm(secret);
         Date expiryDate = new DateTime().plusHours(37).toDate();
         return JWT.create()
-                .withIssuer("Goobi")
+                .withIssuer(DEAULT_ISSUER)
                 .withClaim("api_path", pathRegex)
                 .withArrayClaim("api_methods", methods)
                 .withExpiresAt(expiryDate)
@@ -222,8 +221,7 @@ public class JwtHelper {
     public static boolean verifyChangeStepToken(String token, Integer stepId) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
-            throw new ConfigurationException(
-                    "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
+            throw new ConfigurationException(JWT_NOT_DEFINED);
         }
         try {
             DecodedJWT jwt = verifyToken(token, secret, System::currentTimeMillis);

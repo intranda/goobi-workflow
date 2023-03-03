@@ -42,6 +42,8 @@ public class ControllingManager implements IManager, Serializable {
 
     private static final long serialVersionUID = -8941047628267335304L;
 
+    private static final String ERROR_MESSAGE = "error while getting sql results";
+
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         throw new NotImplementedException();
@@ -71,7 +73,7 @@ public class ControllingManager implements IManager, Serializable {
         try {
             answer = ControllingMysqlHelper.getResultsAsObjectList(sql);
         } catch (SQLException e) {
-            log.error("error while getting sql results", e);
+            log.error(ERROR_MESSAGE, e);
         }
         return answer;
     }
@@ -88,7 +90,7 @@ public class ControllingManager implements IManager, Serializable {
         try {
             return ControllingMysqlHelper.getSingleResultAsMap(sql);
         } catch (SQLException e) {
-            log.error("error while getting sql results", e);
+            log.error(ERROR_MESSAGE, e);
         }
         return null;
     }
@@ -107,7 +109,7 @@ public class ControllingManager implements IManager, Serializable {
         try {
             answer = ControllingMysqlHelper.getResultsAsMaps(sql);
         } catch (SQLException e) {
-            log.error("error while getting sql results", e);
+            log.error(ERROR_MESSAGE, e);
         }
         return answer;
     }

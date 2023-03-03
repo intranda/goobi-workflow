@@ -59,8 +59,10 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.Fileformat;
 
+@Log4j2
 @Named("HelperForm")
 @WindowScoped
 public class HelperForm implements Serializable {
@@ -135,7 +137,7 @@ public class HelperForm implements Serializable {
                 answer.add(new SelectItem(d, d.getName(), null));
             }
         } catch (DAOException e) {
-
+            log.error(e);
         }
 
         return answer;
@@ -151,9 +153,9 @@ public class HelperForm implements Serializable {
                 if (ff.isExportable()) {
                     ffs.add(new SelectItem(ff.getDisplayName(), null));
                 }
-            } catch (InstantiationException e) {
-            } catch (IllegalAccessException e) {
-            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchMethodException
+                    | SecurityException e) {
+                log.error(e);
             }
         }
         return ffs;
@@ -169,9 +171,9 @@ public class HelperForm implements Serializable {
                 if (ff.isWritable()) {
                     ffs.add(new SelectItem(ff.getDisplayName(), null));
                 }
-            } catch (InstantiationException e) {
-            } catch (IllegalAccessException e) {
-            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchMethodException
+                    | SecurityException e) {
+                log.error(e);
             }
 
         }

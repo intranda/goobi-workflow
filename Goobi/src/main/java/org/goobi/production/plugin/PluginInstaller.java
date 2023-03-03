@@ -28,7 +28,6 @@ package org.goobi.production.plugin;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -127,10 +126,9 @@ public class PluginInstaller implements Serializable {
                         }
 
                         try {
-                            Charset charset = Charset.forName("UTF-8");
                             StandardOpenOption truncate = StandardOpenOption.TRUNCATE_EXISTING;
                             StandardOpenOption create = StandardOpenOption.CREATE;
-                            Files.write(installPath, Arrays.asList(fileContent.split("\n")), charset, truncate, create);
+                            Files.write(installPath, Arrays.asList(fileContent.split("\n")), StandardCharsets.UTF_8, truncate, create);
                         } catch (IOException ioException) {
                             log.error(ioException);
                         }
