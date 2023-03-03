@@ -31,6 +31,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobKey;
 
+import de.sub.goobi.helper.Helper;
 import it.burning.cron.CronExpressionDescriptor;
 import lombok.Data;
 
@@ -61,6 +62,14 @@ public class QuartzJobDetails implements Comparable<QuartzJobDetails> {
     @Override
     public int compareTo(QuartzJobDetails o) {
         return jobName.compareTo(o.getJobName());
+    }
+
+    public String getPreviousFireTimeAsString() {
+        return Helper.getDateAsFormattedString(previousFireTime);
+    }
+
+    public String getNextFireTimeAsString() {
+        return Helper.getDateAsFormattedString(nextFireTime);
     }
 
 }

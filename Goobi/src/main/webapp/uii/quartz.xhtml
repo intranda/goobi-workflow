@@ -124,8 +124,8 @@
                                                                 value="#{entry}" />
                                                         </button>
 
-                                                        <span class="admin__tasks-quartz-table-row-data">
-                                                            <h:outputText value="#{msgs[entry.jobName]}" />
+                                                        <span class="admin__tasks-quartz-table-row-data"> <h:outputText
+                                                                value="#{msgs[entry.jobName]}" />
                                                         </span>
                                                     </div>
                                                     <div>
@@ -142,15 +142,9 @@
                                                         </button>
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    <h:outputText value="#{entry.previousFireTime}" />
-                                                </td>
-                                                <td>
-                                                    <h:outputText value="#{entry.nextFireTime}" />
-                                                </td>
-                                                <td>
-                                                    <h:outputText value="#{entry.humanReadableCronTime}" />
-                                                </td>
+                                                <td><h:outputText value="#{entry.previousFireTimeAsString}" /></td>
+                                                <td><h:outputText value="#{entry.nextFireTimeAsString}" /></td>
+                                                <td><h:outputText value="#{entry.humanReadableCronTime}" /></td>
                                             </tr>
                                         </ui:repeat>
                                     </table>
@@ -178,7 +172,9 @@
 
 
 
-                <div class="col-sm-12">
+                <div
+                    class="col-sm-12"
+                    style="margin-top: 20px;">
                     <intranda:box
                         boxType="blank"
                         scope="form-box"
@@ -204,8 +200,7 @@
                                         <!-- Filter by search term -->
                                         <div class="dataTables__filter -search-bar">
                                             <div class="input-group input-group">
-                                                <span class="input-group-text">
-                                                    <i class="fa fa-search"></i>
+                                                <span class="input-group-text"> <i class="fa fa-search"></i>
                                                 </span>
                                                 <h:inputText
                                                     id="searchfield"
@@ -233,91 +228,74 @@
                                                 action="#{jobBean.FilterAlleStart}" />
                                         </div>
                                     </h:form>
-
                                 </div>
-
-
-                                <h:form
-                                    id="myform"
-                                    prependId="false"
-                                    styleClass="table--scrollx"
-                                    style="width: 100%;">
-
-                                    <div class="table-wrapper">
-                                        <table
-                                            role="grid"
-                                            id="tableUserAll"
-                                            class="table table-bordered table-fixed">
-                                            <!-- ### Columnheader row ### -->
-                                            <thead>
-                                                <tr role="row">
-                                                    <intranda:columnheader
-                                                        name="jobName"
-                                                        form="#{jobBean}"
-                                                        value="#{msgs.jobs_jobName}"
-                                                        ajaxRender="@form" />
-                                                        
-                                                    <intranda:columnheader
-                                                        name="jobType"
-                                                        form="#{jobBean}"
-                                                        value="#{msgs.jobs_jobType}"
-                                                        ajaxRender="@form" />
-                                                        
-                                                    <intranda:columnheader
-                                                        name="jobStatus"
-                                                        form="#{jobBean}"
-                                                        value="#{msgs.jobs_jobStatus}"
-                                                        ajaxRender="@form" />
-                                                        
-                                                    <intranda:columnheader
-                                                        name="retryCount"
-                                                        form="#{jobBean}"
-                                                        value="#{msgs.jobs_retryCount}"
-                                                        ajaxRender="@form" />
-                                                        
-                                                    <intranda:columnheader
-                                                        name="lastUpdateTime"
-                                                        form="#{jobBean}"
-                                                        value="#{msgs.jobs_lastUpdateTime}"
-                                                        ajaxRender="@form" />
-                                                </tr>
-                                            </thead>
-                                            <ui:repeat
-                                                var="item"
-                                                value="#{jobBean.paginator.list}"
-                                                varStatus="status">
-                                                <tr role="row">
-                                                    <td>
-                                                        <h:outputText value="#{msgs[item.jobName]}" />
-                                                    </td>
-                                                    <td>
-                                                        <h:outputText value="#{item.jobType}" />
-                                                    </td>
-                                                    <td>
-                                                        <h:outputText value="#{msgs[item.jobStatus.label]}" />
-                                                    </td>
-                                                    <td>
-                                                        <h:outputText value="#{item.retryCount}" />
-                                                    </td>
-                                                    <td>
-                                                        <h:outputText value="#{item.lastUpdateTime}" />
-                                                    </td>
-                                                </tr>
-                                            </ui:repeat>
-                                        </table>
-                                    </div>
-                                </h:form>
-
-
                             </div>
+                            <h:form
+                                id="myform"
+                                prependId="false"
+                                styleClass="table--scrollx"
+                                style="width: 100%;">
+
+                                <div class="table-wrapper">
+                                    <table
+                                        role="grid"
+                                        id="tableUserAll"
+                                        class="table table-bordered table-fixed">
+                                        <!-- ### Columnheader row ### -->
+                                        <thead>
+                                            <tr role="row">
+                                                <intranda:columnheader
+                                                    name="jobName"
+                                                    form="#{jobBean}"
+                                                    value="#{msgs.jobs_jobName}"
+                                                    ajaxRender="@form" />
+
+                                                <intranda:columnheader
+                                                    name="jobType"
+                                                    form="#{jobBean}"
+                                                    value="#{msgs.jobs_jobType}"
+                                                    ajaxRender="@form" />
+
+                                                <intranda:columnheader
+                                                    name="jobStatus"
+                                                    form="#{jobBean}"
+                                                    value="#{msgs.jobs_jobStatus}"
+                                                    ajaxRender="@form" />
+
+                                                <intranda:columnheader
+                                                    name="retryCount"
+                                                    form="#{jobBean}"
+                                                    value="#{msgs.jobs_retryCount}"
+                                                    ajaxRender="@form" />
+
+                                                <intranda:columnheader
+                                                    name="lastUpdateTime"
+                                                    form="#{jobBean}"
+                                                    value="#{msgs.jobs_lastUpdateTime}"
+                                                    ajaxRender="@form" />
+                                            </tr>
+                                        </thead>
+                                        <ui:repeat
+                                            var="item"
+                                            value="#{jobBean.paginator.list}"
+                                            varStatus="status">
+                                            <tr role="row">
+                                                <td><h:outputText value="#{msgs[item.jobName]}" /></td>
+                                                <td><h:outputText value="#{item.jobType}" /></td>
+                                                <td><h:outputText value="#{msgs[item.jobStatus.label]}" /></td>
+                                                <td><h:outputText value="#{item.retryCount}" /></td>
+                                                <td><h:outputText value="#{item.lastUpdateTimeAsString}" /></td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </table>
+                                </div>
+                            </h:form>
+
+
                         </div>
-
-
 
                     </intranda:box>
                 </div>
-
-
             </div>
         </h:panelGroup>
     </ui:define>

@@ -28,6 +28,7 @@ package org.goobi.production.flow.jobs;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,8 @@ import lombok.Setter;
 public class BackgroundJob implements Serializable, DatabaseObject {
 
     private static final long serialVersionUID = -1812771009212445425L;
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
     @Getter
     @Setter
@@ -107,6 +110,10 @@ public class BackgroundJob implements Serializable, DatabaseObject {
             return null;
         }
 
+    }
+
+    public String getLastUpdateTimeAsString() {
+        return lastUpdateTime.format(formatter);
     }
 
     @Override
