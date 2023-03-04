@@ -364,7 +364,7 @@
 								var="myprocess_item"
 								value="#{ProzessverwaltungForm.containerProperties}">
 								
-								<!-- NAME AS TEXT -->
+								<!-- NEW AS TEXT -->
 								<h:panelGroup>
 									<h:panelGroup rendered="#{myprocess_item.isNew}">
 										<intranda:formInputText
@@ -376,13 +376,13 @@
 											required="true" />
 									</h:panelGroup>
 								</h:panelGroup>
-								<!-- // NAME AS TEXT -->
+								<!-- // NEW AS TEXT -->
 	
 								<!-- VALUE AS TEXT -->
 								<h:panelGroup styleClass="row"
 									rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" 
+										<intranda:formLabel label="#{myprocess_item.name}" 
 										labelFor="value" labelRequired="false"/>
 									</div>						
 									<div class="col-12 col-md-9">
@@ -403,7 +403,7 @@
 								<h:panelGroup styleClass="row"
 									rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" 
+										<intranda:formLabel label="#{myprocess_item.name}" 
 										labelFor="number" labelRequired="false"/>
 									</div>						
 									<div class="col-12 col-md-9">
@@ -424,7 +424,7 @@
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'list')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" 
+										<intranda:formLabel label="#{myprocess_item.name}" 
 										labelFor="select" labelRequired="false"/>
 									</div>						
 									<div class="col-12 col-md-9">
@@ -448,7 +448,7 @@
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" 
+										<intranda:formLabel label="#{myprocess_item.name}" 
 										labelFor="selectmany"  labelRequired="false"/>
 									</div>						
 									<div class="col-12 col-md-9">
@@ -473,7 +473,7 @@
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'boolean')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" 
+										<intranda:formLabel label="#{myprocess_item.name}" 
 										labelFor="boolean"  labelRequired="false"/>
 									</div>						
 									<div class="col-12 col-md-9">
@@ -491,14 +491,15 @@
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'date')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" 
+										<intranda:formLabel label="#{myprocess_item.name}" 
 										labelFor="date"  labelRequired="false"/>
 									</div>						
 									<div class="col-12 col-md-9">
 										<p:calendar
 											id="date"
 											value="#{myprocess_item.dateValue}"
-											locale="#{SpracheForm.locale}" />
+											locale="#{SpracheForm.locale}" 
+											readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"/>
 										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="date" />
 									</div>
 								</h:panelGroup>
@@ -508,8 +509,8 @@
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'html')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" 
-										labelFor="html"  labelRequired="false"/>
+										<intranda:formLabel label="#{myprocess_item.name}" 
+										labelFor="html" labelRequired="false"/>
 									</div>						
 									<div class="col-12 col-md-9">
 										<x:inputTextarea

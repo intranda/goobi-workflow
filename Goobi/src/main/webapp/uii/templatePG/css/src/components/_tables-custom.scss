@@ -15,6 +15,7 @@
 // remove margin and make table end at bottom of the box
 .table {
   margin-bottom: 0;
+  border-color: var(--clr-neutral-300);
 }
 
 .table > :not(caption) > * > * {

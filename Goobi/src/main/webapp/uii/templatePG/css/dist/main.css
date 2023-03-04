@@ -813,6 +813,10 @@ a:focus, a:hover, a:active {
   color: #e51400;
 }
 
+.border {
+  border: 1px solid var(--clr-neutral-300) !important;
+}
+
 .border-right,
 .gw-border-right {
   border-right: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
@@ -1506,6 +1510,7 @@ a:focus, a:hover, a:active {
  * ====================================== */
 .table {
   margin-bottom: 0;
+  border-color: var(--clr-neutral-300);
 }
 
 .table > :not(caption) > * > * {

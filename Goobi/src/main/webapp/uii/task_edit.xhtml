@@ -6,9 +6,9 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -40,60 +40,64 @@
     <ui:define name="content">
         <main>
             <c:if test="#{LoginForm.hasRole('Task_List')}">
-
                 <div class="row">
 
                     <div class="col-sm-6">
 
-                        <!-- Box for process details -->
+						<!-- BOX WITH PROCESS DETAILS OR WORKFLOW -->
                         <h:form id="detailsform">
-                            <div class="box thin-margin lightgrey box-bordered">
-                                <div class="box-title">
-                                    <h2 class="tableColumnMaxWidthExtraLong">
-                                        <i class="fa fa-list"></i>
-                                        #{AktuelleSchritteForm.mySchritt.prozess.titel}
-                                    </h2>
-                                    <div class="actions">
+							<intranda:box
+								boxType="outline"
+								boxTitle="false"
+								boxPadding="false"
+								boxForm="false">
 
-                                        <button
-                                            jsf:id="expand"
-                                            aria-label="#{msgs.expandProcessDetails}"
-                                            class="btn btn-mini font-light"
-                                            jsf:action="#{NavigationForm.Reload}">
-                                            <i class="fa #{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'fa-compress':'fa-expand'}" />
-                                            <f:setPropertyActionListener
-                                                target="#{NavigationForm.uiStatus.task_viewWorkflow}"
-                                                value="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'part':'full'}" />
-                                            <f:ajax render=":detailsform" />
-                                        </button>
-
-                                    </div>
-                                </div>
-                                <div class="box-content nopadding">
-
-                                    <!-- do not show the whole workflow -->
+								<intranda:boxTitle
+									title="#{AktuelleSchritteForm.mySchritt.prozess.titel}"
+									icon="fa-list">
+							
+									<!-- TOGGLE VIEW BUTTON -->
+									<div class="actions d-flex">
+										<button
+							                  jsf:id="expand"
+							                  aria-label="#{msgs.expandProcessDetails}"
+							                  class="btn d-flex align-items-center btn--title-action-neutral"
+							                  jsf:action="#{NavigationForm.Reload}">
+							                  <i class="fa #{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'fa-compress':'fa-expand'}" />
+							                  <f:setPropertyActionListener
+							                      target="#{NavigationForm.uiStatus.task_viewWorkflow}"
+							                      value="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'part':'full'}" />
+							                  <f:ajax render=":detailsform" />
+							              </button>              
+									</div>
+									<!-- // TOGGLE VIEW BUTTON -->
+								</intranda:boxTitle>
+	
+ 									<!-- DETAILS ONLY -->
                                     <h:panelGroup rendered="#{NavigationForm.uiStatus.task_viewWorkflow ne 'full'}">
-                                        <h:panelGrid
+                                        <h:panelGrid columnClasses="border-right"
                                             columns="2"
-                                            class="table table-bordered"
-                                            style="border: 1px solid #ddd;">
+                                            class="table table-hover">
+                                            
+                                            <!-- PROCESS -->
+                                            <h:outputText value="#{msgs.prozess}:" />
+                                            <h:panelGroup>
+											<h:outputText
+                                                    value="#{AktuelleSchritteForm.mySchritt.prozess.titel}" />
+                                            </h:panelGroup>
+                                            <!-- // PROCESS -->
+                                            
+                                            <!-- STEP TITLE -->
                                             <h:outputText value="#{msgs.arbeitsschritt}:" />
                                             <h:panelGroup>
-                                                <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatisch}">
-                                                    <i
-                                                        class="fa fa-cogs font-light margin-right-10"
-                                                        title="#{msgs.automatischerSchritt}" />
-                                                </h:panelGroup>
-                                                <h:panelGroup rendered="#{not AktuelleSchritteForm.mySchritt.typAutomatisch}">
-                                                    <i
-                                                        class="fa fa-user-o font-light margin-right-10"
-                                                        title="#{msgs.normalerSchritt}" />
-                                                </h:panelGroup>
-                                                <h:outputText
-                                                    value="#{AktuelleSchritteForm.mySchritt.titelLokalisiert}"
-                                                    title="#{AktuelleSchritteForm.mySchritt.titel}" />
+											<i
+												class="fa #{AktuelleSchritteForm.mySchritt.typAutomatisch ? 'fa-cogs' : 'fa-user-o'} font-light me-3"
+												title="#{AktuelleSchritteForm.mySchritt.typAutomatisch ? msgs.automatischerSchritt : msgs.normalerSchritt}" />
+											<h:outputText value="#{AktuelleSchritteForm.mySchritt.titel}"/>
                                             </h:panelGroup>
+                                            <!-- // STEP TITLE -->
 
+                                            <!-- PRIORITY -->
                                             <h:outputText value="#{msgs.prioritaet}:" />
                                             <h:panelGroup>
 
@@ -129,16 +133,23 @@
                                                     </span>
                                                 </h:panelGroup>
                                             </h:panelGroup>
-
+                                            <!-- // PRIORITY -->
+                                            
+                                            <!-- STATUS -->
                                             <h:outputText value="#{msgs.status}:" />
                                             <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsstatusEnum.title}" />
+                                            <!-- // STATUS -->
+                                            
+                                            <!-- USER -->
                                             <h:outputText
                                                 value="#{msgs.bearbeiter}:"
                                                 rendered="#{!HelperForm.anonymized}" />
                                             <h:outputText
                                                 value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer!=null and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id!=0?(AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.vorname).concat(' ').concat(AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.nachname):''}"
                                                 rendered="#{!HelperForm.anonymized}" />
-
+											<!-- // USER -->
+											
+											<!-- EDIT START -->
                                             <h:outputText
                                                 value="#{msgs.bearbeitungsbeginn}:"
                                                 rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
@@ -147,7 +158,9 @@
                                                 rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
                                                 <!-- 	                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
                                             </h:outputText>
+											<!-- // EDIT START -->
 
+											<!-- EDIT END -->
                                             <h:outputText
                                                 value="#{msgs.zuletztBearbeitet}:"
                                                 rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
@@ -156,15 +169,18 @@
                                                 rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
                                                 <!-- 	                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
                                             </h:outputText>
+											<!-- // EDIT END -->
 
+											<!-- PROJECT -->
                                             <h:outputText value="#{msgs.projekt}:" />
                                             <h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.projekt.titel}" />
+											<!-- // PROJECT -->
 
                                         </h:panelGrid>
                                     </h:panelGroup>
-                                    <!-- / do not show the whole workflow -->
+                                    <!-- // DETAILS ONLY -->
 
-                                    <!-- show the whole workflow -->
+                                    <!-- ENTIRE WORKFLOW -->
                                     <h:panelGroup rendered="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'}">
                                         <table class="table table-hover table-bordered">
                                             <ui:repeat
@@ -173,105 +189,104 @@
                                                 id="stepList">
                                                 <tr>
                                                     <td colspan="#{(step.bearbeitungsstatusEnum == 'DONE')?'1':'3'}">
-                                                        <ul class="colors small13">
-                                                            <li
-                                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)} margin-top-lesser margin-right-regular"
-                                                                rel="tooltip"
-                                                                title="#{step.bearbeitungsstatusEnum.title}" />
-                                                        </ul>
-                                                        <h:panelGroup rendered="#{step.typAutomatisch}">
-                                                            <i
-                                                                class="fa fa-cogs font-light margin-right-10"
-                                                                title="#{msgs.automatischerSchritt}" />
-                                                        </h:panelGroup>
-                                                        <h:panelGroup rendered="#{not step.typAutomatisch}">
-                                                            <i
-                                                                class="fa fa-user-o font-light margin-right-10"
-                                                                title="#{msgs.normalerSchritt}" />
-                                                        </h:panelGroup>
+                                                        <!-- STATUS -->
+                                                        <div title="#{step.bearbeitungsstatusEnum.title}"
+															rel="tooltip"
+															data-toggle="tooltip"
+															class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"/>
+														<!-- // STATUS -->
+                                                        
+                                                        <!-- TYPE -->
+                                                        <i
+															class="fa #{step.typAutomatisch ? 'fa-cogs' : 'fa-user-o'} font-light ms-3 me-3"
+															title="#{step.typAutomatisch ? msgs.automatischerSchritt : msgs.normalerSchritt}" />
+											            <!-- // TYPE -->
+                                                        
+                                                        <!-- TITLE -->
                                                         <h:outputText
-                                                            value="#{step.titelLokalisiert}"
-                                                            title="#{step.titel}"
+                                                            value="#{step.titel}"
                                                             styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" />
+														<!-- TITLE -->
+														
+                                                        <div class="row" jsf:rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and step.id eq AktuelleSchritteForm.mySchritt.id}">
 
-                                                        <div
-                                                            class="row"
-                                                            style="padding-left: 160px; padding-right: 20px">
-                                                            <h:panelGrid
-                                                                columns="2"
-                                                                class="table table-bordered"
-                                                                style="border: 1px solid #ddd;"
-                                                                rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and step.id eq AktuelleSchritteForm.mySchritt.id}">
-                                                                <h:outputText value="#{msgs.prioritaet}:" />
-
-                                                                <h:panelGroup>
-
-                                                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet == 0}">
-                                                                        <span class="badge badge-intranda-light"> #{msgs.badgePriority0} </span>
-                                                                    </h:panelGroup>
-
-                                                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet == 1}">
-                                                                        <span class="badge badge-intranda-orange">
-                                                                            <i class="fa fa-lightbulb-o"></i>
-                                                                            #{msgs.badgePriority1}
-                                                                        </span>
-                                                                    </h:panelGroup>
-
-                                                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet == 2}">
-                                                                        <span class="badge badge-intranda-orange">
-                                                                            <i class="fa fa-lightbulb-o" />
-                                                                            #{msgs.badgePriority2}
-                                                                        </span>
-                                                                    </h:panelGroup>
-
-                                                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet gt 2 and AktuelleSchritteForm.mySchritt.prioritaet lt 10}">
-                                                                        <span class="badge badge-intranda-orange">
-                                                                            <i class="fa fa-lightbulb-o"></i>
-                                                                            #{msgs.badgePriority3}
-                                                                        </span>
-                                                                    </h:panelGroup>
-
-                                                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet gt 9}">
-                                                                        <span class="badge badge-intranda-red">
-                                                                            <i class="fa fa-bullhorn"></i>
-                                                                            #{msgs.badgeCorrection}
-                                                                        </span>
-                                                                    </h:panelGroup>
-                                                                </h:panelGroup>
-
-                                                                <h:outputText value="#{msgs.status}:" />
-                                                                <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsstatusEnum.title}" />
-                                                                <h:outputText
-                                                                    value="#{msgs.bearbeiter}:"
-                                                                    rendered="#{!HelperForm.anonymized}" />
-                                                                <h:outputText
-                                                                    value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer!=null and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id!=0?(AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.vorname).concat(' ').concat(AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.nachname):''}"
-                                                                    rendered="#{!HelperForm.anonymized}" />
-
-                                                                <h:outputText
-                                                                    value="#{msgs.bearbeitungsbeginn}:"
-                                                                    rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
-                                                                <h:outputText
-                                                                    value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginnAsFormattedString}"
-                                                                    rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
-                                                                    <!-- 	                                                        	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-                                                                </h:outputText>
-
-                                                                <h:outputText
-                                                                    value="#{msgs.zuletztBearbeitet}:"
-                                                                    rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
-                                                                <h:outputText
-                                                                    value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktAsFormattedString}"
-                                                                    rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
-                                                                    <!-- 	                                                        	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-                                                                </h:outputText>
-
-
-
-                                                            </h:panelGrid>
+														    <div class="col-4"/>
+														   
+														    <div class="col-8">
+      
+	                                                            <h:panelGrid
+	                                                            	class="table table-bordered border" 
+	                                                                columns="2">
+	                                                                <h:outputText value="#{msgs.prioritaet}:" />
+	
+	                                                                <h:panelGroup>
+	
+	                                                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet == 0}">
+	                                                                        <span class="badge badge-intranda-light"> #{msgs.badgePriority0} </span>
+	                                                                    </h:panelGroup>
+	
+	                                                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet == 1}">
+	                                                                        <span class="badge badge-intranda-orange">
+	                                                                            <i class="fa fa-lightbulb-o"></i>
+	                                                                            #{msgs.badgePriority1}
+	                                                                        </span>
+	                                                                    </h:panelGroup>
+	
+	                                                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet == 2}">
+	                                                                        <span class="badge badge-intranda-orange">
+	                                                                            <i class="fa fa-lightbulb-o" />
+	                                                                            #{msgs.badgePriority2}
+	                                                                        </span>
+	                                                                    </h:panelGroup>
+	
+	                                                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet gt 2 and AktuelleSchritteForm.mySchritt.prioritaet lt 10}">
+	                                                                        <span class="badge badge-intranda-orange">
+	                                                                            <i class="fa fa-lightbulb-o"></i>
+	                                                                            #{msgs.badgePriority3}
+	                                                                        </span>
+	                                                                    </h:panelGroup>
+	
+	                                                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet gt 9}">
+	                                                                        <span class="badge badge-intranda-red">
+	                                                                            <i class="fa fa-bullhorn"></i>
+	                                                                            #{msgs.badgeCorrection}
+	                                                                        </span>
+	                                                                    </h:panelGroup>
+	                                                                </h:panelGroup>
+	
+	                                                                <h:outputText value="#{msgs.status}:" />
+	                                                                <h:outputText value="#{AktuelleSchritteForm.mySchritt.bearbeitungsstatusEnum.title}" />
+	                                                                <h:outputText
+	                                                                    value="#{msgs.bearbeiter}:"
+	                                                                    rendered="#{!HelperForm.anonymized}" />
+	                                                                <h:outputText
+	                                                                    value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer!=null and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id!=0?(AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.vorname).concat(' ').concat(AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.nachname):''}"
+	                                                                    rendered="#{!HelperForm.anonymized}" />
+	
+	                                                                <h:outputText
+	                                                                    value="#{msgs.bearbeitungsbeginn}:"
+	                                                                    rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+	                                                                <h:outputText
+	                                                                    value="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginnAsFormattedString}"
+	                                                                    rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+	                                                                    <!-- 	                                                        	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+	                                                                </h:outputText>
+	
+	                                                                <h:outputText
+	                                                                    value="#{msgs.zuletztBearbeitet}:"
+	                                                                    rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+	                                                                <h:outputText
+	                                                                    value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktAsFormattedString}"
+	                                                                    rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
+	                                                                    <!-- 	                                                        	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+	                                                                </h:outputText>
+	
+	
+	
+	                                                            </h:panelGrid>
+                                                            </div>
+  
                                                         </div>
-
-
                                                     </td>
 
                                                     <h:panelGroup rendered="#{(step.bearbeitungsstatusEnum == 'DONE') and !HelperForm.anonymized}">
@@ -302,19 +317,17 @@
                                             </ui:repeat>
                                         </table>
                                     </h:panelGroup>
-                                    <!-- // show the whole workflow -->
+                                    <!-- // ENTIRE WORKFLOW -->
 
-                                </div>
-                            </div>
-                        </h:form>
-                        <!-- // Box for process details -->
+								</intranda:box>
+	                        </h:form>
+							<!-- // BOX WITH PROCESS DETAILS OR WORKFLOW -->
 
 
-                        <!-- Box for process log -->
-
+                        <!-- JOURNAL -->
                         <h:form
                             rendered="#{!NavigationForm.uiStatus['journalBig']}"
-                            styleClass="form-vertical form-bordered"
+                            styleClass="mt-3"
                             id="journal"
                             enctype="multipart/form-data"
                             prependId="false">
@@ -324,16 +337,16 @@
                                     value="true" />
                                 <x:aliasBean
                                     alias="#{showFolderSelection}"
-                                    value="true" />
+                                    value="false" />
                                 <x:aliasBean
                                     alias="#{bean}"
                                     value="#{AktuelleSchritteForm.mySchritt.prozess}" />
                                 <f:subview id="sublog">
-                                    <ui:include src="includes/journal.xhtml" />
+                                    <ui:include src="templatePG/includes/journal.xhtml" />
                                 </f:subview>
                             </x:aliasBeansScope>
                         </h:form>
-                        <!-- // Box for process log -->
+                        <!-- // JOURNAL -->
 
 
                     </div>
@@ -341,52 +354,31 @@
                     <div class="col-sm-6">
 
                         <!-- Area for part GUI plugins -->
-                        <c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
-                            <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
+                        <c:if test="#{AktuelleSchritteForm.myPlugin !=null and (AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART' or AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART_AND_FULL')}">
+                        	<div class="mb-3">
+	                            <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
+                        	</div>
                         </c:if>
-                        <c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART_AND_FULL'}">
-                            <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
-                        </c:if>
-
-
-                        <!-- Box for process properties -->
-                        <h:panelGroup
-                            id="propform2"
+                        
+                        <!-- PROPERTIES -->
+                        <h:panelGroup layout="block" styleClass="mb-3"
+                        	id="propform2"
                             rendered="#{AktuelleSchritteForm.propertyListSize>0 or AktuelleSchritteForm.sizeOfDisplayableMetadata>0}">
-                            <div class="box box-color lightgrey box-bordered">
-                                <div class="box-title">
-                                    <h3>
-                                        <i class="fa fa-edit"></i>
-                                        <h:outputText value="#{msgs.eigenschaften}" />
-                                    </h3>
-                                </div>
-                                <div class="box-content nopadding">
-                                    <ui:include src="includes/task/task_properties.xhtml" />
-                                </div>
-                            </div>
+							<ui:include src="templatePG/includes/task/task_properties.xhtml" />
+						</h:panelGroup>
+                        <!-- // PROPERTIES -->
 
-                        </h:panelGroup>
-                        <!-- // Box for process properties -->
 
-                        <!-- Box for action area -->
-                        <div class="box box-color box-bordered">
-                            <div class="box-title">
-                                <h3>
-                                    <i class="fa fa-cog"></i>
-                                    <h:outputText value="#{msgs.moeglicheAktionen}" />
-                                </h3>
-                            </div>
-                            <div class="box-content nopadding">
-                                <ui:include src="includes/task/task_action.xhtml" />
-                            </div>
-                        </div>
-                        <!-- // Box for action area -->
+                        <!-- ACTION BOX -->
+                        <ui:include src="templatePG/includes/task/task_action.xhtml" />
+                        <!-- // ACTION BOX -->
 
                     </div>
                 </div>
 
+				<!-- FULL WIDTH JOURNAL -->
                 <ui:fragment rendered="#{NavigationForm.uiStatus['journalBig']}">
-                    <div class="row">
+                    <div class="row mt-3">
                         <div class="col-sm-12">
                             <h:form
                                 styleClass="form-vertical form-bordered"
@@ -399,18 +391,20 @@
                                         value="true" />
                                     <x:aliasBean
                                         alias="#{showFolderSelection}"
-                                        value="true" />
+                                        value="false" />
                                     <x:aliasBean
                                         alias="#{bean}"
                                         value="#{AktuelleSchritteForm.mySchritt.prozess}" />
                                     <f:subview id="sublog2">
-                                        <ui:include src="includes/journal.xhtml" />
+                                        <ui:include src="templatePG/includes/journal.xhtml" />
                                     </f:subview>
                                 </x:aliasBeansScope>
                             </h:form>
                         </div>
                     </div>
                 </ui:fragment>
+				<!-- // FULL WIDTH JOURNAL -->
+				
             </c:if>
         </main>
     </ui:define>
