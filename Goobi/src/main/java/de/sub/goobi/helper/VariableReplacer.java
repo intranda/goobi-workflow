@@ -110,6 +110,8 @@ public class VariableReplacer {
     public static Pattern piiifMediaFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMediaFolder(?:\\}|\\))");
     public static Pattern piiifMasterFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMasterFolder(?:\\}|\\))");
 
+    public static final String SEPARATOR = "; ";
+
     private DigitalDocument dd;
     private Prefs prefs;
     private UghHelper uhelp;
@@ -487,7 +489,7 @@ public class VariableReplacer {
         if (metadataList != null) {
             for (Metadata md : metadataList) {
                 if (bld.length() != 0) {
-                    bld.append("; ");
+                    bld.append(SEPARATOR);
                 }
                 // if it is a person, get the complete name, otherwise the value only
                 if (md.getType().getIsPerson()) {
