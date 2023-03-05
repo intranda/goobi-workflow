@@ -23,33 +23,35 @@
 
 	<composite:implementation>
 
-
+	<!-- BOX -->
 	<h:panelGroup
+		id="box"
 		layout="block"
 		styleClass="box
 		box--#{cc.attrs.boxType}
 		#{cc.attrs.boxScope}
 		#{cc.attrs.boxPadding ? 'box--padded' : 'box--no-padding'}
 		#{cc.attrs.boxSmall ? 'box--small' : ''}
-		#{cc.attrs.boxForm ? 'form-box' : ''}
-		">
+		#{cc.attrs.boxForm ? 'form-box' : ''}">
 
+			<!-- BOX CONTENT -->
 			<!-- Renders if boxTitle = true -->
 			<h:panelGroup layout="block" class="box__content">
 
-					<intranda:boxTitle
-						rendered="#{cc.attrs.boxTitle}"
-						title="#{cc.attrs.title}"
-						icon="#{cc.attrs.icon}"
-					/>
+				<intranda:boxTitle
+					rendered="#{cc.attrs.boxTitle}"
+					title="#{cc.attrs.title}"
+					icon="#{cc.attrs.icon}"/>
 
-					<div class="#{cc.attrs.boxTitle ? 'box__body' : 'box__content-inner'}">
-						<composite:insertChildren />
-					</div>
+				<div class="#{cc.attrs.boxTitle ? 'box__body' : 'box__content-inner'}">
+					<composite:insertChildren />
+				</div>
 
-			</h:panelGroup> <!-- /box__content -->
-    </h:panelGroup> <!-- /box -->
-
+			</h:panelGroup>
+			<!-- // BOX CONTENT -->
+			
+    </h:panelGroup>
+	<!-- // BOX -->
 
 	</composite:implementation>
 </ui:composition>

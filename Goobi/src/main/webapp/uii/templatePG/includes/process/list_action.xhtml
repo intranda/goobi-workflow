@@ -12,7 +12,7 @@
 	</composite:interface>
 
 	<composite:implementation>
-		<h:panelGroup
+		<ui:fragment id="actionarea"
 			rendered="#{LoginForm.hasRole('Workflow_Processes') and (LoginForm.hasAnyGoobiScriptRole or LoginForm.hasRole('Workflow_Processes_Allow_Download') or LoginForm.hasRole('Workflow_Processes_Allow_Export') or LoginForm.hasRole('Statistics_General'))}">
 			<div class="row mt-4">
 				<div class="col-12">
@@ -30,7 +30,7 @@
 									<!-- Upload-Schaltknopf -->
 									<button
 										jsf:action="#{ProzessverwaltungForm.UploadFromHomeAlle}"
-										jsf:id="uploadFromHome" class="btn d-block mb-2"
+										jsf:id="uploadFromHome" class="btn btn-link d-block mb-2"
 										title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}"
 										onclick="if (!confirm('#{msgs.upload}')) return false">
 										
@@ -48,7 +48,7 @@
 									rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 									
 
-									<button type="button" class="btn"
+									<button type="button" class="btn btn-link"
 										data-bs-toggle="collapse" data-bs-target="#possibleActions1"
 										aria-expanded="false" aria-controls="possibleActions1">
 										<i class="btn btn-blank fa fa-cloud-download" />
@@ -63,7 +63,7 @@
 										<!-- Download-Schaltknopf für Selection-->
 										<button
 											jsf:action="#{ProzessverwaltungForm.DownloadToHomeSelection}"
-											jsf:id="downloadToHomeSelection" class="btn ms-5 d-block"
+											jsf:id="downloadToHomeSelection" class="btn btn-link ms-5 d-block"
 											jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
 											title="#{msgs.auswahl2}"
 											onclick="if (!confirm('#{msgs.download}')) return false">
@@ -75,7 +75,7 @@
 										<!-- Download-Schaltknopf für Page-->
 										<button
 											jsf:action="#{ProzessverwaltungForm.DownloadToHomePage}"
-											class="btn ms-5 d-block" title="#{msgs.trefferDieserSeite}"
+											class="btn btn-link ms-5 d-block" title="#{msgs.trefferDieserSeite}"
 											onclick="if (!confirm('#{msgs.download}')) return false"
 											jsf:id="downloadToHomePage">
 											<i class="btn btn-blank fa fa-angle-right" />
@@ -86,7 +86,7 @@
 										<!-- Download-Schaltknopf für gesamtes Trefferset -->
 										<button
 											jsf:action="#{ProzessverwaltungForm.DownloadToHomeHits}"
-											class="btn ms-5 d-block" title="#{msgs.gesamtesTrefferset}"
+											class="btn btn-link ms-5 d-block" title="#{msgs.gesamtesTrefferset}"
 											onclick="if (!confirm('#{msgs.download}')) return false"
 											jsf:id="downloadToHomeAll">
 											<i class="btn btn-blank fa fa-angle-right" />
@@ -102,10 +102,10 @@
 							<!-- // LINK PROCESSES INTO OR OUT OF HOME DIRECTORY -->
 
 							<!-- MASS EXPORT -->
-							<h:panelGroup styleClass="mb-2"
+							<h:panelGroup styleClass="mb-2" layout="block"
 								rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 								
-								<button type="button" class="btn"
+								<button type="button" class="btn btn-link"
 									data-bs-toggle="collapse" data-bs-target="#possibleActions2"
 									aria-expanded="false" aria-controls="possibleActions2">
 									<i class="btn btn-blank fa fa-globe" />
@@ -120,7 +120,7 @@
 									<div class="alert alert-warning mt-4">
 										#{msgs.timeoutWarningDMS}</div>
 									<!-- Download-Schaltknopf für Selection-->
-									<button class="btn ms-5 d-block" jsf:id="action6"
+									<button class="btn btn-link ms-5 d-block" jsf:id="action6"
 										jsf:action="#{ProzessverwaltungForm.ExportDMSSelection}"
 										jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
 										title="#{msgs.auswahl2}"
@@ -131,7 +131,7 @@
 										</span>
 									</button>
 									<!-- Download-Schaltknopf für Page-->
-									<button class="btn ms-5 d-block"
+									<button class="btn btn-link ms-5 d-block"
 										jsf:action="#{ProzessverwaltungForm.ExportDMSPage}"
 										title="#{msgs.trefferDieserSeite}" jsf:id="action7"
 										onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
@@ -141,7 +141,7 @@
 										</span>
 									</button>
 									<!-- Download-Schaltknopf für gesamtes Trefferset -->
-									<button class="btn ms-5 d-block"
+									<button class="btn btn-link ms-5 d-block"
 										jsf:action="#{ProzessverwaltungForm.ExportDMSHits}"
 										title="#{msgs.gesamtesTrefferset}" jsf:id="action8"
 										onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
@@ -170,7 +170,7 @@
 										styleClass="messages mb-2" />
 								</div>
 								<button jsf:id="expandbutton5" type="button"
-									class="btn" data-bs-toggle="collapse"
+									class="btn btn-link" data-bs-toggle="collapse"
 									data-bs-target="#possibleActions5" aria-expanded="false"
 									aria-controls="possibleActions5"
 									onclick="handleGoobiScriptCodeEditor()">
@@ -195,10 +195,12 @@
 											</ui:fragment>
 										</ui:repeat>
 									</div>
-									<x:inputTextarea id="goobiScriptfield"
-										pt:aria-label="goobiScriptfield" forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.goobiScript}" />
+									<div class="mb-2">
+										<x:inputTextarea id="goobiScriptfield"
+											pt:aria-label="goobiScriptfield" forceId="true"
+											styleClass="form-control"
+											value="#{ProzessverwaltungForm.goobiScript}" />
+									</div>
 
 									<!-- GoobiScript für selektierte Treffer der Seite -->
 									<ui:fragment
@@ -208,7 +210,7 @@
 											
 										</script>
 										<button jsf:id="selectedModalRender"
-											class="btn d-block"
+											class="btn btn-link d-block"
 											jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}"
 											pt:data-modalid="goobiScriptModal">
 											<f:ajax
@@ -223,7 +225,7 @@
 									</ui:fragment>
 									<!-- GoobiScript für Treffer der Seite - modal rendern  -->
 									<button jsf:id="resultsModalRender" type="button"
-										class="btn d-block"
+										class="btn btn-link d-block"
 										jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptPage}"
 										pt:data-modalid="goobiScriptModal">
 										<f:ajax render="goobiScriptModalWrapper goobiScriptMessages"
@@ -236,7 +238,7 @@
 									</button>
 									<!-- GoobiScript für alle Treffer - modal rendern  -->
 									<button type="button" jsf:id="allModalRender"
-										class="btn d-block"
+										class="btn btn-link d-block"
 										jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptHits}"
 										pt:data-modalid="goobiScriptModal">
 										<f:ajax render="goobiScriptModalWrapper goobiScriptMessages"
@@ -256,7 +258,7 @@
 							<h:panelGroup layout="block" styleClass="mb-2"
 								rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Download') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 								<button type="button" jsf:id="expandbutton10"
-									class="btn">
+									class="btn btn-link">
 									<i class="btn btn-blank fa fa-floppy-o" />
 									<span>
 										<h:outputText value="#{msgs.saveSearchResult}" />
@@ -301,7 +303,7 @@
 											</button>
 										</h:column>
 									</x:dataTable>
-									<button class="btn d-block"
+									<button class="btn btn-link d-block"
 										jsf:action="#{ProzessverwaltungForm.generateResultXls}"
 										title="#{msgs.createExcel}"
 										jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
@@ -310,7 +312,7 @@
 											<h:outputText value="#{msgs.createExcel}" />
 										</span>
 									</button>
-									<button class="btn d-block"
+									<button class="btn btn-link d-block"
 										jsf:action="#{ProzessverwaltungForm.generateResultDoc}"
 										title="#{msgs.createDoc}"
 										jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
@@ -319,7 +321,7 @@
 											<h:outputText value="#{msgs.createDoc}" />
 										</span>
 									</button>
-									<button class="btn d-block"
+									<button class="btn btn-link d-block"
 										jsf:action="#{ProzessverwaltungForm.generateResultRtf}"
 										title="#{msgs.createRtf}"
 										jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
@@ -328,7 +330,7 @@
 											<h:outputText value="#{msgs.createRtf}" />
 										</span>
 									</button>
-									<button class="btn d-block"
+									<button class="btn btn-link d-block"
 										jsf:action="#{ProzessverwaltungForm.generateResultAsPdf}"
 										title="#{msgs.createPdf}"
 										jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
@@ -346,7 +348,7 @@
 								rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 								
 									<button type="button" jsf:id="expandbutton6"
-										class="btn" data-bs-toggle="collapse" data-bs-target="#possibleActions6">
+										class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#possibleActions6">
 										<i class="btn btn-blank fa fa-table" />
 										<span>
 											<h:outputText value="#{msgs.anzahlMetadatenUndImagesErmitteln}" />
@@ -354,7 +356,7 @@
 									</button>
 									<div id="possibleActions6" class="collapse">
 										<!-- Statistische Auswertung-Schaltknopf für Page-->
-										<button jsf:id="action20" class="btn ms-5 d-block"
+										<button jsf:id="action20" class="btn btn-link ms-5 d-block"
 											jsf:action="#{ProzessverwaltungForm.CalcMetadataAndImagesSelection}"
 											jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
 											title="#{msgs.auswahl2}">
@@ -364,7 +366,7 @@
 											</span>
 										</button>
 										<!-- Statistische Auswertung-Schaltknopf für Page-->
-										<button class="btn ms-5 d-block" jsf:id="action21"
+										<button class="btn btn-link ms-5 d-block" jsf:id="action21"
 											jsf:action="#{ProzessverwaltungForm.CalcMetadataAndImagesPage}"
 											title="#{msgs.trefferDieserSeite}">
 											<i class="btn btn-blank fa fa-angle-right" />
@@ -373,7 +375,7 @@
 											</span>
 										</button>
 										<!-- Statistische Auswertung-Schaltknopf für gesamtes Trefferset -->
-										<button class="btn ms-5 d-block " jsf:id="action22"
+										<button class="btn btn-link ms-5 d-block " jsf:id="action22"
 											jsf:action="#{ProzessverwaltungForm.CalcMetadataAndImagesHits}"
 											title="#{msgs.gesamtesTrefferset}"
 											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
@@ -390,7 +392,7 @@
 							<h:panelGroup
 								rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
 								<button type="button" jsf:id="expandbutton7"
-									class="btn" data-bs-toggle="collapse" data-bs-target="#possibleActions7">
+									class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#possibleActions7">
 									<i class="btn btn-blank fa fa-bar-chart-o" />
 									<span>
 										<h:outputText value="#{msgs.statistischeAuswertung}" />
@@ -398,7 +400,7 @@
 								</button>
 								<div id="possibleActions7" class="collapse">
 									<!-- StatisticsStatusVolumes-->
-									<button class="btn ms-5 d-block" jsf:id="action30"
+									<button class="btn btn-link ms-5 d-block" jsf:id="action30"
 										jsf:rendered="#{!HelperForm.anonymized}"
 										jsf:action="#{ProzessverwaltungForm.StatisticsStatusVolumes}"
 										title="#{msgs.statusOfVolumes}">
@@ -411,7 +413,7 @@
 											value="true" />
 									</button>
 									<!-- StatisticsUsergroups -->
-									<button class="btn ms-5 d-block" jsf:id="action31"
+									<button class="btn btn-link ms-5 d-block" jsf:id="action31"
 										jsf:rendered="#{!HelperForm.anonymized}"
 										jsf:action="#{ProzessverwaltungForm.StatisticsUsergroups}"
 										title="#{msgs.statusForUsers}">
@@ -424,7 +426,7 @@
 											value="true" />
 									</button>
 									<!-- StatisticsRuntimeSteps -->
-									<button class="btn ms-5 d-block" jsf:id="action32"
+									<button class="btn btn-link ms-5 d-block" jsf:id="action32"
 										jsf:rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}"
 										jsf:action="#{ProzessverwaltungForm.StatisticsRuntimeSteps}"
 										title="#{msgs.runtimeOfSteps}">
@@ -437,7 +439,7 @@
 											value="true" />
 									</button>
 									<!-- StatisticsProduction -->
-									<button class="btn ms-5 d-block" jsf:id="action33"
+									<button class="btn btn-link ms-5 d-block" jsf:id="action33"
 										jsf:rendered="#{!HelperForm.anonymized}"
 										jsf:action="#{ProzessverwaltungForm.StatisticsProduction}"
 										title="#{msgs.productionStatistics}">
@@ -450,7 +452,7 @@
 											value="true" />
 									</button>
 									<!-- StatisticsTroughput -->
-									<button class="btn ms-5 d-block" jsf:id="action34"
+									<button class="btn btn-link ms-5 d-block" jsf:id="action34"
 										jsf:rendered="#{!HelperForm.anonymized}"
 										jsf:action="#{ProzessverwaltungForm.StatisticsTroughput}"
 										title="#{msgs.productionThroughput}">
@@ -463,7 +465,7 @@
 											value="true" />
 									</button>
 									<!-- StatisticsStorage -->
-									<button class="btn ms-5 d-block" jsf:id="action35"
+									<button class="btn btn-link ms-5 d-block" jsf:id="action35"
 										jsf:action="#{ProzessverwaltungForm.StatisticsStorage}"
 										title="#{msgs.storageCalculator}">
 										<i class="btn btn-blank fa fa-angle-right" />
@@ -475,7 +477,7 @@
 											value="true" />
 									</button>
 									<!-- StatisticsCorrection -->
-									<button class="btn ms-5 d-block" jsf:id="action36"
+									<button class="btn btn-link ms-5 d-block" jsf:id="action36"
 										jsf:rendered="#{!HelperForm.anonymized}"
 										jsf:action="#{ProzessverwaltungForm.StatisticsCorrection}"
 										title="#{msgs.errorTracking}">
@@ -488,7 +490,7 @@
 											value="true" />
 									</button>
 									<!-- ProjectAssociationss -->
-									<button class="btn ms-5 d-block" jsf:id="action37"
+									<button class="btn btn-link ms-5 d-block" jsf:id="action37"
 										jsf:action="#{ProzessverwaltungForm.StatisticsProject}"
 										title="#{msgs.projectAssociation}">
 										<i class="btn btn-blank fa fa-angle-right" />
@@ -510,6 +512,7 @@
 									id="goobiScriptModal" tabindex="-1" role="dialog"
 									aria-labelledby="myModalLabel"
 									rendered="#{ProzessverwaltungForm.parsedGoobiScripts != null}">
+									
 									<div class="modal-dialog" role="document">
 										<div class="modal-content">
 											<div class="modal-header bg-primary text-white">
@@ -566,7 +569,7 @@
 
 				</div>
 			</div>
-		</h:panelGroup>
+		</ui:fragment>
 
 	</composite:implementation>
 
