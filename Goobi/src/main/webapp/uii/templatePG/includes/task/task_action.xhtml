@@ -24,7 +24,7 @@
 		<h:form
 			id="actionBoxForm"
 			rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
-
+					  
 			<intranda:box
 				boxType="action"
 				boxForm="true"
@@ -84,416 +84,452 @@
 
 				<div class="tab-content">
 
-					<!-- TAB 1 - ACTION BUTTONS -->
+					<!-- TAB 1 - ACTION -->
 					<h:panelGroup
 						class="p-3"
 						layout="block"
 						id="tab1"
 						rendered="#{NavigationForm.uiStatus.taskActionBox_view ne 'tab2' and NavigationForm.uiStatus.taskActionBox_view ne 'tab3'}">
 
-						<!-- PLUGIN - FULL -->
-						<!-- visible only for Plugins without any gui or with full gui -->
-						<button
-							jsf:id="runPluginFullGUI"
-							jsf:rendered="#{AktuelleSchritteForm.myPlugin !=null and (AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL' or AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART_AND_FULL')}"
-							jsf:action="#{AktuelleSchritteForm.runPlugin}"
-							class="btn btn-link d-block"
-							onclick="preventDoubleSubmit(this);">
-							<!-- <h:graphicImage value="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" /> -->
-							<i class="btn btn-blank fa fa-puzzle-piece" />
-							<span>
-								<h:outputText
-									value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
-							</span>
-							<x:updateActionListener
-								property="#{NavigationForm.uiStatus.pluginSimulation}"
-								value="#{false}" />
-						</button>
 
-						<!-- PLUGIN - NONE -->
-						<button
-							jsf:id="runPluginNoGUI"
-							jsf:rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}"
-							jsf:action="#{AktuelleSchritteForm.runPlugin}"
-							class="btn btn-link d-block"
-							onclick="preventDoubleSubmit(this);">
-							<i class="btn btn-blank fa fa-puzzle-piece" />
-							<span>
-								<h:outputText
-									value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
-							</span>
-						</button>
+						<!-- STEP is LOCKED, NO ACTION ALLOWED -->
+						<h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null}">
+							<h:outputText value="#{msgs.gesperrt}" />
 
-						<!-- MODULE -->
-						<button
-							jsf:id="executeModule"
-							jsf:rendered="#{AktuelleSchritteForm.mySchritt.typModulName != null and AktuelleSchritteForm.mySchritt.typModulName != ''}"
-							jsf:action="#{AktuelleSchritteForm.executeModule}"
-							class="btn btn-link d-block"
-							title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})"
-							onclick="preventDoubleSubmit(this);">
-							<i class="btn btn-blank fa fa-cog" />
-							<span>
-								<h:outputText
-									value="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" />
-							</span>
-						</button>
+							<h:panelGrid
+								columns="2"
+								styleClass="alert alert-danger w-100 d-block mt-3 mb-3">
+								<h:outputText value="#{msgs.benutzer}: "/>
+								<h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.nachVorname} namename" styleClass="ms-5 fw-bold"/>
+								<h:outputText value="#{msgs.standort}: " />
+								<h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.standort} hallo" styleClass="ms-5 fw-bold"/>
+								<h:outputText value="#{msgs.lebenszeichen} " />
+								<h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.minutenGesperrt} min #{AktuelleSchritteForm.mySchritt.prozess.sekundenGesperrt} sec" styleClass="ms-5 fw-bold"/>
+							</h:panelGrid>
+							<h:outputText value="#{msgs.spaeter}" />
 
-						<!-- SCRIPT 1 -->
-						<button
-							jsf:id="executeScript"
-							jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != ''}"
-							jsf:action="#{AktuelleSchritteForm.executeScript}"
-							class="btn btn-link d-block"
-							title="#{AktuelleSchritteForm.mySchritt.scriptname1}"
-							onclick="preventDoubleSubmit(this);">
-							<f:setPropertyActionListener
-								target="#{AktuelleSchritteForm.scriptPath}"
-								value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad}" />
-							<i class="btn btn-blank fa fa-wrench" />
-							<span>
-								<h:outputText
-									value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname1}" />
-							</span>
-						</button>
-						<!-- // SCRIPT 1 -->
-
-						<!-- SCRIPT 2 -->
-						<button
-							jsf:id="executeScript2"
-							jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != ''}"
-							jsf:action="#{AktuelleSchritteForm.executeScript}"
-							class="btn btn-link d-block"
-							title="#{AktuelleSchritteForm.mySchritt.scriptname2}"
-							onclick="preventDoubleSubmit(this);">
-							<f:setPropertyActionListener
-								target="#{AktuelleSchritteForm.scriptPath}"
-								value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2}" />
-							<i class="btn btn-blank fa fa-wrench" />
-							<span>
-								<h:outputText
-									value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname2}" />
-							</span>
-						</button>
-						<!-- // SCRIPT 2 -->
-
-						<!-- SCRIPT 3 -->
-						<button
-							jsf:id="executeScript3"
-							jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != ''}"
-							jsf:action="#{AktuelleSchritteForm.executeScript}"
-							class="btn btn-link d-block"
-							title="#{AktuelleSchritteForm.mySchritt.scriptname3}"
-							onclick="preventDoubleSubmit(this);">
-							<f:setPropertyActionListener
-								target="#{AktuelleSchritteForm.scriptPath}"
-								value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3}" />
-							<i class="btn btn-blank fa fa-wrench" />
-							<span>
-								<h:outputText
-									value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname3}" />
-							</span>
-						</button>
-						<!-- // SCRIPT 3 -->
-
-						<!-- SCRIPT 4 -->
-						<button
-							jsf:id="executeScript4"
-							jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != ''}"
-							jsf:action="#{AktuelleSchritteForm.executeScript}"
-							class="btn btn-link d-block"
-							title="#{AktuelleSchritteForm.mySchritt.scriptname4}"
-							onclick="preventDoubleSubmit(this);">
-							<f:setPropertyActionListener
-								target="#{AktuelleSchritteForm.scriptPath}"
-								value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4}" />
-							<i class="btn btn-blank fa fa-wrench" />
-							<span>
-								<h:outputText
-									value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname4}" />
-							</span>
-						</button>
-
-						<!-- SCRIPT 5 -->
-						<button
-							jsf:id="executeScript5"
-							jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != ''}"
-							jsf:action="#{AktuelleSchritteForm.executeScript}"
-							class="btn btn-link d-block"
-							title="#{AktuelleSchritteForm.mySchritt.scriptname5}"
-							onclick="preventDoubleSubmit(this);">
-							<f:setPropertyActionListener
-								target="#{AktuelleSchritteForm.scriptPath}"
-								value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5}" />
-							<i class="btn btn-blank fa fa-wrench" />
-							<span>
-								<h:outputText
-									value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname5}" />
-							</span>
-						</button>
-						<!-- // SCRIPT 5 -->
-
-						<!-- EXPORT -->
-						<h:panelGroup
-							rendered="#{AktuelleSchritteForm.mySchritt.typExportDMS}">
-							<!-- TODO: delete this warning once the root cause of the timeout problem is solved  -->
-							<div class="alert alert-warning mt-4">
-								#{msgs.timeoutWarningDMS}</div>
-							<!-- Upload-Schaltknopf -->
+							<!-- Bei Sperrung durch eigenen Benutzer: Sperrung aufheben können -->
 							<button
-								jsf:id="export"
-								jsf:action="#{AktuelleSchritteForm.ExportDMS}"
+								jsf:id="action1"
+								jsf:rendered="#{(AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null) and (AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.id == LoginForm.myBenutzer.id)}"
+								jsf:action="#{AktuelleSchritteForm.SperrungAufheben}"
+								title="#{msgs.oderSperrungAufheben}">
+								<h:outputText value="#{msgs.oderSperrungAufheben}" />
+							</button>
+			
+						</h:panelGroup>
+						<!-- // STEP is LOCKED, NO ACTION ALLOWED -->
+						
+
+						<!-- STEP NOT LOCKED, ACTION ALLOWED -->
+						<h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}">
+									  
+							<!-- PLUGIN - FULL -->
+							<!-- visible only for Plugins without any gui or with full gui -->
+							<button
+								jsf:id="runPluginFullGUI"
+								jsf:rendered="#{AktuelleSchritteForm.myPlugin !=null and (AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL' or AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART_AND_FULL')}"
+								jsf:action="#{AktuelleSchritteForm.runPlugin}"
 								class="btn btn-link d-block"
-								title="#{msgs.importDms}"
 								onclick="preventDoubleSubmit(this);">
-								<i class="btn btn-blank fa fa-globe" />
+								<!-- <h:graphicImage value="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" /> -->
+								<i class="btn btn-blank fa fa-puzzle-piece" />
 								<span>
-									<h:outputText value="#{msgs.importDms}" />
+									<h:outputText
+										value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
+								</span>
+								<x:updateActionListener
+									property="#{NavigationForm.uiStatus.pluginSimulation}"
+									value="#{false}" />
+							</button>
+	
+							<!-- PLUGIN - NONE -->
+							<button
+								jsf:id="runPluginNoGUI"
+								jsf:rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}"
+								jsf:action="#{AktuelleSchritteForm.runPlugin}"
+								class="btn btn-link d-block"
+								onclick="preventDoubleSubmit(this);">
+								<i class="btn btn-blank fa fa-puzzle-piece" />
+								<span>
+									<h:outputText
+										value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
 								</span>
 							</button>
-						</h:panelGroup>
-						<!-- // EXPORT -->
-
-						<!-- METADATA -->
-						<h:panelGroup
-							rendered="#{AktuelleSchritteForm.mySchritt.typMetadaten}">
-							
-							
-							<h:commandLink
-								id="metadata"
-								action="#{Metadaten.XMLlesen}"
-								title="#{msgs.metadatenBearbeiten}"
-								rendered="#{!AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}"
-								onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
-								styleClass="btn btn-link">
-								<i class="btn btn-blank fa fa-book" />
+	
+							<!-- MODULE -->
+							<button
+								jsf:id="executeModule"
+								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typModulName != null and AktuelleSchritteForm.mySchritt.typModulName != ''}"
+								jsf:action="#{AktuelleSchritteForm.executeModule}"
+								class="btn btn-link d-block"
+								title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})"
+								onclick="preventDoubleSubmit(this);">
+								<i class="btn btn-blank fa fa-cog" />
 								<span>
-									<h:outputText value="#{msgs.metadatenBearbeiten}" />
+									<h:outputText
+										value="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" />
 								</span>
+							</button>
+	
+							<!-- SCRIPT 1 -->
+							<button
+								jsf:id="executeScript"
+								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != ''}"
+								jsf:action="#{AktuelleSchritteForm.executeScript}"
+								class="btn btn-link d-block"
+								title="#{AktuelleSchritteForm.mySchritt.scriptname1}"
+								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
-									target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
-									value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
-								<f:param
-									name="ProzesseID"
-									value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
-								<f:param
-									name="BenutzerID"
-									value="#{LoginForm.myBenutzer.id}" />
-								<f:param
-									name="zurueck"
-									value="task_edit" />
-								<c:if test="#{LoginForm.hasRole('Task_Mets_Files')}">
-									<f:setPropertyActionListener
-										value="File"
-										target="#{Metadaten.modusAnsicht}" />
-								</c:if>
-								<c:if test="#{LoginForm.hasRole('Task_Mets_Metadata')}">
-									<f:setPropertyActionListener
-										value="Metadaten"
-										target="#{Metadaten.modusAnsicht}" />
-								</c:if>
-								<c:if test="#{LoginForm.hasRole('Task_Mets_Structure')}">
-									<f:setPropertyActionListener
-										value="Strukturdaten"
-										target="#{Metadaten.modusAnsicht}" />
-								</c:if>
-								<c:if test="#{LoginForm.hasRole('Task_Mets_Pagination')}">
-									<f:setPropertyActionListener
-										value="Paginierung"
-										target="#{Metadaten.modusAnsicht}" />
-								</c:if>
+									target="#{AktuelleSchritteForm.scriptPath}"
+									value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad}" />
+								<i class="btn btn-blank fa fa-wrench" />
+								<span>
+									<h:outputText
+										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname1}" />
+								</span>
+							</button>
+							<!-- // SCRIPT 1 -->
+	
+							<!-- SCRIPT 2 -->
+							<button
+								jsf:id="executeScript2"
+								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != ''}"
+								jsf:action="#{AktuelleSchritteForm.executeScript}"
+								class="btn btn-link d-block"
+								title="#{AktuelleSchritteForm.mySchritt.scriptname2}"
+								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
-									value="#{null}"
-									target="#{NavigationForm.uiStatus.mets_toc1}" />
+									target="#{AktuelleSchritteForm.scriptPath}"
+									value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2}" />
+								<i class="btn btn-blank fa fa-wrench" />
+								<span>
+									<h:outputText
+										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname2}" />
+								</span>
+							</button>
+							<!-- // SCRIPT 2 -->
+	
+							<!-- SCRIPT 3 -->
+							<button
+								jsf:id="executeScript3"
+								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != ''}"
+								jsf:action="#{AktuelleSchritteForm.executeScript}"
+								class="btn btn-link d-block"
+								title="#{AktuelleSchritteForm.mySchritt.scriptname3}"
+								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
-									value="#{null}"
-									target="#{NavigationForm.uiStatus.mets_toc2}" />
+									target="#{AktuelleSchritteForm.scriptPath}"
+									value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3}" />
+								<i class="btn btn-blank fa fa-wrench" />
+								<span>
+									<h:outputText
+										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname3}" />
+								</span>
+							</button>
+							<!-- // SCRIPT 3 -->
+	
+							<!-- SCRIPT 4 -->
+							<button
+								jsf:id="executeScript4"
+								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != ''}"
+								jsf:action="#{AktuelleSchritteForm.executeScript}"
+								class="btn btn-link d-block"
+								title="#{AktuelleSchritteForm.mySchritt.scriptname4}"
+								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
-									value="#{null}"
-									target="#{NavigationForm.uiStatus.mets_toc3}" />
+									target="#{AktuelleSchritteForm.scriptPath}"
+									value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4}" />
+								<i class="btn btn-blank fa fa-wrench" />
+								<span>
+									<h:outputText
+										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname4}" />
+								</span>
+							</button>
+	
+							<!-- SCRIPT 5 -->
+							<button
+								jsf:id="executeScript5"
+								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != ''}"
+								jsf:action="#{AktuelleSchritteForm.executeScript}"
+								class="btn btn-link d-block"
+								title="#{AktuelleSchritteForm.mySchritt.scriptname5}"
+								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
-									value="#{null}"
-									target="#{NavigationForm.uiStatus.mets_toc4}" />
-								<f:setPropertyActionListener
-									value="#{null}"
-									target="#{NavigationForm.uiStatus.mets_toc5}" />
-							</h:commandLink>
-
+									target="#{AktuelleSchritteForm.scriptPath}"
+									value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5}" />
+								<i class="btn btn-blank fa fa-wrench" />
+								<span>
+									<h:outputText
+										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname5}" />
+								</span>
+							</button>
+							<!-- // SCRIPT 5 -->
+	
+							<!-- EXPORT -->
 							<h:panelGroup
-								rendered="#{AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}">
-								<a
-									class="text_head"
+								rendered="#{AktuelleSchritteForm.mySchritt.typExportDMS}">
+								<!-- TODO: delete this warning once the root cause of the timeout problem is solved  -->
+								<div class="alert alert-warning mt-4">
+									#{msgs.timeoutWarningDMS}</div>
+								<!-- Upload-Schaltknopf -->
+								<button
+									jsf:id="export"
+									jsf:action="#{AktuelleSchritteForm.ExportDMS}"
+									class="btn btn-link d-block"
+									title="#{msgs.importDms}"
+									onclick="preventDoubleSubmit(this);">
+									<i class="btn btn-blank fa fa-globe" />
+									<span>
+										<h:outputText value="#{msgs.importDms}" />
+									</span>
+								</button>
+							</h:panelGroup>
+							<!-- // EXPORT -->
+	
+							<!-- METADATA -->
+							<h:panelGroup
+								rendered="#{AktuelleSchritteForm.mySchritt.typMetadaten}">
+								
+								
+								<h:commandLink
+									id="metadata"
+									action="#{Metadaten.XMLlesen}"
 									title="#{msgs.metadatenBearbeiten}"
-									href="#"
-									data-bs-toggle="modal"
-									data-bs-target="#myModal">
+									rendered="#{!AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}"
+									onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
+									styleClass="btn btn-link">
 									<i class="btn btn-blank fa fa-book" />
 									<span>
 										<h:outputText value="#{msgs.metadatenBearbeiten}" />
 									</span>
-								</a>
-							</h:panelGroup>
-							<div
-								class="modal fade"
-								id="myModal"
-								tabindex="-1"
-								role="dialog"
-								aria-labelledby="myModalLabel">
-								
+									<f:setPropertyActionListener
+										target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
+										value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
+									<f:param
+										name="ProzesseID"
+										value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
+									<f:param
+										name="BenutzerID"
+										value="#{LoginForm.myBenutzer.id}" />
+									<f:param
+										name="zurueck"
+										value="task_edit" />
+									<c:if test="#{LoginForm.hasRole('Task_Mets_Files')}">
+										<f:setPropertyActionListener
+											value="File"
+											target="#{Metadaten.modusAnsicht}" />
+									</c:if>
+									<c:if test="#{LoginForm.hasRole('Task_Mets_Metadata')}">
+										<f:setPropertyActionListener
+											value="Metadaten"
+											target="#{Metadaten.modusAnsicht}" />
+									</c:if>
+									<c:if test="#{LoginForm.hasRole('Task_Mets_Structure')}">
+										<f:setPropertyActionListener
+											value="Strukturdaten"
+											target="#{Metadaten.modusAnsicht}" />
+									</c:if>
+									<c:if test="#{LoginForm.hasRole('Task_Mets_Pagination')}">
+										<f:setPropertyActionListener
+											value="Paginierung"
+											target="#{Metadaten.modusAnsicht}" />
+									</c:if>
+									<f:setPropertyActionListener
+										value="#{null}"
+										target="#{NavigationForm.uiStatus.mets_toc1}" />
+									<f:setPropertyActionListener
+										value="#{null}"
+										target="#{NavigationForm.uiStatus.mets_toc2}" />
+									<f:setPropertyActionListener
+										value="#{null}"
+										target="#{NavigationForm.uiStatus.mets_toc3}" />
+									<f:setPropertyActionListener
+										value="#{null}"
+										target="#{NavigationForm.uiStatus.mets_toc4}" />
+									<f:setPropertyActionListener
+										value="#{null}"
+										target="#{NavigationForm.uiStatus.mets_toc5}" />
+								</h:commandLink>
+	
+								<h:panelGroup
+									rendered="#{AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}">
+									<a
+										class="text_head"
+										title="#{msgs.metadatenBearbeiten}"
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#myModal">
+										<i class="btn btn-blank fa fa-book" />
+										<span>
+											<h:outputText value="#{msgs.metadatenBearbeiten}" />
+										</span>
+									</a>
+								</h:panelGroup>
 								<div
-									class="modal-dialog"
-									role="document">
-									<div class="modal-content">
-										<div class="modal-header bg-primary text-white">
-											<h4 class="modal-title" id="myModalLabel">
-												<h:outputText value="#{msgs.metseditorOpen}" />
-											</h4>
-											<button type="button" class="btn text-white"
-												title="#{msgs.cancel}" data-bs-dismiss="modal">
-												<i class="fa fa-times"></i>
-											</button>
-										</div>
-										<div class="modal-body">
-											<h:outputText
-												value="#{msgs.metseditorTemporaryDataExplanation}" />
-										</div>
-										<div class="modal-footer">
-											<h:commandLink
-												onclick="sessionStorage.removeItem('columnWidths');"
-												action="#{Metadaten.XMLlesen}"
-												id="action15a"
-												title="#{msgs.discard}"
-												rel="tooltip"
-												styleClass="btn btn-hot">
-												<i class="fa fa-trash-o"></i>
-												<span>
-													<h:outputText value="#{msgs.discard}" />
-												</span>
-												<f:setPropertyActionListener
-													target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
-													value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
-												<f:param
-													name="ProzesseID"
-													value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
-												<f:param
-													name="BenutzerID"
-													value="#{LoginForm.myBenutzer.id}" />
-												<f:param
-													name="zurueck"
-													value="task_edit" />
-												<f:param
-													name="discardChanges"
-													value="true" />
-												<f:setPropertyActionListener
-													value="#{null}"
-													target="#{NavigationForm.uiStatus.mets_toc1}" />
-												<f:setPropertyActionListener
-													value="#{null}"
-													target="#{NavigationForm.uiStatus.mets_toc2}" />
-												<f:setPropertyActionListener
-													value="#{null}"
-													target="#{NavigationForm.uiStatus.mets_toc3}" />
-												<f:setPropertyActionListener
-													value="#{null}"
-													target="#{NavigationForm.uiStatus.mets_toc4}" />
-												<f:setPropertyActionListener
-													value="#{null}"
-													target="#{NavigationForm.uiStatus.mets_toc5}" />
-											</h:commandLink>
-
-
-											<h:commandLink
-												onclick="sessionStorage.removeItem('columnWidths');"
-												action="#{Metadaten.XMLlesen}"
-												id="action15b"
-												title="#{msgs.overwrite}"
-												rel="tooltip"
-												styleClass="btn btn-success">
-												<i class="fa fa-floppy-o"></i>
-												<span>
-													<h:outputText value="#{msgs.overwrite}" />
-												</span>
-												<f:setPropertyActionListener
-													target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
-													value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
-												<f:param
-													name="ProzesseID"
-													value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
-												<f:param
-													name="BenutzerID"
-													value="#{LoginForm.myBenutzer.id}" />
-												<f:param
-													name="zurueck"
-													value="task_edit" />
-												<f:param
-													name="overwriteChanges"
-													value="true" />
-												<f:setPropertyActionListener
-													value="#{null}"
-													target="#{NavigationForm.uiStatus.mets_toc1}" />
-												<f:setPropertyActionListener
-													value="#{null}"
-													target="#{NavigationForm.uiStatus.mets_toc2}" />
-												<f:setPropertyActionListener
-													value="#{null}"
-													target="#{NavigationForm.uiStatus.mets_toc3}" />
-												<f:setPropertyActionListener
-													value="#{null}"
-													target="#{NavigationForm.uiStatus.mets_toc4}" />
-												<f:setPropertyActionListener
-													value="#{null}"
-													target="#{NavigationForm.uiStatus.mets_toc5}" />
-											</h:commandLink>
+									class="modal fade"
+									id="myModal"
+									tabindex="-1"
+									role="dialog"
+									aria-labelledby="myModalLabel">
+									
+									<div
+										class="modal-dialog"
+										role="document">
+										<div class="modal-content">
+											<div class="modal-header bg-primary text-white">
+												<h4 class="modal-title" id="myModalLabel">
+													<h:outputText value="#{msgs.metseditorOpen}" />
+												</h4>
+												<button type="button" class="btn text-white"
+													title="#{msgs.cancel}" data-bs-dismiss="modal">
+													<i class="fa fa-times"></i>
+												</button>
+											</div>
+											<div class="modal-body">
+												<h:outputText
+													value="#{msgs.metseditorTemporaryDataExplanation}" />
+											</div>
+											<div class="modal-footer">
+												<h:commandLink
+													onclick="sessionStorage.removeItem('columnWidths');"
+													action="#{Metadaten.XMLlesen}"
+													id="action15a"
+													title="#{msgs.discard}"
+													rel="tooltip"
+													styleClass="btn btn-hot">
+													<i class="fa fa-trash-o"></i>
+													<span>
+														<h:outputText value="#{msgs.discard}" />
+													</span>
+													<f:setPropertyActionListener
+														target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
+														value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
+													<f:param
+														name="ProzesseID"
+														value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
+													<f:param
+														name="BenutzerID"
+														value="#{LoginForm.myBenutzer.id}" />
+													<f:param
+														name="zurueck"
+														value="task_edit" />
+													<f:param
+														name="discardChanges"
+														value="true" />
+													<f:setPropertyActionListener
+														value="#{null}"
+														target="#{NavigationForm.uiStatus.mets_toc1}" />
+													<f:setPropertyActionListener
+														value="#{null}"
+														target="#{NavigationForm.uiStatus.mets_toc2}" />
+													<f:setPropertyActionListener
+														value="#{null}"
+														target="#{NavigationForm.uiStatus.mets_toc3}" />
+													<f:setPropertyActionListener
+														value="#{null}"
+														target="#{NavigationForm.uiStatus.mets_toc4}" />
+													<f:setPropertyActionListener
+														value="#{null}"
+														target="#{NavigationForm.uiStatus.mets_toc5}" />
+												</h:commandLink>
+	
+	
+												<h:commandLink
+													onclick="sessionStorage.removeItem('columnWidths');"
+													action="#{Metadaten.XMLlesen}"
+													id="action15b"
+													title="#{msgs.overwrite}"
+													rel="tooltip"
+													styleClass="btn btn-success">
+													<i class="fa fa-floppy-o"></i>
+													<span>
+														<h:outputText value="#{msgs.overwrite}" />
+													</span>
+													<f:setPropertyActionListener
+														target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
+														value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
+													<f:param
+														name="ProzesseID"
+														value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
+													<f:param
+														name="BenutzerID"
+														value="#{LoginForm.myBenutzer.id}" />
+													<f:param
+														name="zurueck"
+														value="task_edit" />
+													<f:param
+														name="overwriteChanges"
+														value="true" />
+													<f:setPropertyActionListener
+														value="#{null}"
+														target="#{NavigationForm.uiStatus.mets_toc1}" />
+													<f:setPropertyActionListener
+														value="#{null}"
+														target="#{NavigationForm.uiStatus.mets_toc2}" />
+													<f:setPropertyActionListener
+														value="#{null}"
+														target="#{NavigationForm.uiStatus.mets_toc3}" />
+													<f:setPropertyActionListener
+														value="#{null}"
+														target="#{NavigationForm.uiStatus.mets_toc4}" />
+													<f:setPropertyActionListener
+														value="#{null}"
+														target="#{NavigationForm.uiStatus.mets_toc5}" />
+												</h:commandLink>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
+							</h:panelGroup>
+							<!-- // METADATA -->
+	
+							<!-- DOCKET -->
+							<button
+								jsf:rendered="#{AktuelleSchritteForm.mySchritt.generateDocket}"
+								jsf:id="generateDocket"
+								jsf:action="#{AktuelleSchritteForm.mySchritt.prozess.downloadDocket}"
+								class="btn btn-link d-block"
+								title="#{msgs.laufzettelDrucken}"
+								onclick="preventDoubleSubmit(this);">
+								<i class="btn btn-blank fa fa-print" />
+								<span>
+									<h:outputText value="#{msgs.process_generateDocket}" />
+								</span>
+							</button>
+	
+							<!-- CANCEL -->
+							<button
+								jsf:id="cancel"
+								jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}"
+								class="btn btn-link d-block"
+								title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
+								onclick="preventDoubleSubmit(this);">
+								<i class="btn btn-hot fa fa-reply" />
+								<span>
+									<h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
+								</span>
+							</button>
+	
+							<!-- FINISH -->
+							<button
+								jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton}"
+								jsf:id="finish"
+								jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}"
+								class="btn btn-link d-block"
+								title="#{msgs.diesenSchrittAbschliessen}"
+								onclick="preventDoubleSubmit(this);">
+								<i class="btn btn-success fa fa-check" />
+								<span>
+									<h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
+								</span>
+							</button>
 						</h:panelGroup>
-						<!-- // METADATA -->
-
-						<!-- DOCKET -->
-						<button
-							jsf:rendered="#{AktuelleSchritteForm.mySchritt.generateDocket}"
-							jsf:id="generateDocket"
-							jsf:action="#{AktuelleSchritteForm.mySchritt.prozess.downloadDocket}"
-							class="btn btn-link d-block"
-							title="#{msgs.laufzettelDrucken}"
-							onclick="preventDoubleSubmit(this);">
-							<i class="btn btn-blank fa fa-print" />
-							<span>
-								<h:outputText value="#{msgs.process_generateDocket}" />
-							</span>
-						</button>
-
-						<!-- CANCEL -->
-						<button
-							jsf:id="cancel"
-							jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}"
-							class="btn btn-link d-block"
-							title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
-							onclick="preventDoubleSubmit(this);">
-							<i class="btn btn-hot fa fa-reply" />
-							<span>
-								<h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
-							</span>
-						</button>
-
-						<!-- FINISH -->
-						<button
-							jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton}"
-							jsf:id="finish"
-							jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}"
-							class="btn btn-link d-block"
-							title="#{msgs.diesenSchrittAbschliessen}"
-							onclick="preventDoubleSubmit(this);">
-							<i class="btn btn-success fa fa-check" />
-							<span>
-								<h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
-							</span>
-						</button>
+						<!-- STEP NOT LOCKED, ACTION ALLOWED -->
+						
 
 					</h:panelGroup>
-					<!-- // TAB 1 - ACTION BUTTONS -->
+					<!-- // TAB 1 - ACTION -->
 
 
 					<!-- TAB 2 - REPORT PROBLEM -->
@@ -596,104 +632,7 @@
 			</intranda:box>
 		</h:form>
 
-
-
-
-
-
-
-
-
-
-
-
-
-		<!-- Step of the current user -->
-		<h:panelGroup
-			rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
-
-			<!-- Sperrung der Metadaten anzeigen -->
-			<h:form
-				rendered="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null}"
-				styleClass="padding-all-more">
-				<h:outputText value="#{msgs.gesperrt}" />
-
-				<h:panelGrid
-					columns="2"
-					styleClass="alert alert-danger alert-dismissable margin-top-regular margin-bottom-regular block">
-					<h:outputText
-						value="#{msgs.benutzer}: "
-						class="margin-sides-10" />
-					<h:outputText
-						value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.nachVorname}" />
-					<h:outputText
-						value="#{msgs.standort}: "
-						class="margin-sides-10" />
-					<h:outputText
-						value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.standort}" />
-					<h:outputText
-						value="#{msgs.lebenszeichen} "
-						class="margin-sides-10" />
-					<h:outputText
-						value="#{AktuelleSchritteForm.mySchritt.prozess.minutenGesperrt} min #{AktuelleSchritteForm.mySchritt.prozess.sekundenGesperrt} sec" />
-				</h:panelGrid>
-				<h:outputText value="#{msgs.spaeter} " />
-
-				<!-- Bei Sperrung durch eigenen Benutzer: Sperrung aufheben können -->
-				<button
-					jsf:id="action1"
-					jsf:rendered="#{(AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null) and (AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.id == LoginForm.myBenutzer.id)}"
-					jsf:action="#{AktuelleSchritteForm.SperrungAufheben}"
-					title="#{msgs.oderSperrungAufheben}">
-					<h:outputText value="#{msgs.oderSperrungAufheben}" />
-				</button>
-
-			</h:form>
-
-			<h:panelGroup
-				rendered="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}">
-
-				<!-- ++++++++++++++++     Action      ++++++++++++++++ -->
-
-				<h:panelGroup id="actionform">
-
-
-
-					<div
-						class="tab-content nopadding tab-content-inline tab-content-bottom">
-						<div
-							id="firsttab"
-							class="tab-pane active">
-
-							<h:form
-								styleClass="margin-sides-10 margin-top-10 margin-bottom-10"
-								id="actionForm">
-
-								<ul class="action-ul">
-
-
-
-
-
-
-								</ul>
-							</h:form>
-
-						</div>
-
-
-
-					</div>
-
-
-					<!-- ++++++++++++++++     // Action      ++++++++++++++++ -->
-
-				</h:panelGroup>
-			</h:panelGroup>
-
-		</h:panelGroup>
 	</composite:implementation>
-
 </ui:composition>
 
 
