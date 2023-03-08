@@ -60,8 +60,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             try {
                 DatabaseVersion.runSql("alter table benutzer add column additional_search_fields text DEFAULT null");
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                log.error(e);
             }
         }
 
@@ -75,6 +74,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS institution_id ON projekte(institution_id) ");
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
+                DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS automatic_tasks ON schritte(titel, typAutomatisch) ");
             } catch (SQLException e) {
                 log.error(e);
             }
@@ -90,6 +90,11 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 log.info("Create index 'stepstatus' on table 'schritte'.");
                 DatabaseVersion.createIndexOnTable("schritte", "stepstatus", "Bearbeitungsstatus", null);
             }
+
+            if (!DatabaseVersion.checkIfIndexExists("schritte", "automatic_tasks")) {
+                DatabaseVersion.createIndexOnTable("schritte", "automatic_tasks", "titel, typAutomatisch", null);
+            }
+
         }
     }
 
