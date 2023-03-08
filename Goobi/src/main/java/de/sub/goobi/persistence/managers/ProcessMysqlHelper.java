@@ -263,7 +263,7 @@ class ProcessMysqlHelper implements Serializable {
             sql.append("and projekte.institution_id = ");
             sql.append(institution.getId());
         }
-        sql.append(" left JOIN institution on projekte.institution_id = institution.id ");
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -290,7 +290,6 @@ class ProcessMysqlHelper implements Serializable {
             sql.append("and projekte.institution_id = ");
             sql.append(institution.getId());
         }
-        sql.append(" left JOIN institution on projekte.institution_id = institution.id ");
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
@@ -321,7 +320,7 @@ class ProcessMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ProzesseID FROM prozesse left join batches on prozesse.batchID = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left join institution on projekte.institution_id = institution.id ");
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
@@ -420,16 +419,16 @@ class ProcessMysqlHelper implements Serializable {
             return new Object[] { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
-                    o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                            o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
 
         } else {
             return new Object[] { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(),
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
-                    o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                            o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                            o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
         }
     }
 
@@ -489,7 +488,7 @@ class ProcessMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left join institution on projekte.institution_id = institution.id ");
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
