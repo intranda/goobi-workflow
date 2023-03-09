@@ -4,7 +4,7 @@ Goobi workflow styles are based on [Bootstrap 5](https://getbootstrap.com/docs/5
 
 ## Bootstrap 5
 
-Goobi workflow does not use the complete BS5 source. Only source files, which are actually used are imported into `bootstrap.scss`.
+Goobi workflow does not use the complete Bootstrap 5 source. Only source files, which are actually used are imported into `bootstrap.scss`.
 Bootstrap-Variables (colors, fonts, border-radius etc) are modified in `_overrides.scss`.
 
 ## Custom Styles

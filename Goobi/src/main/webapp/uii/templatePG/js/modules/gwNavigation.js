@@ -45,7 +45,7 @@ var gwNavigation = ( function() {
       if (dropdownIsExpanded === 'false') {
         // If a user clicks on the dropdown toggle while the dropdown is expanded
         // => the tooltip is reenabled by the mutation observer (above)
-        // => we will then show the tooltip using this BS5 fn
+        // => we will then show the tooltip using this Bootstrap 5 fn
         tooltip.show();
       }
     }
