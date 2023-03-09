@@ -88,7 +88,7 @@ class UserMysqlHelper implements Serializable {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(BenutzerID) FROM benutzer");
+        sql.append("SELECT COUNT(1) FROM benutzer");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;

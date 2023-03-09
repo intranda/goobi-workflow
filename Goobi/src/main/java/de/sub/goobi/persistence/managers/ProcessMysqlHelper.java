@@ -257,7 +257,7 @@ class ProcessMysqlHelper implements Serializable {
     public static int getProcessCount(String order, String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("SELECT COUNT(1) FROM prozesse left join batches on prozesse.batchID = batches.id ");
         sql.append("left JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         if (institution != null) {
             sql.append("and projekte.institution_id = ");
@@ -266,6 +266,8 @@ class ProcessMysqlHelper implements Serializable {
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+        } else {
+            sql.append( "WHERE ProzesseID > 0 ");
         }
 
         try {
@@ -510,9 +512,11 @@ class ProcessMysqlHelper implements Serializable {
     }
 
     public static int countProcesses(String filter) throws SQLException {
-        StringBuilder sql = new StringBuilder("select count(prozesseID) from prozesse ");
+        StringBuilder sql = new StringBuilder("select count(1) from prozesse ");
         if (filter != null && filter.length() > 0) {
             sql.append(" WHERE ").append(filter);
+        } else {
+            sql.append(" WHERE ProzesseID > 0");
         }
         Connection connection = null;
         try {
@@ -611,7 +615,7 @@ class ProcessMysqlHelper implements Serializable {
     public static int getCountOfProcessesWithRuleset(int rulesetId) throws SQLException {
         Connection connection = null;
 
-        String query = "select count(ProzesseID) from prozesse where MetadatenKonfigurationID = ?";
+        String query = "select count(1) from prozesse where MetadatenKonfigurationID = ?";
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { rulesetId };
@@ -625,7 +629,7 @@ class ProcessMysqlHelper implements Serializable {
 
     public static int getCountOfProcessesWithDocket(int docketId) throws SQLException {
         Connection connection = null;
-        String query = "select count(ProzesseID) from prozesse where  docketID= ?";
+        String query = "select count(1) from prozesse where docketID= ?";
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { docketId };
@@ -639,7 +643,7 @@ class ProcessMysqlHelper implements Serializable {
 
     public static int getCountOfProcessesWithTitle(String title) throws SQLException {
         Connection connection = null;
-        String query = "select count(prozesse.ProzesseID) from prozesse where  titel = ?";
+        String query = "select count(1) from prozesse where titel = ?";
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { title };

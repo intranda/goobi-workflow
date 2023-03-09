@@ -96,7 +96,7 @@ public class MQResultMysqlHelper {
     }
 
     public static int getMessagesCount(String filter) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM mq_results WHERE " + filter;
+        String sql = "SELECT COUNT(1) FROM mq_results WHERE " + filter;
         try (Connection conn = MySQLHelper.getInstance().getConnection()) {
             return new QueryRunner().query(conn, sql, MySQLHelper.resultSetToIntegerHandler);
         }

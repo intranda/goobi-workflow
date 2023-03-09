@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -56,7 +56,7 @@ class TemplateMysqlHelper implements Serializable {
     public static ResultSetHandler<List<Template>> resultSetToTemplateListHandler = new ResultSetHandler<List<Template>>() {
         @Override
         public List<Template> handle(ResultSet rs) throws SQLException {
-            List<Template> answer = new ArrayList<Template>();
+            List<Template> answer = new ArrayList<>();
             try {
                 while (rs.next()) { // implies that rs != null
                     int templateId = rs.getInt("VorlagenID");
@@ -115,7 +115,7 @@ class TemplateMysqlHelper implements Serializable {
 
     public static int getCountOfTemplates() throws SQLException {
         Connection connection = null;
-        String sql = " SELECT count(VorlagenID) from vorlagen";
+        String sql = " SELECT count(1) from vorlagen WHERE VorlagenID > 0";
         try {
             connection = MySQLHelper.getInstance().getConnection();
             return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler);

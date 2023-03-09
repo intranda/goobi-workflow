@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
@@ -56,7 +56,7 @@ class MasterpieceMysqlHelper implements Serializable {
     public static ResultSetHandler<List<Masterpiece>> resultSetToMasterpieceListHandler = new ResultSetHandler<List<Masterpiece>>() {
         @Override
         public List<Masterpiece> handle(ResultSet rs) throws SQLException {
-            List<Masterpiece> answer = new ArrayList<Masterpiece>();
+            List<Masterpiece> answer = new ArrayList<>();
             try {
                 while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int id = rs.getInt("WerkstueckeID");
@@ -111,7 +111,7 @@ class MasterpieceMysqlHelper implements Serializable {
 
     public static int countMasterpieces() throws SQLException {
         Connection connection = null;
-        String sql = " SELECT count(WerkstueckeID) from werkstuecke";
+        String sql = "SELECT count(1) from werkstuecke WHERE WerkstueckeID > 0;";
         try {
             connection = MySQLHelper.getInstance().getConnection();
             return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler);

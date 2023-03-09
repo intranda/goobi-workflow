@@ -81,7 +81,7 @@ class LdapMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         boolean whereSet = false;
 
-        sql.append("SELECT COUNT(ldapgruppenID) FROM ldapgruppen");
+        sql.append("SELECT COUNT(1) FROM ldapgruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;

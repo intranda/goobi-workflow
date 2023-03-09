@@ -93,7 +93,7 @@ class ProjectMysqlHelper implements Serializable {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(ProjekteID) FROM projekte");
+        sql.append("SELECT COUNT(1) FROM projekte");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
@@ -388,7 +388,7 @@ class ProjectMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
 
-        sql.append("SELECT count(ProzesseID) FROM prozesse WHERE ProjekteID = ? ");
+        sql.append("SELECT count(1) FROM prozesse WHERE ProjekteID = ? ");
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { projectId };
@@ -438,7 +438,7 @@ class ProjectMysqlHelper implements Serializable {
     };
 
     public static int countProjectTitle(String title, Institution institution) throws SQLException {
-        String sql = "SELECT count(titel) from projekte WHERE titel = ?";
+        String sql = "SELECT count(1) from projekte WHERE titel = ?";
 
         if (institution != null) {
             sql += " AND insitution_id = " + institution.getId();

@@ -73,6 +73,7 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT count(1) FROM schritte");
+        sql.append(" WHERE schritteid > 0 ");
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -89,7 +90,7 @@ class StepMysqlHelper implements Serializable {
     public static int getStepCount(String order, String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(SchritteID) FROM schritte ");
+        sql.append("SELECT COUNT(1) FROM schritte ");
         if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname()) && filter.contains("Bearbeitungsstatus")) {
             sql.append("use index (" + ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
         }
@@ -104,7 +105,10 @@ class StepMysqlHelper implements Serializable {
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+        } else {
+            sql.append(" WHERE schritte.SchritteID > 0 ");
         }
+
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
