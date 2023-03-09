@@ -30,6 +30,8 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 
+import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
+
 class TemplateMysqlHelper implements Serializable {
 
     /**
@@ -115,10 +117,13 @@ class TemplateMysqlHelper implements Serializable {
 
     public static int getCountOfTemplates() throws SQLException {
         Connection connection = null;
-        String sql = " SELECT count(1) from vorlagen WHERE VorlagenID > 0";
+        StringBuilder sql = new StringBuilder(" SELECT count(1) from vorlagen ");
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
+            sql.append(" WHERE VorlagenID > 0 ");
+        }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

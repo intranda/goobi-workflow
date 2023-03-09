@@ -45,6 +45,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -73,7 +74,9 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT count(1) FROM schritte");
-        sql.append(" WHERE schritteid > 0 ");
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
+            sql.append(" WHERE schritteid > 0 ");
+        }
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -105,7 +108,7 @@ class StepMysqlHelper implements Serializable {
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
-        } else {
+        } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append(" WHERE schritte.SchritteID > 0 ");
         }
 

@@ -44,6 +44,7 @@ import org.goobi.beans.Template;
 import org.joda.time.LocalDate;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -266,7 +267,7 @@ class ProcessMysqlHelper implements Serializable {
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
-        } else {
+        } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append( "WHERE ProzesseID > 0 ");
         }
 
@@ -515,7 +516,7 @@ class ProcessMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder("select count(1) from prozesse ");
         if (filter != null && filter.length() > 0) {
             sql.append(" WHERE ").append(filter);
-        } else {
+        } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append(" WHERE ProzesseID > 0");
         }
         Connection connection = null;
