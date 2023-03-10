@@ -103,7 +103,7 @@
         <freemarker.version>2.3.31</freemarker.version>
         <guava.version>31.1-jre</guava.version>
         <gson.version>2.10</gson.version>
-        <httpclient.version>4.5.13</httpclient.version>
+        <httpclient.version>4.5.14</httpclient.version>
         <httpcore.version>4.4.16</httpcore.version>
         <imageio-openjpeg.version>0.6.2</imageio-openjpeg.version>
         <javassist.version>3.29.2-GA</javassist.version>
