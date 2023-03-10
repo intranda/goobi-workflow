@@ -137,7 +137,7 @@
         <xmpcore.version>6.1.11</xmpcore.version>
         <!-- used in goobi-plugin-step-barcode-scanner -->
         <zxing.version>3.5.1</zxing.version>
-        <jsch.version>0.2.6</jsch.version>
+        <jsch.version>0.2.7</jsch.version>
     </properties>
 
 
