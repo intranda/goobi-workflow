@@ -71,6 +71,8 @@ public class TestAuthorizationFilter extends AbstractTest {
 
     @Test
     public void testCheckPermissions() {
+        assertTrue(Files.exists(Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder(), "goobi_rest.xml")));
+
         // access possible without token
         assertTrue(AuthorizationFilter.checkPermissions("127.0.0.1", null, "/process/image/123", "get"));
         // access possible with correct token
@@ -84,7 +86,7 @@ public class TestAuthorizationFilter extends AbstractTest {
         assertFalse(AuthorizationFilter.checkPermissions("127.0.0.1", "token", "/closestep/123", "get"));
         // access not possible with wrong ip
         assertFalse(AuthorizationFilter.checkPermissions("192.168.0.1", "token", "/closestep/123", "post"));
-        // access not possible with wrong method
+        // access not possible with wrong path
         assertFalse(AuthorizationFilter.checkPermissions("127.0.0.1", "token", "/wrong", "post"));
     }
 }
