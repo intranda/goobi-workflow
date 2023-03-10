@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config>
+    <endpoint path="/process/image/.*">
+        <method name="get">
+            <allow netmask="127.0.0.0/8"/>
+        </method>
+    </endpoint>
+   
+    <endpoint path="/closestep.*">
+        <method name="post">
+            <allow netmask="127.0.0.0/8" token="token"/>
+        </method>
+    </endpoint>
+   
+</config>
+
