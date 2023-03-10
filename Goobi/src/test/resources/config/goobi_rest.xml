@@ -12,5 +12,12 @@
         </method>
     </endpoint>
    
+    <endpoint path="/addtoprocesslog.*">
+        <method name="post">
+            <allow netmask="0:0:0:0:0:0:0:1/128" token="CHANGEME"/>
+            <allow netmask="127.0.0.0/8" token="CHANGEME"/>
+        </method>
+    </endpoint>   
+   
 </config>
 
