@@ -14,7 +14,7 @@
 		<composite:attribute name="help" />
 		<composite:attribute name="selectItems" />
 		<composite:attribute name="fieldStyle" default="form-select"/>
-		<composite:attribute name="style" default="" />
+		<composite:attribute name="style" />
 		<composite:attribute name="readonly" default="false" />
 		<composite:attribute name="required" default="false" />
 		<composite:attribute name="displayAsRequired" default="false" />
@@ -31,39 +31,49 @@
 
 	<composite:implementation>
 
-		<!-- ROW -->
-		<div class="row" style="#{cc.attrs.style}">
+        <!-- ROW -->
+        <div
+            class="row"
+            style="#{cc.attrs.style}">
 
-			<!-- LABEL -->
-			<div class="#{cc.attrs.classLeft}" tabindex="-1">
-				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
-					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
-			</div>
-			<!-- // LABEL -->
+            <!-- LABEL -->
+            <div
+                class="#{cc.attrs.classLeft}"
+                tabindex="-1">
+                <intranda:formLabel
+                    label="#{cc.attrs.label}"
+                    labelFor="#{cc.attrs.name}"
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
+            </div>
+            <!-- // LABEL -->
 
-			<!-- CONTENT -->
-			<div class="#{cc.attrs.classRight}">
-				<h:selectOneMenu
-					id="#{cc.attrs.name}"
-					styleClass="#{cc.attrs.fieldStyle}"
-					value="#{cc.attrs.field}"
-					tabindex="#{cc.attrs.tabindex}"
-					readonly="#{cc.attrs.readonly}"
-					validator="#{cc.attrs.validationMethod}"
-					idForValidator="#{cc.attrs.idForValidator}">
-					<f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
-					<f:selectItems value="#{cc.attrs.selectItems}" />
-				</h:selectOneMenu>
+            <!-- CONTENT -->
+            <div class="#{cc.attrs.classRight}">
+                <h:selectOneMenu
+                    id="#{cc.attrs.name}"
+                    styleClass="#{cc.attrs.fieldStyle}"
+                    value="#{cc.attrs.field}"
+                    tabindex="#{cc.attrs.tabindex}"
+                    readonly="#{cc.attrs.readonly}"
+                    validator="#{cc.attrs.validationMethod}"
+                    idForValidator="#{cc.attrs.idForValidator}">
+                    <f:selectItem
+                        itemValue="null"
+                        itemLabel="#{msgs.bitteAuswaehlen}" />
+                    <f:selectItems value="#{cc.attrs.selectItems}" />
+                </h:selectOneMenu>
 
-				<!-- Help messages, inline + warning -->
-				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
-			</div>
-			<!-- // CONTENT -->
-			
-		</div>
-		<!-- // ROW -->
-		
-	</composite:implementation>
+                <!-- Help messages, inline + warning -->
+                <intranda:formHelp
+                    content="#{cc.attrs.help}"
+                    msgFor="#{cc.attrs.name}" />
+            </div>
+            <!-- // CONTENT -->
+
+        </div>
+        <!-- // ROW -->
+
+    </composite:implementation>
 
 </ui:composition>
 

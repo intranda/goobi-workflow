@@ -425,24 +425,22 @@
                 </div>
 
 
+                <!-- JOURNAL -->
                 <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-md-12 col-lg-6'} d-flex flex-column mb-4">
-                    <!-- Box for process log -->
-                    <x:aliasBeansScope>
-                        <x:aliasBean
-                            alias="#{showBigButton}"
+                    <ui:include src="templatePG/includes/journal.xhtml">
+                        <ui:param
+                            name="showBigButton"
                             value="true" />
-                        <x:aliasBean
-                            alias="#{showFolderSelection}"
+                        <ui:param
+                            name="showFolderSelection"
                             value="false" />
-                        <x:aliasBean
-                            alias="#{bean}"
+                        <ui:param
+                            name="bean"
                             value="#{institutionBean.institution}" />
-                        <f:subview id="sublog">
-                            <ui:include src="templatePG/includes/journal.xhtml" />
-                        </f:subview>
-                    </x:aliasBeansScope>
-                    <!-- // Box for process log -->
+                    </ui:include>
                 </div>
+                 <!-- // JOURNAL -->
+                
             </div>
         </h:form>
 

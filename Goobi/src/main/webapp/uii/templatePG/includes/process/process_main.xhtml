@@ -459,21 +459,18 @@
 						id="processJournal"
 						enctype="multipart/form-data"
 						prependId="false">
-						<x:aliasBeansScope>
-							<x:aliasBean
-								alias="#{showBigButton}"
-								value="true" />
-							<x:aliasBean
-								alias="#{showFolderSelection}"
-								value="true" />
-							<x:aliasBean
-								alias="#{bean}"
-								value="#{ProzessverwaltungForm.myProzess}" />
-							<f:subview id="sublog">
-								<ui:include src="../journal.xhtml" />
-							</f:subview>
-						</x:aliasBeansScope>
-					</h:form>
+						<ui:include src="../journal.xhtml">
+                            <ui:param
+                                name="showBigButton"
+                                value="true" />
+                            <ui:param
+                                name="showFolderSelection"
+                                value="true" />
+                            <ui:param
+                                name="bean"
+                                value="#{ProzessverwaltungForm.myProzess}" />
+                        </ui:include>
+                    </h:form>
 				</div>
 				<!-- // JOURNAL -->
 

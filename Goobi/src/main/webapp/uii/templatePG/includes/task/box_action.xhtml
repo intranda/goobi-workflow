@@ -18,12 +18,12 @@
 		<div
 			class="alert alert-warning"
 			role="alert"
-			jsf:rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id}">
+			jsf:rendered="#{currentStep.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id}">
 			#{msgs.workflowStepOfAnotherUser}</div>
 
 		<h:form
 			id="actionBoxForm"
-			rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+			rendered="#{currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 					  
 			<intranda:box
 				boxType="action"
@@ -51,7 +51,7 @@
 						</li>
 						<li
 							class="tab #{NavigationForm.uiStatus.taskActionBox_view eq 'tab2'?'active':''}"
-							jsf:rendered="#{AktuelleSchritteForm.previousStepsForProblemReporting.size() > 0}">
+							jsf:rendered="#{(!isBatchStep and AktuelleSchritteForm.previousStepsForProblemReporting.size() > 0) or (isBatchStep and AktuelleSchritteForm.batchHelper.sizeOfPreviousStepsForProblemReporting != 0)}">
 							<h:commandLink
 								id="tab2"
 								action="{NavigationForm.Reload}"
@@ -66,7 +66,7 @@
 						</li>
 						<li
 							class="tab #{NavigationForm.uiStatus.taskActionBox_view eq 'tab3'?'active':''}"
-							jsf:rendered="#{AktuelleSchritteForm.mySchritt.prioritaet>9}">
+							jsf:rendered="#{(!isBatchStep and currentStep.prioritaet>9) or (isBatchStep and AktuelleSchritteForm.batchHelper.currentStep.prioritaet>9 and AktuelleSchritteForm.batchHelper.sizeOfNextStepsForProblemSolution != 0)}">
 							<h:commandLink
 								id="tab3"
 								action="{NavigationForm.Reload}"
@@ -93,25 +93,25 @@
 
 
 						<!-- STEP is LOCKED, NO ACTION ALLOWED -->
-						<h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null}">
+						<h:panelGroup rendered="#{currentStep.prozess.benutzerGesperrt != null}">
 							<h:outputText value="#{msgs.gesperrt}" />
 
 							<h:panelGrid
 								columns="2"
 								styleClass="alert alert-danger w-100 d-block mt-3 mb-3">
 								<h:outputText value="#{msgs.benutzer}: "/>
-								<h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.nachVorname} namename" styleClass="ms-5 fw-bold"/>
+								<h:outputText value="#{currentStep.prozess.benutzerGesperrt.nachVorname} namename" styleClass="ms-5 fw-bold"/>
 								<h:outputText value="#{msgs.standort}: " />
-								<h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.standort} hallo" styleClass="ms-5 fw-bold"/>
+								<h:outputText value="#{currentStep.prozess.benutzerGesperrt.standort} hallo" styleClass="ms-5 fw-bold"/>
 								<h:outputText value="#{msgs.lebenszeichen} " />
-								<h:outputText value="#{AktuelleSchritteForm.mySchritt.prozess.minutenGesperrt} min #{AktuelleSchritteForm.mySchritt.prozess.sekundenGesperrt} sec" styleClass="ms-5 fw-bold"/>
+								<h:outputText value="#{currentStep.prozess.minutenGesperrt} min #{currentStep.prozess.sekundenGesperrt} sec" styleClass="ms-5 fw-bold"/>
 							</h:panelGrid>
 							<h:outputText value="#{msgs.spaeter}" />
 
 							<!-- Bei Sperrung durch eigenen Benutzer: Sperrung aufheben können -->
 							<button
 								jsf:id="action1"
-								jsf:rendered="#{(AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null) and (AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.id == LoginForm.myBenutzer.id)}"
+								jsf:rendered="#{(currentStep.prozess.benutzerGesperrt != null) and (currentStep.prozess.benutzerGesperrt.id == LoginForm.myBenutzer.id)}"
 								jsf:action="#{AktuelleSchritteForm.SperrungAufheben}"
 								title="#{msgs.oderSperrungAufheben}">
 								<h:outputText value="#{msgs.oderSperrungAufheben}" />
@@ -122,7 +122,7 @@
 						
 
 						<!-- STEP NOT LOCKED, ACTION ALLOWED -->
-						<h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt == null}">
+						<h:panelGroup rendered="#{currentStep.prozess.benutzerGesperrt == null}">
 									  
 							<!-- PLUGIN - FULL -->
 							<!-- visible only for Plugins without any gui or with full gui -->
@@ -160,33 +160,33 @@
 							<!-- MODULE -->
 							<button
 								jsf:id="executeModule"
-								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typModulName != null and AktuelleSchritteForm.mySchritt.typModulName != ''}"
+								jsf:rendered="#{currentStep.typModulName != null and currentStep.typModulName != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeModule}"
 								class="btn btn-link d-block"
-								title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})"
+								title="#{msgs.modulStarten} (#{currentStep.typModulName})"
 								onclick="preventDoubleSubmit(this);">
 								<i class="btn btn-blank fa fa-cog" />
 								<span>
 									<h:outputText
-										value="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" />
+										value="#{msgs.modulStarten} (#{currentStep.typModulName})" />
 								</span>
 							</button>
 	
 							<!-- SCRIPT 1 -->
 							<button
 								jsf:id="executeScript"
-								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != ''}"
+								jsf:rendered="#{currentStep.typAutomatischScriptpfad != null and currentStep.typAutomatischScriptpfad != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link d-block"
-								title="#{AktuelleSchritteForm.mySchritt.scriptname1}"
+								title="#{currentStep.scriptname1}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
-									value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad}" />
+									value="#{currentStep.typAutomatischScriptpfad}" />
 								<i class="btn btn-blank fa fa-wrench" />
 								<span>
 									<h:outputText
-										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname1}" />
+										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname1}" />
 								</span>
 							</button>
 							<!-- // SCRIPT 1 -->
@@ -194,18 +194,18 @@
 							<!-- SCRIPT 2 -->
 							<button
 								jsf:id="executeScript2"
-								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != ''}"
+								jsf:rendered="#{currentStep.typAutomatischScriptpfad2 != null and currentStep.typAutomatischScriptpfad2 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link d-block"
-								title="#{AktuelleSchritteForm.mySchritt.scriptname2}"
+								title="#{currentStep.scriptname2}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
-									value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2}" />
+									value="#{currentStep.typAutomatischScriptpfad2}" />
 								<i class="btn btn-blank fa fa-wrench" />
 								<span>
 									<h:outputText
-										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname2}" />
+										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname2}" />
 								</span>
 							</button>
 							<!-- // SCRIPT 2 -->
@@ -213,18 +213,18 @@
 							<!-- SCRIPT 3 -->
 							<button
 								jsf:id="executeScript3"
-								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != ''}"
+								jsf:rendered="#{currentStep.typAutomatischScriptpfad3 != null and currentStep.typAutomatischScriptpfad3 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link d-block"
-								title="#{AktuelleSchritteForm.mySchritt.scriptname3}"
+								title="#{currentStep.scriptname3}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
-									value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3}" />
+									value="#{currentStep.typAutomatischScriptpfad3}" />
 								<i class="btn btn-blank fa fa-wrench" />
 								<span>
 									<h:outputText
-										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname3}" />
+										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname3}" />
 								</span>
 							</button>
 							<!-- // SCRIPT 3 -->
@@ -232,43 +232,43 @@
 							<!-- SCRIPT 4 -->
 							<button
 								jsf:id="executeScript4"
-								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != ''}"
+								jsf:rendered="#{currentStep.typAutomatischScriptpfad4 != null and currentStep.typAutomatischScriptpfad4 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link d-block"
-								title="#{AktuelleSchritteForm.mySchritt.scriptname4}"
+								title="#{currentStep.scriptname4}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
-									value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4}" />
+									value="#{currentStep.typAutomatischScriptpfad4}" />
 								<i class="btn btn-blank fa fa-wrench" />
 								<span>
 									<h:outputText
-										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname4}" />
+										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname4}" />
 								</span>
 							</button>
 	
 							<!-- SCRIPT 5 -->
 							<button
 								jsf:id="executeScript5"
-								jsf:rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != ''}"
+								jsf:rendered="#{currentStep.typAutomatischScriptpfad5 != null and currentStep.typAutomatischScriptpfad5 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link d-block"
-								title="#{AktuelleSchritteForm.mySchritt.scriptname5}"
+								title="#{currentStep.scriptname5}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
-									value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5}" />
+									value="#{currentStep.typAutomatischScriptpfad5}" />
 								<i class="btn btn-blank fa fa-wrench" />
 								<span>
 									<h:outputText
-										value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname5}" />
+										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname5}" />
 								</span>
 							</button>
 							<!-- // SCRIPT 5 -->
 	
 							<!-- EXPORT -->
 							<h:panelGroup
-								rendered="#{AktuelleSchritteForm.mySchritt.typExportDMS}">
+								rendered="#{currentStep.typExportDMS}">
 								<!-- TODO: delete this warning once the root cause of the timeout problem is solved  -->
 								<div class="alert alert-warning mt-4">
 									#{msgs.timeoutWarningDMS}</div>
@@ -289,14 +289,14 @@
 	
 							<!-- METADATA -->
 							<h:panelGroup
-								rendered="#{AktuelleSchritteForm.mySchritt.typMetadaten}">
+								rendered="#{currentStep.typMetadaten}">
 								
 								
 								<h:commandLink
 									id="metadata"
 									action="#{Metadaten.XMLlesen}"
 									title="#{msgs.metadatenBearbeiten}"
-									rendered="#{!AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}"
+									rendered="#{!currentStep.prozess.temporaryMetadataFiles}"
 									onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
 									styleClass="btn btn-link">
 									<i class="btn btn-blank fa fa-book" />
@@ -304,11 +304,11 @@
 										<h:outputText value="#{msgs.metadatenBearbeiten}" />
 									</span>
 									<f:setPropertyActionListener
-										target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
-										value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
+										target="#{currentStep.bearbeitungszeitpunktNow}"
+										value="#{currentStep.bearbeitungszeitpunktNow}" />
 									<f:param
 										name="ProzesseID"
-										value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
+										value="#{currentStep.prozess.id}" />
 									<f:param
 										name="BenutzerID"
 										value="#{LoginForm.myBenutzer.id}" />
@@ -353,7 +353,7 @@
 								</h:commandLink>
 	
 								<h:panelGroup
-									rendered="#{AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}">
+									rendered="#{currentStep.prozess.temporaryMetadataFiles}">
 									<a
 										class="text_head"
 										title="#{msgs.metadatenBearbeiten}"
@@ -403,11 +403,11 @@
 														<h:outputText value="#{msgs.discard}" />
 													</span>
 													<f:setPropertyActionListener
-														target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
-														value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
+														target="#{currentStep.bearbeitungszeitpunktNow}"
+														value="#{currentStep.bearbeitungszeitpunktNow}" />
 													<f:param
 														name="ProzesseID"
-														value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
+														value="#{currentStep.prozess.id}" />
 													<f:param
 														name="BenutzerID"
 														value="#{LoginForm.myBenutzer.id}" />
@@ -447,11 +447,11 @@
 														<h:outputText value="#{msgs.overwrite}" />
 													</span>
 													<f:setPropertyActionListener
-														target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}"
-														value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
+														target="#{currentStep.bearbeitungszeitpunktNow}"
+														value="#{currentStep.bearbeitungszeitpunktNow}" />
 													<f:param
 														name="ProzesseID"
-														value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
+														value="#{currentStep.prozess.id}" />
 													<f:param
 														name="BenutzerID"
 														value="#{LoginForm.myBenutzer.id}" />
@@ -486,9 +486,9 @@
 	
 							<!-- DOCKET -->
 							<button
-								jsf:rendered="#{AktuelleSchritteForm.mySchritt.generateDocket}"
+								jsf:rendered="#{currentStep.generateDocket}"
 								jsf:id="generateDocket"
-								jsf:action="#{AktuelleSchritteForm.mySchritt.prozess.downloadDocket}"
+								jsf:action="#{currentStep.prozess.downloadDocket}"
 								class="btn btn-link d-block"
 								title="#{msgs.laufzettelDrucken}"
 								onclick="preventDoubleSubmit(this);">
@@ -498,36 +498,64 @@
 								</span>
 							</button>
 	
-							<!-- CANCEL -->
+                            <!-- CANCEL SINGLE TASK -->
+                            <button
+                                jsf:id="cancel"
+                                jsf:rendered="#{!isBatchStep}"
+                                jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}"
+                                class="btn btn-link d-block"
+                                title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
+                                onclick="preventDoubleSubmit(this);">
+                                <i class="btn btn-hot fa fa-reply" />
+                                <span>
+                                    <h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
+                                </span>
+                            </button>
+                            
+                            <!-- CANCEL ALL TASKS OF BATCH -->
 							<button
-								jsf:id="cancel"
-								jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}"
+								jsf:id="cancelBatch"
+                                jsf:rendered="#{isBatchStep}"
+								jsf:action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerZurueckgeben}"
 								class="btn btn-link d-block"
 								title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
 								onclick="preventDoubleSubmit(this);">
 								<i class="btn btn-hot fa fa-reply" />
 								<span>
-									<h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
+									<h:outputText value="#{msgs.cancelBatchEdition}" />
 								</span>
 							</button>
 	
-							<!-- FINISH -->
+							<!-- FINISH SINGLE TASK -->
+                            <button
+                                jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton and !isBatchStep}"
+                                jsf:id="finish"
+                                jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}"
+                                class="btn btn-link d-block"
+                                title="#{msgs.diesenSchrittAbschliessen}"
+                                onclick="preventDoubleSubmit(this);">
+                                <i class="btn btn-success fa fa-check" />
+                                <span>
+                                    <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
+                                </span>
+                            </button>
+                            
+                            <!-- FINISH ALL TASKS OF BATCH -->
 							<button
-								jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton}"
-								jsf:id="finish"
-								jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}"
+								jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton and isBatchStep}"
+								jsf:id="finishBatch"
+								jsf:action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerAbschliessen}"
 								class="btn btn-link d-block"
 								title="#{msgs.diesenSchrittAbschliessen}"
 								onclick="preventDoubleSubmit(this);">
 								<i class="btn btn-success fa fa-check" />
 								<span>
-									<h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
+									<h:outputText value="#{msgs.finishBatchEdition}" />
 								</span>
 							</button>
 						</h:panelGroup>
 						<!-- STEP NOT LOCKED, ACTION ALLOWED -->
 						
-
 					</h:panelGroup>
 					<!-- // TAB 1 - ACTION -->
 
@@ -536,21 +564,35 @@
 					<h:panelGroup
 						class="p-3"
 						layout="block"
-						rendered="#{NavigationForm.uiStatus.taskActionBox_view eq 'tab2' and AktuelleSchritteForm.previousStepsForProblemReporting.size() > 0}">
+						rendered="#{NavigationForm.uiStatus.taskActionBox_view eq 'tab2' and ((!isBatchStep and AktuelleSchritteForm.previousStepsForProblemReporting.size() > 0) or (isBatchStep and AktuelleSchritteForm.batchHelper.sizeOfPreviousStepsForProblemReporting != 0))}">
 
 						<div class="form-group">
 							<label class="control-label">#{msgs.korrekturmeldungAnVorherigeStationSenden}</label>
 							<div class="controls">
 								<h:selectOneMenu
-									id="selectErrorStep"
+                                    id="selectErrorStep"
+                                    rendered="#{!isBatchStep}"
+                                    pt:aria-label="#{msgs.korrekturmeldungAnVorherigeStationSenden}"
+                                    styleClass="form-select"
+                                    value="#{AktuelleSchritteForm.myProblemID}">
+                                    <f:selectItems
+                                        value="#{AktuelleSchritteForm.previousStepsForProblemReporting}"
+                                        var="step1"
+                                        itemLabel="#{step1.titelMitBenutzername}"
+                                        itemValue="#{step1.id}" />
+                                </h:selectOneMenu>
+                                
+                                <h:selectOneMenu
+									id="selectErrorStepBatch"
+                                    rendered="#{isBatchStep}"
 									pt:aria-label="#{msgs.korrekturmeldungAnVorherigeStationSenden}"
 									styleClass="form-select"
-									value="#{AktuelleSchritteForm.myProblemID}">
-									<f:selectItems
-										value="#{AktuelleSchritteForm.previousStepsForProblemReporting}"
-										var="step1"
-										itemLabel="#{step1.titelMitBenutzername}"
-										itemValue="#{step1.id}" />
+									value="#{AktuelleSchritteForm.batchHelper.myProblemStep}">
+									<f:selectItems 
+                                        value="#{AktuelleSchritteForm.batchHelper.previousStepsForProblemReporting}"
+                                        var="step"
+                                        itemLabel="#{step.titelMitBenutzername}" 
+                                        itemValue="#{step.id}" />
 								</h:selectOneMenu>
 							</div>
 						</div>
@@ -559,21 +601,53 @@
 							<label class="control-label">#{msgs.bemerkung}</label>
 							<div class="controls">
 								<h:inputTextarea
-									id="addToTextArea"
-									pt:aria-label="#{msgs.bemerkung}"
+                                    id="addToTextArea"
+                                    rendered="#{!isBatchStep}"
+                                    pt:aria-label="#{msgs.bemerkung}"
+                                    styleClass="form-control"
+                                    value="#{AktuelleSchritteForm.problemMessage}" />
+                                    
+                                <h:inputTextarea
+									id="addToTextAreaBatch"
+									rendered="#{isBatchStep}"
+                                    pt:aria-label="#{msgs.bemerkung}"
 									styleClass="form-control"
-									value="#{AktuelleSchritteForm.problemMessage}" />
+									value="#{AktuelleSchritteForm.batchHelper.problemMessage}" />
 							</div>
 						</div>
 
 						<div class="form-actions">
-							<h:commandButton
-								id="submiterror"
+							<!-- REPORT BUTTON REGULAR -->
+                            <h:commandButton
+                                id="submiterror"
+                                rendered="#{!isBatchStep}"
+                                type="submit"
+                                action="#{AktuelleSchritteForm.ReportProblem}"
+                                value="#{msgs.korrekturmeldungSenden}"
+                                title="#{msgs.korrekturmeldungSenden}"
+                                styleClass="btn btn-primary">
+                            </h:commandButton>
+                            
+                            <!-- REPORT BUTTON BATCH ALL -->
+                            <h:commandButton
+                                id="submiterrorBatch1"
+                                rendered="#{isBatchStep}"
+                                type="submit"
+                                action="#{AktuelleSchritteForm.batchHelper.ReportProblemForAll}"
+                                value="#{msgs.korrekturmeldungSendenForAll}"
+                                title="#{msgs.korrekturmeldungSendenForAll}"
+                                styleClass="btn btn-primary">
+                            </h:commandButton>
+                            
+                            <!-- REPORT BUTTON BATCH SINGLE -->
+                            <h:commandButton
+								id="submiterrorBatch2"
+                                rendered="#{isBatchStep}"
 								type="submit"
-								action="#{AktuelleSchritteForm.ReportProblem}"
-								value="#{msgs.korrekturmeldungSenden}"
-								title="#{msgs.korrekturmeldungSenden}"
-								styleClass="btn btn-primary pull-right font-size-s margin-bottom-most">
+								action="#{AktuelleSchritteForm.batchHelper.ReportProblemForSingle}"
+								value="#{msgs.korrekturmeldungSendenSingle}"
+								title="#{msgs.korrekturmeldungSendenSingle}"
+								styleClass="btn btn-primary">
 							</h:commandButton>
 						</div>
 
@@ -585,20 +659,33 @@
 					<h:panelGroup
 						class="p-3"
 						layout="block"
-						rendered="#{NavigationForm.uiStatus.taskActionBox_view eq 'tab3' and AktuelleSchritteForm.mySchritt.prioritaet>9}">
+						rendered="#{NavigationForm.uiStatus.taskActionBox_view eq 'tab3' and currentStep.prioritaet>9}">
 
 						<div class="form-group">
 							<label class="control-label">#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}</label>
 							<div class="controls">
 								<h:selectOneMenu
-									id="selectSolveStep"
+                                    id="selectSolveStep"
+                                    rendered="#{!isBatchStep}"
+                                    styleClass="form-control"
+                                    value="#{AktuelleSchritteForm.mySolutionID}">
+                                    <f:selectItems
+                                        value="#{AktuelleSchritteForm.nextStepsForProblemSolution}"
+                                        var="step2"
+                                        itemLabel="#{step2.titelMitBenutzername}"
+                                        itemValue="#{step2.id}" />
+                                </h:selectOneMenu>
+                                
+                                <h:selectOneMenu
+									id="selectSolveStepBatch"
+                                    rendered="#{isBatchStep}"
 									styleClass="form-control"
-									value="#{AktuelleSchritteForm.mySolutionID}">
-									<f:selectItems
-										value="#{AktuelleSchritteForm.nextStepsForProblemSolution}"
-										var="step2"
-										itemLabel="#{step2.titelMitBenutzername}"
-										itemValue="#{step2.id}" />
+									value="#{AktuelleSchritteForm.batchHelper.mySolutionStep}">
+									<f:selectItems 
+                                        value="#{AktuelleSchritteForm.batchHelper.nextStepsForProblemSolution}" 
+                                        var="step2"
+                                        itemLabel="#{step2.titelMitBenutzername}" 
+                                        itemValue="#{step2.id}" />
 								</h:selectOneMenu>
 							</div>
 						</div>
@@ -607,20 +694,51 @@
 							<label class="control-label">#{msgs.bemerkung}</label>
 							<div class="controls">
 								<h:inputTextarea
-									id="addComment"
-									styleClass="form-control"
-									value="#{AktuelleSchritteForm.solutionMessage}" />
+                                    id="addComment"
+                                    rendered="#{!isBatchStep}"
+                                    styleClass="form-control"
+                                    value="#{AktuelleSchritteForm.solutionMessage}" />
+                                <h:inputTextarea
+									id="addCommentBatch"
+									rendered="#{isBatchStep}"
+                                    styleClass="form-control"
+									value="#{AktuelleSchritteForm.batchHelper.solutionMessage}" />
 							</div>
 						</div>
 
 						<div class="form-actions">
-							<h:commandButton
-								id="solveProblem"
+							
+                            <!-- SOLVE BUTTON REGULAR -->
+                            <h:commandButton
+                                id="solveProblem"
+                                rendered="#{!isBatchStep}"
+                                type="submit"
+                                action="#{AktuelleSchritteForm.SolveProblem}"
+                                value="#{msgs.meldungUeberProblemloesungSenden}"
+                                title="#{msgs.meldungUeberProblemloesungSenden}"
+                                styleClass="btn btn-primary">
+                            </h:commandButton>
+
+                            <!-- SOLVE BUTTON BATCH ALL -->
+                            <h:commandButton
+                                id="solveProblemBatch1"
+                                rendered="#{isBatchStep}"
+                                type="submit"
+                                action="#{AktuelleSchritteForm.batchHelper.SolveProblemForAll}"
+                                value="#{msgs.meldungUeberProblemloesungSendenForAll}"
+                                title="#{msgs.meldungUeberProblemloesungSendenForAll}"
+                                styleClass="btn btn-primary">
+                            </h:commandButton>
+                            
+                            <!-- SOLVE BUTTON BATCH SINGLE -->
+                            <h:commandButton
+								id="solveProblemBatch2"
+                                rendered="#{isBatchStep}"
 								type="submit"
-								action="#{AktuelleSchritteForm.SolveProblem}"
-								value="#{msgs.meldungUeberProblemloesungSenden}"
-								title="#{msgs.meldungUeberProblemloesungSenden}"
-								styleClass="btn btn-primary pull-right font-size-s margin-bottom-most">
+								action="#{AktuelleSchritteForm.batchHelper.SolveProblemForSingle}"
+								value="#{msgs.meldungUeberProblemloesungSendenSingle}"
+								title="#{msgs.meldungUeberProblemloesungSendenSingle}"
+								styleClass="btn btn-primary">
 							</h:commandButton>
 						</div>
 
@@ -634,5 +752,3 @@
 
 	</composite:implementation>
 </ui:composition>
-
-
