@@ -268,7 +268,7 @@ class ProcessMysqlHelper implements Serializable {
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
-            sql.append( "WHERE ProzesseID > 0 ");
+            sql.append("WHERE ProzesseID > 0 ");
         }
 
         try {
@@ -294,11 +294,29 @@ class ProcessMysqlHelper implements Serializable {
             sql.append(institution.getId());
         }
 
+        String sortfield = order;
+        if (order.startsWith("{db_meta")) {
+            boolean reverse = false;
+            if (order.endsWith(" desc")) {
+                reverse = true;
+                order = order.replace(" desc", "");
+            }
+            String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
+            sql.append("LEFT JOIN (SELECT processid, MAX(value) AS value FROM metadata WHERE metadata.name = '");
+            sql.append(fieldname);
+            sql.append("' GROUP BY processid) AS field ON field.processid = prozesse.prozesseID ");
+            if (reverse) {
+                sortfield = "field.value IS NULL, field.value desc";
+            } else {
+                sortfield = "field.value IS NULL, field.value";
+            }
+        }
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        if (sortfield != null && !sortfield.isEmpty()) {
+            sql.append(" ORDER BY " + sortfield);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
@@ -422,16 +440,16 @@ class ProcessMysqlHelper implements Serializable {
             return new Object[] { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
-                            o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                    o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
 
         } else {
             return new Object[] { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(),
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
-                            o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                            o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                    o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
         }
     }
 

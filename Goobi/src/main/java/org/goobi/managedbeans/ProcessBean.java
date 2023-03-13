@@ -266,7 +266,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Setter
     private boolean showStatistics = false;
 
-    private static String DONEDIRECTORYNAME = "fertig/";
+    private static String doneDirectoryName = "fertig/";
 
     @Getter
     private DatabasePaginator usergroupPaginator;
@@ -309,8 +309,6 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
-    private IStepPlugin currentPlugin;
-
     @Inject
     private StepBean bean;
 
@@ -324,7 +322,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         anzeigeAnpassen.put("numberOfImages", false);
 
-        sortierung = "prozesse.titel";
+        sortField = "prozesse.titel";
         /*
          * Vorgangsdatum generell anzeigen?
          */
@@ -351,7 +349,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             anzeigeAnpassen.put("editionTask",
                     ConfigurationHelper.getInstance().isProcesslistShowEditionData() && login.getMyBenutzer().isDisplayLastEditionTask());
             if (StringUtils.isNotBlank(login.getMyBenutzer().getProcessListDefaultSortField())) {
-                sortierung = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
+                sortField = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
             }
 
         } else {
@@ -364,7 +362,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             anzeigeAnpassen.put("institution", false);
             this.anzeigeAnpassen.put("processRuleset", false);
         }
-        DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
+        doneDirectoryName = ConfigurationHelper.getInstance().getDoneDirectoryName(); // NOSONAR
 
         searchField.add(new SearchColumn(order++));
 
@@ -374,7 +372,6 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         validationPluginList = PluginLoader.getListOfPlugins(PluginType.Validation);
         Collections.sort(validationPluginList);
-
     }
 
     /**
@@ -563,7 +560,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             sql = sql + " projekte.projectIsArchived = false ";
         }
 
-        paginator = new DatabasePaginator(sortierung, sql, m, "process_all");
+        paginator = new DatabasePaginator(sortField, sql, m, "process_all");
 
         this.modusAnzeige = "aktuell";
         return "process_all";
@@ -612,7 +609,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             sql = sql + " projekte.projectIsArchived = false ";
         }
         ProcessManager m = new ProcessManager();
-        paginator = new DatabasePaginator(sortierung, sql, m, "process_all");
+        paginator = new DatabasePaginator(sortField, sql, m, "process_all");
         this.modusAnzeige = "vorlagen";
         return "process_all";
     }
@@ -666,7 +663,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
 
         ProcessManager m = new ProcessManager();
-        paginator = new DatabasePaginator(sortierung, sql, m, "process_all");
+        paginator = new DatabasePaginator(sortField, sql, m, "process_all");
 
         return "process_all";
     }
@@ -1120,9 +1117,9 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String uploadFromHomeAlle() {
         WebDav myDav = new WebDav();
-        List<String> folder = myDav.UploadFromHomeAlle(DONEDIRECTORYNAME);
-        myDav.removeFromHomeAlle(folder, DONEDIRECTORYNAME);
-        Helper.setMeldung(null, "directoryRemovedAll", DONEDIRECTORYNAME);
+        List<String> folder = myDav.UploadFromHomeAlle(doneDirectoryName);
+        myDav.removeFromHomeAlle(folder, doneDirectoryName);
+        Helper.setMeldung(null, "directoryRemovedAll", doneDirectoryName);
         return "";
     }
 
@@ -2113,7 +2110,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
                 XSSFWorkbook wb =
-                        sch.getResult(prepareSearchColumnData(), this.filter, sortierung, this.showClosedProcesses, this.showArchivedProjects);
+                        sch.getResult(prepareSearchColumnData(), this.filter, sortField, this.showClosedProcesses, this.showArchivedProjects);
 
                 List<List<XSSFCell>> rowList = new ArrayList<>();
                 XSSFSheet mySheet = wb.getSheetAt(0);
@@ -2174,7 +2171,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
                 XSSFWorkbook wb =
-                        sch.getResult(prepareSearchColumnData(), this.filter, sortierung, this.showClosedProcesses, this.showArchivedProjects);
+                        sch.getResult(prepareSearchColumnData(), this.filter, sortField, this.showClosedProcesses, this.showArchivedProjects);
 
                 wb.write(out);
                 out.flush();
@@ -2202,7 +2199,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
                 XWPFDocument wb =
-                        sch.getResultAsWord(prepareSearchColumnData(), this.filter, sortierung, this.showClosedProcesses, this.showArchivedProjects);
+                        sch.getResultAsWord(prepareSearchColumnData(), this.filter, sortField, this.showClosedProcesses,
+                                this.showArchivedProjects);
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
@@ -2228,7 +2226,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.rtf\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                sch.getResultAsRtf(prepareSearchColumnData(), this.filter, sortierung, this.showClosedProcesses, this.showArchivedProjects, out);
+                sch.getResultAsRtf(prepareSearchColumnData(), this.filter, sortField, this.showClosedProcesses, this.showArchivedProjects,
+                        out);
                 out.flush();
                 facesContext.responseComplete();
 
@@ -2552,7 +2551,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     private String startStepPlugin() {
-        currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
+        IStepPlugin currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
         if (currentPlugin != null) {
             currentPlugin.initialize(mySchritt, "/process_edit");
             if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {

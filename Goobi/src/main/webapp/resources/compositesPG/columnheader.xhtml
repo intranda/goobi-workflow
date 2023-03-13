@@ -28,16 +28,16 @@
 		<ui:param name="ascendingLabel" value="#{cc.attrs.sortField}" />
 
 		<th scope="col" role="columnheader" id="#{cc.attrs.id}" style="#{cc.attrs.style}" class="#{cc.attrs.addClass}" jsf:rendered="#{cc.attrs.sortable}"
-			aria-sort="#{cc.attrs.form.sortierung== descendingLabel ? 'descending' : cc.attrs.form.sortierung== ascendingLabel ? 'ascending' :'none'}">
+			aria-sort="#{cc.attrs.form.sortField== descendingLabel ? 'descending' : cc.attrs.form.sortField== ascendingLabel ? 'ascending' :'none'}">
 			<button class="column-header-sort" jsf:rendered="#{not cc.attrs.addAction}"
 				jsf:action="#{cc.attrs.form.FilterAlleStart}"
-				aria-label="#{msgs.defaultSortField} #{cc.attrs.value} #{cc.attrs.form.sortierung== descendingLabel ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== ascendingLabel ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
+				aria-label="#{msgs.defaultSortField} #{cc.attrs.value} #{cc.attrs.form.sortField== descendingLabel ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortField== ascendingLabel ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
 				<h:outputText value="#{cc.attrs.value}" />
 				<span
-					class="pull-right table-sort-icon fa #{cc.attrs.form.sortierung== descendingLabel ?'fa-sort-desc':cc.attrs.form.sortierung== ascendingLabel ?'fa-sort-asc':'fa-sort'}"></span>
+					class="pull-right table-sort-icon fa #{cc.attrs.form.sortField== descendingLabel ?'fa-sort-desc':cc.attrs.form.sortField== ascendingLabel ?'fa-sort-asc':'fa-sort'}"></span>
 				<f:setPropertyActionListener
-					target="#{cc.attrs.form.sortierung}"
-					value="#{cc.attrs.reverseOrder and cc.attrs.form.sortierung eq descendingLabel? ascendingLabel : (not cc.attrs.reverseOrder and cc.attrs.form.sortierung ne ascendingLabel ? ascendingLabel : descendingLabel)}" />
+					target="#{cc.attrs.form.sortField}"
+					value="#{cc.attrs.reverseOrder and cc.attrs.form.sortField eq descendingLabel? ascendingLabel : (not cc.attrs.reverseOrder and cc.attrs.form.sortField ne ascendingLabel ? ascendingLabel : descendingLabel)}" />
 				<f:ajax render="#{cc.attrs.ajaxRender}" />
 			</button>
 		</th>

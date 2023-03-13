@@ -101,7 +101,7 @@ public class InstitutionBean extends BasicBean implements Serializable {
 
     public String FilterKein() {
         InstitutionManager manager = new InstitutionManager();
-        paginator = new DatabasePaginator(sortierung, filter, manager, "institution_all");
+        paginator = new DatabasePaginator(sortField, filter, manager, "institution_all");
         displayMode = "";
         return "institution_all";
     }

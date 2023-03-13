@@ -260,9 +260,9 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     public String FilterKein() {
         displayMode = "";
-        sortierung = "Titel";
+        sortField = "Titel";
         ProjectManager m = new ProjectManager();
-        paginator = new DatabasePaginator(sortierung, filter, m, "project_all");
+        paginator = new DatabasePaginator(sortField, filter, m, "project_all");
         return "project_all";
     }
 

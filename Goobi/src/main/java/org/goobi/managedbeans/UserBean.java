@@ -152,9 +152,9 @@ public class UserBean extends BasicBean implements Serializable {
     public String FilterKein() {
         displayMode = "";
         this.filter = null;
-        this.sortierung = "nachname, vorname";
+        this.sortField = "nachname, vorname";
         UserManager m = new UserManager();
-        paginator = new DatabasePaginator(sortierung, getBasicFilter(), m, "user_all");
+        paginator = new DatabasePaginator(sortField, getBasicFilter(), m, "user_all");
         return "user_all";
     }
 
@@ -195,8 +195,8 @@ public class UserBean extends BasicBean implements Serializable {
         this.paginator = new DatabasePaginator(this.getSortTitle(), sqlQuery, m, "user_all");
         List<? extends DatabaseObject> users = paginator.getList();
 
-        boolean sortProjects = this.sortierung.startsWith("projects");
-        boolean sortUserGroups = this.sortierung.startsWith("group");
+        boolean sortProjects = this.sortField.startsWith("projects");
+        boolean sortUserGroups = this.sortField.startsWith("group");
         if (sortProjects || sortUserGroups) {
             List<User> list = new ArrayList<>();
             for (int index = 0; index < users.size(); index++) {
@@ -205,7 +205,7 @@ public class UserBean extends BasicBean implements Serializable {
             this.sortUserListByProjectOrGroup(list);
             this.paginator.setList(list);
         } else {
-            if (this.sortierung.endsWith("Desc")) {
+            if (this.sortField.endsWith("Desc")) {
                 Collections.reverse(users);
             }
             this.paginator.setList(users);
@@ -215,13 +215,13 @@ public class UserBean extends BasicBean implements Serializable {
 
     private String getSortTitle() {
         String sort = "";
-        if (this.sortierung.startsWith("name")) {
+        if (this.sortField.startsWith("name")) {
             sort = "benutzer.Nachname, benutzer.Vorname";
-        } else if (this.sortierung.startsWith("login")) {
+        } else if (this.sortField.startsWith("login")) {
             sort = "benutzer.login";
-        } else if (this.sortierung.startsWith("location")) {
+        } else if (this.sortField.startsWith("location")) {
             sort = "benutzer.Standort";
-        } else if (this.sortierung.startsWith("institution")) {
+        } else if (this.sortField.startsWith("institution")) {
             sort = "institution.shortName";
         }
         return sort;
@@ -230,9 +230,9 @@ public class UserBean extends BasicBean implements Serializable {
     private void sortUserListByProjectOrGroup(List<User> users) {
         // Find the fitting User-getter-method for the sorting routine depending on the sort strategy
         Function<User, String> function = null;
-        if (this.sortierung.startsWith("group")) {
+        if (this.sortField.startsWith("group")) {
             function = User::getFirstUserGroupTitle;
-        } else if (this.sortierung.startsWith("projects")) {
+        } else if (this.sortField.startsWith("projects")) {
             function = User::getFirstProjectTitle;
         }
 
@@ -241,7 +241,7 @@ public class UserBean extends BasicBean implements Serializable {
             Comparator<User> comparator = Comparator.comparing(function);
 
             // Only when the sorting routine is descending, replace comparator by reversed comparator.
-            if (this.sortierung.endsWith("Desc")) {
+            if (this.sortField.endsWith("Desc")) {
                 comparator = Collections.reverseOrder(comparator);
             }
             Collections.sort(users, comparator);

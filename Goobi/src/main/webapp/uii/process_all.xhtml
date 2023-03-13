@@ -179,7 +179,8 @@
 														value="#{msgs.id}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
 														ajaxRender="processAllProcessesBox:myform"
-														reverseOrder="true" />
+														reverseOrder="true"
+														sortField="prozesse.ProzesseID" />
 													<!-- thumbnail -->
 													<intranda:columnheader
 														addClass="header__thumbnail"
@@ -199,7 +200,8 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.batch}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform"
+                                                        sortField="prozesse.batchID" />
 													<!-- Alle Schritte Auflisten -->
 													<intranda:columnheader
 														addClass=" header__title"
@@ -208,16 +210,19 @@
 														value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}"
 														rendered="true"
 														ajaxRender="processAllProcessesBox:myform"
-														id="ajaxcolumn" />
+														id="ajaxcolumn"
+                                                        sortField="prozesse.titel" />
 													<!-- Costum Columns -->
 													<c:forEach
 														items="#{LoginForm.listOfCustomColumns}"
 														var="var">
 														<intranda:columnheader
 															addClass="width80"
+                                                            form="#{ProzessverwaltungForm}"
+                                                            ajaxRender="processAllProcessesBox:myform"
 															value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
-															sortable="false" />
-														<!-- rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}" -->
+															sortField="#{var}" />
+														<!-- TODO: sort field -->
 													</c:forEach>
 													<!-- Vorgangsdatum -->
 													<intranda:columnheader
@@ -226,7 +231,8 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.vorgangsdatum}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform" 
+                                                        sortField="prozesse.erstellungsdatum"/>
 													<!-- Ruleset -->
 													<intranda:columnheader
 														addClass=" header__ruleset"
@@ -239,14 +245,16 @@
 														name="fortschritt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.status}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform" 
+                                                         sortField="prozesse.sortHelperStatus"/>
 													<!-- . -->
 													<intranda:columnheader
 														addClass=" #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'}"
 														name="projekt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.projekt}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform"
+                                                        sortField="projekte.titel" />
 													<!-- .. -->
 													<intranda:columnheader
 														addClass=""
@@ -254,7 +262,8 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.institution}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['institution']}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform"
+                                                        sortField="institution.shortName" />
 													<!-- Lockings -->
 													<intranda:columnheader
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
@@ -262,7 +271,8 @@
 														name="sperrungen"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.sperrungen}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform"
+                                                        sortable="false" />
 													<!-- .... -->
 													<intranda:columnheader
 														addClass=""

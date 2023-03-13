@@ -201,7 +201,7 @@ public class StepBean extends BasicBean implements Serializable {
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
 
             if (StringUtils.isNotBlank(login.getMyBenutzer().getTaskListDefaultSortingField())) {
-                sortierung = login.getMyBenutzer().getTaskListDefaultSortingField() + login.getMyBenutzer().getTaskListDefaultSortOrder();
+                sortField = login.getMyBenutzer().getTaskListDefaultSortingField() + login.getMyBenutzer().getTaskListDefaultSortOrder();
             }
         } else {
             this.anzeigeAnpassen.put("lockings", false);
@@ -254,60 +254,60 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     private String sortList() {
-        if (sortierung == null) {
+        if (sortField == null) {
             return "prioritaet desc";
         }
 
         String answer = "prioritaet desc ";
 
-        if ("schrittAsc".equals(this.sortierung)) {
+        if ("schrittAsc".equals(this.sortField)) {
             answer += ", schritte.titel";
-        } else if ("schrittDesc".equals(this.sortierung)) {
+        } else if ("schrittDesc".equals(this.sortField)) {
             answer += ", schritte.titel desc";
         }
-        if ("prozessAsc".equals(this.sortierung)) {
+        if ("prozessAsc".equals(this.sortField)) {
             answer += ", prozesse.Titel";
         }
-        if ("prozessDesc".equals(this.sortierung)) {
+        if ("prozessDesc".equals(this.sortField)) {
             answer += ", prozesse.Titel desc";
         }
-        if ("batchAsc".equals(this.sortierung)) {
+        if ("batchAsc".equals(this.sortField)) {
             answer += ", prozesse.batchID";
         }
-        if ("batchDesc".equals(this.sortierung)) {
+        if ("batchDesc".equals(this.sortField)) {
             answer += ", prozesse.batchID desc";
         }
-        if ("prozessdateAsc".equals(this.sortierung)) {
+        if ("prozessdateAsc".equals(this.sortField)) {
 
             answer += ", prozesse.erstellungsdatum";
         }
-        if ("prozessdateDesc".equals(this.sortierung)) {
+        if ("prozessdateDesc".equals(this.sortField)) {
             answer += ", prozesse.erstellungsdatum desc";
         }
-        if ("projektAsc".equals(this.sortierung)) {
+        if ("projektAsc".equals(this.sortField)) {
             answer += " ,projekte.Titel";
         }
-        if ("projektDesc".equals(this.sortierung)) {
+        if ("projektDesc".equals(this.sortField)) {
             answer += ", projekte.Titel desc";
-        } else if ("modulesAsc".equals(this.sortierung)) {
+        } else if ("modulesAsc".equals(this.sortField)) {
             answer += ", typModulName";
-        } else if ("modulesDesc".equals(this.sortierung)) {
+        } else if ("modulesDesc".equals(this.sortField)) {
             answer += ", typModulName desc";
-        } else if ("statusAsc".equals(this.sortierung)) {
+        } else if ("statusAsc".equals(this.sortField)) {
             answer += ", bearbeitungsstatus";
-        } else if ("statusDesc".equals(this.sortierung)) {
+        } else if ("statusDesc".equals(this.sortField)) {
             answer += ", bearbeitungsstatus desc";
-        } else if ("idAsc".equals(this.sortierung)) {
+        } else if ("idAsc".equals(this.sortField)) {
             answer = "prozesse.ProzesseID";
-        } else if ("idDesc".equals(this.sortierung)) {
+        } else if ("idDesc".equals(this.sortField)) {
             answer = "prozesse.ProzesseID desc";
-        } else if ("institutionAsc".equals(sortierung)) {
+        } else if ("institutionAsc".equals(sortField)) {
             answer = "institution.shortName";
-        } else if ("institutionDesc".equals(sortierung)) {
+        } else if ("institutionDesc".equals(sortField)) {
             answer = "institution.shortName desc";
-        } else if ("numberOfImagesAsc".equals(sortierung)) {
+        } else if ("numberOfImagesAsc".equals(sortField)) {
             answer = "prozesse.sortHelperImages";
-        } else if ("numberOfImagesDesc".equals(sortierung)) {
+        } else if ("numberOfImagesDesc".equals(sortField)) {
             answer = "prozesse.sortHelperImages desc";
         }
 
