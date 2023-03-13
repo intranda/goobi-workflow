@@ -546,12 +546,6 @@ public class ConfigurationHelperTest extends AbstractTest {
      * category in goobi_config.properties: DATABASE SEARCH
      */
 
-    // @Test
-    public void testUseH2DB() {
-        // not testable without mocking the sql connection
-        assertFalse(ConfigurationHelper.getInstance().isUseH2DB());
-    }
-
     @Test
     public void testUseFulltextSearch() {
         assertFalse(ConfigurationHelper.getInstance().isUseFulltextSearch());

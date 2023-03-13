@@ -48,6 +48,8 @@ import org.goobi.vocabulary.Vocabulary;
 
 import com.google.gson.Gson;
 
+import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
+
 /**
  * @author steffen
  *
@@ -503,7 +505,7 @@ class VocabularyMysqlHelper implements Serializable {
 
     static List<VocabRecord> findRecords(String vocabularyName, String searchValue, boolean exact, String... fieldNames) throws SQLException {
         String likeStr = "like";
-        if (MySQLHelper.isUsingH2()) {
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
             likeStr = "ilike";
         }
 
@@ -622,7 +624,7 @@ class VocabularyMysqlHelper implements Serializable {
     @Deprecated
     static void getRecords(Vocabulary vocabulary) throws SQLException {
         String likeStr = "like";
-        if (MySQLHelper.isUsingH2()) {
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
             likeStr = "ilike";
         }
 
@@ -692,7 +694,7 @@ class VocabularyMysqlHelper implements Serializable {
 
     static List<VocabRecord> findRecords(String vocabularyName, List<StringPair> data, boolean exactSearch) throws SQLException {
         String likeStr = "like";
-        if (MySQLHelper.isUsingH2()) {
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
             likeStr = "ilike";
         }
 
@@ -762,7 +764,7 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             try {
-                if (!MySQLHelper.isUsingH2()) {
+                if (MySQLHelper.getInstance().getSqlType() != SQLTYPE.H2) {
                     runner.execute(connection, "Lock tables vocabulary_record write");
                 }
                 int id = runner.query(connection, "SELECT MAX(id) +1 FROM vocabulary_record", MySQLHelper.resultSetToIntegerHandler);
@@ -776,7 +778,7 @@ class VocabularyMysqlHelper implements Serializable {
                 }
                 runner.execute(connection, insertRecordQuery.toString(), parameter);
             } finally {
-                if (!MySQLHelper.isUsingH2()) {
+                if (MySQLHelper.getInstance().getSqlType() != SQLTYPE.H2) {
                     runner.execute(connection, "unlock tables");
                 }
             }

@@ -29,29 +29,39 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import org.apache.activemq.util.ByteArrayInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Before;
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.config.ConfigProjectsTest;
+import de.sub.goobi.config.ConfigurationHelper;
 
 public class TestRestConfig extends AbstractTest {
-    private static String configString = "<?xml version='1.0' encoding='UTF-8'?>\n" +
-            "<config>\n" +
-            "    <endpoint path=\"/addtoprocesslog.*\">\n" +
-            "        <method name=\"post\">\n" +
-            "            <allow netmask=\"0:0:0:0:0:0:0:1/128\" token=\"CHANGEME\"/>\n" +
-            "            <allow netmask=\"127.0.0.0/8\" token=\"CHANGEME\"/>\n" +
-            "        </method>\n" +
-            "    </endpoint>\n" +
-            "</config>";
+
+    @Before
+    public void setUp() throws Exception {
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        if (!Files.exists(goobiFolder)) {
+            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
+        }
+        String goobiMainFolder = goobiFolder.getParent().getParent().toString() + "/";
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
+        ConfigurationHelper.resetConfigurationFile();
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiMainFolder);
+    }
 
     @Test
     public void testGetConfigForPath() {
         try {
-            RestEndpointConfig endpointConfig = RestConfig.getConfigForPath("/addtoprocesslog", new ByteArrayInputStream(configString.getBytes()));
+            RestEndpointConfig endpointConfig = RestConfig.getConfigForPath("/addtoprocesslog", null);
             assertNotNull("Rest endpoint configuration should not be null", endpointConfig);
-            endpointConfig = RestConfig.getConfigForPath("/fail", new ByteArrayInputStream(configString.getBytes()));
+            endpointConfig = RestConfig.getConfigForPath("/fail", null);
             assertNull("Rest endpoint configuration should be null for unconfigured path", endpointConfig);
         } catch (ConfigurationException e) {
             fail("Getting rest auth configuration for path should not throw exception");

@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
@@ -29,6 +29,8 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
+
+import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 
 class MasterpieceMysqlHelper implements Serializable {
 
@@ -56,7 +58,7 @@ class MasterpieceMysqlHelper implements Serializable {
     public static ResultSetHandler<List<Masterpiece>> resultSetToMasterpieceListHandler = new ResultSetHandler<List<Masterpiece>>() {
         @Override
         public List<Masterpiece> handle(ResultSet rs) throws SQLException {
-            List<Masterpiece> answer = new ArrayList<Masterpiece>();
+            List<Masterpiece> answer = new ArrayList<>();
             try {
                 while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int id = rs.getInt("WerkstueckeID");
@@ -111,10 +113,13 @@ class MasterpieceMysqlHelper implements Serializable {
 
     public static int countMasterpieces() throws SQLException {
         Connection connection = null;
-        String sql = " SELECT count(WerkstueckeID) from werkstuecke";
+        StringBuilder sql = new StringBuilder("SELECT count(1) from werkstuecke ");
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
+            sql.append("WHERE WerkstueckeID > 0;");
+        }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

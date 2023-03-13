@@ -81,7 +81,7 @@ class LdapMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         boolean whereSet = false;
 
-        sql.append("SELECT COUNT(ldapgruppenID) FROM ldapgruppen");
+        sql.append("SELECT COUNT(1) FROM ldapgruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
@@ -92,8 +92,8 @@ class LdapMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append(
-                    "ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
+            sql.append("ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' ");
+            sql.append("and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }
