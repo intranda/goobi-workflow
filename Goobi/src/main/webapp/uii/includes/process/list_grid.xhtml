@@ -162,7 +162,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 											
 											<li>
 												<!-- DMS-Export-Schaltknopf -->
-												<button jsf:action="#{ProzessverwaltungForm.ExportDMS}" jsf:id="grid_action21" jsf:rel="tooltip" title="#{msgs.importDms}" class="font-light dropdown-item" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
+												<button jsf:action="#{ProzessverwaltungForm.exportDMS}" jsf:id="grid_action21" jsf:rel="tooltip" title="#{msgs.importDms}" class="font-light dropdown-item" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
 													<i class="fa fa-globe margin-right-10" />
 													<h:outputText value="#{msgs.importDms}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -171,7 +171,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 											</li>
 											<li>
 												<!-- DMS-Export-Schaltknopf greyed -->
-												<button jsf:id="grid_action21-greyed" jsf:action="#{ProzessverwaltungForm.ExportDMS}" class="dropdown-item" jsf:disabled="true" jsf:rel="tooltip" title="#{msgs.importDms}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}">
+												<button jsf:id="grid_action21-greyed" jsf:action="#{ProzessverwaltungForm.exportDMS}" class="dropdown-item" jsf:disabled="true" jsf:rel="tooltip" title="#{msgs.importDms}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}">
 													<i class="font-light fa fa-globe margin-right-10" />
 													<h:outputText value="#{msgs.importDms}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -182,7 +182,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 											<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Linking')}">
 												<li>
 													<!-- Download-Schaltknopf -->
-													<button jsf:action="#{ProzessverwaltungForm.DownloadToHome}" jsf:id="grid_action16" class="dropdown-item" title="#{msgs.imHomeVerzeichnisVerlinken}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}">
+													<button jsf:action="#{ProzessverwaltungForm.downloadToHome}" jsf:id="grid_action16" class="dropdown-item" title="#{msgs.imHomeVerzeichnisVerlinken}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}">
 														<i class="fa fa-cloud-download margin-right-10"></i>
 														<h:outputText value="#{msgs.imHomeVerzeichnisVerlinken}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
@@ -191,7 +191,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 												</li>
 												<li>
 													<!-- Download-Schaltknopf -->
-													<button jsf:action="#{ProzessverwaltungForm.DownloadToHome}" jsf:id="grid_action17" class="dropdown-item" title="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}">
+													<button jsf:action="#{ProzessverwaltungForm.downloadToHome}" jsf:id="grid_action17" class="dropdown-item" title="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}">
 														<i class="fa fa-cloud-download margin-right-10"></i>
 														<h:outputText value="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
@@ -200,7 +200,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 												</li>
 												<li>
 													<!-- Upload-Schaltknopf -->
-													<button jsf:action="#{ProzessverwaltungForm.UploadFromHome}" jsf:id="grid_action18" class="dropdown-item" title="#{msgs.ausHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.ausHomeverzeichnisEntfernen}')) return false" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+													<button jsf:action="#{ProzessverwaltungForm.uploadFromHome}" jsf:id="grid_action18" class="dropdown-item" title="#{msgs.ausHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.ausHomeverzeichnisEntfernen}')) return false" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 														<i class="fa fa-cloud-upload margin-right-10"></i>
 														<h:outputText value="#{msgs.ausHomeverzeichnisEntfernen}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
@@ -230,7 +230,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 												</li>
 												<li>
 													<!-- Mets-Export-Schaltknopf -->
-													<button jsf:action="#{ProzessverwaltungForm.ExportMets}" jsf:id="grid_action19" class="dropdown-item" title="#{msgs.exportMets}" jsf:rendered="#{item.displayMETSButton}">
+													<button jsf:action="#{ProzessverwaltungForm.exportMets}" jsf:id="grid_action19" class="dropdown-item" title="#{msgs.exportMets}" jsf:rendered="#{item.displayMETSButton}">
 														<i class="fa fa-floppy-o margin-right-10"></i>
 														<h:outputText value="#{msgs.exportMets}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
@@ -239,7 +239,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 												</li>
 												<li>
 													<!-- PDF-Export-Schaltknopf -->
-													<button jsf:action="#{ProzessverwaltungForm.ExportPdf}" jsf:id="grid_action20" class="dropdown-item" title="#{msgs.exportPdf}" jsf:rendered="#{item.displayPDFButton}">
+													<button jsf:action="#{ProzessverwaltungForm.exportPdf}" jsf:id="grid_action20" class="dropdown-item" title="#{msgs.exportPdf}" jsf:rendered="#{item.displayPDFButton}">
 														<i class="fa fa-floppy-o margin-right-10"></i>
 														<h:outputText value="#{msgs.exportPdf}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />

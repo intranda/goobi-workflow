@@ -977,7 +977,7 @@ public class ProcessBean extends BasicBean implements Serializable {
      * Aktionen
      */
 
-    public void ExportMets() {
+    public void exportMets() {
         ExportMets export = new ExportMets();
         try {
             export.startExport(this.myProzess);
@@ -1007,7 +1007,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    public void ExportPdf() {
+    public void exportPdf() {
         ExportPdf export = new ExportPdf();
         try {
             export.startExport(this.myProzess);
@@ -1023,7 +1023,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    public void ExportDMS() {
+    public void exportDMS() {
         if (this.myProzess.getContainsExportStep()) {
             String pluginName = ProcessManager.getExportPluginName(myProzess.getId());
             ProcessBean.executeExportPlugin(pluginName, this.myProzess);
@@ -1063,7 +1063,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public void ExportDMSPage() {
+    public void exportDMSPage() {
 
         for (Process proz : (List<Process>) this.paginator.getList()) {
             exportSingleProcess(proz);
@@ -1072,7 +1072,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public void ExportDMSSelection() {
+    public void exportDMSSelection() {
 
         for (Process proz : (List<Process>) this.paginator.getList()) {
 
@@ -1110,7 +1110,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public void ExportDMSHits() {
+    public void exportDMSHits() {
 
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
             exportSingleProcess(proz);
@@ -1118,7 +1118,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         Helper.setMeldung(null, "ExportFinished", "");
     }
 
-    public String UploadFromHomeAlle() {
+    public String uploadFromHomeAlle() {
         WebDav myDav = new WebDav();
         List<String> folder = myDav.UploadFromHomeAlle(DONEDIRECTORYNAME);
         myDav.removeFromHomeAlle(folder, DONEDIRECTORYNAME);
@@ -1126,7 +1126,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public String UploadFromHome() {
+    public String uploadFromHome() {
         WebDav myDav = new WebDav();
         myDav.UploadFromHome(this.myProzess);
         Helper.setMeldung(null, "directoryRemoved", this.myProzess.getTitel());
@@ -1134,7 +1134,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public void DownloadToHome() {
+    public void downloadToHome() {
         doDownloadToHome(this.myProzess);
     }
 
@@ -1159,7 +1159,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public void DownloadToHomePage() {
+    public void downloadToHomePage() {
         for (Process proz : (List<Process>) this.paginator.getList()) {
             doDownloadToHome(proz);
         }
@@ -1167,7 +1167,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public void DownloadToHomeSelection() {
+    public void downloadToHomeSelection() {
         for (Process proz : (List<Process>) this.paginator.getList()) {
             if (proz.isSelected()) {
                 doDownloadToHome(proz);
@@ -1177,7 +1177,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public void DownloadToHomeHits() {
+    public void downloadToHomeHits() {
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
             doDownloadToHome(proz);
         }

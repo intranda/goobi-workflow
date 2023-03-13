@@ -29,7 +29,7 @@
 									rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.paginator.totalResults > 0 }">
 									<!-- Upload-Schaltknopf -->
 									<button
-										jsf:action="#{ProzessverwaltungForm.UploadFromHomeAlle}"
+										jsf:action="#{ProzessverwaltungForm.uploadFromHomeAlle}"
 										jsf:id="uploadFromHome" class="btn btn-link d-block mb-2"
 										title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}"
 										onclick="if (!confirm('#{msgs.upload}')) return false">
@@ -62,7 +62,7 @@
 									
 										<!-- Download-Schaltknopf für Selection-->
 										<button
-											jsf:action="#{ProzessverwaltungForm.DownloadToHomeSelection}"
+											jsf:action="#{ProzessverwaltungForm.downloadToHomeSelection}"
 											jsf:id="downloadToHomeSelection" class="btn btn-link ms-5 d-block"
 											jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
 											title="#{msgs.auswahl2}"
@@ -74,7 +74,7 @@
 										</button>
 										<!-- Download-Schaltknopf für Page-->
 										<button
-											jsf:action="#{ProzessverwaltungForm.DownloadToHomePage}"
+											jsf:action="#{ProzessverwaltungForm.downloadToHomePage}"
 											class="btn btn-link ms-5 d-block" title="#{msgs.trefferDieserSeite}"
 											onclick="if (!confirm('#{msgs.download}')) return false"
 											jsf:id="downloadToHomePage">
@@ -85,7 +85,7 @@
 										</button>
 										<!-- Download-Schaltknopf für gesamtes Trefferset -->
 										<button
-											jsf:action="#{ProzessverwaltungForm.DownloadToHomeHits}"
+											jsf:action="#{ProzessverwaltungForm.downloadToHomeHits}"
 											class="btn btn-link ms-5 d-block" title="#{msgs.gesamtesTrefferset}"
 											onclick="if (!confirm('#{msgs.download}')) return false"
 											jsf:id="downloadToHomeAll">
@@ -121,7 +121,7 @@
 										#{msgs.timeoutWarningDMS}</div>
 									<!-- Download-Schaltknopf für Selection-->
 									<button class="btn btn-link ms-5 d-block" jsf:id="action6"
-										jsf:action="#{ProzessverwaltungForm.ExportDMSSelection}"
+										jsf:action="#{ProzessverwaltungForm.exportDMSSelection}"
 										jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
 										title="#{msgs.auswahl2}"
 										onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
@@ -132,7 +132,7 @@
 									</button>
 									<!-- Download-Schaltknopf für Page-->
 									<button class="btn btn-link ms-5 d-block"
-										jsf:action="#{ProzessverwaltungForm.ExportDMSPage}"
+										jsf:action="#{ProzessverwaltungForm.exportDMSPage}"
 										title="#{msgs.trefferDieserSeite}" jsf:id="action7"
 										onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
 										<i class="btn btn-blank fa fa-angle-right" />
@@ -142,7 +142,7 @@
 									</button>
 									<!-- Download-Schaltknopf für gesamtes Trefferset -->
 									<button class="btn btn-link ms-5 d-block"
-										jsf:action="#{ProzessverwaltungForm.ExportDMSHits}"
+										jsf:action="#{ProzessverwaltungForm.exportDMSHits}"
 										title="#{msgs.gesamtesTrefferset}" jsf:id="action8"
 										onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
 										<i class="btn btn-blank fa fa-angle-right" />

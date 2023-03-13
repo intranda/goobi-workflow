@@ -359,7 +359,7 @@ public class StepBean extends BasicBean implements Serializable {
              */
 
             if (this.mySchritt.isTypImagesLesen() || this.mySchritt.isTypImagesSchreiben()) {
-                DownloadToHome();
+                downloadToHome();
             }
         }
         return "task_edit";
@@ -799,7 +799,7 @@ public class StepBean extends BasicBean implements Serializable {
      * Upload und Download der Images
      */
 
-    public String UploadFromHome() {
+    public String uploadFromHome() {
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = Helper.getCurrentUser();
         if (ben != null) {
@@ -810,7 +810,7 @@ public class StepBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public String DownloadToHome() {
+    public String downloadToHome() {
         try {
             Paths.get(this.mySchritt.getProzess().getImagesOrigDirectory(true));
         } catch (Exception exception) {
@@ -826,7 +826,7 @@ public class StepBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public String UploadFromHomeAlle() throws NumberFormatException, DAOException {
+    public String uploadFromHomeAlle() throws NumberFormatException, DAOException {
 
         List<String> fertigListe = this.myDav.UploadFromHomeAlle(DONEDIRECTORYNAME);
         List<String> geprueft = new ArrayList<>();
@@ -860,7 +860,7 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public String DownloadToHomePage() {
+    public String downloadToHomePage() {
         User ben = Helper.getCurrentUser();
 
         for (Iterator<Step> iter = (Iterator<Step>) this.paginator.getList().iterator(); iter.hasNext();) {
@@ -890,7 +890,7 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public String DownloadToHomeHits() {
+    public String downloadToHomeHits() {
         User ben = Helper.getCurrentUser();
 
         for (Iterator<Step> iter = (Iterator<Step>) this.paginator.getCompleteList().iterator(); iter.hasNext();) {
@@ -1094,7 +1094,7 @@ public class StepBean extends BasicBean implements Serializable {
         tiff.ExportStart();
     }
 
-    public void ExportDMS() {
+    public void exportDMS() {
         IExportPlugin dms = null;
         if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
             try {

@@ -1041,7 +1041,7 @@
 																title="#{!item.containsExportStep ? msgs.noExportTask : ''}"
 																data-bs-toggle="tooltip">
 																<button
-																	jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+																	jsf:action="#{ProzessverwaltungForm.exportDMS}"
 																	jsf:id="action21"
 																	aria-label="#{!item.containsExportStep ? msgs.noExportTask : msgs.importDms}"
 																	jsf:rel="tooltip"
@@ -1066,7 +1066,7 @@
 
 															<!-- DMS-EXPORT - DISABLED -->
 															<button
-																jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+																jsf:action="#{ProzessverwaltungForm.exportDMS}"
 																jsf:disabled="true"
 																jsf:rel="tooltip"
 																title="#{msgs.importDms}"
@@ -1271,7 +1271,7 @@
 																			<li>
 																				<!-- DOWNLOAD INTO HOME DIRECTORY -->
 																				<button
-																					jsf:action="#{ProzessverwaltungForm.DownloadToHome}"
+																					jsf:action="#{ProzessverwaltungForm.downloadToHome}"
 																					jsf:id="action16"
 																					jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}"
 																					class="dropdown-item">
@@ -1288,7 +1288,7 @@
 																			<li>
 																				<!-- DOWNLOAD INTO HOME DIRECTORY - FOR ADMINS -->
 																				<button
-																					jsf:action="#{ProzessverwaltungForm.DownloadToHome}"
+																					jsf:action="#{ProzessverwaltungForm.downloadToHome}"
 																					jsf:id="action17"
 																					onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false"
 																					jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}"
@@ -1306,7 +1306,7 @@
 																			<li>
 																				<!-- UPLOAD FROM HOME DIRECTORY -->
 																				<button
-																					jsf:action="#{ProzessverwaltungForm.UploadFromHome}"
+																					jsf:action="#{ProzessverwaltungForm.uploadFromHome}"
 																					jsf:id="action18"
 																					onclick="if (!confirm('#{msgs.ausHomeverzeichnisEntfernen}')) return false"
 																					jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
@@ -1373,7 +1373,7 @@
 																			<li>
 																				<!-- DOWNLOAD PDF FILE -->
 																				<button
-																					jsf:action="#{ProzessverwaltungForm.ExportPdf}"
+																					jsf:action="#{ProzessverwaltungForm.exportPdf}"
 																					jsf:id="action20"
 																					onclick="preventDoubleSubmit(this);"
 																					jsf:rendered="#{item.displayPDFButton}"

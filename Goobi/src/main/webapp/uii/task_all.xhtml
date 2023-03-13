@@ -666,7 +666,7 @@
 								
 								<!-- UPLOAD FROM DONE FOLDER -->
 								<button jsf:id="uploadAll"
-									jsf:action="#{AktuelleSchritteForm.UploadFromHomeAlle}"
+									jsf:action="#{AktuelleSchritteForm.uploadFromHomeAlle}"
 									class="btn d-block"
 									title="#{msgs.verzeichnisFertigHochladen}"
 									onclick="if (!confirm('#{msgs.upload}')) return false">
@@ -678,7 +678,7 @@
 								
 								<!-- DOWNLOAD PAGE HITS INTO USERS HOME -->
 								<button jsf:id="downloadPage"
-									jsf:action="#{AktuelleSchritteForm.DownloadToHomePage}"
+									jsf:action="#{AktuelleSchritteForm.downloadToHomePage}"
 									class="btn d-block"
 									title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}"
 									onclick="if (!confirm('#{msgs.upload}')) return false">
@@ -690,7 +690,7 @@
 
 								<!-- DOWNLOAD ALL HITS INTO USERS HOME -->
 								<button jsf:id="downloadAll"
-									jsf:action="#{AktuelleSchritteForm.DownloadToHomeHits}"
+									jsf:action="#{AktuelleSchritteForm.downloadToHomeHits}"
 									class="btn d-block"
 									title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}"
 									onclick="if (!confirm('#{msgs.upload}')) return false">
