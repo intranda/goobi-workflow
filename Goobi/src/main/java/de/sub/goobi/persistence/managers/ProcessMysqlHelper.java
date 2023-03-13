@@ -353,9 +353,9 @@ class ProcessMysqlHelper implements Serializable {
             sql.append("' GROUP BY ProzesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
         }
         if (reverse) {
-            sortfield = "field.value IS NULL, field.value desc";
+            sortfield = " case when field.value = '' or field.value is null then 1 else 0 end, field.value desc ";
         } else {
-            sortfield = "field.value IS NULL, field.value";
+            sortfield = " case when field.value = '' or field.value is null then 1 else 0 end, field.value ";
         }
         return sortfield;
     }
