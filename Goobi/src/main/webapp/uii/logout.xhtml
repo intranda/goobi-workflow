@@ -1,45 +1,104 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" template="/uii/template/template_logout.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/uii/templatePG/template_minimum.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:define name="content">
-	    <div class="logout">
-	    	<div class="logout-body" style="margin-bottom:5px;">
-				<h1>
-					<a href="index.xhtml"><h:outputText escape="false" value="#{HelperForm.applicationHeaderTitle}" /></a>
-				</h1>
-				<div class="logout-box">
-					<ui:fragment rendered="#{LoginForm.ssoError == null}">
-					<div>
-						<h2>You have been logged out</h2>
-						
-						<p class="relogin-message">
-							To log in again, click here: 
-							<a href="index.xhtml"
-							class=" btn font-size-s"
-							style="background: #fff; color: black; outline: 1px solid #368ee0; margin-left: 20px;">
-								Goobi login
-							</a>
-						</p>
-					</div>
-					</ui:fragment>
-					<ui:fragment rendered="#{LoginForm.ssoError != null}"> 
-					<div>
-						<h2>Error logging you in: User not found</h2>
-						
-						<p class="relogin-message">
-							To try logging in again, click here: 
-							<a href="index.xhtml"
-							class=" btn font-size-s"
-							style="background: #fff; color: black; outline: 1px solid #368ee0; margin-left: 20px;">
-								Goobi login
-							</a>
-						</p>
-					</div>
-					</ui:fragment>
-				</div>
-				<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
-				<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
-			</div>
-		</div>
+
+        <style type="text/css">
+.logout {
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	background-color: #368ee0;
+}
+
+.logout-body {
+	width: 450px;
+}
+
+.logout-body>h1 {
+	text-align: center;
+}
+
+.logout-body>h1>a {
+	color: white;
+	display: block;
+	font-weight: 300;
+	font-size: 48px;
+	padding: 2px 0;
+	text-decoration: none;
+}
+
+.logout-box {
+	display: flex;
+	height: 240px;
+	background-color: white;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+}
+
+.logout-box h2 {
+	font-weight: 300;
+	color: #333;
+	font-size: 24px;
+	margin-top: 0;
+	margin-bottom: 30px;
+}
+
+
+</style>
+        <div class="logout">
+            <div class="logout-body">
+                
+                <!-- HEADLILNE -->
+                <h1>
+                    <h:outputLink value="index.xhtml">
+                        <h:outputText
+                            escape="false"
+                            value="#{HelperForm.applicationHeaderTitle}" />
+                    </h:outputLink>
+                </h1>
+                <!-- // HEADLILNE -->
+                
+                <!-- BOX -->
+                <div class="logout-box mt-3 mb-3">
+                    <div>
+                        <h2>
+                            <h:outputText value="#{LoginForm.ssoError == null ? 'You have been logged out' : 'Error logging you in: User not found'}"/>
+                        </h2>
+                        <p class="relogin-message">
+                            <h:outputText value="#{LoginForm.ssoError == null ? 'To log in again, click here:' : 'To try logging in again, click here:'}"/>
+                            <h:outputLink styleClass="btn border ms-5" value="index.xhtml">
+                                <h:outputText value="Goobi login" />
+                            </h:outputLink>
+                        </p>
+                    </div>
+                </div>
+                <!-- // BOX -->
+                
+                <!-- LINK AND VERSION -->
+                <h:outputLink value="https://goobi.io/" style="color: #FFFFFF;">
+                   Goobi workflow - developed by intranda
+                </h:outputLink>
+                <h:outputText
+                    style="color:#FFFFFF;"
+                    styleClass="float-end"
+                    value="#{msgs.version} #{HelperForm.version}" />
+                <!-- // LINK AND VERSION -->
+                
+            </div>
+        </div>
     </ui:define>
 
 
