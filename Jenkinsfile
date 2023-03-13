@@ -28,6 +28,7 @@ pipeline {
     stage('sonarcloud') {
       when {
         anyOf {
+          tag "v*"
           branch 'sonar_*'
         }
       }
@@ -40,7 +41,7 @@ pipeline {
     stage('deployment to maven repository') {
       when {
         anyOf {
-        branch 'master'
+        tag "v*"
         branch 'develop'
         }
       }

@@ -69,6 +69,34 @@ public class MySQLHelper implements Serializable {
         this.cm = new ConnectionManager();
     }
 
+    public enum SQLTYPE {
+        H2,
+        MYSQL,
+        MARIADB;
+    }
+
+    private SQLTYPE type = null;
+
+    public SQLTYPE getSqlType() {
+        if (type == null) {
+            try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+                DatabaseMetaData meta = connection.getMetaData();
+                String dbType = meta.getDatabaseProductName();
+                if (dbType.equals("H2")) {
+                    type = SQLTYPE.H2;
+                } else if (dbType.equals("MySQL")) {
+                    type = SQLTYPE.MYSQL;
+                } else {
+                    type = SQLTYPE.MARIADB;
+                }
+
+            } catch (SQLException e) {
+                log.error("Error getting database provider information", e);
+            }
+        }
+        return type;
+    }
+
     /**
      * Check if current database connection is based on H2. Otherwise it is Mysql or Mariadb
      * 

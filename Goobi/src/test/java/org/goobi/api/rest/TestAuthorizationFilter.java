@@ -25,6 +25,7 @@
  */
 package org.goobi.api.rest;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
@@ -50,9 +51,10 @@ public class TestAuthorizationFilter extends AbstractTest {
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
+        String goobiMainFolder = goobiFolder.getParent().getParent().toString() + "/";
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
         ConfigurationHelper.resetConfigurationFile();
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiMainFolder);
     }
 
     @Test
@@ -65,5 +67,26 @@ public class TestAuthorizationFilter extends AbstractTest {
         assertTrue(!AuthorizationFilter.checkJwt(jwt, "/processes/bla", "GET"));
         assertTrue(!AuthorizationFilter.checkJwt(jwt, "/process/136", "GET"));
         assertTrue(!AuthorizationFilter.checkJwt(jwt, "/processes/136/log", "GET"));
+    }
+
+    @Test
+    public void testCheckPermissions() {
+        assertTrue(Files.exists(Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder(), "goobi_rest.xml")));
+
+        // access possible without token
+        assertTrue(AuthorizationFilter.checkPermissions("127.0.0.1", null, "/process/image/123", "get"));
+        // access possible with correct token
+        assertTrue(AuthorizationFilter.checkPermissions("127.0.0.1", "token", "/closestep/123", "post"));
+        // access not possible without token
+        assertFalse(AuthorizationFilter.checkPermissions("127.0.0.1", "", "/closestep/123", "post"));
+        assertFalse(AuthorizationFilter.checkPermissions("127.0.0.1", null, "/closestep/123", "post"));
+        // access not possible with wrong token
+        assertFalse(AuthorizationFilter.checkPermissions("127.0.0.1", "wrong", "/closestep/123", "post"));
+        // access not possible with wrong method
+        assertFalse(AuthorizationFilter.checkPermissions("127.0.0.1", "token", "/closestep/123", "get"));
+        // access not possible with wrong ip
+        assertFalse(AuthorizationFilter.checkPermissions("192.168.0.1", "token", "/closestep/123", "post"));
+        // access not possible with wrong path
+        assertFalse(AuthorizationFilter.checkPermissions("127.0.0.1", "token", "/wrong", "post"));
     }
 }

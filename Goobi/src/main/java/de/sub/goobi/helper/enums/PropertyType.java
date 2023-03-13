@@ -38,36 +38,40 @@ import lombok.Getter;
  */
 public enum PropertyType {
 
-    unknown(0, "unknown", false, false),
+    UNKNOWN(0, "unknown", false),
 
     /** general type */
-    general(1, "general", false, false),
+    GENERAL(1, "general", false),
 
     /** normal message */
-    messageNormal(2, "messageNormal", false, false),
+    MESSAGE_NORMAL(2, "messageNormal", false),
 
     /** important message */
-    messageImportant(3, "messageImportant", false, false),
+    MESSAGE_IMPORTANT(3, "messageImportant", false),
 
     /** error message */
-    messageError(4, "messageError", false, false),
-    String(5, "String", true, true),
-    Boolean(6, "Boolean", true, true),
-    List(7, "List", true, true),
-    Number(8, "Number", true, true),
-    Container(9, "Container", true, true),
-    Date(10, "Date", true, true),
-    Integer(11, "Integer", true, true),
-    SpecialView(12, "SpecialView", false, true),
-    Textarea(13, "Textarea", true, true),
-    ListMultiSelect(14, "ListMultiSelect", true, true),
-    WikiField(15, "WikiField", false, true),
+    MESSAGE_ERROR(4, "messageError", false),
+    STRING(5, "String", true),
+    BOOLEAN(6, "Boolean", true),
+    LIST(7, "List", true),
+    NUMBER(8, "Number", true),
+    CONTAINER(9, "Container", true),
+    DATE(10, "Date", true),
+    INTEGER(11, "Integer", true),
+    SPECIAL_VIEW(12, "SpecialView", false),
+    TEXTAREA(13, "Textarea", true),
+    LIST_MULTI_SELECT(14, "ListMultiSelect", true),
+    WIKIFIELD(15, "WikiField", false),
     // special Properties
-    Hidden(16, "Hidden", false, false),
-    ErrorMessage(17, "ErrorMessage", true, false),
-    CommandLink(18, "CommandLink", true, false),
-    NoEdit(19, "NoEdit", true, false),
-    Filter(20, "Filter", false, false);
+    HIDDEN(16, "Hidden", false),
+    ERROR_MESSAGE(17, "ErrorMessage", true),
+    COMMAND_LINK(18, "CommandLink", true),
+    NO_EDIT(19, "NoEdit", true),
+    FILTER(20, "Filter", false),
+
+    YAML(21, "yaml", true),
+    JSON(22, "json", true),
+    XML(23, "xml", true);
 
     @Getter
     private int id;
@@ -76,7 +80,7 @@ public enum PropertyType {
     @Getter
     private Boolean showInDisplay;
 
-    private PropertyType(int id, String inName, Boolean showInDisplay, Boolean editable) {
+    private PropertyType(int id, String inName, Boolean showInDisplay) {
         this.id = id;
         this.name = inName;
 
@@ -89,7 +93,7 @@ public enum PropertyType {
 
     @Override
     public java.lang.String toString() {
-        return this.name();
+        return this.name().toLowerCase();
     }
 
     public static PropertyType getByName(String inName) {
@@ -98,7 +102,7 @@ public enum PropertyType {
                 return p;
             }
         }
-        return String;
+        return STRING;
     }
 
     public static PropertyType getById(int id) {
@@ -107,7 +111,7 @@ public enum PropertyType {
                 return p;
             }
         }
-        return String;
+        return STRING;
     }
 
 }

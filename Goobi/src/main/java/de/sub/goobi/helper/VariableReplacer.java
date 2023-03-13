@@ -58,6 +58,8 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -109,6 +111,9 @@ public class VariableReplacer {
 
     public static Pattern piiifMediaFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMediaFolder(?:\\}|\\))");
     public static Pattern piiifMasterFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMasterFolder(?:\\}|\\))");
+
+    @Getter @Setter
+    private String SEPARATOR = ",";
 
     private DigitalDocument dd;
     private Prefs prefs;
@@ -454,13 +459,16 @@ public class VariableReplacer {
     }
 
     /**
-     * Metadatum von übergebenen Docstruct ermitteln, im Fehlerfall wird null zurückgegeben
-     * ================================================================
+     * get one single metadata from given docstruct
+     * @param inDocstruct
+     * @param mdt
+     * @return
      */
     private String getMetadataValue(DocStruct inDocstruct, MetadataType mdt) {
         List<? extends Metadata> mds = inDocstruct.getAllMetadataByType(mdt);
         if (!mds.isEmpty()) {
             Metadata m = mds.get(0);
+            // if it is a person, get the complete name, otherwise the value only
             if (m.getType().getIsPerson()) {
                 Person p = (Person) m;
                 return p.getLastname() + ", " + p.getFirstname();
@@ -472,18 +480,32 @@ public class VariableReplacer {
         }
     }
 
+    /**
+     * get multiple metadata from given docstruct, separated with semicolon
+     * @param inDocstruct
+     * @param mdt
+     * @return
+     */
     private String getAllMetadataValues(DocStruct ds, MetadataType mdt) {
         StringBuilder bld = new StringBuilder();
         List<? extends Metadata> metadataList = ds.getAllMetadataByType(mdt);
         if (metadataList != null) {
             for (Metadata md : metadataList) {
-                String value = md.getValue();
-                if (value != null && !value.isEmpty()) {
-                    if (bld.length() != 0) {
-                        bld.append(",");
-                    }
-                    bld.append(value);
+                if (bld.length() != 0) {
+                    bld.append(SEPARATOR);
                 }
+                // if it is a person, get the complete name, otherwise the value only
+                if (md.getType().getIsPerson()) {
+                    Person p = (Person) md;
+                    String value = p.getLastname() + ", " + p.getFirstname();
+                    bld.append(value);
+                } else {
+                    String value = md.getValue();
+                    if (value != null && !value.isEmpty()) {
+                        bld.append(value);
+                    }
+                }
+
             }
         }
         return bld.toString();
