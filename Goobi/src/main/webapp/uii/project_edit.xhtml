@@ -69,9 +69,9 @@
 
                             <ul class="tabs">
                                 <li class="tab #{ProjekteForm.displayMode eq ''?'active':''}"><h:commandLink
-                                        id="details"
+                                        id="general"
                                         action="#{NavigationForm.Reload}"
-                                        value="#{msgs.details}">
+                                        value="#{msgs.general}">
                                         <f:setPropertyActionListener
                                             target="#{ProjekteForm.displayMode}"
                                             value="" />
@@ -91,9 +91,9 @@
                                             execute=":myform" />
                                     </h:commandLink></li>
                                 <li class="tab #{ProjekteForm.displayMode eq 'tab3'?'active':''}"><h:commandLink
-                                        id="metsParameter"
+                                        id="contentSettings"
                                         action="#{NavigationForm.Reload}"
-                                        value="#{msgs.metsParamater}">
+                                        value="#{msgs.contentSettings}">
                                         <f:setPropertyActionListener
                                             target="#{ProjekteForm.displayMode}"
                                             value="tab3" />
