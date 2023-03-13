@@ -294,23 +294,7 @@ class ProcessMysqlHelper implements Serializable {
             sql.append(institution.getId());
         }
 
-        String sortfield = order;
-        if (order.startsWith("{db_meta")) {
-            boolean reverse = false;
-            if (order.endsWith(" desc")) {
-                reverse = true;
-                order = order.replace(" desc", "");
-            }
-            String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
-            sql.append("LEFT JOIN (SELECT processid, MAX(value) AS value FROM metadata WHERE metadata.name = '");
-            sql.append(fieldname);
-            sql.append("' GROUP BY processid) AS field ON field.processid = prozesse.prozesseID ");
-            if (reverse) {
-                sortfield = "field.value IS NULL, field.value desc";
-            } else {
-                sortfield = "field.value IS NULL, field.value";
-            }
-        }
+        String sortfield = prepareSortField(order, sql);
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
@@ -334,6 +318,37 @@ class ProcessMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
+    }
+
+    private static String prepareSortField(String order, StringBuilder sql) {
+        if (!order.startsWith("{")) {
+            return order;
+        }
+
+        String sortfield = order;
+        boolean reverse = false;
+        if (order.endsWith(" desc")) {
+            reverse = true;
+            order = order.replace(" desc", "");
+        }
+
+        String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
+        if (order.startsWith("{db_meta")) {
+            sql.append("LEFT JOIN (SELECT processid, MAX(value) AS value FROM metadata WHERE metadata.name = '");
+            sql.append(fieldname);
+            sql.append("' GROUP BY processid) AS field ON field.processid = prozesse.prozesseID ");
+        } else if (order.startsWith("{process.")) {
+            sql.append("LEFT JOIN (SELECT prozesseID, MAX(WERT) AS value FROM prozesseeigenschaften WHERE prozesseeigenschaften.Titel = '");
+            sql.append(fieldname);
+            sql.append("' GROUP BY prozesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
+        }
+
+        if (reverse) {
+            sortfield = "field.value IS NULL, field.value desc";
+        } else {
+            sortfield = "field.value IS NULL, field.value";
+        }
+        return sortfield;
     }
 
     public static List<Integer> getProcessIdList(String order, String filter, Integer start, Integer count) throws SQLException {
