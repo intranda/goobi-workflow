@@ -357,7 +357,7 @@
 									<div id="possibleActions6" class="collapse">
 										<!-- Statistische Auswertung-Schaltknopf für Page-->
 										<button jsf:id="action20" class="btn btn-link ms-5 d-block"
-											jsf:action="#{ProzessverwaltungForm.CalcMetadataAndImagesSelection}"
+											jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesSelection}"
 											jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
 											title="#{msgs.auswahl2}">
 											<i class="btn btn-blank fa fa-angle-right" />
@@ -367,7 +367,7 @@
 										</button>
 										<!-- Statistische Auswertung-Schaltknopf für Page-->
 										<button class="btn btn-link ms-5 d-block" jsf:id="action21"
-											jsf:action="#{ProzessverwaltungForm.CalcMetadataAndImagesPage}"
+											jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesPage}"
 											title="#{msgs.trefferDieserSeite}">
 											<i class="btn btn-blank fa fa-angle-right" />
 											<span>
@@ -376,7 +376,7 @@
 										</button>
 										<!-- Statistische Auswertung-Schaltknopf für gesamtes Trefferset -->
 										<button class="btn btn-link ms-5 d-block " jsf:id="action22"
-											jsf:action="#{ProzessverwaltungForm.CalcMetadataAndImagesHits}"
+											jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesHits}"
 											title="#{msgs.gesamtesTrefferset}"
 											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 											<i class="btn btn-blank fa fa-angle-right" />
@@ -402,7 +402,7 @@
 									<!-- StatisticsStatusVolumes-->
 									<button class="btn btn-link ms-5 d-block" jsf:id="action30"
 										jsf:rendered="#{!HelperForm.anonymized}"
-										jsf:action="#{ProzessverwaltungForm.StatisticsStatusVolumes}"
+										jsf:action="#{ProzessverwaltungForm.statisticsStatusVolumes}"
 										title="#{msgs.statusOfVolumes}">
 										<i class="btn btn-blank fa fa-angle-right" />
 										<span>
@@ -415,7 +415,7 @@
 									<!-- StatisticsUsergroups -->
 									<button class="btn btn-link ms-5 d-block" jsf:id="action31"
 										jsf:rendered="#{!HelperForm.anonymized}"
-										jsf:action="#{ProzessverwaltungForm.StatisticsUsergroups}"
+										jsf:action="#{ProzessverwaltungForm.statisticsUsergroups}"
 										title="#{msgs.statusForUsers}">
 										<i class="btn btn-blank fa fa-angle-right" />
 										<span>
@@ -428,7 +428,7 @@
 									<!-- StatisticsRuntimeSteps -->
 									<button class="btn btn-link ms-5 d-block" jsf:id="action32"
 										jsf:rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}"
-										jsf:action="#{ProzessverwaltungForm.StatisticsRuntimeSteps}"
+										jsf:action="#{ProzessverwaltungForm.statisticsRuntimeSteps}"
 										title="#{msgs.runtimeOfSteps}">
 										<i class="btn btn-blank fa fa-angle-right" />
 										<span>
@@ -441,7 +441,7 @@
 									<!-- StatisticsProduction -->
 									<button class="btn btn-link ms-5 d-block" jsf:id="action33"
 										jsf:rendered="#{!HelperForm.anonymized}"
-										jsf:action="#{ProzessverwaltungForm.StatisticsProduction}"
+										jsf:action="#{ProzessverwaltungForm.statisticsProduction}"
 										title="#{msgs.productionStatistics}">
 										<i class="btn btn-blank fa fa-angle-right" />
 										<span>
@@ -454,7 +454,7 @@
 									<!-- StatisticsTroughput -->
 									<button class="btn btn-link ms-5 d-block" jsf:id="action34"
 										jsf:rendered="#{!HelperForm.anonymized}"
-										jsf:action="#{ProzessverwaltungForm.StatisticsTroughput}"
+										jsf:action="#{ProzessverwaltungForm.statisticsTroughput}"
 										title="#{msgs.productionThroughput}">
 										<i class="btn btn-blank fa fa-angle-right" />
 										<span>
@@ -466,7 +466,7 @@
 									</button>
 									<!-- StatisticsStorage -->
 									<button class="btn btn-link ms-5 d-block" jsf:id="action35"
-										jsf:action="#{ProzessverwaltungForm.StatisticsStorage}"
+										jsf:action="#{ProzessverwaltungForm.statisticsStorage}"
 										title="#{msgs.storageCalculator}">
 										<i class="btn btn-blank fa fa-angle-right" />
 										<span>
@@ -479,7 +479,7 @@
 									<!-- StatisticsCorrection -->
 									<button class="btn btn-link ms-5 d-block" jsf:id="action36"
 										jsf:rendered="#{!HelperForm.anonymized}"
-										jsf:action="#{ProzessverwaltungForm.StatisticsCorrection}"
+										jsf:action="#{ProzessverwaltungForm.statisticsCorrection}"
 										title="#{msgs.errorTracking}">
 										<i class="btn btn-blank fa fa-angle-right" />
 										<span>
@@ -491,7 +491,7 @@
 									</button>
 									<!-- ProjectAssociationss -->
 									<button class="btn btn-link ms-5 d-block" jsf:id="action37"
-										jsf:action="#{ProzessverwaltungForm.StatisticsProject}"
+										jsf:action="#{ProzessverwaltungForm.statisticsProject}"
 										title="#{msgs.projectAssociation}">
 										<i class="btn btn-blank fa fa-angle-right" />
 										<span>

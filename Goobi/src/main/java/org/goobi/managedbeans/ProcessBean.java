@@ -77,6 +77,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
+import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Docket;
 import org.goobi.beans.ExportValidator;
 import org.goobi.beans.Institution;
@@ -316,12 +317,14 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Inject
     private GoobiScriptManager goobiScriptManager;
 
+    private static final String TASK_EDIT_SIMULATOR = "/uii/task_edit_simulator";
+
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
 
         anzeigeAnpassen.put("numberOfImages", false);
 
-        this.sortierung = "titel";
+        sortierung = "prozesse.titel";
         /*
          * Vorgangsdatum generell anzeigen?
          */
@@ -560,7 +563,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             sql = sql + " projekte.projectIsArchived = false ";
         }
 
-        paginator = new DatabasePaginator(sortList(), sql, m, "process_all");
+        paginator = new DatabasePaginator(sortierung, sql, m, "process_all");
 
         this.modusAnzeige = "aktuell";
         return "process_all";
@@ -609,7 +612,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             sql = sql + " projekte.projectIsArchived = false ";
         }
         ProcessManager m = new ProcessManager();
-        paginator = new DatabasePaginator(sortList(), sql, m, "process_all");
+        paginator = new DatabasePaginator(sortierung, sql, m, "process_all");
         this.modusAnzeige = "vorlagen";
         return "process_all";
     }
@@ -663,48 +666,9 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
 
         ProcessManager m = new ProcessManager();
-        paginator = new DatabasePaginator(sortList(), sql, m, "process_all");
+        paginator = new DatabasePaginator(sortierung, sql, m, "process_all");
 
         return "process_all";
-    }
-
-    private String sortList() {
-        String answer = "prozesse.titel";
-        if ("titelAsc".equals(this.sortierung)) {
-            answer = "prozesse.titel";
-        } else if ("titelDesc".equals(this.sortierung)) {
-            answer = "prozesse.titel desc";
-        } else if ("batchAsc".equals(this.sortierung)) {
-            answer = "batchID";
-        } else if ("batchDesc".equals(this.sortierung)) {
-            answer = "batchID desc";
-        } else if ("projektAsc".equals(this.sortierung)) {
-            answer = "projekte.Titel";
-        } else if ("projektDesc".equals(this.sortierung)) {
-            answer = "projekte.Titel desc";
-        } else if ("vorgangsdatumAsc".equals(this.sortierung)) {
-            answer = "erstellungsdatum";
-        } else if ("vorgangsdatumDesc".equals(this.sortierung)) {
-            answer = "erstellungsdatum desc";
-        } else if ("fortschrittAsc".equals(this.sortierung)) {
-            answer = "sortHelperStatus";
-        } else if ("fortschrittDesc".equals(this.sortierung)) {
-            answer = "sortHelperStatus desc";
-        } else if ("idAsc".equals(this.sortierung)) {
-            answer = "prozesse.ProzesseID";
-        } else if ("idDesc".equals(this.sortierung)) {
-            answer = "prozesse.ProzesseID desc";
-        } else if ("institutionAsc".equals(sortierung)) {
-            answer = "institution.shortName";
-        } else if ("institutionDesc".equals(sortierung)) {
-            answer = "institution.shortName desc";
-        } else if ("numberOfImagesAsc".equals(sortierung)) {
-            answer = "prozesse.sortHelperImages";
-        } else if ("numberOfImagesDesc".equals(sortierung)) {
-            answer = "prozesse.sortHelperImages desc";
-        }
-
-        return answer;
     }
 
     /*
@@ -1230,7 +1194,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         filter = bld.toString();
     }
 
-    public void SchrittStatusUp() {
+    public void stepStatusUp() {
         if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE && this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DEACTIVATED) {
             this.mySchritt.setBearbeitungsstatusUp();
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
@@ -1251,7 +1215,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         deleteSymlinksFromUserHomes();
     }
 
-    public String SchrittStatusDown() {
+    public String stepStatusDown() {
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
 
@@ -1278,14 +1242,14 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
 
     @SuppressWarnings("unchecked")
-    public void SelectionAll() {
+    public void selectionAll() {
         for (Process proz : (List<Process>) this.paginator.getList()) {
             proz.setSelected(true);
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void SelectionNone() {
+    public void selectionNone() {
         for (Process proz : (List<Process>) this.paginator.getList()) {
             proz.setSelected(false);
         }
@@ -1309,9 +1273,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public void setMySchrittReload(Step mySchritt) {
-        this.mySchritt = mySchritt;
-        updateUsergroupPaginator();
-        updateUserPaginator();
+        setMySchritt(mySchritt);
     }
 
     public void setMyVorlageReload(Template myVorlage) {
@@ -1383,30 +1345,24 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         List<Step> steps = this.myProzess.getSchritte();
         int targetOrder = -1;
-        int currentOrder;
+        int currentOrder = 0;
 
         for (Step step : steps) {
             currentOrder = step.getReihenfolge().intValue();
-            // Is baseOrder < currentOrder < targetOrder or targetOrder undefined (-1)?
-            if (direction == -1) {//downwards
-
-                if (currentOrder < baseOrder) {
-                    if (targetOrder == -1 || (targetOrder != -1 && currentOrder > targetOrder)) {
-                        targetOrder = currentOrder;
-                    }
-                }
-                // Is targetOrder < currentOrder < baseOrder or targetOrder undefined (-1)?
-            } else if (direction == 1) {//upwards
-
-                if (currentOrder > baseOrder) {
-                    if (targetOrder == -1 || (targetOrder != 1 && currentOrder < targetOrder)) {
-                        targetOrder = currentOrder;
-                    }
-                }
-            }
         }
+        // Is baseOrder < currentOrder < targetOrder or targetOrder undefined (-1)?
+        if (direction == -1) {//downwards
+            if (currentOrder < baseOrder && (targetOrder == -1 || (targetOrder != -1 && currentOrder > targetOrder))) {
+                targetOrder = currentOrder;
+            }
+            // Is targetOrder < currentOrder < baseOrder or targetOrder undefined (-1)?
+        } else if (direction == 1 && currentOrder > baseOrder && (targetOrder == -1 || (targetOrder != 1 && currentOrder < targetOrder))) {
+            targetOrder = currentOrder;
+        }
+
         // When there is no next order, the given order will be returned
         return (targetOrder > 0 ? targetOrder : baseOrder);
+
     }
 
     private void saveStepInStepManager(Step step) {
@@ -1564,27 +1520,27 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
 
     @SuppressWarnings("unchecked")
-    public void CalcMetadataAndImagesPage() throws IOException, InterruptedException, SwapException, DAOException {
-        CalcMetadataAndImages((List<Process>) this.paginator.getList());
+    public void calcMetadataAndImagesPage() throws IOException, InterruptedException, SwapException, DAOException {
+        calcMetadataAndImages((List<Process>) this.paginator.getList());
     }
 
     @SuppressWarnings("unchecked")
-    public void CalcMetadataAndImagesSelection() throws IOException, InterruptedException, SwapException, DAOException {
-        ArrayList<Process> auswahl = new ArrayList<>();
+    public void calcMetadataAndImagesSelection() throws IOException, InterruptedException, SwapException, DAOException {
+        List<Process> auswahl = new ArrayList<>();
         for (Process p : (List<Process>) this.paginator.getList()) {
             if (p.isSelected()) {
                 auswahl.add(p);
             }
         }
-        CalcMetadataAndImages(auswahl);
+        calcMetadataAndImages(auswahl);
     }
 
     @SuppressWarnings("unchecked")
-    public void CalcMetadataAndImagesHits() throws IOException, InterruptedException, SwapException, DAOException {
-        CalcMetadataAndImages((List<Process>) this.paginator.getCompleteList());
+    public void calcMetadataAndImagesHits() throws IOException, InterruptedException, SwapException, DAOException {
+        calcMetadataAndImages((List<Process>) this.paginator.getCompleteList());
     }
 
-    private void CalcMetadataAndImages(List<Process> inListe) throws IOException, InterruptedException, SwapException, DAOException {
+    private void calcMetadataAndImages(List<Process> inListe) throws IOException, InterruptedException, SwapException, DAOException { // NOSONAR
         this.myAnzahlList = new ArrayList<>();
         int allMetadata = 0;
         int allDocstructs = 0;
@@ -1678,7 +1634,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             ImageIO.write(im, "png", baos);
             this.goobiScriptHitsImage = "data:image/png;base64, " + Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             log.error(e);
         }
     }
@@ -1769,7 +1724,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     private void logGoobiScriptExecution(List<Integer> processIds) {
         Collections.sort(processIds);
         User user = Helper.getCurrentUser();
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append("User \"");
         buffer.append(user != null ? user.getLogin() : "[unknown user]");
         buffer.append("\" executed GoobiScript ...\n");
@@ -1813,7 +1768,7 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
     private List<Integer> getProcessIdsForPage() {
         List<Integer> idList = new ArrayList<>();
-        for (Object processObject : paginator.getList()) {
+        for (DatabaseObject processObject : paginator.getList()) {
             Process process = (Process) processObject;
             idList.add(process.getId());
         }
@@ -1827,7 +1782,7 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
     private List<Integer> getProcessIdsForSelection() {
         List<Integer> idList = new ArrayList<>();
-        for (Object processObject : this.paginator.getList()) {
+        for (DatabaseObject processObject : this.paginator.getList()) {
             Process process = (Process) processObject;
             if (process.isSelected()) {
                 idList.add(process.getId());
@@ -1851,44 +1806,44 @@ public class ProcessBean extends BasicBean implements Serializable {
      * Statistische Auswertung
      */
 
-    public void StatisticsStatusVolumes() {
+    public void statisticsStatusVolumes() {
         this.statisticsManager =
                 new StatisticsManager(StatisticsMode.STATUS_VOLUMES, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
-    public void StatisticsUsergroups() {
+    public void statisticsUsergroups() {
         this.statisticsManager =
                 new StatisticsManager(StatisticsMode.USERGROUPS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
-    public void StatisticsRuntimeSteps() {
+    public void statisticsRuntimeSteps() {
         this.statisticsManager = new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS,
                 FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
-    public void StatisticsProduction() {
+    public void statisticsProduction() {
         this.statisticsManager =
                 new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
-    public void StatisticsStorage() {
+    public void statisticsStorage() {
         this.statisticsManager =
                 new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
-    public void StatisticsCorrection() {
+    public void statisticsCorrection() {
         this.statisticsManager =
                 new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
-    public void StatisticsTroughput() {
+    public void statisticsTroughput() {
         this.statisticsManager =
                 new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
-    public void StatisticsProject() {
+    public void statisticsProject() {
         this.statisticsManager =
                 new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
@@ -1926,7 +1881,7 @@ public class ProcessBean extends BasicBean implements Serializable {
      * Downloads
      */
 
-    public void DownloadTiffHeader() throws IOException {
+    public void downloadTiffHeader() throws IOException {
         TiffHeader tiff = new TiffHeader(this.myProzess);
         tiff.ExportStart();
     }
@@ -1965,7 +1920,7 @@ public class ProcessBean extends BasicBean implements Serializable {
      * starts generation of xml logfile for current process
      */
 
-    public void CreateXML() {
+    public void createXML() {
         XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         try {
             String ziel = Helper.getCurrentUser().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
@@ -1980,7 +1935,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     /**
      * transforms xml logfile with given xslt and provides download
      */
-    public void TransformXml() {
+    public void transformXml() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
             String outputFileName = "export.xml";
@@ -2074,7 +2029,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         CSVPrinter csvFilePrinter = null;
         if (!facesContext.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            try {
+            try { // NOSONAR try-with-resource not possible as CSVPrinter does not implement AutoCloseable
                 ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
                 String contentType = servletContext.getMimeType("export.csv");
                 response.setContentType(contentType);
@@ -2142,7 +2097,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         return columnList;
     }
 
-    public void generateResultAsPdf() {
+    public void generateResultAsPdf() { //NOSONAR
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
@@ -2158,7 +2113,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
                 XSSFWorkbook wb =
-                        sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
+                        sch.getResult(prepareSearchColumnData(), this.filter, sortierung, this.showClosedProcesses, this.showArchivedProjects);
 
                 List<List<XSSFCell>> rowList = new ArrayList<>();
                 XSSFSheet mySheet = wb.getSheetAt(0);
@@ -2219,7 +2174,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
                 XSSFWorkbook wb =
-                        sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
+                        sch.getResult(prepareSearchColumnData(), this.filter, sortierung, this.showClosedProcesses, this.showArchivedProjects);
 
                 wb.write(out);
                 out.flush();
@@ -2247,7 +2202,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
                 XWPFDocument wb =
-                        sch.getResultAsWord(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
+                        sch.getResultAsWord(prepareSearchColumnData(), this.filter, sortierung, this.showClosedProcesses, this.showArchivedProjects);
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
@@ -2273,7 +2228,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.rtf\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                sch.getResultAsRtf(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects, out);
+                sch.getResultAsRtf(prepareSearchColumnData(), this.filter, sortierung, this.showClosedProcesses, this.showArchivedProjects, out);
                 out.flush();
                 facesContext.responseComplete();
 
@@ -2337,7 +2292,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    // TODO validierung nur bei Schritt abgeben, nicht bei normalen speichern
     public void saveProcessProperties() {
         boolean valid = true;
         for (IProperty p : this.processPropertyList) {
@@ -2347,31 +2301,34 @@ public class ProcessBean extends BasicBean implements Serializable {
                 valid = false;
             }
         }
-
         if (valid) {
-            for (ProcessProperty p : this.processPropertyList) {
-                if (p.getProzesseigenschaft() == null) {
-                    Processproperty pe = new Processproperty();
-                    pe.setProzess(this.myProzess);
-                    p.setProzesseigenschaft(pe);
-                    this.myProzess.getEigenschaften().add(pe);
-                }
-                p.transfer();
-                if (!this.myProzess.getEigenschaften().contains(p.getProzesseigenschaft())) {
-                    this.myProzess.getEigenschaften().add(p.getProzesseigenschaft());
-                }
-            }
-
-            List<Processproperty> props = this.myProzess.getEigenschaftenList();
-            for (Processproperty pe : props) {
-                if (pe.getTitel() == null) {
-                    this.myProzess.getEigenschaften().remove(pe);
-                }
-            }
-
-            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
-            Helper.setMeldung("Properties saved");
+            saveValidProperties();
         }
+    }
+
+    private void saveValidProperties() {
+        for (ProcessProperty p : this.processPropertyList) {
+            if (p.getProzesseigenschaft() == null) {
+                Processproperty pe = new Processproperty();
+                pe.setProzess(this.myProzess);
+                p.setProzesseigenschaft(pe);
+                this.myProzess.getEigenschaften().add(pe);
+            }
+            p.transfer();
+            if (!this.myProzess.getEigenschaften().contains(p.getProzesseigenschaft())) {
+                this.myProzess.getEigenschaften().add(p.getProzesseigenschaft());
+            }
+        }
+
+        List<Processproperty> props = this.myProzess.getEigenschaftenList();
+        for (Processproperty pe : props) {
+            if (pe.getTitel() == null) {
+                this.myProzess.getEigenschaften().remove(pe);
+            }
+        }
+
+        PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+        Helper.setMeldung("Properties saved");
     }
 
     public void saveCurrentProperty() {
@@ -2549,7 +2506,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public void setConfirmLink(boolean confirm) {
-
+        // do nothing, its needed for jsf
     }
 
     public boolean getConfirmLink() {
@@ -2581,50 +2538,56 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
 
             if (mySchritt.isTypExportDMS()) {
-                IExportPlugin dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
-                try {
-                    dms.startExport(mySchritt.getProzess());
-                } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ReadException
-                        | TypeNotAllowedForParentException | IOException | ExportFileException | UghHelperException | SwapException
-                        | DAOException e) {
-                    log.error(e);
-                    Helper.setFehlerMeldung("Can't load export plugin.");
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+                startExport();
             } else if (mySchritt.isDelayStep()) {
                 Helper.setFehlerMeldung("cannotStartPlugin");
             } else {
                 Helper.addMessageToProcessJournal(mySchritt.getProcessId(), LogType.DEBUG,
                         "Plugin " + mySchritt.getStepPlugin() + " was executed from process details");
-                currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
-                if (currentPlugin != null) {
-                    currentPlugin.initialize(mySchritt, "/process_edit");
-                    if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
-
-                        bean.setMyPlugin(currentPlugin);
-                        String mypath = currentPlugin.getPagePath();
-                        currentPlugin.execute();
-                        return mypath;
-                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART) {
-
-                        bean.setMyPlugin(currentPlugin);
-                        String mypath = "/uii/task_edit_simulator";
-                        currentPlugin.execute();
-                        return mypath;
-                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.NONE) {
-                        currentPlugin.execute();
-                        currentPlugin.finish();
-                        return "";
-                    } else {
-                        Helper.setFehlerMeldung("cannotStartPlugin");
-                    }
-
-                }
+                return startStepPlugin();
             }
         }
 
         return "";
+    }
+
+    private String startStepPlugin() {
+        currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
+        if (currentPlugin != null) {
+            currentPlugin.initialize(mySchritt, "/process_edit");
+            if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
+                bean.setMyPlugin(currentPlugin);
+                String mypath = currentPlugin.getPagePath();
+                currentPlugin.execute();
+                return mypath;
+            } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART) {
+
+                bean.setMyPlugin(currentPlugin);
+                String mypath = TASK_EDIT_SIMULATOR;
+                currentPlugin.execute();
+                return mypath;
+            } else if (currentPlugin.getPluginGuiType() == PluginGuiType.NONE) {
+                currentPlugin.execute();
+                currentPlugin.finish();
+            } else {
+                Helper.setFehlerMeldung("cannotStartPlugin");
+            }
+        }
+        return "";
+    }
+
+    private void startExport() {
+        IExportPlugin dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
+        try {
+            dms.startExport(mySchritt.getProzess());
+        } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ReadException
+                | TypeNotAllowedForParentException | IOException | ExportFileException | UghHelperException | SwapException
+                | DAOException e) {
+            log.error(e);
+            Helper.setFehlerMeldung("Can't load export plugin.");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
@@ -2686,7 +2649,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    public boolean isFoldersArchived() throws IOException, InterruptedException, SwapException, DAOException {
+    public boolean isFoldersArchived() throws IOException, SwapException {
         Path images = Paths.get(this.myProzess.getImagesDirectory());
         try (Stream<Path> filesInImages = Files.list(images)) {
             return filesInImages.anyMatch(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".xml"));

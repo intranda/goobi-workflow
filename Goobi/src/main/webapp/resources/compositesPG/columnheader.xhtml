@@ -20,11 +20,12 @@
 		<composite:attribute name="addAction" default="false" />
 		<composite:attribute name="customActionBean" type="java.lang.Object"/>
 		<composite:attribute name="customAction" type="java.lang.String"/>
+        <composite:attribute name="sortField" type="java.lang.String"/>
 	</composite:interface>
 
 	<composite:implementation>
-		<ui:param name="descendingLabel" value="#{cc.attrs.name}Desc" />
-		<ui:param name="ascendingLabel" value="#{cc.attrs.name}Asc" />
+		<ui:param name="descendingLabel" value="#{cc.attrs.sortField} desc" />
+		<ui:param name="ascendingLabel" value="#{cc.attrs.sortField}" />
 
 		<th scope="col" role="columnheader" id="#{cc.attrs.id}" style="#{cc.attrs.style}" class="#{cc.attrs.addClass}" jsf:rendered="#{cc.attrs.sortable}"
 			aria-sort="#{cc.attrs.form.sortierung== descendingLabel ? 'descending' : cc.attrs.form.sortierung== ascendingLabel ? 'ascending' :'none'}">

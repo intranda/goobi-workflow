@@ -1078,7 +1078,7 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public void SelectionNone() {
+    public void selectionNone() {
         for (Iterator<Step> iter = (Iterator<Step>) this.paginator.getList().iterator(); iter.hasNext();) {
             Step s = iter.next();
             s.setSelected(false);
@@ -1089,7 +1089,7 @@ public class StepBean extends BasicBean implements Serializable {
      * Downloads
      */
 
-    public void DownloadTiffHeader() throws IOException {
+    public void downloadTiffHeader() throws IOException {
         TiffHeader tiff = new TiffHeader(this.mySchritt.getProzess());
         tiff.ExportStart();
     }

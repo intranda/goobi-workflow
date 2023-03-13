@@ -212,7 +212,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 											<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Download')}">
 												<li>
 													<!-- XML Export-Schaltknopf -->
-													<button jsf:id="grid_ubid119" jsf:action="#{ProzessverwaltungForm.CreateXML}" class="dropdown-item" title="#{msgs.createXML}">
+													<button jsf:id="grid_ubid119" jsf:action="#{ProzessverwaltungForm.createXML}" class="dropdown-item" title="#{msgs.createXML}">
 														<i class="fa fa-floppy-o margin-right-10"></i>
 														<h:outputText value="#{msgs.createXML}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
