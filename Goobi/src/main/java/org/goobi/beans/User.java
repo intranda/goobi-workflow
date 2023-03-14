@@ -389,13 +389,13 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         if (inPasswort == null || inPasswort.length() == 0) {
             return false;
         } else /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
-        if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
-            LdapAuthentication myldap = new LdapAuthentication();
-            return myldap.isUserPasswordCorrect(this, inPasswort);
-        } else {
-            String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
-            return this.encryptedPassword.equals(hashedPasswordBase64);
-        }
+            if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
+                LdapAuthentication myldap = new LdapAuthentication();
+                return myldap.isUserPasswordCorrect(this, inPasswort);
+            } else {
+                String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
+                return this.encryptedPassword.equals(hashedPasswordBase64);
+            }
     }
 
     public String getPasswordHash(String plainTextPassword) {
@@ -679,21 +679,21 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     public List<SelectItem> getProcessListColumnNames() {
         List<SelectItem> taskList = new ArrayList<>();
         if (isDisplayIdColumn()) {
-            taskList.add(new SelectItem("id", Helper.getTranslation("id")));
+            taskList.add(new SelectItem("prozesse.ProzesseID", Helper.getTranslation("id")));
         }
         if (isDisplayBatchColumn()) {
-            taskList.add(new SelectItem("batch", Helper.getTranslation("batch")));
+            taskList.add(new SelectItem("prozesse.batchID", Helper.getTranslation("batch")));
         }
-        taskList.add(new SelectItem("titel", Helper.getTranslation("prozessTitel")));
+        taskList.add(new SelectItem("prozesse.titel", Helper.getTranslation("titel")));
 
         if (isDisplayProcessDateColumn()) {
-            taskList.add(new SelectItem("vorgangsdatum", Helper.getTranslation("vorgangsdatum")));
+            taskList.add(new SelectItem("prozesse.erstellungsdatum", Helper.getTranslation("vorgangsdatum")));
         }
-        taskList.add(new SelectItem("fortschritt", Helper.getTranslation("status")));
-        taskList.add(new SelectItem("projekt", Helper.getTranslation("projekt")));
+        taskList.add(new SelectItem("prozesse.sortHelperStatus", Helper.getTranslation("status")));
+        taskList.add(new SelectItem("projekte.titel", Helper.getTranslation("projekt")));
 
         if (isDisplayInstitutionColumn()) {
-            taskList.add(new SelectItem("institution", Helper.getTranslation("institution")));
+            taskList.add(new SelectItem("institution.shortName", Helper.getTranslation("institution")));
         }
 
         return taskList;
