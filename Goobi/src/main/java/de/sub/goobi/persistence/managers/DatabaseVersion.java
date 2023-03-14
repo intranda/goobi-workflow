@@ -1972,6 +1972,53 @@ public class DatabaseVersion {
         }
     }
 
+    public static void createTableForBackgroundJobs() {
+        if (!checkIfTableExists("background_job")) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE background_job ( ");
+            sb.append("id INT(11) unsigned NOT NULL AUTO_INCREMENT, ");
+            sb.append("jobname VARCHAR(255), ");
+            sb.append("jobtype VARCHAR(255), ");
+            sb.append("jobstatus INT(11), ");
+            sb.append("retrycount INT(11), ");
+            sb.append("lastAltered DATETIME, ");
+            sb.append("PRIMARY KEY (id) ); ");
+            executeStatement(sb);
+        }
+
+        if (!checkIfTableExists("background_job_properties")) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE background_job_properties ( ");
+            sb.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sb.append("job_id INT(11), ");
+            sb.append("title VARCHAR(255), ");
+            sb.append("value TEXT, ");
+            sb.append("PRIMARY KEY (id), ");
+            sb.append("KEY job_id (job_id) ");
+            sb.append("); ");
+            executeStatement(sb);
+        }
+    }
+
+    private static void executeStatement(StringBuilder sb) {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, sb.toString());
+        } catch (SQLException e) {
+            log.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    log.error(e);
+                }
+            }
+        }
+    }
+
     public static void checkIfEmptyDatabase() {
         try {
             int num = new UserManager().getHitSize(null, null, null);

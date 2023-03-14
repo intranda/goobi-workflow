@@ -74,32 +74,12 @@ public class AdministrationForm implements Serializable {
 
     public void startStorageCalculationForAllProcessesNow() {
         HistoryAnalyserJob job = new HistoryAnalyserJob();
-        if (Boolean.FALSE.equals(job.getIsRunning())) { // job.getIsRunning() returns a boxed Boolean object
+        if (!job.isRunning()) {
             job.execute();
             Helper.setMeldung("scheduler calculation executed");
         } else {
             Helper.setMeldung("Job is already running, try again in a few minutes");
         }
-    }
-
-    @Deprecated
-    public void test() {
-        Helper.setFehlerMeldung(
-                "Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 1");
-        Helper.setFehlerMeldung(
-                "Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 2");
-        Helper.setFehlerMeldung(
-                "Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
-        Helper.setFehlerMeldung(
-                "Fehlermeldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 4",
-                new Exception("eine Exception die eine Exception ist und damit eine Exception geworfen hat."));
-
-        Helper.setMeldung(
-                "Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 1");
-        Helper.setMeldung(
-                "Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 2");
-        Helper.setMeldung(
-                "Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
     }
 
     public String setPlugin(String pluginName) {
