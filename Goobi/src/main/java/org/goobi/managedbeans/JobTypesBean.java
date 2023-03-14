@@ -127,6 +127,14 @@ public class JobTypesBean implements Serializable {
         return "admin_jobtypes_all.xhtml";
     }
 
+    public void toggleJobType(JobType jobType) {
+        if (jobType.isPaused()) {
+            this.unPauseJobType(jobType);
+        } else {
+            this.pauseJobType(jobType);
+        }
+    }
+
     public void pauseJobType(JobType jobType) {
         jobType.setPaused(true);
         this.apply();

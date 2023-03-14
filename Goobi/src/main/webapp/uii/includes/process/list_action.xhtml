@@ -22,9 +22,10 @@
                             <h:form id="actionForm" prependId="false">
                                 <ul class="action-ul">
 
-                                    <h:panelGroup rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList}">
 
-                                        <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{true}">
+
+                                        <h:panelGroup rendered="#{true}">
                                             <li class="action-li">
                                                 <!-- Upload-Schaltknopf -->
                                                 <button  jsf:action="#{ProzessverwaltungForm.UploadFromHomeAlle}" jsf:id="uploadFromHome" class="btn btn-lightred" title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.upload}')) return false">
@@ -34,7 +35,7 @@
                                             </li>
                                         </h:panelGroup>
 
-                                        <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                        <h:panelGroup rendered="#{true}">
                                             <li class="action-li">
 
                                                 <button onclick="toggle('possibleActions1')" jsf:id="downloadToHome" class="btn btn-green">
@@ -119,25 +120,25 @@
                                             <button jsf:id="expandbutton5" jsf:action="#{NavigationForm.Reload}" class="button-link blue">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
                                                 <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
-                                                <f:setPropertyActionListener value="#{NavigationForm.uiStatus.goobiScript eq 'true' ? 'false' : 'true'}" 
+                                                <f:setPropertyActionListener value="#{NavigationForm.uiStatus.goobiScript eq 'true' ? 'false' : 'true'}"
                                                 	target="#{NavigationForm.uiStatus.goobiScript}"/>
                                                 <f:ajax render="actionForm"/>
                                             </button>
 											<ui:fragment rendered="#{NavigationForm.uiStatus.goobiScript eq 'true'}">
 	                                            <ul id="possibleActions5" class="action-intent-ul">
 	                                                <li class="action-intent-li">
-                                                    
+
 	                                                	<!-- iterate through all existing GoobiScripts -->
                                                         <ui:repeat var="gs" value="#{ProzessverwaltungForm.allGoobiScripts}">
                                                             <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('goobiscript_'.concat(gs.one))}">
-                                                            	<span class="badge badge-intranda-light pointer" 
+                                                            	<span class="badge badge-intranda-light pointer"
     			                                                	onclick="goobiScriptCodeMirror.doc.setValue('#{gs.two}')">
     			                                                    #{gs.one}
     			                                                </span>
                                                             </ui:fragment>
 														</ui:repeat>
 	                                                </li>
-                                                    
+
 	                                                <li class="action-intent-li">
 	                                                    <x:inputTextarea id="goobiScriptfield" pt:aria-label="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
 	                                                </li>
@@ -173,7 +174,7 @@
                                         </li>
 
                                     </h:panelGroup>
-                                    
+
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Download') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <button type="button" jsf:id="expandbutton10" class="expandbutton">
@@ -364,13 +365,13 @@
                                     </h:panelGroup>
 
                                 </ul>
-                            
+
                             <h:panelGroup id="goobiScriptModalWrapper" prependId="false" rendered="#{LoginForm.hasAnyGoobiScriptRole and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
 	                            <h:panelGroup styleClass="modal fade" layout="block" id="goobiScriptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" rendered="#{ProzessverwaltungForm.parsedGoobiScripts != null}">
 		                            <div class="modal-dialog" role="document">
 		                                <div class="modal-content">
 		                                    <div class="modal-header">
-		
+
 		                                        <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
 		                                            <i class="fa fa-times"></i>
 		                                        </a>
@@ -382,7 +383,7 @@
 		                                    	<div class="text-center" style="border: 2px solid red;">
 		                                    		<img src="#{ProzessverwaltungForm.goobiScriptHitsImage}" style="height: 32px;"></img>
 		                                    	</div><br />
-		                                    	<p>#{msgs.youWantToExecuteGoobiScript}</p> 
+		                                    	<p>#{msgs.youWantToExecuteGoobiScript}</p>
 		                                    	<pre>#{ProzessverwaltungForm.goobiScript}</pre><br/>
 		                                    	<p>#{msgs.pleaseEnterNumberOfProcesses}</p>
 		                                        <h:inputText id="goobiScriptPopup" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScriptHitsCountUser}" validatorMessage="#{msgs.GoobiScript_input_not_valid}" onkeydown="clickOnEnter(event)" pt:data-onenterbutton="goobiScriptConfirmButton">
@@ -390,13 +391,13 @@
 		                                        </h:inputText>
 		                                    </div>
 		                                    <div class="modal-footer">
-		
+
 												<!--
 												<a class="btn pull-left" title="#{msgs.cancel}" data-dismiss="modal">
 		                                            <h:outputText value="#{msgs.cancel}" />
 		                                        </a>
 		                                        -->
-		                                        
+
 		                                        <button jsf:id="goobiScriptCancelButton" title="#{msgs.goobiScriptAusfuehren}" jsf:rel="tooltip" class="btn pull-left">
 		                                            <h:outputText value="#{msgs.cancel} " />
 		                                        </button>
@@ -404,12 +405,12 @@
 		                                            <i class="fa fa-cogs margin-right-10"></i>
 		                                            <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
 		                                        </button>
-		
+
 		                                    </div>
 		                                </div>
 		                            </div>
 		                        </h:panelGroup>
-	                        
+
                         	</h:panelGroup>
                             </h:form>
                         </div>

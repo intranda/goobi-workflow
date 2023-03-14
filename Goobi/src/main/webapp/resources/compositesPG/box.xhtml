@@ -1,47 +1,57 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
   xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+>
 
 	<composite:interface>
 		<composite:attribute name="boxType" />
-		<composite:attribute name="scope" />
+		<composite:attribute name="boxTitle" default="true" />
+		<composite:attribute name="boxForm" default="false"/>
+		<composite:attribute name="boxPadding" default="true" />
+		<composite:attribute name="boxSmall" default="false"/>
+		<composite:attribute name="boxScope" />
 		<composite:attribute name="icon" />
 		<composite:attribute name="title" />
-		<composite:attribute name="padding" default="true" />
-		<composite:attribute name="scrollX" default="false" />
-		<composite:attribute name="boxTitle" default="true" />
-		<composite:attribute name="addClass" />
 	</composite:interface>
 
 	<composite:implementation>
 
+	<!-- BOX -->
+	<h:panelGroup
+		id="box"
+		layout="block"
+		styleClass="box
+		box--#{cc.attrs.boxType}
+		#{cc.attrs.boxScope}
+		#{cc.attrs.boxPadding ? 'box--padded' : 'box--no-padding'}
+		#{cc.attrs.boxSmall ? 'box--small' : ''}
+		#{cc.attrs.boxForm ? 'form-box' : ''}">
 
-	<div class="box box--#{cc.attrs.boxType} #{cc.attrs.scope}">
-			<!--
-      <div class="box-title">
+			<!-- BOX CONTENT -->
+			<!-- Renders if boxTitle = true -->
+			<h:panelGroup layout="block" class="box__content">
 
-        <h2>
-          <i class="fa #{cc.attrs.icon}"></i>
-          <h:outputText value="#{cc.attrs.title}" />
-        </h2>
-      </div>
-			-->
+				<intranda:boxTitle
+					rendered="#{cc.attrs.boxTitle}"
+					title="#{cc.attrs.title}"
+					icon="#{cc.attrs.icon}"/>
 
-			<div class="box__content #{cc.attrs.padding ? 'box__content--padded' : 'p-0'} #{cc.attrs.scrollX ? 'box__content--scrollx' : ''} #{cc.attrs.addClass}">
+				<div class="#{cc.attrs.boxTitle ? 'box__body' : 'box__content-inner'}">
+					<composite:insertChildren />
+				</div>
 
-			<intranda:boxTitle rendered="#{cc.attrs.boxTitle}" title="#{cc.attrs.title}" icon="#{cc.attrs.icon}" />
-
-
-				<composite:insertChildren/>
-
-      </div> <!-- box-content end -->
-    </div> <!-- box end -->
-
+			</h:panelGroup>
+			<!-- // BOX CONTENT -->
+			
+    </h:panelGroup>
+	<!-- // BOX -->
 
 	</composite:implementation>
 </ui:composition>

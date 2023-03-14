@@ -411,7 +411,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export": //NOSONAR
                             configuredFolderNames
-                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -453,8 +453,8 @@ public class ProzesskopieForm implements Serializable {
         if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
             filter.append(" AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ")
-                    .append(aktuellerNutzer.getId())
-                    .append(")");
+            .append(aktuellerNutzer.getId())
+            .append(")");
         }
         Institution inst = null;
         if (aktuellerNutzer != null && !aktuellerNutzer.isSuperAdmin()) {
@@ -1373,10 +1373,17 @@ public class ProzesskopieForm implements Serializable {
         }
     }
 
+    /**
+     * Get the UI part of the opac plugin as path to let it be embedded into the process creation interface
+     *
+     * @return
+     */
     public String getPluginGui() {
-        return currentCatalogue == null || currentCatalogue.getOpacPlugin() == null ? "/uii/includes/process/process_new_opac.xhtml"
-                : currentCatalogue.getOpacPlugin().getGui();
-
+        if (currentCatalogue == null || currentCatalogue.getOpacPlugin() == null) {
+            return "/uii/templatePG/includes/process/process_new_opac.xhtml";
+        } else {
+            return currentCatalogue.getOpacPlugin().getGui();
+        }
     }
 
     /*
@@ -1384,7 +1391,7 @@ public class ProzesskopieForm implements Serializable {
      */
 
     /**
-     * Processtitel und andere Details generieren ================================================================
+     * Processtitel und andere Details generieren
      */
     public void CalcProzesstitel() {
         String currentAuthors = "";

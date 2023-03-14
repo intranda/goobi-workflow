@@ -73,12 +73,12 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public @Data class Image {
     private static final int LARGE_THUMBNAIL_SIZE_FACTOR = 3;
-    private static final String PLACEHOLDER_URL_PDF = "/uii/template/img/goobi_placeholder_pdf_large.png?version=1";
-    private static final String PLACEHOLDER_URL_EPUB = "/uii/template/img/goobi_placeholder_epub_large.png?version=1";
-    private static final String PLACEHOLDER_URL_3D = "/uii/template/img/goobi_3d_object_placeholder_large.png?version=1";
-    private static final String PLACEHOLDER_URL_VIDEO = "/uii/template/img/goobi_placeholder_video_large.png?version=1";
-    private static final String PLACEHOLDER_URL_AUDIO = "/uii/template/img/goobi_placeholder_audio_large.png?version=1";
-    private static final String PLACEHOLDER_URL_NOTFOUND = "/uii/template/img/goobi_placeholder_notFound_large.png?version=1";
+    private static final String PLACEHOLDER_URL_PDF = "/uii/templatePG/img/goobi_placeholder_pdf_large.png?version=1";
+    private static final String PLACEHOLDER_URL_EPUB = "/uii/templatePG/img/goobi_placeholder_epub_large.png?version=1";
+    private static final String PLACEHOLDER_URL_3D = "/uii/templatePG/img/goobi_3d_object_placeholder_large.png?version=1";
+    private static final String PLACEHOLDER_URL_VIDEO = "/uii/templatePG/img/goobi_placeholder_video_large.png?version=1";
+    private static final String PLACEHOLDER_URL_AUDIO = "/uii/templatePG/img/goobi_placeholder_audio_large.png?version=1";
+    private static final String PLACEHOLDER_URL_NOTFOUND = "/uii/templatePG/img/goobi_placeholder_notFound_large.png?version=1";
 
     private static final String FILE_TYPE_NOT_IMPLEMENTED_ERROR = "Filetype handling not implemented at ";
 
@@ -486,13 +486,13 @@ public @Data class Image {
 
             String mimetype = NIOFileUtils.getMimeTypeFromFile(path);
             if (mimetype != null) {
-                if (mimetype.startsWith("audio") && (mimetype.equals("audio/mpeg") || mimetype.equals("audio/ogg") || mimetype.equals("audio/wav")
-                        || mimetype.equals("audio/x-wav"))) {
+                if (mimetype.startsWith("audio") && ("audio/mpeg".equals(mimetype) || "audio/ogg".equals(mimetype) || "audio/wav".equals(mimetype)
+                        || "audio/x-wav".equals(mimetype))) {
                     return Type.audio;
                 } else if (mimetype.startsWith("video")
-                        && (mimetype.equals("video/mp4") || mimetype.equals("video/webm") || mimetype.equals("video/ogg"))) {
+                        && ("video/mp4".equals(mimetype) || "video/webm".equals(mimetype) || "video/ogg".equals(mimetype))) {
                     return Type.video;
-                } else if (mimetype.equals("application/mxf")) {
+                } else if ("application/mxf".equals(mimetype)) {
                     return Type.video;
                 } else if (mimetype.startsWith("image/")) {
                     return Type.image;

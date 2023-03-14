@@ -5,9 +5,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:p="http://primefaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -37,73 +37,74 @@
 
     <ui:define name="content">
 
-    <style>
-        .select-radio input[type=radio] {
-            margin-left: 20px !important;
-        }        
-    </style>
-
         <ui:fragment rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
-            <div class="row" role="main">
-                <div class="col-sm-12">
-                    <div class="box box-color orange box-bordered">
-                        <div class="box-title">
-                            <h2>
-                                <i class="fa fa-database box-icon-fix"></i>
-                                <h:outputText value="#{myPageTitle}" />
-                            </h2>
-                        </div>
-                        <div class="box-content">
-                            <h:panelGroup class="draganddroparea col-sm-4">
-                                <h:form
-                                    id="uploadform"
-                                    prependId="false" enctype="multipart/form-data">
-                                    <p:fileUpload
-                                        listener="#{vocabularyBean.handleFileUpload}"
-                                        id="upload"
-                                        name="uploadName"
-                                        auto="true"
-                                        style="text-align:center;"
-                                        mode="advanced"
-                                        multiple="false"
-                                        dragDropSupport="true"
-                                        label="#{msgs.vocabularyManager_uploadExcelFileArea}"
-                                        allowTypes="/(\.|\/)(xml|xls|xlsx|json)$/"
-                                        update=":actionform">
-                                        <f:passThroughAttribute
-	                                    	name="aria-label"
-	                                    	value="#{msgs.vocabularyManager_uploadExcelFileArea}" />
-                                     </p:fileUpload>
-                                </h:form>
-                            </h:panelGroup>
+
+            <main id="vocabularyUpload" class="row">
+                <div class="col-12">
+
+                    <intranda:box id="uploadBox"
+                        boxType="action"
+                        title="#{myPageTitle}"
+                        icon="fa-database"
+                    >
+
+                      <div class="row">
+
+                          <div class="col-12 col-md-4 d-flex">
+
+                          <h:panelGroup class="draganddroparea">
+                              <h:form
+                              id="uploadform"
+                              prependId="false" enctype="multipart/form-data">
+                              <p:fileUpload
+                                  listener="#{vocabularyBean.handleFileUpload}"
+                                  id="upload"
+                                  name="uploadName"
+                                  auto="true"
+                                  style="text-align:center;"
+                                  mode="advanced"
+                                  multiple="false"
+                                  dragDropSupport="true"
+                                  label="#{msgs.vocabularyManager_uploadExcelFileArea}"
+                                  allowTypes="/(\.|\/)(xml|xls|xlsx|json)$/"
+                                  update="uploadBox:actionform uploadBox:vocabBoxActions"
+                                  >
+                                  <f:passThroughAttribute
+                                      name="aria-label"
+                                      value="#{msgs.vocabularyManager_uploadExcelFileArea}" />
+                               </p:fileUpload>
+                              </h:form>
+                          </h:panelGroup>
+
+                          </div>
+                          <div class="col-12 col-md-8">
 
                             <h:panelGroup
                                 id="actionform"
-                                layout="block"
-                                styleClass="col-sm-8">
-                                
+                                layout="block">
+
                                 <h:form
                                     id="assignForm"
-                                    prependId="false"
-                                    styleClass="form-horizontal form-bordered">
+                                    prependId="false">
 
-                                        <h:selectOneRadio
-                                            value="#{vocabularyBean.importType}" style="padding-left:30px"
-                                            styleClass="select-radio">
-                                            <f:selectItem 
-                                                itemLabel="#{msgs.vocabularyManager_excelImport_removeExisting}"
-                                                itemValue="remove" />
-                                            <f:selectItem
-                                                itemLabel="#{msgs.vocabularyManager_excelImport_addNew}"
-                                                itemValue="add" />
-                                            <f:selectItem
-                                                itemLabel="#{msgs.vocabularyManager_excelImport_mergeExisting}"
-                                                itemValue="merge" />
-                                        <f:ajax
-                                            execute="@this"
-                                            render="vocabularyWarning" />
-                                        </h:selectOneRadio>
+                                    <h:selectOneRadio id="vocabSelects"
+                                        value="#{vocabularyBean.importType}" styleClass="select-radio select-radio-horizontal">
+                                        <f:selectItem
+                                            itemLabel="#{msgs.vocabularyManager_excelImport_removeExisting}"
+                                            itemValue="remove" />
+                                        <f:selectItem
+                                            itemLabel="#{msgs.vocabularyManager_excelImport_addNew}"
+                                            itemValue="add" />
+                                        <f:selectItem
+                                            itemLabel="#{msgs.vocabularyManager_excelImport_mergeExisting}"
+                                            itemValue="merge" />
+                                    <f:ajax
+                                        execute="@this"
+                                        render="vocabularyWarning" />
+                                    </h:selectOneRadio>
 
+                                    <div class="gw-table gw-table-fixed mt-4">
+                                        <div class="gw-table__wrapper">
                                     <x:dataTable
                                         id="headerAssignment"
                                         rendered="#{vocabularyBean.headerOrder.size() gt 0}"
@@ -138,56 +139,73 @@
                                             </h:selectOneMenu>
                                         </h:column>
                                     </x:dataTable>
+                                        </div>
+                                    </div>
 
-                                    <br />
                                     <h:panelGroup id="vocabularyWarning">
                                         <h:panelGroup
+                                            layout="block"
                                             rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.importType == 'remove'}"
-                                            styleClass="alert alert-danger block">
+                                            styleClass="alert alert-danger mt-4">
                                             <h:outputText
                                                 value="#{vocabularyBean.filename}"
-                                                styleClass="font-bold" />
+                                                styleClass="fw-bold" />
                                             <h:outputText value=" - #{msgs.vocabularyManager_excelImport_alert}" />
                                         </h:panelGroup>
 
                                         <h:panelGroup
+                                            layout="block"
                                             rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.importType != 'remove'}"
-                                            styleClass="alert alert-warning block">
+                                            styleClass="alert alert-warning mt-4">
                                             <h:outputText
                                                 value="#{vocabularyBean.filename}"
-                                                styleClass="font-bold" />
+                                                styleClass="fw-bold" />
                                             <h:outputText value=" - #{msgs.vocabularyManager_excelImport_info}" />
                                         </h:panelGroup>
                                     </h:panelGroup>
-                                    <!-- Save -->
-                                    <button
-                                        jsf:rendered="#{vocabularyBean.headerOrder.size() gt 0}"
-                                        class="btn btn-success pull-right font-size-s margin-bottom-most"
-                                        jsf:id="absenden"
-                                        type="submit"
-                                        jsf:action="#{vocabularyBean.importRecords}">
-                                        <i class="fa fa-save margin-right-5"></i>
-                                        <h:outputText value="#{msgs.vocabularyManager_excelImport_importRecords}" />
-                                    </button>
-
-                                    <!-- Cancel -->
-                                    <button
-                                        class="btn btn-cancel pull-right font-size-s margin-bottom-most margin-sides-10"
-                                        jsf:id="abbrechen"
-                                        type="cancel"
-                                        jsf:action="#{vocabularyBean.editVocabulary}"
-                                        jsf:immediate="true">
-                                        <h:outputText value="#{msgs.abbrechen}" />
-                                    </button>
 
                                 </h:form>
                             </h:panelGroup>
+                          </div>
 
+                            <h:form id="vocabBoxActions" styleClass="box__actions">
+
+                              <!-- Cancel -->
+                              <a
+                                  class="btn btn-blank"
+                                  jsf:id="abbrechen"
+                                  type="cancel"
+                                  jsf:action="#{vocabularyBean.editVocabulary}"
+                                  jsf:immediate="true">
+                                  <h:outputText value="#{msgs.abbrechen}" />
+                              </a>
+
+                              <!-- Save -->
+                              <button
+                                  jsf:rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                  class="btn btn-success"
+                                  jsf:id="absenden"
+                                  type="submit"
+                                  jsf:action="#{vocabularyBean.importRecords}">
+                                  <i class="fa fa-save margin-right-5"></i>
+                                  <span>
+                                      <h:outputText value="#{msgs.vocabularyManager_excelImport_importRecords}" />
+                                  </span>
+                              </button>
+
+                            </h:form>
+
+                            </div>
+
+                            <!--
                         </div>
-                    </div>
+                            -->
+                    </intranda:box>
+
+
                 </div>
 
-            </div>
+            </main>
 
         </ui:fragment>
 

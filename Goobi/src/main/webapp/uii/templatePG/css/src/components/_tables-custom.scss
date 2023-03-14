@@ -1,54 +1,96 @@
-// BS override, make table end at bottom of the box
-.table {
-  margin-bottom: 0;
-}
-
+// Set table column width
+.gw-table-fixed,
 .table-fixed {
   --width-table-col: 200px;
 }
 
-// Border color: all borders, one color
-tbody,
-td,
-tfoot,
-th,
-thead,
-tr,
-.table,
-.box__content--padded tr {
+.gw-col-check {
+  --width-table-col: 100px;
+}
+
+/* ========================================
+ * BS OVERRIDES
+ * ====================================== */
+
+// remove margin and make table end at bottom of the box
+.table {
+  margin-bottom: 0;
   border-color: var(--clr-neutral-300);
 }
 
-thead {
-  background-color: var(--clr-neutral-200);
-  button {
-    background-color: transparent;
-    border: 0;
+.table > :not(caption) > * > * {
+  padding: 0.6rem;
+}
+
+/* ========================================
+ * Goobi tables
+ * ====================================== */
+
+.table .row {
+  width: 100%;
+}
+
+// Border color: all borders, one color
+.gw-table {
+  tbody,
+  td,
+  tfoot,
+  th,
+  thead,
+  tr,
+  .table,
+  .box__content--padded tr {
+    border-color: var(--clr-neutral-300);
   }
-}
 
-.table > :not(:first-child) {
-  border-top: unset;
-}
-
-th span {
-  font-weight: bold;
-}
-
-td {
-  .btn-group .btn:not(:first-of-type) {
-    margin-right: 0.8rem;
+  thead {
+    background-color: var(--clr-neutral-200);
+    button {
+      background-color: transparent;
+      border: 0;
+    }
   }
-  .btn {
-    // Display a margin when buttons are stacked
-    margin-top: 1px;
 
-    & ~ .btn {
-      margin-inline-start: 0;
-      margin-inline-end: 0;
+  .table-bordered-custom {
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--clr-neutral-300);
+  }
+
+  .table-bordered-custom td:not(:last-child) {
+    border-right-width: 1px;
+    border-color: inherit;
+    border-style: inherit;
+  }
+
+  .table-bordered-custom.-no-bb tr:last-child td {
+    border-bottom-width: 0;
+  }
+
+  .table > :not(:first-child) {
+    border-top: unset;
+  }
+
+  th span {
+    font-weight: bold;
+  }
+
+  td {
+    .btn-group .btn:not(:first-of-type) {
+      margin-right: 0.0rem;
+    }
+    .btn {
+      // Display a margin when buttons are stacked
+      margin-top: 1px;
+
+      & ~ .btn {
+        margin-inline-start: 0;
+        margin-inline-end: 0;
+      }
     }
   }
 }
+
 // Remove borders left + right if the table is in a box
 .box th:first-child,
 .box td:first-child {
@@ -60,56 +102,124 @@ td {
 }
 
 .table-hover > tbody > tr:hover > * {
-  --bs-table-accent-bg: var(--clr-neutral-200);
+  --bs-table-accent-bg: #f8f8f8;
 }
 
 // Some tables come with a search bar:
+// both classes are used for the same purpose
+// => .dataTables__search__container is a legacy version
+.gw-table__search,
+.dataTables__search,
 .dataTables__search__container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   margin: 1.6rem 0;
+  gap: var(--gap, 8px);
 
   // Contains search form + `show active users btn`
   form {
     display: flex;
     flex-shrink: 0;
   }
+
+  input {
+    background-color: #f6f6f6;
+  }
 }
 
-.dataTables__filter-container {
-  width: 84%;
+.gw-table__filters {
+  display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: var(--gap, 8px);
+  width: 84%;
 
-  .search-form {
+  &__option {
+    background-color: var(--clr-neutral-200);
+
+    &:hover {
+      background-color: var(--clr-neutral-300);
+    }
+  }
+
+  .dropdown-item {
+    white-space: normal;
+    max-width: 32rem;
+    min-width: 24rem;
+    min-height: 2.8rem;
+  }
+
+  &__search-bar {
     flex: 0 1 590px;
+
+    // BS override
+    .searchfield {
+    }
+    .searchfield ~ button {
+      border-left-width: 0px;
+      margin-left: 0px !important;
+    }
+
+    .input-group {
+      flex-wrap: nowrap;
+    }
+
+    button {
+      border: 1px solid var(--clr-neutral-300);
+    }
   }
 }
 
 @media (max-width: 555px) {
-  .dataTables__filter-container {
+  .gw-table__filters {
     width: 100%;
     flex-wrap: wrap;
   }
 }
 
-.dataTables__filter {
-  background-color: var(--clr-neutral-200);
+/* ========================================
+ * Fixed sized Goobi tables
+ * ====================================== */
 
-  input,
-  button:not(.btn--active-users) {
-    border: 1px solid var(--clr-neutral-300);
-  }
-
-  &.-search-bar {
-    width: 100%;
-  }
+.gw-table-fixed__sizeXXS{
+  --width-table-col: 50px;
 }
 
+.gw-table-fixed__sizeXS{
+  --width-table-col: 75px;
+}
+
+.gw-table-fixed__sizeS{
+  --width-table-col: 100px;
+}
+
+.gw-table-fixed__sizeM{
+  --width-table-col: 150px;
+}
+
+.gw-table-fixed__sizeL{
+  --width-table-col: 200px;
+}
+
+.gw-table-fixed__sizeXL{
+  --width-table-col: 250px;
+}
+
+.gw-table-fixed__sizeXXL{
+  --width-table-col: 300px;
+}
+
+.table-fixed__actions,
+.gw-table-fixed__actions,
 .dataTables__actions {
   --width-table-col: 110px;
+}
+
+.gw-table__actions__container,
+.gw-table-fixed__actions__btns,
+.table-fixed__actions__btns {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
@@ -117,31 +227,40 @@ td {
 
 .dataTables__paginator {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--gap, 8px);
+  gap: 8px;
 }
 
+.gw-table-fixed table,
 .table-fixed {
   table-layout: fixed;
   width: 100%;
 
   hyphens: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-.table-fixed th {
+.table-fixed th,
+.gw-table-fixed th,
+.gw-table-fixed-no-th td {
   width: var(--width-table-col);
 }
 
+.gw-table-fixed th button,
 .table-fixed th button {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
+.gw-table-fixed td,
 .table-fixed td {
   overflow-x: auto;
 }
 
+.gw-table-fixed__actions,
 .table-fixed .table-fixed__actions {
   --width-table-col: 120px;
   width: var(--width-table-col);
@@ -149,12 +268,24 @@ td {
   max-width: var(--width-table-col);
 }
 
-/*
-.table--scrollx {
-  overflow-x: scroll;
-}
-*/
-
+.gw-table__wrapper,
+.dataTables__table-wrapper,
+.table-fixed__table-wrapper,
 .table-wrapper {
   overflow-x: auto;
+}
+
+/* ========================================
+ * Tables with auto layout
+ * ====================================== */
+
+.gw-table-auto table {
+  table-layout: auto;
+}
+
+/* ========================================
+ * Sorting column header
+ * ====================================== */
+.column-header-sort{
+	width: 100%; 
 }

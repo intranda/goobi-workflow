@@ -55,6 +55,11 @@
     }
   }
 
+  // carret in nav-items which are dropdowns
+  .dropdown-toggle::after {
+    margin-left: 8px;
+  }
+
   // Mobile nav toggler (burger menu)
   .navbar-toggler {
     &:focus {
@@ -98,7 +103,6 @@
 }
 
 // Locale switch, user menu etc
-
 .language-select {
   &__icon {
     margin-right: 0.8rem;
@@ -134,6 +138,8 @@
 
     .nav-link.btn-link {
       margin-inline-end: 0;
+      color: #fff;
+      text-decoration: none;
     }
   }
 }

@@ -36,7 +36,7 @@
 					<x:outputText id="txtMoveTo1" forceId="true"
 						value="#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}"
 						onclick="document.getElementById('txtMoveTo2').style.display='inline';
-			       document.getElementById('txtMoveTo1').style.display='none'; 
+			       document.getElementById('txtMoveTo1').style.display='none';
 			       document.getElementById('txtMoveTo2').focus();
 			       document.getElementById('txtMoveTo2').select();" />
 
@@ -48,7 +48,7 @@
 						onkeypress="return submitEnter('cmdMoveTo',event)" />
 					<x:commandButton action="#{NavigationForm.Reload}" id="cmdMoveTo"
 						forceId="true" value="go" style="display:none" >
-						
+
 					</x:commandButton>
 				</div>
 
