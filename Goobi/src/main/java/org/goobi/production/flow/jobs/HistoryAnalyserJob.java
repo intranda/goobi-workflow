@@ -63,7 +63,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      */
     @Override
     public String getJobName() {
-        return "HistoryAnalyserJob";
+        return "dailyHistoryAnalyser";
     }
 
     /*

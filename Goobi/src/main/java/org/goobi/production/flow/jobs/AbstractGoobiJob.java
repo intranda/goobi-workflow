@@ -25,10 +25,12 @@
  */
 package org.goobi.production.flow.jobs;
 
+import org.goobi.production.flow.jobs.BackgroundJob.JobStatus;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import de.sub.goobi.persistence.managers.BackgroundJobManager;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -39,7 +41,8 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public abstract class AbstractGoobiJob implements Job, IGoobiJob {
-    private static Boolean isRunning = false;
+
+    private static boolean running = false;
 
     protected AbstractGoobiJob() {
     }
@@ -52,56 +55,29 @@ public abstract class AbstractGoobiJob implements Job, IGoobiJob {
      */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        if (Boolean.FALSE.equals(getIsRunning())) {
+        if (!isRunning()) {
             log.trace("Start scheduled Job: " + getJobName());
-            if (Boolean.FALSE.equals(isRunning)) {
-                log.trace("start history updating for all processes");
-                setIsRunning(true);
+            if (!running) {
+                setRunning(true);
                 execute();
-                setIsRunning(false);
+                BackgroundJob details = new BackgroundJob();
+                details.setJobName(getJobName());
+                details.setJobType("quartz");
+                details.setJobStatus(JobStatus.FINISH);
+                BackgroundJobManager.saveBackgroundJob(details);
+                setRunning(false);
             }
             log.trace("End scheduled Job: " + getJobName());
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.goobi.production.flow.jobs.IGoobiJob#setIsRunning(java.lang.Boolean)
-     */
     @Override
-    public void setIsRunning(Boolean inisRunning) {
-        isRunning = inisRunning;
+    public boolean isRunning() {
+        return running;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.goobi.production.flow.jobs.IGoobiJob#getIsRunning()
-     */
     @Override
-    public Boolean getIsRunning() {
-        return isRunning;
+    public void setRunning(boolean inisRunning) {
+        running = inisRunning;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.goobi.production.flow.jobs.IGoobiJob#getJobName()
-     */
-    @Override
-    public String getJobName() {
-        return "";
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.goobi.production.flow.jobs.IGoobiJob#execute()
-     */
-    @Override
-    public void execute() {
-    }
-
 }

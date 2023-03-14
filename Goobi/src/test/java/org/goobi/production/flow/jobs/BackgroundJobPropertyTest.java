@@ -23,42 +23,46 @@
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package de.sub.goobi;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+package org.goobi.production.flow.jobs;
 
-import org.junit.BeforeClass;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import de.sub.goobi.config.ConfigProjectsTest;
-import de.sub.goobi.config.ConfigurationHelper;
+import org.junit.Test;
 
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
-public abstract class AbstractTest {
+import de.sub.goobi.AbstractTest;
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        // setup log4j configuration
-        String log4jFile = "src/test/resources/log4j2.test.xml"; // for junit tests in eclipse
+public class BackgroundJobPropertyTest extends AbstractTest {
 
-        if (!Files.exists(Paths.get(log4jFile))) {
-            log4jFile = "target/test-classes/log4j2.test.xml"; // to run mvn test from cli or in jenkins
-        }
+    @Test
+    public void testConstructor() throws Exception {
+        BackgroundJobProperty fixture = new BackgroundJobProperty();
+        assertNotNull(fixture);
+    }
 
-        System.setProperty("log4j.configurationFile", log4jFile);
+    @Test
+    public void testId() throws Exception {
+        BackgroundJobProperty fixture = new BackgroundJobProperty();
+        assertNull(fixture.getId());
+        fixture.setId(1);
+        assertEquals(1, fixture.getId().intValue());
+    }
 
-        // use separate configuration files for tests
-        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString()
-                + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
-        if (!Files.exists(goobiFolder)) {
-            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
-        }
-        String goobiMainFolder = goobiFolder.getParent().getParent().toString();
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
-        ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiMainFolder + "/");
+    @Test
+    public void testJobName() throws Exception {
+        BackgroundJobProperty fixture = new BackgroundJobProperty();
+        assertNull(fixture.getTitle());
+        fixture.setTitle("fixture");
+        assertEquals("fixture", fixture.getTitle());
+    }
+
+    @Test
+    public void testJobType() throws Exception {
+        BackgroundJobProperty fixture = new BackgroundJobProperty();
+        assertNull(fixture.getValue());
+        fixture.setValue("fixture");
+        assertEquals("fixture", fixture.getValue());
     }
 }

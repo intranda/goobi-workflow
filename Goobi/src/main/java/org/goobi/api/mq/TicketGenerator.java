@@ -75,17 +75,18 @@ public class TicketGenerator {
     public static String submitInternalTicket(Object ticket, QueueType queueType, String ticketType, Integer processid) throws JMSException {
         return submitInternalTicketWithDelay(ticket, queueType, ticketType, processid, 0);
     }
-    
+
     /**
-     * submits an Object to an internal queue. Be sure that someone really consumes the queue, 
-     * the argument "queueType" is not checked for sanity. The delay is given in seconds
+     * submits an Object to an internal queue. Be sure that someone really consumes the queue, the argument "queueType" is not checked for sanity. The
+     * delay is given in seconds
      * 
      * @param ticket
      * @param queueType
      * @return id of the generated message
      * @throws JMSException
      */
-    public static String submitInternalTicketWithDelay(Object ticket, QueueType queueType, String ticketType, Integer processid, Integer delay) throws JMSException {
+    public static String submitInternalTicketWithDelay(Object ticket, QueueType queueType, String ticketType, Integer processid, Integer delay)
+            throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
@@ -98,8 +99,8 @@ public class TicketGenerator {
     }
 
     /**
-     * submits an Object to an external queue. Be sure that someone really consumes the queue, the argument "queueType" 
-     * is not checked for sanity. The delay is given in seconds
+     * submits an Object to an external queue. Be sure that someone really consumes the queue, the argument "queueType" is not checked for sanity. The
+     * delay is given in seconds
      * 
      * @param ticket
      * @param queueType
@@ -109,7 +110,7 @@ public class TicketGenerator {
     public static String submitExternalTicket(Object ticket, QueueType queueType, String ticketType, Integer processid) throws JMSException {
         return submitExternalTicketWithDelay(ticket, queueType, ticketType, processid, 0);
     }
-    
+
     /**
      * submits an Object to an external queue. Be sure that someone really consumes the queue, the argument "queueType" is not checked for sanity
      * 
@@ -118,7 +119,8 @@ public class TicketGenerator {
      * @return id of the generated message
      * @throws JMSException
      */
-    public static String submitExternalTicketWithDelay(Object ticket, QueueType queueType, String ticketType, Integer processid, Integer delay) throws JMSException {
+    public static String submitExternalTicketWithDelay(Object ticket, QueueType queueType, String ticketType, Integer processid, Integer delay)
+            throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         Connection conn = ExternalConnectionFactory.createConnection(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
@@ -127,7 +129,8 @@ public class TicketGenerator {
         return messageId;
     }
 
-    private static String submitTicket(Object ticket, String queueName, Connection conn, String ticketType, Integer processid, Integer delay) throws JMSException {
+    private static String submitTicket(Object ticket, String queueName, Connection conn, String ticketType, Integer processid, Integer delay)
+            throws JMSException {
         Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
         final Destination dest = sess.createQueue(queueName);
         MessageProducer producer = sess.createProducer(dest);
@@ -140,15 +143,15 @@ public class TicketGenerator {
         message.setText(gson.toJson(ticket));
         message.setStringProperty("JMSType", ticketType);
         message.setIntProperty("processid", processid);
-        
+
         // add a delay, given in seconds
         if (delay > 0) {
-        	long seconds = delay * 1000;
-        	message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, seconds);
+            long seconds = delay * 1000l;
+            message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, seconds);
         }
-        
+
         producer.send(message);
         return message.getJMSMessageID();
     }
-    
+
 }

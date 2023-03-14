@@ -33,6 +33,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
+        // do nothing
     }
 
     @Override
@@ -56,6 +57,8 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
 
+        // TODO move to DatabaseVersion after merge, change visibility to private
+        DatabaseVersion.createTableForBackgroundJobs();
         // TODO move it to DatabaseVersion class after merge
         if (!DatabaseVersion.checkIfColumnExists("benutzer", "additional_search_fields")) {
             try {
@@ -64,7 +67,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 log.error(e);
             }
         }
-
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist

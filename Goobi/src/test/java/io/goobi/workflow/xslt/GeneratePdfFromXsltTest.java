@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
@@ -43,7 +44,12 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.easymock.EasyMock;
+import org.goobi.beans.Batch;
 import org.goobi.beans.HistoryEvent;
+import org.goobi.beans.Institution;
+import org.goobi.beans.InstitutionConfigurationObject;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -51,7 +57,9 @@ import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
+import org.goobi.beans.User;
 import org.goobi.production.cli.helper.StringPair;
+import org.goobi.production.enums.LogType;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
@@ -75,6 +83,7 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -83,7 +92,7 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyManager.class, StepManager.class, TemplateManager.class, MasterpieceManager.class, HistoryManager.class,
-        MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class })
+        MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class, InstitutionManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class GeneratePdfFromXsltTest extends AbstractTest {
 
@@ -107,7 +116,50 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
         xsltfile = goobiFolder.getParent().getParent() + "/xslt/docket.xsl";
 
+        // journal
+
         process = MockProcess.createProcess();
+        List<JournalEntry> journal = new ArrayList<>();
+        JournalEntry e1 = new JournalEntry(1, 1, new Date(), "user", LogType.INFO, "content", "", EntryType.PROCESS, null);
+        journal.add(e1);
+        JournalEntry e2 =
+                new JournalEntry(2, 1, new Date(), "user", LogType.FILE, "content", "filename", EntryType.PROCESS, Paths.get("/path/to/fle"));
+        journal.add(e2);
+        process.setJournal(journal);
+
+        // batch
+        Batch batch = new Batch();
+        batch.setBatchId(1);
+        batch.setBatchLabel("label");
+        batch.setBatchName("name");
+        batch.setStartDate(new Date());
+        batch.setEndDate(new Date());
+        process.setBatch(batch);
+
+        // institution
+        Institution inst = new Institution();
+        inst.setId(1);
+        inst.setShortName("short name");
+        inst.setLongName("long name");
+
+        InstitutionConfigurationObject ico = new InstitutionConfigurationObject();
+        ico.setInstitution_id(1);
+        ico.setId(1);
+
+        ico.setObject_id(1);
+        ico.setObject_name("name");
+        ico.setObject_type("type");
+
+        List<InstitutionConfigurationObject> icolist = new ArrayList<>();
+        icolist.add(ico);
+        PowerMock.mockStatic(InstitutionManager.class);
+        EasyMock.expect(InstitutionManager.getConfiguredRulesets(EasyMock.anyInt())).andReturn(icolist).anyTimes();
+        EasyMock.expect(InstitutionManager.getConfiguredDockets(EasyMock.anyInt())).andReturn(icolist).anyTimes();
+        EasyMock.expect(InstitutionManager.getConfiguredAuthentications(EasyMock.anyInt())).andReturn(icolist).anyTimes();
+
+        process.getProjekt().setInstitution(inst);
+
+        process.setSortHelperStatus("12345567890");
 
         PowerMock.mockStatic(PropertyManager.class);
         PowerMock.mockStatic(StepManager.class);
@@ -129,6 +181,13 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         step.setTitel("title");
         step.setBearbeitungsstatusEnum(StepStatus.OPEN);
         steps.add(step);
+        User user = new User();
+        user.setId(1);
+        user.setNachname("lastname");
+        user.setVorname("firstname");
+        user.setLogin("login");
+        step.setBearbeitungsbenutzer(user);
+
         process.setSchritte(steps);
 
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(steps);
@@ -136,8 +195,12 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         Templateproperty tp = new Templateproperty();
         tp.setTitel("title");
         tp.setWert("value");
+        Templateproperty tp2 = new Templateproperty();
+        tp2.setTitel("Signatur");
+        tp2.setWert("value");
         List<Templateproperty> tpl = new ArrayList<>();
         tpl.add(tp);
+        tpl.add(tp2);
         template.setEigenschaften(tpl);
         List<Template> tl = new ArrayList<>();
         tl.add(template);
@@ -300,6 +363,31 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         assertTrue(fixture.exists());
         assertTrue(fixture.length() > 0);
+    }
+
+    @Test
+    public void testStartExportList() throws Exception {
+        List<Process> processList = new ArrayList<>();
+        processList.add(process);
+
+        File fixture = folder.newFile("docket.pdf");
+
+        OutputStream os = new FileOutputStream(fixture);
+
+        XsltPreparatorDocket xslt = new XsltPreparatorDocket();
+        assertNotNull(xslt);
+        xslt.startExport(processList, os, xsltfile, false);
+        assertTrue(fixture.exists());
+        assertTrue(fixture.length() > 0);
+    }
+
+    @Test
+    public void testCreateExtendedDocument() throws Exception {
+
+        XsltPreparatorDocket xslt = new XsltPreparatorDocket();
+
+        Document fixture = xslt.createExtendedDocument(process);
+        assertNotNull(fixture);
     }
 
 }
