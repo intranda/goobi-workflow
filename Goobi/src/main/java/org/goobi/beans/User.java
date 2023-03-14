@@ -250,14 +250,14 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     private String processListDefaultSortField = "titel";
     @Getter
     @Setter
-    private String processListDefaultSortOrder = "Asc";
+    private String processListDefaultSortOrder = "";
 
     @Getter
     @Setter
     private String taskListDefaultSortingField = "prioritaet";
     @Getter
     @Setter
-    private String taskListDefaultSortOrder = "Desc";
+    private String taskListDefaultSortOrder = " desc";
 
     @Getter
     @Setter
@@ -656,22 +656,19 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         List<SelectItem> taskList = new ArrayList<>();
         taskList.add(new SelectItem("prioritaet", Helper.getTranslation("prioritaet")));
         if (isDisplayIdColumn()) {
-            taskList.add(new SelectItem("id", Helper.getTranslation("id")));
+            taskList.add(new SelectItem("prozesse.ProzesseID", Helper.getTranslation("id")));
         }
-        taskList.add(new SelectItem("schritt", Helper.getTranslation("arbeitsschritt")));
-        taskList.add(new SelectItem("prozess", Helper.getTranslation("prozessTitel")));
+        taskList.add(new SelectItem("schritte.titel", Helper.getTranslation("arbeitsschritt")));
+        taskList.add(new SelectItem("prozesse.titel", Helper.getTranslation("prozessTitel")));
         if (isDisplayProcessDateColumn()) {
-            taskList.add(new SelectItem("prozessdate", Helper.getTranslation("vorgangsdatum")));
+            taskList.add(new SelectItem("prozesse.erstellungsdatum", Helper.getTranslation("vorgangsdatum")));
         }
-        taskList.add(new SelectItem("projekt", Helper.getTranslation("projekt")));
+        taskList.add(new SelectItem("projekte.titel", Helper.getTranslation("projekt")));
         if (isDisplayInstitutionColumn()) {
-            taskList.add(new SelectItem("institution", Helper.getTranslation("institution")));
-        }
-        if (isDisplayLocksColumn()) {
-            taskList.add(new SelectItem("sperrungen", Helper.getTranslation("sperrungen")));
+            taskList.add(new SelectItem("institution.shortName", Helper.getTranslation("institution")));
         }
         if (isDisplayBatchColumn()) {
-            taskList.add(new SelectItem("batch", Helper.getTranslation("batch")));
+            taskList.add(new SelectItem("prozesse.batchID", Helper.getTranslation("batch")));
         }
         return taskList;
     }

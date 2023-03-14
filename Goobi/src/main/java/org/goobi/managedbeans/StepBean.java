@@ -240,7 +240,7 @@ public class StepBean extends BasicBean implements Serializable {
             sql = sql + " AND ";
         }
         sql = sql + " projekte.projectIsArchived = false ";
-        paginator = new DatabasePaginator(sortList(), sql, m, "task_all");
+        paginator = new DatabasePaginator(sortField, sql, m, "task_all");
 
         return "task_all";
     }
@@ -251,67 +251,6 @@ public class StepBean extends BasicBean implements Serializable {
             FilterAlleStart();
         }
         return paginator;
-    }
-
-    private String sortList() {
-        if (sortField == null) {
-            return "prioritaet desc";
-        }
-
-        String answer = "prioritaet desc ";
-
-        if ("schrittAsc".equals(this.sortField)) {
-            answer += ", schritte.titel";
-        } else if ("schrittDesc".equals(this.sortField)) {
-            answer += ", schritte.titel desc";
-        }
-        if ("prozessAsc".equals(this.sortField)) {
-            answer += ", prozesse.Titel";
-        }
-        if ("prozessDesc".equals(this.sortField)) {
-            answer += ", prozesse.Titel desc";
-        }
-        if ("batchAsc".equals(this.sortField)) {
-            answer += ", prozesse.batchID";
-        }
-        if ("batchDesc".equals(this.sortField)) {
-            answer += ", prozesse.batchID desc";
-        }
-        if ("prozessdateAsc".equals(this.sortField)) {
-
-            answer += ", prozesse.erstellungsdatum";
-        }
-        if ("prozessdateDesc".equals(this.sortField)) {
-            answer += ", prozesse.erstellungsdatum desc";
-        }
-        if ("projektAsc".equals(this.sortField)) {
-            answer += " ,projekte.Titel";
-        }
-        if ("projektDesc".equals(this.sortField)) {
-            answer += ", projekte.Titel desc";
-        } else if ("modulesAsc".equals(this.sortField)) {
-            answer += ", typModulName";
-        } else if ("modulesDesc".equals(this.sortField)) {
-            answer += ", typModulName desc";
-        } else if ("statusAsc".equals(this.sortField)) {
-            answer += ", bearbeitungsstatus";
-        } else if ("statusDesc".equals(this.sortField)) {
-            answer += ", bearbeitungsstatus desc";
-        } else if ("idAsc".equals(this.sortField)) {
-            answer = "prozesse.ProzesseID";
-        } else if ("idDesc".equals(this.sortField)) {
-            answer = "prozesse.ProzesseID desc";
-        } else if ("institutionAsc".equals(sortField)) {
-            answer = "institution.shortName";
-        } else if ("institutionDesc".equals(sortField)) {
-            answer = "institution.shortName desc";
-        } else if ("numberOfImagesAsc".equals(sortField)) {
-            answer = "prozesse.sortHelperImages";
-        } else if ("numberOfImagesDesc".equals(sortField)) {
-            answer = "prozesse.sortHelperImages desc";
-        }
-
-        return answer;
     }
 
     /*
@@ -475,8 +414,8 @@ public class StepBean extends BasicBean implements Serializable {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                            + batchNumber + ")",
+                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                    + batchNumber + ")",
                     0, Integer.MAX_VALUE, institution);
 
         } else {
@@ -762,7 +701,7 @@ public class StepBean extends BasicBean implements Serializable {
                             + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                 } else {
                     seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
-                            + ": " + this.solutionMessage);
+                    + ": " + this.solutionMessage);
                 }
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);
@@ -841,7 +780,7 @@ public class StepBean extends BasicBean implements Serializable {
             String myID = element.substring(element.indexOf("[") + 1, element.indexOf("]")).trim();
 
             String sql = FilterHelper.criteriaBuilder("id:" + myID, false, false, false, false, false, true);
-            List<Step> stepList = StepManager.getSteps(sortList(), sql, null);
+            List<Step> stepList = StepManager.getSteps(sortField, sql, null);
 
             for (Step step : stepList) {
                 if (StepStatus.INWORK.equals(step.getBearbeitungsstatusEnum())) {

@@ -299,7 +299,7 @@ class ProcessMysqlHelper implements Serializable {
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
-        if (sortfield != null && !sortfield.isEmpty()) {
+        if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);
         }
         if (start != null && count != null) {
@@ -325,12 +325,12 @@ class ProcessMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ProzesseID FROM prozesse left join batches on prozesse.batchID = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);

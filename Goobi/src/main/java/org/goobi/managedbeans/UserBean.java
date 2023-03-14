@@ -37,12 +37,9 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +57,6 @@ import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
-import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
@@ -192,60 +188,9 @@ public class UserBean extends BasicBean implements Serializable {
             sqlQuery = sqlQueryBuilder.toString();
         }
 
-        this.paginator = new DatabasePaginator(this.getSortTitle(), sqlQuery, m, "user_all");
-        List<? extends DatabaseObject> users = paginator.getList();
+        this.paginator = new DatabasePaginator(sortField, sqlQuery, m, "user_all");
 
-        boolean sortProjects = this.sortField.startsWith("projects");
-        boolean sortUserGroups = this.sortField.startsWith("group");
-        if (sortProjects || sortUserGroups) {
-            List<User> list = new ArrayList<>();
-            for (int index = 0; index < users.size(); index++) {
-                list.add((User) (users.get(index)));
-            }
-            this.sortUserListByProjectOrGroup(list);
-            this.paginator.setList(list);
-        } else {
-            if (this.sortField.endsWith("Desc")) {
-                Collections.reverse(users);
-            }
-            this.paginator.setList(users);
-        }
         return "user_all";
-    }
-
-    private String getSortTitle() {
-        String sort = "";
-        if (this.sortField.startsWith("name")) {
-            sort = "benutzer.Nachname, benutzer.Vorname";
-        } else if (this.sortField.startsWith("login")) {
-            sort = "benutzer.login";
-        } else if (this.sortField.startsWith("location")) {
-            sort = "benutzer.Standort";
-        } else if (this.sortField.startsWith("institution")) {
-            sort = "institution.shortName";
-        }
-        return sort;
-    }
-
-    private void sortUserListByProjectOrGroup(List<User> users) {
-        // Find the fitting User-getter-method for the sorting routine depending on the sort strategy
-        Function<User, String> function = null;
-        if (this.sortField.startsWith("group")) {
-            function = User::getFirstUserGroupTitle;
-        } else if (this.sortField.startsWith("projects")) {
-            function = User::getFirstProjectTitle;
-        }
-
-        // When there is no sorting routine, don't sort and return the original list
-        if (function != null) {
-            Comparator<User> comparator = Comparator.comparing(function);
-
-            // Only when the sorting routine is descending, replace comparator by reversed comparator.
-            if (this.sortField.endsWith("Desc")) {
-                comparator = Collections.reverseOrder(comparator);
-            }
-            Collections.sort(users, comparator);
-        }
     }
 
     public String Speichern() {

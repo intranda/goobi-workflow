@@ -96,13 +96,15 @@
 														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}"
 														id="my_tasks_process" name="id"
 														form="#{AktuelleSchritteForm}" value="#{msgs.id}"
-														ajaxRender="processAllBox:myform" reverseOrder="true" />
+														ajaxRender="processAllBox:myform" reverseOrder="true"
+                                                        sortField="prozesse.ProzesseID" />
 
 													<!-- Task -->
 													<intranda:columnheader id="sortStepTitle" name="schritt"
 														form="#{AktuelleSchritteForm}"
 														value="#{msgs.arbeitsschritt}"
-														ajaxRender="processAllBox:myform" />
+														ajaxRender="processAllBox:myform"
+                                                        sortField="schritte.titel" />
 
 													<!-- Process -->
 													<intranda:columnheader class="tableColumnMaxWidthLong"
@@ -110,15 +112,26 @@
 														form="#{AktuelleSchritteForm}"
 														value="#{msgs.prozessTitel}"
 														ajaxRender="processAllBox:myform"
-														addClass="gw-table-fixed__sizeXL" />
+														addClass="gw-table-fixed__sizeXL"
+                                                        sortField="prozesse.titel" />
 
-													<!-- Custom columns -->
-													<c:forEach items="#{LoginForm.listOfCustomColumns}"
-														var="var">
-														<intranda:columnheader
-															value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
-															sortable="false" />
-													</c:forEach>
+													<!-- Costum Columns -->
+                                                    <c:forEach
+                                                        items="#{LoginForm.listOfCustomColumns}"
+                                                        var="var">
+                                                        <intranda:columnheader
+                                                            addClass="width80"
+                                                            form="#{ProzessverwaltungForm}"
+                                                            ajaxRender="processAllProcessesBox:myform"
+                                                            value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
+                                                            sortField="#{var}"
+                                                            rendered="#{LoginForm.isDisplaySortfield(var)}" />
+                                                        <intranda:columnheader
+                                                            addClass="width80"
+                                                            sortable="false"
+                                                            value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
+                                                            rendered="#{!LoginForm.isDisplaySortfield(var)}" />
+                                                    </c:forEach>
 
 													<!-- Process date -->
 													<intranda:columnheader
@@ -126,41 +139,37 @@
 														id="sortDate" name="prozessdate"
 														form="#{AktuelleSchritteForm}"
 														value="#{msgs.vorgangsdatum}"
-														ajaxRender="processAllBox:myform" />
-
-													<!-- Modules / Plugins -->
-													<!-- <intranda:columnheader
-											rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}"
-											id="sortModule"
-											name="module"
-											form="#{AktuelleSchritteForm}"
-											value="#{msgs.module}"
-											ajaxRender=":myform" /> -->
+														ajaxRender="processAllBox:myform"
+                                                        sortField="prozesse.erstellungsdatum" />
 
 													<!-- Project -->
 													<intranda:columnheader id="sortProject" name="projekt"
 														form="#{AktuelleSchritteForm}" value="#{msgs.projekt}"
 														ajaxRender="processAllBox:myform"
-														addClass="gw-table-fixed__sizeM" />
+														addClass="gw-table-fixed__sizeM"
+                                                        sortField="projekte.titel" />
 
 													<intranda:columnheader
 														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['institution']}"
 														class="tableColumnOverflow maxWidth120" name="institution"
 														form="#{AktuelleSchritteForm}" value="#{msgs.institution}"
-														ajaxRender="processAllBox:myform" />
+														ajaxRender="processAllBox:myform"
+                                                        sortField="institution.shortName" />
 
 													<!-- Lockings -->
 													<intranda:columnheader
 														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}"
 														id="sortLocking" name="sperrungen"
 														form="#{AktuelleSchritteForm}" value="#{msgs.sperrungen}"
-														ajaxRender="processAllBox:myform" />
+														ajaxRender="processAllBox:myform"
+                                                        sortable="false" />
 
 													<!-- Batch -->
 													<intranda:columnheader
 														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}"
 														id="sortBatch" name="batch" form="#{AktuelleSchritteForm}"
-														value="#{msgs.batch}" ajaxRender="processAllBox:myform" />
+														value="#{msgs.batch}" ajaxRender="processAllBox:myform"
+                                                        sortField="prozesse.batchID" />
 
 													<!-- number of images -->
 													<intranda:columnheader
@@ -168,11 +177,13 @@
 														value="#{msgs.NumberOfImages}"
 														addClass="tableColumnOverflow maxWidth120"
 														name="numberOfImages" form="#{AktuelleSchritteForm}"
-														ajaxRender="processAllBox:myform" />
+														ajaxRender="processAllBox:myform"
+                                                        sortField="sortHelperImages" />
 
 													<!-- Priority -->
 													<intranda:columnheader value="#{msgs.prioritaet}"
-														sortable="false" addClass="gw-table-fixed__sizeXS" />
+														sortable="false" addClass="gw-table-fixed__sizeXS"
+                                                         />
 
 													<!-- Action -->
 													<intranda:columnheader id="sortStatus" name="status"

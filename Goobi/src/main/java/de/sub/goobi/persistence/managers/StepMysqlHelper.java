@@ -143,12 +143,13 @@ class StepMysqlHelper implements Serializable {
             sql.append("and projekte.institution_id = ");
             sql.append(institution.getId());
         }
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);

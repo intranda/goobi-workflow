@@ -237,7 +237,7 @@
 														value="#{msgs.vorgangsdatum}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
 														ajaxRender="processAllProcessesBox:myform" 
-                                                        sortField="prozesse.erstellungsdatum"/>
+                                                        sortField="prozesse.erstellungsdatum" />
 													<!-- Ruleset -->
 													<intranda:columnheader
 														addClass=" header__ruleset"
@@ -251,7 +251,7 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.status}"
 														ajaxRender="processAllProcessesBox:myform" 
-                                                         sortField="prozesse.sortHelperStatus"/>
+                                                        sortField="prozesse.sortHelperStatus" />
 													<!-- . -->
 													<intranda:columnheader
 														addClass=" #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'}"
