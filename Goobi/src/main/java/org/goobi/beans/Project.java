@@ -340,6 +340,24 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         return result;
     }
 
+    /**
+     * This constructor clones all metadata of the given project to a new instance (this project). Most of the properties are cloned, including the
+     * user assignments and file groups.
+     *
+     * Differences between this project and source:<br />
+     * - the project title is reused, but with the suffix "_copy"<br />
+     *
+     * Following properties are NOT cloned to another project:<br />
+     * - this.id (is created in the database afterwards)<br />
+     * - this.prozesse (the project is going to get own processes)<br />
+     * - this.commonWorkFlow (statistics for this.prozesse, does not make sense without this.prozesse)<br />
+     *
+     * <b>Attention:</b><br />
+     * The metadata of file groups is also cloned with the responsible constructor!<br />
+     * If metadata is added to file groups, check that constructor too!<br />
+     *
+     * @param source The source project to clone the data from
+     */
     public Project(Project source) {
         setDmsImportCreateProcessFolder(source.isDmsImportCreateProcessFolder());
         setDmsImportErrorPath(source.getDmsImportErrorPath());
@@ -379,6 +397,8 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         setUseDmsImport(source.isUseDmsImport());
         setInstitution(source.getInstitution());
         setProjectIdentifier(source.getProjectIdentifier());
+        setMetsSruUrl(source.getMetsSruUrl());
+        setMetsIIIFUrl(source.getMetsIIIFUrl());
         try {
             ProjectManager.saveProject(this);
         } catch (DAOException e) {
@@ -406,8 +426,6 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         }
         ProjectManager.saveProjectFileGroups(projectFileGroupList);
     }
-
-
 
     @Override
     public EntryType getEntryType() {

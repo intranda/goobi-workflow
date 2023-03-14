@@ -52,6 +52,12 @@ public class ProjectFileGroup implements Serializable {
     public ProjectFileGroup() {
     }
 
+    /**
+     * The ID is not cloned; a new ID is generated in the database instead. The project is also not cloned. It is set by the clone-constructor from
+     * Project.java
+     *
+     * @param source The source project file group to clone the data from
+     */
     public ProjectFileGroup(ProjectFileGroup source) {
         setName(source.getName());
         setPath(source.getPath());
