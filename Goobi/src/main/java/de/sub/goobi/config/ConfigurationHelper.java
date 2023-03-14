@@ -51,7 +51,6 @@ import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.persistence.managers.MySQLHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -700,16 +699,6 @@ public class ConfigurationHelper implements Serializable {
     /*
      * category in goobi_config.properties: DATABASE SEARCH
      */
-
-    /**
-     * Check if Mysql or H2 is used as internal database
-     *
-     * @deprecated use MySQLHelper.isUsingH2() for this instead
-     */
-    @Deprecated
-    public boolean isUseH2DB() {
-        return MySQLHelper.isUsingH2();
-    }
 
     public boolean isUseFulltextSearch() {
         return getLocalBoolean("useFulltextSearch", false);

@@ -2,12 +2,12 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	template="/uii/template/template.html"
+	template="/uii/templatePG/templatePG.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.benutzergruppen}" />
@@ -26,134 +26,141 @@
 
 		<h:form id="myform" rendered="#{LoginForm.hasRole('Admin_Usergroups')}">
 
-			<div class="row" role="main">
+			<main id="usergroupAll" class="row" role="main">
 				<div class="col-sm-12">
-					<div class="box box-color box-bordered">
-						<div class="box-title">
-							<h2>
-								<i class="fa fa-users"></i>
-								<h:outputText value="#{myPageTitle}" />
-							</h2>
-						</div>
-						<div class="box-content nopadding">
-							<div class="dataTables_wrapper">
-								<div class="dataTables_length">
+
+					<intranda:box
+						boxType="primary"
+						icon="fa-users"
+						title="#{myPageTitle}"
+						boxPadding="true">
+
+							<div class="gw-table gw-table-fixed">
+								<div class="gw-table__search">
+								<div class="gw-table__search__length">
 									<h:outputText
 										value="#{msgs.treffer}: #{BenutzergruppenForm.paginator.totalResults}" />
 								</div>
+								</div>
+
 
 								<!-- Datentabelle -->
-								<x:dataTable id="usergroups"
-									styleClass="table table-hover dataTable table-bordered responsive"
+								<div class="gw-table__wrapper">
+								<x:dataTable id="usergroups" styleClass="table table-hover table-bordered"
 									var="item" value="#{BenutzergruppenForm.paginator.list}">
 
-									<x:column style="min-width:250px;">
+									<x:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.name}" />
 										</f:facet>
 
-										<ui:include src="includes/ajaxPlusMinusButton.xhtml" />
+										<ui:include src="templatePG/includes/ajaxPlusMinusButton.xhtml" />
 
 										<h:panelGroup rendered="#{item.panelAusgeklappt}">
 											<div class="row">
-												<div class="col-sm-6">
-													<div class="box box-small box-color lightgrey box-bordered">
-														<div class="box-title">
-															<h3>#{msgs.benutzer}</h3>
-														</div>
-														<div class="box-content nopadding">
+												<div class="col-12 col-md-6">
+
+													<intranda:box
+														boxType="neutral"
+														boxPadding="false"
+														boxSmall="true"
+														title="#{msgs.benutzer}"
+														>
+
 															<x:dataTable var="step" value="#{item.benutzer}"
 																styleClass="table table-hover table-bordered ">
 																<h:column>
 																	<h:outputText value="#{step.nachVorname}" />
 																</h:column>
 															</x:dataTable>
-														</div>
-		
-													</div>
+													</intranda:box>
+
 												</div>
-												<div class="col-sm-6">
-													<div class="box box-small box-color lightgrey box-bordered">
-														<div class="box-title">
-															<h3>#{msgs.usergroup_userRoles}</h3>
-														</div>
-														<div class="box-content">
+												<div class="col-12 col-md-6">
+													<intranda:box
+														boxType="neutral"
+														title="#{msgs.usergroup_userRoles}"
+														boxPadding="true"
+														boxSmall="true"
+														>
 															<ui:repeat var="role" value="#{item.userRoles}" varStatus="row">
-									                        	<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" 
-									                        	styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
-								                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
-								                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
-								                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
-                                                                    fn:startsWith(role,'goobiscript_') ? 'badge-light-blue' : 
-								                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
-								                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
-								                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' :
-                                                                    'badge-light-greengrey'}" />
+																<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}"
+																styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' :
+																		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
+																		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' :
+																		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' :
+																												fn:startsWith(role,'goobiscript_') ? 'badge-light-blue' :
+																		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' :
+																		fn:startsWith(role,'Task_') ? 'badge-light-orange' :
+																		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' :
+																		'badge-light-greengrey'}" />
 															</ui:repeat>
-														</div>
-													</div>
+													</intranda:box>
 												</div>
-											</div>
+											</div> <!-- end row -->
 										</h:panelGroup>
 
 									</x:column>
-                                    <x:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.institution}" />
-                                        </f:facet>
-                                        <h:outputText value="#{item.institution.shortName}" />
-                                    </x:column>
-                                    <x:column style="min-width:100px;">
+									<x:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
+											<f:facet name="header">
+													<h:outputText value="#{msgs.institution}" />
+											</f:facet>
+											<h:outputText value="#{item.institution.shortName}" />
+									</x:column>
+									<x:column headerClass="gw-table-fixed__actions">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 
-										<!-- Bearbeiten-Schaltknopf -->
-										<button jsf:id="edit" class="btn margin-right-5" jsf:rel="tooltip"
-											jsf:action="usergroup_edit"
-											title="#{msgs.benutzergruppeBearbeiten}">
-											<i class="fa fa-pencil"></i>
-											<f:passThroughAttribute name="data-toggle" value="tooltip" />
-											<f:passThroughAttribute name="aria-label" value="#{msgs.benutzergruppeBearbeiten}" />
-											<f:setPropertyActionListener
-												target="#{BenutzergruppenForm.myBenutzergruppe}"
-												value="#{item}" />
-										</button>
+										<div class="gw-table__actions__container">
+											<!-- Bearbeiten-Schaltknopf -->
+											<button jsf:id="edit" class="btn btn-blank" jsf:rel="tooltip"
+												jsf:action="usergroup_edit"
+												title="#{msgs.bearbeiten}">
+												<i class="fa fa-pencil"></i>
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
+												<f:setPropertyActionListener
+													target="#{BenutzergruppenForm.myBenutzergruppe}"
+													value="#{item}" />
+											</button>
 
-
-                                        <!-- Duplicate user group -->
-                                        <button jsf:action="#{BenutzergruppenForm.cloneUsergroup}" class="btn" jsf:rel="tooltip" title="#{msgs.duplicateUsergroup}"
-                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                            <i class="fa fa-clipboard" />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                            <f:passThroughAttribute name="aria-label" value="#{msgs.duplicateUsergroup}" />
-                                            <x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
-                                        </button>
-
+											<!-- Duplicate user group -->
+											<button
+												jsf:action="#{BenutzergruppenForm.cloneUsergroup}"
+												class="btn btn-blank"
+												jsf:rel="tooltip"
+												title="#{msgs.duplicate}"
+												onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+												<i class="fa fa-clipboard" />
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												<f:passThroughAttribute name="aria-label" value="#{msgs.duplicate}" />
+												<x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
+											</button>
+										</div>
 
 									</x:column>
 
 								</x:dataTable>
-								<div class="dataTables_info" style="float: left;">
-									<!-- Neu-Schaltknopf -->
-									<button jsf:id="newUserGroup" class="btn btn-primary font-size-s"
-										jsf:action="#{BenutzergruppenForm.Neu}" jsf:immediate="true">
-										<i class="fa fa-plus margin-right-5"></i>
-										<h:outputText value="#{msgs.neueBenutzergruppeAnlegen}" />
-									</button>
 								</div>
-								<div class="dataTables_paginate">
+
+								<div class="form-actions">
+									<!-- Neu-Schaltknopf -->
+									<button jsf:id="newUserGroup" class="btn btn-primary-400 me-auto"
+										jsf:action="#{BenutzergruppenForm.Neu}" jsf:immediate="true">
+										<i class="fa fa-plus"></i>
+										<span>#{msgs.neueBenutzergruppeAnlegen}</span>
+									</button>
+
 									<!-- paginator -->
-									<intranda:tablePaginator id="groups"
-										paginator="#{BenutzergruppenForm.paginator}" />
-									<!-- /paginator -->
+									<intranda:tablePaginator id="groups" paginator="#{BenutzergruppenForm.paginator}" />
 								</div>
 							</div>
-						</div>
-					</div>
+
+					</intranda:box>
 
 				</div>
-			</div>
+			</main>
 		</h:form>
 	</ui:define>
 

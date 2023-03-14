@@ -636,7 +636,7 @@ public class StepBean extends BasicBean implements Serializable {
             } else {
                 se.setWert("[" + this.formatter.format(new Date()) + "] " + this.problemMessage);
             }
-            se.setType(PropertyType.messageError);
+            se.setType(PropertyType.MESSAGE_ERROR);
             se.setCreationDate(myDate);
             se.setSchritt(temp);
             String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
@@ -671,7 +671,7 @@ public class StepBean extends BasicBean implements Serializable {
                 seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
                 seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage);
                 seg.setSchritt(step);
-                seg.setType(PropertyType.messageImportant);
+                seg.setType(PropertyType.MESSAGE_IMPORTANT);
                 seg.setCreationDate(new Date());
                 step.getEigenschaften().add(seg);
                 StepManager.saveStep(step);
@@ -765,7 +765,7 @@ public class StepBean extends BasicBean implements Serializable {
                             + ": " + this.solutionMessage);
                 }
                 seg.setSchritt(step);
-                seg.setType(PropertyType.messageImportant);
+                seg.setType(PropertyType.MESSAGE_IMPORTANT);
                 seg.setCreationDate(new Date());
                 step.getEigenschaften().add(seg);
                 StepManager.saveStep(step);

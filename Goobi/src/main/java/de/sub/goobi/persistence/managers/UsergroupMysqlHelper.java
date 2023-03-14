@@ -83,7 +83,7 @@ class UsergroupMysqlHelper implements Serializable {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(BenutzergruppenID) FROM benutzergruppen");
+        sql.append("SELECT COUNT(1) FROM benutzergruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
@@ -145,7 +145,7 @@ class UsergroupMysqlHelper implements Serializable {
 
             if (ro.getId() == null) {
                 Object[] param =
-                        { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
+                    { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
                 String propNames = "titel, berechtigung, roles, institution_id";
                 String propValues = "? ,?, ?, ?";
                 sql.append("INSERT INTO benutzergruppen (");
@@ -162,7 +162,7 @@ class UsergroupMysqlHelper implements Serializable {
                 }
             } else {
                 Object[] param =
-                        { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
+                    { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
                 sql.append("UPDATE benutzergruppen SET ");
                 sql.append("titel = ?, ");
                 sql.append("berechtigung = ?, ");

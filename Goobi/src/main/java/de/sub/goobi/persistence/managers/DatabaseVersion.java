@@ -46,6 +46,7 @@ import org.goobi.vocabulary.Vocabulary;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -398,7 +399,7 @@ public class DatabaseVersion {
     private static void updateToVersion51() throws SQLException {
         if (DatabaseVersion.checkIfTableExists("processlog")) {
             try {
-                if (MySQLHelper.isUsingH2()) {
+                if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
                     DatabaseVersion.runSql("alter table processlog rename to journal; ");
                 } else {
                     DatabaseVersion.runSql("RENAME TABLE processlog TO journal;");
@@ -753,7 +754,7 @@ public class DatabaseVersion {
             // change length of sortHelperStatus to allow a complete index field in utf8mb4
             runner.update(connection, "alter table prozesse change column sortHelperStatus sortHelperStatus varchar(20);");
             runner.update(connection, "alter table benutzereigenschaften change column Wert Wert text;");
-            if (MySQLHelper.isUsingH2()) {
+            if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
                 runner.update(connection, "CREATE INDEX IF NOT EXISTS status ON prozesse(sortHelperStatus)");
             } else {
                 // create a new index
@@ -898,7 +899,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -907,15 +908,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 
@@ -965,7 +966,7 @@ public class DatabaseVersion {
     private static void updateToVersion33() {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             QueryRunner runner = new QueryRunner();
-            if (MySQLHelper.isUsingH2()) {
+            if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
                 runner.update(connection,
                         "CREATE TABLE IF NOT EXISTS mq_results ( ticket_id varchar(255), time datetime, status varchar(25), message text, original_message text );");
             } else {
@@ -1056,7 +1057,7 @@ public class DatabaseVersion {
                 runner.update(connection, "alter table schritte add column httpEscapeBodyJson tinyint(1);");
             }
             // run conversion only on mysql/mariadb
-            if (!MySQLHelper.isUsingH2()) {
+            if (MySQLHelper.getInstance().getSqlType() != SQLTYPE.H2) {
                 // delete old, incompatible indexes
                 try {
                     runner.update(connection, "ALTER TABLE benutzer DROP INDEX id_x_login");
@@ -1266,7 +1267,7 @@ public class DatabaseVersion {
 
     private static void updateToVersion20() {
         // just enhance the fulltext index for mysql databases
-        if (!MySQLHelper.isUsingH2()) {
+        if (MySQLHelper.getInstance().getSqlType() != SQLTYPE.H2) {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
@@ -1289,7 +1290,7 @@ public class DatabaseVersion {
     private static void updateToVersion19() {
         String dropBatches = "drop table if exists batches;";
         StringBuilder createBatches = new StringBuilder();
-        if (MySQLHelper.isUsingH2()) {
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
             createBatches.append("CREATE TABLE `batches` (");
             createBatches.append("`id` int(11) NOT NULL AUTO_INCREMENT,");
             createBatches.append("`startDate` DATETIME DEFAULT NULL,");
@@ -1507,7 +1508,7 @@ public class DatabaseVersion {
     private static void updateToVersion13() {
         Connection connection = null;
         String sqlStatement = null;
-        if (MySQLHelper.isUsingH2()) {
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
             sqlStatement =
                     "CREATE TABLE 'processlog' ('id' int(10) unsigned NOT NULL AUTO_INCREMENT,'processID' int(10) unsigned NOT NULL,'creationDate' datetime DEFAULT NULL,'userName' varchar(255) DEFAULT NULL,'type' varchar(255) DEFAULT NULL,'content' text DEFAULT NULL,'secondContent' text DEFAULT NULL,'thirdContent' text DEFAULT NULL,PRIMARY KEY ('id'),KEY 'processID' ('processID')) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
 
@@ -2068,7 +2069,7 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (MySQLHelper.isUsingH2()) {
+            if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
                 ResultSet rset = connection.getMetaData().getTables(null, null, tableName, null);
                 if (rset.next()) {
                     return true;
@@ -2104,7 +2105,7 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (MySQLHelper.isUsingH2()) {
+            if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
                 ResultSet rset = connection.getMetaData().getColumns(null, null, tableName, columnName);
                 if (rset.next()) {
                     return true;

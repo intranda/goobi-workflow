@@ -1,7 +1,14 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+  xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+  xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.projekte}" />
 
@@ -16,38 +23,49 @@
 	<ui:define name="content">
 		<h:form  id="myform" rendered="#{LoginForm.hasRole('Admin_Projects')}">
 
-			<div class="row" role="main">
-				<div class="col-sm-12">
-					<div class="box box-color box-bordered">
-						<div class="box-title">
-							<h2>
-								<i class="fa fa-compass"></i>
-								<h:outputText value="#{myPageTitle}" />
-							</h2>
-						</div>
-						<div class="box-content nopadding">
-							<div class="dataTables_wrapper">
-								<div class="dataTables_length" >
-									<h:outputText value="#{msgs.treffer}: #{ProjekteForm.paginator.totalResults}" />
+			<main class="row">
+				<div class="col-12">
+
+
+					<intranda:box
+						boxType="primary"
+						title="#{myPageTitle}"
+						icon="fa-compass"
+					>
+
+							<div class="gw-table gw-table-fixed">
+
+								<!-- SEARCH -->
+								<div class="gw-table__search">
+									<!-- Hits -->
+									<div class="gw-table__search__length" >
+										<h:outputText value="#{msgs.treffer}: #{ProjekteForm.paginator.totalResults}" />
+									</div>
 								</div>
 
-								<!-- Datentabelle -->
-								<x:dataTable id="projectList" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item"
-									value="#{ProjekteForm.paginator.list}">
+								<!-- TABLE -->
 
-									<x:column styleClass="tableColumnMaxWidthLong" style="min-width:280px;">
+								<div class="gw-table__wrapper">
+									<x:dataTable
+										id="projectList"
+										styleClass="table table-hover table-bordered"
+										var="item"
+										value="#{ProjekteForm.paginator.list}"
+										>
+
+									<x:column>
 										<f:facet name="header">
-											<h:outputText value="#{msgs.projekt}" />
+											<h:outputText value="#{msgs.name}" />
 										</f:facet>
 										<h:outputText value="#{item.titel}" />
 									</x:column>
 
-                                    <x:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.institution}" />
-                                        </f:facet>
-                                        <h:outputText value="#{item.institution.shortName}" />
-                                    </x:column>
+									<x:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
+											<f:facet name="header">
+													<h:outputText value="#{msgs.institution}" />
+											</f:facet>
+											<h:outputText value="#{item.institution.shortName}" />
+									</x:column>
 
 									<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs" style="max-width:180px;">
 										<f:facet name="header">
@@ -68,56 +86,68 @@
 											<h:outputText value="#{msgs.status}" />
 										</f:facet>
 										<h:panelGroup  rendered="#{item.projectIsArchived}"  class="badge badge-intranda-red">
-											<i class="fa fa-lock"></i> #{msgs.inactive}	
+											<i class="fa fa-lock"></i> <span>#{msgs.inactive}</span>
 										</h:panelGroup>
-                                        <h:panelGroup class="badge badge-intranda-green" rendered="#{!item.projectIsArchived}">
-                                            <i class="fa fa-unlock"></i> #{msgs.active}
-                                        </h:panelGroup>
+										<h:panelGroup class="badge badge-intranda-green" rendered="#{!item.projectIsArchived}">
+											<i class="fa fa-unlock"></i> <span>#{msgs.active}</span>
+										</h:panelGroup>
 									</h:column>
 
-									<x:column >
+									<x:column headerClass="gw-table-fixed__actions">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
-										<!-- Bearbeiten-Schaltknopf -->
-										<button jsf:id="edit" class="btn margin-right-5" jsf:rel="tooltip" jsf:action="project_edit">
-											<i class="fa fa-pencil"></i>
-											<f:passThroughAttribute name="data-toggle" value="tooltip" />
-											<f:passThroughAttribute name="aria-label" value="#{msgs.projektBearbeiten}" />
-											<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
-											<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
-										</button>
-										
-										<!-- Duplicate project -->
-										<button jsf:id="clone" jsf:action="#{ProjekteForm.cloneProject}" class="btn" 
-											title="#{msgs.duplicateProject}" jsf:rel="tooltip"
-											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-											<i class="fa fa-clipboard" title="#{msgs.duplicateProject}" jsf:rel="tooltip"/>
-											<f:passThroughAttribute name="data-toggle" value="tooltip" />
-											<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
-										</button>
+
+										<div class="gw-table__actions__container">
+											<!-- Bearbeiten-Schaltknopf -->
+											<button
+												jsf:id="edit"
+												class="btn btn-blank"
+												jsf:rel="tooltip"
+												jsf:action="project_edit">
+												<i class="fa fa-pencil"></i>
+												<f:passThroughAttribute name="title" value="#{msgs.bearbeiten}" />
+												<f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
+												<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
+												<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
+												<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
+											</button>
+
+											<!-- Duplicate project -->
+											<button
+												jsf:id="clone"
+												jsf:action="#{ProjekteForm.cloneProject}"
+												class="btn btn-blank"
+												title="#{msgs.duplicate}"
+												jsf:rel="tooltip"
+												onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+												<i class="fa fa-clipboard" title="#{msgs.duplicate}" jsf:rel="tooltip"/>
+												<f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
+												<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
+											</button>
+										</div>
 									</x:column>
 
 								</x:dataTable>
+								</div>
 
-								<div class="dataTables_info">
+								<div class="box__actions">
 									<!-- Neu-Schaltknopf -->
-									<button jsf:id="newProject" class="btn btn-primary font-size-s" jsf:action="#{ProjekteForm.Neu}" jsf:immediate="true">
+									<button jsf:id="newProject" class="btn btn-primary-400 me-auto" jsf:action="#{ProjekteForm.Neu}" jsf:immediate="true">
 										<i class="fa fa-plus margin-right-5"></i>
-										<h:outputText value="#{msgs.neuesProjektAnlegen}" />
+										<span>
+											<h:outputText value="#{msgs.neuesProjektAnlegen}" />
+										</span>
 										<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
 									</button>
-								</div>
-								<div class="dataTables_paginate">
+
 									<!-- paginator -->
 									<intranda:tablePaginator id="projects" paginator="#{ProjekteForm.paginator}" />
-									<!-- /paginator -->
 								</div>
 							</div>
-						</div>
-					</div>
+					</intranda:box>
 				</div>
-			</div>
+			</main>
 		</h:form>
 	</ui:define>
 

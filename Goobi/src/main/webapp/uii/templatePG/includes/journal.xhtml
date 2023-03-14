@@ -23,7 +23,6 @@
             href="#{HelperForm.applicationWebsiteUrl}uii/css/index.css" />
         -->
 
-
         <script type="text/javascript">
         /*
             function switchExpanded( id ) {
@@ -42,25 +41,6 @@
         */
         </script>
 
-
-        <!--
-        <div class="box thin-margin box-bordered">
-            <div class="box-title">
-                <h3>
-                    <i class="fa #{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-comment' : NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal'] == '' ? 'fa-list-ol' : 'fa-folder-o'}" />
-                    <h:outputText
-                        value="#{msgs.processLog}"
-                        rendered="#{NavigationForm.uiStatus['toggleJournal'] == null or NavigationForm.uiStatus['toggleJournal'] == ''}" />
-                    <h:outputText
-                        value="#{msgs.process_log_fileView}"
-                        rendered="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload'}" />
-                    <h:outputText
-                        value="#{msgs.imageComments}"
-                        rendered="#{NavigationForm.uiStatus['toggleJournal'] == 'imageComments'}" />
-                </h3>
-
-        -->
-
         <!-- Get box title -->
         <c:if test="#{NavigationForm.uiStatus['toggleJournal'] == null or NavigationForm.uiStatus['toggleJournal'] == '' }">
             <c:set var="boxTitle" value="#{msgs.processLog}"/>
@@ -73,38 +53,34 @@
         </c:if>
 
         <intranda:box
-            scope="processLog"
+            boxScope="processLog"
             boxType="outline"
-            boxTitle="false"
-            >
-
+            boxTitle="false">
 
             <intranda:boxTitle
                 title="#{boxTitle}"
-                icon="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-comment' : NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal'] == '' ? 'fa-list-ol' : 'fa-folder-o'}"
-                >
+                icon="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-comment' : NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal'] == '' ? 'fa-list-ol' : 'fa-folder-o'}">
 
-                <div class="actions">
+                <div class="actions d-flex">
 
                     <h:panelGroup rendered="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null}">
+                        
                         <div
                             class="btn-group"
                             data-bs-trigger="hover"
-                            data-bs-toggle="tooltip"
-                            >
+                            data-bs-toggle="tooltip">
                             <div class="dropdown">
                                 <button
                                     title="#{msgs.filterProcessLog}"
                                     id="filterLogDropdown"
                                     type="button"
-                                    class="btn dropdown-toggle searchfieldbuttongroup"
+                                    class="btn d-flex align-items-center btn--title-action-neutral dropdown-toggle"
                                     aria-label="#{msgs.filterProcessLog}"
                                     aria-haspopup="true"
                                     aria-expanded="false"
                                     onclick="switchExpanded(this.id)"
-                                    data-bs-toggle="dropdown"
-                                    >
-                                    <i class="fa fa-columns" />
+                                    data-bs-toggle="dropdown">
+                                    <i class="fa fa-columns btn-dropDownInBoxHeader" />
                                     <span class="caret"></span>
                                 </button>
 
@@ -187,7 +163,6 @@
                                             jsf:id="showErrorMessages"
                                             class="dropdown-item">
                                             <i class="fa #{NavigationForm.uiStatus['process_log_level_error']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
-
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showErrorMessages}" />
                                             </span>
@@ -203,7 +178,7 @@
 
                     <x:selectOneMenu
                         pt:aria-label="#{msgs.process_log_file_FolderSelection}"
-                        styleClass="form-control input"
+                        styleClass="form-select me-3 pe-5"
                         style="width: auto;"
                         value="#{bean.currentFolder}"
                         rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload' and showFolderSelection}">
@@ -217,7 +192,7 @@
                         data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
-                        class="btn btn-mini pull-right margin-right-10">
+                        class="btn d-flex align-items-center btn--title-action-neutral">
                         <i class="fa #{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-list-ol' : 'fa-comment'}" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal']=='fileUpload' ? 'imageComments' : '' }"
@@ -230,16 +205,15 @@
                         jsf:rendered="#{showFolderSelection}"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
-                        class="btn btn-mini pull-right margin-right-10">
+                        class="btn d-flex align-items-center btn--title-action-neutral">
                         <i class="fa #{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? 'fa-list-ol ' : 'fa-folder-open-o'}" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal']=='imageComments' ? 'fileUpload' : '' }"
                             target="#{NavigationForm.uiStatus['toggleJournal']}" />
                     </button>
 
-
                     <button
-                        class="btn"
+                        class="btn d-flex align-items-center btn--title-action-neutral"
                         data-toggle="tooltip"
                         jsf:action="#{NavigationForm.Reload}"
                         title="#{msgs.resizeBox}"
@@ -321,7 +295,7 @@
                         <div class="d-flex p-4 pb-2 border-top">
                             <div class="col-md-3">
                             <h:outputText
-                                styleClass="flex-label "
+                                styleClass="flex-label"
                                 value="#{msgs.process_log_firstContent}:" />
                             </div>
                             <div class="col-md-9">
@@ -336,8 +310,8 @@
 
                         <div class="d-flex p-4 pt-2">
                             <div class="col-md-3">
-                            <h:outputText
-                                value="#{msgs.fileUpload}:" />
+                            	<h:outputText
+                                	value="#{msgs.fileUpload}:" />
                             </div>
                             <div class="col-md-9 d-flex">
                                     <div>
@@ -355,9 +329,8 @@
                                         <h:selectOneRadio
                                             id="folderSelection"
                                             value="#{bean.uploadFolder}"
-                                            styleClass="inline-table focusableChild"
-                                            disabledClass="margin-sides-10"
-                                            enabledClass="margin-sides-10" rendered="#{showFolderSelection}">
+                                            styleClass="select-radio select-radio-horizontal"
+                                            rendered="#{showFolderSelection}">
                                             <f:selectItem
                                                 pt:styleClass="focusable"
                                                 itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"

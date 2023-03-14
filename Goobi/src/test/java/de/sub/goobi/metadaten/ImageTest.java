@@ -128,7 +128,7 @@ public class ImageTest extends AbstractTest {
         Path imagePath = Paths.get(process.getImagesTifDirectory(false), "00000001.tif");
         Image image = new Image(imagePath, 1, 200);
         assertNotNull(image);
-        assertEquals("https://localhost:443/goobi/uii/template/img/goobi_placeholder_notFound_large.png?version=1", image.getBookmarkUrl());
+        assertEquals("https://localhost:443/goobi/uii/templatePG/img/goobi_placeholder_notFound_large.png?version=1", image.getBookmarkUrl());
     }
 
     @Test

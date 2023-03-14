@@ -25,6 +25,7 @@ import javax.servlet.ServletContextListener;
 
 import de.sub.goobi.persistence.managers.DatabaseVersion;
 import de.sub.goobi.persistence.managers.MySQLHelper;
+import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -71,11 +72,12 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
     // this method is executed on every startup and checks, if some mandatory indexes exist
     // if some indexes are missing, they are created
     private void checkIndexes() {
-        if (MySQLHelper.isUsingH2()) {
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
             try {
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS institution_id ON projekte(institution_id) ");
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
+                DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS automatic_tasks ON schritte(titel, typAutomatisch) ");
             } catch (SQLException e) {
                 log.error(e);
             }
@@ -91,6 +93,11 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 log.info("Create index 'stepstatus' on table 'schritte'.");
                 DatabaseVersion.createIndexOnTable("schritte", "stepstatus", "Bearbeitungsstatus", null);
             }
+
+            if (!DatabaseVersion.checkIfIndexExists("schritte", "automatic_tasks")) {
+                DatabaseVersion.createIndexOnTable("schritte", "automatic_tasks", "titel, typAutomatisch", null);
+            }
+
         }
     }
 

@@ -44,6 +44,7 @@ import org.goobi.beans.Template;
 import org.joda.time.LocalDate;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -257,15 +258,17 @@ class ProcessMysqlHelper implements Serializable {
     public static int getProcessCount(String order, String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("SELECT COUNT(1) FROM prozesse left join batches on prozesse.batchID = batches.id ");
         sql.append("left JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         if (institution != null) {
             sql.append("and projekte.institution_id = ");
             sql.append(institution.getId());
         }
-        sql.append(" left JOIN institution on projekte.institution_id = institution.id ");
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+        } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
+            sql.append( "WHERE ProzesseID > 0 ");
         }
 
         try {
@@ -290,7 +293,6 @@ class ProcessMysqlHelper implements Serializable {
             sql.append("and projekte.institution_id = ");
             sql.append(institution.getId());
         }
-        sql.append(" left JOIN institution on projekte.institution_id = institution.id ");
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
@@ -321,7 +323,7 @@ class ProcessMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ProzesseID FROM prozesse left join batches on prozesse.batchID = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left join institution on projekte.institution_id = institution.id ");
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
@@ -420,16 +422,16 @@ class ProcessMysqlHelper implements Serializable {
             return new Object[] { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
-                    o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                            o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
 
         } else {
             return new Object[] { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(),
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
-                    o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                            o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                            o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
         }
     }
 
@@ -489,7 +491,7 @@ class ProcessMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left join institution on projekte.institution_id = institution.id ");
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -511,9 +513,11 @@ class ProcessMysqlHelper implements Serializable {
     }
 
     public static int countProcesses(String filter) throws SQLException {
-        StringBuilder sql = new StringBuilder("select count(prozesseID) from prozesse ");
+        StringBuilder sql = new StringBuilder("select count(1) from prozesse ");
         if (filter != null && filter.length() > 0) {
             sql.append(" WHERE ").append(filter);
+        } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
+            sql.append(" WHERE ProzesseID > 0");
         }
         Connection connection = null;
         try {
@@ -612,7 +616,7 @@ class ProcessMysqlHelper implements Serializable {
     public static int getCountOfProcessesWithRuleset(int rulesetId) throws SQLException {
         Connection connection = null;
 
-        String query = "select count(ProzesseID) from prozesse where MetadatenKonfigurationID = ?";
+        String query = "select count(1) from prozesse where MetadatenKonfigurationID = ?";
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { rulesetId };
@@ -626,7 +630,7 @@ class ProcessMysqlHelper implements Serializable {
 
     public static int getCountOfProcessesWithDocket(int docketId) throws SQLException {
         Connection connection = null;
-        String query = "select count(ProzesseID) from prozesse where  docketID= ?";
+        String query = "select count(1) from prozesse where docketID= ?";
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { docketId };
@@ -640,7 +644,7 @@ class ProcessMysqlHelper implements Serializable {
 
     public static int getCountOfProcessesWithTitle(String title) throws SQLException {
         Connection connection = null;
-        String query = "select count(prozesse.ProzesseID) from prozesse where  titel = ?";
+        String query = "select count(1) from prozesse where titel = ?";
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { title };
