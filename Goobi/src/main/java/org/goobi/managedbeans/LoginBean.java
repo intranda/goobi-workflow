@@ -488,6 +488,17 @@ public class LoginBean implements Serializable {
         return myColumns;
     }
 
+
+    public boolean isDisplaySortfield(String field) {
+        if (StringUtils.isBlank(field)) {
+            return false;
+        }
+        if (field.startsWith("{db_meta.") ||field.startsWith("{process.")||field.startsWith("{product.") || field.startsWith("{template.") ) {
+            return true;
+        }
+        return false;
+    }
+
     public boolean isUserCreationEnabled() {
         return ConfigurationHelper.getInstance().isEnableExternalUserLogin();
     }

@@ -294,7 +294,7 @@ class ProcessMysqlHelper implements Serializable {
             sql.append(institution.getId());
         }
 
-        String sortfield = prepareSortField(order, sql);
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
@@ -318,46 +318,6 @@ class ProcessMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
-    }
-
-    private static String prepareSortField(String order, StringBuilder sql) {
-        if (!order.startsWith("{")) {
-            return order;
-        }
-
-        String sortfield = order;
-        boolean reverse = false;
-        if (order.endsWith(" desc")) {
-            reverse = true;
-            order = order.replace(" desc", "");
-        }
-
-        String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
-        if (order.startsWith("{db_meta")) {
-            sql.append("LEFT JOIN (SELECT processid, MAX(value) AS value FROM metadata WHERE metadata.name = '");
-            sql.append(fieldname);
-            sql.append("' GROUP BY processid) AS field ON field.processid = prozesse.prozesseID ");
-        } else if (order.startsWith("{process.")) {
-            sql.append("LEFT JOIN (SELECT prozesseID, MAX(WERT) AS value FROM prozesseeigenschaften WHERE prozesseeigenschaften.Titel = '");
-            sql.append(fieldname);
-            sql.append("' GROUP BY prozesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
-        } else if (order.startsWith("{template.")) {
-            sql.append("LEFT JOIN (SELECT  ProzesseID, MAX(WERT) AS value FROM vorlageneigenschaften LEFT JOIN vorlagen ON ");
-            sql.append("vorlagen.VorlagenID = vorlageneigenschaften.VorlagenID WHERE titel = '");
-            sql.append(fieldname);
-            sql.append("' GROUP BY ProzesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
-        } else if (order.startsWith("{product.")) {
-            sql.append("LEFT JOIN (SELECT  ProzesseID, MAX(WERT) AS value FROM werkstueckeeigenschaften LEFT JOIN werkstuecke ON ");
-            sql.append("werkstuecke.werkstueckeID = werkstueckeeigenschaften.werkstueckeID WHERE titel = '");
-            sql.append(fieldname);
-            sql.append("' GROUP BY ProzesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
-        }
-        if (reverse) {
-            sortfield = " case when field.value = '' or field.value is null then 1 else 0 end, field.value desc ";
-        } else {
-            sortfield = " case when field.value = '' or field.value is null then 1 else 0 end, field.value ";
-        }
-        return sortfield;
     }
 
     public static List<Integer> getProcessIdList(String order, String filter, Integer start, Integer count) throws SQLException {
@@ -464,16 +424,16 @@ class ProcessMysqlHelper implements Serializable {
             return new Object[] { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
-                    o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                            o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
 
         } else {
             return new Object[] { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(),
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
-                    o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                            o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                            o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
         }
     }
 
