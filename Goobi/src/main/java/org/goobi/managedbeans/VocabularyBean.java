@@ -838,7 +838,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         // Get information about the field that should be set:
         java.util.Map<String, Object> map = component.getAttributes();
 
-        String label = (String) (map.get("fieldLabelForValidator"));
+        String label = (String) (map.get("idForValidator"));
         Field field = this.currentVocabRecord.getFieldByLabel(label);
 
         String type = field.getDefinition().getType();

@@ -263,30 +263,25 @@
             </div>
         </h:form>
 
-        <!-- Box for process log -->
+        <!-- JOURNAL -->
         <h:form
             styleClass="form-vertical form-bordered"
             id="processJournal"
             enctype="multipart/form-data"
             prependId="false">
-            <x:aliasBeansScope>
-                <x:aliasBean
-                    alias="#{showBigButton}"
+            <ui:include src="../journal.xhtml">
+                <ui:param
+                    name="showBigButton"
                     value="true" />
-                <x:aliasBean
-                    alias="#{showFolderSelection}"
+                <ui:param
+                    name="showFolderSelection"
                     value="true" />
-                <x:aliasBean
-                    alias="#{bean}"
+                <ui:param
+                    name="bean"
                     value="#{AktuelleSchritteForm.batchHelper.currentStep.prozess}" />
-                <f:subview id="sublog">
-                    <ui:include src="../journal.xhtml" />
-                </f:subview>
-            </x:aliasBeansScope>
+            </ui:include>
         </h:form>
-
-
-        <!-- // Box for process log -->
+        <!-- // JOURNAL -->
 
     </composite:implementation>
 

@@ -67,7 +67,7 @@ public class Templateproperty implements Serializable, IGoobiProperty {
 
     public Templateproperty() {
         this.istObligatorisch = false;
-        this.datentyp = PropertyType.String.getId();
+        this.datentyp = PropertyType.STRING.getId();
         this.creationDate = new Date();
     }
 
@@ -105,7 +105,7 @@ public class Templateproperty implements Serializable, IGoobiProperty {
     @Override
     public PropertyType getType() {
         if (this.datentyp == null) {
-            this.datentyp = PropertyType.String.getId();
+            this.datentyp = PropertyType.STRING.getId();
         }
         return PropertyType.getById(this.datentyp);
     }

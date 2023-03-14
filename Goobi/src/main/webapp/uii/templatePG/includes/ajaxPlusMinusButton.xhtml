@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+    <script src="templatePG/js/modules/gwHandleTooltip.js?v=#{HelperForm.buildVersion}"></script>
+
+		<button
+			type="button"
+			class="btn btn--plusMinus"
+			jsf:rendered="#{!item.panelAusgeklappt}"
+			jsf:id="displayDetails"
+			title="#{msgs.expandProcessDetails}"
+			data-bs-toggle="tooltip"
+			aria-haspopup="true"
+			aria-expanded="false"
+		>
+			<i class="fa fa-angle-right"></i>
+			<span>
+				<h:outputText value="#{item.titelLokalisiert}" />
+			</span>
+			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="true"/>
+			<f:ajax
+				render="#{ajaxRender}"
+				onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init({scope: document.querySelector('#processTable')});}"
+			/>
+		</button>
+
+		<button
+			type="button"
+			class="btn btn--plusMinus mb-4"
+			jsf:rendered="#{item.panelAusgeklappt}"
+			jsf:id="hideDetails"
+			aria-haspopup="true"
+			aria-expanded="true"
+			title="#{msgs.showBoxDetailsOff}"
+			data-bs-toggle="tooltip"
+		>
+			<i class="fa fa-angle-down"></i>
+			<span>
+				<h:outputText value="#{item.titelLokalisiert}" />
+			</span>
+			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="false"/>
+			<f:ajax
+				render="#{ajaxRender}"
+				onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init({scope: document.querySelector('#processTable')});}"
+			/>
+		</button>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

@@ -6,9 +6,9 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
@@ -36,7 +36,7 @@
         <intranda:breadcrumb
             id="taskEdit"
             label="#{myPageTitle}"
-            action="task_edit"
+            action="task_edit_simulator"
             noSeparator="#{true}" />
     </ui:define>
 
@@ -50,79 +50,76 @@
                 <div class="row">
                     <div class="col-sm-6">
 
-                        <!-- Box for process details -->
-                        <div class="box thin-margin lightgrey box-bordered">
-                            <div
-                                class="box-title"
-                                style="background-color: #eee;">
-                                <h2 class="tableColumnMaxWidthExtraLong">
-                                    <i class="fa fa-list"></i> #{ProzessverwaltungForm.myProzess.titel}
-                                </h2>
-
+                        <!-- SIMULATED BOX FOR PROCESS DETAILS -->
+                        <intranda:box
+                            boxType="outline"
+                            boxPadding="false"
+                            icon="fa-list"
+                            title="#{ProzessverwaltungForm.myProzess.titel}">                            
+                            <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
+                                <div class="row text-center d-flex align-items-center font-light">
+                                    <h2>PLACEHOLDER</h2>
+                                </div>
                             </div>
-                            <div class="box-content nopadding">
-
-                                <div style="background-color: #eee; height: 250px;"></div>
+                        </intranda:box>
+                        <!-- // SIMULATED BOX FOR PROCESS DETAILS -->
+                     
+                        <div class="m-4"/>
+                        
+                        <!-- SIMULATED BOX FOR JOURNAL -->
+                        <intranda:box
+                            boxType="outline"
+                            boxPadding="false"
+                            icon="fa-comment"
+                            title="#{msgs.processLog}">   
+                            <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
+                                <div class="row text-center d-flex align-items-center font-light">
+                                    <h2>PLACEHOLDER</h2>
+                                </div>
                             </div>
-                        </div>
-                        <!-- // Box for process details -->
-
-                        <!-- Box for process log -->
-                        <div class="box thin-margin box-bordered">
-                            <div
-                                class="box-title"
-                                style="background-color: #eee;">
-                                <h3>
-                                    <i class="fa fa-comment"></i>
-                                    <h:outputText value="#{msgs.processLog}" />
-                                </h3>
-                            </div>
-                            <div
-                                class="box-content nopadding"
-                                style="background-color: #eee;">
-                                <div style="height: 214px;" />
-                                <div
-                                    class="form-actions"
-                                    style="border-top: 1px solid #ddd; height: 50px;" />
-                            </div>
-                        </div>
-                        <!-- // Box for process log -->
-
+                        </intranda:box>
+                        <!-- // SIMULATED BOX FOR JOURNAL -->
+                   
                     </div>
 
                     <div class="col-sm-6">
 
-                        <!-- Area for part GUI plugins -->
+                        <!-- AREA FOR PART GUI PLUGIN -->
                         <c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
                             <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
                         </c:if>
+                        <!-- // AREA FOR PART GUI PLUGIN -->
 
-                        <!-- Box for action area -->
-                        <div class="box thin-margin box-bordered">
-                            <div
-                                class="box-title"
-                                style="background-color: #eee;">
-                                <h3>
-                                    <i class="fa fa-cog"></i>
-                                    <h:outputText value="#{msgs.moeglicheAktionen}" />
-                                </h3>
+                        <div class="m-3"/>
+                        
+                        <!-- SIMULATED BOX FOR ACTION -->
+                        <intranda:box
+                            boxType="outline"
+                            boxPadding="false"
+                            icon="fa-cog"
+                            title="#{msgs.moeglicheAktionen}">   
+                            <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
+                                <div class="row text-center d-flex align-items-center font-light">
+                                    <h2>PLACEHOLDER</h2>
+                                </div>
                             </div>
-                            <div
-                                class="box-content"
-                                style="background-color: #eee; height: 150px;" />
-                        </div>
-                        <!-- // Box for action area -->
-
-                        <h:form styleClass="margin-top-most">
+                        </intranda:box>
+                        <!-- // SIMULATED BOX FOR ACTION -->
+                        
+                        <!-- BUTTON TO LEAVE -->                        
+                        <h:form styleClass="mt-4">
                             <button
-                                class="btn btn-blue pull-right font-size-s"
+                                class="btn btn-primary-400 float-end"
                                 jsf:id="absenden"
                                 jsf:action="#{AktuelleSchritteForm.myPlugin.cancel}">
-                                <i class="fa fa-check margin-right-5"></i>
-                                <h:outputText value="#{msgs.pluginLeave}" />
+                                <i class="fa fa-check"></i>
+                                <span>
+                                    <h:outputText value="#{msgs.pluginLeave}" />
+                                </span>
                             </button>
                         </h:form>
-
+                        <!-- // BUTTON TO LEAVE -->   
+                        
                     </div>
                 </div>
 

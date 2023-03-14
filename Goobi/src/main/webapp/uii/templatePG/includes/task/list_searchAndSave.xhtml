@@ -1,0 +1,116 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface />
+
+	<composite:implementation>
+
+	<div class="btn-group">
+		<!-- remove filter from list -->
+		<button
+			jsf:id="deleteFilter"
+			data-bs-toggle="tooltip"
+			aria-label="#{msgs.loeschen}"
+			class="btn gw-table__filters__option"
+			jsf:action="#{Form.removeFilterFromUser}"
+			title="#{msgs.removeFilter}"
+		>
+			<i class="fa fa-trash-o"></i>
+		</button>
+
+		<!--Filter zur User-Liste hinzufuegen -->
+		<button
+			jsf:id="saveFilter"
+			data-toggle="tooltip"
+			aria-label="#{msgs.save}"
+			class="btn gw-table__filters__option"
+			jsf:action="#{Form.addFilterToUser}"
+			title="#{msgs.addFilter}"
+		>
+			<i class="fa fa-save"></i>
+		</button>
+
+		<h:panelGroup rendered="#{Form.user.filters.size() gt 0}">
+		<div class="btn-group">
+			<span data-bs-toggle="tooltip" title="#{msgs.filter}">
+				<div class="dropdown">
+					<button
+						class="btn gw-table__filters__option dropdown-toggle"
+						aria-label="#{msgs.dropdownMenu}"
+						data-bs-toggle="dropdown"
+						id="filterDropdown"
+						aria-haspopup="true"
+						aria-expanded="false"
+					>
+						<i class="fa fa-filter" />
+						<span class="caret"></span>
+					</button>
+					<!-- Filter Liste -->
+					<ul class="dropdown-menu">
+						<ui:repeat var="fil" value="#{Form.user.filters}" id="fil">
+						<li>
+							<button jsf:id="currentFilter" jsf:action="#{Form.FilterAlleStart}" class="dropdown-item">
+								<h:outputText value="#{fil}" />
+								<x:updateActionListener property="#{Form.filter}" value="#{fil}" />
+							</button>
+						</li>
+						</ui:repeat>
+					</ul>
+				</div>
+			</span>
+		</div>
+		</h:panelGroup>
+	</div>
+
+		<div class="gw-table__filters__search-bar">
+			<div class="input-group">
+				<span class="input-group-text">
+					<i class="fa fa-search"></i>
+				</span>
+				<h:inputText
+					id="searchField"
+					pt:aria-label="search"
+					styleClass="form-control searchfield"
+					value="#{Form.filter}"
+					 onkeypress="submitSearch(event)"
+				>
+					<f:passThroughAttribute name="placeholder" value="#{label}" />
+				</h:inputText>
+				<button
+					type="submit"
+					jsf:id="FilterAlle2"
+					jsf:forceId="true"
+					class="btn btn-blank"
+					jsf:action="#{Form.FilterAlleStart}" >
+					<span>
+						#{msgs.search}
+					</span>
+				</button>
+			</div>
+			<x:commandButton type="submit" id="FilterAlle" forceId="true" style="display: none;" action="#{Form.FilterAlleStart}" />
+		</div>
+
+		<script>
+			/** Submit the search on pressing Enter inside the search form.
+			* This is a workaround: A form element cannot be used, because
+			* we would end up with nested form elements, which is not allowed:
+			* https://stackoverflow.com/questions/379610/can-you-nest-html-forms
+			* The current outer form element is `:searchForm`
+			*/
+			function submitSearch(e) {
+				if(e.key != 'Enter') return
+				e.preventDefault()
+				var submit = document.querySelector('[id$="FilterAlle2"]');
+				submit.click()
+			}
+		</script>
+
+
+	</composite:implementation>
+</ui:composition>

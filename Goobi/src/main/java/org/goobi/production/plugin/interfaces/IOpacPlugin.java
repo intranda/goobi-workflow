@@ -68,7 +68,7 @@ public interface IOpacPlugin extends IPlugin {
      */
 
     public default String getGui() {
-        return "/uii/includes/process/process_new_opac.xhtml";
+        return "/uii/templatePG/includes/process/process_new_opac.xhtml";
     }
 
     default List<ConfigOpacCatalogue> getOpacConfiguration(String title) {

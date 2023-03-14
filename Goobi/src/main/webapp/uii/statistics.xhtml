@@ -4,9 +4,9 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -32,48 +32,51 @@
     </ui:define>
 
     <ui:define name="content">
-            <ui:include src="includes/calendarJavaScript.xhtml" />
+
+    <main id="statisticsView">
+
+            <ui:include src="templatePG/includes/calendarJavaScript.xhtml" />
 
             <h:form
-                rendered="#{NavigationForm.aktuell == 'a40' and LoginForm.hasRole('Statistics_General')}"
-                id="myform">
-                <div
-                    class="row"
-                    role="main">
-                    <div class="col-sm-6">
-                        <div class="box box-color lightgrey box-bordered">
-                            <div class="box-title">
-                                <h2>
-                                    <i class="fa fa-compass"></i>
-                                    <h:outputText value="#{msgs.projekt}" />
-                                </h2>
-                            </div>
-                            <div class="box-content">
+              rendered="#{NavigationForm.aktuell == 'a40' and LoginForm.hasRole('Statistics_General')}"
+              id="myform"
+            >
 
-                                <div class="row">
-                                    <div
-                                        class="col-sm-4">
-                                        <h:outputLabel
-                                            styleClass="control-label"
-                                            for="project"
-                                            value="#{msgs.projekt}:" />
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <h:selectOneMenu
-                                            id="project"
-                                            styleClass="form-control"
-                                            value="#{ProjekteForm.projektAuswahl}"
-                                            required="true">
-                                            <f:selectItem
-                                                itemValue=""
-                                                itemLabel="#{msgs.bitteAuswaehlen}" />
-                                            <f:selectItems value="#{ProzessverwaltungForm.projektAuswahlListe}" />
-                                            <f:ajax
-                                                execute="@form"
-                                                render="@form" />
-                                        </h:selectOneMenu>
-                                    </div>
-                                </div>
+              <div class="row">
+
+                <div class="col-12 col-md-6 mb-4">
+
+                  <intranda:box
+                    boxType="neutral"
+                    boxScope="stats-box"
+                    title="#{msgs.projekt}"
+                    icon="fa-compass"
+                  >
+
+                  <div class="row">
+                    <div
+                      class="col-sm-4">
+                      <h:outputLabel
+                          styleClass="control-label"
+                          for="project"
+                          value="#{msgs.projekt}:" />
+                    </div>
+                    <div class="col-sm-8">
+                      <h:selectOneMenu
+                          id="project"
+                          styleClass="form-select"
+                          value="#{ProjekteForm.projektAuswahl}"
+                          required="true">
+                          <f:selectItem
+                              itemValue=""
+                              itemLabel="#{msgs.bitteAuswaehlen}" />
+                          <f:selectItems value="#{ProzessverwaltungForm.projektAuswahlListe}" />
+                          <f:ajax
+                              execute="@form"
+                              render="@form" />
+                      </h:selectOneMenu>
+                    </div>
+                  </div>
 
                                 <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
                                     <!-- number of images -->
@@ -137,109 +140,110 @@
                                         </div>
                                     </div>
                                 </h:panelGroup>
-                            </div>
+                </intranda:box>
+                </div> <!-- /col -->
+
+              <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
+
+                <div class="col-12 col-md-6">
+
+                  <intranda:box
+                    boxType="neutral"
+                    boxScope="stats-box"
+                    title="#{msgs.vorgaben}"
+                    icon="fa-calculator"
+                  >
+
+
+
+                    <div class="row">
+                      <!-- pages per volume -->
+                      <div
+                        class="col-sm-4"
+                        >
+                        <h:outputLabel
+                          styleClass="control-label"
+                          value="#{msgs.imagesPerVolume}:" />
+                      </div>
+                      <div
+                        class="col-sm-2"
+                        >
+                        <h:outputText value="#{ProjekteForm.calcImagesPerVolume}" />
+                      </div>
+                      <!-- duration -->
+                      <div
+                        class="col-sm-4"
+                        >
+                        <h:outputLabel
+                          styleClass="control-label"
+                          value="#{msgs.durationInMonth}:" />
+                      </div>
+                      <div
+                        class="col-sm-2"
+                        >
+                        <h:outputText value="#{ProjekteForm.calcDuration}" />
+                      </div>
+                    </div> <!-- /row -->
+
+                    <!-- throughputPerYear -->
+                    <h:panelGroup rendered="#{ProjekteForm.calcDuration > 11}">
+                      <div class="row">
+                        <div
+                          class="col-sm-4"
+                          >
+                          <h:outputLabel
+                            styleClass="control-label"
+                            value="#{msgs.volumesPerYear}:" />
                         </div>
-                    </div>
+                        <div
+                          class="col-sm-2"
+                          >
+                          <h:outputText value="#{ProjekteForm.calcThroughputPerYear}" />
+                        </div>
+                        <div
+                          class="col-sm-4"
+                          >
+                          <h:outputLabel
+                            styleClass="control-label"
+                            value="#{msgs.pagesPerYear}:" />
+                        </div>
+                        <div
+                          class="col-sm-2"
+                          >
+                          <h:outputText value="#{ProjekteForm.calcThroughputPagesPerYear}" />
+                        </div>
+                      </div>
+                    </h:panelGroup>
 
-                    <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
-                        <div class="col-sm-6">
-                            <div class="box box-color lightgrey box-bordered">
-                                <div class="box-title">
-                                    <h2>
-                                        <i class="fa fa-calculator"></i>
-                                        <h:outputText value="#{msgs.vorgaben}" />
-                                    </h2>
-                                </div>
-                                <div class="box-content">
-
-                                    <div class="row margin-top-regular">
-                                        <!-- pages per volume -->
-                                        <div
-                                            class="col-sm-4"
-                                            >
-                                            <h:outputLabel
-                                                styleClass="control-label"
-                                                value="#{msgs.imagesPerVolume}:" />
-                                        </div>
-                                        <div
-                                            class="col-sm-2"
-                                            >
-                                            <h:outputText value="#{ProjekteForm.calcImagesPerVolume}" />
-                                        </div>
-                                        <!-- duration -->
-                                        <div
-                                            class="col-sm-4"
-                                            >
-                                            <h:outputLabel
-                                                styleClass="control-label"
-                                                value="#{msgs.durationInMonth}:" />
-                                        </div>
-                                        <div
-                                            class="col-sm-2"
-                                            >
-                                            <h:outputText value="#{ProjekteForm.calcDuration}" />
-                                        </div>
-                                    </div>
-
-                                    <!-- throughputPerYear -->
-                                    <h:panelGroup rendered="#{ProjekteForm.calcDuration > 11}">
-                                        <div class="row margin-top-regular">
-                                            <div
-                                                class="col-sm-4"
-                                                >
-                                                <h:outputLabel
-                                                    styleClass="control-label"
-                                                    value="#{msgs.volumesPerYear}:" />
-                                            </div>
-                                            <div
-                                                class="col-sm-2"
-                                                >
-                                                <h:outputText value="#{ProjekteForm.calcThroughputPerYear}" />
-                                            </div>
-                                            <div
-                                                class="col-sm-4"
-                                                >
-                                                <h:outputLabel
-                                                    styleClass="control-label"
-                                                    value="#{msgs.pagesPerYear}:" />
-                                            </div>
-                                            <div
-                                                class="col-sm-2"
-                                                >
-                                                <h:outputText value="#{ProjekteForm.calcThroughputPagesPerYear}" />
-                                            </div>
-                                        </div>
-                                    </h:panelGroup>
-
-                                    <!-- throughputPerQuarter -->
-                                    <h:panelGroup rendered="#{ProjekteForm.calcDuration > 2}">
-                                        <div class="row margin-top-regular">
-                                            <div
-                                                class="col-sm-4"
-                                                >
-                                                <h:outputLabel
-                                                    styleClass="control-label"
-                                                    value="#{msgs.volumesPerQuarter}:" />
-                                            </div>
-                                            <div
-                                                class="col-sm-2"
-                                                >
-                                                <h:outputText value="#{ProjekteForm.calcThroughputPerQuarter}" />
-                                            </div>
-                                            <div
-                                                class="col-sm-4"
-                                                >
-                                                <h:outputLabel
-                                                    styleClass="control-label"
-                                                    value="#{msgs.pagesPerQuarter}:" />
-                                            </div>
-                                            <div
-                                                class="col-sm-2"
-                                                >
-                                                <h:outputText value="#{ProjekteForm.calcTroughputPagesPerQuarter}" />
-                                            </div>
-                                        </div>
-                                    </h:panelGroup>
+                    <!-- throughputPerQuarter -->
+                    <h:panelGroup rendered="#{ProjekteForm.calcDuration > 2}">
+                      <div class="row">
+                        <div
+                          class="col-sm-4"
+                          >
+                          <h:outputLabel
+                            styleClass="control-label"
+                            value="#{msgs.volumesPerQuarter}:" />
+                        </div>
+                        <div
+                          class="col-sm-2"
+                          >
+                          <h:outputText value="#{ProjekteForm.calcThroughputPerQuarter}" />
+                        </div>
+                        <div
+                          class="col-sm-4"
+                          >
+                          <h:outputLabel
+                            styleClass="control-label"
+                            value="#{msgs.pagesPerQuarter}:" />
+                        </div>
+                        <div
+                          class="col-sm-2"
+                          >
+                          <h:outputText value="#{ProjekteForm.calcTroughputPagesPerQuarter}" />
+                        </div>
+                      </div>
+                    </h:panelGroup>
 
                                     <!-- throughputPerMonth -->
                                     <h:panelGroup rendered="#{ProjekteForm.calcDuration > 0}">
@@ -299,113 +303,121 @@
                                         </div>
                                     </div>
 
-                                </div>
-                            </div>
+
+                  </intranda:box>
+                </div> <!-- /col -->
+              </h:panelGroup>
+            </div> <!-- /row -->
+
+
+              <div class="row mt-4" role="contentinfo">
+                <div class="col-12">
+
+                    <intranda:box
+                      boxType="neutral"
+                      boxScope="box-body-padding-top-0"
+                      id="actionform"
+                      rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}"
+                      boxTitle="false"
+                    >
+
+                      <intranda:boxTitle
+                        title="#{msgs.statistik}"
+                        icon="fa-bar-chart"
+                      >
+
+                        <div class="actions">
+
+                          <button
+                            jsf:id="resetStatistics"
+                            jsf:action="#{ProjekteForm.resetStatistics}"
+                            class="btn btn--title-action"
+                            title="#{msgs.reload}"
+                            jsf:rel="tooltip">
+                            <i
+                              class="fa fa-refresh"
+                              title="#{msgs.reload}"
+                              jsf:rel="tooltip" />
+                            <f:passThroughAttribute
+                              name="data-toggle"
+                              value="tooltip" />
+                          </button>
+
                         </div>
-                    </h:panelGroup>
-                </div>
+                      </intranda:boxTitle>
 
-                <div
-                    class="row"
-                    role="contentinfo">
-                    <div class="col-sm-12">
+                      <div class="box__body">
 
-                        <h:panelGroup
-                            layout="block"
-                            styleClass="box box-color lightgrey box-bordered"
-                            id="actionform"
-                            rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
-                            <div class="box box-color box-bordered">
-                                <div class="box-title">
-                                    <h2>
-                                        <i class="fa fa-bar-chart"></i>
-                                        <h:outputText value="#{msgs.statistik}" />
-                                    </h2>
+                        <!-- TABS -->
+                        <ul class="tabs tabs-inline tabs-top">
+                          <li class="#{NavigationForm.activeTab == 'productionStatistics'?'active':''}"><h:commandLink
+                              id="tab1"
+                              action="#{NavigationForm.Reload}"
+                              value="#{msgs.productionStatistics}"
+                              title="#{msgs.productionStatistics}">
+                            <f:setPropertyActionListener
+                              target="#{NavigationForm.activeTab}"
+                              value="productionStatistics" />
+                            </h:commandLink>
+                          </li>
 
-                                    <div class="actions">
+                          <li class="#{NavigationForm.activeTab == 'productionThroughput'?'active':''}"><h:commandLink
+                              id="tab2"
+                              action="#{NavigationForm.Reload}"
+                              value="#{msgs.productionThroughput}"
+                              title="#{msgs.productionThroughput}">
+                            <f:setPropertyActionListener
+                              target="#{NavigationForm.activeTab}"
+                              value="productionThroughput" />
+                            </h:commandLink>
+                          </li>
 
-                                        <button
-                                            jsf:id="resetStatistics"
-                                            jsf:action="#{ProjekteForm.resetStatistics}"
-                                            class="btn btn-mini"
-                                            title="#{msgs.reload}"
-                                            jsf:rel="tooltip">
-                                            <i
-                                                class="fa fa-refresh"
-                                                title="#{msgs.reload}"
-                                                jsf:rel="tooltip" />
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="box-content nopadding">
+                          <li class="#{NavigationForm.activeTab == 'errorTracking'?'active':''}"><h:commandLink
+                              id="tab3"
+                              action="#{NavigationForm.Reload}"
+                              value="#{msgs.errorTracking}"
+                              title="#{msgs.errorTracking}">
+                            <f:setPropertyActionListener
+                              target="#{NavigationForm.activeTab}"
+                              value="errorTracking" />
+                            </h:commandLink>
+                          </li>
 
-                                <ul class="tabs tabs-inline tabs-top">
-                                    <li class="#{NavigationForm.activeTab == 'productionStatistics'?'active':''}"><h:commandLink
-                                            id="tab1"
-                                            action="#{NavigationForm.Reload}"
-                                            value="#{msgs.productionStatistics}"
-                                            title="#{msgs.productionStatistics}">
-                                            <f:setPropertyActionListener
-                                                target="#{NavigationForm.activeTab}"
-                                                value="productionStatistics" />
-                                        </h:commandLink></li>
+                          <li class="#{NavigationForm.activeTab == 'storageCalculator'?'active':''}"><h:commandLink
+                              id="tab4"
+                              action="#{NavigationForm.Reload}"
+                              value="#{msgs.storageCalculator}"
+                              title="#{msgs.storageCalculator}">
+                            <f:setPropertyActionListener
+                              target="#{NavigationForm.activeTab}"
+                              value="storageCalculator" />
+                            </h:commandLink>
+                          </li>
 
-                                    <li class="#{NavigationForm.activeTab == 'productionThroughput'?'active':''}"><h:commandLink
-                                            id="tab2"
-                                            action="#{NavigationForm.Reload}"
-                                            value="#{msgs.productionThroughput}"
-                                            title="#{msgs.productionThroughput}">
-                                            <f:setPropertyActionListener
-                                                target="#{NavigationForm.activeTab}"
-                                                value="productionThroughput" />
-                                        </h:commandLink></li>
+                          <li class="#{NavigationForm.activeTab == 'projektstand'?'active':''}"><h:commandLink
+                              id="tab5"
+                              action="#{NavigationForm.Reload}"
+                              value="#{msgs.projektstand}"
+                              title="#{msgs.projektstand}">
+                            <f:setPropertyActionListener
+                              target="#{NavigationForm.activeTab}"
+                              value="projektstand" />
+                            </h:commandLink>
+                          </li>
 
-                                    <li class="#{NavigationForm.activeTab == 'errorTracking'?'active':''}"><h:commandLink
-                                            id="tab3"
-                                            action="#{NavigationForm.Reload}"
-                                            value="#{msgs.errorTracking}"
-                                            title="#{msgs.errorTracking}">
-                                            <f:setPropertyActionListener
-                                                target="#{NavigationForm.activeTab}"
-                                                value="errorTracking" />
-                                        </h:commandLink></li>
+                          <li class="#{NavigationForm.activeTab == 'projectProgress'?'active':''}"><h:commandLink
+                              id="tab6"
+                              action="#{NavigationForm.Reload}"
+                              value="#{msgs.projectProgress}"
+                              title="#{msgs.projectProgress}">
+                            <f:setPropertyActionListener
+                              target="#{NavigationForm.activeTab}"
+                              value="projectProgress" />
+                            </h:commandLink>
+                          </li>
+                        </ul>
 
-                                    <li class="#{NavigationForm.activeTab == 'storageCalculator'?'active':''}"><h:commandLink
-                                            id="tab4"
-                                            action="#{NavigationForm.Reload}"
-                                            value="#{msgs.storageCalculator}"
-                                            title="#{msgs.storageCalculator}">
-                                            <f:setPropertyActionListener
-                                                target="#{NavigationForm.activeTab}"
-                                                value="storageCalculator" />
-                                        </h:commandLink></li>
-
-                                    <li class="#{NavigationForm.activeTab == 'projektstand'?'active':''}"><h:commandLink
-                                            id="tab5"
-                                            action="#{NavigationForm.Reload}"
-                                            value="#{msgs.projektstand}"
-                                            title="#{msgs.projektstand}">
-                                            <f:setPropertyActionListener
-                                                target="#{NavigationForm.activeTab}"
-                                                value="projektstand" />
-                                        </h:commandLink></li>
-
-                                    <li class="#{NavigationForm.activeTab == 'projectProgress'?'active':''}"><h:commandLink
-                                            id="tab6"
-                                            action="#{NavigationForm.Reload}"
-                                            value="#{msgs.projectProgress}"
-                                            title="#{msgs.projectProgress}">
-                                            <f:setPropertyActionListener
-                                                target="#{NavigationForm.activeTab}"
-                                                value="projectProgress" />
-                                        </h:commandLink></li>
-                                </ul>
-
-                                <div class="tab-content tab-content-inline tab-content-bottom padding-all-more">
+                      <div class="tab-content tab-content-inline tab-content-bottom padding-all-more">
                                     <h:panelGroup
                                         layout="block"
                                         id="firsttab"
@@ -420,7 +432,7 @@
                                                     alias="#{Manager}"
                                                     value="#{ProjekteForm.statisticsManager1}" />
                                                 <f:subview id="id1">
-                                                    <ui:include src="includes/statistics/statistic_details.xhtml" />
+                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
                                                 </f:subview>
                                             </x:aliasBeansScope>
                                         </div>
@@ -441,7 +453,7 @@
                                                     value="#{ProjekteForm.statisticsManager2}" />
 
                                                 <f:subview id="id2">
-                                                    <ui:include src="includes/statistics/statistic_details.xhtml" />
+                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
                                                 </f:subview>
                                             </x:aliasBeansScope>
                                         </div>
@@ -461,7 +473,7 @@
                                                     alias="#{Manager}"
                                                     value="#{ProjekteForm.statisticsManager3}" />
                                                 <f:subview id="id3">
-                                                    <ui:include src="includes/statistics/statistic_details.xhtml" />
+                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
                                                 </f:subview>
                                             </x:aliasBeansScope>
                                         </div>
@@ -480,7 +492,7 @@
                                                     alias="#{Manager}"
                                                     value="#{ProjekteForm.statisticsManager4}" />
                                                 <f:subview id="id4">
-                                                    <ui:include src="includes/statistics/statistic_details.xhtml" />
+                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
                                                 </f:subview>
                                             </x:aliasBeansScope>
                                         </div>
@@ -525,13 +537,13 @@
                                         </h3>
 
                                         <div class="row">
-                                            <div class="col-sm-6">
+                                            <div class="col-12 col-md-6">
                                                 <div class="form-group">
                                                     <h:selectManyListbox
                                                         pt:aria-label="#{msgs.schritte}"
                                                         id="vinput5"
                                                         value="#{ProjekteForm.projectProgressInterface.selectedSteps}"
-                                                        styleClass="form-control">
+                                                        styleClass="form-select">
                                                         <f:selectItems
                                                             value="#{ProjekteForm.projectProgressInterface.selectableSteps}"
                                                             var="item"
@@ -544,11 +556,11 @@
                                                      
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-12 col-md-6">
                                                 <div class="form-group">
                                                     <h:selectOneMenu
                                                         value="#{ProjekteForm.projectProgressInterface.timeUnit}"
-                                                        styleClass="form-control margin-bottom-regular"
+                                                        styleClass="form-select margin-bottom-regular"
                                                         converter="StatisticsTimeUnitConverter">
                                                         <f:selectItems
                                                             id="pcid11"
@@ -561,10 +573,13 @@
                                                             value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}" />
                                                     </h:selectOneMenu>
                                                      
+                                                    <div class="form-check__wrapper">
                                                     <h:selectBooleanCheckbox
                                                         id="pcid13"
                                                         value="#{ProjekteForm.projectProgressInterface.referenceCurve}"
-                                                        title="#{msgs.refCurve}">
+                                                        title="#{msgs.refCurve}"
+                                                        styleClass="form-check-input"
+                                                        >
                                                     </h:selectBooleanCheckbox>
                                                     <h:outputLabel
                                                         id="pcid14"
@@ -572,14 +587,17 @@
                                                         for="pcid13"
                                                         styleClass="font-normal margin-left-5" />
                                                 </div>
+                                                </div>
 
-                                                <div class="form-group">
+                                                <div class="form-group d-grid mt-4">
                                                     <button
                                                         jsf:id="pcid20"
-                                                        class="btn btn-lightgrey font-size-s pull-right"
+                                                        class="btn btn-neutral-600 ms-auto"
                                                         jsf:action="#{ProjekteForm.filegroupEdit}">
-                                                        <span class="margin-right-10 fa fa-cog" />
-                                                        <h:outputText value="#{msgs.rerender}" />
+                                                        <i class="fa fa-cog" />
+                                                        <span>
+                                                            <h:outputText value="#{msgs.rerender}" />
+                                                        </span>
                                                     </button>
                                                      
                                                 </div>
@@ -602,13 +620,15 @@
 
                                         </h:panelGroup>
                                     </h:panelGroup>
-                                </div>
+                      </div> <!-- /tab-content -->
+                    </div> <!-- /box__body -->
 
-                            </div>
-                        </h:panelGroup>
-                    </div>
+                  </intranda:box>
 
-                </div>
+                </div> <!-- /col -->
+              </div> <!-- /row -->
+
+
             </h:form>
 
             <h:panelGroup rendered="#{NavigationForm.aktuell == 'a41' and LoginForm.hasRole('Statistics_General')}">
@@ -622,6 +642,9 @@
                         value="#{msgs.statisticsMissingPermission}"></h:outputText>
                 </h:panelGroup>
             </h:panelGroup>
+    </main>
+
     </ui:define>
+
 
 </ui:composition>
