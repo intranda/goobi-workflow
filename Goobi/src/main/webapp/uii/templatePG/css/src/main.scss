@@ -21,6 +21,7 @@
 
 // PAGES
 @use "pages/style-guide";
+@use "pages/login-logout";
 @use "pages/batch-all";
 @use "pages/user-group";
 @use "pages/rest-api";
@@ -28,4 +29,4 @@
 @use "pages/projects";
 @use "pages/statistics";
 @use "pages/process-all";
-@use "pages/process-new.scss";
+@use "pages/process-new";

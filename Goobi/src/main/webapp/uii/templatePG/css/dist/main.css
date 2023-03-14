@@ -2350,6 +2350,64 @@ body .ui-messages .ui-messages-error .ui-messages-error-icon, body .ui-messages 
   padding: 1px;
 }
 
+/* ========================================
+ * Styles for
+ *
+ * login.xhtml
+ * logout.xhtml
+ * ====================================== */
+.login-logout {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: var(--clr-primary-400);
+  color: white;
+}
+
+.login-logout-body {
+  width: 450px;
+}
+
+.login-logout-body > h1 {
+  text-align: center;
+}
+
+.login-logout-body > h1 > a {
+  color: white;
+  display: block;
+  font-weight: 300;
+  font-size: 48px;
+  padding: 2px 0;
+  text-decoration: none;
+}
+
+.login-logout-body > a {
+  color: white;
+  text-decoration: none;
+}
+
+.login-logout-box {
+  display: flex;
+  height: 240px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+  color: black;
+}
+
+.login-logout-box h2 {
+  font-weight: 300;
+  color: black;
+  font-size: 24px;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
 #batchAll tr td:empty {
   display: none;
 }
