@@ -75,6 +75,23 @@
 	<defaultPdfConfig metsFileGroup="LOCAL" writeAsPdfA="false" imageScale="0.5" imageCompression="50"
 		pagesize="original" />
 
+
+      <pdfConfig>
+                <config variant="pdfa"
+                        metsFileGroup="LOCAL"
+                        writeAsPdfA="true"
+                        pagesize="original"
+                        imageCompression="50"/>
+
+                <config variant="default"
+                        metsFileGroup="LOCAL"
+                        writeAsPdfA="false"
+                        imageScale="0.5"
+                        imageCompression="50"
+                        pagesize="original" />
+        </pdfConfig>
+
+
 	<!--########################################################## *############################################################# 
 		* * ContentServer parameters * *############################################################# 
 		*########################################################### -->
