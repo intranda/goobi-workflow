@@ -82,6 +82,8 @@ public class JobBean extends BasicBean implements Serializable {
 
     @PostConstruct
     public void init() throws SchedulerException {
+        sortField = "lastAltered desc";
+
         activeJobs.clear();
         scheduler = new StdSchedulerFactory().getScheduler();
         Set<Class<? extends AbstractGoobiJob>> allJobTypes = new Reflections().getSubTypesOf(AbstractGoobiJob.class);
@@ -209,7 +211,7 @@ public class JobBean extends BasicBean implements Serializable {
 
     public void FilterAlleStart() {
         BackgroundJobManager manager = new BackgroundJobManager();
-        paginator = new DatabasePaginator("lastAltered desc", filter, manager, "");
+        paginator = new DatabasePaginator(sortField, filter, manager, "");
     }
 
 }
