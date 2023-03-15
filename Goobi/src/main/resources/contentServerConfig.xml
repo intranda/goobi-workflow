@@ -71,9 +71,13 @@
 		to use for pdf generation * - writeAsPdfA write PDF file as Pdf/A * - pagesize 
 		default page size for pdf generation; possible values are 'A4', 'original' 
 		and 'A4Box' * sample: <defaultPdfConfig alwaysUseRenderedImage="true" alwaysCompressToJPEG="true" 
-		metsFileGroup="DEFAULT" writeAsPdfA="true" pagesize="A4"/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        metsFileGroup="DEFAULT" writeAsPdfA="true" pagesize="A4"/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <!-- old config syntax, replaced by pdfConfig/config[@variant], see below -->
+    <!--
 	<defaultPdfConfig metsFileGroup="LOCAL" writeAsPdfA="false" imageScale="0.5" imageCompression="50"
-		pagesize="original" />
+        pagesize="original" />
+    -->
 
 
       <pdfConfig>
