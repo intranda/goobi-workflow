@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -42,7 +42,7 @@ class PropertyMysqlHelper implements Serializable {
     private static final long serialVersionUID = 5175567943231852013L;
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {
-        String sql = "SELECT * FROM prozesseeigenschaften WHERE prozesseID = ? ORDER BY container, Titel";
+        String sql = "SELECT * FROM prozesseeigenschaften WHERE prozesseID = ? ORDER BY container, Titel, creationDate";
         Connection connection = null;
         Object[] param = { processId };
         try {
@@ -95,7 +95,7 @@ class PropertyMysqlHelper implements Serializable {
     public static ResultSetHandler<List<Processproperty>> resultSetToPropertyListHandler = new ResultSetHandler<List<Processproperty>>() {
         @Override
         public List<Processproperty> handle(ResultSet rs) throws SQLException {
-            List<Processproperty> properties = new ArrayList<Processproperty>();
+            List<Processproperty> properties = new ArrayList<>();
             try {
                 while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int id = rs.getInt("prozesseeigenschaftenID");
@@ -133,7 +133,7 @@ class PropertyMysqlHelper implements Serializable {
     public static ResultSetHandler<List<Templateproperty>> resultSetToTemplatePropertyListHandler = new ResultSetHandler<List<Templateproperty>>() {
         @Override
         public List<Templateproperty> handle(ResultSet rs) throws SQLException {
-            List<Templateproperty> properties = new ArrayList<Templateproperty>();
+            List<Templateproperty> properties = new ArrayList<>();
             try {
                 while (rs.next()) {
                     int id = rs.getInt("vorlageneigenschaftenID");
@@ -207,42 +207,42 @@ class PropertyMysqlHelper implements Serializable {
 
     public static ResultSetHandler<List<Masterpieceproperty>> resultSetToMasterpiecePropertyListHandler =
             new ResultSetHandler<List<Masterpieceproperty>>() {
-                @Override
-                public List<Masterpieceproperty> handle(ResultSet rs) throws SQLException {
-                    List<Masterpieceproperty> properties = new ArrayList<Masterpieceproperty>();
-                    try {
-                        while (rs.next()) {
-                            int id = rs.getInt("werkstueckeeigenschaftenID");
-                            String title = rs.getString("Titel");
-                            String value = rs.getString("Wert");
-                            Boolean mandatory = rs.getBoolean("IstObligatorisch");
-                            int type = rs.getInt("DatentypenID");
-                            String choice = rs.getString("Auswahl");
-                            int templateId = rs.getInt("werkstueckeID");
-                            Timestamp time = rs.getTimestamp("creationDate");
-                            Date creationDate = null;
-                            if (time != null) {
-                                creationDate = new Date(time.getTime());
-                            }
-                            int container = rs.getInt("container");
-                            Masterpieceproperty ve = new Masterpieceproperty();
-                            ve.setId(id);
-                            ve.setTitel(title);
-                            ve.setWert(value);
-                            ve.setIstObligatorisch(mandatory);
-                            ve.setType(PropertyType.getById(type));
-                            ve.setAuswahl(choice);
-                            ve.setMasterpieceId(templateId);
-                            ve.setCreationDate(creationDate);
-                            ve.setContainer(container);
-                            properties.add(ve);
-                        }
-                    } finally {
-                        rs.close();
+        @Override
+        public List<Masterpieceproperty> handle(ResultSet rs) throws SQLException {
+            List<Masterpieceproperty> properties = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    int id = rs.getInt("werkstueckeeigenschaftenID");
+                    String title = rs.getString("Titel");
+                    String value = rs.getString("Wert");
+                    Boolean mandatory = rs.getBoolean("IstObligatorisch");
+                    int type = rs.getInt("DatentypenID");
+                    String choice = rs.getString("Auswahl");
+                    int templateId = rs.getInt("werkstueckeID");
+                    Timestamp time = rs.getTimestamp("creationDate");
+                    Date creationDate = null;
+                    if (time != null) {
+                        creationDate = new Date(time.getTime());
                     }
-                    return properties;
+                    int container = rs.getInt("container");
+                    Masterpieceproperty ve = new Masterpieceproperty();
+                    ve.setId(id);
+                    ve.setTitel(title);
+                    ve.setWert(value);
+                    ve.setIstObligatorisch(mandatory);
+                    ve.setType(PropertyType.getById(type));
+                    ve.setAuswahl(choice);
+                    ve.setMasterpieceId(templateId);
+                    ve.setCreationDate(creationDate);
+                    ve.setContainer(container);
+                    properties.add(ve);
                 }
-            };
+            } finally {
+                rs.close();
+            }
+            return properties;
+        }
+    };
 
     public static ResultSetHandler<Masterpieceproperty> resultSetToMasterpiecePropertyHandler = new ResultSetHandler<Masterpieceproperty>() {
         @Override
@@ -399,7 +399,7 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static List<Templateproperty> getTemplateProperties(int templateId) throws SQLException {
-        String sql = "SELECT * FROM vorlageneigenschaften WHERE vorlagenID = ? ORDER BY Titel";
+        String sql = "SELECT * FROM vorlageneigenschaften WHERE vorlagenID = ? ORDER BY Titel, creationDate";
         Connection connection = null;
         Object[] param = { templateId };
         try {
@@ -431,7 +431,7 @@ class PropertyMysqlHelper implements Serializable {
                         + property.getId();
         Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
                 property.getVorlage().getId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
-                property.getContainer() };
+                        property.getContainer() };
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -449,7 +449,7 @@ class PropertyMysqlHelper implements Serializable {
                 "INSERT INTO vorlageneigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, vorlagenID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
                 property.getVorlage().getId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
-                property.getContainer() };
+                        property.getContainer() };
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -481,7 +481,7 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static List<Masterpieceproperty> getMasterpieceProperties(int templateId) throws SQLException {
-        String sql = "SELECT * FROM werkstueckeeigenschaften WHERE werkstueckeID = ? ORDER BY container, Titel";
+        String sql = "SELECT * FROM werkstueckeeigenschaften WHERE werkstueckeID = ? ORDER BY container, Titel, creationDate";
         Connection connection = null;
         Object[] param = { templateId };
         try {
@@ -513,7 +513,7 @@ class PropertyMysqlHelper implements Serializable {
                         + property.getId();
         Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
                 property.getWerkstueck().getId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
-                property.getContainer() };
+                        property.getContainer() };
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -531,7 +531,7 @@ class PropertyMysqlHelper implements Serializable {
                 "INSERT INTO werkstueckeeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, werkstueckeID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property.getAuswahl(),
                 property.getWerkstueck().getId(), property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()),
-                property.getContainer() };
+                        property.getContainer() };
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

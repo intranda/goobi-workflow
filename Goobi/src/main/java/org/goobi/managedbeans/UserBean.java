@@ -129,10 +129,10 @@ public class UserBean extends BasicBean implements Serializable {
 
     //set up the change recording lists
     private void resetChangeLists() {
-        addedToGroups.put(myClass.getId(), new ArrayList<Integer>());
-        addedToProjects.put(myClass.getId(), new ArrayList<Integer>());
-        removedFromGroups.put(myClass.getId(), new ArrayList<Integer>());
-        removedFromProjects.put(myClass.getId(), new ArrayList<Integer>());
+        addedToGroups.put(myClass.getId(), new ArrayList<>());
+        addedToProjects.put(myClass.getId(), new ArrayList<>());
+        removedFromGroups.put(myClass.getId(), new ArrayList<>());
+        removedFromProjects.put(myClass.getId(), new ArrayList<>());
     }
 
     private String getBasicFilter() {
