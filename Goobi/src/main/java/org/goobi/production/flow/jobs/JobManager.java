@@ -89,7 +89,7 @@ public class JobManager implements ServletContextListener {
 
         Set<Class<? extends IGoobiJob>> jobs = new Reflections().getSubTypesOf(IGoobiJob.class);
         for (Class<? extends IGoobiJob> jobClass : jobs) {
-            if (Modifier.isAbstract(jobClass.getModifiers())) {
+            if (!Modifier.isAbstract(jobClass.getModifiers())) {
                 try {
                     IGoobiJob job = jobClass.getDeclaredConstructor().newInstance();
                     initializeJob(job, job.getJobName(), sched);
