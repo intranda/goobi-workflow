@@ -142,6 +142,7 @@
         <!-- used in goobi-plugin-step-barcode-scanner -->
         <zxing.version>3.5.1</zxing.version>
         <jsch.version>0.2.7</jsch.version>
+        <slf4j.version>2.0.6</slf4j.version>
     </properties>
 
 
@@ -1076,6 +1077,16 @@
             <artifactId>antlr4-runtime</artifactId>
             <version>${antlr4.version}</version>
         </dependency>
+
+        <!-- Needed to get rid of logging spam during test execution -->
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-nop</artifactId>
+    <version>${slf4j.version}</version>
+    <scope>test</scope>
+</dependency>
+
+
 
         <!-- ################################################################# -->
         <!-- Dependencies for test execution only -->
