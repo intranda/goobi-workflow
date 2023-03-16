@@ -28,6 +28,7 @@ package org.goobi.managedbeans;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -79,7 +80,6 @@ public class JobBean extends BasicBean implements Serializable {
     @Getter
     private transient List<QuartzJobDetails> activeJobs = new ArrayList<>();
 
-
     @PostConstruct
     public void init() throws SchedulerException {
         activeJobs.clear();
@@ -88,15 +88,17 @@ public class JobBean extends BasicBean implements Serializable {
 
         // find all existing jobs
         for (Class<? extends IGoobiJob> jobClass : allJobTypes) {
-            try {
-                IGoobiJob job = jobClass.getDeclaredConstructor().newInstance();
-                QuartzJobDetails details = new QuartzJobDetails();
-                activeJobs.add(details);
-                details.setJob(job);
-                details.setJobName(job.getJobName());
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-                    | SecurityException e) {
-                log.error(e);
+            if (!Modifier.isAbstract(jobClass.getModifiers())) {
+                try {
+                    IGoobiJob job = jobClass.getDeclaredConstructor().newInstance();
+                    QuartzJobDetails details = new QuartzJobDetails();
+                    activeJobs.add(details);
+                    details.setJob(job);
+                    details.setJobName(job.getJobName());
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                        | NoSuchMethodException | SecurityException e) {
+                    log.error(e);
+                }
             }
         }
 
