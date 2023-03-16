@@ -27,6 +27,7 @@
 package org.goobi.production.flow.jobs;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.Set;
 
 import javax.servlet.ServletContextEvent;
@@ -88,14 +89,15 @@ public class JobManager implements ServletContextListener {
 
         Set<Class<? extends IGoobiJob>> jobs = new Reflections().getSubTypesOf(IGoobiJob.class);
         for (Class<? extends IGoobiJob> jobClass : jobs) {
-            try {
-                IGoobiJob job = jobClass.getDeclaredConstructor().newInstance();
-                initializeJob(job, job.getJobName(), sched);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-                    | SecurityException e) {
-                log.warn(jobClass.getName() + " cannot be instantiated");
+            if (!Modifier.isAbstract(jobClass.getModifiers())) {
+                try {
+                    IGoobiJob job = jobClass.getDeclaredConstructor().newInstance();
+                    initializeJob(job, job.getJobName(), sched);
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                        | NoSuchMethodException | SecurityException e) {
+                    log.warn(jobClass.getName() + " cannot be instantiated");
+                }
             }
-
         }
     }
 
