@@ -88,7 +88,8 @@ public class JobBean extends BasicBean implements Serializable {
 
         // find all existing jobs
         for (Class<? extends IGoobiJob> jobClass : allJobTypes) {
-            if (!Modifier.isAbstract(jobClass.getModifiers())) {
+            if (!Modifier.isAbstract(jobClass.getModifiers()) && !Modifier.isPrivate(jobClass.getModifiers())) {
+
                 try {
                     IGoobiJob job = jobClass.getDeclaredConstructor().newInstance();
                     QuartzJobDetails details = new QuartzJobDetails();
