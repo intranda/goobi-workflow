@@ -93,7 +93,7 @@ public class JobManager implements ServletContextListener {
                 initializeJob(job, job.getJobName(), sched);
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
                     | SecurityException e) {
-                log.error(e);
+                log.warn(jobClass.getName() + " cannot be instantiated");
             }
 
         }
