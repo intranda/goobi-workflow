@@ -94,7 +94,7 @@ public class ProjectManager implements IManager, Serializable {
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = ProjectMysqlHelper.getProjectCount( filter, institution);
+            num = ProjectMysqlHelper.getProjectCount(filter, institution);
         } catch (SQLException e) {
             log.error("error while getting Project hit size", e);
             throw new DAOException(e);
@@ -299,4 +299,28 @@ public class ProjectManager implements IManager, Serializable {
         }
         return o;
     }
+
+    /**
+     * Returns a project title for the case that the project with the given source project title is cloned. The returned title is generated so that is
+     * unused in the current list of (active and inactive) projects in the goobi database. If a normal project title is cloned for the first time,
+     * this method returns sourceProjectTitle + "_copy". If there is already a project with that title, an index is added to the title
+     * (sourceProjectTitle + "_copy_" + index) until there is no project with that name.
+     *
+     * @param sourceProjectTitle The title of the project that should be cloned
+     * @return The new name for a cloned project, the name does not exist until now
+     */
+    public static String cloneProjectTitleWithoutNameConflict(String sourceProjectTitle) {
+        String newProjectTitle = sourceProjectTitle + "_copy";
+        List<String> existingProjectTitles = ProjectManager.getAllProjectTitles(false);
+        if (!existingProjectTitles.contains(newProjectTitle)) {
+            return newProjectTitle;
+        }
+        newProjectTitle += "_";
+        int cloneIndex = 1;
+        do {
+            cloneIndex++;
+        } while (existingProjectTitles.contains(newProjectTitle + cloneIndex));
+        return newProjectTitle + cloneIndex;
+    }
+
 }

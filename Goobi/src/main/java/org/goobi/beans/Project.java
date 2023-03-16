@@ -346,6 +346,7 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
      *
      * Differences between this project and source:<br />
      * - the project title is reused, but with the suffix "_copy"<br />
+     * - If the project title is already in use, a number is added until there is no existing project with that name<br />
      *
      * Following properties are NOT cloned to another project:<br />
      * - this.id (is created in the database afterwards)<br />
@@ -393,7 +394,7 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         setNumberOfVolumes(source.getNumberOfVolumes());
         setProjectIsArchived(source.getProjectIsArchived());
         setStartDate(source.getStartDate());
-        setTitel(source.getTitel() + "_copy");
+        setTitel(ProjectManager.cloneProjectTitleWithoutNameConflict(source.getTitel()));
         setUseDmsImport(source.isUseDmsImport());
         setInstitution(source.getInstitution());
         setProjectIdentifier(source.getProjectIdentifier());
