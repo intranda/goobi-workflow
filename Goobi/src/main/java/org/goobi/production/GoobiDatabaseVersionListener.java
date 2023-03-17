@@ -56,17 +56,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         }
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
-
-        // TODO move to DatabaseVersion after merge, change visibility to private
-        DatabaseVersion.createTableForBackgroundJobs();
-        // TODO move it to DatabaseVersion class after merge
-        if (!DatabaseVersion.checkIfColumnExists("benutzer", "additional_search_fields")) {
-            try {
-                DatabaseVersion.runSql("alter table benutzer add column additional_search_fields text DEFAULT null");
-            } catch (SQLException e) {
-                log.error(e);
-            }
-        }
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
