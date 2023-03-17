@@ -82,9 +82,9 @@ public class MySQLHelper implements Serializable {
             try (Connection connection = MySQLHelper.getInstance().getConnection()) {
                 DatabaseMetaData meta = connection.getMetaData();
                 String dbType = meta.getDatabaseProductName();
-                if (dbType.equals("H2")) {
+                if ("H2".equals(dbType)) {
                     type = SQLTYPE.H2;
-                } else if (dbType.equals("MySQL")) {
+                } else if ("MySQL".equals(dbType)) {
                     type = SQLTYPE.MYSQL;
                 } else {
                     type = SQLTYPE.MARIADB;
@@ -106,7 +106,7 @@ public class MySQLHelper implements Serializable {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             DatabaseMetaData meta = connection.getMetaData();
             String dbType = meta.getDatabaseProductName();
-            return (dbType.equals("H2"));
+            return ("H2".equals(dbType));
         } catch (SQLException e) {
             log.error("Error getting database provider information", e);
         }
@@ -515,9 +515,19 @@ public class MySQLHelper implements Serializable {
 
     }
 
+    /**
+     * Prepare the SQL query and generate order statement
+     * 
+     * If a regular column is used, nothing gets changed. But if a custom column is used, the query gets extended to include the data into the result
+     * list, so ordering by this data is possible.
+     * 
+     * @param order column name to order
+     * @param sql prepared sql statement, gets extended if needed
+     * @return order statement
+     */
 
     public static String prepareSortField(String order, StringBuilder sql) {
-        if (StringUtils.isBlank(order) ||  !order.startsWith("{")) {
+        if (StringUtils.isBlank(order) || !order.startsWith("{")) {
             return order;
         }
 
