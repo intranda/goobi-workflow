@@ -60,74 +60,8 @@ public class JournalEntry implements Serializable {
     // used only for LogType.File
     private transient Path file;
 
-    /**
-     * 
-     * @deprecated, use the constructor with arguments instead
-     */
-    @Deprecated(since = "2022-09", forRemoval = true)
-    public JournalEntry() {
-        objectId = 0;
-        creationDate = new Date();
-        userName = "";
-        type = LogType.DEBUG;
-        content = "";
-        entryType = EntryType.PROCESS;
-
-    }
-
     public String getFormattedCreationDate() {
         return Helper.getDateAsFormattedString(creationDate);
-    }
-
-    /**
-     * 
-     * @deprecated, use the constructor with arguments instead
-     */
-    @Deprecated(since = "2022-09", forRemoval = true)
-    public static JournalEntry build(Integer objectId) {
-        JournalEntry le = new JournalEntry();
-        le.setObjectId(objectId);
-        return le;
-    }
-
-    /**
-     * 
-     * @deprecated, use the constructor with arguments instead
-     */
-    @Deprecated(since = "2022-09", forRemoval = true)
-    public JournalEntry withCreationDate(Date date) {
-        this.creationDate = date;
-        return this;
-    }
-
-    /**
-     * 
-     * @deprecated, use the constructor with arguments instead
-     */
-    @Deprecated(since = "2022-09", forRemoval = true)
-    public JournalEntry withUsername(String userName) {
-        this.userName = userName;
-        return this;
-    }
-
-    /**
-     * 
-     * @deprecated, use the constructor with arguments instead
-     */
-    @Deprecated(since = "2022-09", forRemoval = true)
-    public JournalEntry withType(LogType type) {
-        this.type = type;
-        return this;
-    }
-
-    /**
-     * 
-     * @deprecated, use the constructor with arguments instead
-     */
-    @Deprecated(since = "2022-09", forRemoval = true)
-    public JournalEntry withContent(String content) {
-        this.content = content;
-        return this;
     }
 
     public void persist() {
