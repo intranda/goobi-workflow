@@ -46,17 +46,20 @@
 											name="name"
 											form="#{BenutzerverwaltungForm}"
 											value="#{msgs.benutzer}"
-											ajaxRender="allUsers:myform" />
+											ajaxRender="allUsers:myform"
+                                            sortField="benutzer.nachname, benutzer.vorname" />
 										<intranda:columnheader
 											name="login"
 											form="#{BenutzerverwaltungForm}"
 											value="#{msgs.login}"
-											ajaxRender="allUsers:myform" />
+											ajaxRender="allUsers:myform"
+                                            sortField="benutzer.login" />
 										<intranda:columnheader
 											name="location"
 											form="#{BenutzerverwaltungForm}"
 											value="#{msgs.standort}"
-											ajaxRender="allUsers:myform" />
+											ajaxRender="allUsers:myform"
+                                            sortField="benutzer.standort" />
 										<intranda:columnheader
 											value="#{msgs.auswahl}"
 											sortable="false"

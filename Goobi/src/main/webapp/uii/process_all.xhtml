@@ -154,14 +154,14 @@
 															<h:outputText value="#{msgs.auswahl2}" />
 
 															<button
-																jsf:action="#{ProzessverwaltungForm.SelectionAll}"
+																jsf:action="#{ProzessverwaltungForm.selectionAll}"
 																jsf:id="selectall"
 																title="#{msgs.alleAuswaehlen}"
 																class="button-link">
 																<i class="fa fa-check-square-o font-black margin-left-5" />
 															</button>
 															<button
-																jsf:action="#{ProzessverwaltungForm.SelectionNone}"
+																jsf:action="#{ProzessverwaltungForm.selectionNone}"
 																jsf:id="selectnone"
 																title="#{msgs.auswahlEntfernen}"
 																class="button-link">
@@ -179,7 +179,8 @@
 														value="#{msgs.id}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
 														ajaxRender="processAllProcessesBox:myform"
-														reverseOrder="true" />
+														reverseOrder="true"
+														sortField="prozesse.ProzesseID" />
 													<!-- thumbnail -->
 													<intranda:columnheader
 														addClass="header__thumbnail"
@@ -199,7 +200,8 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.batch}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform"
+                                                        sortField="prozesse.batchID" />
 													<!-- Alle Schritte Auflisten -->
 													<intranda:columnheader
 														addClass=" header__title"
@@ -208,25 +210,34 @@
 														value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}"
 														rendered="true"
 														ajaxRender="processAllProcessesBox:myform"
-														id="ajaxcolumn" />
+														id="ajaxcolumn"
+                                                        sortField="prozesse.titel" />
 													<!-- Costum Columns -->
-													<c:forEach
-														items="#{LoginForm.listOfCustomColumns}"
-														var="var">
-														<intranda:columnheader
-															addClass="width80"
-															value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
-															sortable="false" />
-														<!-- rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}" -->
-													</c:forEach>
-													<!-- Vorgangsdatum -->
+                                                    <c:forEach
+                                                        items="#{LoginForm.listOfCustomColumns}"
+                                                        var="var">
+                                                        <intranda:columnheader
+                                                            addClass="width80"
+                                                            form="#{ProzessverwaltungForm}"
+                                                            ajaxRender="processAllProcessesBox:myform"
+                                                            value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
+                                                            sortField="#{var}"
+                                                            rendered="#{LoginForm.isDisplaySortfield(var)}" />
+                                                        <intranda:columnheader
+                                                            addClass="width80"
+                                                            sortable="false"
+                                                            value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
+                                                            rendered="#{!LoginForm.isDisplaySortfield(var)}" />
+                                                    </c:forEach>
+                                                    <!-- Vorgangsdatum -->
 													<intranda:columnheader
 														addClass=""
 														name="vorgangsdatum"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.vorgangsdatum}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform" 
+                                                        sortField="prozesse.erstellungsdatum" />
 													<!-- Ruleset -->
 													<intranda:columnheader
 														addClass=" header__ruleset"
@@ -239,14 +250,16 @@
 														name="fortschritt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.status}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform" 
+                                                        sortField="prozesse.sortHelperStatus" />
 													<!-- . -->
 													<intranda:columnheader
 														addClass=" #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'}"
 														name="projekt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.projekt}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform"
+                                                        sortField="projekte.titel" />
 													<!-- .. -->
 													<intranda:columnheader
 														addClass=""
@@ -254,7 +267,8 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.institution}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['institution']}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform"
+                                                        sortField="institution.shortName" />
 													<!-- Lockings -->
 													<intranda:columnheader
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
@@ -262,7 +276,8 @@
 														name="sperrungen"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.sperrungen}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBox:myform"
+                                                        sortable="false" />
 													<!-- .... -->
 													<intranda:columnheader
 														addClass=""
@@ -294,6 +309,7 @@
 														value="#{msgs.NumberOfImages}"
 														addClass=" header__number-of-imgs"
 														name="numberOfImages"
+                                                        sortField="sortHelperImages"
 														form="#{ProzessverwaltungForm}"
 														ajaxRender="processAllProcessesBox:myform" />
 													<!-- Buttons -->
@@ -1041,7 +1057,7 @@
 																title="#{!item.containsExportStep ? msgs.noExportTask : ''}"
 																data-bs-toggle="tooltip">
 																<button
-																	jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+																	jsf:action="#{ProzessverwaltungForm.exportDMS}"
 																	jsf:id="action21"
 																	aria-label="#{!item.containsExportStep ? msgs.noExportTask : msgs.importDms}"
 																	jsf:rel="tooltip"
@@ -1066,7 +1082,7 @@
 
 															<!-- DMS-EXPORT - DISABLED -->
 															<button
-																jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+																jsf:action="#{ProzessverwaltungForm.exportDMS}"
 																jsf:disabled="true"
 																jsf:rel="tooltip"
 																title="#{msgs.importDms}"

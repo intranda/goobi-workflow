@@ -60,7 +60,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
     }
 
     public UsergroupBean() {
-        sortierung = "titel";
+        sortField = "titel";
     }
 
     public String Neu() {
@@ -128,7 +128,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
 
     public String FilterKein() {
         UsergroupManager m = new UsergroupManager();
-        paginator = new DatabasePaginator(sortierung, filter, m, "usergroup_all");
+        paginator = new DatabasePaginator(sortField, filter, m, "usergroup_all");
         return "usergroup_all";
     }
 
