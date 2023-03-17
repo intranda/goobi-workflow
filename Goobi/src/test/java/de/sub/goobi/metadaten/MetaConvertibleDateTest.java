@@ -23,16 +23,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import de.sub.goobi.metadaten.MetaConvertibleDate.DateType;
 
 public class MetaConvertibleDateTest {
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @Test
     // Dates have to be in YYYY-MM-DD format
@@ -59,7 +54,7 @@ public class MetaConvertibleDateTest {
     public void convertSameToSameTest() {
         MetaConvertibleDate britishDate = new MetaConvertibleDate("1752-09-02", DateType.BRITISH);
         MetaConvertibleDate stillBritishDate = britishDate.convert(DateType.BRITISH);
-        assertTrue(stillBritishDate.equals(britishDate));
+        assertEquals(stillBritishDate, britishDate);
         assertTrue(stillBritishDate.isBritish());
     }
 

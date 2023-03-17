@@ -122,12 +122,6 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     private static final String EMPTY_STRING = "";
 
-    // making sure its cleaned up
-    @Override
-    protected void finalize() {
-        this.Cancel();
-    }
-
     /**
      * this method deletes filegroups by their id's in the list
      * 
