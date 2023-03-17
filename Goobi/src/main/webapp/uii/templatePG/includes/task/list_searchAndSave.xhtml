@@ -68,6 +68,22 @@
 		</h:panelGroup>
 	</div>
 
+
+        <h:panelGroup
+            styleClass="dataTables_filter"
+            layout="block"
+            rendered="#{Form.user.allAdditionalSearchFilter.size() gt 0}">
+            <h:selectOneMenu
+                value="#{Form.additionalFilter}"
+                styleClass="form-select">
+
+                <f:selectItems
+                    value="#{Form.user.allAdditionalSearchFilter}"
+                    var="sf"
+                    itemLabel="#{sf.one}"
+                    itemValue="#{sf.two}" />
+            </h:selectOneMenu>
+        </h:panelGroup>
 		<div class="gw-table__filters__search-bar">
 			<div class="input-group">
 				<span class="input-group-text">

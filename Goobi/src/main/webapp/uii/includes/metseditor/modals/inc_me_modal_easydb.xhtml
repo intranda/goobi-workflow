@@ -24,7 +24,6 @@
             <div
                 class="modal-dialog"
                 role="document">
-				<c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'easydb'}">
                 <h:panelGroup
                     id="easydbModalContent"
                     layout="block"
@@ -71,7 +70,7 @@
                             <div class="col-2 text-right">
                                 <div class="text-right">
                                     <button
-                                    	jsf:id="easyDbSearch"
+                                        jsf:id="easyDbSearch"
                                         class="btn btn--white btn--loader"
                                         jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
                                         <i
@@ -134,7 +133,7 @@
                                             <div class="col-2 text-right">
                                                 <button
                                                     onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
-                                                	jsf:id="easyDbbutton3"
+                                                    jsf:id="easyDbbutton3"
                                                     class="btn btn--icon-green btn__bottom greenCheckButton"
                                                     jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                     <i
@@ -194,7 +193,6 @@
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>
-                </c:if>
             </div>
         </div>
     </composite:implementation>
