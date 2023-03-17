@@ -185,7 +185,7 @@
                             icon="fa-history">
                         </intranda:boxTitle>
 
-                        <div class="dataTables flow">
+                       <div class="gw-table gw-table-fixed">
 
                             <!-- SEARCH -->
                             <div class="dataTables__search__container">
@@ -236,11 +236,11 @@
                                 styleClass="table--scrollx"
                                 style="width: 100%;">
 
-                                <div class="table-wrapper">
+                                <div class="gw-table__wrapper">
                                     <table
                                         role="grid"
                                         id="tableUserAll"
-                                        class="table table-bordered table-fixed">
+                                        class="table table-hover table-nomargin dataTable table-bordered responsive">
                                         <!-- ### Columnheader row ### -->
                                         <thead>
                                             <tr role="row">
@@ -248,31 +248,36 @@
                                                     name="jobName"
                                                     form="#{jobBean}"
                                                     value="#{msgs.jobs_jobName}"
-                                                    ajaxRender="@form" />
+                                                    ajaxRender="@form"
+                                                    sortField="jobname" />
 
                                                 <intranda:columnheader
                                                     name="jobType"
                                                     form="#{jobBean}"
                                                     value="#{msgs.jobs_jobType}"
-                                                    ajaxRender="@form" />
+                                                    ajaxRender="@form"
+                                                    sortField="jobtype" />
 
                                                 <intranda:columnheader
                                                     name="jobStatus"
                                                     form="#{jobBean}"
                                                     value="#{msgs.jobs_jobStatus}"
-                                                    ajaxRender="@form" />
+                                                    ajaxRender="@form" 
+                                                    sortField="jobstatus" />
 
                                                 <intranda:columnheader
                                                     name="retryCount"
                                                     form="#{jobBean}"
                                                     value="#{msgs.jobs_retryCount}"
-                                                    ajaxRender="@form" />
+                                                    ajaxRender="@form"
+                                                    sortField="retrycount" />
 
                                                 <intranda:columnheader
                                                     name="lastUpdateTime"
                                                     form="#{jobBean}"
                                                     value="#{msgs.jobs_lastUpdateTime}"
-                                                    ajaxRender="@form" />
+                                                    ajaxRender="@form"
+                                                    sortField="lastAltered" />
                                             </tr>
                                         </thead>
                                         <ui:repeat

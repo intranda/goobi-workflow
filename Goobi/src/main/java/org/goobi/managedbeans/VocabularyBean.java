@@ -136,7 +136,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     public VocabularyBean() {
         uiStatus = "down";
-        sortierung = "title";
+        sortField = "title";
     }
 
     /**
@@ -146,7 +146,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     public String FilterKein() {
         VocabularyManager vm = new VocabularyManager();
-        paginator = new DatabasePaginator(sortierung, filter, vm, "vocabulary_all");
+        paginator = new DatabasePaginator(sortField, filter, vm, "vocabulary_all");
         return "vocabulary_all";
     }
 
