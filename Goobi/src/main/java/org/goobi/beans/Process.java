@@ -2028,7 +2028,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         }
     }
 
-    //read the image comments files in the image folders, and return all of them as a list.
+    //read the image comments files in the image folders, and return all of them as a list, sorted by image name
     public List<ImageComment> getImageComments() throws IOException, InterruptedException, SwapException, DAOException {
 
         List<ImageComment> lstComments = new ArrayList<>();
@@ -2056,7 +2056,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                 }
             }
         }
-
+        lstComments.sort((c1,c2) -> c1.getImageName().compareTo(c2.getImageName()));
         return lstComments;
     }
 
