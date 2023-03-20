@@ -5,9 +5,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
@@ -35,26 +35,38 @@
             id="myform"
             rendered="#{LoginForm.myBenutzer.superAdmin}">
             <div class="row">
-                <div class="col-sm-12">
-                    <div class="box box-color box-bordered">
-                        <div class="box-title">
-                            <h3>
-                                <i class="fa fa-building box-icon-fix"></i>
-                                <h:outputText value="#{myPageTitle}" />
-                            </h3>
-                        </div>
-                        <div class="box-content nopadding">
-                            <div class="dataTables_wrapper">
-                                <div class="dataTables_length">
-                                    <h:outputText value="#{msgs.treffer}: #{institutionBean.paginator.totalResults}" />
+                <div class="col-12">
+
+                    <intranda:box
+                        boxType="primary"
+                        title="#{myPageTitle}"
+                        icon="fa-building"
+                        >
+
+                            <div class="gw-table gw-table-fixed">
+                                <div class="gw-table__search">
+
+                                    <div class="gw-table__search__length">
+                                        <h:outputText value="#{msgs.treffer}: #{institutionBean.paginator.totalResults}" />
+                                    </div>
+
                                 </div>
+
+                                <div class="gw-table__wrapper">
 
                                 <!-- Datentabelle -->
                                 <x:dataTable
                                     id="ldaps"
-                                    styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                    styleClass="table table-hover table-bordered"
                                     var="item"
                                     value="#{institutionBean.paginator.list}">
+
+                                    <x:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.institution_longName}" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.longName}" />
+                                    </x:column>
 
                                     <x:column>
                                         <f:facet name="header">
@@ -64,14 +76,6 @@
                                     </x:column>
 
                                     <x:column>
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.institution_longName}" />
-                                        </f:facet>
-                                        <h:outputText value="#{item.longName}" />
-                                    </x:column>
-
-
-                                    <x:column style="max-width:250px;">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.regelsaetze}" />
                                         </f:facet>
@@ -95,7 +99,7 @@
 
                                     </x:column>
 
-                                    <x:column style="max-width:250px;">
+                                    <x:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.dockets}" />
                                         </f:facet>
@@ -116,7 +120,7 @@
                                         </x:dataList>
 
                                     </x:column>
-                                    <x:column style="max-width:250px;">
+                                    <x:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.authentication}" />
                                         </f:facet>
@@ -151,7 +155,9 @@
                                         <ui:fragment rendered="#{!item.allowAllPlugins}">
                                             <h:outputText
                                                 value="#{msgs.instituiton_administrationPlugin}: "
-                                                escape="false" />
+                                                escape="false"
+                                                styleClass="fw-bold"
+                                                />
                                             <x:dataList
                                                 var="intern"
                                                 value="#{item.allowedAdministrationPlugins}"
@@ -168,6 +174,7 @@
 
                                             <h:outputText
                                                 value=" &lt;br/&gt;#{msgs.instituiton_workflowPlugin}: "
+                                                styleClass="fw-bold"
                                                 escape="false" />
                                             <x:dataList
                                                 var="intern"
@@ -185,6 +192,7 @@
 
                                             <h:outputText
                                                 value="&lt;br/&gt;#{msgs.instituiton_statisticsPlugin}: "
+                                                styleClass="fw-bold"
                                                 escape="false" />
                                             <x:dataList
                                                 var="intern"
@@ -201,6 +209,7 @@
                                             </x:dataList>
                                             <h:outputText
                                                 value="&lt;br/&gt;#{msgs.instituiton_dashboardPlugin}: "
+                                                styleClass="fw-bold"
                                                 escape="false" />
                                             <x:dataList
                                                 var="intern"
@@ -221,50 +230,53 @@
 
 
 
-                                    <x:column width="150px;">
+                                    <x:column headerClass="gw-table-fixed__actions">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
-                                        <!-- Bearbeiten-Schaltknopf -->
-                                        <button
-                                            jsf:id="edit"
-                                            class="btn margin-right-5"
-                                            jsf:rel="tooltip"
-                                            jsf:action="institution_edit"
-                                            title="#{msgs.institution_edit}">
-                                            <i class="fa fa-pencil"></i>
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
-                                            <f:setPropertyActionListener
-                                                target="#{institutionBean.institution}"
-                                                value="#{item}" />
-                                        </button>
+
+                                        <div class="gw-table__actions__container">
+                                            <!-- Bearbeiten-Schaltknopf -->
+                                            <button
+                                                jsf:id="edit"
+                                                class="btn btn-blank"
+                                                jsf:rel="tooltip"
+                                                jsf:action="institution_edit"
+                                                title="#{msgs.bearbeiten}">
+                                                <i class="fa fa-pencil"></i>
+                                                <f:passThroughAttribute
+                                                    name="data-toggle"
+                                                    value="tooltip" />
+                                                <f:setPropertyActionListener
+                                                    target="#{institutionBean.institution}"
+                                                    value="#{item}" />
+                                            </button>
+                                        </div>
+
                                     </x:column>
 
                                 </x:dataTable>
 
-                                <div class="dataTables_info">
+                                </div> <!-- /gw-table__table-wrapper -->
+
+                                <div class="box__actions">
                                     <!-- Neu-Schaltknopf -->
                                     <button
                                         jsf:id="new"
-                                        class="btn btn-primary font-size-s"
+                                        class="btn btn-primary-400 me-auto"
                                         jsf:action="#{institutionBean.createNewInstitution}"
                                         jsf:immediate="true">
-                                        <i class="fa fa-plus margin-right-5"></i>
-                                        <h:outputText value="#{msgs.institution_createNew}" />
+                                        <i class="fa fa-plus"></i>
+                                        <span>
+                                            <h:outputText value="#{msgs.institution_createNew}" />
+                                        </span>
                                     </button>
-                                </div>
-                                <div class="dataTables_paginate">
+
                                     <!-- paginator -->
-                                    <intranda:tablePaginator
-                                        id="inst"
-                                        paginator="#{institutionBean.paginator}" />
-                                    <!-- /paginator -->
+                                    <intranda:tablePaginator id="inst" paginator="#{institutionBean.paginator}" />
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                    </intranda:box>
                 </div>
             </div>
         </h:form>

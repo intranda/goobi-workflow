@@ -1,0 +1,58 @@
+#processAll {
+  // Custom column widths
+  .header {
+    &__title {
+      --width-table-col: 320px;
+    }
+    &__ruleset,
+    &__swapped,
+    &__lockings,
+    &__selection {
+      --width-table-col: 120px;
+    }
+    &__id,
+    &__batch-id {
+      --width-table-col: 80px;
+    }
+
+    &__thumbnail {
+      --width-table-col: 168px;
+    }
+
+    &__number-of-imgs {
+      --width-table-col: 140px;
+    }
+
+    &__embedded-metadata {
+      --width-table-col: 240px;
+    }
+
+    &__status,
+    &__buttons {
+      --width-table-col: 200px;
+    }
+  }
+
+  .metadata-nested-table {
+    tr {
+      display: flex;
+      .data-key {
+        white-space: nowrap;
+        min-width: min-content;
+        font-weight: 700;
+        margin-inline-end: 2px;
+      }
+    }
+  }
+  // Small nested box with details on processes
+  .boxTitleDetails {
+    th:first-child,
+    th:last-child {
+      --width-table-col: 80px;
+    }
+  }
+  .list-of-goobi-scripts .badge {
+    cursor: pointer;
+    border: 0;
+  }
+}

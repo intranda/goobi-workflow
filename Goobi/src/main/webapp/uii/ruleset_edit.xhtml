@@ -3,9 +3,9 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
-	template="/uii/template/template.html"
+	template="/uii/templatePG/templatePG.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
 	<ui:param name="myPageTitle"
 		value="#{RegelsaetzeForm.myRegelsatz.id == null?msgs.neuenRegelsatzAnlegen:msgs.regelsatzBearbeiten}" />
@@ -23,29 +23,28 @@
 	</ui:define>
 
 	<ui:define name="content">
-		
-		<h:form id="myform" styleClass="form-horizontal form-bordered"
+
+		<h:form id="myform" 
 			onkeypress="submitOnEnter(event);"
 			rendered="#{LoginForm.hasRole('Admin_Rulesets')}">
 
 			<div class="row" role="main">
 				<div class="col-sm-12">
-					<div class="box box-color orange box-bordered">
-						<div class="box-title">
-							<h2>
-								<i class="fa fa-wrench"></i>
-								<h:outputText value="#{myPageTitle}" />
-								<h:outputText value=": #{RegelsaetzeForm.myRegelsatz.titel}" rendered="#{RegelsaetzeForm.myRegelsatz.id != null}" />
-							</h2>
-						</div>
-						<div class="box-content nopadding">
+
+					<intranda:box
+						boxType="action"
+						boxForm="true"
+						boxPadding="false"
+						title="#{myPageTitle}"
+						icon="fa-wrench"
+					>
+
 
 							<intranda:formInputText
 								id="title"
 								name="titel"
 								label="#{msgs.rulesetTitle}"
 								field="#{RegelsaetzeForm.myRegelsatz.titel}"
-								fieldStyle="form-control"
 								help="#{msgs.helpRulesetTitle}" />
 
 							<intranda:formInputDropDown
@@ -53,7 +52,6 @@
 								name="filename"
 								label="#{msgs.rulesetFile}"
 								field="#{RegelsaetzeForm.myRegelsatz.datei}"
-								fieldStyle="form-control"
 								help="#{msgs.helpRulesetFile}"
 								selectItems="#{RegelsaetzeForm.availableRulesetFiles}"
 								required="true" />
@@ -71,10 +69,9 @@
 								object="#{RegelsaetzeForm.myRegelsatz.id}"
 								actionCancel="#{RegelsaetzeForm.Cancel}" />
 
-						</div>
-					</div>
-				</div>
+					</intranda:box>
 
+						</div>
 			</div>
 
 		</h:form>

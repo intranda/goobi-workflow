@@ -27,48 +27,47 @@
 
 					<intranda:box
 						id="allUsers"
-						boxType="primary-400"
+						boxType="primary"
 						icon="fa-user"
 						title="#{myPageTitle}"
-						padding="true"
+						boxPadding="true"
 						>
 
-							<div class="dataTables flow">
+							<div class="gw-table gw-table-fixed">
 
 								<!-- SEARCH -->
-								<div class="dataTables__search__container">
-									<div class="dataTables__search__length">
+								<div class="gw-table__search">
+									<div class="gw-table__search__length">
 										<h:outputText
 											value="#{msgs.treffer}: #{BenutzerverwaltungForm.paginator.totalResults}" />
 									</div>
 
 
-									<div class="dataTables__filter-container d-flex">
+									<div class="gw-table__filters">
 									<!-- SEARCH IN TABLE-->
 									<h:form id="isActiveUsers">
 
 										<!-- Show only active users -->
-										<div class="dataTables__filter -active-users">
-											<button jsf:id="tableUserAllShowActiveUsers"
-												class="btn btn--active-users"
-												jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
-												jsf:immediate="true">
-												<i
-													class="fa #{BenutzerverwaltungForm.hideInactiveUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-												<h:outputText styleClass="font-size-s"
-													value="#{msgs.nurAktiveNutzerZeigen}" />
-												<f:setPropertyActionListener
-													target="#{BenutzerverwaltungForm.hideInactiveUsers}"
-													value="#{not BenutzerverwaltungForm.hideInactiveUsers}" />
-											</button>
-										</div>
+										<button jsf:id="tableUserAllShowActiveUsers"
+											class="btn gw-table__filters__option"
+											jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
+											jsf:immediate="true">
+											<i
+												class="fa #{BenutzerverwaltungForm.hideInactiveUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+											<h:outputText styleClass="font-size-s"
+												value="#{msgs.nurAktiveNutzerZeigen}" />
+											<f:setPropertyActionListener
+												target="#{BenutzerverwaltungForm.hideInactiveUsers}"
+												value="#{not BenutzerverwaltungForm.hideInactiveUsers}" />
+										</button>
+
 									</h:form>
 
-									<h:form id="searchform" styleClass="search-form">
 
 										<!-- Filter by search term -->
-										<div class="dataTables__filter -search-bar">
-											<div class="input-group input-group">
+										<div class="gw-table__filters__search-bar">
+										<h:form id="searchform" styleClass="search-form">
+											<div class="input-group">
 												<span class="input-group-text"> <i
 													class="fa fa-search"></i>
 												</span>
@@ -91,57 +90,63 @@
 											<x:commandButton type="submit" id="FilterAlle" forceId="true"
 												style="display:none"
 												action="#{BenutzerverwaltungForm.FilterAlleStart}" />
+											</h:form>
 										</div>
 
-									</h:form>
 									</div> <!-- dataTables__filters-container end -->
 								</div> <!-- SEARCH END -->
 
 								<!-- ### Table ### -->
 								<h:form id="myform" prependId="false" styleClass="table--scrollx">
 
-								<div class="table-wrapper">
-									<table role="grid" id="tableUserAll"
-										class="table table-bordered table-fixed">
+								<div class="gw-table__wrapper">
+									<table role="grid" id="tableUserAll" class="table table-bordered table-fixed table-hover">
 										<!-- ### Columnheader row ### -->
 										<thead>
 											<tr role="row">
 												<intranda:columnheader
 														name="name"
 														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.benutzer}"
-														ajaxRender="allUsers:myform" />
+														value="#{msgs.name}"
+														ajaxRender="allUsers:myform"
+                                                        sortField="benutzer.nachname, benutzer.vorname" />
 												<intranda:columnheader
 														name="login"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.login}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform"
+                                                        sortField="benutzer.login" />
 												<intranda:columnheader
 														name="location"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.standort}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform" 
+                                                        sortField="benutzer.standort" />
 												<intranda:columnheader
 														name="group"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.benutzergruppen}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform"
+                                                        sortField="groups" />
 												<intranda:columnheader
 														name="projects"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.projekte}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform"
+                                                        sortField="projects" />
+                                                        
 												<intranda:columnheader
 														name="institution"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.institution}"
 														rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform"
+                                                        sortField="institution.shortName" />
 												<intranda:columnheader
 														value="#{msgs.auswahl}"
 														sortable="false"
-														addClass="table-fixed__actions"
-														/>
+														addClass="gw-table-fixed__actions"
+												/>
 											</tr>
 										</thead>
 
@@ -192,62 +197,63 @@
 												</td>
 												<!-- ### Action Buttons ### -->
 												<td>
-													<div class="dataTables__actions">
-														<!-- Bearbeiten-Schaltknopf -->
-														<button jsf:id="edit" class="btn btn-blank"
-															jsf:rel="tooltip" jsf:action="user_edit"
-															title="#{msgs.benutzerBearbeiten}">
-															<i class="fa fa-pencil"></i>
-															<f:passThroughAttribute name="data-toggle"
-																value="tooltip" />
-															<f:passThroughAttribute name="aria-label"
-																value="#{msgs.benutzerBearbeiten}" />
-															<f:setPropertyActionListener
-																target="#{BenutzerverwaltungForm.myClass}"
-																value="#{item}" />
-															<f:setPropertyActionListener
-																target="#{BenutzerverwaltungForm.displayMode}" value="" />
-														</button>
+														<div class="gw-table__actions__container">
+															<!-- Bearbeiten-Schaltknopf -->
+															<button jsf:id="edit" class="btn btn-blank"
+																jsf:rel="tooltip" jsf:action="user_edit"
+																title="#{msgs.bearbeiten}">
+																<i class="fa fa-pencil"></i>
+																<f:passThroughAttribute name="data-toggle"
+																	value="tooltip" />
+																<f:passThroughAttribute name="aria-label"
+																	value="#{msgs.bearbeiten}" />
+																<f:setPropertyActionListener
+																	target="#{BenutzerverwaltungForm.myClass}"
+																	value="#{item}" />
+																<f:setPropertyActionListener
+																	target="#{BenutzerverwaltungForm.displayMode}" value="" />
+															</button>
 
-														<!-- Benutzerprofil laden-Schaltknopf -->
-														<button jsf:id="switch"
-															jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
-															class="btn btn-blank"
-															jsf:action="#{LoginForm.EinloggenAls}"
-															title="#{msgs.benutzerprofilLaden}">
-															<i class="fa fa-user-secret"></i>
-															<f:passThroughAttribute name="aria-label"
-																value="#{msgs.benutzerprofilLaden}" />
-															<f:passThroughAttribute name="data-toggle"
-																value="tooltip" />
-															<f:passThroughAttribute name="data-placement" value="top" />
-															<f:param name="ID" value="#{item.id}" />
-														</button>
+															<!-- Benutzerprofil laden-Schaltknopf -->
+															<button jsf:id="switch"
+																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
+																class="btn btn-blank"
+																jsf:action="#{LoginForm.EinloggenAls}"
+																title="#{msgs.benutzerprofilLaden}">
+																<i class="fa fa-user-secret"></i>
+																<f:passThroughAttribute name="aria-label"
+																	value="#{msgs.benutzerprofilLaden}" />
+																<f:passThroughAttribute name="data-toggle"
+																	value="tooltip" />
+																<f:passThroughAttribute name="data-placement" value="top" />
+																<f:param name="ID" value="#{item.id}" />
+															</button>
 
-														<!-- Create new random password for user -->
-														<button jsf:id="createNewRandomPassword"
-															class="btn btn-blank" jsf:rel="tooltip"
-															title="#{msgs.createNewRandomPassword}"
-															jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
-															jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
-															jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
-															<i class="fa fa-key"></i>
-															<f:passThroughAttribute name="data-toggle"
-																value="tooltip" />
-															<f:setPropertyActionListener
-																target="#{BenutzerverwaltungForm.myClass}"
-																value="#{item}" />
-															<f:passThroughAttribute name="aria-label"
-																value="#{msgs.createNewRandomPassword}" />
-															<f:param name="ID" value="#{item.id}" />
-															<f:ajax render="globalMessage" />
-														</button>
+															<!-- Create new random password for user -->
+															<button jsf:id="createNewRandomPassword"
+																class="btn btn-blank" jsf:rel="tooltip"
+																title="#{msgs.createNewRandomPassword}"
+																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
+																jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
+																jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
+																<i class="fa fa-key"></i>
+																<f:passThroughAttribute name="data-toggle"
+																	value="tooltip" />
+																<f:setPropertyActionListener
+																	target="#{BenutzerverwaltungForm.myClass}"
+																	value="#{item}" />
+																<f:passThroughAttribute name="aria-label"
+																	value="#{msgs.createNewRandomPassword}" />
+																<f:param name="ID" value="#{item.id}" />
+																<f:ajax render="globalMessage" />
+															</button>
 													</div>
 												</td>
 											</tr>
 										</ui:repeat>
 									</table>
 								</div>
+
 								<div class="form-actions">
 									<!-- Neu-Schaltknopf -->
 									<button jsf:id="newUser" class="btn btn-primary-400 me-auto"

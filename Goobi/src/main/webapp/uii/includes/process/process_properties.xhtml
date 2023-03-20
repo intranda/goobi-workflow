@@ -335,7 +335,7 @@
 
                                     </h:panelGroup>
 
-                                    <!-- text -->
+                                    <!-- TEXT -->
                                     <h:panelGroup
                                         rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
 
@@ -361,7 +361,7 @@
                                         </div>
                                     </h:panelGroup>
 
-                                    <!-- numbers only -->
+                                    <!-- NUMBER -->
                                     <h:panelGroup rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
                                         <div class="form-group">
                                             <h:outputLabel
@@ -387,7 +387,7 @@
                                     </h:panelGroup>
 
 
-                                    <!--  SelectOneMenu -->
+                                    <!--  SELECT ONE -->
                                     <h:panelGroup rendered="#{(myprocess_item.type.name == 'list')}">
                                         <div class="form-group">
                                             <h:outputLabel
@@ -415,7 +415,7 @@
                                         </div>
                                     </h:panelGroup>
 
-                                    <!--  SelectManyMenu -->
+                                    <!--  SELECT MANY -->
                                     <h:panelGroup rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
                                         <div class="form-group">
                                             <h:outputLabel
@@ -445,7 +445,7 @@
                                     </h:panelGroup>
 
 
-                                    <!-- Boolean  -->
+                                    <!-- BOOLEAN  -->
                                     <h:panelGroup rendered="#{(myprocess_item.type.name == 'boolean')}">
                                         <div class="form-group">
                                             <h:outputLabel
@@ -468,7 +468,7 @@
                                     </h:panelGroup>
 
 
-                                    <!--  Date   -->
+                                    <!--  DATE   -->
                                     <h:panelGroup rendered="#{(myprocess_item.type.name == 'date')}">
                                         <div class="form-group">
                                             <h:outputLabel

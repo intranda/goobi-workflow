@@ -1,25 +1,33 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:f="http://xmlns.jcp.org/jsf/core"
+  xmlns:o="http://omnifaces.org/ui"
+  xmlns:of="http://omnifaces.org/functions"
+  template="/uii/templatePG/templatePG.html"
+  xmlns:x="http://myfaces.apache.org/tomahawk"
+  xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+  >
 
-    <ui:param name="myPageTitle" value="#{msgs.failure}" />
+  <ui:param name="myPageTitle" value="#{msgs.failure}" />
 
 
 
 
     <ui:define name="content">
         <script type="text/javascript">
-									function show_txt() {
-										if (document
-												.getElementById('errorForm:stacktrace').style.display == 'block') {
-											document
-													.getElementById('errorForm:stacktrace').style.display = "none";
-										} else {
-											document
-													.getElementById('errorForm:stacktrace').style.display = "block";
-										}
-									}
-								</script>
+					function show_txt() {
+            if (document
+              .getElementById('errorForm:stacktrace').style.display == 'block') {
+              document
+                .getElementById('errorForm:stacktrace').style.display = "none";
+            } else {
+              document
+                .getElementById('errorForm:stacktrace').style.display = "block";
+            }
+          }
+        </script>
 
         <h:form styleClass="formError" id="errorForm">
             <p>
@@ -30,23 +38,23 @@
             </p>
             <br />
 
-            <h4>
+            <h2>
                 <h:outputText value="#{msgs.details}" />
-            </h4>
+            </h2>
 
-            <h:outputText value="#{msgs.errorText} " />
-            <p style="padding: 10px; border: 1px dashed red;">#{errorDetails}</p>
+            <h:outputText value="#{msgs.errorText}" styleClass="mb-4"/>
+            <p style="padding: 10px; border: 1px dashed red;" class="mt-2">#{errorDetails}</p>
             <br />
 
-            <h4>
+            <h2>
                 <h:outputText value="#{msgs.errorReport}" />
-            </h4>
+            </h2>
             <p>
                 <h:outputText value="#{msgs.errorReportDescription}" />
             </p>
             <br />
             <h:button onclick="show_txt(); return false;" title="#{msgs.showErrorDetails}" value="#{msgs.showErrorDetails}"
-                styleClass="btn font-size-s margin-sides-10" />
+                styleClass="btn btn-primary" />
             <br />
             <br />
             <h:panelGroup id="stacktrace" style="display:none;">

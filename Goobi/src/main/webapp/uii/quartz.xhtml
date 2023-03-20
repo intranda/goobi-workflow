@@ -1,0 +1,308 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.jobs_quartzJobs}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="admin"
+            label="#{msgs.jobs_quartzJobs}"
+            action="quartz.xhtml"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Quartz')}">
+
+            <div
+                class="row"
+                role="main">
+
+
+
+
+                <div class="col-sm-12">
+                    <intranda:box
+                        boxType="primary-400"
+                        scope="form-box"
+                        boxTitle="false"
+                        padding="true">
+
+                        <intranda:boxTitle
+                            title="#{msgs.jobs_quartzJobs}"
+                            icon="fa-spinner">
+
+
+                        </intranda:boxTitle>
+                        <div class="dataTables flow">
+                            <div class="dataTables__search__container">
+                                <div class="dataTables__search__length">
+                                    <h:outputText value="#{msgs.jobs_number_of_jobs}: #{jobBean.activeJobs.size()}" />
+                                </div>
+                                <div class="dataTables__filter-container d-flex"></div>
+                            </div>
+
+                            <h:form
+                                id="myform"
+                                prependId="false"
+                                styleClass="table--scrollx">
+
+                                <div class="table-wrapper">
+                                    <table
+                                        role="grid"
+                                        id="tableQuartz"
+                                        class="table table-bordered table-fixed">
+                                        <!-- ### Columnheader row ### -->
+                                        <thead>
+                                            <tr role="row">
+                                                <intranda:columnheader
+                                                    value="#{msgs.jobs_quartz_single_name}"
+                                                    sortable="false" />
+                                                <intranda:columnheader
+                                                    value="#{msgs.jobs_quartz_last}"
+                                                    sortable="false" />
+                                                <intranda:columnheader
+                                                    value="#{msgs.jobs_quartz_next}"
+                                                    sortable="false" />
+                                                <intranda:columnheader
+                                                    value="#{msgs.jobs_quartz_single_schedule}"
+                                                    sortable="false"
+                                                    addClass="table-fixed__actions" />
+                                            </tr>
+                                        </thead>
+                                        <ui:repeat
+                                            var="entry"
+                                            value="#{jobBean.activeJobs}">
+
+                                            <tr role="row">
+                                                <td>
+                                                    <div
+                                                        class="admin__tasks-quartz-table-entry-name-wrapper"
+                                                        role="gridcell">
+                                                        <button
+                                                            jsf:rendered="#{entry.jobKey != null}"
+                                                            jsf:action="#{jobBean.pauseJob}"
+                                                            class="btn btn--clean admin__tasks-quartz-table-pause-button">
+                                                            <i class="fa fa-pause" />
+                                                            <f:ajax
+                                                                execute="@form"
+                                                                render="quartzRowID pauseAllGroup quartzNotProcessed" />
+                                                            <f:setPropertyActionListener
+                                                                target="#{jobBean.quartzJobDetails}"
+                                                                value="#{entry}" />
+                                                        </button>
+
+                                                        <button
+                                                            jsf:rendered="#{entry.jobKey != null}"
+                                                            jsf:action="#{jobBean.resumeJob}"
+                                                            class="btn btn--clean admin__tasks-quartz-table-play-button">
+                                                            <i class="fa fa-play" />
+                                                            <f:ajax
+                                                                execute="@form"
+                                                                render="quartzRowID pauseAllGroup quartzNotProcessed" />
+                                                            <f:setPropertyActionListener
+                                                                target="#{jobBean.quartzJobDetails}"
+                                                                value="#{entry}" />
+                                                        </button>
+
+                                                        <span class="admin__tasks-quartz-table-row-data"> <h:outputText
+                                                                value="#{msgs[entry.jobName]}" />
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <button
+                                                            jsf:action="#{jobBean.triggerQuartzJob}"
+                                                            class="btn admin__table-action-link -bluelink">
+                                                            #{msgs.jobs_run_once_now}
+                                                            <f:setPropertyActionListener
+                                                                target="#{jobBean.quartzJobDetails}"
+                                                                value="#{entry}" />
+                                                            <f:ajax
+                                                                execute="@form"
+                                                                render="runningTasksQueueWrapper" />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td><h:outputText value="#{entry.previousFireTimeAsString}" /></td>
+                                                <td><h:outputText value="#{entry.nextFireTimeAsString}" /></td>
+                                                <td><h:outputText value="#{entry.humanReadableCronTime}" /></td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </table>
+                                </div>
+                                <div class="form-actions">
+                                    <button
+                                        data-target="pauseButton"
+                                        jsf:action="#{jobBean.pauseAllJobs}"
+                                        class="btn pull-right">
+                                        <i class="fa fa-pause"></i>
+                                    </button>
+
+                                    <button
+                                        data-target="resumeButton"
+                                        jsf:action="#{jobBean.resumeAllJobs}"
+                                        class="btn pull-right">
+                                        <i class="fa fa-play"></i>
+                                    </button>
+
+                                </div>
+                            </h:form>
+                        </div>
+                    </intranda:box>
+                </div>
+
+
+
+                <div
+                    class="col-sm-12"
+                    style="margin-top: 20px;">
+                    <intranda:box
+                        boxType="blank"
+                        scope="form-box"
+                        boxTitle="false"
+                        padding="true">
+                        <intranda:boxTitle
+                            title="#{msgs.jobs_quartzHistory}"
+                            icon="fa-history">
+                        </intranda:boxTitle>
+
+                       <div class="gw-table gw-table-fixed">
+
+                            <!-- SEARCH -->
+                            <div class="dataTables__search__container">
+                                <div class="dataTables__search__length">
+                                    <h:outputText value="#{msgs.treffer}: #{jobBean.paginator.totalResults}" />
+                                </div>
+
+                                <div class="dataTables__filter-container d-flex">
+                                    <h:form
+                                        id="searchform"
+                                        styleClass="search-form">
+                                        <!-- Filter by search term -->
+                                        <div class="dataTables__filter -search-bar">
+                                            <div class="input-group input-group">
+                                                <span class="input-group-text"> <i class="fa fa-search"></i>
+                                                </span>
+                                                <h:inputText
+                                                    id="searchfield"
+                                                    styleClass="form-control searchfield"
+                                                    value="#{jobBean.filter}">
+                                                    <f:passThroughAttribute
+                                                        name="placeholder"
+                                                        value="#{msgs.filter}" />
+                                                    <f:passThroughAttribute
+                                                        name="aria-label"
+                                                        value="#{msgs.filter}" />
+                                                </h:inputText>
+                                                <button
+                                                    jsf:id="FilterAlle2"
+                                                    jsf:forceId="true"
+                                                    class="btn btn-blank"
+                                                    style="text-align: center; line-height: 100%; padding: 0px 10px"
+                                                    jsf:action="#{jobBean.filterLastJobs}">#{msgs.search}</button>
+                                            </div>
+                                            <x:commandButton
+                                                type="submit"
+                                                id="FilterAlle"
+                                                forceId="true"
+                                                style="display:none"
+                                                action="#{jobBean.FilterAlleStart}" />
+                                        </div>
+                                    </h:form>
+                                </div>
+                            </div>
+                            <h:form
+                                id="myform"
+                                prependId="false"
+                                styleClass="table--scrollx"
+                                style="width: 100%;">
+
+                                <div class="gw-table__wrapper">
+                                    <table
+                                        role="grid"
+                                        id="tableUserAll"
+                                        class="table table-hover table-nomargin dataTable table-bordered responsive">
+                                        <!-- ### Columnheader row ### -->
+                                        <thead>
+                                            <tr role="row">
+                                                <intranda:columnheader
+                                                    name="jobName"
+                                                    form="#{jobBean}"
+                                                    value="#{msgs.jobs_jobName}"
+                                                    ajaxRender="@form"
+                                                    sortField="jobname" />
+
+                                                <intranda:columnheader
+                                                    name="jobType"
+                                                    form="#{jobBean}"
+                                                    value="#{msgs.jobs_jobType}"
+                                                    ajaxRender="@form"
+                                                    sortField="jobtype" />
+
+                                                <intranda:columnheader
+                                                    name="jobStatus"
+                                                    form="#{jobBean}"
+                                                    value="#{msgs.jobs_jobStatus}"
+                                                    ajaxRender="@form" 
+                                                    sortField="jobstatus" />
+
+                                                <intranda:columnheader
+                                                    name="retryCount"
+                                                    form="#{jobBean}"
+                                                    value="#{msgs.jobs_retryCount}"
+                                                    ajaxRender="@form"
+                                                    sortField="retrycount" />
+
+                                                <intranda:columnheader
+                                                    name="lastUpdateTime"
+                                                    form="#{jobBean}"
+                                                    value="#{msgs.jobs_lastUpdateTime}"
+                                                    ajaxRender="@form"
+                                                    sortField="lastAltered" />
+                                            </tr>
+                                        </thead>
+                                        <ui:repeat
+                                            var="item"
+                                            value="#{jobBean.paginator.list}"
+                                            varStatus="status">
+                                            <tr role="row">
+                                                <td><h:outputText value="#{msgs[item.jobName]}" /></td>
+                                                <td><h:outputText value="#{item.jobType}" /></td>
+                                                <td><h:outputText value="#{msgs[item.jobStatus.label]}" /></td>
+                                                <td><h:outputText value="#{item.retryCount}" /></td>
+                                                <td><h:outputText value="#{item.lastUpdateTimeAsString}" /></td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </table>
+                                </div>
+                            </h:form>
+
+
+                        </div>
+
+                    </intranda:box>
+                </div>
+            </div>
+        </h:panelGroup>
+    </ui:define>
+
+</ui:composition>

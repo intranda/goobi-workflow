@@ -11,6 +11,7 @@
  * user_all.xhtml
  * ===================================== */
 
+/*
 .view-users {
   &__box--usergroup-1,
   &__box--usergroup-2,
@@ -66,3 +67,10 @@
     border-right-width: 1px;
   }
 }
+
+.view-users {
+  .edit-user .form__label {
+    align-items: flex-start;
+  }
+}
+*/

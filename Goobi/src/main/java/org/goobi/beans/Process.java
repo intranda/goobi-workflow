@@ -1550,12 +1550,12 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                         images = StorageProvider.getInstance().listFiles(getImagesOrigDirectory(true), NIOFileUtils.objectNameFilter);
                     }
                     if (images != null && !images.isEmpty()) {
-                        return "uii/template/img/goobi_3d_object_placeholder.png?version=1";
+                        return "uii/templatePG/img/goobi_3d_object_placeholder.png?version=1";
                     }
                 }
 
                 if (StringUtils.isBlank(representativeImage)) {
-                    return "uii/template/img/thumbnail-placeholder.png?version=1";
+                    return "uii/templatePG/img/thumbnail-placeholder.png?version=1";
                 }
             } catch (IOException | SwapException | DAOException e) {
                 log.error(e);

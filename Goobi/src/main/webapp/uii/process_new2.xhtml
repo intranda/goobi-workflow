@@ -1,267 +1,295 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/template/template.html"
+	template="/uii/templatePG/templatePG.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:p="http://primefaces.org/ui"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://primefaces.org/ui">
 
-	<ui:param name="myPageTitle" value="#{msgs.einenNeuenProzessAnlegen}" />
+	<ui:param
+		name="myPageTitle"
+		value="#{msgs.einenNeuenProzessAnlegen}" />
 
 	<ui:define name="breadcrumb">
-		<intranda:breadcrumb id="id2"
+		<intranda:breadcrumb
+			id="id2"
 			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-			action="index" navId="a0" />
-		<intranda:breadcrumb id="templates" label="#{msgs.prozessvorlagen}"
-			action="process_all" navId="a1" />
-		<intranda:breadcrumb id="newProcess2"
-			label="#{msgs.einenNeuenProzessAnlegen}" action="process_new2" />
-		<intranda:breadcrumb id="templateName"
+			action="index"
+			navId="a0" />
+		<intranda:breadcrumb
+			id="templates"
+			label="#{msgs.prozessvorlagen}"
+			action="process_all"
+			navId="a1" />
+		<intranda:breadcrumb
+			id="newProcess2"
+			label="#{msgs.einenNeuenProzessAnlegen}"
+			action="process_new2" />
+		<intranda:breadcrumb
+			id="templateName"
 			label="#{ProzesskopieForm.prozessVorlage.titel}"
-			action="process_new2" noSeparator="#{true}" />
-	</ui:define>
-
-	<ui:define name="info">
+			action="process_new2"
+			noSeparator="#{true}" />
 	</ui:define>
 
 	<ui:define name="content">
-		<script type="text/javascript"
+		<script
+			type="text/javascript"
 			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
-		<script type="text/javascript"
+		<script
+			type="text/javascript"
 			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/openseadragon/openseadragon-viewerinputhook.js?v=#{HelperForm.buildVersion}"></script>
-		<script type="text/javascript"
+		<script
+			type="text/javascript"
 			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/q-promises/q.min.js?v=#{HelperForm.buildVersion}"></script>
-		<script type="text/javascript"
+		<script
+			type="text/javascript"
 			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/reactiveX/rx.lite.min.js?v=#{HelperForm.buildVersion}"></script>
-		<script src="template/js/imageView/imageView.image.js?v=#{HelperForm.buildVersion}"></script>
-		<script src="template/js/imageView/imageView.tileSourceResolver.js?v=#{HelperForm.buildVersion}"></script>
-		<script src="template/js/imageView/imageView.measures.js?v=#{HelperForm.buildVersion}"></script>
-		<script src="template/js/imageView/imageView.controls.js?v=#{HelperForm.buildVersion}"></script>
-		<script src="template/js/imageView/imageView.zoomSlider.js?v=#{HelperForm.buildVersion}"></script>
+		
+		<!-- 
+		<script
+			src="template/js/imageView/imageView.image.js?v=#{HelperForm.buildVersion}"></script>
+		<script
+			src="template/js/imageView/imageView.tileSourceResolver.js?v=#{HelperForm.buildVersion}"></script>
+		<script
+			src="template/js/imageView/imageView.measures.js?v=#{HelperForm.buildVersion}"></script>
+		<script
+			src="template/js/imageView/imageView.controls.js?v=#{HelperForm.buildVersion}"></script>
+		<script
+			src="template/js/imageView/imageView.zoomSlider.js?v=#{HelperForm.buildVersion}"></script>
+		-->
 
-		<style>
-.grid-container {
-	display: grid;
-	grid-template-columns: 35% 65%;
-	grid-template-rows: auto;
-	justify-items: center;
-}
+		<!-- FORM WITH BOX -->
+		<h:form
+			id="uploadForm"
+			enctype="multipart/form-data"
+			prependId="false">
+			<main class="row">
+				<div class="col-12">
+					<intranda:box
+						id="uploadBox"
+						boxType="action"
+						boxPadding="false"
+						boxForm="true"
+						icon="fa-tasks"
+						title="#{msgs.zusaetzlicheDetails}">
 
-.image-area {
-	padding-right: 15px;
-	width: 100%;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: flex-start;
-	align-content: stretch;
-	display: flex;
-	border-top: 1px solid #ddd;
-}
+						<!-- ADDITIONAL PROPERTIES -->
+						<x:dataList
+							var="item"
+							id="properties"
+							value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}">
+							<intranda:formInputText
+								id="property"
+								label="#{item.titel}"
+								field="#{item.wert}"
+								help="#{msgs[('help_import_').concat(item.titel)]}"
+								name="id"
+								required="true" />
+						</x:dataList>
+						<!-- // ADDITIONAL PROPERTIES -->
 
-.image-container {
-	width: 300px;
-	margin: 10px;
-	position: relative;
-	text-align: center;
-}
+						<!-- FILE UPLOAD AREA -->
+						<h:panelGroup
+							id="uploadArea"
+							rendered="#{ProzesskopieForm.enableFileUpload}">
 
-.image {
-	max-width: 300px;
-	margin-top: 40px;
-	margin-bottom: 90px;
-}
-
-.folderselection {
-	width: 100%;
-	position: absolute;
-	bottom: 60px;
-	text-align: left;
-}
-
-.folderselectiondropdown{
-	display:inline; 
-	width:265px; 
-	text-align:left
-}
-
-.folderselectionbutton{
-	margin-left:5px;
-	margin-top: -3px;
-	padding: 4px 9px;
-}
-
-.comment {
-	width: 100%;
-	position: absolute;
-	bottom: 0px;
-}
-
-.commentField {
-	resize: none;
-  	overflow: auto;
-}
-
-</style>
-
-		<main>
-			<div class="row">
-				<div class="col-sm-12 box box-color box-bordered">
-					<div class="box-title">
-						<h2>
-							<i class="fa fa-tasks"></i>
-							<h:outputText value="#{msgs.zusaetzlicheDetails}" />
-						</h2>
-					</div>
-					<div class="box-content nopadding">
-
-						<h:form id="uploadForm" enctype="multipart/form-data"
-							styleClass="form-horizontal form-bordered" prependId="false">
-							
-							<!-- area for all additional properties -->
-							<x:dataList var="item" id="properties"
-								value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}">
-								<intranda:formInputText id="property" label="#{item.titel}"
-									field="#{item.wert}"
-									help="#{msgs[('help_import_').concat(item.titel)]}" name="id"
-									fieldStyle="form-control" required="true" />
-							</x:dataList>
-
-							<!-- area to allow the file upload -->
-							<h:panelGroup id="uploadArea" rendered="#{ProzesskopieForm.enableFileUpload}">
-									
-								<!-- selection of the target folder -->
-								<div class="form-group">
-									<div class="col-sm-3 control-label" tabindex="-1">
-										<h:outputLabel for="folderSelection" value="#{msgs.damageDocFolderSelection}" />
-										<i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
-									</div>
-									<div class="col-sm-9">
-										<h:selectOneRadio id="folderSelection"
-											value="#{ProzesskopieForm.uploadFolder}"
-											disabledClass="margin-sides-10" enabledClass="margin-sides-10"
-											tabindex="0">
-											<f:selectItems value="#{ProzesskopieForm.configuredFolderNames}" />
-											<f:ajax event="change" execute="@this" />
-											<f:ajax event="click" update="@form" render="@form" />
-										</h:selectOneRadio>
-										<intranda:formHelp content="#{msgs.helpDamageDocFolderSelection}" />
-									</div>
+							<!-- TARGET FOLDER -->
+							<div class="row">
+								<div class="col-12 col-md-3">
+									<intranda:formLabel label="#{msgs.damageDocFolderSelection}" 
+										labelFor="folderSelection" labelRequired="true"/>
 								</div>
-								<!-- // selection of the target folder -->
-								
-								<!-- define a default comment -->
-								<intranda:formInputTextAjax id="defaultComment" label="#{msgs.damageDocDefaultComment}" 
-									field="#{ProzesskopieForm.fileComment}" help="#{msgs.helpDamageDocDefaultComment}" 
-									name="defaultComment" fieldStyle="form-control" required="false" ajaxevent="change" execute="@this"/>
-								
-								<!-- Upload of the files -->
-								<div class="form-group">
-									<div class="col-sm-3 control-label" tabindex="-1">
-										<h:outputLabel for="uploadArea" value="#{msgs.damageDocFileUpload}" />
-									</div>
-									<div class="col-sm-9">
-										<!-- IMPORTANT: allowTypes="" only works with "/regex/" (included in slashes) -->
-										<!-- Even if other regular expressions would be valid too, only "/regex/" works in contrast to "regex" -->
-										<p:fileUpload
-											listener="#{ProzesskopieForm.uploadFile}"
-											id="upload"
-											auto="true"
-											mode="advanced"
-											multiple="true"
-											dragDropSupport="true"
-											label="#{msgs.plugin_massupload_selectFiles}"
-											sizeLimit="1000000000000"
-											fileLimit="42000"
-											update=":imageform"
-											allowTypes="#{ProzesskopieForm.getUploadRegex()}"
-											invalidFileMessage="#{ProzesskopieForm.generateFileUploadErrorMessage()}"
-                                            >
-										</p:fileUpload>
-										<intranda:formHelp content="#{msgs.helpDamageDocFileUpload}" />
-									</div>
+
+								<!-- SELECT ONE -->
+								<div class="col-12 col-md-9">
+									<h:selectOneRadio
+										id="folderSelection"
+										value="#{ProzesskopieForm.uploadFolder}"
+										styleClass="select-radio select-radio-horizontal"
+										tabindex="0">
+										<f:selectItems
+											value="#{ProzesskopieForm.configuredFolderNames}" />
+										<f:ajax
+											event="change"
+											execute="@this" />
+										<f:ajax
+											event="click"
+											update="@form"
+											render="@form" />
+									</h:selectOneRadio>
+									<intranda:formHelp content="#{msgs.helpDamageDocFolderSelection}" msgFor="folderSelection" />
 								</div>
-								<!-- // Upload of the files -->
-							</h:panelGroup>
-							<!-- // area to allow the file upload -->
+								<!-- SELECT ONE -->
 
-
-							<!-- area to show all uploaded images -->
-							<h:panelGroup layout="block" styleClass="image-area" style="#{ProzesskopieForm.uploadedFiles.size() > 0 ? 'border-bottom:1px solid #ddd': ''}"
-								id="imageform" rendered="#{ProzesskopieForm.enableFileUpload}">
-								
-								<ui:repeat var="image"
-									value="#{ProzesskopieForm.uploadedFiles}">
-
-									<ui:fragment rendered="#{!image.deleted}">
-										<div class="image-container">
-											<img class="image" alt="#{image.tooltip}" title="#{image.tooltip}"
-												src="#{image.thumbnailUrl}" data-toggle="tooltip"/>
-											<div class="folderselection">
-												<h:selectOneMenu value="#{image.foldername}" title="#{msgs.damageDocFolderSelection}"
-													styleClass="form-control folderselectiondropdown">
-													<f:selectItems
-														value="#{ProzesskopieForm.configuredFolderNames}" />
-													<f:ajax event="change" execute="@this" />
-													<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												</h:selectOneMenu>
-												<!-- delete file -->
-												<button jsf:id="deleteFile" class="btn font-size-s folderselectionbutton" 
-													jsf:action="#{ProzesskopieForm.uploadedFiles.remove(image)}" 
-													title="#{msgs.damageDocDeleteFile}">
-													<i class="fa fa-trash "/>
-													<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													<f:ajax render=":imageform" />
-												</button>
-											</div>
-											<div class="comment">
-												<h:inputTextarea value="#{image.descriptionText}" title="#{msgs.damageDocComment}"
-													styleClass="form-control commentField">
-													<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													<f:ajax event="change" execute="@this" />
-												</h:inputTextarea>
-											</div>
-										</div>
-									</ui:fragment>
-								</ui:repeat>
-							</h:panelGroup>
-							<!-- // area to show all uploaded images -->
-							
-							<!-- area for buttons to -->
-							<div class="form-actions">
-								<!-- Save -->
-								<button
-									class="btn btn-success font-size-s pull-right"
-									jsf:id="absenden" jsf:action="#{ProzesskopieForm.NeuenProzessAnlegen}">
-									<i class="fa fa-save margin-right-5"></i>
-									<h:outputText value="#{msgs.speichern}" />
-								</button>
-
-								<!-- Cancel -->
-								<button jsf:id="cancel"
-									class="btn margin-sides-10 font-size-s pull-right"
-									jsf:action="process_all" jsf:immediate="true">
-									#{msgs.abbrechen}
-								</button>
-
-								<!-- Go back -->
-								<h:commandLink styleClass="btn font-size-s" id="back"
-									action="#{ProzesskopieForm.GoToSeite1}" immediate="true">
-									<i class="fa fa-arrow-circle-o-left margin-right-5"></i>
-									<h:outputText value="#{msgs.zurueck}" />
-								</h:commandLink>
 							</div>
-							<!-- // area for all additional properties -->
-							
-						</h:form>
-					</div>
-				</div>
-			</div>
+							<!-- // TARGET FOLDER -->
 
-		</main>
+							<!-- DEFAULT COMMENT -->
+							<intranda:formInputTextAjax
+								id="defaultComment"
+								label="#{msgs.damageDocDefaultComment}"
+								field="#{ProzesskopieForm.fileComment}"
+								help="#{msgs.helpDamageDocDefaultComment}"
+								name="defaultComment"
+								fieldStyle="form-control"
+								required="false"
+								ajaxevent="change"
+								execute="@this" />
+							<!-- // DEFAULT COMMENT -->
+
+
+							<!-- FILE UPLOAD -->
+							<div class="row">
+								<div class="col-12 col-md-3">
+									<intranda:formLabel label="#{msgs.damageDocFileUpload}" 
+										labelFor="uploadArea" labelRequired="false"/>
+								</div>
+
+								<div class="col-12 col-md-9">
+									<!-- IMPORTANT: allowTypes="" only works with "/regex/" (included in slashes) -->
+									<!-- Even if other regular expressions would be valid too, only "/regex/" works in contrast to "regex" -->
+									<p:fileUpload
+										listener="#{ProzesskopieForm.uploadFile}"
+										id="upload"
+										auto="true"
+										mode="advanced"
+										multiple="true"
+										dragDropSupport="true"
+										label="#{msgs.plugin_massupload_selectFiles}"
+										sizeLimit="1000000000000"
+										fileLimit="42000"
+										update="uploadBox:thumbnails"
+										allowTypes="#{ProzesskopieForm.getUploadRegex()}"
+										invalidFileMessage="#{ProzesskopieForm.generateFileUploadErrorMessage()}">
+									</p:fileUpload>
+
+									<intranda:formHelp content="#{msgs.helpDamageDocFileUpload}" msgFor="uploadArea" />
+								</div>
+								
+							</div>
+							<!-- // FILE UPLOAD -->
+							
+						</h:panelGroup>
+						<!-- // FILE UPLOAD AREA -->
+
+
+						<!-- THUMBNAILS -->
+						<h:panelGroup
+							layout="block"
+							styleClass="damageBoxThumbnails"
+							id="thumbnails">
+
+							<ui:repeat
+								var="image"
+								value="#{ProzesskopieForm.uploadedFiles}">
+
+								<ui:fragment rendered="#{!image.deleted}">
+									<div class="damageBoxThumbnailsContainer">
+										<img
+											class="damageBoxThumbnailsImage"
+											alt="#{image.tooltip}"
+											title="#{image.tooltip}"
+											src="#{image.thumbnailUrl}"
+											data-toggle="tooltip" />
+										<div class="damageBoxThumbnailsFolderSelection">
+											<h:selectOneMenu
+												value="#{image.foldername}"
+												title="#{msgs.damageDocFolderSelection}"
+												styleClass="form-control damageBoxThumbnailsFolderSelectionDropdown">
+												<f:selectItems
+													value="#{ProzesskopieForm.configuredFolderNames}" />
+												<f:ajax
+													event="change"
+													execute="@this" />
+												<f:passThroughAttribute
+													name="data-toggle"
+													value="tooltip" />
+											</h:selectOneMenu>
+											<!-- delete file -->
+											<button
+												jsf:id="deleteFile"
+												class="btn btn-blank ms-2 mb-1"
+												jsf:action="#{ProzesskopieForm.uploadedFiles.remove(image)}"
+												title="#{msgs.damageDocDeleteFile}">
+												<i class="fa fa-trash " />
+												<f:passThroughAttribute
+													name="data-toggle"
+													value="tooltip" />
+												<f:ajax render="uploadBox:thumbnails" />
+											</button>
+										</div>
+										<div class="damageBoxThumbnailsComment">
+											<h:inputTextarea
+												value="#{image.descriptionText}"
+												title="#{msgs.damageDocComment}"
+												styleClass="form-control damageBoxThumbnailsCommentField">
+												<f:passThroughAttribute
+													name="data-toggle"
+													value="tooltip" />
+												<f:ajax
+													event="change"
+													execute="@this" />
+											</h:inputTextarea>
+										</div>
+									</div>
+								</ui:fragment>
+							</ui:repeat>
+						</h:panelGroup>
+						<!-- // THUMBNAILS -->
+
+						<!-- BUTTONS -->
+						<div class="box__actions">
+					
+							<!-- Cancel -->
+							<a
+								jsf:id="cancel"
+								class="btn btn-blank"
+								jsf:immediate="true"
+								jsf:action="process_all">
+								<h:outputText value="#{msgs.abbrechen}" />
+							</a>
+					
+							<!-- Save => should be the first btn in the form (subit on enter) -->
+							<button
+								class="btn btn-success"
+								jsf:id="absenden"
+								type="submit"
+								jsf:action="#{ProzesskopieForm.NeuenProzessAnlegen}">
+								<i class="fa fa-save"></i>
+								<span>
+									<h:outputText value="Speichern" />
+								</span>
+							</button>
+					
+							<!-- back -->
+							<button
+								jsf:id="deleteUser"
+								class="btn btn-blank trigger-delete"
+								jsf:action="#{ProzesskopieForm.GoToSeite1}">
+								<i class="fa fa-arrow-circle-o-left"></i>
+								<span>
+									<h:outputText value="#{msgs.zurueck}" />
+								</span>
+							</button>
+					
+						</div>
+						<!-- // BUTTONS -->
+	
+
+					</intranda:box>
+				</div>
+			</main>
+		</h:form>
+		<!-- // FORM WITH BOX -->
+
+
 	</ui:define>
 
 </ui:composition>

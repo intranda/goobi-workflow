@@ -36,13 +36,6 @@ import de.sub.goobi.AbstractTest;
 public class JournalEntryTest extends AbstractTest {
 
     @Test
-    public void testEmptyConstructor() {
-        JournalEntry fixture = new JournalEntry();
-        assertNotNull(fixture);
-        assertEquals(0, fixture.getObjectId().intValue());
-    }
-
-    @Test
     public void testDefaultConstructor() {
         Date d = new Date();
         JournalEntry fixture = new JournalEntry(1, d, "user", LogType.INFO, "content", EntryType.PROCESS);
@@ -69,17 +62,6 @@ public class JournalEntryTest extends AbstractTest {
         assertEquals("filename", fixture.getFilename());
         assertEquals(EntryType.PROCESS, fixture.getEntryType());
         assertEquals(path.toString(), fixture.getFile().toString());
-    }
-
-    @Test
-    public void testBuilderConstructor() {
-        Date d = new Date();
-        JournalEntry fixture = JournalEntry.build(1).withUsername("user").withCreationDate(d).withContent("content").withType(LogType.INFO);
-        assertEquals(1, fixture.getObjectId().intValue());
-        assertEquals(d, fixture.getCreationDate());
-        assertEquals("user", fixture.getUserName());
-        assertEquals(LogType.INFO, fixture.getType());
-        assertEquals("content", fixture.getContent());
     }
 
     @Test

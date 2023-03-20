@@ -5,10 +5,10 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <ui:param
@@ -42,12 +42,12 @@
         <main>
 
             <c:if test="#{LoginForm.hasRole('Workflow_General_Details')}">
-                <div class="alert alert-warning" style="margin-bottom: 0; margin-top: 10px;" jsf:rendered="#{ProzessverwaltungForm.myProzess.archivedImageFolders.size() gt 0}">
+                <div class="alert alert-warning mt-4" jsf:rendered="#{ProzessverwaltungForm.myProzess.archivedImageFolders.size() gt 0}">
                     <h:outputText value="#{msgs.warningImageFoldersArchived}" escape="false" />
                     <ui:repeat var="folder" value="#{ProzessverwaltungForm.myProzess.archivedImageFolders}">#{folder}</ui:repeat>
                 </div>
 
-                <ui:include src="includes/process/process_main.xhtml" />
+                <ui:include src="templatePG/includes/process/process_main.xhtml" />
 
                 <h:form
                     id="proceditform"
@@ -58,30 +58,28 @@
                         rendered="#{ProzessverwaltungForm.myProzess.id != null}">
 
                         <!-- Schritte -->
-                        <ui:include src="includes/process/process_steps.xhtml" />
+                        <ui:include src="templatePG/includes/process/process_steps.xhtml" />
 
                         <!-- Vorlagen -->
                         <f:subview
                             id="subVorlage"
                             rendered="#{ProzessverwaltungForm.myProzess.vorlagenSize != 0}">
-                            <ui:include src="includes/process/process_templates.xhtml" />
+                            <ui:include src="templatePG/includes/process/process_templates.xhtml" />
                         </f:subview>
 
                         <!-- Werkstuecke -->
                         <f:subview
                             id="subWerk"
                             rendered="#{ProzessverwaltungForm.myProzess.werkstueckeSize != 0}">
-                            <ui:include src="includes/process/process_workpieces.xhtml" />
+                            <ui:include src="templatePG/includes/process/process_workpieces.xhtml" />
                         </f:subview>
-
-
                     </f:subview>
 
                 </h:form>
 
                 <!-- Prozesseigenschaften -->
                 <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.id != null}">
-                    <ui:include src="includes/process/process_properties.xhtml" />
+                    <ui:include src="templatePG/includes/process/process_properties.xhtml" />
                 </h:panelGroup>
 
             </c:if>
@@ -89,9 +87,3 @@
     </ui:define>
 
 </ui:composition>
-
-
-
-
-
-

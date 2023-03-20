@@ -1,5 +1,3 @@
-package org.goobi.production.flow.jobs;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -25,19 +23,26 @@ package org.goobi.production.flow.jobs;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.util.Calendar;
-import java.util.Date;
+
+package org.goobi.production.flow.jobs;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.util.Set;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.goobi.vocabulary.UploadVocabJob;
+import org.apache.commons.lang.StringUtils;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
-import org.quartz.Trigger;
-import org.quartz.TriggerUtils;
+import org.quartz.TriggerBuilder;
+import org.reflections.Reflections;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
@@ -82,12 +87,18 @@ public class JobManager implements ServletContextListener {
         Scheduler sched = schedFact.getScheduler();
         sched.start();
 
-        initializeJob(new HistoryAnalyserJob(), "dailyHistoryAnalyser", sched);
-        initializeJob(new DelayJob(), "dailyDelayJob", sched);
-
-        initializeJob(new UploadVocabJob(), "dailyVocabJob", sched);
-
-        initializeMinutelyJob(new UploadVocabJob(), "goobiAuthorityServerUploadFrequencyInMinutes", sched);
+        Set<Class<? extends IGoobiJob>> jobs = new Reflections().getSubTypesOf(IGoobiJob.class);
+        for (Class<? extends IGoobiJob> jobClass : jobs) {
+            if (!Modifier.isAbstract(jobClass.getModifiers())) {
+                try {
+                    IGoobiJob job = jobClass.getDeclaredConstructor().newInstance();
+                    initializeJob(job, job.getJobName(), sched);
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                        | NoSuchMethodException | SecurityException e) {
+                    log.warn(jobClass.getName() + " cannot be instantiated");
+                }
+            }
+        }
     }
 
     /**
@@ -96,64 +107,15 @@ public class JobManager implements ServletContextListener {
      * @throws SchedulerException
      */
     private static void initializeJob(IGoobiJob goobiJob, String configuredStartTimeProperty, Scheduler sched) throws SchedulerException {
-        JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
-
-        if (ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty) != -1) {
-            long msOfToday = ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty);
-            Calendar cal = Calendar.getInstance();
-            cal.set(1984, 8, 11, 0, 0);
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-
-            cal.setTime(new Date(cal.getTimeInMillis() + msOfToday));
-            int hour = cal.get(Calendar.HOUR_OF_DAY);
-            int min = cal.get(Calendar.MINUTE);
-
-            Trigger trigger = TriggerUtils.makeDailyTrigger(hour, min);
-            trigger.setStartTime(new Date());
-            trigger.setName(goobiJob.getJobName() + "_trigger");
-
-            log.info("Set the start time for daily Job '" + goobiJob.getJobName() + "' to: " + hour + ":" + min);
+        JobDetail jobDetail = JobBuilder.newJob(goobiJob.getClass()).withIdentity(goobiJob.getJobName(), goobiJob.getJobName()).build();
+        String cronTimer = ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty);
+        if (StringUtils.isNotBlank(cronTimer)) {
+            CronTrigger trigger = TriggerBuilder.newTrigger()
+                    .withIdentity(goobiJob.getJobName(), goobiJob.getJobName())
+                    .withSchedule(CronScheduleBuilder.cronSchedule(cronTimer))
+                    .build();
             sched.scheduleJob(jobDetail, trigger);
         }
-    }
-
-    /**
-     * initializes given SimpleGoobiJob every specified number of hours
-     * 
-     * @throws SchedulerException
-     */
-    private static void initializeMinutelyJob(IGoobiJob goobiJob, String configuredMinutelyIntervalProperty, Scheduler sched)
-            throws SchedulerException {
-
-        if (ConfigurationHelper.getInstance().getJobStartTime(configuredMinutelyIntervalProperty) != -1) {
-            int intervalInMinutes = (int) ConfigurationHelper.getInstance().getJobStartTime(configuredMinutelyIntervalProperty);
-
-            log.debug("Initialize job '" + goobiJob.getJobName() + "'");
-            JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
-
-            Trigger trigger = TriggerUtils.makeMinutelyTrigger(intervalInMinutes);
-            trigger.setStartTime(new Date());
-            trigger.setName(goobiJob.getJobName() + "_minute_trigger");
-            sched.scheduleJob(jobDetail, trigger);
-        }
-    }
-
-    /**
-     * initializes given SimpleGoobiJob at given time
-     * 
-     * @throws SchedulerException
-     */
-    @SuppressWarnings("unused")
-    private static void initializeJobNonConfigured(IGoobiJob goobiJob, int myTime, Scheduler sched) throws SchedulerException {
-        log.debug("Initialize job '" + goobiJob.getJobName() + "'");
-        JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
-
-        // hier alle 60 sek. oder so
-        Trigger trigger = TriggerUtils.makeMinutelyTrigger(myTime);
-        trigger.setStartTime(new Date());
-        trigger.setName(goobiJob.getJobName() + "_trigger");
-        sched.scheduleJob(jobDetail, trigger);
     }
 
     @Override
@@ -175,21 +137,4 @@ public class JobManager implements ServletContextListener {
             log.error("daily JobManager could not be started", e);
         }
     }
-
-    /**
-     * get current time plus 60 seconds as milliseconds from midnight to debug jobmanager
-     */
-    public static void main(String[] args) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        Calendar calNow = Calendar.getInstance();
-
-        log.debug(calNow.getTime() + " --- " + cal.getTime());
-        log.debug("60 seconds from now in milliseconds from 0:00 are " + (calNow.getTimeInMillis() - cal.getTimeInMillis() + 60000));
-    }
-
 }

@@ -76,7 +76,7 @@ public class Masterpieceproperty implements Serializable, IGoobiProperty {
 
     public Masterpieceproperty() {
         this.istObligatorisch = false;
-        this.datentyp = PropertyType.String.getId();
+        this.datentyp = PropertyType.STRING.getId();
         this.creationDate = new Date();
     }
 
@@ -109,7 +109,7 @@ public class Masterpieceproperty implements Serializable, IGoobiProperty {
     @Override
     public PropertyType getType() {
         if (this.datentyp == null) {
-            this.datentyp = PropertyType.String.getId();
+            this.datentyp = PropertyType.STRING.getId();
         }
         return PropertyType.getById(this.datentyp);
     }

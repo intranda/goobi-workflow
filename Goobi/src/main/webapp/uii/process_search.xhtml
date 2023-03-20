@@ -1,390 +1,412 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:of="http://omnifaces.org/functions"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    template="/uii/template/template.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-    <ui:param
-        name="myPageTitle"
-        value="#{msgs.nachEinemBandSuchen}" />
+	<ui:param
+		name="myPageTitle"
+		value="#{msgs.nachEinemBandSuchen}" />
 
-    <ui:define name="breadcrumb">
-        <intranda:breadcrumb
-            id="id2"
-            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-            action="index"
-            navId="a0" />
-        <intranda:breadcrumb
-            id="search1"
-            label="#{msgs.nachEinemBandSuchen}"
-            action="process_search"
-            noSeparator="#{true}" />
-    </ui:define>
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb
+			id="id2"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index"
+			navId="a0" />
+		<intranda:breadcrumb
+			id="search1"
+			label="#{msgs.nachEinemBandSuchen}"
+			action="process_search"
+			noSeparator="#{true}" />
+	</ui:define>
 
-    <ui:define name="content">
-        <main>
-            <c:if test="#{LoginForm.hasRole('Workflow_General_Search')}">
+	<ui:define name="content">
+		<main>
+			<c:if test="#{LoginForm.hasRole('Workflow_General_Search')}">
 
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="box box-color box-bordered">
-                            <div class="box-title">
-                                <h2>
-                                    <i class="fa fa-search"></i>
-                                    <h:outputText
-                                        value="#{msgs.nachEinemBandSuchen}"
-                                        class="margin-right-5" />
-                                </h2>
-                            </div>
-                            <div class="box-content nopadding">
-                                <h:form
-                                    id="searchform"
-                                    onkeypress="submitOnEnter(event);"
-                                    styleClass="form-horizontal form-bordered">
-                                    <x:dataList
-                                        value="#{SearchForm.rowList}"
-                                        var="row"
-                                        id="rowList">
-                                        <div class="form-group row">
-                                            <div class="control-label col-sm-3">
-                                                <h:selectOneMenu
-                                                    value="#{row.fieldName}"
-                                                    styleClass="form-control"
-                                                    pt:aria-label="#{msgs.fieldname}"
-                                                    id="fieldname">
-                                                    <f:selectItems
-                                                        var="fieldname"
-                                                        value="#{SearchForm.fieldnameList}"
-                                                        itemValue="#{fieldname.value}"
-                                                        itemLabel="#{msgs[fieldname.label]}" />
-                                                    <f:ajax
-                                                        render="@form"
-                                                        execute="@form" />
-                                                </h:selectOneMenu>
-                                            </div>
+				<div class="row">
+					<div class="col-sm-12">
+						<h:form
+							id="searchform"
+							onkeypress="submitOnEnter(event);">
 
-                                            <h:panelGroup
-                                                class="col-sm-2 searchformfield"
-                                                rendered="#{row.fieldName != 'PROCESSID' and row.fieldName != 'PROCESSDATE' and row.fieldName != 'STEPSTARTDATE' and row.fieldName != 'STEPFINISHDATE'}">
-                                                <h:selectOneMenu
-                                                    value="#{row.fieldOperand}"
-                                                    styleClass="form-control"
-                                                    pt:aria-label="#{msgs.operand}"
-                                                    id="operand">
-                                                    <f:selectItems value="#{SearchForm.operands}" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
+							<!-- SEARCH BOX -->
+							<intranda:box
+								boxForm="true"
+								boxType="primary"
+								boxPadding="false"
+								icon="fa-search"
+								title="#{msgs.nachEinemBandSuchen}">
 
-                                            <h:panelGroup
-                                                class="col-sm-2 searchformfield"
-                                                rendered="#{row.fieldName == 'PROCESSID'}">
-                                                <h:selectOneMenu
-                                                    value="#{row.fieldOperand}"
-                                                    styleClass="form-control"
-                                                    pt:aria-label="#{msgs.operand}"
-                                                    id="operand2">
-                                                    <f:selectItems value="#{SearchForm.operandsForID}" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
+			
+								<!-- LIST OF SEARCH ROWS -->
+								<x:dataList
+									value="#{SearchForm.rowList}"
+									var="row"
+									id="rowList">
+									
+									
+									<div class="row">
+										<div class="col-12 col-md-3">
+											<label class="form__label w-100">
+												<h:selectOneMenu
+													value="#{row.fieldName}"
+													styleClass="form-select"
+													pt:aria-label="#{msgs.fieldname}"
+													id="fieldname">
+													<f:selectItems
+														var="fieldname"
+														value="#{SearchForm.fieldnameList}"
+														itemValue="#{fieldname.value}"
+														itemLabel="#{msgs[fieldname.label]}" />
+													<f:ajax
+														render="@form"
+														execute="@form" />
+												</h:selectOneMenu>
+											</label>
+										</div>
 
-                                            <h:panelGroup
-                                                class="col-sm-2 searchformfield"
-                                                rendered="#{row.fieldName == 'PROCESSDATE' or row.fieldName == 'STEPSTARTDATE' or row.fieldName == 'STEPFINISHDATE'}">
-                                                <h:selectOneMenu
-                                                    value="#{row.fieldOperand}"
-                                                    styleClass="form-control"
-                                                    pt:aria-label="#{msgs.operand}"
-                                                    id="operand3">
-                                                    <f:selectItems value="#{SearchForm.operandsForDates}" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
+										<h:panelGroup
+											class="col-sm-2 gw-border-right"
+											rendered="#{row.fieldName != 'PROCESSID' and row.fieldName != 'PROCESSDATE' and row.fieldName != 'STEPSTARTDATE' and row.fieldName != 'STEPFINISHDATE'}">
+											<h:selectOneMenu
+												value="#{row.fieldOperand}"
+												styleClass="form-select"
+												pt:aria-label="#{msgs.operand}"
+												id="operand">
+												<f:selectItems value="#{SearchForm.operands}" />
+											</h:selectOneMenu>
+										</h:panelGroup>
 
+										<h:panelGroup
+											class="col-sm-2 gw-border-right"
+											rendered="#{row.fieldName == 'PROCESSID'}">
+											<h:selectOneMenu
+												value="#{row.fieldOperand}"
+												styleClass="form-select"
+												pt:aria-label="#{msgs.operand}"
+												id="operand2">
+												<f:selectItems value="#{SearchForm.operandsForID}" />
+											</h:selectOneMenu>
+										</h:panelGroup>
 
-                                            <h:panelGroup
-                                                styleClass="col-sm-6 searchformfield"
-                                                rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH' or row.fieldName == 'JOURNAL' or row.fieldName == 'PROCESSDATE' or row.fieldName == 'STEPSTARTDATE' or row.fieldName == 'STEPFINISHDATE'}">
-                                                <h:inputText
-                                                    value="#{row.fieldValue}"
-                                                    styleClass="form-control"
-                                                    pt:aria-label="#{msgs.prozess}id"
-                                                    id="processid">
-                                                    <f:ajax render="@form" />
-                                                </h:inputText>
-                                            </h:panelGroup>
-
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'STEP'}"
-                                                styleClass="col-sm-2 searchformfield">
-
-                                                <h:selectOneMenu
-                                                    value="#{row.stepStatus}"
-                                                    styleClass="form-control"
-                                                    pt:aria-label="#{msgs.step} #{msgs.status}"
-                                                    id="stepstatus">
-                                                    <f:selectItems
-                                                        value="#{SearchForm.stepstatus}"
-                                                        var="stepstatus"
-                                                        itemLabel="#{stepstatus.title}"
-                                                        itemValue="#{stepstatus.searchString}" />
-                                                    <f:ajax
-                                                        render="@form"
-                                                        execute="@form" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
-
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'STEP'}"
-                                                styleClass="col-sm-4 searchformfield">
-
-                                                <h:selectOneMenu
-                                                    value="#{row.stepName}"
-                                                    styleClass="form-control"
-                                                    pt:aria-label="#{msgs.step} #{msgs.name}"
-                                                    id="stepname">
-                                                    <f:selectItems
-                                                        value="#{SearchForm.stepTitles}"
-                                                        var="stepTitles"
-                                                        itemLabel="#{stepTitles}"
-                                                        itemValue="#{stepTitles}" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
+										<h:panelGroup
+											class="col-sm-2 gw-border-right"
+											rendered="#{row.fieldName == 'PROCESSDATE' or row.fieldName == 'STEPSTARTDATE' or row.fieldName == 'STEPFINISHDATE'}">
+											<h:selectOneMenu
+												value="#{row.fieldOperand}"
+												styleClass="form-select"
+												pt:aria-label="#{msgs.operand}"
+												id="operand3">
+												<f:selectItems value="#{SearchForm.operandsForDates}" />
+											</h:selectOneMenu>
+										</h:panelGroup>
 
 
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'PROJECT'}"
-                                                styleClass="col-sm-6 searchformfield">
-                                                <h:selectOneMenu
-                                                    value="#{row.projectName}"
-                                                    rendered="#{row.fieldName == 'PROJECT'}"
-                                                    styleClass="form-control"
-                                                    pt:aria-label="#{msgs.project}"
-                                                    id="project">
-                                                    <f:selectItems
-                                                        value="#{SearchForm.projects}"
-                                                        var="proj"
-                                                        itemLabel="#{proj}"
-                                                        itemValue="#{proj}" />
-                                                    <f:ajax
-                                                        render="@form"
-                                                        execute="@form" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
+										<h:panelGroup
+											styleClass="col-sm-6 gw-border-right"
+											rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH' or row.fieldName == 'JOURNAL' or row.fieldName == 'PROCESSDATE' or row.fieldName == 'STEPSTARTDATE' or row.fieldName == 'STEPFINISHDATE'}">
+											<h:inputText
+												value="#{row.fieldValue}"
+												styleClass="form-control"
+												pt:aria-label="#{msgs.prozess}id"
+												id="processid">
+												<f:ajax render="@form" />
+											</h:inputText>
+										</h:panelGroup>
 
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'INSTITUTION'}"
-                                                styleClass="col-sm-6 searchformfield">
-                                                <h:selectOneMenu
-                                                    value="#{row.institutionName}"
-                                                    rendered="#{row.fieldName == 'INSTITUTION'}"
-                                                    styleClass="form-control"
-                                                    id="institution">
-                                                    <f:selectItems
-                                                        value="#{SearchForm.institutionNames}"
-                                                        var="institutionNames"
-                                                        itemLabel="#{institutionNames}"
-                                                        itemValue="#{institutionNames}" />
-                                                    <f:ajax
-                                                        render="@form"
-                                                        execute="@form" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
+										<h:panelGroup
+											rendered="#{row.fieldName == 'STEP'}"
+											styleClass="col-sm-2 gw-border-right">
 
+											<h:selectOneMenu
+												value="#{row.stepStatus}"
+												styleClass="form-select"
+												pt:aria-label="#{msgs.step} #{msgs.status}"
+												id="stepstatus">
+												<f:selectItems
+													value="#{SearchForm.stepstatus}"
+													var="stepstatus"
+													itemLabel="#{stepstatus.title}"
+													itemValue="#{stepstatus.searchString}" />
+												<f:ajax
+													render="@form"
+													execute="@form" />
+											</h:selectOneMenu>
+										</h:panelGroup>
 
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'PROCESSPROPERTY'}"
-                                                styleClass="col-sm-2 searchformfield">
-                                                <h:selectOneMenu
-                                                    value="#{row.processPropertyName}"
-                                                    styleClass="form-control"
-                                                    id="propertyName">
-                                                    <f:selectItems
-                                                        value="#{SearchForm.processPropertyTitles}"
-                                                        var="proc"
-                                                        itemLabel="#{proc}"
-                                                        itemValue="#{proc}" />
-                                                    <f:ajax
-                                                        render="@form"
-                                                        execute="@form" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'PROCESSPROPERTY'}"
-                                                styleClass="col-sm-4 searchformfield">
-                                                <h:inputText
-                                                    value="#{row.processPropertyValue}"
-                                                    styleClass="form-control"
-                                                    id="propertyValue">
-                                                </h:inputText>
-                                            </h:panelGroup>
+										<h:panelGroup
+											rendered="#{row.fieldName == 'STEP'}"
+											styleClass="col-sm-4 gw-border-right">
 
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'TEMPLATE'}"
-                                                styleClass="col-sm-2 searchformfield">
-                                                <h:selectOneMenu
-                                                    value="#{row.templatePropertyName}"
-                                                    styleClass="form-control"
-                                                    id="propertyName2">
-                                                    <f:selectItems
-                                                        value="#{SearchForm.templatePropertyTitles}"
-                                                        var="proc"
-                                                        itemLabel="#{proc}"
-                                                        itemValue="#{proc}" />
-                                                    <f:ajax
-                                                        render="@form"
-                                                        execute="@form" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'TEMPLATE'}"
-                                                styleClass="col-sm-4 searchformfield">
-                                                <h:inputText
-                                                    value="#{row.templatePropertyValue}"
-                                                    styleClass="form-control"
-                                                    id="propertyValue2">
-                                                </h:inputText>
-                                            </h:panelGroup>
-
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'WORKPIECE'}"
-                                                styleClass="col-sm-2 searchformfield">
-                                                <h:selectOneMenu
-                                                    value="#{row.masterpiecePropertyName}"
-                                                    styleClass="form-control"
-                                                    id="propertyName3">
-                                                    <f:selectItems
-                                                        value="#{SearchForm.masterpiecePropertyTitles}"
-                                                        var="proc"
-                                                        itemLabel="#{proc}"
-                                                        itemValue="#{proc}" />
-                                                    <f:ajax
-                                                        render="@form"
-                                                        execute="@form" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'WORKPIECE'}"
-                                                styleClass="col-sm-4 searchformfield">
-                                                <h:inputText
-                                                    value="#{row.masterpiecePropertyValue}"
-                                                    styleClass="form-control"
-                                                    id="propertyValue3">
-                                                </h:inputText>
-
-                                            </h:panelGroup>
-
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'METADATA'}"
-                                                styleClass="col-sm-2 searchformfield">
-                                                <h:selectOneMenu
-                                                    value="#{row.metadataName}"
-                                                    styleClass="form-control"
-                                                    pt:aria-label="#{msgs.metadata} #{msgs.name}"
-                                                    id="metadataName">
-                                                    <f:selectItems
-                                                        value="#{SearchForm.metadataTitles}"
-                                                        var="proc"
-                                                        itemLabel="#{msgs[proc]}"
-                                                        itemValue="#{proc}" />
-                                                    <f:ajax
-                                                        render="@form"
-                                                        execute="@form" />
-                                                </h:selectOneMenu>
-                                            </h:panelGroup>
-                                            <h:panelGroup
-                                                rendered="#{row.fieldName == 'METADATA'}"
-                                                styleClass="col-sm-4 searchformfield">
-                                                <h:inputText
-                                                    value="#{row.metadataValue}"
-                                                    styleClass="form-control"
-                                                    pt:aria-label="#{msgs.metadata} #{msgs.wert}"
-                                                    id="metadataValue">
-                                                </h:inputText>
-                                            </h:panelGroup>
-
-                                            <div class="control-label col-sm-1 searchformfield">
-                                                <button
-                                                    jsf:action="#{SearchForm.addRow}"
-                                                    title="#{msgs.conditionAdd}"
-                                                    aria-label="#{msgs.conditionAdd}"
-                                                    jsf:id="addCondition"
-                                                    class="btn btn-primary fa fa-plus"
-                                                    style="margin-right: 5px">
-                                                    <f:passThroughAttribute
-                                                        name="data-toggle"
-                                                        value="tooltip" />
-                                                </button>
-                                                <button
-                                                    jsf:action="#{SearchForm.deleteRow}"
-                                                    title="#{msgs.conditionRemove}"
-                                                    aria-label="#{msgs.conditionRemove}"
-                                                    jsf:rendered="#{SearchForm.sizeOfRowList > 1}"
-                                                    jsf:id="removeCondition"
-                                                    class="btn btn-primary fa fa-minus">
-                                                    <f:passThroughAttribute
-                                                        name="data-toggle"
-                                                        value="tooltip" />
-                                                    <x:updateActionListener
-                                                        property="#{SearchForm.currentRow}"
-                                                        value="#{row}" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </x:dataList>
+											<h:selectOneMenu
+												value="#{row.stepName}"
+												styleClass="form-select"
+												pt:aria-label="#{msgs.step} #{msgs.name}"
+												id="stepname">
+												<f:selectItems
+													value="#{SearchForm.stepTitles}"
+													var="stepTitles"
+													itemLabel="#{stepTitles}"
+													itemValue="#{stepTitles}" />
+											</h:selectOneMenu>
+										</h:panelGroup>
 
 
-                                    <c:if test="#{LoginForm.hasRole('Workflow_Processes_Show_Deactivated_Projects')}">
-                                        <intranda:formInputCheckBox
-                                            classRight="col-sm-9 focusableChild"
-                                            tabindex="-1"
-                                            id="showArchivedProjects"
-                                            label="#{msgs.showArchivedProjects}:"
-                                            field="#{ProzessverwaltungForm.showArchivedProjects}"
-                                            help="#{msgs.helpShowArchivedProjects}"
-                                            name="showArchivedProjectsname" />
-                                    </c:if>
-                                    <c:if test="#{LoginForm.hasRole('Workflow_Processes_Show_Finished')}">
-                                        <intranda:formInputCheckBox
-                                            classRight="col-sm-9 focusableChild"
-                                            tabindex="-1"
-                                            id="showClosedProcesses"
-                                            label="#{msgs.showClosedProcesses}:"
-                                            field="#{ProzessverwaltungForm.showClosedProcesses}"
-                                            help="#{msgs.helpShowClosedProcesses}"
-                                            name="showClosedProcessesname" />
-                                    </c:if>
+										<h:panelGroup
+											rendered="#{row.fieldName == 'PROJECT'}"
+											styleClass="col-sm-6 gw-border-right">
+											<h:selectOneMenu
+												value="#{row.projectName}"
+												rendered="#{row.fieldName == 'PROJECT'}"
+												styleClass="form-select"
+												pt:aria-label="#{msgs.project}"
+												id="project">
+												<f:selectItems
+													value="#{SearchForm.projects}"
+													var="proj"
+													itemLabel="#{proj}"
+													itemValue="#{proj}" />
+												<f:ajax
+													render="@form"
+													execute="@form" />
+											</h:selectOneMenu>
+										</h:panelGroup>
 
-                                    <div class="form-actions">
-                                        <button
-                                            class="btn btn-primary submitOnEnter font-size-s pull-right"
-                                            jsf:id="absenden"
-                                            jsf:action="#{SearchForm.createFilter}">
-                                            <h:outputText value="#{msgs.search}" />
-                                        </button>
+										<h:panelGroup
+											rendered="#{row.fieldName == 'INSTITUTION'}"
+											styleClass="col-sm-6 gw-border-right">
+											<h:selectOneMenu
+												value="#{row.institutionName}"
+												rendered="#{row.fieldName == 'INSTITUTION'}"
+												styleClass="form-select"
+												id="institution">
+												<f:selectItems
+													value="#{SearchForm.institutionNames}"
+													var="institutionNames"
+													itemLabel="#{institutionNames}"
+													itemValue="#{institutionNames}" />
+												<f:ajax
+													render="@form"
+													execute="@form" />
+											</h:selectOneMenu>
+										</h:panelGroup>
 
-                                        <button
-                                            class="btn font-size-s"
-                                            jsf:id="cancel"
-                                            jsf:action="#{SearchForm.resetFilter}"
-                                            jsf:immediate="true">
-                                            <h:outputText value="#{msgs.clear}" />
-                                        </button>
-                                    </div>
 
-                                </h:form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+										<h:panelGroup
+											rendered="#{row.fieldName == 'PROCESSPROPERTY'}"
+											styleClass="col-sm-2 gw-border-right">
+											<h:selectOneMenu
+												value="#{row.processPropertyName}"
+												styleClass="form-select"
+												id="propertyName">
+												<f:selectItems
+													value="#{SearchForm.processPropertyTitles}"
+													var="proc"
+													itemLabel="#{proc}"
+													itemValue="#{proc}" />
+												<f:ajax
+													render="@form"
+													execute="@form" />
+											</h:selectOneMenu>
+										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{row.fieldName == 'PROCESSPROPERTY'}"
+											styleClass="col-sm-4 gw-border-right">
+											<h:inputText
+												value="#{row.processPropertyValue}"
+												styleClass="form-control"
+												id="propertyValue">
+											</h:inputText>
+										</h:panelGroup>
 
-            </c:if>
-        </main>
-    </ui:define>
+										<h:panelGroup
+											rendered="#{row.fieldName == 'TEMPLATE'}"
+											styleClass="col-sm-2 gw-border-right">
+											<h:selectOneMenu
+												value="#{row.templatePropertyName}"
+												styleClass="form-select"
+												id="propertyName2">
+												<f:selectItems
+													value="#{SearchForm.templatePropertyTitles}"
+													var="proc"
+													itemLabel="#{proc}"
+													itemValue="#{proc}" />
+												<f:ajax
+													render="@form"
+													execute="@form" />
+											</h:selectOneMenu>
+										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{row.fieldName == 'TEMPLATE'}"
+											styleClass="col-sm-4 gw-border-right">
+											<h:inputText
+												value="#{row.templatePropertyValue}"
+												styleClass="form-control"
+												id="propertyValue2">
+											</h:inputText>
+										</h:panelGroup>
+
+										<h:panelGroup
+											rendered="#{row.fieldName == 'WORKPIECE'}"
+											styleClass="col-sm-2 gw-border-right">
+											<h:selectOneMenu
+												value="#{row.masterpiecePropertyName}"
+												styleClass="form-select"
+												id="propertyName3">
+												<f:selectItems
+													value="#{SearchForm.masterpiecePropertyTitles}"
+													var="proc"
+													itemLabel="#{proc}"
+													itemValue="#{proc}" />
+												<f:ajax
+													render="@form"
+													execute="@form" />
+											</h:selectOneMenu>
+										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{row.fieldName == 'WORKPIECE'}"
+											styleClass="col-sm-4 gw-border-right">
+											<h:inputText
+												value="#{row.masterpiecePropertyValue}"
+												styleClass="form-control"
+												id="propertyValue3">
+											</h:inputText>
+
+										</h:panelGroup>
+
+										<h:panelGroup
+											rendered="#{row.fieldName == 'METADATA'}"
+											styleClass="col-sm-2 gw-border-right">
+											<h:selectOneMenu
+												value="#{row.metadataName}"
+												styleClass="form-select"
+												pt:aria-label="#{msgs.metadata} #{msgs.name}"
+												id="metadataName">
+												<f:selectItems
+													value="#{SearchForm.metadataTitles}"
+													var="proc"
+													itemLabel="#{msgs[proc]}"
+													itemValue="#{proc}" />
+												<f:ajax
+													render="@form"
+													execute="@form" />
+											</h:selectOneMenu>
+										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{row.fieldName == 'METADATA'}"
+											styleClass="col-sm-4 gw-border-right">
+											<h:inputText
+												value="#{row.metadataValue}"
+												styleClass="form-control"
+												pt:aria-label="#{msgs.metadata} #{msgs.wert}"
+												id="metadataValue">
+											</h:inputText>
+										</h:panelGroup>
+
+										<!-- PLUS AND MINUS BUTTONS -->
+										<div class="col-sm-1">
+											<button
+												jsf:action="#{SearchForm.addRow}"
+												title="#{msgs.conditionAdd}"
+												aria-label="#{msgs.conditionAdd}"
+												jsf:id="addCondition"
+												class="btn btn-primary fa fa-plus"
+												style="margin-right: 5px">
+												<f:passThroughAttribute
+													name="data-toggle"
+													value="tooltip" />
+											</button>
+											<button
+												jsf:action="#{SearchForm.deleteRow}"
+												title="#{msgs.conditionRemove}"
+												aria-label="#{msgs.conditionRemove}"
+												jsf:rendered="#{SearchForm.sizeOfRowList > 1}"
+												jsf:id="removeCondition"
+												class="btn btn-primary fa fa-minus">
+												<f:passThroughAttribute
+													name="data-toggle"
+													value="tooltip" />
+												<x:updateActionListener
+													property="#{SearchForm.currentRow}"
+													value="#{row}" />
+											</button>
+										<!-- // PLUS AND MINUS BUTTONS -->
+										
+										</div>
+									</div>
+								</x:dataList>
+								<!-- // LIST OF SEARCH ROWS -->
+
+
+								<!-- CHECK BOXES -->
+								<c:if
+									test="#{LoginForm.hasRole('Workflow_Processes_Show_Deactivated_Projects')}">
+									<intranda:formInputCheckBox
+										classRight="col-sm-9 focusableChild"
+										tabindex="-1"
+										id="showArchivedProjects"
+										label="#{msgs.showArchivedProjects}:"
+										field="#{ProzessverwaltungForm.showArchivedProjects}"
+										help="#{msgs.helpShowArchivedProjects}"
+										name="showArchivedProjectsname" />
+								</c:if>
+								<c:if
+									test="#{LoginForm.hasRole('Workflow_Processes_Show_Finished')}">
+									<intranda:formInputCheckBox
+										classRight="col-sm-9 focusableChild"
+										tabindex="-1"
+										id="showClosedProcesses"
+										label="#{msgs.showClosedProcesses}:"
+										field="#{ProzessverwaltungForm.showClosedProcesses}"
+										help="#{msgs.helpShowClosedProcesses}"
+										name="showClosedProcessesname" />
+								</c:if>
+								<!-- // CHECK BOXES -->
+
+
+								<!-- BUTTONS -->
+								<div class="form-actions">
+									<a
+										jsf:id="cancel"
+										class="btn btn-blank me-2"
+										jsf:immediate="true"
+										jsf:action="#{SearchForm.resetFilter}">
+										<h:outputText value="#{msgs.clear}" />
+									</a>
+
+									<button
+										class="btn btn-primary-400"
+										jsf:id="absenden"
+										type="submit"
+										jsf:action="#{SearchForm.createFilter}">
+										<i class="fa fa-search"></i>
+										<span>
+											<h:outputText value="#{msgs.search}" />
+										</span>
+									</button>
+								</div>
+								<!-- // BUTTONS -->
+
+							</intranda:box>
+							<!-- // SEARCH BOX -->
+							
+							
+						</h:form>
+
+					</div>
+				</div>
+
+			</c:if>
+		</main>
+	</ui:define>
 
 </ui:composition>

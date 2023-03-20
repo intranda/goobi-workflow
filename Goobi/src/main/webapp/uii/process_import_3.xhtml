@@ -1,10 +1,19 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-    <ui:param name="myPageTitle" value="#{msgs.MassImport}" />
+	<ui:param
+		name="myPageTitle"
+		value="#{msgs.MassImport}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
@@ -13,47 +22,47 @@
         <intranda:breadcrumb id="templateName" label="#{MassImportForm.template.titel}"  action="process_import_3" noSeparator="#{true}" />
     </ui:define>
 
-    <ui:define name="info">
-    </ui:define>
+	<ui:define name="content">
+		<h:form id="myform">
 
-    <ui:define name="content">
+			<main class="row">
+				<div class="col-12">
 
-        <h:form styleClass="form-horizontal form-bordered" id="nextStep">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="box box-color lightgrey box-bordered">
-                        <div class="box-title">
-                            <h3>
-                            	<i class="fa fa-tasks"></i>
-								<h:outputText value="#{msgs.nextStep}" />
-                            </h3>
-                        </div>
-                        <div class="box-content">
-                             <ul class="action-ul">
-                                <li class="action-li">
-                                    <button jsf:id="utid21" class="expandbutton" jsf:action="#{MassImportForm.downloadDocket}">
-                                        <span class="btn margin-right-10 fa fa-print fa-lg width-40" />
-                                        <h:outputText value="#{msgs.process_generateDocket}" />
-                                    </button>
-                                </li>
-                                <li class="action-li">
-                                    <button jsf:id="utid20" class="expandbutton" jsf:action="#{MassImportForm.Prepare}">
-                                        <span class="btn margin-right-10 fa fa-file-o fa-lg width-40" />
-                                        <h:outputText value="#{msgs.weiterenVorgangAnlegen}" />
-                                    </button>
+					<intranda:box
+						boxType="primary"
+						boxPadding="true"
+						icon="fa-tasks"
+						title="#{msgs.nextStep}">
 
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </h:form>
+						<!-- BUTTON TO DOWNLOAD DOCKET -->
+						<button
+							jsf:id="utid21"
+							jsf:action="#{MassImportForm.downloadDocket}"
+							class="btn d-block">
+							<i class="btn btn-blank fa fa-print" />
+							<span>
+								<h:outputText value="#{msgs.process_generateDocket}" />
+							</span>
+						</button>
 
-    </ui:define>
+						<!-- BUTTON TO CREATE ANOTHER PROCESS -->
+						<button
+							jsf:id="utid20"
+							jsf:action="#{MassImportForm.Prepare}"
+							class="btn d-block">
+							<i class="btn btn-blank fa fa-file-o" />
+							<span>
+								<h:outputText value="#{msgs.weiterenVorgangAnlegen}" />
+							</span>
+						</button>
+
+					</intranda:box>
+				</div>
+			</main>
+		</h:form>
+	</ui:define>
 
 </ui:composition>
-
 
 
 

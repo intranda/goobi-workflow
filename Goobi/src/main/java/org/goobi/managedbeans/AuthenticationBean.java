@@ -85,7 +85,7 @@ public class AuthenticationBean extends BasicBean implements Serializable {
 
     public String FilterKein() {
         LdapManager rm = new LdapManager();
-        paginator = new DatabasePaginator(sortierung, filter, rm, "ldap_all");
+        paginator = new DatabasePaginator(sortField, filter, rm, "ldap_all");
         return "ldap_all";
     }
 
