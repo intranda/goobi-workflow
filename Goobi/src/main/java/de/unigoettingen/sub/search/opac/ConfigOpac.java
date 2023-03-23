@@ -47,6 +47,32 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class ConfigOpac {
+
+    private static final String PARAMETER_TITLE = "[@title]";
+    private static final String PARAMETER_OPAC_TYPE = "[@opacType]";
+    private static final String PARAMETER_DESCRIPTION = "[@description]";
+    private static final String PARAMETER_ADDRESS = "[@address]";
+    private static final String PARAMETER_DATABASE = "[@database]";
+    private static final String PARAMETER_IKTLIST = "[@iktlist]";
+    private static final String PARAMETER_UCNF = "[@ucnf]";
+    private static final String PARAMETER_PORT = "[@port]";
+    private static final String PARAMETER_CHARSET = "[@charset]";
+    private static final String PARAMETER_PROTOCOL = "[@protocol]";
+    private static final String PARAMETER_TAG = "[@tag]";
+    private static final String PARAMETER_SUBTAG = "[@subtag]";
+    private static final String PARAMETER_VALUE = "[@value]";
+    private static final String PARAMETER_LABEL = "[@label]";
+    private static final String PARAMETER_TYPE = "[@type]";
+    private static final String PARAMETER_LANGUAGE = "[@language]";
+    private static final String PARAMETER_RULESET_TYPE = "[@rulesetType]";
+    private static final String PARAMETER_TIF_HEADER_TYPE = "[@tifHeaderType]";
+    private static final String PARAMETER_IS_PERIODICAL = "[@isPeriodical]";
+    private static final String PARAMETER_IS_MULTI_VOLUME = "[@isMultiVolume]";
+    private static final String PARAMETER_IS_CONTAINED_WORK = "[@isContainedWork]";
+    private static final String PARAMETER_RULESET_CHILD_TYPE = "[@rulesetChildType]";
+
+    private static final String DEFAULT_OPAC_TYPE = "PICA";
+
     private XMLConfiguration config;
     private static String configPfad;
 
@@ -60,15 +86,15 @@ public class ConfigOpac {
         if (!StorageProvider.getInstance().isFileExists(Paths.get(configPfad))) {
             throw new IOException("File not found: " + configPfad);
         }
-        config = new XMLConfiguration();
-        config.setDelimiterParsingDisabled(true);
+        this.config = new XMLConfiguration();
+        this.config.setDelimiterParsingDisabled(true);
         try {
-            config.load(configPfad);
+            this.config.load(configPfad);
         } catch (ConfigurationException e) {
             log.error(e);
         }
-        config.setListDelimiter('&');
-        config.setReloadingStrategy(new FileChangedReloadingStrategy());
+        this.config.setListDelimiter('&');
+        this.config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
         searchFieldMap.put("Identifier", "12");
         searchFieldMap.put("Barcode", "8535");
@@ -98,10 +124,12 @@ public class ConfigOpac {
 
     public List<ConfigOpacCatalogue> getAllCatalogues(String workflowName) {
         List<ConfigOpacCatalogue> answer = new ArrayList<>();
-        int countCatalogues = config.getMaxIndex("catalogue");
-        for (int i = 0; i <= countCatalogues; i++) {
-            String title = config.getString("catalogue(" + i + ")[@title]");
-            String opacType = config.getString("catalogue(" + i + ").config[@opacType]", "PICA");
+        int countCatalogues = this.config.getMaxIndex("catalogue");
+        for (int index = 0; index <= countCatalogues; index++) {
+            String catalogue = "catalogue(" + index + ")";
+            String configPrefix = catalogue + ".config";
+            String title = this.config.getString(catalogue + PARAMETER_TITLE);
+            String opacType = this.config.getString(configPrefix + PARAMETER_OPAC_TYPE, DEFAULT_OPAC_TYPE);
             IOpacPlugin opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, opacType);
             if (opacPlugin != null) {
                 answer.addAll(opacPlugin.getOpacConfiguration(workflowName, title));
@@ -111,53 +139,69 @@ public class ConfigOpac {
     }
 
     public ConfigOpacCatalogue getCatalogueByName(String inTitle) {
-        int countCatalogues = config.getMaxIndex("catalogue");
-        for (int i = 0; i <= countCatalogues; i++) {
-            String title = config.getString("catalogue(" + i + ")[@title]");
+        int countCatalogues = this.config.getMaxIndex("catalogue");
+        for (int index = 0; index <= countCatalogues; index++) {
+            String catalogue = "catalogue(" + index + ")";
+            String configPrefix = catalogue + ".config";
+            String title = this.config.getString(catalogue + PARAMETER_TITLE);
             if (title.equals(inTitle)) {
-                String description = config.getString("catalogue(" + i + ").config[@description]");
-                String address = config.getString("catalogue(" + i + ").config[@address]");
-                String database = config.getString("catalogue(" + i + ").config[@database]");
-                String iktlist = config.getString("catalogue(" + i + ").config[@iktlist]");
-                String cbs = config.getString("catalogue(" + i + ").config[@ucnf]", "");
+                String description = this.config.getString(configPrefix + PARAMETER_DESCRIPTION);
+                String address = this.config.getString(configPrefix + PARAMETER_ADDRESS);
+                String database = this.config.getString(configPrefix + PARAMETER_DATABASE);
+                String iktlist = this.config.getString(configPrefix + PARAMETER_IKTLIST);
+                String cbs = this.config.getString(configPrefix + PARAMETER_UCNF, "");
                 if (!cbs.equals("")) {
                     cbs = "&" + cbs;
                 }
-                int port = config.getInt("catalogue(" + i + ").config[@port]");
-                String charset = "iso-8859-1";
-                if (config.getString("catalogue(" + i + ").config[@charset]") != null) {
-                    charset = config.getString("catalogue(" + i + ").config[@charset]");
-                }
-                String protocol = "http://";
-                if (config.getString("catalogue(" + i + ").config[@protocol]") != null) {
-                    protocol = config.getString("catalogue(" + i + ").config[@protocol]");
+                int port = this.config.getInt(configPrefix + PARAMETER_PORT);
+
+                String charset = this.config.getString(configPrefix + PARAMETER_CHARSET);
+                if (charset == null) {
+                    charset = "iso-8859-1";
                 }
 
-                String opacType = config.getString("catalogue(" + i + ").config[@opacType]", "PICA");
+                String protocol = this.config.getString(configPrefix + PARAMETER_PROTOCOL);
+                if (protocol == null) {
+                    protocol = "http://";
+                }
+
+                String opacType = this.config.getString(configPrefix + PARAMETER_OPAC_TYPE, DEFAULT_OPAC_TYPE);
                 /* ---------------------
                  * Opac-Beautifier einlesen und in Liste zu jedem Catalogue packen
                  * -------------------*/
+                int numberOfBeautifiers = this.config.getMaxIndex(catalogue + ".beautify.setvalue");
                 List<ConfigOpacCatalogueBeautifier> beautyList = new ArrayList<>();
-                for (int j = 0; j <= config.getMaxIndex("catalogue(" + i + ").beautify.setvalue"); j++) {
+                for (int beautifierIndex = 0; beautifierIndex <= numberOfBeautifiers; beautifierIndex++) {
                     /* Element, dessen Wert geändert werden soll */
-                    String tempJ = "catalogue(" + i + ").beautify.setvalue(" + j + ")";
-                    ConfigOpacCatalogueBeautifierElement oteChange = new ConfigOpacCatalogueBeautifierElement(config.getString(tempJ + "[@tag]"),
-                            config.getString(tempJ + "[@subtag]"), config.getString(tempJ + "[@value]"));
+                    String beautifierPrefix = catalogue + ".beautify.setvalue(" + beautifierIndex + ")";
+                    String beautifierTag = this.config.getString(beautifierPrefix + PARAMETER_TAG);
+                    String beautifierSubtag = this.config.getString(beautifierPrefix + PARAMETER_SUBTAG);
+                    String beautifierValue = this.config.getString(beautifierPrefix + PARAMETER_VALUE);
+                    ConfigOpacCatalogueBeautifierElement oteChange;
+                    oteChange = new ConfigOpacCatalogueBeautifierElement(beautifierTag, beautifierSubtag, beautifierValue);
                     /* Elemente, die bestimmte Werte haben müssen, als Prüfung, ob das zu ändernde Element geändert werden soll */
                     List<ConfigOpacCatalogueBeautifierElement> proofElements = new ArrayList<>();
-                    for (int k = 0; k <= config.getMaxIndex(tempJ + ".condition"); k++) {
-                        String tempK = tempJ + ".condition(" + k + ")";
-                        ConfigOpacCatalogueBeautifierElement oteProof = new ConfigOpacCatalogueBeautifierElement(config.getString(tempK + "[@tag]"),
-                                config.getString(tempK + "[@subtag]"), config.getString(tempK + "[@value]"));
+                    int numberOfConditions = this.config.getMaxIndex(beautifierPrefix + ".condition");
+                    for (int conditionIndex = 0; conditionIndex <= numberOfConditions; conditionIndex++) {
+                        String conditionPrefix = beautifierPrefix + ".condition(" + conditionIndex + ")";
+                        String conditionTag = this.config.getString(conditionPrefix + PARAMETER_TAG);
+                        String conditionSubtag = this.config.getString(conditionPrefix + PARAMETER_SUBTAG);
+                        String conditionValue = this.config.getString(conditionPrefix + PARAMETER_VALUE);
+                        ConfigOpacCatalogueBeautifierElement oteProof;
+                        oteProof = new ConfigOpacCatalogueBeautifierElement(conditionTag, conditionSubtag, conditionValue);
                         proofElements.add(oteProof);
                     }
                     beautyList.add(new ConfigOpacCatalogueBeautifier(oteChange, proofElements));
                 }
 
+                String searchFieldTag = catalogue + ".searchFields.searchField";
+                int numberOfSearchFields = this.config.getMaxIndex(searchFieldTag);
                 Map<String, String> searchFields = new LinkedHashMap<>();
-                for (int j = 0; j <= config.getMaxIndex("catalogue(" + i + ").searchFields.searchField"); j++) {
-                    searchFields.put(config.getString("catalogue(" + i + ").searchFields.searchField(" + j + ")[@label]"),
-                            config.getString("catalogue(" + i + ").searchFields.searchField(" + j + ")[@value]"));
+                for (int fieldIndex = 0; fieldIndex <= numberOfSearchFields; fieldIndex++) {
+                    String prefix = searchFieldTag + "(" + fieldIndex + ")";
+                    String label = this.config.getString(prefix + PARAMETER_LABEL);
+                    String value = this.config.getString(prefix + PARAMETER_VALUE);
+                    searchFields.put(label, value);
                 }
 
                 if (searchFields.isEmpty()) {
@@ -175,9 +219,10 @@ public class ConfigOpac {
      */
     public List<String> getAllDoctypeTitles() {
         List<String> myList = new ArrayList<>();
-        int countTypes = config.getMaxIndex("doctypes.type");
-        for (int i = 0; i <= countTypes; i++) {
-            String title = config.getString("doctypes.type(" + i + ")[@title]");
+        String type = "doctypes.type";
+        int countTypes = this.config.getMaxIndex(type);
+        for (int index = 0; index <= countTypes; index++) {
+            String title = this.config.getString(type + "(" + index + ")" + PARAMETER_TITLE);
             myList.add(title);
         }
         return myList;
@@ -199,18 +244,20 @@ public class ConfigOpac {
      * ================================================================
      */
     public ConfigOpacDoctype getDoctypeByMapping(String inMapping, String inCatalogue) {
-        int countCatalogues = config.getMaxIndex("catalogue");
-        for (int i = 0; i <= countCatalogues; i++) {
-            String title = config.getString("catalogue(" + i + ")[@title]");
+        int countCatalogues = this.config.getMaxIndex("catalogue");
+        for (int index = 0; index <= countCatalogues; index++) {
+            String catalogue = "catalogue(" + index + ")";
+            String title = this.config.getString(catalogue + PARAMETER_TITLE);
             if (title.equals(inCatalogue)) {
                 /* ---------------------
                  * alle speziell gemappten DocTypes eines Kataloges einlesen
                  * -------------------*/
                 Map<String, String> labels = new HashMap<>();
-                int countLabels = config.getMaxIndex("catalogue(" + i + ").specialmapping");
+                String specialMapping = catalogue + ".specialmapping";
+                int countLabels = this.config.getMaxIndex(specialMapping);
                 for (int j = 0; j <= countLabels; j++) {
-                    String type = config.getString("catalogue(" + i + ").specialmapping[@type]");
-                    String value = config.getString("catalogue(" + i + ").specialmapping");
+                    String type = this.config.getString(specialMapping + PARAMETER_TYPE);
+                    String value = this.config.getString(specialMapping);
                     labels.put(value, type);
                 }
                 if (labels.containsKey(inMapping)) {
@@ -235,25 +282,27 @@ public class ConfigOpac {
      * get doctype from title ================================================================
      */
     public ConfigOpacDoctype getDoctypeByName(String inTitle) {
-        int countCatalogues = config.getMaxIndex("doctypes.type");
-        for (int i = 0; i <= countCatalogues; i++) {
-            String title = config.getString("doctypes.type(" + i + ")[@title]");
+        int countCatalogues = this.config.getMaxIndex("doctypes.type");
+        for (int index = 0; index <= countCatalogues; index++) {
+            String typePrefix = "doctypes.type(" + index + ")";
+            String title = this.config.getString(typePrefix + PARAMETER_TITLE);
             if (title.equals(inTitle)) {
                 /* Sprachen erfassen */
                 Map<String, String> labels = new HashMap<>();
-                int countLabels = config.getMaxIndex("doctypes.type(" + i + ").label");
-                for (int j = 0; j <= countLabels; j++) {
-                    String language = config.getString("doctypes.type(" + i + ").label(" + j + ")[@language]");
-                    String value = config.getString("doctypes.type(" + i + ").label(" + j + ")");
+                int countLabels = this.config.getMaxIndex(typePrefix + ".label");
+                for (int labelIndex = 0; labelIndex <= countLabels; labelIndex++) {
+                    String labelPrefix = typePrefix + ".label(" + labelIndex + ")";
+                    String language = this.config.getString(labelPrefix + PARAMETER_LANGUAGE);
+                    String value = this.config.getString(labelPrefix);
                     labels.put(language, value);
                 }
-                String inRulesetType = config.getString("doctypes.type(" + i + ")[@rulesetType]");
-                String inTifHeaderType = config.getString("doctypes.type(" + i + ")[@tifHeaderType]");
-                boolean periodical = config.getBoolean("doctypes.type(" + i + ")[@isPeriodical]");
-                boolean multiVolume = config.getBoolean("doctypes.type(" + i + ")[@isMultiVolume]");
-                boolean containedWork = config.getBoolean("doctypes.type(" + i + ")[@isContainedWork]");
-                List<String> mappings = Arrays.asList(config.getStringArray("doctypes.type(" + i + ").mapping"));
-                String rulesetChildType = config.getString("doctypes.type(" + i + ")[@rulesetChildType]");
+                String inRulesetType = this.config.getString(typePrefix + PARAMETER_RULESET_TYPE);
+                String inTifHeaderType = this.config.getString(typePrefix + PARAMETER_TIF_HEADER_TYPE);
+                boolean periodical = this.config.getBoolean(typePrefix + PARAMETER_IS_PERIODICAL);
+                boolean multiVolume = this.config.getBoolean(typePrefix + PARAMETER_IS_MULTI_VOLUME);
+                boolean containedWork = this.config.getBoolean(typePrefix + PARAMETER_IS_CONTAINED_WORK);
+                List<String> mappings = Arrays.asList(this.config.getStringArray(typePrefix + ".mapping"));
+                String rulesetChildType = this.config.getString(typePrefix + PARAMETER_RULESET_CHILD_TYPE);
                 return new ConfigOpacDoctype(inTitle, inRulesetType, inTifHeaderType, periodical, multiVolume, containedWork, labels,
                         mappings, rulesetChildType);
             }

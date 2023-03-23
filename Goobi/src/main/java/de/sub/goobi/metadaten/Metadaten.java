@@ -1526,25 +1526,32 @@ public class Metadaten implements Serializable {
     }
 
     private String readXmlAndBuildTree() {
-        /*
-         * re-reading the config for display rules
-         */
+
+        // Refreshing the configuration because the display rules may have changed
         ConfigDisplayRules.getInstance().refresh();
 
+        // Parameter names for request parameters
+        String parameterBack = "zurueck";
+        String parameterReadOnly = "nurLesen";
+        String parameterDiscardChanges = "discardChanges";
+        String parameterOverwriteChanges = "overwriteChanges";
+        String parameterProcessId = "ProzesseID";
+        String parameterUserId = "BenutzerID";
+
         try {
-            Integer id = Integer.valueOf(Helper.getRequestParameter("ProzesseID"));
+            Integer id = Integer.valueOf(Helper.getRequestParameter(parameterProcessId));
             this.myProzess = ProcessManager.getProcessById(id);
         } catch (NumberFormatException e1) {
             Helper.setFehlerMeldung("error while loading process data " + e1.getMessage());
             log.error(e1);
-            return Helper.getRequestParameter("zurueck");
+            return Helper.getRequestParameter(parameterBack);
         }
         processHasNewTemporaryMetadataFiles = false;
-        this.myBenutzerID = Helper.getRequestParameter("BenutzerID");
+        this.myBenutzerID = Helper.getRequestParameter(parameterUserId);
         this.pageSelectionFirstPage = "";
         this.pageSelectionLastPage = "";
-        this.zurueck = Helper.getRequestParameter("zurueck");
-        this.nurLesenModus = "true".equals(Helper.getRequestParameter("nurLesen"));
+        this.zurueck = Helper.getRequestParameter(parameterBack);
+        this.nurLesenModus = "true".equals(Helper.getRequestParameter(parameterReadOnly));
         this.neuesElementWohin = "4";
         this.tree3 = null;
         image = null;
@@ -1552,9 +1559,9 @@ public class Metadaten implements Serializable {
         dataList = null;
         treeProperties.put("showThumbnails", false);
         treeProperties.put("showOcr", false);
-        if ("true".equals(Helper.getRequestParameter("discardChanges"))) {
+        if ("true".equals(Helper.getRequestParameter(parameterDiscardChanges))) {
             myProzess.removeTemporaryMetadataFiles();
-        } else if ("true".equals(Helper.getRequestParameter("overwriteChanges"))) {
+        } else if ("true".equals(Helper.getRequestParameter(parameterOverwriteChanges))) {
             myProzess.overwriteMetadata();
             myProzess.removeTemporaryMetadataFiles();
         }
@@ -1566,10 +1573,10 @@ public class Metadaten implements Serializable {
             }
         } catch (SwapException e) {
             Helper.setFehlerMeldung(e);
-            return Helper.getRequestParameter("zurueck");
+            return Helper.getRequestParameter(parameterBack);
         } catch (ReadException | PreferencesException | IOException | DAOException e) {
             Helper.setFehlerMeldung("Error while loading metadata", e);
-            return Helper.getRequestParameter("zurueck");
+            return Helper.getRequestParameter(parameterBack);
         }
         getAddDocStructType2();
         createAddableData();

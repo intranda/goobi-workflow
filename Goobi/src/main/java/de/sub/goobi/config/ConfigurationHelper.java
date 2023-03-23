@@ -1004,6 +1004,11 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");
     }
 
+    /**
+     * The locking time is measured in milliseconds.
+     *
+     * @return The locking time in milliseconds
+     */
     public long getMetsEditorLockingTime() {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
     }

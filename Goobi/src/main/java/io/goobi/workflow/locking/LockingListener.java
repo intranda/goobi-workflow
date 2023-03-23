@@ -59,11 +59,13 @@ public class LockingListener implements ServletContextListener {
 
             FreeLockingJob goobiJob = new FreeLockingJob();
 
-            JobDetail jobDetail = JobBuilder.newJob(goobiJob.getClass()).withIdentity("FreeLockingJob", "FreeLockingJob").build();
+            String jobName = "FreeLockingJob";
+
+            JobDetail jobDetail = JobBuilder.newJob(goobiJob.getClass()).withIdentity(jobName, jobName).build();
 
             Trigger trigger =
                     TriggerBuilder.newTrigger()
-                            .withIdentity("FreeLockingJob", "FreeLockingJob")
+                            .withIdentity(jobName, jobName)
 
                             .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(30))
                             .startNow()

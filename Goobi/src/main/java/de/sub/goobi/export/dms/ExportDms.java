@@ -79,6 +79,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
     public static final String DIRECTORY_SUFFIX = "_media";
 
+    private static final String EXPORT_ERROR_PREFIX = "Export cancelled: ";
+
     public ExportDms() {
     }
 
@@ -113,6 +115,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             PreferencesException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException,
             SwapException, DAOException, TypeNotAllowedForParentException {
 
+        String errorMessageTitle = EXPORT_ERROR_PREFIX + "Process: " + myProzess.getTitel();
+
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
         String atsPpnBand = myProzess.getTitel();
 
@@ -146,12 +150,11 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 // replace {EXPORTFILE} keyword from configuration file
                 final String exportTag = "{EXPORTFILE}";
                 if (!command.contains(exportTag)) {
-                    Helper.setFehlerMeldung("Export cancelled, process: " + myProzess.getTitel(),
-                            "Export validation command does not contain required {EXPORTFILE} tag. Aborting export. Command:" + command);
-                    Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG,
-                            "Export validation command does not contain required {EXPORTFILE} tag. Aborting export. Command:" + command);
-                    log.warn("Export validation and export cancelled. No {EXPORTFILE} tag in command: " + command);
-                    problems.add("Export cancelled: malformed export validation command.");
+                    String details = "Export validation command does not contain required {EXPORTFILE} tag. Aborting export. Command: " + command;
+                    Helper.setFehlerMeldung(errorMessageTitle, details);
+                    Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, details);
+                    log.warn(EXPORT_ERROR_PREFIX + details);
+                    problems.add(EXPORT_ERROR_PREFIX + "Malformed export validation command.");
                     return false;
                 }
                 command = command.replace(exportTag, pathToGeneratedFile);
@@ -165,10 +168,10 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             newfile.setDigitalDocument(gdzfile.getDigitalDocument());
             gdzfile = newfile;
 
-        } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
-            Helper.setFehlerMeldung(Helper.getTranslation("exportError") + myProzess.getTitel(), e);
-            log.error("Export abgebrochen, xml-LeseFehler", e);
-            problems.add("Export cancelled: " + e.getMessage());
+        } catch (Exception exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            Helper.setFehlerMeldung(Helper.getTranslation("exportError") + myProzess.getTitel(), exception);
+            log.error("Export abgebrochen, xml-LeseFehler", exception);
+            problems.add(EXPORT_ERROR_PREFIX + exception.getMessage());
             return false;
         }
 
@@ -182,7 +185,9 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         if (ConfigurationHelper.getInstance().isUseMetadataValidation()) {
             MetadatenVerifizierung mv = new MetadatenVerifizierung();
             if (!mv.validate(gdzfile, this.myPrefs, myProzess)) {
-                problems.add("Export cancelled because of validation errors");
+                String errorDetails = "The metadata could not be validated successfully.";
+                Helper.setFehlerMeldung(errorMessageTitle, errorDetails);
+                problems.add(EXPORT_ERROR_PREFIX + errorDetails);
                 problems.addAll(mv.getProblems());
                 return false;
             }
@@ -202,10 +207,12 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             if (myProzess.getProjekt().isDmsImportCreateProcessFolder()) {
                 benutzerHome = Paths.get(benutzerHome.toString(), myProzess.getTitel());
                 zielVerzeichnis = benutzerHome.toString();
+
                 /* alte Import-Ordner löschen */
                 if (!StorageProvider.getInstance().deleteDir(benutzerHome)) {
-                    Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Import folder could not be cleared");
-                    problems.add("Export cancelled: Import folder could not be cleared.");
+                    String errorDetails = "Import folder could not be cleared.";
+                    Helper.setFehlerMeldung(errorMessageTitle, errorDetails);
+                    problems.add(EXPORT_ERROR_PREFIX + errorDetails);
                     return false;
                 }
                 /* alte Success-Ordner löschen */
@@ -213,8 +220,9 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 successPath = replacer.replace(successPath);
                 Path successFile = Paths.get(successPath, myProzess.getTitel());
                 if (!StorageProvider.getInstance().deleteDir(successFile)) {
-                    Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Success folder could not be cleared");
-                    problems.add("Export cancelled: Success folder could not be cleared.");
+                    String errorDetails = "Success folder could not be cleared.";
+                    Helper.setFehlerMeldung(errorMessageTitle, errorDetails);
+                    problems.add(EXPORT_ERROR_PREFIX + errorDetails);
                     return false;
                 }
                 /* alte Error-Ordner löschen */
@@ -222,8 +230,9 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 importPath = replacer.replace(importPath);
                 Path errorfile = Paths.get(importPath, myProzess.getTitel());
                 if (!StorageProvider.getInstance().deleteDir(errorfile)) {
-                    Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Error folder could not be cleared");
-                    problems.add("Export cancelled: Error folder could not be cleared.");
+                    String errorDetails = "Error folder could not be cleared.";
+                    Helper.setFehlerMeldung(errorMessageTitle, errorDetails);
+                    problems.add(EXPORT_ERROR_PREFIX + errorDetails);
                     return false;
                 }
 
@@ -238,8 +247,9 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             // wenn das Home existiert, erst löschen und dann neu anlegen
             benutzerHome = Paths.get(zielVerzeichnis);
             if (!StorageProvider.getInstance().deleteDir(benutzerHome)) {
-                Helper.setFehlerMeldung("Export canceled: " + myProzess.getTitel(), "Could not delete home directory");
-                problems.add("Export cancelled: Could not delete home directory.");
+                String errorDetails = "Could not delete home directory.";
+                Helper.setFehlerMeldung(errorMessageTitle, errorDetails);
+                problems.add(EXPORT_ERROR_PREFIX + errorDetails);
                 return false;
             }
             prepareUserDirectory(zielVerzeichnis);
@@ -287,13 +297,14 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
                 }
             }
-        } catch (AccessDeniedException e) {
-            Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Access to " + e.getMessage() + " was denied");
-            problems.add("Export cancelled: Access to " + e.getMessage() + " was denied");
+        } catch (AccessDeniedException exception) {
+            String errorDetails = "Access to " + exception.getMessage() + " was denied.";
+            Helper.setFehlerMeldung(errorMessageTitle, errorDetails);
+            problems.add(EXPORT_ERROR_PREFIX + errorDetails);
             return false;
-        } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
-            Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), e);
-            problems.add("Export cancelled: " + e.getMessage());
+        } catch (Exception exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            Helper.setFehlerMeldung(errorMessageTitle, exception);
+            problems.add(EXPORT_ERROR_PREFIX + exception.getMessage());
             return false;
         }
 
@@ -372,17 +383,26 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             if (exitVal == 0 && errorStreamAsString.isBlank()) {
                 Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
             } else {
-                Helper.setFehlerMeldung("Export cancelled, XML Validation error for process: " + myProzess.getTitel(), exitVal.toString());
-                Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "XML Validation error when executing: " + command);
-                log.error("Export cancelled, XML Validation error for command: " + command);
-                problems.add("Export cancelled XML Validation tool reports errorcode: " + exitVal.toString());
+                StringBuffer errorMessage = new StringBuffer();
+                errorMessage.append("XML validation error for process \"");
+                errorMessage.append(myProzess.getTitel());
+                errorMessage.append("\" with validation command: \"");
+                errorMessage.append(command);
+                errorMessage.append("\", exit code was: ");
+                errorMessage.append(exitVal.toString());
+                String errorDetails = errorMessage.toString();
+                Helper.setFehlerMeldung(EXPORT_ERROR_PREFIX + errorDetails, exitVal.toString());
+                Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, errorDetails);
+                log.error(EXPORT_ERROR_PREFIX + errorDetails);
+                problems.add(EXPORT_ERROR_PREFIX + errorDetails);
                 return false;
             }
         } catch (java.io.IOException e) {
-            Helper.setFehlerMeldung("Export cancelled, XML Validation command could not be found. Command: " + command);
-            Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "XML Validation command not found: " + command);
-            log.error("Export cancelled, XML validation error. Command not found: " + command);
-            problems.add("Export cancelled XML validation tool could not be found. Command: " + command);
+            String errorDetails = "XML validation command could not be found. Command: " + command;
+            Helper.setFehlerMeldung(EXPORT_ERROR_PREFIX + errorDetails);
+            Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, errorDetails);
+            log.error(EXPORT_ERROR_PREFIX + errorDetails);
+            problems.add(EXPORT_ERROR_PREFIX + errorDetails);
             return false;
         } finally {
             // delete the now no longer required generated .xml
@@ -481,9 +501,10 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     } else {
                         FilesystemHelper.createDirectoryForUser(zielTif.toString(), myBenutzer.getLogin());
                     }
-                } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
-                    Helper.setFehlerMeldung("Export canceled, error", "could not create destination directory");
-                    log.error("could not create destination directory", e);
+                } catch (Exception exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+                    String errorDetails = "Could not create destination directory.";
+                    Helper.setFehlerMeldung(EXPORT_ERROR_PREFIX + "Error", errorDetails);
+                    log.error(errorDetails, exception);
                 }
             }
 

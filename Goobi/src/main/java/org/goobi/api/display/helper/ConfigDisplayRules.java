@@ -295,7 +295,7 @@ public final class ConfigDisplayRules {
         Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(projectTitle);
         if (itemsByType.isEmpty()) {
             if ("*".equals(projectTitle)) {
-                values.add(new Item(projectTitle, "", false, "", ""));
+                values.add(new Item(projectTitle));
 
             } else {
                 return getItemsByNameAndType("*", projectTitle, displayType);
@@ -307,13 +307,13 @@ public final class ConfigDisplayRules {
                 values = typeList.get(elementName);
 
             } else if ("*".equals(projectTitle)) {
-                values.add(new Item(projectTitle, "", false, "", ""));
+                values.add(new Item(projectTitle));
             } else {
                 return getElementsForMetadata("*", displayType, elementName);
             }
 
         } else if ("*".equals(projectTitle)) {
-            values.add(new Item(projectTitle, "", false, "", ""));
+            values.add(new Item(projectTitle));
         } else {
             return getElementsForMetadata("*", displayType, elementName);
         }
@@ -326,7 +326,7 @@ public final class ConfigDisplayRules {
             if (this.allValues.isEmpty() && config != null) {
                 getDisplayItems();
             } else if (config == null) {
-                values.add(new Item(myelementName, "", false, "", ""));
+                values.add(new Item(myelementName));
                 return values;
             }
             if (allValues.containsKey(myproject)) {
@@ -334,7 +334,7 @@ public final class ConfigDisplayRules {
             } else if (allValues.containsKey("*")) {
                 values.addAll(getElementsForMetadata("*", mydisplayType, myelementName));
             } else {
-                values.add(new Item(myelementName, "", false, "", ""));
+                values.add(new Item(myelementName));
             }
         }
         return values;

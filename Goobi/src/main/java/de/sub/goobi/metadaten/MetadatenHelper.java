@@ -95,6 +95,8 @@ public class MetadatenHelper implements Comparator<Object> {
     public DocStruct ChangeCurrentDocstructType(DocStruct inOldDocstruct, String inNewType)
             throws DocStructHasNoTypeException, MetadataTypeNotAllowedException, TypeNotAllowedAsChildException, TypeNotAllowedForParentException {
 
+        String isNotAllowedInNewElement = " is not allowed in new element ";
+
         DocStructType dst = this.myPrefs.getDocStrctTypeByName(inNewType);
         DocStruct newDocstruct = this.mydocument.createDocStruct(dst);
         /*
@@ -103,7 +105,7 @@ public class MetadatenHelper implements Comparator<Object> {
         if (inOldDocstruct.getAllMetadata() != null && !inOldDocstruct.getAllMetadata().isEmpty()) {
             for (Metadata old : inOldDocstruct.getAllMetadata()) {
                 boolean match = false;
-                String error = "Metadata " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
+                String error = "Metadata " + old.getType().getName() + isNotAllowedInNewElement + newDocstruct.getType().getName();
                 if (old.getValue() != null && !old.getValue().isEmpty()) {
                     if (newDocstruct.getAddableMetadataTypes(true) != null && !newDocstruct.getAddableMetadataTypes(true).isEmpty()) {
                         for (MetadataType mt : newDocstruct.getAddableMetadataTypes(true)) {
@@ -136,7 +138,7 @@ public class MetadatenHelper implements Comparator<Object> {
         if (inOldDocstruct.getAllPersons() != null && !inOldDocstruct.getAllPersons().isEmpty()) {
             for (Person old : inOldDocstruct.getAllPersons()) {
                 boolean match = false;
-                String error = "Person " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
+                String error = "Person " + old.getType().getName() + isNotAllowedInNewElement + newDocstruct.getType().getName();
                 if ((old.getFirstname() != null && !old.getFirstname().isEmpty()) || (old.getLastname() != null && !old.getLastname().isEmpty())) {
 
                     if (newDocstruct.getAddableMetadataTypes(true) != null && !newDocstruct.getAddableMetadataTypes(true).isEmpty()) {
@@ -161,7 +163,7 @@ public class MetadatenHelper implements Comparator<Object> {
         if (inOldDocstruct.getAllMetadataGroups() != null && !inOldDocstruct.getAllMetadataGroups().isEmpty()) {
             for (MetadataGroup mg : inOldDocstruct.getAllMetadataGroups()) {
                 boolean match = false;
-                String error = "Person " + mg.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
+                String error = "Person " + mg.getType().getName() + isNotAllowedInNewElement + newDocstruct.getType().getName();
                 if (newDocstruct.getPossibleMetadataGroupTypes() != null && !newDocstruct.getPossibleMetadataGroupTypes().isEmpty()) {
                     for (MetadataGroupType mgt : newDocstruct.getPossibleMetadataGroupTypes()) {
                         if (mgt.getName().equals(mg.getType().getName())) {
@@ -197,7 +199,7 @@ public class MetadatenHelper implements Comparator<Object> {
          */
         if (inOldDocstruct.getAllChildren() != null && !inOldDocstruct.getAllChildren().isEmpty()) {
             for (DocStruct old : inOldDocstruct.getAllChildren()) {
-                String error = "Child element " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
+                String error = "Child element " + old.getType().getName() + isNotAllowedInNewElement + newDocstruct.getType().getName();
                 if (newDocstruct.getType().getAllAllowedDocStructTypes() != null && !newDocstruct.getType().getAllAllowedDocStructTypes().isEmpty()) {
 
                     if (!newDocstruct.getType().getAllAllowedDocStructTypes().contains(old.getType().getName())) {

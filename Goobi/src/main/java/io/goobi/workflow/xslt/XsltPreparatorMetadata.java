@@ -65,7 +65,7 @@ import ugh.dl.Prefs;
  */
 @Log4j2
 public class XsltPreparatorMetadata implements IXsltPreparator {
-    private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+    private static Namespace xmlns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
 
     private MetadatenHelper metahelper;
     private Prefs prefs;
@@ -125,54 +125,55 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
      */
     public Document createDocument(Process process, boolean addNamespace) {
 
-        Element mainElement = new Element("process");
+        Element mainElement = new Element(XsltPreparatorDocket.ELEMENT_PROCESS);
         Document doc = new Document(mainElement);
 
-        mainElement.setAttribute("processID", String.valueOf(process.getId()));
+        mainElement.setAttribute(XsltPreparatorDocket.ATTRIBUTE_PROCESS_ID, String.valueOf(process.getId()));
 
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+        Namespace xmlns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
         mainElement.setNamespace(xmlns);
         // namespace declaration
         if (addNamespace) {
-            Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            Namespace xsi = Namespace.getNamespace(XsltPreparatorDocket.NAMESPACE_XSI, XsltPreparatorDocket.FILE_SCHEMA);
             mainElement.addNamespaceDeclaration(xsi);
-            Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
+            Attribute attSchema = new Attribute(XsltPreparatorDocket.ATTRIBUTE_SCHEMA_LOCATION,
+                    XsltPreparatorDocket.FILE_LOG + " " + XsltPreparatorDocket.XSD_ENDING, xsi);
             mainElement.setAttribute(attSchema);
         }
 
         // process information
-        Element processTitle = new Element("title", xmlns);
+        Element processTitle = new Element(XsltPreparatorDocket.ELEMENT_TITLE, xmlns);
         processTitle.setText(process.getTitel());
         mainElement.addContent(processTitle);
 
-        Element project = new Element("project", xmlns);
+        Element project = new Element(XsltPreparatorDocket.ELEMENT_PROJECT, xmlns);
         project.setText(process.getProjekt().getTitel());
         mainElement.addContent(project);
 
-        Element date = new Element("creationDate", xmlns);
+        Element date = new Element(XsltPreparatorDocket.ELEMENT_CREATION_DATE, xmlns);
         date.setText(String.valueOf(process.getErstellungsdatum()));
         mainElement.addContent(date);
 
-        Element pdfdate = new Element("pdfGenerationDate", xmlns);
+        Element pdfdate = new Element(XsltPreparatorDocket.ELEMENT_PDF_GENERATION_DATE, xmlns);
         pdfdate.setText(String.valueOf(new Date()));
         mainElement.addContent(pdfdate);
 
-        Element ruleset = new Element("ruleset", xmlns);
+        Element ruleset = new Element(XsltPreparatorDocket.ELEMENT_RULESET, xmlns);
         ruleset.setText(process.getRegelsatz().getDatei());
         mainElement.addContent(ruleset);
 
         try {
-            Element representative = new Element("representative", xmlns);
+            Element representative = new Element(XsltPreparatorDocket.ELEMENT_REPRESENTATIVE, xmlns);
             Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
             String folderName;
             if (process.getImagesTifDirectory(true).equals(repImagePath.getParent().toString() + "/")) {
-                folderName = "media";
+                folderName = XsltPreparatorDocket.FOLDER_MEDIA;
             } else {
-                folderName = "master";
+                folderName = XsltPreparatorDocket.FOLDER_MASTER;
             }
             Image repimage = new Image(process, folderName, repImagePath.getFileName().toString(), 0, 3000);
-            representative.setAttribute("path", process.getRepresentativeImageAsString());
-            representative.setAttribute("url", repimage.getThumbnailUrl());
+            representative.setAttribute(XsltPreparatorDocket.ATTRIBUTE_PATH, process.getRepresentativeImageAsString());
+            representative.setAttribute(XsltPreparatorDocket.ATTRIBUTE_URL, repimage.getThumbnailUrl());
             mainElement.addContent(representative);
         } catch (IOException | DAOException | SwapException e1) {
             log.error("Error added the representative to the metadata docket", e1);
@@ -200,15 +201,15 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
      * @param parentNode the parent node where to add the subnodes to
      */
     private void addMetadataAndChildElements(DocStruct parentStruct, Element parentNode) {
-        Element node = new Element("node", xmlns);
-        node.setAttribute("type", parentStruct.getType().getNameByLanguage(Helper.getMetadataLanguage()));
+        Element node = new Element(XsltPreparatorDocket.ELEMENT_NODE, xmlns);
+        node.setAttribute(XsltPreparatorDocket.ATTRIBUTE_TYPE, parentStruct.getType().getNameByLanguage(Helper.getMetadataLanguage()));
 
         addPersonElements(parentStruct, node);
         if (parentStruct.getAllMetadata() != null) {
             for (Metadata md : parentStruct.getAllMetadata()) {
                 if (md.getValue() != null && md.getValue().length() > 0) {
-                    Element metadata = new Element("metadata", xmlns);
-                    metadata.setAttribute("name", md.getType().getNameByLanguage(Helper.getMetadataLanguage()));
+                    Element metadata = new Element(XsltPreparatorDocket.ELEMENT_METADATA, xmlns);
+                    metadata.setAttribute(XsltPreparatorDocket.ATTRIBUTE_NAME, md.getType().getNameByLanguage(Helper.getMetadataLanguage()));
                     metadata.addContent(md.getValue());
                     node.addContent(metadata);
                 }
@@ -220,13 +221,13 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
         MutablePair<String, String> last = this.metahelper.getImageNumber(parentStruct, MetadatenHelper.PAGENUMBER_LAST);
 
         if (first != null) {
-            Element mdPages = new Element("metadata", xmlns);
-            mdPages.setAttribute("name", Helper.getTranslation("Pages"));
+            Element mdPages = new Element(XsltPreparatorDocket.ELEMENT_METADATA, xmlns);
+            mdPages.setAttribute(XsltPreparatorDocket.ATTRIBUTE_NAME, Helper.getTranslation("Pages"));
             mdPages.addContent(first.getRight() + " - " + last.getRight());
             node.addContent(mdPages);
 
-            Element mdImages = new Element("metadata", xmlns);
-            mdImages.setAttribute("name", Helper.getTranslation("Images"));
+            Element mdImages = new Element(XsltPreparatorDocket.ELEMENT_METADATA, xmlns);
+            mdImages.setAttribute(XsltPreparatorDocket.ATTRIBUTE_NAME, Helper.getTranslation("Images"));
             mdImages.addContent(first.getLeft() + " - " + last.getLeft());
             node.addContent(mdImages);
         }
@@ -249,19 +250,19 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
     private void addPersonElements(DocStruct parentStruct, Element parentNode) {
         if (parentStruct.getAllPersons() != null) {
             for (Person p : parentStruct.getAllPersons()) {
-                Element pele = new Element("person", xmlns);
-                pele.setAttribute("role", p.getType().getNameByLanguage(Helper.getMetadataLanguage()));
+                Element pele = new Element(XsltPreparatorDocket.ELEMENT_PERSON, xmlns);
+                pele.setAttribute(XsltPreparatorDocket.ATTRIBUTE_ROLE, p.getType().getNameByLanguage(Helper.getMetadataLanguage()));
                 if (p.getFirstname() != null) {
-                    pele.setAttribute("firstname", p.getFirstname());
+                    pele.setAttribute(XsltPreparatorDocket.ATTRIBUTE_FIRSTNAME, p.getFirstname());
                 }
                 if (p.getLastname() != null) {
-                    pele.setAttribute("lastname", p.getLastname());
+                    pele.setAttribute(XsltPreparatorDocket.ATTRIBUTE_LASTNAME, p.getLastname());
                 }
                 if (p.getAuthorityURI() != null) {
-                    pele.setAttribute("uri", p.getAuthorityURI());
+                    pele.setAttribute(XsltPreparatorDocket.ATTRIBUTE_URI, p.getAuthorityURI());
                 }
                 if (p.getAuthorityValue() != null) {
-                    pele.setAttribute("id", p.getAuthorityValue());
+                    pele.setAttribute(XsltPreparatorDocket.ATTRIBUTE_ID, p.getAuthorityValue());
                 }
                 parentNode.addContent(pele);
             }
@@ -277,14 +278,15 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
      */
     public void startExport(List<Process> processList, OutputStream outputStream, String xslt) {
         Document answer = new Document();
-        Element root = new Element("processes");
+        Element root = new Element(XsltPreparatorDocket.ELEMENT_PROCESSES);
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+        Namespace xmlns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
 
-        Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        Namespace xsi = Namespace.getNamespace(XsltPreparatorDocket.NAMESPACE_XSI, XsltPreparatorDocket.FILE_SCHEMA);
         root.addNamespaceDeclaration(xsi);
         root.setNamespace(xmlns);
-        Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
+        Attribute attSchema = new Attribute(XsltPreparatorDocket.ATTRIBUTE_SCHEMA_LOCATION,
+                XsltPreparatorDocket.FILE_LOG + " " + XsltPreparatorDocket.XSD_ENDING, xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {
             Document doc = createDocument(p, false);
