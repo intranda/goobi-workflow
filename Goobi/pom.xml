@@ -1399,6 +1399,19 @@
   			<artifactId>threeten-extra</artifactId>
   			<version>1.7.2</version>
 		</dependency>
+		
+		<!-- needed for libsafe ingest -->
+        <dependency>
+            <groupId>gov.loc</groupId>
+            <artifactId>bagit</artifactId>
+            <version>5.2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>		
     </dependencies>
 
 
