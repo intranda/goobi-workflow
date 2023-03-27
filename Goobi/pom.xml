@@ -1443,8 +1443,6 @@
                                 <!-- goobi-plugin-step-barcode-scanner -->
                                 <ignoredUnusedDeclaredDependency>com.google.zxing:core</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>com.google.zxing:javase</ignoredUnusedDeclaredDependency>
-                                <!-- libsafe ingest -->
-                                <ignoredUnusedDeclaredDependency>gov.loc:bagit</ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>
