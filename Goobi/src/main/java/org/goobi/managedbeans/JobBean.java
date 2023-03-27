@@ -56,6 +56,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.reflections.Reflections;
 
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.BackgroundJobManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -154,8 +155,10 @@ public class JobBean extends BasicBean implements Serializable {
             }
         } catch (SchedulerException e) {
             log.error(e);
+            Helper.setFehlerMeldung("jobs_pause_all_error", e);
         }
         paused = true;
+        Helper.setMeldung("jobs_pause_all_successful");
     }
 
     public void resumeAllJobs() {
@@ -166,16 +169,20 @@ public class JobBean extends BasicBean implements Serializable {
             }
         } catch (SchedulerException e) {
             log.error(e);
+            Helper.setFehlerMeldung("jobs_resume_all_error", e);
         }
         paused = false;
+        Helper.setMeldung("jobs_resume_all_successful");
     }
 
     public void pauseJob() {
         try {
             scheduler.pauseJob(quartzJobDetails.getJobKey());
             quartzJobDetails.setPaused(true);
+            Helper.setMeldung("jobs_pause_successful");
         } catch (SchedulerException e) {
             log.error(e);
+            Helper.setFehlerMeldung("jobs_pause_error", e);
         }
     }
 
@@ -183,8 +190,10 @@ public class JobBean extends BasicBean implements Serializable {
         try {
             scheduler.resumeJob(quartzJobDetails.getJobKey());
             quartzJobDetails.setPaused(false);
+            Helper.setMeldung("jobs_resume_successful");
         } catch (SchedulerException e) {
             log.error(e);
+            Helper.setFehlerMeldung("jobs_resume_error", e);
         }
     }
 
@@ -206,9 +215,10 @@ public class JobBean extends BasicBean implements Serializable {
                 scheduler.scheduleJob(jobDetail, trigger);
                 init();
             }
-
+            Helper.setMeldung("jobs_trigger_successful");
         } catch (SchedulerException e) {
             log.error(e);
+            Helper.setFehlerMeldung("jobs_trigger_error", e);
         }
     }
 
