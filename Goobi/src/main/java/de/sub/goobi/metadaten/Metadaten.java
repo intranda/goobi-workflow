@@ -481,6 +481,8 @@ public class Metadaten implements Serializable {
     private transient PageAreaManager pageAreaManager;
 
     private transient ImageCommentHelper commentHelper;
+    private ImageCommentPropertyHelper commentPropertyHelper;
+
     //this is set whenever setImage() is called.
     @Getter
     private boolean showImageComments = false;
@@ -5087,6 +5089,42 @@ public class Metadaten implements Serializable {
             }
         }
     }
+
+    // =========================== Use ImageCommentPropertyHelper Instead =========================== //
+
+    private ImageCommentPropertyHelper getCommentPropertyHelper() {
+        if (commentPropertyHelper == null) {
+            commentPropertyHelper = new ImageCommentPropertyHelper(myProzess);
+        }
+
+        return commentPropertyHelper;
+    }
+
+    public String getCommentPropertyForImage() {
+        if (myProzess == null || getImage() == null) {
+            return null;
+        }
+
+        String folderType = this.imageFolderName.endsWith("master") ? "master" : "media";
+        return getCommentPropertyHelper().getComment(folderType, getImage().getImageName());
+    }
+
+    public void setCommentPropertyForImage(String comment) {
+        if (myProzess == null || getImage() == null) {
+            return;
+        }
+
+        // only save new log entry if the comment has changed
+        String oldComment = getCommentPropertyForImage();
+        if (comment == null || (oldComment != null && comment.contentEquals(oldComment)) || (oldComment == null && comment.isBlank())) {
+            return;
+        }
+
+        String folderType = this.imageFolderName.endsWith("master") ? "master" : "media";
+        getCommentPropertyHelper().setComment(folderType, getImage().getImageName(), comment);
+    }
+
+    // =========================== Use ImageCommentPropertyHelper Instead =========================== //
 
     private ImageCommentHelper getCommentHelper() {
 
