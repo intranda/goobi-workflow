@@ -48,6 +48,22 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public final class ConfigDisplayRules {
 
+    private static final String PARAMETER_PROJECT_NAME = "@projectName";
+    private static final String PARAMETER_REF = "@ref";
+    private static final String PARAMETER_SELECTED = "@selected";
+    private static final String FIELD_CONDITION = "condition";
+    private static final String FIELD_ITEM = "item";
+    private static final String FIELD_TYPE = "type";
+    private static final String FIELD_FIELD = "field";
+    private static final String FIELD_SOURCE = "source";
+    private static final String FIELD_LABEL = "label";
+    private static final String FIELD_VALUE = "value";
+    private static final String FIELD_REGULAR_EXPRESSION = "regularExpression";
+    private static final String FIELD_REPLACEMENT = "replacement";
+    private static final String FIELD_INPUT = "input";
+
+    private static final String ALL = "*";
+
     @Getter
     private static ConfigDisplayRules instance = new ConfigDisplayRules();
     private static XMLConfiguration config;
@@ -88,32 +104,32 @@ public final class ConfigDisplayRules {
             List<HierarchicalConfiguration> sub = config.configurationsAt("ruleSet/context");
             for (HierarchicalConfiguration hc : sub) {
 
-                String projectName = hc.getString("@projectName");
+                String projectName = hc.getString(PARAMETER_PROJECT_NAME);
 
                 for (DisplayType type : DisplayType.values()) {
                     List<HierarchicalConfiguration> entries = hc.configurationsAt(type.name());
                     if (entries != null) {
                         for (HierarchicalConfiguration metadataConfiguration : entries) {
-                            String metadataName = metadataConfiguration.getString("@ref");
+                            String metadataName = metadataConfiguration.getString(PARAMETER_REF);
 
                             if (type == DisplayType.generate) {
-                                String condition = metadataConfiguration.getString("condition");
-                                String defaultValue = metadataConfiguration.getString("value", "");
+                                String condition = metadataConfiguration.getString(FIELD_CONDITION);
+                                String defaultValue = metadataConfiguration.getString(FIELD_VALUE, "");
 
                                 MetadataGeneration mg = new MetadataGeneration();
                                 mg.setCondition(condition);
                                 mg.setDefaultValue(defaultValue);
 
-                                List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
+                                List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt(FIELD_ITEM);
 
                                 if (items != null && !items.isEmpty()) {
                                     for (HierarchicalConfiguration item : items) {
 
-                                        String parameterName = item.getString("label");
-                                        String parameterType = item.getString("type");
-                                        String field = item.getString("field");
-                                        String regularExpression = item.getString("regularExpression");
-                                        String replacement = item.getString("replacement");
+                                        String parameterName = item.getString(FIELD_LABEL);
+                                        String parameterType = item.getString(FIELD_TYPE);
+                                        String field = item.getString(FIELD_FIELD);
+                                        String regularExpression = item.getString(FIELD_REGULAR_EXPRESSION);
+                                        String replacement = item.getString(FIELD_REPLACEMENT);
                                         MetadataGenerationParameter param = mg.new MetadataGenerationParameter();
                                         param.setParameterName(parameterName);
                                         param.setType(parameterType);
@@ -156,21 +172,21 @@ public final class ConfigDisplayRules {
 
                             } else {
 
-                                List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
+                                List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt(FIELD_ITEM);
                                 List<Item> listOfItems = new ArrayList<>();
                                 if (items != null && !items.isEmpty()) {
-                                    String source = metadataConfiguration.getString("source", "");
-                                    String field = metadataConfiguration.getString("field", "");
+                                    String source = metadataConfiguration.getString(FIELD_SOURCE, "");
+                                    String field = metadataConfiguration.getString(FIELD_FIELD, "");
                                     for (HierarchicalConfiguration item : items) {
-                                        Item myItem = new Item(item.getString("label", ""), item.getString("value", ""),
-                                                item.getBoolean("@selected", false),
+                                        Item myItem = new Item(item.getString(FIELD_LABEL, ""), item.getString(FIELD_VALUE, ""),
+                                                item.getBoolean(PARAMETER_SELECTED, false),
                                                 source, field);
                                         listOfItems.add(myItem);
                                     }
                                 } else {
-                                    String defaultValue = metadataConfiguration.getString("label", "");
-                                    Item myItem = new Item(defaultValue, defaultValue, true, metadataConfiguration.getString("source", ""),
-                                            metadataConfiguration.getString("field", ""));
+                                    String defaultValue = metadataConfiguration.getString(FIELD_LABEL, "");
+                                    Item myItem = new Item(defaultValue, defaultValue, true, metadataConfiguration.getString(FIELD_SOURCE, ""),
+                                            metadataConfiguration.getString(FIELD_FIELD, ""));
                                     listOfItems.add(myItem);
                                 }
                                 if (allValues.containsKey(projectName)) {
@@ -229,10 +245,10 @@ public final class ConfigDisplayRules {
                     }
                 }
                 // finally add it as input text field
-                Map<String, List<Item>> typeList = itemsByType.get("input");
+                Map<String, List<Item>> typeList = itemsByType.get(FIELD_INPUT);
                 if (typeList == null) {
                     typeList = new HashMap<>();
-                    itemsByType.put("input", typeList);
+                    itemsByType.put(FIELD_INPUT, typeList);
                 }
                 typeList.put(myelementName, Collections.emptyList());
 
@@ -257,10 +273,10 @@ public final class ConfigDisplayRules {
             }
             Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(myproject);
             if (itemsByType == null) {
-                if ("*".equals(myproject)) {
+                if (ALL.equals(myproject)) {
                     return DisplayType.input;
                 } else {
-                    return getElementTypeByName("*", myelementName);
+                    return getElementTypeByName(ALL, myelementName);
                 }
             }
             Set<String> itemTypes = itemsByType.keySet();
@@ -275,10 +291,10 @@ public final class ConfigDisplayRules {
             }
         }
 
-        if ("*".equals(myproject)) {
+        if (ALL.equals(myproject)) {
             return DisplayType.input;
         } else {
-            return getElementTypeByName("*", myelementName);
+            return getElementTypeByName(ALL, myelementName);
         }
     }
 
@@ -294,11 +310,11 @@ public final class ConfigDisplayRules {
         List<Item> values = new ArrayList<>();
         Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(projectTitle);
         if (itemsByType.isEmpty()) {
-            if ("*".equals(projectTitle)) {
+            if (ALL.equals(projectTitle)) {
                 values.add(new Item(projectTitle));
 
             } else {
-                return getItemsByNameAndType("*", projectTitle, displayType);
+                return getItemsByNameAndType(ALL, projectTitle, displayType);
             }
         }
         if (itemsByType.containsKey(displayType.name())) {
@@ -306,16 +322,16 @@ public final class ConfigDisplayRules {
             if (typeList.containsKey(elementName)) {
                 values = typeList.get(elementName);
 
-            } else if ("*".equals(projectTitle)) {
+            } else if (ALL.equals(projectTitle)) {
                 values.add(new Item(projectTitle));
             } else {
-                return getElementsForMetadata("*", displayType, elementName);
+                return getElementsForMetadata(ALL, displayType, elementName);
             }
 
-        } else if ("*".equals(projectTitle)) {
+        } else if (ALL.equals(projectTitle)) {
             values.add(new Item(projectTitle));
         } else {
-            return getElementsForMetadata("*", displayType, elementName);
+            return getElementsForMetadata(ALL, displayType, elementName);
         }
         return values;
     }
@@ -331,8 +347,8 @@ public final class ConfigDisplayRules {
             }
             if (allValues.containsKey(myproject)) {
                 values.addAll(getElementsForMetadata(myproject, mydisplayType, myelementName));
-            } else if (allValues.containsKey("*")) {
-                values.addAll(getElementsForMetadata("*", mydisplayType, myelementName));
+            } else if (allValues.containsKey(ALL)) {
+                values.addAll(getElementsForMetadata(ALL, mydisplayType, myelementName));
             } else {
                 values.add(new Item(myelementName));
             }

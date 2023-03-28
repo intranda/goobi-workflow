@@ -69,6 +69,8 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 @Path("/view/object")
 public class ObjectResource {
 
+    private static final String FILE_NOT_FOUND = "The file could not be found in the file system: ";
+
     @GET
     @Path("/{processId}/{foldername}/{filename}/info.json")
     @Produces({ MediaType.APPLICATION_JSON })
@@ -158,7 +160,7 @@ public class ObjectResource {
                 }
             }
 
-            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+            throw new FileNotFoundException(FILE_NOT_FOUND + objectPath);
         } else {
             return Files.readAllLines(objectPath).stream().collect(Collectors.joining("\n"));
         }
@@ -190,7 +192,7 @@ public class ObjectResource {
                 }
             }
 
-            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+            throw new FileNotFoundException(FILE_NOT_FOUND + objectPath);
         } else {
             return Files.readAllLines(objectPath).stream().collect(Collectors.joining("\n"));
         }
@@ -224,7 +226,7 @@ public class ObjectResource {
                 }
             }
 
-            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+            throw new FileNotFoundException(FILE_NOT_FOUND + objectPath);
         } else {
             try (FileInputStream fis = new FileInputStream(objectPath.toFile())) {
                 IOUtils.copy(fis, response.getOutputStream());
@@ -263,7 +265,7 @@ public class ObjectResource {
                 }
             }
 
-            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+            throw new FileNotFoundException(FILE_NOT_FOUND + objectPath);
         } else {
             return new ObjectStreamingOutput(objectPath);
         }
@@ -279,7 +281,7 @@ public class ObjectResource {
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder, filename);
         if (!objectPath.toFile().isFile()) {
-            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+            throw new FileNotFoundException(FILE_NOT_FOUND + objectPath);
         } else {
             return new ObjectStreamingOutput(objectPath);
         }
@@ -305,7 +307,7 @@ public class ObjectResource {
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder1, subfolder2, filename);
         if (!objectPath.toFile().isFile()) {
-            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+            throw new FileNotFoundException(FILE_NOT_FOUND + objectPath);
         } else {
             return new ObjectStreamingOutput(objectPath);
         }

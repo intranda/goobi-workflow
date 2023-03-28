@@ -298,6 +298,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     protected static final String NAMESPACE_XSI = "xsi";
     protected static final String XSD_ENDING = "XML-logfile.xsd";
 
+    protected static final String CONSTANT_TRUE = "true";
+    protected static final String CONSTANT_FALSE = "false";
+
     private static Namespace xmlns = Namespace.getNamespace(FILE_LOG);
 
     private SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
@@ -1589,9 +1592,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         institutionElement.setAttribute(ATTRIBUTE_SHORT_NAME, inst.getShortName());
         institutionElement.setAttribute(ATTRIBUTE_LONG_NAME, inst.getLongName());
         if (inst.isAllowAllAuthentications()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, CONSTANT_TRUE);
         } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, CONSTANT_FALSE);
             for (InstitutionConfigurationObject ico : inst.getAllowedAuthentications()) {
                 Element type = new Element(ELEMENT_AUTHENTICATION, xmlns);
                 type.setText(ico.getObject_name());
@@ -1600,9 +1603,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         if (inst.isAllowAllDockets()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, CONSTANT_TRUE);
         } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, CONSTANT_FALSE);
             for (InstitutionConfigurationObject ico : inst.getAllowedDockets()) {
                 Element type = new Element(ELEMENT_DOCKET, xmlns);
                 type.setText(ico.getObject_name());
@@ -1611,9 +1614,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
         //inst.isAllowAllPlugins()
         if (inst.isAllowAllPlugins()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, CONSTANT_TRUE);
         } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, CONSTANT_FALSE);
             for (InstitutionConfigurationObject ico : inst.getAllowedAdministrationPlugins()) {
                 Element type = new Element(ELEMENT_ADMINISTRATION_PLUGIN, xmlns);
                 type.setText(ico.getObject_name());
@@ -1637,9 +1640,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         }
         if (inst.isAllowAllRulesets()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, CONSTANT_TRUE);
         } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, CONSTANT_FALSE);
             for (InstitutionConfigurationObject ico : inst.getAllowedRulesets()) {
                 Element type = new Element(ELEMENT_RULESET, xmlns);
                 type.setText(ico.getObject_name());

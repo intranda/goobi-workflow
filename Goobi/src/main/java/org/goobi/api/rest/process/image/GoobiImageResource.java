@@ -32,6 +32,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -106,6 +107,9 @@ public class GoobiImageResource {
     private static long availableThumbnailFoldersLastUpdate = 0;
     private static final long AVAILABLE_THUMBNAIL_FOLDERS_TTL = 30000; // 30s
 
+    // Returns "UTF-8", is valid for URLEncoder and URLDecoder:
+    private static final String UTF_8 = StandardCharsets.UTF_8.toString();
+
     private static final Map<String, Dimension> IMAGE_SIZES = new ConcurrentHashMap<>();
     private static Map<String, List<String>> availableThumbnailFolders = new ConcurrentHashMap<>();
     private static Map<String, Long[]> FILE_LAST_EDITED_TIMES = new ConcurrentHashMap<>();
@@ -133,7 +137,7 @@ public class GoobiImageResource {
             @PathParam("filename") String filename) throws ContentLibException {
 
         try {
-            filename = URLDecoder.decode(filename, "UTF-8");
+            filename = URLDecoder.decode(filename, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -193,7 +197,7 @@ public class GoobiImageResource {
             @PathParam("quality") String quality, @PathParam("format") String format, @PathParam("cacheCommand") String command)
             throws ContentLibException {
         try {
-            filename = URLDecoder.decode(filename, "UTF-8");
+            filename = URLDecoder.decode(filename, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -218,7 +222,7 @@ public class GoobiImageResource {
             @PathParam("filename") String filename, @PathParam("region") String region, @PathParam("size") String size,
             @PathParam("rotation") String rotation, @PathParam("pdfName") String pdfName) throws ContentLibException {
         try {
-            filename = URLDecoder.decode(filename, "UTF-8");
+            filename = URLDecoder.decode(filename, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -234,7 +238,7 @@ public class GoobiImageResource {
             @PathParam("region") String region, @PathParam("size") String size, @PathParam("rotation") String rotation,
             @PathParam("quality") String quality, @PathParam("format") String format) throws ContentLibException {
         try {
-            filename = URLDecoder.decode(filename, "UTF-8");
+            filename = URLDecoder.decode(filename, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -629,9 +633,9 @@ public class GoobiImageResource {
                 }
 
                 return new URI(uriBase.toString()
-                        .replace(URLEncoder.encode("{process}", "utf-8"), URLEncoder.encode(processId, "utf-8"))
-                        .replace(URLEncoder.encode("{folder}", "utf-8"), URLEncoder.encode(folder, "utf-8"))
-                        .replace(URLEncoder.encode("{filename}", "utf-8"), URLEncoder.encode(filename, "utf-8")));
+                        .replace(URLEncoder.encode("{process}", UTF_8), URLEncoder.encode(processId, UTF_8))
+                        .replace(URLEncoder.encode("{folder}", UTF_8), URLEncoder.encode(folder, UTF_8))
+                        .replace(URLEncoder.encode("{filename}", UTF_8), URLEncoder.encode(filename, UTF_8)));
             } catch (URISyntaxException | UnsupportedEncodingException e) {
                 log.error("Failed to create image request uri");
                 throw new IllegalRequestException("Unable to evaluate request to '" + processId + "', '" + folder + "', '" + filename + "'");

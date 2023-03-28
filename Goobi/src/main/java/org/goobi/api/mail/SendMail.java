@@ -43,6 +43,7 @@ import java.util.Properties;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -195,19 +196,9 @@ public class SendMail {
             return;
         }
 
-        // Set the host smtp address
-        Properties props = prepareMail();
-
         // create a mail for each user
         for (User user : recipients) {
-            Session session = Session.getDefaultInstance(props, null);
-            Message msg = new MimeMessage(session);
 
-            InternetAddress addressFrom = new InternetAddress(config.getSmtpSenderAddress());
-            msg.setFrom(addressFrom);
-            msg.setRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
-            String messageSubject = "";
-            String messageBody = "";
             // create list of urls to deactivate mail notifications
             Map<String, String> deactivateAllMap = new HashMap<>();
             deactivateAllMap.put("purpose", "disablemails");
@@ -226,6 +217,8 @@ public class SendMail {
             deactivateProjectMap.put("user", user.getLogin());
             deactivateProjectMap.put("project", step.getProzess().getProjekt().getTitel());
 
+            String messageSubject = "";
+            String messageBody = "";
             try {
                 String deactivateAllToken = JwtHelper.createToken(deactivateAllMap);
                 String deactivateProjectToken = JwtHelper.createToken(deactivateProjectMap);
@@ -270,51 +263,9 @@ public class SendMail {
             } catch (IOException | javax.naming.ConfigurationException e1) {
                 log.error(e1);
             }
+            this.sendMailToUser(messageSubject, messageBody, user.getEmail());
 
-            // create mail
-            MimeMultipart multipart = new MimeMultipart();
-
-            msg.setSubject(messageSubject);
-            MimeBodyPart messageHtmlPart = new MimeBodyPart();
-            messageHtmlPart.setText(messageBody, "utf-8");
-            messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
-            multipart.addBodyPart(messageHtmlPart);
-
-            msg.setContent(multipart);
-            msg.setSentDate(new Date());
-
-            Transport transport = session.getTransport();
-            transport.connect(config.getSmtpUser(), config.getSmtpPassword());
-            transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
-            transport.close();
         }
-    }
-
-    private Properties prepareMail() {
-        Properties props = new Properties();
-        if (config.isSmtpUseStartTls()) {
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.port", "25");
-            props.setProperty("mail.smtp.host", config.getSmtpServer());
-            props.setProperty("mail.smtp.ssl.trust", "*");
-            props.setProperty("mail.smtp.starttls.enable", "true");
-            props.setProperty("mail.smtp.starttls.required", "true");
-        } else if (config.isSmtpUseSsl()) {
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.smtp.host", config.getSmtpServer());
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.port", "465");
-            props.setProperty("mail.smtp.ssl.enable", "true");
-            props.setProperty("mail.smtp.ssl.trust", "*");
-
-        } else {
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.port", "25");
-            props.setProperty("mail.smtp.host", config.getSmtpServer());
-        }
-        return props;
     }
 
     // replace the placeholder in mail template with variables
@@ -367,12 +318,11 @@ public class SendMail {
     }
 
     /**
-     * Create a mail and send it to the recipient. Uses the configured {@link MailConfiguration} for communication with the mail server.
+     * Creates a mail and sends it to the recipient. Uses the configured {@link MailConfiguration} for communication with the mail server.
      * 
-     * @param messageSubject the subject of the message
-     * @param messageBody the message body
-     * @param recipients list of email addresses
-     * 
+     * @param messageSubject The email subject text
+     * @param messageBody The email body text
+     * @param recipient The email address of the recipient
      */
 
     public void sendMailToUser(String messageSubject, String messageBody, String recipient) {
@@ -380,36 +330,24 @@ public class SendMail {
         if (!config.isEnableMail()) {
             return;
         }
-        Properties props = prepareMail();
+
+        // Creating the SMTP settings
+        Properties properties = createMailProperties();
 
         try {
+            Session session = Session.getDefaultInstance(properties, null);
+            Message message = new MimeMessage(session);
+
+            // Adding the recipient address
             Address address = new InternetAddress(recipient);
+            message.setRecipient(Message.RecipientType.TO, address);
 
-            Session session = Session.getDefaultInstance(props, null);
-            Message msg = new MimeMessage(session);
+            // Adding the subject, content, sent date, and sender address to message
+            this.addContentToMessage(message, messageSubject, messageBody);
+            this.sendMail(session, message);
 
-            InternetAddress addressFrom = new InternetAddress(config.getSmtpSenderAddress());
-            msg.setFrom(addressFrom);
-            msg.setRecipient(Message.RecipientType.TO, address);
-
-            // create mail
-            MimeMultipart multipart = new MimeMultipart();
-
-            msg.setSubject(messageSubject);
-            MimeBodyPart messageHtmlPart = new MimeBodyPart();
-            messageHtmlPart.setText(messageBody, "utf-8");
-            messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
-            multipart.addBodyPart(messageHtmlPart);
-
-            msg.setContent(multipart);
-            msg.setSentDate(new Date());
-
-            Transport transport = session.getTransport();
-            transport.connect(config.getSmtpUser(), config.getSmtpPassword());
-            transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
-            transport.close();
-        } catch (MessagingException e) {
-            log.error(e);
+        } catch (MessagingException exception) {
+            log.error(exception);
         }
     }
 
@@ -427,7 +365,9 @@ public class SendMail {
         if (!config.isEnableMail()) {
             return;
         }
-        Properties props = prepareMail();
+
+        // Create the SMTP settings
+        Properties props = createMailProperties();
 
         List<Address> addresses = new ArrayList<>(recipients.size());
         // create a mail for each user
@@ -440,33 +380,105 @@ public class SendMail {
             Session session = Session.getDefaultInstance(props, null);
             Message msg = new MimeMessage(session);
 
-            InternetAddress addressFrom = new InternetAddress(config.getSmtpSenderAddress());
-            msg.setFrom(addressFrom);
             if (blindCopy) {
                 msg.setRecipients(Message.RecipientType.BCC, addresses.toArray(new Address[addresses.size()]));
             } else {
                 msg.setRecipients(Message.RecipientType.TO, addresses.toArray(new Address[addresses.size()]));
             }
-            // create mail
-            MimeMultipart multipart = new MimeMultipart();
 
-            msg.setSubject(messageSubject);
-            MimeBodyPart messageHtmlPart = new MimeBodyPart();
-            messageHtmlPart.setText(messageBody, "utf-8");
-            messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
-            multipart.addBodyPart(messageHtmlPart);
-
-            msg.setContent(multipart);
-            msg.setSentDate(new Date());
-
-            Transport transport = session.getTransport();
-            transport.connect(config.getSmtpUser(), config.getSmtpPassword());
-            transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
-            transport.close();
+            // create and send mail
+            this.addContentToMessage(msg, messageSubject, messageBody);
+            this.sendMail(session, msg);
 
         } catch (MessagingException e) {
             log.error(e);
         }
 
     }
+
+    /**
+     * Creates and returns the necessary mail and SMTP properties that are required to successfully send the mail. This method uses the configuration
+     * (SSL or TLS) automatically.
+     * 
+     * @return The mail properties
+     */
+    private Properties createMailProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("mail.transport.protocol", "smtp");
+        properties.setProperty("mail.smtp.auth", "true");
+        properties.setProperty("mail.smtp.host", config.getSmtpServer());
+        int port;
+        if (config.isSmtpUseStartTls()) {
+            properties.setProperty("mail.smtp.ssl.trust", "*");
+            properties.setProperty("mail.smtp.starttls.enable", "true");
+            properties.setProperty("mail.smtp.starttls.required", "true");
+            port = 25;
+        } else if (config.isSmtpUseSsl()) {
+            properties.setProperty("mail.smtp.ssl.enable", "true");
+            properties.setProperty("mail.smtp.ssl.trust", "*");
+            port = 465;
+        } else {
+            port = 25;
+        }
+        properties.setProperty("mail.smtp.port", String.valueOf(port));
+        return properties;
+    }
+
+    /**
+     * Sends the given mail (the message object) with the configuration of the given session. If the mail could not be sent, an exception is thrown.
+     *
+     * @param session The session to get the transport object from
+     * @param message The mail / message that should be sent
+     * @throws NoSuchProviderException If the configured mail provider is invalid
+     * @throws MessagingException If the mail is invalid
+     */
+    private void sendMail(Session session, Message message) throws NoSuchProviderException, MessagingException {
+        Transport transport = session.getTransport();
+        transport.connect(config.getSmtpUser(), config.getSmtpPassword());
+        transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO));
+        transport.close();
+    }
+
+    /**
+     * Adds the subject, the message body, the current time stamp and the 'from' attribute to the given message object. The body is encoded in UTF-8
+     * encoding.
+     *
+     * @param message The message object where the parameters should be added
+     * @param messageSubject The subject string for the mail
+     * @param messageBody The content string for the mail
+     * @throws MessagingException If the message parameters could not be added
+     */
+    private void addContentToMessage(Message message, String messageSubject, String messageBody) throws MessagingException {
+
+        // Subject
+        message.setSubject(messageSubject);
+
+        // Body
+        MimeMultipart multipart = new MimeMultipart();
+        multipart.addBodyPart(this.createUTF8MimeBodyPart(messageBody));
+        message.setContent(multipart);
+
+        // From
+        InternetAddress addressFrom = new InternetAddress(config.getSmtpSenderAddress());
+        message.setFrom(addressFrom);
+
+        // Sent date
+        message.setSentDate(new Date());
+    }
+
+    /**
+     * Creates and returns the message body for a mail. The content is UTF-8 encoded. If the content could not be created, a MessagingException is
+     * thrown.
+     *
+     * @param messageBody The text that should be written to the message body
+     * @return The message body object (if it could be created)
+     * @throws MessagingException If the message body could not be created
+     */
+    private MimeBodyPart createUTF8MimeBodyPart(String messageBody) throws MessagingException {
+        MimeBodyPart messageHtmlPart = new MimeBodyPart();
+        messageHtmlPart.setText(messageBody, "utf-8");
+        messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
+        return messageHtmlPart;
+    }
+
 }

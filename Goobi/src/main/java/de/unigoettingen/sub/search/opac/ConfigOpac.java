@@ -72,6 +72,7 @@ public class ConfigOpac {
     private static final String PARAMETER_RULESET_CHILD_TYPE = "[@rulesetChildType]";
 
     private static final String DEFAULT_OPAC_TYPE = "PICA";
+    private static final String TAG_CATALOGUE = "catalogue";
 
     private XMLConfiguration config;
     private static String configPfad;
@@ -124,9 +125,9 @@ public class ConfigOpac {
 
     public List<ConfigOpacCatalogue> getAllCatalogues(String workflowName) {
         List<ConfigOpacCatalogue> answer = new ArrayList<>();
-        int countCatalogues = this.config.getMaxIndex("catalogue");
+        int countCatalogues = this.config.getMaxIndex(TAG_CATALOGUE);
         for (int index = 0; index <= countCatalogues; index++) {
-            String catalogue = "catalogue(" + index + ")";
+            String catalogue = TAG_CATALOGUE + "(" + index + ")";
             String configPrefix = catalogue + ".config";
             String title = this.config.getString(catalogue + PARAMETER_TITLE);
             String opacType = this.config.getString(configPrefix + PARAMETER_OPAC_TYPE, DEFAULT_OPAC_TYPE);
@@ -139,9 +140,9 @@ public class ConfigOpac {
     }
 
     public ConfigOpacCatalogue getCatalogueByName(String inTitle) {
-        int countCatalogues = this.config.getMaxIndex("catalogue");
+        int countCatalogues = this.config.getMaxIndex(TAG_CATALOGUE);
         for (int index = 0; index <= countCatalogues; index++) {
-            String catalogue = "catalogue(" + index + ")";
+            String catalogue = TAG_CATALOGUE + "(" + index + ")";
             String configPrefix = catalogue + ".config";
             String title = this.config.getString(catalogue + PARAMETER_TITLE);
             if (title.equals(inTitle)) {
@@ -244,9 +245,9 @@ public class ConfigOpac {
      * ================================================================
      */
     public ConfigOpacDoctype getDoctypeByMapping(String inMapping, String inCatalogue) {
-        int countCatalogues = this.config.getMaxIndex("catalogue");
+        int countCatalogues = this.config.getMaxIndex(TAG_CATALOGUE);
         for (int index = 0; index <= countCatalogues; index++) {
-            String catalogue = "catalogue(" + index + ")";
+            String catalogue = TAG_CATALOGUE + "(" + index + ")";
             String title = this.config.getString(catalogue + PARAMETER_TITLE);
             if (title.equals(inCatalogue)) {
                 /* ---------------------
