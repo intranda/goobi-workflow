@@ -54,14 +54,15 @@ public class BagCreation {
 
     /**
      * 
-     * @param rootFolderName name of the root folder. If missing, a new uuid is generated
+     * @param rootFolderName name of the root folder. If missing, a new uuid folder is generated within the temp directory
      */
 
     public BagCreation(String rootFolderName) {
         if (StringUtils.isBlank(rootFolderName)) {
-            rootFolderName = UUID.randomUUID().toString();
+            bagitRoot = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder(), UUID.randomUUID().toString());
+        } else {
+            bagitRoot = Paths.get(rootFolderName);
         }
-        bagitRoot = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder(), rootFolderName);
     }
 
     /**
