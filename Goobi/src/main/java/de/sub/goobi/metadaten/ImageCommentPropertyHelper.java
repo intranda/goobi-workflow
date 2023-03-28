@@ -139,6 +139,7 @@ public class ImageCommentPropertyHelper {
      * prepare the process property object
      * 
      * @param propertyTitle title of the process property object
+     * @return the Processproperty object
      */
     private Processproperty prepareProcessproperty(String propertyTitle) {
         List<Processproperty> props = PropertyManager.getProcessPropertiesForProcess(process.getId());

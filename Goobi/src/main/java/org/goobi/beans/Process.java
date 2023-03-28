@@ -2069,24 +2069,15 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
         ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(this);
 
-        String folderMaster = this.getImagesOrigDirectory(true);
-        Map<String, String> masterComments = helper.getComments(folderMaster);
-
-        for (String imageName : masterComments.keySet()) {
-            String comment = masterComments.get(imageName);
-            if (!StringUtils.isBlank(comment)) {
-                lstComments.add(new ImageComment("Master", imageName, comment));
-            }
-        }
-
-        if (StorageProvider.getInstance().isFileExists(Paths.get(this.getImagesDirectory()))) {
-            String folderMedia = this.getImagesTifDirectory(true);
-            Map<String, String> mediaComments = helper.getComments(folderMedia);
-
-            for (String imageName : mediaComments.keySet()) {
-                String comment = mediaComments.get(imageName);
-                if (!StringUtils.isBlank(comment)) {
-                    lstComments.add(new ImageComment("Media", imageName, comment));
+        Map<String, Map<String, String>> commentsMap = helper.getAllComments();
+        for (Map.Entry<String, Map<String, String>> entry : commentsMap.entrySet()) {
+            String folderType = entry.getKey();
+            Map<String, String> comments = entry.getValue();
+            for (Map.Entry<String, String> imageCommentPair : comments.entrySet()) {
+                String imageName = imageCommentPair.getKey();
+                String imageComment = imageCommentPair.getValue();
+                if (StringUtils.isNotBlank(imageComment)) {
+                    lstComments.add(new ImageComment(folderType, imageName, imageComment));
                 }
             }
         }
