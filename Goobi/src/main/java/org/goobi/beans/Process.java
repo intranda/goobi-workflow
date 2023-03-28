@@ -80,7 +80,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.metadaten.Image;
-import de.sub.goobi.metadaten.ImageCommentHelper;
+import de.sub.goobi.metadaten.ImageCommentPropertyHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -2062,12 +2062,12 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         }
     }
 
-    //read the image comments files in the image folders, and return all of them as a list, sorted by image name
+    // read the image comments from process properties and return all of them as a list, sorted by image names
     public List<ImageComment> getImageComments() throws IOException, InterruptedException, SwapException, DAOException {
 
         List<ImageComment> lstComments = new ArrayList<>();
 
-        ImageCommentHelper helper = new ImageCommentHelper();
+        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(this);
 
         String folderMaster = this.getImagesOrigDirectory(true);
         Map<String, String> masterComments = helper.getComments(folderMaster);
@@ -2090,7 +2090,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                 }
             }
         }
-        lstComments.sort((c1, c2) -> c1.getImageName().compareTo(c2.getImageName()));
+
+        // the use of TreeMap in ImageCommentPropertyHelper assures that the list is already sorted
+
         return lstComments;
     }
 
