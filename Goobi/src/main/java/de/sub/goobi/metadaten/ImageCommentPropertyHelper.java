@@ -20,8 +20,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class ImageCommentPropertyHelper {
-    private static final String IMAGE_COMMENTS_MASTER = "image comments master";
-    private static final String IMAGE_COMMENTS_MEDIA = "image comments media";
+    private static final String IMAGE_COMMENTS_HEADER = "image comments ";
     private static final String JSON_HEADER = "{\"comments\":";
     private static final String JSON_TAIL = "}";
 
@@ -76,11 +75,17 @@ public class ImageCommentPropertyHelper {
     /**
      * get the property title given the name of the image folder
      * 
-     * @param folderName name of the image folder
+     * @param folderName full name of the image folder, whose tail following the last _ is the folder type that we need
      * @return title of the process property
      */
     private String getPropertyTitle(String folderName) {
-        return "master".equals(folderName) ? IMAGE_COMMENTS_MASTER : IMAGE_COMMENTS_MEDIA;
+        int lastUnderscoreIndex = folderName.lastIndexOf("_");
+        String imageCommentsTail = folderName.substring(lastUnderscoreIndex + 1);
+
+        String propertyTitle = IMAGE_COMMENTS_HEADER + imageCommentsTail;
+        log.debug("propertyTitle = " + propertyTitle);
+
+        return propertyTitle;
     }
 
     /**

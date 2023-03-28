@@ -5105,8 +5105,7 @@ public class Metadaten implements Serializable {
             return null;
         }
 
-        String folderType = this.imageFolderName.endsWith("master") ? "master" : "media";
-        return getCommentPropertyHelper().getComment(folderType, getImage().getImageName());
+        return getCommentPropertyHelper().getComment(currentTifFolder, getImage().getImageName());
     }
 
     public void setCommentPropertyForImage(String comment) {
@@ -5120,8 +5119,7 @@ public class Metadaten implements Serializable {
             return;
         }
 
-        String folderType = this.imageFolderName.endsWith("master") ? "master" : "media";
-        getCommentPropertyHelper().setComment(folderType, getImage().getImageName(), comment);
+        getCommentPropertyHelper().setComment(currentTifFolder, getImage().getImageName(), comment);
     }
 
     // =========================== Use ImageCommentPropertyHelper Instead =========================== //
