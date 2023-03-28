@@ -33,17 +33,20 @@ public class BagCreationTest extends AbstractTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
+    private String bagitFolder;
+
     @Before
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        // for junit tests in eclipse
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties");
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
 
         File tempdir = folder.newFolder("tmp");
         tempdir.mkdirs();
-
+        bagitFolder = tempdir.getAbsolutePath();
         PowerMock.mockStatic(ConfigurationHelper.class);
         ConfigurationHelper configurationHelper = EasyMock.createMock(ConfigurationHelper.class);
         EasyMock.expect(ConfigurationHelper.getInstance()).andReturn(configurationHelper).anyTimes();
@@ -56,7 +59,7 @@ public class BagCreationTest extends AbstractTest {
     @Test
     public void testConstructor() {
         // use a root name
-        BagCreation creation = new BagCreation("fixture");
+        BagCreation creation = new BagCreation(bagitFolder + "/fixture");
         assertEquals("fixture", creation.getBagitRoot().getFileName().toString());
 
         // blank root name, create a uuid
@@ -70,7 +73,7 @@ public class BagCreationTest extends AbstractTest {
 
     @Test
     public void testCreateIEFolder() {
-        BagCreation creation = new BagCreation("fixture");
+        BagCreation creation = new BagCreation(bagitFolder + "/fixture");
         assertEquals("fixture", creation.getBagitRoot().getFileName().toString());
         creation.createIEFolder("subfolder", "objects");
         assertEquals("subfolder", creation.getIeFolder().getFileName().toString());
@@ -80,7 +83,7 @@ public class BagCreationTest extends AbstractTest {
 
     @Test
     public void testMetadata() {
-        BagCreation creation = new BagCreation("fixture");
+        BagCreation creation = new BagCreation(bagitFolder + "/fixture");
         assertTrue(creation.getMetadata().isEmpty());
         creation.addMetadata("key", "value");
         assertFalse(creation.getMetadata().isEmpty());
@@ -89,7 +92,7 @@ public class BagCreationTest extends AbstractTest {
     @Test
     public void testCreateBag() throws IOException {
         // folder preparation
-        BagCreation creation = new BagCreation("fixture");
+        BagCreation creation = new BagCreation(bagitFolder + "/fixture");
         creation.createIEFolder("subfolder", "objects");
         // metadata prepararation
         creation.addMetadata("Source-Organization", "example library");
