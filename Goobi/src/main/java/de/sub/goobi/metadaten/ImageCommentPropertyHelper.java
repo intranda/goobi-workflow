@@ -1,5 +1,6 @@
 package de.sub.goobi.metadaten;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -29,8 +30,6 @@ public class ImageCommentPropertyHelper {
 
     private Process process;
 
-    private Processproperty currentProperty = null;
-
     public ImageCommentPropertyHelper(Process p) {
         this.process = p;
         log.debug("process p has id = " + p.getId());
@@ -45,8 +44,8 @@ public class ImageCommentPropertyHelper {
      */
     public String getComment(String folderName, String imageName) {
         String propertyTitle = getPropertyTitle(folderName);
-        prepareProcessproperty(propertyTitle);
-        ImageComments comments = getImageComments(propertyTitle);
+        Processproperty currentProperty = prepareProcessproperty(propertyTitle);
+        ImageComments comments = getImageComments(currentProperty);
 
         return comments == null ? "" : comments.getComment(imageName);
     }
@@ -60,8 +59,8 @@ public class ImageCommentPropertyHelper {
      */
     public void setComment(String folderName, String imageName, String comment) {
         String propertyTitle = getPropertyTitle(folderName);
-        prepareProcessproperty(propertyTitle);
-        ImageComments comments = getImageComments(propertyTitle);
+        Processproperty currentProperty = prepareProcessproperty(propertyTitle);
+        ImageComments comments = getImageComments(currentProperty);
         comments.setComment(imageName, comment);
 
         String newPropertyValue = createPropertyValue(comments);
@@ -78,10 +77,30 @@ public class ImageCommentPropertyHelper {
      */
     public Map<String, String> getComments(String folderName) {
         String propertyTitle = getPropertyTitle(folderName);
-        prepareProcessproperty(propertyTitle);
-        ImageComments comments = getImageComments(propertyTitle);
+        Processproperty currentProperty = prepareProcessproperty(propertyTitle);
+        ImageComments comments = getImageComments(currentProperty);
 
         return comments.getComments();
+    }
+
+    /**
+     * get all comments of all images from all image folders
+     * 
+     * @return a Map whose key is the folder type, while value is a Map between image names and image comments
+     */
+    public Map<String, Map<String, String>> getAllComments() {
+        Map<String, Map<String, String>> commentsMap = new TreeMap<>();
+
+        Map<String, Processproperty> propertyMap = prepareProcesspropertyMap();
+        for (Map.Entry<String, Processproperty> entry : propertyMap.entrySet()) {
+            String key = entry.getKey();
+            ImageComments comments = getImageComments(entry.getValue());
+            Map<String, String> value = comments.getComments();
+
+            commentsMap.put(key, value);
+        }
+
+        return commentsMap;
     }
 
     /**
@@ -121,12 +140,11 @@ public class ImageCommentPropertyHelper {
      * 
      * @param propertyTitle title of the process property object
      */
-    private void prepareProcessproperty(String propertyTitle) {
+    private Processproperty prepareProcessproperty(String propertyTitle) {
         List<Processproperty> props = PropertyManager.getProcessPropertiesForProcess(process.getId());
         for (Processproperty p : props) {
             if (propertyTitle.equals(p.getTitel())) {
-                currentProperty = p;
-                return;
+                return p;
             }
         }
 
@@ -134,17 +152,36 @@ public class ImageCommentPropertyHelper {
         Processproperty property = new Processproperty();
         property.setProcessId(process.getId());
         property.setTitel(propertyTitle);
-        currentProperty = property;
+        return property;
+    }
+
+    /**
+     * get a Map between folder types and Processproperty objects
+     * 
+     * @return the Map between folder types and Processproperty objects
+     */
+    private Map<String, Processproperty> prepareProcesspropertyMap() {
+        List<Processproperty> props = PropertyManager.getProcessPropertiesForProcess(process.getId());
+        Map<String, Processproperty> result = new HashMap<>();
+        for (Processproperty p : props) {
+            String title = p.getTitel();
+            if (p.getTitel().startsWith(IMAGE_COMMENTS_HEADER)) {
+                String key = title.replace(IMAGE_COMMENTS_HEADER, "");
+                result.put(key, p);
+            }
+        }
+
+        return result;
     }
 
     /**
      * get an ImageComments object containing all saved comments
      * 
-     * @param propertyTitle title of the process property
+     * @param property the Processproperty object whose values are needed
      * @return the ImageComments object containing all comments
      */
-    private ImageComments getImageComments(String propertyTitle) {
-        String propertyValue = currentProperty.getWert();
+    private ImageComments getImageComments(Processproperty property) {
+        String propertyValue = property.getWert();
         log.debug("propertyValue = " + propertyValue);
         if (propertyValue == null) {
             return new ImageComments();
