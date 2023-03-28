@@ -1,6 +1,7 @@
 package de.sub.goobi.metadaten;
 
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -61,15 +62,26 @@ public class ImageCommentPropertyHelper {
         String propertyTitle = getPropertyTitle(folderName);
         prepareProcessproperty(propertyTitle);
         ImageComments comments = getImageComments(propertyTitle);
-        if (comments == null) {
-            comments = new ImageComments();
-        }
         comments.setComment(imageName, comment);
 
         String newPropertyValue = createPropertyValue(comments);
         log.debug("newPropertyValue = " + newPropertyValue);
         currentProperty.setWert(newPropertyValue);
         PropertyManager.saveProcessProperty(currentProperty);
+    }
+
+    /**
+     * get the comments of images in the given image folder as a Map object
+     * 
+     * @param folderName full name of the image folder
+     * @return all comments of images in this folder as a Map object
+     */
+    public Map<String, String> getComments(String folderName) {
+        String propertyTitle = getPropertyTitle(folderName);
+        prepareProcessproperty(propertyTitle);
+        ImageComments comments = getImageComments(propertyTitle);
+
+        return comments.getComments();
     }
 
     /**
@@ -81,6 +93,9 @@ public class ImageCommentPropertyHelper {
     private String getPropertyTitle(String folderName) {
         int lastUnderscoreIndex = folderName.lastIndexOf("_");
         String imageCommentsTail = folderName.substring(lastUnderscoreIndex + 1);
+
+        // remove non-letter characters from the tail
+        imageCommentsTail = imageCommentsTail.replaceAll("[\\W]*$", "");
 
         String propertyTitle = IMAGE_COMMENTS_HEADER + imageCommentsTail;
         log.debug("propertyTitle = " + propertyTitle);
@@ -131,6 +146,10 @@ public class ImageCommentPropertyHelper {
     private ImageComments getImageComments(String propertyTitle) {
         String propertyValue = currentProperty.getWert();
         log.debug("propertyValue = " + propertyValue);
+        if (propertyValue == null) {
+            return new ImageComments();
+        }
+
         String comments = JSON_HEADER + propertyValue + JSON_TAIL;
 
         return gson.fromJson(comments, ImageComments.class);
@@ -156,6 +175,10 @@ public class ImageCommentPropertyHelper {
             } else {
                 comments.put(imageName, comment);
             }
+        }
+
+        public Map<String, String> getComments() {
+            return comments;
         }
     }
 
