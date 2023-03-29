@@ -47,7 +47,7 @@ public class ImageCommentPropertyHelper {
         Processproperty currentProperty = prepareProcessproperty(propertyTitle);
         ImageComments comments = getImageComments(currentProperty);
 
-        return comments == null ? "" : comments.getComment(imageName);
+        return comments.getComment(imageName);
     }
 
     /**
