@@ -41,6 +41,9 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+
     @Override
     public String getAction() {
         return "deleteStep";
@@ -50,7 +53,7 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to delete an existing workflow step");
-        addParameterToSampleCall(sb, "steptitle", "Image upload", "Define the name of the step that shall get deleted.");
+        addParameterToSampleCall(sb, STEPTITLE, "Image upload", "Define the name of the step that shall get deleted.");
         return sb.toString();
     }
 
@@ -58,8 +61,10 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
@@ -88,7 +93,7 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
         }
 
         List<Step> steps = process.getSchritte();
-        String stepTitle = parameters.get("steptitle");
+        String stepTitle = parameters.get(STEPTITLE);
         int removedSteps = 0;
 
         for (int index = 0; index < steps.size(); index++) {
@@ -105,10 +110,10 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
             if (removedSteps > 1) {
                 howOften = " (" + removedSteps + "x)";
             }
-            String message = "Deleted step '" + stepTitle + "'" + howOften + " from process using GoobiScript";
-            Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message + ".", username);
-            log.info(message + " for process with ID " + process.getId());
-            gsr.setResultMessage("Deleted step '" + stepTitle + "'" + howOften + " from process.");
+            String message = "Deleted step '" + stepTitle + "'" + howOften + " from process";
+            Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message + "using GoobiScript.", username);
+            log.info(message + "using GoobiScript for process with ID " + process.getId());
+            gsr.setResultMessage(message + ".");
         } else {
             gsr.setResultMessage("Step not found: " + stepTitle);
         }

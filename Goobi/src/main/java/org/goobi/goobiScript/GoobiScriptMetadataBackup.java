@@ -41,11 +41,12 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class GoobiScriptMetadataBackup extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String ACTION = "metadataBackup";
+    private static final String META_FILE = "meta.xml";
+    private static final String META_ANCHOR_FILE = "meta_anchor.xml";
 
     @Override
     public String getAction() {
-        return ACTION;
+        return "metadataBackup";
     }
 
     @Override
@@ -83,30 +84,28 @@ public class GoobiScriptMetadataBackup extends AbstractIGoobiScript implements I
         String warning2 = " does not exist.";
         String success = "Created backup successfully.";
 
-        String metaFileName = "meta.xml";
-        boolean existsMetaFile = StorageProvider.getInstance().isFileExists(Paths.get(path + metaFileName));
+        boolean existsMetaFile = StorageProvider.getInstance().isFileExists(Paths.get(path + META_FILE));
         GoobiScriptResult metaBackupResult;
 
         if (existsMetaFile) {
-            metaBackupResult = GoobiScriptMetadataBackup.createBackup(path, metaFileName, maximumNumberOfBackupFiles);
+            metaBackupResult = GoobiScriptMetadataBackup.createBackup(path, META_FILE, maximumNumberOfBackupFiles);
             if (metaBackupResult.getResultType() == GoobiScriptResultType.OK) {
                 metaBackupResult.setResultMessage(success);
             }
         } else {
             metaBackupResult = new GoobiScriptResult(null, null, null, null, 0);
-            metaBackupResult.setResultMessage(warning1 + metaFileName + warning2);
+            metaBackupResult.setResultMessage(warning1 + META_FILE + warning2);
             metaBackupResult.setResultType(GoobiScriptResultType.ERROR);
         }
 
-        String metaAnchorFileName = "meta_anchor.xml";
-        boolean existsMetaAnchorFile = StorageProvider.getInstance().isFileExists(Paths.get(path + metaAnchorFileName));
+        boolean existsMetaAnchorFile = StorageProvider.getInstance().isFileExists(Paths.get(path + META_ANCHOR_FILE));
         GoobiScriptResult metaAnchorBackupResult;
 
         if (existsMetaAnchorFile) {
-            metaAnchorBackupResult = GoobiScriptMetadataBackup.createBackup(path, metaAnchorFileName, maximumNumberOfBackupFiles);
+            metaAnchorBackupResult = GoobiScriptMetadataBackup.createBackup(path, META_ANCHOR_FILE, maximumNumberOfBackupFiles);
         } else {
             metaAnchorBackupResult = new GoobiScriptResult(null, null, null, null, 0);
-            metaAnchorBackupResult.setResultMessage(warning1 + metaAnchorFileName + warning2);
+            metaAnchorBackupResult.setResultMessage(warning1 + META_ANCHOR_FILE + warning2);
             metaAnchorBackupResult.setResultType(GoobiScriptResultType.OK);
         }
 

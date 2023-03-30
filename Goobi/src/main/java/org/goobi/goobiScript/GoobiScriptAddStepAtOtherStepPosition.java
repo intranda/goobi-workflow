@@ -41,18 +41,19 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String ACTION = "addStepAtOtherStepPosition";
-    private static final String PARAMETER_INSERTION_STRATEGY = "insertionstrategy";
-    private static final String PARAMETER_EXISTING_STEP_TITLE = "existingsteptitle";
-    private static final String PARAMETER_NEW_STEP_TITLE = "newsteptitle";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STRATEGY = "insertionstrategy";
+    private static final String EXISTING_STEP_TITLE = "existingsteptitle";
+    private static final String NEW_STEP_TITLE = "newsteptitle";
     private static final String STATE_BEFORE = "before";
     private static final String STATE_AFTER = "after";
+
     private static final int ERROR_NO_STEPS = -1;
     private static final int ERROR_MULTIPLE_STEPS = -2;
 
     @Override
     public String getAction() {
-        return ACTION;
+        return "addStepAtOtherStepPosition";
     }
 
     @Override
@@ -60,10 +61,10 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb,
                 "This GoobiScript allows to add a new workflow step into the workflow before or after an other step (defined by name).");
-        addParameterToSampleCall(sb, PARAMETER_INSERTION_STRATEGY, "after",
-                "The new step can be executed \"before\" or \"after\" the existing step.");
-        addParameterToSampleCall(sb, PARAMETER_EXISTING_STEP_TITLE, "Scanning", "Title of the existing workflow step");
-        addParameterToSampleCall(sb, PARAMETER_NEW_STEP_TITLE, "Analyzing", "Title of the new workflow step");
+        addParameterToSampleCall(sb, STRATEGY, STATE_AFTER, "The new step can be executed \"" + STATE_BEFORE + "\" or \"" + STATE_AFTER
+                + "\" the existing step.");
+        addParameterToSampleCall(sb, EXISTING_STEP_TITLE, "Scanning", "Title of the existing workflow step");
+        addParameterToSampleCall(sb, NEW_STEP_TITLE, "Analyzing", "Title of the new workflow step");
         return sb.toString();
     }
 
@@ -72,25 +73,29 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
         super.prepare(processes, command, parameters);
 
         // Check strategy
-        String strategy = parameters.get(PARAMETER_INSERTION_STRATEGY);
+        String missingParameter = "Missing parameter: ";
+        String wrongParameter = "Wrong parameter: ";
+        String strategy = parameters.get(STRATEGY);
         if (strategy == null || strategy.equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", PARAMETER_INSERTION_STRATEGY);
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STRATEGY);
             return new ArrayList<>();
         }
         if (!strategy.equals(STATE_BEFORE) && !strategy.equals(STATE_AFTER)) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Wrong parameter: ", PARAMETER_INSERTION_STRATEGY);
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, wrongParameter, STRATEGY);
             return new ArrayList<>();
         }
 
         // Check existing step title
-        if (parameters.get(PARAMETER_EXISTING_STEP_TITLE) == null || parameters.get(PARAMETER_EXISTING_STEP_TITLE).equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", PARAMETER_EXISTING_STEP_TITLE);
+        String existingStepTitle = parameters.get(EXISTING_STEP_TITLE);
+        if (existingStepTitle == null || existingStepTitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, EXISTING_STEP_TITLE);
             return new ArrayList<>();
         }
 
         // Check new step title
-        if (parameters.get(PARAMETER_NEW_STEP_TITLE) == null || parameters.get(PARAMETER_NEW_STEP_TITLE).equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", PARAMETER_NEW_STEP_TITLE);
+        String newStepTitle = parameters.get(NEW_STEP_TITLE);
+        if (newStepTitle == null || newStepTitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, NEW_STEP_TITLE);
             return new ArrayList<>();
         }
 
@@ -145,11 +150,11 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
         int order = ERROR_NO_STEPS;
         for (int i = 0; i < steps.size(); i++) {
             // Look for the given title
-            if (steps.get(i).getTitel().equals(parameters.get(PARAMETER_EXISTING_STEP_TITLE))) {
+            if (steps.get(i).getTitel().equals(parameters.get(EXISTING_STEP_TITLE))) {
                 if (order == -1) {
                     // Index was found, but still look whole list for that case when there are multiple indices
                     order = steps.get(i).getReihenfolge();
-                    if (parameters.get(PARAMETER_INSERTION_STRATEGY).equals(STATE_AFTER)) {
+                    if (parameters.get(STRATEGY).equals(STATE_AFTER)) {
                         // order + 1 because new step should be inserted after found step
                         order++;
                     }
@@ -185,26 +190,24 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
             }
         }
         Step s = new Step();
-        s.setTitel(parameters.get(PARAMETER_NEW_STEP_TITLE));
+        s.setTitel(parameters.get(NEW_STEP_TITLE));
         s.setReihenfolge(order);
         s.setProzess(p);
         if (p.getSchritte() == null) {
             p.setSchritte(new ArrayList<Step>());
         }
         p.getSchritte().add(s);
+        String info = "'" + s.getTitel() + "' at position '" + s.getReihenfolge() + "'";
         try {
             ProcessManager.saveProcess(p);
-            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                    "Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "' to process using GoobiScript.",
-                    username);
-            log.info("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge()
-                    + "' to process using GoobiScript for process with ID " + p.getId());
-            gsr.setResultMessage("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "'.");
+            String message = "Added workflow step " + info;
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " to process using GoobiScript.", username);
+            log.info(message + " to process using GoobiScript for process with ID " + p.getId());
+            gsr.setResultMessage(message + ".");
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (DAOException e) {
-            log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-            gsr.setResultMessage("A problem occurred while adding a workflow step '" + s.getTitel() + "' at position '"
-                    + s.getReihenfolge() + "': " + e.getMessage());
+            log.error(GOOBI_SCRIPTFIELD + "Error while saving process: " + p.getTitel(), e);
+            gsr.setResultMessage("A problem occurred while adding a workflow step " + info + ": " + e.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e.getMessage());
         }

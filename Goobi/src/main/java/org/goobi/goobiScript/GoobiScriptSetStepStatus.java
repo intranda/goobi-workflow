@@ -43,6 +43,24 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String STATUS = "status";
+
+    private static final String STATUS_NUMBER_LOCKED = "0";
+    private static final String STATUS_NUMBER_OPEN = "1";
+    private static final String STATUS_NUMBER_IN_WORK = "2";
+    private static final String STATUS_NUMBER_DONE = "3";
+    private static final String STATUS_NUMBER_ERROR = "4";
+    private static final String STATUS_NUMBER_DEACTIVATED = "5";
+
+    private static final String STATUS_TEXT_LOCKED = "locked";
+    private static final String STATUS_TEXT_OPEN = "open";
+    private static final String STATUS_TEXT_IN_WORK = "in work";
+    private static final String STATUS_TEXT_DONE = "done";
+    private static final String STATUS_TEXT_ERROR = "error";
+    private static final String STATUS_TEXT_DEACTIVATED = "deactivated";
+
     @Override
     public String getAction() {
         return "setStepStatus";
@@ -50,11 +68,18 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 
     @Override
     public String getSampleCall() {
+        StringBuffer options = new StringBuffer();
+        options.append("`" + STATUS_NUMBER_LOCKED + "` (" + STATUS_TEXT_LOCKED + "), ");
+        options.append("`" + STATUS_NUMBER_OPEN + "` (" + STATUS_TEXT_OPEN + "), ");
+        options.append("`" + STATUS_NUMBER_IN_WORK + "` (" + STATUS_TEXT_IN_WORK + "), ");
+        options.append("`" + STATUS_NUMBER_DONE + "` (" + STATUS_TEXT_DONE + "), ");
+        options.append("`" + STATUS_NUMBER_ERROR + "` (" + STATUS_TEXT_ERROR + "), ");
+        options.append("`" + STATUS_NUMBER_DEACTIVATED + "` (" + STATUS_TEXT_DEACTIVATED + ")");
+
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to change the current status of a specific step in the workflow.");
-        addParameterToSampleCall(sb, "steptitle", "Metadata enrichment", "Title of the workflow step to be changed");
-        addParameterToSampleCall(sb, "status", "1",
-                "Value of the status. Possible values are `0` (locked), `1` (open), `2` (in work), `3` (done), `4` (error), `5` (deactivated)");
+        addParameterToSampleCall(sb, STEPTITLE, "Metadata enrichment", "Title of the workflow step to be changed");
+        addParameterToSampleCall(sb, STATUS, "1", "Value of the status. Possible values are " + options.toString());
         return sb.toString();
     }
 
@@ -62,20 +87,28 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
-        if (parameters.get("status") == null || parameters.get("status").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "status");
+        String status = parameters.get(STATUS);
+        if (status == null || status.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STATUS);
             return new ArrayList<>();
         }
 
-        if (!parameters.get("status").equals("0") && !parameters.get("status").equals("1") && !parameters.get("status").equals("2")
-                && !parameters.get("status").equals("3") && !parameters.get("status").equals("4") && !parameters.get("status").equals("5")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Wrong status parameter: status ",
-                    "(possible: 0=closed, 1=open, 2=in work, 3=finished, 4=error, 5=deactivated");
+        if (!status.equals("0") && !status.equals("1") && !status.equals("2") && !status.equals("3") && !status.equals("4") && !status.equals("5")) {
+            StringBuffer options = new StringBuffer();
+            options.append(STATUS_NUMBER_LOCKED + "=" + STATUS_TEXT_LOCKED + ", ");
+            options.append(STATUS_NUMBER_OPEN + "=" + STATUS_TEXT_OPEN + ", ");
+            options.append(STATUS_NUMBER_IN_WORK + "=" + STATUS_TEXT_IN_WORK + ", ");
+            options.append(STATUS_NUMBER_DONE + "=" + STATUS_TEXT_DONE + ", ");
+            options.append(STATUS_NUMBER_ERROR + "=" + STATUS_TEXT_ERROR + ", ");
+            options.append(STATUS_NUMBER_DEACTIVATED + "=" + STATUS_TEXT_DEACTIVATED);
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Wrong status parameter: status ", "(possible: " + options.toString() + ")");
             return new ArrayList<>();
         }
 
@@ -90,27 +123,27 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 
     @Override
     public void execute(GoobiScriptResult gsr) {
-        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-        gsr.setProcessTitle(p.getTitel());
+        Process process = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(process.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-            Step s = iterator.next();
-            if (s.getTitel().equals(gsr.getParameters().get("steptitle"))) {
-                String oldStatusTitle = s.getBearbeitungsstatusEnum().getUntranslatedTitle();
-                s.setBearbeitungsstatusAsString(gsr.getParameters().get("status"));
+        for (Iterator<Step> iterator = process.getSchritteList().iterator(); iterator.hasNext();) {
+            Step step = iterator.next();
+            if (step.getTitel().equals(gsr.getParameters().get(STEPTITLE))) {
+                String oldStatusTitle = step.getBearbeitungsstatusEnum().getUntranslatedTitle();
+                step.setBearbeitungsstatusAsString(gsr.getParameters().get(STATUS));
                 try {
-                    StepManager.saveStep(s);
-                    String newStatusTitle = s.getBearbeitungsstatusEnum().getUntranslatedTitle();
-                    String message = "Changed status of step '" + s.getTitel() + "' from' " + oldStatusTitle + " ' to '" + newStatusTitle
+                    StepManager.saveStep(step);
+                    String newStatusTitle = step.getBearbeitungsstatusEnum().getUntranslatedTitle();
+                    String message = "Changed status of step '" + step.getTitel() + "' from' " + oldStatusTitle + " ' to '" + newStatusTitle
                             + "' using GoobiScript";
-                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + ".", username);
-                    log.info(message + " for process with ID " + p.getId());
+                    Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message + ".", username);
+                    log.info(message + " for process with ID " + process.getId());
                     gsr.setResultMessage("Status of the step is set successfully.");
                     gsr.setResultType(GoobiScriptResultType.OK);
                 } catch (DAOException e) {
-                    log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
+                    log.error(GOOBI_SCRIPTFIELD + " Error while saving process: " + process.getTitel(), e);
                     gsr.setResultMessage("Error while changing the step status: " + e.getMessage());
                     gsr.setResultType(GoobiScriptResultType.ERROR);
                     gsr.setErrorText(e.getMessage());
@@ -120,7 +153,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
         }
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
             gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + gsr.getParameters().get("steptitle"));
+            gsr.setResultMessage("Step not found: " + gsr.getParameters().get(STEPTITLE));
         }
         gsr.updateTimestamp();
     }

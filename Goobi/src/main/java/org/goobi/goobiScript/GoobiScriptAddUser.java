@@ -45,6 +45,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String USERNAME = "username";
+
     @Override
     public String getAction() {
         return "addUser";
@@ -54,8 +58,8 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to assign a user to an existing workflow step.");
-        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to be edited");
-        addParameterToSampleCall(sb, "username", "steffen", "Login name of the user to assign to the workflow step.");
+        addParameterToSampleCall(sb, STEPTITLE, "Scanning", "Title of the workflow step to be edited");
+        addParameterToSampleCall(sb, USERNAME, "steffen", "Login name of the user to assign to the workflow step.");
         return sb.toString();
     }
 
@@ -63,17 +67,20 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
         User myUser = null;
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
-        if (parameters.get("username") == null || this.parameters.get("username").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "username");
+        String username = parameters.get(USERNAME);
+        if (username == null || username.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, USERNAME);
             return new ArrayList<>();
         }
         /* prüfen, ob ein solcher Benutzer existiert */
 
-        myUser = getUser(parameters.get("username"));
+        myUser = getUser(username);
         if (myUser == null) {
             return new ArrayList<>();
         }
@@ -90,7 +97,7 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
-        User myUser = getUser(parameters.get("username"));
+        User myUser = getUser(parameters.get(USERNAME));
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
@@ -98,7 +105,7 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
         if (myUser != null) {
             for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
                 Step s = iterator.next();
-                if (s.getTitel().equals(parameters.get("steptitle"))) {
+                if (s.getTitel().equals(parameters.get(STEPTITLE))) {
                     List<User> myBenutzer = s.getBenutzer();
                     if (myBenutzer == null) {
                         myBenutzer = new ArrayList<>();
@@ -106,18 +113,17 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
                     }
                     if (!myBenutzer.contains(myUser)) {
                         myBenutzer.add(myUser);
+                        String info = "'" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "'";
                         try {
                             StepManager.saveStep(s);
-                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                                    "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript.", username);
-                            log.info("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel()
-                                    + "' using GoobiScript for process with ID " + p.getId());
-                            gsr.setResultMessage("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' successfully.");
+                            String message = "Added user " + info;
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+                            log.info(message + " using GoobiScript for process with ID " + p.getId());
+                            gsr.setResultMessage(message + " successfully.");
                             gsr.setResultType(GoobiScriptResultType.OK);
                         } catch (DAOException e) {
-                            log.error("goobiScriptfield" + "Error while saving - " + p.getTitel(), e);
-                            gsr.setResultMessage(
-                                    "Problem while adding user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "': " + e.getMessage());
+                            log.error(GOOBI_SCRIPTFIELD + "Error while saving - " + p.getTitel(), e);
+                            gsr.setResultMessage("Problem while adding user " + info + ": " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             gsr.setErrorText(e.getMessage());
                         }
@@ -128,23 +134,23 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
 
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
             gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+            gsr.setResultMessage("Step not found: " + parameters.get(STEPTITLE));
         }
         gsr.updateTimestamp();
     }
 
-    private User getUser(String userTitle) {
+    private User getUser(String userName) {
         try {
-            List<User> treffer = UserManager.getUsers(null, "login='" + parameters.get("username") + "'", null, null, null);
+            List<User> treffer = UserManager.getUsers(null, "login='" + userName + "'", null, null, null);
             if (treffer != null && !treffer.isEmpty()) {
                 return treffer.get(0);
             } else {
-                Helper.setFehlerMeldung("goobiScriptfield", "Unknown user: ", parameters.get("username"));
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Unknown user: ", userName);
                 return null;
             }
         } catch (DAOException e) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Error in GoobiScript.adduser", e);
-            log.error("goobiScriptfield" + "Error in GoobiScript.adduser: ", e);
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error in GoobiScript.adduser", e);
+            log.error(GOOBI_SCRIPTFIELD + "Error in GoobiScript.adduser: ", e);
             return null;
         }
     }

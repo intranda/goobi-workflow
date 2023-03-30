@@ -24,6 +24,7 @@
  */
 package org.goobi.goobiScript;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,11 @@ import ugh.dl.Fileformat;
 @Log4j2
 public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String TITLE = "title";
+    private static final String CONTENT = "content";
+    private static final String META_ANCHOR_FILE = "meta_anchor.xml";
+
     private static final String CONTENT_ALL = "all"; // all data completely
     private static final String CONTENT_EMPTY = "empty"; // just the metadata
     private static final String CONTENT_PART = "part"; // still unused
@@ -57,9 +63,9 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to clone an existing process and store it under a new name.");
-        addParameterToSampleCall(sb, "title", "\"{processtitle}_copy\"",
+        addParameterToSampleCall(sb, TITLE, "\"{processtitle}_copy\"",
                 "Title for the new process that is created. Please notice that typically no special characters and no blanks are allowed.");
-        addParameterToSampleCall(sb, "content", "all",
+        addParameterToSampleCall(sb, CONTENT, CONTENT_ALL,
                 "You can define here now much of the content shall be cloned. Possible values are `all` (all data, the database entry and the METS file), `empty` (no data, just the database entry and the corresponding METS file)");
         return sb.toString();
     }
@@ -68,18 +74,21 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("title") == null || parameters.get("title").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "title");
+        String missingParameter = "Missing parameter: ";
+        String wrongParameter = "Wrong content parameter";
+        String title = parameters.get(TITLE);
+        if (title == null || title.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, TITLE);
             return new ArrayList<>();
         }
-        if (parameters.get("content") == null || parameters.get("content").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "content");
+        String content = parameters.get(CONTENT);
+        if (content == null || content.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, CONTENT);
             return new ArrayList<>();
         }
 
-        String c = parameters.get("content");
-        if (!c.equals(CONTENT_ALL) && !c.equals(CONTENT_EMPTY)) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Wrong content parameter", "(only limited values are allowed)");
+        if (!content.equals(CONTENT_ALL) && !content.equals(CONTENT_EMPTY)) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, wrongParameter, "(only limited values are allowed)");
             return new ArrayList<>();
         }
 
@@ -95,51 +104,53 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
-        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-        gsr.setProcessTitle(p.getTitel());
+        Process process = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(process.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        String title = parameters.get("title");
+        String title = parameters.get(TITLE);
         try {
 
             // first duplicate the process inside of the database
-            Process newprocess = new Process(p);
+            Process newProcess = new Process(process);
+
+            Path existingDirectory = Paths.get(process.getProcessDataDirectory());
+            Path newDirectory = Paths.get(newProcess.getProcessDataDirectory());
+            Path existingMetaAnchorFile = Paths.get(process.getProcessDataDirectory(), META_ANCHOR_FILE);
+            Path newMetaAnchorFile = Paths.get(newProcess.getProcessDataDirectory(), META_ANCHOR_FILE);
 
             // copy the files and other content over to the new process
-            String c = parameters.get("content");
-            if (c.equals(CONTENT_ALL)) {
+            if (parameters.get(CONTENT).equals(CONTENT_ALL)) {
                 // all content
-                StorageProvider.getInstance().copyDirectory(Paths.get(p.getProcessDataDirectory()), Paths.get(newprocess.getProcessDataDirectory()));
+                StorageProvider.getInstance().copyDirectory(existingDirectory, newDirectory);
             } else {
                 // just the metadata files
-                StorageProvider.getInstance().copyFile(Paths.get(p.getMetadataFilePath()), Paths.get(newprocess.getMetadataFilePath()));
-                if (StorageProvider.getInstance().isFileExists(Paths.get(p.getProcessDataDirectory(), "meta_anchor.xml"))) {
-                    StorageProvider.getInstance()
-                            .copyFile(Paths.get(p.getProcessDataDirectory(), "meta_anchor.xml"),
-                                    Paths.get(newprocess.getProcessDataDirectory(), "meta_anchor.xml"));
+                StorageProvider.getInstance().copyFile(Paths.get(process.getMetadataFilePath()), Paths.get(newProcess.getMetadataFilePath()));
+                if (StorageProvider.getInstance().isFileExists(existingMetaAnchorFile)) {
+                    StorageProvider.getInstance().copyFile(existingMetaAnchorFile, newMetaAnchorFile);
                 }
             }
 
             // get the title to be set and pipe it through the variable replacer
-            Fileformat ff = p.readMetadataFile();
-            VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
+            Fileformat ff = process.readMetadataFile();
+            VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), process.getRegelsatz().getPreferences(), process, null);
             title = replacer.replace(title);
 
             // assign the old process title to be able to change that and all folders correctly
-            newprocess.setTitel(p.getTitel());
-            newprocess.changeProcessTitle(title);
-            ProcessManager.saveProcess(newprocess);
+            newProcess.setTitel(process.getTitel());
+            newProcess.changeProcessTitle(title);
+            ProcessManager.saveProcess(newProcess);
 
             // all successfull, yeah
-            gsr.setResultMessage("Process '" + p.getTitel() + "' successfully cloned under the new name '" + parameters.get("title") + "' with id: "
-                    + newprocess.getId());
+            gsr.setResultMessage(
+                    "Process '" + process.getTitel() + "' successfully cloned under the new name '" + title + "' with id: " + newProcess.getId());
             gsr.setResultType(GoobiScriptResultType.OK);
 
         } catch (Exception e) {
-            Helper.addMessageToProcessJournal(p.getId(), LogType.ERROR,
-                    "Problem while cloning the process '" + p.getTitel() + "' under the new name '" + title + "'", username);
-            log.error("Problem while cloning the process '" + p.getTitel() + "' under the new name '" + title + "'", e);
+            String message = "Error while cloning the process '" + process.getTitel() + "' under the new name '" + title + "'.";
+            Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, message, username);
+            log.error(message, e);
             gsr.setResultMessage("Error while cloning a process: " + e.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e.getMessage());

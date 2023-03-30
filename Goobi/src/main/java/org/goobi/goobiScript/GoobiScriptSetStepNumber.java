@@ -44,6 +44,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String NUMBER = "number";
+
     @Override
     public String getAction() {
         return "setStepNumber";
@@ -53,8 +57,8 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allow to change the order number of a specific workflow step.");
-        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to be changed");
-        addParameterToSampleCall(sb, "number", "4", "Order number that the workflow step shall have in the order of all workflow steps");
+        addParameterToSampleCall(sb, STEPTITLE, "Scanning", "Title of the workflow step to be changed");
+        addParameterToSampleCall(sb, NUMBER, "4", "Order number that the workflow step shall have in the order of all workflow steps");
         return sb.toString();
     }
 
@@ -62,18 +66,22 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+        String missingParameter = "Missing parameter: ";
+        String wrongParameter = "Wrong number parameter";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
-        if (parameters.get("number") == null || parameters.get("number").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "number");
+        String number = parameters.get(NUMBER);
+        if (number == null || number.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, NUMBER);
             return new ArrayList<>();
         }
 
-        if (!StringUtils.isNumeric(parameters.get("number"))) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Wrong number parameter", "(only numbers allowed)");
+        if (!StringUtils.isNumeric(number)) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, wrongParameter, "(only numbers allowed)");
             return new ArrayList<>();
         }
 
@@ -93,25 +101,24 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
+        String steptitle = parameters.get(STEPTITLE);
+        String number = parameters.get(NUMBER);
 
         for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
             Step s = iterator.next();
-            if (s.getTitel().equals(parameters.get("steptitle"))) {
-                s.setReihenfolge(Integer.parseInt(parameters.get("number")));
+            if (s.getTitel().equals(steptitle)) {
+                s.setReihenfolge(Integer.parseInt(number));
+                String info = "'" + s.getTitel() + "' to '" + s.getReihenfolge() + "'";
                 try {
                     StepManager.saveStep(s);
-                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                            "Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' using GoobiScript.",
-                            username);
-                    log.info("Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge()
-                            + "' using GoobiScript for process with ID " + p.getId());
-                    gsr.setResultMessage(
-                            "Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' successfully.");
+                    String message = "Changed order number of step " + info;
+                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+                    log.info(message + " using GoobiScript for process with ID " + p.getId());
+                    gsr.setResultMessage(message + " successfully.");
                     gsr.setResultType(GoobiScriptResultType.OK);
                 } catch (DAOException e) {
-                    log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-                    gsr.setResultMessage(
-                            "Error while changing the order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "'.");
+                    log.error(GOOBI_SCRIPTFIELD + "Error while saving process: " + p.getTitel(), e);
+                    gsr.setResultMessage("Error while changing the order number of step " + info + ".");
                     gsr.setResultType(GoobiScriptResultType.ERROR);
                     gsr.setErrorText(e.getMessage());
                 }
@@ -120,7 +127,7 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
         }
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
             gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+            gsr.setResultMessage("Step not found: " + steptitle);
         }
         gsr.updateTimestamp();
     }

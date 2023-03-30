@@ -52,6 +52,19 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 @Log4j2
 public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String FIELD = "field";
+    private static final String VALUE = "value";
+    private static final String POSITION = "position";
+    private static final String IGNORE_ERRORS = "ignoreErrors";
+    private static final String TYPE = "type";
+    private static final String GROUP = "group";
+
+    private static final String POSITION_TOP = "top";
+    private static final String POSITION_CHILD = "child";
+    private static final String POSITION_ANY = "any";
+    private static final String POSITION_PHYSICAL = "physical";
+
     @Override
     public String getAction() {
         return "metadataAdd";
@@ -61,17 +74,17 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to add a new metadata to a METS file.");
-        addParameterToSampleCall(sb, "field", "Description",
+        addParameterToSampleCall(sb, FIELD, "Description",
                 "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
-        addParameterToSampleCall(sb, "value", "This is my content.",
+        addParameterToSampleCall(sb, VALUE, "This is my content.",
                 "This is used to define the value that shall be stored inside of the newly created metadata field.");
-        addParameterToSampleCall(sb, "position", "work",
+        addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
-        addParameterToSampleCall(sb, "ignoreErrors", "true",
+        addParameterToSampleCall(sb, IGNORE_ERRORS, "true",
                 "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
-        addParameterToSampleCall(sb, "type", "metadata",
+        addParameterToSampleCall(sb, TYPE, "metadata",
                 "Define what type of metadata you would like to add. Possible values are `metadata` and `group`. Default is metadata.");
-        addParameterToSampleCall(sb, "group", "",
+        addParameterToSampleCall(sb, GROUP, "",
                 "Internal name of the group. Use it when the metadata to add is located within a group or if a new group should be added.");
         return sb.toString();
     }
@@ -80,17 +93,19 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (StringUtils.isBlank(parameters.get("field"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "field");
+        String missingParameter = "Missing parameter: ";
+        if (StringUtils.isBlank(parameters.get(FIELD))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, FIELD);
             return Collections.emptyList();
         }
 
-        if (StringUtils.isBlank(parameters.get("value"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "value");
+        if (StringUtils.isBlank(parameters.get(VALUE))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, VALUE);
             return Collections.emptyList();
         }
-        if (StringUtils.isBlank(parameters.get("position"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
+
+        if (StringUtils.isBlank(parameters.get(POSITION))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, POSITION);
             return Collections.emptyList();
         }
 
@@ -118,10 +133,10 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
 
             // find the right elements to adapt
             List<DocStruct> dsList = new ArrayList<>();
-            switch (parameters.get("position")) {
+            switch (parameters.get(POSITION)) {
 
                 // just the anchor element
-                case "top":
+                case POSITION_TOP:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds);
                     } else {
@@ -132,7 +147,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                     break;
 
                 // fist the first child element
-                case "child":
+                case POSITION_CHILD:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
                     } else {
@@ -143,11 +158,11 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                     break;
 
                 // any element in the hierarchy
-                case "any":
+                case POSITION_ANY:
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
                     break;
-                case "physical":
+                case POSITION_PHYSICAL:
                     if (physical != null) {
                         dsList.add(physical);
                     }
@@ -164,20 +179,20 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             }
 
             // check if errors shall be ignored
-            boolean ignoreErrors = getParameterAsBoolean("ignoreErrors");
+            boolean ignoreErrors = getParameterAsBoolean(IGNORE_ERRORS);
 
             // get the content to be set and pipe it through the variable replacer
-            String newvalue = parameters.get("value");
+            String newvalue = parameters.get(VALUE);
             VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
             newvalue = replacer.replace(newvalue);
-            String type = parameters.get("type");
-            String group = parameters.get("group");
+            String type = parameters.get(TYPE);
+            String group = parameters.get(GROUP);
             // now add the new metadata and save the file
-            addMetadata(dsList, type, group, parameters.get("field"), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors);
+            addMetadata(dsList, type, group, parameters.get(FIELD), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors);
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                    "Metadata added using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
+                    "Metadata added using GoobiScript: " + parameters.get(FIELD) + " - " + parameters.get(VALUE), username);
             log.info("Metadata added using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Metadata added successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
@@ -206,7 +221,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
     @SuppressWarnings("unchecked")
     private void addMetadata(List<DocStruct> dsList, String addType, String groupName, String field, String value, Prefs prefs, boolean ignoreErrors)
             throws MetadataTypeNotAllowedException {
-        if (StringUtils.isNotBlank(addType) && "group".equals(addType)) {
+        if (StringUtils.isNotBlank(addType) && GROUP.equals(addType)) {
             for (DocStruct ds : dsList) {
                 MetadataGroup mg = new MetadataGroup(prefs.getMetadataGroupTypeByName(groupName));
                 ds.addMetadataGroup(mg);

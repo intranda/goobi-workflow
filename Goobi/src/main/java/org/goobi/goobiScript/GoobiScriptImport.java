@@ -46,6 +46,13 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Setter;
 
 public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
+
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String PLUGIN = "plugin";
+    private static final String IDENTIFIERS = "identifiers";
+    private static final String TEMPLATE = "template";
+    private static final String PROJECT_ID = "projectId";
+
     @Setter
     private MassImportForm mi;
     private Batch batch = null;
@@ -60,10 +67,10 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript is used to execute mass imports of data using an existing mass import plugin.");
-        addParameterToSampleCall(sb, "plugin", "plugin_intranda_import_myplugin", "Define the plugin identifier to use here.");
-        addParameterToSampleCall(sb, "identifiers", "1,2,3,4,5", "Define the identifiers to use for the import. These are comma separated.");
-        addParameterToSampleCall(sb, "template", "13", "Define here the identifier of the process template to use for the mass import.");
-        addParameterToSampleCall(sb, "projectId", "2",
+        addParameterToSampleCall(sb, PLUGIN, "plugin_intranda_import_myplugin", "Define the plugin identifier to use here.");
+        addParameterToSampleCall(sb, IDENTIFIERS, "1,2,3,4,5", "Define the identifiers to use for the import. These are comma separated.");
+        addParameterToSampleCall(sb, TEMPLATE, "13", "Define here the identifier of the process template to use for the mass import.");
+        addParameterToSampleCall(sb, PROJECT_ID, "2",
                 "In case another project shall be used define the project identifier here. This parameter is optional.");
         return sb.toString();
     }
@@ -72,27 +79,31 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("plugin") == null || parameters.get("plugin").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "plugin");
+        String missingParameter = "Missing parameter: ";
+        String plugin = parameters.get(PLUGIN);
+        if (plugin == null || plugin.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, PLUGIN);
             return new ArrayList<>();
         }
 
-        if (parameters.get("identifiers") == null || parameters.get("identifiers").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "identifiers");
+        String identifiers = parameters.get(IDENTIFIERS);
+        if (identifiers == null || identifiers.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, IDENTIFIERS);
             return new ArrayList<>();
         }
 
-        if (parameters.get("template") == null || parameters.get("template").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "template");
+        String template = parameters.get(TEMPLATE);
+        if (template == null || template.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, TEMPLATE);
             return new ArrayList<>();
         }
 
         batch = mi.getBatch();
 
-        String[] identifiers = parameters.get("identifiers").split(",");
+        String[] identifierList = identifiers.split(",");
         List<GoobiScriptResult> newList = new ArrayList<>();
-        for (String id : identifiers) {
-            GoobiScriptResult gsr = new GoobiScriptResult(Integer.parseInt(parameters.get("template")), command, parameters, username, starttime);
+        for (String id : identifierList) {
+            GoobiScriptResult gsr = new GoobiScriptResult(Integer.parseInt(template), command, parameters, username, starttime);
             gsr.setProcessTitle(id);
             newList.add(gsr);
         }
@@ -106,13 +117,13 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
-        String pluginName = parameters.get("plugin");
-        Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
+        String pluginName = parameters.get(PLUGIN);
+        Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get(TEMPLATE)));
 
         // set the overridden project if present
-        if (parameters.get("projectId") != null && !parameters.get("projectId").equals("")) {
-            int projectid = Integer.parseInt(parameters.get("projectId"));
-            template.setProjectId(projectid);
+        String projectId = parameters.get(PROJECT_ID);
+        if (projectId != null && !projectId.equals("")) {
+            template.setProjectId(Integer.parseInt(projectId));
         }
 
         // execute all jobs that are still in waiting state
