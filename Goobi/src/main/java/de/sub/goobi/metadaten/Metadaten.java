@@ -480,7 +480,6 @@ public class Metadaten implements Serializable {
 
     private transient PageAreaManager pageAreaManager;
 
-    private transient ImageCommentHelper commentHelper;
     private ImageCommentPropertyHelper commentPropertyHelper;
 
     //this is set whenever setImage() is called.
