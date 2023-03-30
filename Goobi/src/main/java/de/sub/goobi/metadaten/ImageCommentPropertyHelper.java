@@ -25,6 +25,8 @@ public class ImageCommentPropertyHelper {
     private static final String IMAGE_COMMENTS_HEADER = "image comments ";
     private static final String JSON_HEADER = "{\"comments\":";
     private static final String JSON_TAIL = "}";
+    private static final String ERROR_MESSAGE_FOR_NULL_FOLDER_NAME = "folderName should not be null";
+    private static final String ERROR_MESSAGE_FOR_NULL_IMAGE_NAME = "imageName should not be null";
 
     private static Gson gson = new Gson();
 
@@ -43,6 +45,14 @@ public class ImageCommentPropertyHelper {
      * @return comment of the image
      */
     public String getComment(String folderName, String imageName) {
+        if (folderName == null) {
+            log.error(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
+            return null;
+        }
+        if (imageName == null) {
+            log.error(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
+            return null;
+        }
         String propertyTitle = getPropertyTitle(folderName);
         Processproperty currentProperty = prepareProcessproperty(propertyTitle);
         ImageComments comments = getImageComments(currentProperty);
@@ -58,6 +68,14 @@ public class ImageCommentPropertyHelper {
      * @param comment comment of the image
      */
     public void setComment(String folderName, String imageName, String comment) {
+        if (folderName == null) {
+            log.error(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
+            return;
+        }
+        if (imageName == null) {
+            log.error(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
+            return;
+        }
         String propertyTitle = getPropertyTitle(folderName);
         Processproperty currentProperty = prepareProcessproperty(propertyTitle);
         ImageComments comments = getImageComments(currentProperty);
@@ -76,6 +94,10 @@ public class ImageCommentPropertyHelper {
      * @return all comments of images in this folder as a Map object
      */
     public Map<String, String> getComments(String folderName) {
+        if (folderName == null) {
+            log.error(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
+            return null;
+        }
         String propertyTitle = getPropertyTitle(folderName);
         Processproperty currentProperty = prepareProcessproperty(propertyTitle);
         ImageComments comments = getImageComments(currentProperty);
@@ -193,7 +215,7 @@ public class ImageCommentPropertyHelper {
         return gson.fromJson(comments, ImageComments.class);
     }
 
-    private class ImageComments {
+    class ImageComments {
         private TreeMap<String, String> comments;
 
         public ImageComments() {
