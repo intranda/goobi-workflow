@@ -56,13 +56,13 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -75,6 +75,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
 import ugh.dl.Corporate;
@@ -89,7 +90,7 @@ import ugh.exceptions.ReadException;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, MetadataManager.class,
-        ProcessManager.class })
+        ProcessManager.class, PropertyManager.class })
 @PowerMockIgnore({ "javax.net.ssl.*" })
 public class MetadatenTest extends AbstractTest {
 
@@ -2074,23 +2075,39 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(DisplayType.select, fixture.getCurrentMetadataToPerformSearch().getMetadataDisplaytype());
     }
 
-    @Ignore("not completed yet, check the comment below")
     @Test
-    public void testCommentForImage() throws Exception {
-        Metadaten fixture = initMetadaten();
-        Image image = fixture.getImage();
-        String imageName = image.getImageName();
-        String folderName = image.getImagePath().getParent().getFileName().toString();
-        assertNotNull(imageName);
-        assertNotNull(folderName);
+    public void testGetCommentPropertyForImage() throws Exception {
+        List<Processproperty> props = new ArrayList<>();
 
+        PowerMock.mockStatic(PropertyManager.class);
+        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andStubReturn(props);
+        PowerMock.replayAll();
+
+        Metadaten fixture = initMetadaten();
+        assertEquals("", fixture.getCommentPropertyForImage());
+        
         ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
         assertNotNull(helper);
 
-        // the following call will result in an
-        // java.lang.IllegalAccessError: class javax.naming.spi.NamingManager (in unnamed module @0x4604e051) cannot access class 
-        // jdk.internal.loader.ClassLoaderValue (in module java.base) because module java.base does not export jdk.internal.loader to unnamed module @0x4604e051
-        String comment = helper.getComment(folderName, imageName);
+        // prepare some process property
+        String folderName = process.getImagesTifDirectory(false);
+        String imageName = fixture.getImage().getImageName();
+        String comment = "just some comment";
+        
+        Processproperty property = new Processproperty();
+        property.setProcessId(process.getId());
+        
+        // prepare title and value for this process property
+        String propertyTitle = Whitebox.invokeMethod(helper, "getPropertyTitle", folderName);
+        ImageCommentPropertyHelper.ImageComments imageComments = Whitebox.invokeMethod(helper, "getImageComments", property);
+        imageComments.setComment(imageName, comment);
+        String propertyValue = Whitebox.invokeMethod(helper, "createPropertyValue", imageComments);
+
+        property.setTitel(propertyTitle);
+        property.setWert(propertyValue);
+        props.add(property);
+
+        assertEquals(comment, fixture.getCommentPropertyForImage());
     }
 
     private Metadaten initMetadaten() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
