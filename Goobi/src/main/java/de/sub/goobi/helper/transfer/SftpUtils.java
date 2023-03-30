@@ -136,7 +136,7 @@ public class SftpUtils implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         if (sftpChannel != null && sftpChannel.isConnected()) {
             sftpChannel.disconnect();
         }
