@@ -50,16 +50,19 @@ public class BagCreation {
     @Getter
     private Metadata metadata = new Metadata();
 
+    private Path updatedIeFolder;
+
     /**
      * 
-     * @param rootFolderName name of the root folder. If missing, a new uuid is generated
+     * @param rootFolderName name of the root folder. If missing, a new uuid folder is generated within the temp directory
      */
 
     public BagCreation(String rootFolderName) {
         if (StringUtils.isBlank(rootFolderName)) {
-            rootFolderName = UUID.randomUUID().toString();
+            bagitRoot = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder(), UUID.randomUUID().toString());
+        } else {
+            bagitRoot = Paths.get(rootFolderName);
         }
-        bagitRoot = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder(), rootFolderName);
     }
 
     /**
@@ -72,9 +75,11 @@ public class BagCreation {
 
     public void createIEFolder(String folderName, String objectFolderName) {
         if (StringUtils.isBlank(folderName)) {
-            ieFolder = Paths.get(bagitRoot.toString(), "data/");
+            ieFolder = Paths.get(bagitRoot.toString());
+            updatedIeFolder = Paths.get(bagitRoot.toString(), "data");
         } else {
-            ieFolder = Paths.get(bagitRoot.toString(), "data/", folderName);
+            ieFolder = Paths.get(bagitRoot.toString(), folderName);
+            updatedIeFolder = Paths.get(bagitRoot.toString(), "data", folderName);
         }
         metadataFolder = Paths.get(ieFolder.toString(), "metadata");
         objectsFolder = Paths.get(ieFolder.toString(), objectFolderName);
@@ -100,6 +105,12 @@ public class BagCreation {
             log.error(e);
         }
         log.info("Files  and Metadata aranged in Bag structure");
+
+        // update folder
+        ieFolder = updatedIeFolder;
+        metadataFolder = Paths.get(ieFolder.toString(), "metadata");
+        objectsFolder = Paths.get(ieFolder.toString(), objectsFolder.getFileName().toString());
+
     }
 
     public void addMetadata(String key, String value) {
