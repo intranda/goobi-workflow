@@ -119,7 +119,7 @@
                                                                 render="@all" />
                                                         </button>
                                                         <button
-                                                            jsf:rendered="#{entry.jobKey != null}"
+                                                            jsf:rendered="#{entry.jobKey != null and !entry.paused}"
                                                             jsf:action="#{jobBean.pauseJob}"
                                                             jsf:rel="tooltip"
                                                             class="btn btn-blank me-2 float-end"
@@ -136,7 +136,7 @@
                                                                 value="#{entry}" />
                                                         </button>
                                                         <button
-                                                            jsf:rendered="#{entry.jobKey != null}"
+                                                            jsf:rendered="#{entry.jobKey != null and entry.paused}"
                                                             jsf:action="#{jobBean.resumeJob}"
                                                             jsf:rel="tooltip"
                                                             class="btn btn-blank me-2 float-end"
@@ -177,6 +177,7 @@
                                     <button
                                         data-target="pauseButton"
                                         jsf:action="#{jobBean.pauseAllJobs}"
+                                        jsf:rendered="#{!jobBean.paused}"
                                         class="btn btn-blank float-end">
                                         <i class="fa fa-pause"></i>
                                         <span>#{msgs.jobs_pause_all}</span>
@@ -187,6 +188,7 @@
                                     <button
                                         data-target="resumeButton"
                                         jsf:action="#{jobBean.resumeAllJobs}"
+                                        jsf:rendered="#{jobBean.paused}"
                                         class="btn btn-primary-400 float-end">
                                         <i class="fa fa-play"></i>
                                         <span>#{msgs.jobs_resume_all}</span>
