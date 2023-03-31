@@ -16,7 +16,7 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package de.sub.goobi.helper.transfer;
+package io.goobi.workflow.api.connection;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
