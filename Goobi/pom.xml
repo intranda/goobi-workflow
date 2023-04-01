@@ -90,7 +90,7 @@
         <h2.version>1.4.200</h2.version>
         <oscache.version>2.3</oscache.version>
         <shiro.version>1.11.0</shiro.version>
-        <activemq.version>5.17.4</activemq.version>
+        <activemq.version>5.18.0</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
         <aws.version>1.12.428</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
