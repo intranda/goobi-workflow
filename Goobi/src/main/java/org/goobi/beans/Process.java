@@ -165,6 +165,13 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     private String imagesTiffDirectory = null;
     private String imagesOrigDirectory = null;
+    private String ocrAltoDirectory = null;
+    private String ocrXmlDirectory = null;
+    private String ocrTxtDirectory = null;
+    private String ocrPdfDirectory = null;
+    private String imagesSourceDirectory = null;
+    private String importDirectory = null;
+    private String exportDirectory = null;
 
     private BeanHelper bhelp = new BeanHelper();
 
@@ -475,12 +482,15 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public String getSourceDirectory() throws IOException, SwapException {
-        Path sourceFolder = Paths.get(getImagesDirectory(),
-                VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName(), this));
-        if (ConfigurationHelper.getInstance().isCreateSourceFolder() && !StorageProvider.getInstance().isDirectory(sourceFolder)) {
-            StorageProvider.getInstance().createDirectories(sourceFolder);
+        if (imagesSourceDirectory == null) {
+            Path sourceFolder = Paths.get(getImagesDirectory(),
+                    VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName(), this));
+            if (ConfigurationHelper.getInstance().isCreateSourceFolder() && !StorageProvider.getInstance().isDirectory(sourceFolder)) {
+                StorageProvider.getInstance().createDirectories(sourceFolder);
+            }
+            imagesSourceDirectory = sourceFolder.toString();
         }
-        return sourceFolder.toString();
+        return imagesSourceDirectory;
     }
 
     public String getProcessDataDirectory() throws IOException, SwapException {
@@ -507,8 +517,12 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public String getOcrTxtDirectory() throws SwapException, IOException {
-        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        if (ocrTxtDirectory == null) {
+            ocrTxtDirectory =
+                    getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
+                            + FileSystems.getDefault().getSeparator();
+        }
+        return ocrTxtDirectory;
     }
 
     @Deprecated
@@ -517,28 +531,48 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public String getOcrPdfDirectory() throws SwapException, IOException {
-        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        if (ocrPdfDirectory == null) {
+            ocrPdfDirectory =
+                    getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
+                            + FileSystems.getDefault().getSeparator();
+        }
+        return ocrPdfDirectory;
     }
 
     public String getOcrAltoDirectory() throws SwapException, IOException {
-        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        if (ocrAltoDirectory == null) {
+            ocrAltoDirectory =
+                    getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
+                            + FileSystems.getDefault().getSeparator();
+        }
+        return ocrAltoDirectory;
     }
 
     public String getOcrXmlDirectory() throws SwapException, IOException {
-        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        if (ocrXmlDirectory == null) {
+            ocrXmlDirectory =
+                    getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
+                            + FileSystems.getDefault().getSeparator();
+        }
+        return ocrXmlDirectory;
     }
 
     public String getImportDirectory() throws SwapException, IOException {
-        return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        if (importDirectory == null) {
+            importDirectory = getProcessDataDirectory()
+                    + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
+                    + FileSystems.getDefault().getSeparator();
+        }
+        return importDirectory;
     }
 
     public String getExportDirectory() throws SwapException, IOException {
-        return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        if (exportDirectory == null) {
+            exportDirectory = getProcessDataDirectory()
+                    + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
+                    + FileSystems.getDefault().getSeparator();
+        }
+        return exportDirectory;
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException {
@@ -2028,7 +2062,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         }
     }
 
-    //read the image comments files in the image folders, and return all of them as a list.
+    //read the image comments files in the image folders, and return all of them as a list, sorted by image name
     public List<ImageComment> getImageComments() throws IOException, InterruptedException, SwapException, DAOException {
 
         List<ImageComment> lstComments = new ArrayList<>();
@@ -2056,7 +2090,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                 }
             }
         }
-
+        lstComments.sort((c1, c2) -> c1.getImageName().compareTo(c2.getImageName()));
         return lstComments;
     }
 

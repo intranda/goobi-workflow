@@ -105,7 +105,7 @@ public class DocketBean extends BasicBean implements Serializable {
 
     public String FilterKein() {
         DocketManager m = new DocketManager();
-        paginator = new DatabasePaginator(sortierung, filter, m, "docket_all");
+        paginator = new DatabasePaginator(sortField, filter, m, "docket_all");
         return "docket_all";
     }
 

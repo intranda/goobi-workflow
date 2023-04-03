@@ -108,33 +108,40 @@
 														name="name"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.name}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform"
+                                                        sortField="benutzer.nachname, benutzer.vorname" />
 												<intranda:columnheader
 														name="login"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.login}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform"
+                                                        sortField="benutzer.login" />
 												<intranda:columnheader
 														name="location"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.standort}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform" 
+                                                        sortField="benutzer.standort" />
 												<intranda:columnheader
 														name="group"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.benutzergruppen}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform"
+                                                        sortField="groups" />
 												<intranda:columnheader
 														name="projects"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.projekte}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform"
+                                                        sortField="projects" />
+                                                        
 												<intranda:columnheader
 														name="institution"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.institution}"
 														rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
-														ajaxRender="allUsers:myform" />
+														ajaxRender="allUsers:myform"
+                                                        sortField="institution.shortName" />
 												<intranda:columnheader
 														value="#{msgs.auswahl}"
 														sortable="false"

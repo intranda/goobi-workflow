@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
@@ -49,7 +50,20 @@ class UserMysqlHelper implements Serializable {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM benutzer LEFT JOIN institution ON benutzer.institution_id = institution.id");
+        sql.append("SELECT * FROM benutzer LEFT JOIN institution ON benutzer.institution_id = institution.id ");
+        String sortField = order;
+
+        if (StringUtils.isNotBlank(order) && order.contains("groups")) {
+            sql.append(" LEFT JOIN (SELECT BenutzerID, GROUP_CONCAT(titel order by titel) as groups FROM benutzergruppenmitgliedschaft LEFT JOIN ");
+            sql.append("benutzergruppen ON benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzerGruppenID GROUP BY ");
+            sql.append("BenutzerID) as grp ON grp.BenutzerID = benutzer.BenutzerID ");
+            sortField = "case when groups = '' or groups is null then 1 else 0 end, " + order;
+        } else if (StringUtils.isNotBlank(order) && order.contains("projects")) {
+            sql.append(" LEFT JOIN (SELECT BenutzerID, GROUP_CONCAT(titel order by titel) as projects  FROM projektbenutzer LEFT JOIN projekte ON ");
+            sql.append("projektbenutzer.ProjekteID = projekte.ProjekteID GROUP BY BenutzerID) as grp ON grp.BenutzerID = benutzer.BenutzerID ");
+            sortField = "case when projects = '' or projects is null then 1 else 0 end, " + order;
+        }
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
@@ -65,8 +79,8 @@ class UserMysqlHelper implements Serializable {
             sql.append(institution.getId());
         }
 
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        if (StringUtils.isNotBlank(sortField)) {
+            sql.append(" ORDER BY " + sortField);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);

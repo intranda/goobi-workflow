@@ -54,9 +54,13 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.DosFileAttributeView;
 import java.nio.file.attribute.DosFileAttributes;
 import java.nio.file.attribute.FileOwnerAttributeView;
+import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,6 +68,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.CRC32;
+
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -151,7 +157,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-            ).size();
+                    ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -924,5 +930,49 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
 
         return mimeType;
+    }
+
+    @Override
+    public String createSha1Checksum(Path file) {
+        try {
+            return calculateChecksum(file, "SHA-1");
+        } catch (NoSuchAlgorithmException | IOException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    @Override
+    public String createSha256Checksum(Path file) {
+        try {
+            return calculateChecksum(file, "SHA-256");
+        } catch (NoSuchAlgorithmException | IOException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    private String calculateChecksum(Path file, String checksumType) throws NoSuchAlgorithmException, IOException {
+        String sha1 = null;
+        MessageDigest digest = MessageDigest.getInstance(checksumType);
+        try (InputStream input = Files.newInputStream(file); DigestInputStream digestStream = new DigestInputStream(input, digest)) {
+            while (digestStream.read() != -1) {
+                // read file stream without buffer
+            }
+            MessageDigest msgDigest = digestStream.getMessageDigest();
+            sha1 = new HexBinaryAdapter().marshal(msgDigest.digest());
+        }
+        return sha1;
+    }
+
+    public String getFileCreationTime(Path path) {
+        try {
+            BasicFileAttributes            attr = Files.readAttributes(path, BasicFileAttributes.class);
+            FileTime fileTime = attr.creationTime();
+            return fileTime.toInstant().toString();
+        } catch (IOException e) {
+            log.error(e);
+        }
+        return null;
     }
 }

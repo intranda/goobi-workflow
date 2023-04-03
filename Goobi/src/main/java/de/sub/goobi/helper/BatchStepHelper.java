@@ -729,7 +729,7 @@ public class BatchStepHelper implements Serializable {
         }
     }
 
-    public void ExportDMS() {
+    public void exportDMS() {
         for (Step step : this.steps) {
             IExportPlugin dms = null;
             if (StringUtils.isNotBlank(step.getStepPlugin())) {

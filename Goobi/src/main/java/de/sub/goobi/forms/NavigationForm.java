@@ -75,7 +75,6 @@ public class NavigationForm implements Serializable {
      */
     @Getter
     @Setter
-    @Deprecated
     private String aktuell = "0";
     @Getter
     @Setter
@@ -148,7 +147,7 @@ public class NavigationForm implements Serializable {
             completePath = completePath.replace("/uii", "");
             completePath = completePath.replace("/ui", "");
         }
-        if (currentTheme.equals("/uii")) {
+        if ("/uii".equals(currentTheme)) {
             currentTheme = "/ui";
         } else {
             currentTheme = "/uii";
@@ -161,7 +160,7 @@ public class NavigationForm implements Serializable {
         String completePath = context.getExternalContext().getRequestServletPath();
         if (StringUtils.isNotBlank(completePath)) {
             String[] parts = completePath.split("/");
-            if (parts[1].equalsIgnoreCase("ui")) {
+            if ("ui".equalsIgnoreCase(parts[1])) {
                 return Theme.ui;
             } else {
                 return Theme.uii;

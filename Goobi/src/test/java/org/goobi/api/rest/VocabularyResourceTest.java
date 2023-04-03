@@ -76,7 +76,7 @@ public class VocabularyResourceTest {
         EasyMock.expect(VocabularyManager.findRecords(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString()))
                 .andReturn(records)
                 .anyTimes();
-        EasyMock.expect(VocabularyManager.findRecords(EasyMock.anyString(), EasyMock.anyObject(List.class))).andReturn(records).anyTimes();
+        EasyMock.expect(VocabularyManager.findRecords(EasyMock.anyString(), EasyMock.anyObject())).andReturn(records).anyTimes();
 
         EasyMock.expect(VocabularyManager.getRecord(EasyMock.anyInt(), EasyMock.anyInt())).andReturn(vr).anyTimes();
 
@@ -98,6 +98,7 @@ public class VocabularyResourceTest {
         VocabularyResource res = new VocabularyResource();
         Response response = res.findRecords("vocabulary", "searchvalue");
         assertEquals(200, response.getStatus());
+        @SuppressWarnings("unchecked")
         List<VocabRecord> rec = (List<VocabRecord>) response.getEntity();
         assertEquals(1, rec.size());
     }
@@ -107,6 +108,7 @@ public class VocabularyResourceTest {
         VocabularyResource res = new VocabularyResource();
         Response response = res.findRecords("vocabulary", "fieldname", "searchvalue");
         assertEquals(200, response.getStatus());
+        @SuppressWarnings("unchecked")
         List<VocabRecord> rec = (List<VocabRecord>) response.getEntity();
         assertEquals(1, rec.size());
 
@@ -118,6 +120,7 @@ public class VocabularyResourceTest {
         List<StringPair> list = new ArrayList<>();
         Response response = res.findRecords("vocabulary", list);
         assertEquals(200, response.getStatus());
+        @SuppressWarnings("unchecked")
         List<VocabRecord> rec = (List<VocabRecord>) response.getEntity();
         assertEquals(1, rec.size());
     }

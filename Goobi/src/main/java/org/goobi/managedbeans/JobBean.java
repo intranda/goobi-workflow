@@ -28,6 +28,7 @@ package org.goobi.managedbeans;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -55,6 +56,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.reflections.Reflections;
 
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.BackgroundJobManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -79,24 +81,28 @@ public class JobBean extends BasicBean implements Serializable {
     @Getter
     private transient List<QuartzJobDetails> activeJobs = new ArrayList<>();
 
-
     @PostConstruct
     public void init() throws SchedulerException {
+        sortField = "lastAltered desc";
+
         activeJobs.clear();
         scheduler = new StdSchedulerFactory().getScheduler();
         Set<Class<? extends AbstractGoobiJob>> allJobTypes = new Reflections().getSubTypesOf(AbstractGoobiJob.class);
 
         // find all existing jobs
         for (Class<? extends IGoobiJob> jobClass : allJobTypes) {
-            try {
-                IGoobiJob job = jobClass.getDeclaredConstructor().newInstance();
-                QuartzJobDetails details = new QuartzJobDetails();
-                activeJobs.add(details);
-                details.setJob(job);
-                details.setJobName(job.getJobName());
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-                    | SecurityException e) {
-                log.error(e);
+            if (!Modifier.isAbstract(jobClass.getModifiers()) && !Modifier.isPrivate(jobClass.getModifiers())) {
+
+                try {
+                    IGoobiJob job = jobClass.getDeclaredConstructor().newInstance();
+                    QuartzJobDetails details = new QuartzJobDetails();
+                    activeJobs.add(details);
+                    details.setJob(job);
+                    details.setJobName(job.getJobName());
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                        | NoSuchMethodException | SecurityException e) {
+                    log.error(e);
+                }
             }
         }
 
@@ -149,8 +155,10 @@ public class JobBean extends BasicBean implements Serializable {
             }
         } catch (SchedulerException e) {
             log.error(e);
+            Helper.setFehlerMeldung("jobs_pause_all_error", e);
         }
         paused = true;
+        Helper.setMeldung("jobs_pause_all_successful");
     }
 
     public void resumeAllJobs() {
@@ -161,16 +169,20 @@ public class JobBean extends BasicBean implements Serializable {
             }
         } catch (SchedulerException e) {
             log.error(e);
+            Helper.setFehlerMeldung("jobs_resume_all_error", e);
         }
         paused = false;
+        Helper.setMeldung("jobs_resume_all_successful");
     }
 
     public void pauseJob() {
         try {
             scheduler.pauseJob(quartzJobDetails.getJobKey());
             quartzJobDetails.setPaused(true);
+            Helper.setMeldung("jobs_pause_successful");
         } catch (SchedulerException e) {
             log.error(e);
+            Helper.setFehlerMeldung("jobs_pause_error", e);
         }
     }
 
@@ -178,8 +190,10 @@ public class JobBean extends BasicBean implements Serializable {
         try {
             scheduler.resumeJob(quartzJobDetails.getJobKey());
             quartzJobDetails.setPaused(false);
+            Helper.setMeldung("jobs_resume_successful");
         } catch (SchedulerException e) {
             log.error(e);
+            Helper.setFehlerMeldung("jobs_resume_error", e);
         }
     }
 
@@ -201,15 +215,16 @@ public class JobBean extends BasicBean implements Serializable {
                 scheduler.scheduleJob(jobDetail, trigger);
                 init();
             }
-
+            Helper.setMeldung("jobs_trigger_successful");
         } catch (SchedulerException e) {
             log.error(e);
+            Helper.setFehlerMeldung("jobs_trigger_error", e);
         }
     }
 
     public void FilterAlleStart() {
         BackgroundJobManager manager = new BackgroundJobManager();
-        paginator = new DatabasePaginator("lastAltered desc", filter, manager, "");
+        paginator = new DatabasePaginator(sortField, filter, manager, "");
     }
 
 }

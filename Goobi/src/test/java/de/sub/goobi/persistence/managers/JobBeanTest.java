@@ -56,6 +56,9 @@ public class JobBeanTest {
 
         PowerMock.mockStatic(Helper.class);
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        Helper.setMeldung(EasyMock.anyString());
+        Helper.setMeldung(EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyObject(Exception.class));
         PowerMock.replay(Helper.class);
 
         BackgroundJob job = EasyMock.createMock(BackgroundJob.class);

@@ -52,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 51;
+    public static final int EXPECTED_VERSION = 52;
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
@@ -382,6 +382,10 @@ public class DatabaseVersion {
                     log.trace("Update database to version 51.");
                     updateToVersion51();
                     tempVersion++;
+                case 51: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 52.");
+                    updateToVersion52();
+                    tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -393,6 +397,17 @@ public class DatabaseVersion {
             log.error(e);
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
+        }
+    }
+
+    private static void updateToVersion52() {
+        DatabaseVersion.createTableForBackgroundJobs();
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "additional_search_fields")) {
+            try {
+                DatabaseVersion.runSql("alter table benutzer add column additional_search_fields text DEFAULT null");
+            } catch (SQLException e) {
+                log.error(e);
+            }
         }
     }
 
@@ -899,7 +914,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -908,15 +923,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
+                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 
@@ -1972,7 +1987,7 @@ public class DatabaseVersion {
         }
     }
 
-    public static void createTableForBackgroundJobs() {
+    private static void createTableForBackgroundJobs() {
         if (!checkIfTableExists("background_job")) {
             StringBuilder sb = new StringBuilder();
             sb.append("CREATE TABLE background_job ( ");
