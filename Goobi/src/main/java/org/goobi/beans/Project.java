@@ -394,7 +394,7 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         setNumberOfVolumes(source.getNumberOfVolumes());
         setProjectIsArchived(source.getProjectIsArchived());
         setStartDate(source.getStartDate());
-        setTitel(Project.cloneProjectTitleWithoutNameConflict(source.getTitel()));
+        setTitel(cloneProjectTitleWithoutNameConflict(source.getTitel()));
         setUseDmsImport(source.isUseDmsImport());
         setInstitution(source.getInstitution());
         setProjectIdentifier(source.getProjectIdentifier());
@@ -447,7 +447,7 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
      * @param sourceProjectTitle The title of the project that should be cloned
      * @return The new name for a cloned project, the name does not exist until now
      */
-    private static String cloneProjectTitleWithoutNameConflict(String sourceProjectTitle) {
+    private String cloneProjectTitleWithoutNameConflict(String sourceProjectTitle) {
         String newProjectTitle = sourceProjectTitle + "_copy";
         List<String> existingProjectTitles = ProjectManager.getAllProjectTitles(false);
         if (!existingProjectTitles.contains(newProjectTitle)) {
