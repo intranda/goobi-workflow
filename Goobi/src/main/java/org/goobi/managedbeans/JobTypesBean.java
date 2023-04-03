@@ -51,7 +51,11 @@ import lombok.extern.log4j.Log4j2;
 @Named("JobTypesBean")
 @Data
 public class JobTypesBean implements Serializable {
+
     private static final long serialVersionUID = 4451013586976652181L;
+
+    private static final String RETURN_PAGE_ALL = "admin_jobtypes_all.xhtml";
+    private static final String RETURN_PAGE_EDIT = "admin_jobtypes_edit.xhtml";
 
     @Inject
     private JobTypesCache jobTypesCache;
@@ -94,14 +98,14 @@ public class JobTypesBean implements Serializable {
     public String addNewJobType() {
         this.currentJobType = new JobType();
         this.availableStepTitles = new ArrayList<>(this.stepTitles);
-        return "admin_jobtypes_edit.xhtml";
+        return RETURN_PAGE_EDIT;
     }
 
     public String editJobType(JobType jobType) {
         this.currentJobType = new JobType(jobType);
         this.availableStepTitles = new ArrayList<>(this.stepTitles);
         this.availableStepTitles.removeAll(this.currentJobType.getStepNameList());
-        return "admin_jobtypes_edit.xhtml";
+        return RETURN_PAGE_EDIT;
     }
 
     public String saveCurrentJobType() {
@@ -119,12 +123,12 @@ public class JobTypesBean implements Serializable {
             this.jobTypes.set(indexes[0], this.currentJobType);
         }
         this.apply();
-        return "admin_jobtypes_all.xhtml";
+        return RETURN_PAGE_ALL;
     }
 
     public String cancelJobTypeEdit() {
         this.currentJobType = new JobType();
-        return "admin_jobtypes_all.xhtml";
+        return RETURN_PAGE_ALL;
     }
 
     public void toggleJobType(JobType jobType) {
@@ -157,7 +161,7 @@ public class JobTypesBean implements Serializable {
                 .filter(jt -> !jt.getId().equals(this.currentJobType.getId()))
                 .collect(Collectors.toList());
         this.apply();
-        return "admin_jobtypes_all.xhtml";
+        return RETURN_PAGE_ALL;
     }
 
     public void apply() {

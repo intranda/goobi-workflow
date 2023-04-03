@@ -141,7 +141,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                         } catch (Exception e) {
                             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, contentCouldNotBeDeleted, username);
                             log.error(contentCouldNotBeDeletedWithId);
-                            gsr.setResultMessage(contentCouldNotBeDeleted + " error: " + e.getMessage());
+                            gsr.setResultMessage(contentCouldNotBeDeleted + " process OCR directory deletion error: " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             gsr.setErrorText(e.getMessage());
                         }
@@ -161,7 +161,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                         } catch (Exception e) {
                             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, contentCouldNotBeDeleted, username);
                             log.error(contentCouldNotBeDeletedWithId);
-                            gsr.setResultMessage(contentCouldNotBeDeleted + " error: " + e.getMessage());
+                            gsr.setResultMessage(contentCouldNotBeDeleted + " process content deletion error: " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             gsr.setErrorText(e.getMessage());
                         }
@@ -176,7 +176,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                         } catch (Exception e) {
                             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, processCouldNotBeDeleted, username);
                             log.error(processCouldNotBeDeletedWithId);
-                            gsr.setResultMessage(processCouldNotBeDeleted + " error: " + e.getMessage());
+                            gsr.setResultMessage(processCouldNotBeDeleted + " process deletion error: " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             gsr.setErrorText(e.getMessage());
                         }

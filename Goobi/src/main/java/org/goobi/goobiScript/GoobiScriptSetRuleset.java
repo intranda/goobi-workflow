@@ -43,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoobiScript {
 
     private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
-    private static final String RULESET = "ruleset";
+    private static final String FIELD_RULESET = "ruleset";
 
     private Ruleset ruleset;
 
@@ -56,7 +56,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to assign a specific ruleset to the processes.");
-        addParameterToSampleCall(sb, RULESET, "Newspapers",
+        addParameterToSampleCall(sb, FIELD_RULESET, "Newspapers",
                 "Use the internal name of the ruleset here, not the name of the xml file where the ruleset is located.");
         return sb.toString();
     }
@@ -66,9 +66,9 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
         super.prepare(processes, command, parameters);
 
         String missingParameter = "Missing parameter: ";
-        String rulesetName = parameters.get(RULESET);
+        String rulesetName = parameters.get(FIELD_RULESET);
         if (rulesetName == null || rulesetName.equals("")) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, RULESET);
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, FIELD_RULESET);
             return new ArrayList<>();
         }
 

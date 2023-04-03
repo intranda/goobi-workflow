@@ -48,6 +48,9 @@ import lombok.Setter;
 public class DocketBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = 3006854499230483171L;
+
+    private static final String RETURN_PAGE = "docket_all";
+
     @Getter
     @Setter
     private Docket myDocket = new Docket();
@@ -95,7 +98,7 @@ public class DocketBean extends BasicBean implements Serializable {
     }
 
     public String Cancel() {
-        return "docket_all";
+        return RETURN_PAGE;
     }
 
     private boolean hasAssignedProcesses(Docket d) {
@@ -105,8 +108,8 @@ public class DocketBean extends BasicBean implements Serializable {
 
     public String FilterKein() {
         DocketManager m = new DocketManager();
-        paginator = new DatabasePaginator(sortField, filter, m, "docket_all");
-        return "docket_all";
+        paginator = new DatabasePaginator(sortField, filter, m, RETURN_PAGE);
+        return RETURN_PAGE;
     }
 
     public String FilterKeinMitZurueck() {

@@ -584,11 +584,10 @@ public class HelperSchritte {
                     step.setBearbeitungsende(new Date());
                     SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
                     StepManager.saveStep(step);
-                    Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
-                            "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
-                                    + ". The script returned: " + rueckgabe.getErrorText());
-                    log.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                            + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                    String scriptDidNotFinish = "Script for '" + step.getTitel() + "' did not finish successfully";
+                    String returned = ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText();
+                    Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, scriptDidNotFinish + returned);
+                    log.error(scriptDidNotFinish + " for process with ID " + step.getProcessId() + returned);
                 }
             }
         } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
@@ -725,24 +724,32 @@ public class HelperSchritte {
         } catch (JDOMException | IOException e1) {
             return;
         }
+
+        final String TAG_DMD_SEC = "dmdSec";
+        final String TAG_MD_WRAP = "mdWrap";
+        final String TAG_XML_DATA = "xmlData";
+        final String TAG_MODS = "mods";
+        final String TAG_EXTENSION = "extension";
+        final String TAG_GOOBI = "goobi";
+
         Element root = doc.getRootElement();
         try {
-            Element goobi = root.getChildren("dmdSec", mets)
+            Element goobi = root.getChildren(TAG_DMD_SEC, mets)
                     .get(0)
-                    .getChild("mdWrap", mets)
-                    .getChild("xmlData", mets)
-                    .getChild("mods", mods)
-                    .getChild("extension", mods)
-                    .getChild("goobi", goobiNamespace);
+                    .getChild(TAG_MD_WRAP, mets)
+                    .getChild(TAG_XML_DATA, mets)
+                    .getChild(TAG_MODS, mods)
+                    .getChild(TAG_EXTENSION, mods)
+                    .getChild(TAG_GOOBI, goobiNamespace);
             List<Element> metadataList = goobi.getChildren();
             addMetadata(metadataList, metadataPairs);
-            for (Element el : root.getChildren("dmdSec", mets)) {
+            for (Element el : root.getChildren(TAG_DMD_SEC, mets)) {
                 if ("DMDPHYS_0000".equals(el.getAttributeValue("ID"))) {
-                    Element phys = el.getChild("mdWrap", mets)
-                            .getChild("xmlData", mets)
-                            .getChild("mods", mods)
-                            .getChild("extension", mods)
-                            .getChild("goobi", goobiNamespace);
+                    Element phys = el.getChild(TAG_MD_WRAP, mets)
+                            .getChild(TAG_XML_DATA, mets)
+                            .getChild(TAG_MODS, mods)
+                            .getChild(TAG_EXTENSION, mods)
+                            .getChild(TAG_GOOBI, goobiNamespace);
                     List<Element> physList = phys.getChildren();
                     addMetadata(physList, metadataPairs);
                 }
@@ -759,14 +766,15 @@ public class HelperSchritte {
 
     private static void addMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
         for (Element goobimetadata : elements) {
-            String metadataType = goobimetadata.getAttributeValue("name");
+            String metadataName = goobimetadata.getAttributeValue("name");
+            String metadataType = goobimetadata.getAttributeValue("type");
             String metadataValue = "";
-            if (goobimetadata.getAttributeValue("type") != null && "person".equals(goobimetadata.getAttributeValue("type"))) {
+            if (metadataType != null && "person".equals(metadataType)) {
                 Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
                 if (displayName != null && !",".equals(displayName.getValue())) {
                     metadataValue = displayName.getValue();
                 }
-            } else if (goobimetadata.getAttributeValue("type") != null && "group".equals(goobimetadata.getAttributeValue("type"))) {
+            } else if (metadataType != null && "group".equals(metadataType)) {
                 List<Element> groupMetadataList = goobimetadata.getChildren();
                 addMetadata(groupMetadataList, metadataPairs);
             } else {
@@ -774,16 +782,16 @@ public class HelperSchritte {
             }
             if (!"".equals(metadataValue)) {
 
-                if (metadataPairs.containsKey(metadataType)) {
-                    List<String> oldValue = metadataPairs.get(metadataType);
+                if (metadataPairs.containsKey(metadataName)) {
+                    List<String> oldValue = metadataPairs.get(metadataName);
                     if (!oldValue.contains(metadataValue)) {
                         oldValue.add(metadataValue);
-                        metadataPairs.put(metadataType, oldValue);
+                        metadataPairs.put(metadataName, oldValue);
                     }
                 } else {
                     List<String> list = new ArrayList<>();
                     list.add(metadataValue);
-                    metadataPairs.put(metadataType, list);
+                    metadataPairs.put(metadataName, list);
                 }
             }
 

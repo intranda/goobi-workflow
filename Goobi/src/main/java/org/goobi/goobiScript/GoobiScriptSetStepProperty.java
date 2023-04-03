@@ -89,7 +89,8 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
         addNewActionToSampleCall(sb,
                 "This GoobiScript allow to configure a specific workflow step (e.g. to work as metadata edition step, to automatically run a plugin).");
         addParameterToSampleCall(sb, STEPTITLE, "Metadata edition", "Title of the workflow step to configure");
-        addParameterToSampleCall(sb, PROPERTY, "metadata", "Name of the property to be changed. Possible values are: \\n# " + buffer.toString());
+        addParameterToSampleCall(sb, PROPERTY, PROPERTY_METADATA,
+                "Name of the property to be changed. Possible values are: \\n# " + buffer.toString());
         addParameterToSampleCall(sb, VALUE, "true", "Value that the property shall have (e.g. `true` or `false`)");
         return sb.toString();
     }

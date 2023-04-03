@@ -221,7 +221,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     @Getter
     @Setter
-    private String uploadFolder = "intern";
+    private String uploadFolder = INTERN_FOLDER;
 
     @Getter
     private boolean showFileDeletionButton;
@@ -1208,7 +1208,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * here differet Getters and Setters for the same value, because Hibernate does not like bit-Fields with null Values (thats why Boolean) and
+     * here different Getters and Setters for the same value, because Hibernate does not like bit-Fields with null Values (thats why Boolean) and
      * MyFaces seams not to like Boolean (thats why boolean for the GUI) ================================================================
      */
     public Boolean isSwappedOutHibernate() {
@@ -1250,16 +1250,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            String fileName = getTitel() + LOG_FILE_SUFFIX;
-            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(fileName);
-            response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
             // write to servlet output stream
             try {
-                ServletOutputStream out = response.getOutputStream();
+                ServletOutputStream out = Process.createOutputStream(getTitel() + LOG_FILE_SUFFIX);
                 xmlExport.startExport(this, out);
                 out.flush();
             } catch (IOException e) {
@@ -1268,7 +1262,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
             facesContext.responseComplete();
         }
-        return;
     }
 
     public String downloadDocket() {
@@ -1278,6 +1271,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         }
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         Path xsltfile = Paths.get(rootpath, DOCKET_FILE);
+
         if (docket != null) {
             xsltfile = Paths.get(rootpath, docket.getFile());
             if (!StorageProvider.getInstance().isFileExists(xsltfile)) {
@@ -1287,16 +1281,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         }
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            String fileName = this.titel + ".pdf";
-            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(fileName);
-            response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
             // write run note to servlet output stream
             try {
-                ServletOutputStream out = response.getOutputStream();
+                ServletOutputStream out = Process.createOutputStream(this.titel + ".pdf");
                 XsltToPdf ern = new XsltToPdf();
                 ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorDocket());
                 out.flush();
@@ -1319,25 +1307,37 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            String fileName = this.titel + ".pdf";
-            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(fileName);
-            response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
             // write simplified metadata to servlet output stream
             try {
-                ServletOutputStream out = response.getOutputStream();
+                ServletOutputStream out = Process.createOutputStream(this.titel + ".pdf");
                 XsltToPdf ern = new XsltToPdf();
                 ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorMetadata());
                 out.flush();
             } catch (IOException e) {
-                log.error("IOException while exporting simplefied metadata", e);
+                log.error("IOException while exporting simplified metadata", e);
             }
 
             facesContext.responseComplete();
         }
+    }
+
+    /**
+     * Creates and returns an output stream for the current faces context. The file name parameter in the HTTP header is set to the given file name.
+     * The file name parameter is then recommended in the save-dialog on the client's side.
+     * 
+     * @param fileName The file name that should be used as default file name on the client side
+     * @return The output stream of the current faces context
+     * @throws IOException If the output stream could not be created
+     */
+    private static ServletOutputStream createOutputStream(String fileName) throws IOException {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+        ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+        String contentType = servletContext.getMimeType(fileName);
+        response.setContentType(contentType);
+        response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+        return response.getOutputStream();
     }
 
     public Step getFirstOpenStep() {

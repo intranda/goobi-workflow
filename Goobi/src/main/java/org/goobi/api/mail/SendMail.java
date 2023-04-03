@@ -196,26 +196,34 @@ public class SendMail {
             return;
         }
 
+        final String FIELD_PURPOSE = "purpose";
+        final String FIELD_TYPE = "type";
+        final String FIELD_USER = "user";
+        final String FIELD_STEP = "step";
+        final String FIELD_PROJECT = "project";
+        final String FIELD_ALL = "all";
+        final String DISABLE_MAILS = "disablemails";
+
         // create a mail for each user
         for (User user : recipients) {
 
             // create list of urls to deactivate mail notifications
             Map<String, String> deactivateAllMap = new HashMap<>();
-            deactivateAllMap.put("purpose", "disablemails");
-            deactivateAllMap.put("type", "all");
-            deactivateAllMap.put("user", user.getLogin());
+            deactivateAllMap.put(FIELD_PURPOSE, DISABLE_MAILS);
+            deactivateAllMap.put(FIELD_TYPE, FIELD_ALL);
+            deactivateAllMap.put(FIELD_USER, user.getLogin());
 
             Map<String, String> deactivateStepMap = new HashMap<>();
-            deactivateStepMap.put("purpose", "disablemails");
-            deactivateStepMap.put("type", "step");
-            deactivateStepMap.put("user", user.getLogin());
-            deactivateStepMap.put("step", step.getTitel());
+            deactivateStepMap.put(FIELD_PURPOSE, DISABLE_MAILS);
+            deactivateStepMap.put(FIELD_TYPE, FIELD_STEP);
+            deactivateStepMap.put(FIELD_USER, user.getLogin());
+            deactivateStepMap.put(FIELD_STEP, step.getTitel());
 
             Map<String, String> deactivateProjectMap = new HashMap<>();
-            deactivateProjectMap.put("purpose", "disablemails");
-            deactivateProjectMap.put("type", "project");
-            deactivateProjectMap.put("user", user.getLogin());
-            deactivateProjectMap.put("project", step.getProzess().getProjekt().getTitel());
+            deactivateProjectMap.put(FIELD_PURPOSE, DISABLE_MAILS);
+            deactivateProjectMap.put(FIELD_TYPE, FIELD_PROJECT);
+            deactivateProjectMap.put(FIELD_USER, user.getLogin());
+            deactivateProjectMap.put(FIELD_PROJECT, step.getProzess().getProjekt().getTitel());
 
             String messageSubject = "";
             String messageBody = "";

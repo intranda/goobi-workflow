@@ -43,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoobiScript {
 
     private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
-    private static final String PROJECT = "project";
+    private static final String FIELD_PROJECT = "project";
 
     private Project project;
 
@@ -56,7 +56,7 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to assign Goobi processes to another project.");
-        addParameterToSampleCall(sb, PROJECT, "Newspaper_2021",
+        addParameterToSampleCall(sb, FIELD_PROJECT, "Newspaper_2021",
                 "Define the project where the processes shall belong to. Use the name of the project here.");
         return sb.toString();
     }
@@ -66,9 +66,9 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
         super.prepare(processes, command, parameters);
 
         String missingParameter = "Missing parameter: ";
-        String projectName = parameters.get(PROJECT);
+        String projectName = parameters.get(FIELD_PROJECT);
         if (projectName == null || projectName.equals("")) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, PROJECT);
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, FIELD_PROJECT);
             return new ArrayList<>();
         }
 

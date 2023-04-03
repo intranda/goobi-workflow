@@ -111,6 +111,20 @@ public class ConfigurationHelper implements Serializable {
         return Arrays.asList(localList);
     }
 
+    /**
+     * Returns a list of numbers for the given key name. The numbers are non-null integer objects with a length of 1 to 9 digits.
+     *
+     * @param key The key of the configured integer list
+     * @return The integer list that is specified in the configuration file
+     */
+    private List<Integer> getLocalIntegerList(String key) {
+        return getLocalList(key).stream()
+                .filter(Objects::nonNull)
+                .filter(s -> s.matches("\\d{1,9}"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+
     private String[] getLocalStringArray(String inPath, String[] inDefault) {
         try {
             String[] local = configLocal.getStringArray(inPath);
@@ -1101,27 +1115,15 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public List<Integer> getMetsEditorImageSizes() {
-        return getLocalList("MetsEditorImageSize").stream()
-                .filter(Objects::nonNull)
-                .filter(s -> s.matches("\\d{1,9}"))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        return getLocalIntegerList("MetsEditorImageSize");
     }
 
     public List<Integer> getMetsEditorImageTileSizes() {
-        return getLocalList("MetsEditorImageTileSize").stream()
-                .filter(Objects::nonNull)
-                .filter(s -> s.matches("\\d{1,9}"))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        return getLocalIntegerList("MetsEditorImageTileSize");
     }
 
     public List<Integer> getMetsEditorImageTileScales() {
-        return getLocalList("MetsEditorImageTileScale").stream()
-                .filter(Objects::nonNull)
-                .filter(s -> s.matches("\\d{1,9}"))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        return getLocalIntegerList("MetsEditorImageTileScale");
     }
 
     public String[] getHistoryImageSuffix() {
