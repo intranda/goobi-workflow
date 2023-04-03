@@ -1,11 +1,10 @@
-package de.sub.goobi.helper;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
+ *          - https://goobi.io
  *          - https://www.intranda.com
- *          - http://digiverso.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -15,8 +14,10 @@ package de.sub.goobi.helper;
  * 
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
  */
+
+package io.goobi.workflow.api.connection;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +47,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class HttpClientHelper {
+public class HttpUtils {
 
     private static final String WRONG_STATUS_CODE_PREFIX = "Wrong status code: ";
 
@@ -156,7 +157,7 @@ public class HttpClientHelper {
         setupProxy(url, method);
 
         try {
-            response = client.execute(method, HttpClientHelper.stringResponseHandler); // also implies that client != null
+            response = client.execute(method, HttpUtils.stringResponseHandler); // also implies that client != null
         } catch (IOException e) {
             log.error("Cannot execute URL " + url, e);
         } finally {
@@ -254,7 +255,7 @@ public class HttpClientHelper {
             RequestConfig rc = builder.build();
             method.setConfig(rc);
 
-            byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
+            byte[] response = httpclient.execute(method, HttpUtils.byteArrayResponseHandler);
             if (response == null) {
                 log.error("Response stream is null");
             }

@@ -89,7 +89,6 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
-import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.TreeNode;
@@ -103,6 +102,7 @@ import de.sub.goobi.metadaten.MetaConvertibleDate.DateType;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
+import io.goobi.workflow.api.connection.HttpUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -481,6 +481,8 @@ public class Metadaten implements Serializable {
     private transient PageAreaManager pageAreaManager;
 
     private transient ImageCommentHelper commentHelper;
+    private ImageCommentPropertyHelper commentPropertyHelper;
+
     //this is set whenever setImage() is called.
     @Getter
     private boolean showImageComments = false;
@@ -3615,7 +3617,7 @@ public class Metadaten implements Serializable {
             try {
                 client = HttpClientBuilder.create().build();
 
-                stream = client.execute(method, HttpClientHelper.streamResponseHandler);
+                stream = client.execute(method, HttpUtils.streamResponseHandler);
                 if (stream != null) {
                     ocrResult = IOUtils.toString(stream, StandardCharsets.UTF_8);
                 }
@@ -5094,6 +5096,42 @@ public class Metadaten implements Serializable {
             }
         }
     }
+
+    // =========================== Use ImageCommentPropertyHelper Instead =========================== //
+
+    private ImageCommentPropertyHelper getCommentPropertyHelper() {
+        if (commentPropertyHelper == null) {
+            commentPropertyHelper = new ImageCommentPropertyHelper(myProzess);
+        }
+
+        return commentPropertyHelper;
+    }
+
+    public String getCommentPropertyForImage() {
+        if (myProzess == null || getImage() == null) {
+            return null;
+        }
+
+        String folderType = this.imageFolderName.endsWith("master") ? "master" : "media";
+        return getCommentPropertyHelper().getComment(folderType, getImage().getImageName());
+    }
+
+    public void setCommentPropertyForImage(String comment) {
+        if (myProzess == null || getImage() == null) {
+            return;
+        }
+
+        // only save new log entry if the comment has changed
+        String oldComment = getCommentPropertyForImage();
+        if (comment == null || (oldComment != null && comment.contentEquals(oldComment)) || (oldComment == null && comment.isBlank())) {
+            return;
+        }
+
+        String folderType = this.imageFolderName.endsWith("master") ? "master" : "media";
+        getCommentPropertyHelper().setComment(folderType, getImage().getImageName(), comment);
+    }
+
+    // =========================== Use ImageCommentPropertyHelper Instead =========================== //
 
     private ImageCommentHelper getCommentHelper() {
 
