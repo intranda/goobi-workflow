@@ -176,8 +176,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-            TypeNotAllowedForParentException {
+    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+    TypeNotAllowedForParentException {
 
         String benutzerHome = "";
         LoginBean login = Helper.getLoginBean();
@@ -190,7 +190,7 @@ public class ExportMets {
     }
 
     public void downloadMets(Process process) throws ReadException, PreferencesException, WriteException, IOException, InterruptedException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+    SwapException, DAOException, TypeNotAllowedForParentException {
         this.myPrefs = process.getRegelsatz().getPreferences();
         String atsPpnBand = process.getTitel();
         Fileformat gdzfile = process.readMetadataFile();
@@ -246,8 +246,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+    SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -416,15 +416,17 @@ public class ExportMets {
                 }
             }
         }
+        VariableReplacer vp = new VariableReplacer(mm.getDigitalDocument(), this.myPrefs, myProzess, null);
 
         String metadataWarning = "Configured metadata for project name is unknown or not allowed.";
         Map<String, String> additionalMetadataMap = config.getExportWriteAdditionalMetadata();
         if (!additionalMetadataMap.isEmpty()) {
             String projectMetadataName = additionalMetadataMap.get("Project");
             String institutionMetadataName = additionalMetadataMap.get("Institution");
-            Prefs prefs = myProzess.getRegelsatz().getPreferences();
+
+            String dfgViewerUrlName = additionalMetadataMap.get("dfgViewerUrl");
             if (StringUtils.isNotBlank(projectMetadataName)) {
-                MetadataType mdt = prefs.getMetadataTypeByName(projectMetadataName);
+                MetadataType mdt = myPrefs.getMetadataTypeByName(projectMetadataName);
                 if (mdt != null) {
                     try {
                         ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
@@ -445,7 +447,7 @@ public class ExportMets {
                 }
             }
             if (StringUtils.isNotBlank(institutionMetadataName)) {
-                MetadataType mdt = prefs.getMetadataTypeByName(institutionMetadataName);
+                MetadataType mdt = myPrefs.getMetadataTypeByName(institutionMetadataName);
                 if (mdt != null) {
                     try {
                         ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
@@ -465,6 +467,32 @@ public class ExportMets {
                     }
                 }
             }
+
+
+            if (StringUtils.isNotBlank(dfgViewerUrlName) && StringUtils.isNotBlank(myProzess.getProjekt().getDfgViewerUrl())) {
+                String val = vp.replace(myProzess.getProjekt().getDfgViewerUrl());
+                MetadataType mdt = myPrefs.getMetadataTypeByName(dfgViewerUrlName);
+                if (mdt != null) {
+                    try {
+                        ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
+                        md.setValue(val);
+                        topElement.addMetadata(md);
+                    } catch (MetadataTypeNotAllowedException e) {
+                        // ignore this and continue with the export
+                    }
+                }
+
+                if (topElement.getParent() != null) {
+                    try {
+                        ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
+                        md.setValue(
+                                vp.replace(myProzess.getProjekt().getDfgViewerUrl().replace("meta.CatalogIDDigital", "meta.topstruct.CatalogIDDigital")));
+                        topElement.getParent().addMetadata(md);
+                    } catch (MetadataTypeNotAllowedException e) {
+                        log.warn(metadataWarning);
+                    }
+                }
+            }
         }
 
         /*
@@ -473,7 +501,7 @@ public class ExportMets {
          */
         // Replace all pathes with the given VariableReplacer, also the file
         // group pathes!
-        VariableReplacer vp = new VariableReplacer(mm.getDigitalDocument(), this.myPrefs, myProzess, null);
+
         List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
 
         boolean useOriginalFiles = false;
@@ -503,12 +531,12 @@ public class ExportMets {
         if (useOriginalFiles) {
             // check if media folder contains images
             List<Path> filesInFolder = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(false));
-            filesInFolder.sort((f1,f2) -> {
+            filesInFolder.sort((f1, f2) -> {
                 String b1 = FilenameUtils.getBaseName(f1.getFileName().toString());
                 String e1 = FilenameUtils.getExtension(f1.getFileName().toString());
                 String b2 = FilenameUtils.getBaseName(f2.getFileName().toString());
                 String e2 = FilenameUtils.getExtension(f2.getFileName().toString());
-                if(StringUtils.equalsIgnoreCase(b1, b2)) {
+                if (StringUtils.equalsIgnoreCase(b1, b2)) {
                     return StringUtils.isBlank(e1) ? 1 : (StringUtils.isBlank(e2) ? -1 : 0);
                 } else {
                     return f1.getFileName().toString().compareTo(f2.getFileName().toString());
@@ -606,7 +634,7 @@ public class ExportMets {
     }
 
     private void saveFinishedMetadata(Process myProzess, String targetFileName, ConfigurationHelper config, ExportFileformat mm,
-            boolean addAnchorFile) throws IOException, WriteException, PreferencesException, InterruptedException, SwapException, DAOException {
+            boolean addAnchorFile) throws IOException, WriteException, PreferencesException, SwapException, DAOException {
         String xmlEnding = ".xml";
         String zipEnding = ".zip";
         String anchorEnding = "_anchor.xml";
