@@ -90,12 +90,12 @@
         <h2.version>1.4.200</h2.version>
         <oscache.version>2.3</oscache.version>
         <shiro.version>1.11.0</shiro.version>
-        <activemq.version>5.17.4</activemq.version>
+        <activemq.version>5.18.0</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <aws.version>1.12.428</aws.version>
+        <aws.version>1.12.440</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
-        <commons-csv.version>1.9.0</commons-csv.version>
+        <commons-csv.version>1.10.0</commons-csv.version>
         <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
         <commons-io.version>2.11.0</commons-io.version>
         <!-- JXPath is used at XPathExpressionEngine from org.apache.commons.configuration2 -->
@@ -109,15 +109,15 @@
         <gson.version>2.10.1</gson.version>
         <httpclient.version>4.5.14</httpclient.version>
         <httpcore.version>4.4.16</httpcore.version>
-        <imageio-openjpeg.version>0.6.5</imageio-openjpeg.version>
+        <imageio-openjpeg.version>0.6.6</imageio-openjpeg.version>
         <javassist.version>3.29.2-GA</javassist.version>
         <java-jwt.version>3.19.1</java-jwt.version>
         <jaxb-impl.version>2.3.8</jaxb-impl.version>
         <jackson.version>2.14.2</jackson.version>
-        <jersey.version>2.39</jersey.version>
+        <jersey.version>2.39.1</jersey.version>
         <jhove.version>1.20.1</jhove.version>
         <jna.version>5.11.0</jna.version>
-        <joda.version>2.12.2</joda.version>
+        <joda.version>2.12.5</joda.version>
         <junit.version>4.13.2</junit.version>
         <jsonpath.version>2.7.0</jsonpath.version>
         <jwks-rsa.version>0.21.2</jwks-rsa.version>
@@ -132,8 +132,8 @@
         <powermock.version>2.0.9</powermock.version>
         <reflections.version>0.10.2</reflections.version>
         <spark.version>2.9.4</spark.version>
-        <spring.version>5.3.25</spring.version>
-        <swagger.version>2.2.8</swagger.version>
+        <spring.version>5.3.26</spring.version>
+        <swagger.version>2.2.9</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
         <hk2.version>2.6.1</hk2.version>
         <xmlbeans.version>5.1.1</xmlbeans.version>
@@ -141,7 +141,7 @@
         <xmpcore.version>6.1.11</xmpcore.version>
         <!-- used in goobi-plugin-step-barcode-scanner -->
         <zxing.version>3.5.1</zxing.version>
-        <jsch.version>0.2.7</jsch.version>
+        <jsch.version>0.2.8</jsch.version>
         <slf4j.version>2.0.6</slf4j.version>
     </properties>
 
@@ -311,7 +311,7 @@
         <dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-configuration2</artifactId>
-    		<version>2.8.0</version>
+    		<version>2.9.0</version>
 		</dependency>
         <dependency>
             <groupId>commons-jxpath</groupId>
@@ -331,7 +331,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.22</version>
+            <version>1.23.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

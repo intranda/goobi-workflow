@@ -46,8 +46,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaders;
 
-import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.XmlTools;
+import io.goobi.workflow.api.connection.HttpUtils;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -463,7 +463,7 @@ public class SRUClient {
             log.error(e);
         }
 
-        return HttpClientHelper.getStringFromUrl(searchUrl);
+        return HttpUtils.getStringFromUrl(searchUrl);
 
     }
 

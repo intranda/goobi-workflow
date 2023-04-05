@@ -89,7 +89,6 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
-import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.TreeNode;
@@ -103,6 +102,7 @@ import de.sub.goobi.metadaten.MetaConvertibleDate.DateType;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
+import io.goobi.workflow.api.connection.HttpUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -3609,7 +3609,7 @@ public class Metadaten implements Serializable {
             try {
                 client = HttpClientBuilder.create().build();
 
-                stream = client.execute(method, HttpClientHelper.streamResponseHandler);
+                stream = client.execute(method, HttpUtils.streamResponseHandler);
                 if (stream != null) {
                     ocrResult = IOUtils.toString(stream, StandardCharsets.UTF_8);
                 }

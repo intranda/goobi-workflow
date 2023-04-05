@@ -94,7 +94,7 @@ public class ProjectManager implements IManager, Serializable {
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = ProjectMysqlHelper.getProjectCount( filter, institution);
+            num = ProjectMysqlHelper.getProjectCount(filter, institution);
         } catch (SQLException e) {
             log.error("error while getting Project hit size", e);
             throw new DAOException(e);
@@ -225,6 +225,7 @@ public class ProjectManager implements IManager, Serializable {
         }
         r.setMetsIIIFUrl(rs.getString("iiifUrl"));
         r.setMetsSruUrl(rs.getString("sruUrl"));
+        r.setDfgViewerUrl(rs.getString("dfgViewerUrl"));
         r.setJournal(JournalManager.getLogEntriesForProject(r.getId()));
         return r;
     }
@@ -299,4 +300,5 @@ public class ProjectManager implements IManager, Serializable {
         }
         return o;
     }
+
 }

@@ -53,12 +53,12 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
-import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
+import io.goobi.workflow.api.connection.HttpUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -187,7 +187,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             method.setConfig(rc);
 
             try {
-                byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
+                byte[] response = httpclient.execute(method, HttpUtils.byteArrayResponseHandler);
                 try (InputStream istr = new ByteArrayInputStream(response);
                         OutputStream ostr = new FileOutputStream(tempPdf.toFile())) {
 
