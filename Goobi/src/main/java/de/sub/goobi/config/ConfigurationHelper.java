@@ -1180,6 +1180,10 @@ public class ConfigurationHelper implements Serializable {
         if (StringUtils.isNotBlank(exportInstitutionMetadataName)) {
             answer.put("Institution", exportInstitutionMetadataName);
         }
+        String exportMetadataForDfgViewerUrl = getLocalString("ExportMetadataForDfgViewerUrl", null);
+        if (StringUtils.isNotBlank(exportMetadataForDfgViewerUrl)) {
+            answer.put("dfgViewerUrl", exportMetadataForDfgViewerUrl);
+        }
         return answer;
     }
 

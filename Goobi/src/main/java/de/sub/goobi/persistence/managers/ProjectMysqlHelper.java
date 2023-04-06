@@ -170,8 +170,8 @@ class ProjectMysqlHelper implements Serializable {
                 sql.append("metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, ");
                 sql.append("metsPointerPathAnchor, metsPurl, metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes,  ");
                 sql.append("projectIsArchived, metsRightsSponsor, metsRightsSponsorLogo, metsRightsSponsorSiteURL, metsRightsLicense, ");
-                sql.append("institution_id, project_identifier, iiifUrl, sruUrl");
-                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)");
+                sql.append("institution_id, project_identifier, iiifUrl, sruUrl, dfgViewerUrl");
+                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)");
 
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getTitel(), ro.isUseDmsImport(),
                         ro.getDmsImportTimeOut(), ro.getDmsImportRootPath(),
@@ -185,7 +185,7 @@ class ProjectMysqlHelper implements Serializable {
                                 ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(), ro.getNumberOfVolumes(),
                                         ro.getProjectIsArchived(), ro.getMetsRightsSponsor(), ro.getMetsRightsSponsorLogo(), ro.getMetsRightsSponsorSiteURL(),
                                         ro.getMetsRightsLicense(), ro.getInstitution() != null ? ro.getInstitution().getId() : null, ro.getProjectIdentifier(),
-                                                ro.getMetsIIIFUrl(), ro.getMetsSruUrl());
+                                                ro.getMetsIIIFUrl(), ro.getMetsSruUrl(), ro.getDfgViewerUrl());
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -226,7 +226,7 @@ class ProjectMysqlHelper implements Serializable {
                 sql.append("institution_id =?, ");
                 sql.append("project_identifier =?, ");
                 sql.append("iiifUrl =?, ");
-                sql.append("sruUrl =? ");
+                sql.append("sruUrl =?, dfgViewerUrl=? ");
                 sql.append(" WHERE ProjekteID = " + ro.getId() + ";");
 
                 run.update(connection, sql.toString(), ro.getTitel(), ro.isUseDmsImport(), ro.getDmsImportTimeOut(), ro.getDmsImportRootPath(),
@@ -239,7 +239,7 @@ class ProjectMysqlHelper implements Serializable {
                                 ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(), ro.getNumberOfVolumes(),
                                         ro.getProjectIsArchived(), ro.getMetsRightsSponsor(), ro.getMetsRightsSponsorLogo(), ro.getMetsRightsSponsorSiteURL(),
                                         ro.getMetsRightsLicense(), ro.getInstitution() != null ? ro.getInstitution().getId() : null, ro.getProjectIdentifier(),
-                                                ro.getMetsIIIFUrl(), ro.getMetsSruUrl());
+                                                ro.getMetsIIIFUrl(), ro.getMetsSruUrl(), ro.getDfgViewerUrl());
             }
         } finally {
             if (connection != null) {

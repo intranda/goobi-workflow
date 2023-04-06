@@ -225,6 +225,7 @@ public class ProjectManager implements IManager, Serializable {
         }
         r.setMetsIIIFUrl(rs.getString("iiifUrl"));
         r.setMetsSruUrl(rs.getString("sruUrl"));
+        r.setDfgViewerUrl(rs.getString("dfgViewerUrl"));
         r.setJournal(JournalManager.getLogEntriesForProject(r.getId()));
         return r;
     }

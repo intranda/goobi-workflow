@@ -166,6 +166,10 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
     @Setter
     private String metsIIIFUrl = "";
 
+    @Getter
+    @Setter
+    private String dfgViewerUrl = "";
+
     @Override
     public void lazyLoad() {
 
@@ -400,6 +404,7 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         setProjectIdentifier(source.getProjectIdentifier());
         setMetsSruUrl(source.getMetsSruUrl());
         setMetsIIIFUrl(source.getMetsIIIFUrl());
+        dfgViewerUrl = source.getDfgViewerUrl();
         try {
             ProjectManager.saveProject(this);
         } catch (DAOException e) {

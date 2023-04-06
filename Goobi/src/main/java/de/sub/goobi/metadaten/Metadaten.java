@@ -480,7 +480,6 @@ public class Metadaten implements Serializable {
 
     private transient PageAreaManager pageAreaManager;
 
-    private transient ImageCommentHelper commentHelper;
     private ImageCommentPropertyHelper commentPropertyHelper;
 
     //this is set whenever setImage() is called.
@@ -5097,7 +5096,7 @@ public class Metadaten implements Serializable {
         }
     }
 
-    // =========================== Use ImageCommentPropertyHelper Instead =========================== //
+    // =========================== Use ImageCommentPropertyHelper To Save Comments =========================== //
 
     private ImageCommentPropertyHelper getCommentPropertyHelper() {
         if (commentPropertyHelper == null) {
@@ -5112,8 +5111,7 @@ public class Metadaten implements Serializable {
             return null;
         }
 
-        String folderType = this.imageFolderName.endsWith("master") ? "master" : "media";
-        return getCommentPropertyHelper().getComment(folderType, getImage().getImageName());
+        return getCommentPropertyHelper().getComment(currentTifFolder, getImage().getImageName());
     }
 
     public void setCommentPropertyForImage(String comment) {
@@ -5127,44 +5125,10 @@ public class Metadaten implements Serializable {
             return;
         }
 
-        String folderType = this.imageFolderName.endsWith("master") ? "master" : "media";
-        getCommentPropertyHelper().setComment(folderType, getImage().getImageName(), comment);
+        getCommentPropertyHelper().setComment(currentTifFolder, getImage().getImageName(), comment);
     }
 
-    // =========================== Use ImageCommentPropertyHelper Instead =========================== //
-
-    private ImageCommentHelper getCommentHelper() {
-
-        if (commentHelper == null) {
-            commentHelper = new ImageCommentHelper();
-        }
-
-        return commentHelper;
-    }
-
-    public String getCommentForImage() {
-
-        if (myProzess == null || getImage() == null) {
-            return null;
-        }
-
-        return getCommentHelper().getComment(this.imageFolderName, getImage().getImageName());
-    }
-
-    public void setCommentForImage(String comment) {
-
-        if (myProzess == null || getImage() == null) {
-            return;
-        }
-
-        //only save new log entry if the comment has changed
-        String oldComment = getCommentForImage();
-        if (comment == null || (oldComment != null && comment.contentEquals(oldComment)) || (oldComment == null && comment.isBlank())) {
-            return;
-        }
-
-        getCommentHelper().setComment(this.imageFolderName, getImage().getImageName(), comment);
-    }
+    // =========================== Use ImageCommentPropertyHelper To Save Comments =========================== //
 
     public void refresh() {
         // do nothing, this is needed for jsf calls

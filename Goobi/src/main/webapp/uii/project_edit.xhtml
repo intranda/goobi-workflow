@@ -511,9 +511,18 @@
                                     help="#{msgs.helpMetsIIIFUrl}"
                                     fieldStyle="form-control"
                                     required="false"
-                                    style="border-bottom: 1px solid #DDDDDD;" />
+                                 />
 
-
+                                    <!-- DFG-Viewer URL -->
+                                    <intranda:formInputText
+                                        id="dfgViewerUrl"
+                                        name="dfgViewerUrl"
+                                        label="#{msgs.metsDfgViewerUrl}"
+                                        field="#{ProjekteForm.myProjekt.dfgViewerUrl}"
+                                        help="#{msgs.helpMetsDfgViewerUrl}"
+                                        fieldStyle="form-control"
+                                        required="false" 
+                                        style="border-bottom: 1px solid #DDDDDD;"/>
                             </h:panelGroup>
                             <h:panelGroup
                                 rendered="#{ProjekteForm.displayMode eq 'tab4' or ProjekteForm.displayMode eq 'filegroups'}">
@@ -532,7 +541,6 @@
                                     <div class="col-12 col-md-9">
 
                                         <h:panelGroup rendered="#{ProjekteForm.displayMode eq 'filegroups'}">
-
 
                                             <intranda:box
                                                 boxType="action"

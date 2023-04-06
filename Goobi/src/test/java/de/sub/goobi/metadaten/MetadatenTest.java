@@ -62,6 +62,7 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -74,6 +75,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
 import ugh.dl.Corporate;
@@ -88,7 +90,7 @@ import ugh.exceptions.ReadException;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, MetadataManager.class,
-        ProcessManager.class })
+        ProcessManager.class, PropertyManager.class })
 @PowerMockIgnore({ "javax.net.ssl.*" })
 public class MetadatenTest extends AbstractTest {
 
@@ -2074,14 +2076,38 @@ public class MetadatenTest extends AbstractTest {
     }
 
     @Test
-    public void testCommentForImage() throws Exception {
+    public void testGetCommentPropertyForImage() throws Exception {
+        List<Processproperty> props = new ArrayList<>();
+
+        PowerMock.mockStatic(PropertyManager.class);
+        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andStubReturn(props);
+        PowerMock.replayAll();
+
         Metadaten fixture = initMetadaten();
-        String s = fixture.getCommentForImage();
-        assertNull(s);
-        fixture.setCommentForImage("comment");
-        s = fixture.getCommentForImage();
-        assertEquals("comment", s);
-        StorageProvider.getInstance().deleteFile(Paths.get(process.getImagesDirectory(), "comments_media.json"));
+        assertEquals("", fixture.getCommentPropertyForImage());
+        
+        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
+        assertNotNull(helper);
+
+        // prepare some process property
+        String folderName = process.getImagesTifDirectory(false);
+        String imageName = fixture.getImage().getImageName();
+        String comment = "just some comment";
+        
+        Processproperty property = new Processproperty();
+        property.setProcessId(process.getId());
+        
+        // prepare title and value for this process property
+        String propertyTitle = Whitebox.invokeMethod(helper, "getPropertyTitle", folderName);
+        ImageCommentPropertyHelper.ImageComments imageComments = Whitebox.invokeMethod(helper, "getImageComments", property);
+        imageComments.setComment(imageName, comment);
+        String propertyValue = Whitebox.invokeMethod(helper, "createPropertyValue", imageComments);
+
+        property.setTitel(propertyTitle);
+        property.setWert(propertyValue);
+        props.add(property);
+
+        assertEquals(comment, fixture.getCommentPropertyForImage());
     }
 
     private Metadaten initMetadaten() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
