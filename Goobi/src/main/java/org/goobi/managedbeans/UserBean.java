@@ -85,7 +85,15 @@ import lombok.extern.log4j.Log4j2;
 @WindowScoped
 @Log4j2
 public class UserBean extends BasicBean implements Serializable {
+
     private static final long serialVersionUID = -3635859455444639614L;
+
+    private static final String RETURN_PAGE_ALL = "user_all";
+    private static final String RETURN_PAGE_EDIT = "user_edit";
+
+    private static final String ID = "ID";
+    private static final String TITLE = "titel";
+
     @Getter
     private User myClass = new User();
     @Getter
@@ -150,8 +158,8 @@ public class UserBean extends BasicBean implements Serializable {
         this.filter = null;
         this.sortField = "nachname, vorname";
         UserManager m = new UserManager();
-        paginator = new DatabasePaginator(sortField, getBasicFilter(), m, "user_all");
-        return "user_all";
+        paginator = new DatabasePaginator(sortField, getBasicFilter(), m, RETURN_PAGE_ALL);
+        return RETURN_PAGE_ALL;
     }
 
     public String FilterKeinMitZurueck() {
@@ -188,9 +196,9 @@ public class UserBean extends BasicBean implements Serializable {
             sqlQuery = sqlQueryBuilder.toString();
         }
 
-        this.paginator = new DatabasePaginator(sortField, sqlQuery, m, "user_all");
+        this.paginator = new DatabasePaginator(sortField, sqlQuery, m, RETURN_PAGE_ALL);
 
-        return "user_all";
+        return RETURN_PAGE_ALL;
     }
 
     public String Speichern() {
@@ -277,10 +285,10 @@ public class UserBean extends BasicBean implements Serializable {
 
         if (this.displayMode.equals("") && creatingUser) {
             this.displayMode = "tab2";
-            return "user_edit";
+            return RETURN_PAGE_EDIT;
         } else {
             this.displayMode = "";
-            return "user_all";
+            return RETURN_PAGE_ALL;
         }
     }
 
@@ -360,7 +368,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String AusGruppeLoeschen() {
-        int gruppenID = Integer.parseInt(Helper.getRequestParameter("ID"));
+        int gruppenID = Integer.parseInt(Helper.getRequestParameter(ID));
         String strResult = AusGruppeLoeschen(gruppenID);
 
         if (strResult != null) {
@@ -415,7 +423,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String ZuGruppeHinzufuegen() {
-        Integer gruppenID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        Integer gruppenID = Integer.valueOf(Helper.getRequestParameter(ID));
         String strResult = ZuGruppeHinzufuegen(gruppenID);
 
         if (strResult != null) {
@@ -443,7 +451,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String AusProjektLoeschen() {
-        int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
+        int projektID = Integer.parseInt(Helper.getRequestParameter(ID));
         String strResult = AusProjektLoeschen(projektID); // strResult == ""
 
         removedFromProjects.get(myClass.getId()).add(projektID);
@@ -468,7 +476,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String ZuProjektHinzufuegen() {
-        Integer projektID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        Integer projektID = Integer.valueOf(Helper.getRequestParameter(ID));
 
         String strResult = ZuProjektHinzufuegen(projektID);
 
@@ -526,25 +534,27 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public void validateAuthenticationSelection(FacesContext context, UIComponent component, Object value) {
-        FacesMessage message = null;
+        boolean valid = true;
         if (value == null) {
-            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value", Helper.getTranslation("javax.faces.component.UIInput.REQUIRED"));
-        } else {
+            valid = false;
+        }
+        if (valid) {
             Integer intValue = (Integer) value;
             if (intValue.intValue() == 0) {
-                message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value",
-                        Helper.getTranslation("javax.faces.component.UIInput.REQUIRED"));
+                valid = false;
             }
         }
-        if (message != null) {
-            throw new ValidatorException(message);
+        if (!valid) {
+            String message = Helper.getTranslation("javax.faces.component.UIInput.REQUIRED");
+            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value", message);
+            throw new ValidatorException(facesMessage);
         }
     }
 
     public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
         List<SelectItem> myLdapGruppen = new ArrayList<>();
         myLdapGruppen.add(new SelectItem(0, Helper.getTranslation("bitteAuswaehlen")));
-        List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null,
+        List<Ldap> temp = LdapManager.getLdaps(TITLE, null, null, null,
                 Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
         for (Ldap gru : temp) {
             myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));
@@ -594,17 +604,17 @@ public class UserBean extends BasicBean implements Serializable {
         // Check for administrator rules
         if (!Helper.getCurrentUser().getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString())) {
             Helper.setFehlerMeldung("You are not allowed to change the user's password!");
-            return "user_all";
+            return RETURN_PAGE_ALL;
         }
 
         // Get and create user
-        Integer loginID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        Integer loginID = Integer.valueOf(Helper.getRequestParameter(ID));
         User userToResetPassword;
         try {
             userToResetPassword = UserManager.getUserById(loginID);
         } catch (DAOException daoe) {
             Helper.setFehlerMeldung("could not read database", daoe.getMessage());
-            return "user_all";
+            return RETURN_PAGE_ALL;
         }
 
         // Create the random password and save it
@@ -628,7 +638,7 @@ public class UserBean extends BasicBean implements Serializable {
                 Helper.setFehlerMeldung("ldap errror", e.getMessage());
             }
         }
-        return "user_all";
+        return RETURN_PAGE_ALL;
     }
 
     /**
@@ -687,7 +697,7 @@ public class UserBean extends BasicBean implements Serializable {
                     + "benutzergruppenmitgliedschaft where benutzergruppenmitgliedschaft.BenutzerID = " + myClass.getId() + ")";
         }
         UsergroupManager m = new UsergroupManager();
-        usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
+        usergroupPaginator = new DatabasePaginator(TITLE, filter, m, "");
 
         unsubscribedGroupsExist = usergroupPaginator.getTotalResults() > 0;
     }
@@ -699,7 +709,7 @@ public class UserBean extends BasicBean implements Serializable {
                     + myClass.getId() + ")";
         }
         ProjectManager m = new ProjectManager();
-        projectPaginator = new DatabasePaginator("titel", filter, m, "");
+        projectPaginator = new DatabasePaginator(TITLE, filter, m, "");
 
         unsubscribedProjectsExist = projectPaginator.getTotalResults() > 0;
     }
@@ -761,6 +771,6 @@ public class UserBean extends BasicBean implements Serializable {
         }
 
         resetChangeLists();
-        return "user_all";
+        return RETURN_PAGE_ALL;
     }
 }

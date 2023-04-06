@@ -85,6 +85,15 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -4591427229251805665L;
 
+    private static final String RETURN_PAGE_ALL = "vocabulary_all";
+    private static final String RETURN_PAGE_EDIT = "vocabulary_edit";
+    private static final String RETURN_PAGE_RECORDS = "vocabulary_records";
+    private static final String RETURN_PAGE_UPLOAD = "vocabulary_upload";
+
+    private static final String IMPORT_TYPE_MERGE = "merge";
+    private static final String IMPORT_TYPE_ADD = "add";
+    private static final String IMPORT_TYPE_REMOVE = "remove";
+
     @Getter
     @Setter
     private Vocabulary currentVocabulary;
@@ -124,7 +133,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     @Getter
     @Setter
-    private String importType = "merge";
+    private String importType = IMPORT_TYPE_MERGE;
 
     private boolean resetResultsOnNextValidation = false;
 
@@ -146,8 +155,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     public String FilterKein() {
         VocabularyManager vm = new VocabularyManager();
-        paginator = new DatabasePaginator(sortField, filter, vm, "vocabulary_all");
-        return "vocabulary_all";
+        paginator = new DatabasePaginator(sortField, filter, vm, RETURN_PAGE_ALL);
+        return RETURN_PAGE_ALL;
     }
 
     /**
@@ -157,7 +166,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     public String editVocabulary() {
         removedDefinitions = new ArrayList<>();
-        return "vocabulary_edit";
+        return RETURN_PAGE_EDIT;
     }
 
     /**
@@ -176,7 +185,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         } else {
             addRecord();
         }
-        return "vocabulary_records";
+        return RETURN_PAGE_RECORDS;
     }
 
     public String uploadToServerRecords() {
@@ -184,7 +193,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         Boolean boOK = VocabularyUploader.upload(currentVocabulary);
         if (Boolean.TRUE.equals(boOK)) {
             Helper.setMeldung(Helper.getTranslation("ExportFinished"));
-            return "vocabulary_all";
+            return RETURN_PAGE_ALL;
         } else {
             Helper.setFehlerMeldung(Helper.getTranslation("ExportError"));
             return "";
@@ -519,7 +528,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         headerOrder = null;
         filename = null;
         importFile = null;
-        return "vocabulary_upload";
+        return RETURN_PAGE_UPLOAD;
     }
 
     /**
@@ -544,12 +553,12 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return
      */
     public String importRecords() {
-        if (importType.equals("remove")) {
+        if (importType.equals(IMPORT_TYPE_REMOVE)) {
             // if selected, remove existing entries of this vocabulary
             VocabularyManager.deleteAllRecords(currentVocabulary);
             currentVocabulary.setRecords(new ArrayList<>());
         }
-        if (importType.equals("remove") || importType.equals("add")) {
+        if (importType.equals(IMPORT_TYPE_REMOVE) || importType.equals(IMPORT_TYPE_ADD)) {
             List<VocabRecord> recordsToAdd = new ArrayList<>(rowsToImport.size());
             for (Row row : rowsToImport) {
                 VocabRecord record = new VocabRecord();
@@ -574,7 +583,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             log.debug("Stored {} new records", recordsToAdd.size());
         }
 
-        if (importType.equals("merge")) {
+        if (importType.equals(IMPORT_TYPE_MERGE)) {
             List<VocabRecord> newRecords = new ArrayList<>();
             List<VocabRecord> updateRecords = new ArrayList<>();
             // get main entry row

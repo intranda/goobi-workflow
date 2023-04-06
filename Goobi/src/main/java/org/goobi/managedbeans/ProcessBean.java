@@ -1170,7 +1170,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             String statusString = this.mySchritt.getBearbeitungsstatusAsString();
             String message = "Changed status for step '" + mySchritt.getTitel() + "' to " + statusString + " in process details.";
             Helper.addMessageToProcessJournal(mySchritt.getProcessId(), LogType.DEBUG, message);
-            if (status == StepStatus.DONE) {
+            if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 new HelperSchritte().CloseStepObjectAutomatic(mySchritt);
             } else {
                 mySchritt.setBearbeitungszeitpunkt(new Date());

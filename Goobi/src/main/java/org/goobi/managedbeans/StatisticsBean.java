@@ -52,81 +52,91 @@ import lombok.extern.log4j.Log4j2;
 @ApplicationScoped
 @Log4j2
 public class StatisticsBean implements Serializable {
+
     private static final long serialVersionUID = 8974769449562593234L;
+
+    private static final String DATABASE_ERROR = "fehlerBeimEinlesen";
+
     Calendar cal = new GregorianCalendar();
     int n = 200;
 
     /**
-     * @return Anzahl aller Literatureinträge
-     * @throws DAOException
+     * Returns the number of literature objects. WARNING: Currently, this method is not implemented and returns 0.
+     *
+     * @return The number of literature objects (currently 0 due to non-implementation)
      */
     public Integer getAnzahlLiteraturGesamt() {
         return Integer.valueOf(0);
     }
 
     /**
-     * The function getAnzahlBenutzer() counts the number of user accounts in the goobi.production environment. Since user accounts are not hard
-     * deleted from the database when the delete button is pressed a where clause is used in the SQL statement to exclude the deleted accounts from
-     * the sum.
+     * Returns the number of non-deleted user accounts in the goobi database (or the environment if an other user database is used). Since accounts
+     * are not really deleted in the database, but set to a -deleted- state, the deleted accounts are explicitly subtracted from the SQL search
+     * result. If a database error occurs, an error message is shown in the user interface and 0 is returned.
      * 
-     * @return the count of valid user accounts
-     * @throws DAOException if the current session can't be retrieved or an exception is thrown while performing the rollback.
+     * @return The number of non-deleted user accounts or 0 in case of a database error
      */
-
     public int getAnzahlBenutzer() {
         try {
             return new UserManager().getHitSize(null, "userstatus != 'deleted'", null);
         } catch (DAOException e) {
-            Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
+            Helper.setFehlerMeldung(DATABASE_ERROR, e.getMessage());
             return 0;
         }
     }
 
     /**
-     * @return Anzahl der Benutzer
-     * @throws DAOException
+     * Returns the number of user groups in the goobi database. If a database error occurs, an error message is shown in the user interface and 0 is
+     * returned.
+     * 
+     * @return The number of user groups or 0 in case of a database error
      */
     public int getAnzahlBenutzergruppen() {
         try {
             return new UsergroupManager().getHitSize(null, null, null);
         } catch (DAOException e) {
-            Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
+            Helper.setFehlerMeldung(DATABASE_ERROR, e.getMessage());
             return 0;
         }
     }
 
     /**
-     * @return Anzahl der Benutzer
-     * @throws DAOException
+     * Returns the number of processes in the goobi database. If a database error occurs, an error message is shown in the user interface and 0 is
+     * returned.
+     * 
+     * @return The number of processes or null in case of a database error
      */
     public Long getAnzahlProzesse() {
         try {
             return (long) new ProcessManager().getHitSize(null, null, null);
         } catch (DAOException e) {
-            Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
+            Helper.setFehlerMeldung(DATABASE_ERROR, e.getMessage());
             return null;
         }
     }
 
     /**
-     * @return Anzahl der Benutzer
-     * @throws DAOException
+     * Returns the number of steps in the goobi database. If a database error occurs, 0 is returned.
+     * 
+     * @return The number of steps or 0 in case of a database error
      */
     public Long getAnzahlSchritte() {
         return (long) StepManager.countAllSteps();
     }
 
     /**
-     * @return Anzahl der Benutzer
-     * @throws DAOException
+     * Returns the number of templates in the goobi database. If a database error occurs, 0 is returned.
+     * 
+     * @return The number of templates or 0 in case of a database error
      */
     public Long getAnzahlVorlagen() {
         return (long) TemplateManager.countTemplates();
     }
 
     /**
-     * @return Anzahl der Benutzer
-     * @throws DAOException
+     * Returns the number of masterpieces in the goobi database. If a database error occurs, 0 is returned.
+     * 
+     * @return The number of masterpieces or 0 in case of a database error
      */
     public Long getAnzahlWerkstuecke() {
         return (long) MasterpieceManager.countMasterpieces();

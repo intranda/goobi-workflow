@@ -49,7 +49,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UsergroupBean extends BasicBean implements Serializable {
+
     private static final long serialVersionUID = 8051160917458068675L;
+
+    private static final String RETURN_PAGE_ALL = "usergroup_all";
+    private static final String RETURN_PAGE_EDIT = "usergroup_edit";
+
     private Usergroup myBenutzergruppe = new Usergroup();
     private String tempTitle = ""; //title before editing
     private String tempRole;
@@ -65,7 +70,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
 
     public String Neu() {
         this.myBenutzergruppe = new Usergroup();
-        return "usergroup_edit";
+        return RETURN_PAGE_EDIT;
     }
 
     public String Speichern() {
@@ -109,7 +114,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
 
     public String Cancel() {
         this.myBenutzergruppe.setTitel(tempTitle);
-        return "usergroup_all";
+        return RETURN_PAGE_ALL;
     }
 
     public String addRole() {
@@ -128,8 +133,8 @@ public class UsergroupBean extends BasicBean implements Serializable {
 
     public String FilterKein() {
         UsergroupManager m = new UsergroupManager();
-        paginator = new DatabasePaginator(sortField, filter, m, "usergroup_all");
-        return "usergroup_all";
+        paginator = new DatabasePaginator(sortField, filter, m, RETURN_PAGE_ALL);
+        return RETURN_PAGE_ALL;
     }
 
     public String FilterKeinMitZurueck() {

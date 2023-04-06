@@ -53,7 +53,7 @@ public class ZipUtils {
                             outputStream.write(bytes, 0, bytes.length);
                             outputStream.closeEntry();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            log.error(e);
                         }
                         return FileVisitResult.CONTINUE;
                     }

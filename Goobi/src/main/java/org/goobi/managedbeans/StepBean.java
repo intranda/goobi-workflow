@@ -104,7 +104,13 @@ import lombok.extern.log4j.Log4j2;
 @WindowScoped
 @Log4j2
 public class StepBean extends BasicBean implements Serializable {
+
     private static final long serialVersionUID = 5841566727939692509L;
+
+    private static final String RETURN_PAGE_ALL = "task_all";
+    private static final String RETURN_PAGE_EDIT = "task_edit";
+    private static final String RETURN_PAGE_EDIT_BATCH = "task_edit_batch";
+
     @Getter
     @Setter
     private Process myProzess = new Process();
@@ -240,9 +246,9 @@ public class StepBean extends BasicBean implements Serializable {
             sql = sql + " AND ";
         }
         sql = sql + " projekte.projectIsArchived = false ";
-        paginator = new DatabasePaginator(sortField, sql, m, "task_all");
+        paginator = new DatabasePaginator(sortField, sql, m, RETURN_PAGE_ALL);
 
-        return "task_all";
+        return RETURN_PAGE_ALL;
     }
 
     @Override
@@ -301,7 +307,7 @@ public class StepBean extends BasicBean implements Serializable {
                 downloadToHome();
             }
         }
-        return "task_edit";
+        return RETURN_PAGE_EDIT;
     }
 
     public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
@@ -312,7 +318,7 @@ public class StepBean extends BasicBean implements Serializable {
             log.error(exception);
         }
 
-        return "task_edit";
+        return RETURN_PAGE_EDIT;
     }
 
     public String TakeOverBatch() {
@@ -394,7 +400,7 @@ public class StepBean extends BasicBean implements Serializable {
             }
         }
         this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch, mySchritt));
-        return "task_edit_batch";
+        return RETURN_PAGE_EDIT_BATCH;
     }
 
     public String BatchesEdit() {
@@ -414,20 +420,20 @@ public class StepBean extends BasicBean implements Serializable {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                    + batchNumber + ")",
+                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                            + batchNumber + ")",
                     0, Integer.MAX_VALUE, institution);
 
         } else {
-            return "task_edit";
+            return RETURN_PAGE_EDIT;
         }
         // if only one step is asigned for this batch, use the single
 
         if (currentStepsOfBatch.size() == 1) {
-            return "task_edit";
+            return RETURN_PAGE_EDIT;
         }
         this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch, mySchritt));
-        return "task_edit_batch";
+        return RETURN_PAGE_EDIT_BATCH;
     }
 
     @Deprecated
@@ -701,7 +707,7 @@ public class StepBean extends BasicBean implements Serializable {
                             + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                 } else {
                     seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
-                    + ": " + this.solutionMessage);
+                            + ": " + this.solutionMessage);
                 }
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
@@ -1039,8 +1045,9 @@ public class StepBean extends BasicBean implements Serializable {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
             } catch (Exception e) {
-                log.error("Can't load export plugin, use default export", e);
-                Helper.setFehlerMeldung("Can't load export plugin, use default export");
+                String message = "Can't load export plugin, use default export";
+                log.error(message, e);
+                Helper.setFehlerMeldung(message);
                 dms = new ExportDms();
             }
         }
