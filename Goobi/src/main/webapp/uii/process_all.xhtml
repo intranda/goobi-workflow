@@ -453,7 +453,7 @@
 																					</h:panelGroup>
 																					<h:panelGroup rendered="#{not step.typAutomatisch}">
 																						<i
-																							class="fa fa-user-o me-4"
+																							class="fa fa-user-o me-4 #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"
 																							title="#{msgs.normalerSchritt}"
 																							data-bs-toggle="tooltip" />
 																					</h:panelGroup>
