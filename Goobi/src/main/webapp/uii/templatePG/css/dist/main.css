@@ -1649,8 +1649,20 @@ a:focus, a:hover, a:active {
 /* ========================================
  * Fixed sized Goobi tables
  * ====================================== */
+.gw-table-fixed__sizeXXXXS {
+  --width-table-col: 20px;
+}
+
+.gw-table-fixed__sizeXXXXS {
+  --width-table-col: 30px;
+}
+
+.gw-table-fixed__sizeXXXS {
+  --width-table-col: 45px;
+}
+
 .gw-table-fixed__sizeXXS {
-  --width-table-col: 50px;
+  --width-table-col: 60px;
 }
 
 .gw-table-fixed__sizeXS {
