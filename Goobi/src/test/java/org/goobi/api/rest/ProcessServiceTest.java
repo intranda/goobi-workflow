@@ -45,14 +45,21 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 public class ProcessServiceTest extends AbstractTest {
 
     private ProcessService service;
+    private RestProcessResource resource;
 
     @Before
     public void setUp() throws Exception {
         service = new ProcessService();
 
+        resource = new RestProcessResource();
+        resource.setId(1);
+
         Process process = MockProcess.createProcess();
         PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process);
+        EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
+
+        ProcessManager.saveProcessInformation(EasyMock.anyObject());
+
         EasyMock.expectLastCall();
         PowerMock.replayAll();
 
@@ -78,21 +85,24 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testUpdateProcess() {
         service = new ProcessService();
-        Response response = service.updateProcess("1");
-        assertNull(response);
+        Response response = service.updateProcess(resource);
+        assertNotNull(response);
+        RestProcessResource res = (RestProcessResource) response.getEntity();
+        assertEquals(1, res.getId());
+        assertEquals("testprocess", res.getTitle());
     }
 
     @Test
     public void testCreateProcess() {
         service = new ProcessService();
-        Response response = service.createProcess();
+        Response response = service.createProcess( resource);
         assertNull(response);
     }
 
     @Test
     public void testDeleteProcess() {
         service = new ProcessService();
-        Response response = service.deleteProcess("1");
+        Response response = service.deleteProcess(resource);
         assertNull(response);
     }
 }

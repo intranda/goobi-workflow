@@ -24,10 +24,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.goobi.beans.Process;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Getter;
 import lombok.Setter;
 
-@XmlRootElement
+@XmlRootElement(name = "process")
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RestProcessResource {
 
     @Getter
@@ -68,7 +73,7 @@ public class RestProcessResource {
 
     @Getter
     @Setter
-    private String batchName;
+    private Integer batchNumber;
 
     @Getter
     @Setter
@@ -88,8 +93,8 @@ public class RestProcessResource {
         numberOfMetadata = process.getSortHelperMetadata();
         numberOfDocstructs = process.getSortHelperDocstructs();
         rulesetName = process.getRegelsatz().getTitel();
-        batchName = process.getBatch() == null ? null : process.getBatch().getBatchLabel();
-        docketName =  process.getDocket() == null ? null : process.getDocket().getName();
+        batchNumber = process.getBatch() == null ? null : process.getBatch().getBatchId();
+        docketName = process.getDocket() == null ? null : process.getDocket().getName();
 
     }
 }
