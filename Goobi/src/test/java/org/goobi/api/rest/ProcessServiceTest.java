@@ -66,7 +66,7 @@ public class ProcessServiceTest extends AbstractTest {
         service = new ProcessService();
 
         resource = new RestProcessResource();
-        resource.setId(1);
+        resource.setId(5);
 
         Process process = MockProcess.createProcess();
         process.setIstTemplate(true);
