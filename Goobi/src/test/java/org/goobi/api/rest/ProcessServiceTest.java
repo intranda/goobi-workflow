@@ -50,11 +50,12 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-    MasterpieceManager.class })
+    MasterpieceManager.class, StepManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
 
@@ -95,10 +96,12 @@ public class ProcessServiceTest extends AbstractTest {
 
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
+        EasyMock.expect(ProcessManager.getProcessByExactTitle(EasyMock.anyString())).andReturn(process).anyTimes();
         EasyMock.expect(ProcessManager.getBatchById(EasyMock.anyInt())).andReturn(batch).anyTimes();
         EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), EasyMock.anyObject())).andReturn(0).anyTimes();
         ProcessManager.saveProcessInformation(EasyMock.anyObject());
         ProcessManager.saveProcessInformation(EasyMock.anyObject());
+        ProcessManager.saveProcess(EasyMock.anyObject());
         ProcessManager.deleteProcess(EasyMock.anyObject());
         PowerMock.mockStatic(ProjectManager.class);
         EasyMock.expect(ProjectManager.getProjectByName(EasyMock.anyString())).andReturn(otherProject).anyTimes();
@@ -115,6 +118,9 @@ public class ProcessServiceTest extends AbstractTest {
         EasyMock.expect(TemplateManager.getTemplatesForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
         PowerMock.mockStatic(MasterpieceManager.class);
         EasyMock.expect(MasterpieceManager.getMasterpiecesForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
+
+        PowerMock.mockStatic(StepManager.class);
+        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();
@@ -188,8 +194,26 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testCreateProcess() {
         service = new ProcessService();
+
+
         Response response = service.createProcess(resource);
-        assertNull(response);
+        // no process template configured
+        assertEquals(400, response.getStatus());
+        resource.setProcessTemplateName("template");
+
+        // no title configured
+        resource.setTitle(null);
+        response = service.createProcess(resource);
+        assertEquals(400, response.getStatus());
+
+        // invalid title configured
+        resource.setTitle("ÖÄÜ?\"§$%%&");
+        response = service.createProcess(resource);
+        assertEquals(406, response.getStatus());
+
+        resource.setTitle("sample");
+        response = service.createProcess(resource);
+        assertEquals(400, response.getStatus());
     }
 
     @Test

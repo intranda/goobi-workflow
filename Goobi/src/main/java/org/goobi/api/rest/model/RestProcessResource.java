@@ -79,6 +79,17 @@ public class RestProcessResource {
     @Setter
     private String docketName;
 
+
+    // only needed to create new processes
+    @Getter
+    @Setter
+    private String processTemplateName;
+    @Getter
+    @Setter
+    private String documentType;
+
+
+
     public RestProcessResource() {
 
     }

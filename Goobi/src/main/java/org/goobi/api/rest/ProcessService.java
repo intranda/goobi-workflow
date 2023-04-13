@@ -20,6 +20,7 @@ package org.goobi.api.rest;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -38,12 +39,17 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.api.rest.model.RestProcessResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.Step;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.enums.StepEditType;
+import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -53,6 +59,17 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j2;
+import ugh.dl.DigitalDocument;
+import ugh.dl.DocStruct;
+import ugh.dl.Fileformat;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
+import ugh.dl.Prefs;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
+import ugh.fileformats.mets.MetsMods;
 
 @Log4j2
 @Path("/process")
@@ -204,16 +221,10 @@ public class ProcessService {
         // update process title
         if (StringUtils.isNotBlank(resource.getTitle()) && !process.getTitel().equals(resource.getTitle())) {
             String newTitle = resource.getTitle();
-            // check if new title fulfills requirements
-            String validateRegEx = ConfigurationHelper.getInstance().getProcessTitleValidationRegex();
-            if (!newTitle.matches(validateRegEx)) {
-                // invalid characters, return 406 - Not Acceptable
-                return Response.status(406).entity("Title contains invalid characters").build();
-            }
-            // check if new title can be used
-            if (ProcessManager.countProcessTitle(newTitle, process.getProjekt().getInstitution()) != 0) {
-                // new title is not unique, return 409 - Conflict
-                return Response.status(409).entity("Title is not unique").build();
+            Response resp = validateProcessTitle(newTitle, process.getProjekt().getInstitution());
+            if (resp != null) {
+                // error found, break up
+                return resp;
             }
             // rename folder, update metadata etc
             process.changeProcessTitle(newTitle);
@@ -224,19 +235,192 @@ public class ProcessService {
         return getProcessData(String.valueOf(id));
     }
 
+    /*
+     * Validate the new process title.
+     * Check if the title matches the requirements and is unique.
+     * 
+     */
+    private Response validateProcessTitle(String newTitle, Institution institution) {
+        if (StringUtils.isBlank(newTitle)) {
+            return Response.status(400).entity("No title found.").build();
+        }
+        // check if new title fulfills requirements
+        String validateRegEx = ConfigurationHelper.getInstance().getProcessTitleValidationRegex();
+        if (!newTitle.matches(validateRegEx)) {
+            // invalid characters, return 406 - Not Acceptable
+            return Response.status(406).entity("Title contains invalid characters").build();
+        }
+        // check if new title can be used
+        if (ProcessManager.countProcessTitle(newTitle, institution) != 0) {
+            // new title is not unique, return 409 - Conflict
+            return Response.status(409).entity("Title is not unique").build();
+        }
+        return null;
+    }
+
     @PUT
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Create a new process", description = "Create a new process")
     @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request - required data is missing")
+    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
+    @ApiResponse(responseCode = "404", description = "Data not found")
+    @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
+    @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
     public Response createProcess(RestProcessResource resource) {
 
-        // validate input data
+        // validate required fields - template name and process title
 
+        //  check template name
+        if (StringUtils.isBlank(resource.getProcessTemplateName())) {
+            return Response.status(400).entity("Process template name cannot be empty.").build();
+        }
+        Process template = ProcessManager.getProcessByExactTitle(resource.getProcessTemplateName());
+        // process does not exist
+        if (template == null) {
+            return Response.status(404).entity("Process template not found").build();
+        }
 
-        return null;
+        // check process title
+        String processTitle = resource.getTitle();
+        Response resp = validateProcessTitle(processTitle, null);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+
+        Process newProcess = prepareProcess(processTitle, template);
+
+        try {
+            // optional: change project
+            if (StringUtils.isNotBlank(resource.getProjectName())) {
+                Project newProject = ProjectManager.getProjectByName(resource.getProjectName());
+                if (newProject == null) {
+                    return Response.status(404).entity("Project not found").build();
+                }
+                newProcess.setProjekt(newProject);
+            }
+            // optional: change ruleset
+            if (StringUtils.isNotBlank(resource.getRulesetName())) {
+                Ruleset ruleset = RulesetManager.getRulesetByName(resource.getRulesetName());
+                if (ruleset == null) {
+                    return Response.status(404).entity("Ruleset not found").build();
+                }
+                newProcess.setRegelsatz(ruleset);
+            }
+            // optional: change docket
+            if (StringUtils.isNotBlank(resource.getDocketName())) {
+                Docket docket = DocketManager.getDocketByName(resource.getRulesetName());
+                if (docket == null) {
+                    return Response.status(404).entity("Docket not found").build();
+                }
+                newProcess.setDocket(docket);
+            }
+            // optional: add process to a batch
+            if (resource.getBatchNumber() != null) {
+                Batch batch = ProcessManager.getBatchById(resource.getBatchNumber());
+                if (batch == null) {
+                    batch = new Batch();
+                }
+                newProcess.setBatch(batch);
+            }
+        } catch (DAOException e) {
+            log.error(e);
+        }
+
+        // add optional data
+        if (resource.getCreationDate() != null) {
+            newProcess.setErstellungsdatum(resource.getCreationDate());
+        }
+        if (StringUtils.isNotBlank(resource.getStatus()) && StringUtils.isNumeric(resource.getStatus())) {
+            newProcess.setSortHelperStatus(resource.getStatus());
+        }
+        if (resource.getNumberOfImages() != null) {
+            newProcess.setSortHelperImages(resource.getNumberOfImages());
+        }
+        if (resource.getNumberOfMetadata() != null) {
+            newProcess.setSortHelperMetadata(resource.getNumberOfMetadata());
+        }
+        if (resource.getNumberOfDocstructs() != null) {
+            newProcess.setSortHelperDocstructs(resource.getNumberOfDocstructs());
+        }
+
+        try {
+            // save process to create ids and directories
+            ProcessManager.saveProcess(newProcess);
+
+            // create dummy metadata file
+            if (StringUtils.isNotBlank(resource.getDocumentType())) {
+                createMetadataFile(resource, newProcess);
+            }
+        } catch (DAOException | UGHException e) {
+            log.error(e);
+        }
+
+        return getProcessData(String.valueOf(newProcess.getId()));
+    }
+
+    private void createMetadataFile(RestProcessResource resource, Process newProcess)
+            throws PreferencesException, TypeNotAllowedForParentException, MetadataTypeNotAllowedException {
+        Prefs prefs = newProcess.getRegelsatz().getPreferences();
+        Fileformat fileformat = new MetsMods(prefs);
+        DigitalDocument digDoc = new DigitalDocument();
+        fileformat.setDigitalDocument(digDoc);
+        DocStruct logical = digDoc.createDocStruct(prefs.getDocStrctTypeByName(resource.getDocumentType()));
+        digDoc.setLogicalDocStruct(logical);
+        for (MetadataType mdt : prefs.getAllMetadataTypes()) {
+            if (mdt.isIdentifier()) {
+                Metadata meta = new Metadata(mdt);
+                meta.setValue(resource.getTitle());
+                logical.addMetadata(meta);
+            }
+        }
+        DocStruct physical = digDoc.createDocStruct(prefs.getDocStrctTypeByName("BoundBook"));
+        digDoc.setPhysicalDocStruct(physical);
+        try {
+            java.nio.file.Path f = Paths.get(newProcess.getProcessDataDirectoryIgnoreSwapping());
+            if (!StorageProvider.getInstance().isFileExists(f)) {
+                StorageProvider.getInstance().createDirectories(f);
+            }
+            newProcess.writeMetadataFile(fileformat);
+        } catch (UGHException | IOException | SwapException e) {
+            log.error(e);
+        }
+    }
+
+    private Process prepareProcess(String processName, Process template) {
+        BeanHelper helper = new BeanHelper();
+        Process newProcess = new Process();
+        newProcess.setTitel(processName);
+        newProcess.setIstTemplate(false);
+        newProcess.setInAuswahllisteAnzeigen(false);
+        newProcess.setProjekt(template.getProjekt());
+        newProcess.setRegelsatz(template.getRegelsatz());
+        newProcess.setDocket(template.getDocket());
+        newProcess.setExportValidator(template.getExportValidator());
+        helper.SchritteKopieren(template, newProcess);
+        helper.ScanvorlagenKopieren(template, newProcess);
+        helper.WerkstueckeKopieren(template, newProcess);
+        helper.EigenschaftenKopieren(template, newProcess);
+
+        // update task edition dates
+        for (Step step : newProcess.getSchritteList()) {
+
+            step.setBearbeitungszeitpunkt(newProcess.getErstellungsdatum());
+            step.setEditTypeEnum(StepEditType.AUTOMATIC);
+
+            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
+                step.setBearbeitungsbeginn(newProcess.getErstellungsdatum());
+                Date myDate = new Date();
+                step.setBearbeitungszeitpunkt(myDate);
+                step.setBearbeitungsende(myDate);
+            }
+        }
+
+        return newProcess;
     }
 
     @DELETE
