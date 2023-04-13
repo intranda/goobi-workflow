@@ -31,6 +31,36 @@ import de.sub.goobi.config.ConfigurationHelper;
 
 @Singleton
 public class StorageProvider {
+
+    private static final String REGEX_AVI = "\\.[aA][vV][iI]";
+    private static final String REGEX_DOCX = "\\.[dD][oO][cC][xX]?";
+    private static final String REGEX_EPUB = "\\.[eE][pP][uU][bB]";
+    private static final String REGEX_FBX = "\\.[fF][bB][xX]";
+    private static final String REGEX_FLV = "\\.[fF][lL][vV]";
+    private static final String REGEX_GIF = "\\.[gG][iI][fF]";
+    private static final String REGEX_GLB = "\\.[Gg][lL][bB]";
+    private static final String REGEX_GLTF = "\\.[gG][lL][tT][fF]";
+    private static final String REGEX_JP2 = "\\.[jJ][pP][2]";
+    private static final String REGEX_JPEG = "\\.[jJ][pP][eE]?[gG]";
+    private static final String REGEX_MP3 = "\\.[mM][pP]3";
+    private static final String REGEX_MP4 = "\\.[mM][pP]4";
+    private static final String REGEX_MPEG = "\\.[mM][pP][eE]?[gG]";
+    private static final String REGEX_MXF = "\\.[mM][xX][fF]";
+    private static final String REGEX_OBJ = "\\.[oO][bB][jJ]";
+    private static final String REGEX_OGG = "\\.[oO][gG][gG]";
+    private static final String REGEX_PDF = "\\.[pP][dD][fF]";
+    private static final String REGEX_PLY = "\\.[pP][lL][yY]";
+    private static final String REGEX_PPTX = "\\.[pP][pP][tT][xX]?";
+    private static final String REGEX_PNG = "\\.[pP][nN][gG]";
+    private static final String REGEX_STL = "\\.[sS][tT][lL]";
+    private static final String REGEX_TIFF = "\\.[tT][iI][fF][fF]?";
+    private static final String REGEX_TXT = "\\.[tT][xX][tT]";
+    private static final String REGEX_WAV = "\\.[wW][aA][vV]";
+    private static final String REGEX_WMV = "\\.[wW][mM][vV]";
+    private static final String REGEX_XLSX = "\\.[xX][lL][sS][xX]?";
+    private static final String REGEX_X3D = "\\.[xX]3[dD]";
+    private static final String REGEX_XML = "\\.[xX][mM][lL]";
+
     private static StorageProviderInterface instance;
 
     public static enum StorageType {
@@ -52,67 +82,37 @@ public class StorageProvider {
     }
 
     public static boolean dataFilterString(String name) {
-        boolean fileOk = false;
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[pP][dD][fF]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[aA][vV][iI]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[mM][pP][eE]?[gG]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[mM][pP]4")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[mM][pP]3")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[wW][aA][vV]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[wW][mM][vV]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[fF][lL][vV]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[oO][gG][gG]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[dD][oO][cC][xX]?")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[xX][lL][sS][xX]?")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[pP][pP][tT][xX]?")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[tT][xX][tT]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[xX][mM][lL]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[oO][bB][jJ]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[fF][bB][xX]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[pP][lL][yY]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[sS][tT][lL]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[Mm][Xx][Ff]")) {
-            fileOk = true;
-        } else if (name.matches(prefix + "\\.[Ee][Pp][Uu][Bb]")) {
-            fileOk = true;
-        }
-
-        return fileOk;
+        boolean isAllowed = false;
+        isAllowed = isAllowed || name.matches(prefix + REGEX_AVI);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_DOCX);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_EPUB);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_FLV);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GIF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GLB);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GLTF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_JP2);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_JPEG);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_MP3);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_MP4);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_MPEG);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_MXF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_OBJ);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_OGG);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PDF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PLY);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PPTX);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PNG);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_STL);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_TIFF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_TXT);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_WAV);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_WMV);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_XLSX);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_X3D);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_XML);
+        return isAllowed;
     }
 
 }

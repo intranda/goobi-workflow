@@ -157,7 +157,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -240,43 +240,28 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     public static boolean checkImageType(String name) {
-        boolean fileOk = false;
+        boolean isAllowed = false;
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        if (name.matches(prefix + REGEX_TIFF)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_JPEG)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_JP2)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_PNG)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_GIF)) {
-            fileOk = true;
-        }
-        return fileOk;
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GIF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_JP2);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_JPEG);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PNG);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_TIFF);
+        return isAllowed;
     }
 
     public static boolean check3DType(String name) {
-        boolean fileOk = false;
+        boolean isAllowed = false;
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        if (name.matches(prefix + REGEX_OBJ)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_PLY)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_STL)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_FBX)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_3DS)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_X3D)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_GLTF)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_GLB)) {
-            fileOk = true;
-        }
-        return fileOk;
+        isAllowed = isAllowed || name.matches(prefix + REGEX_3DS);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GLB);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GLTF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_OBJ);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PLY);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_STL);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_X3D);
+        return isAllowed;
     }
 
     @Override
@@ -294,29 +279,19 @@ public class NIOFileUtils implements StorageProviderInterface {
     public static final DirectoryStream.Filter<Path> objectNameFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) {
+            boolean isAllowed = false;
             String prefix = ConfigurationHelper.getInstance().getImagePrefix();
             String name = path.getFileName().toString();
-            boolean fileOk = false;
-            if (name.matches(prefix + REGEX_OBJ)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_PLY)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_STL)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_FBX)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_3DS)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_X3D)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_GLTF)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_GLB)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_XML)) {
-                fileOk = true;
-            }
-            return fileOk;
+            isAllowed = isAllowed || name.matches(prefix + REGEX_3DS);
+            isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);
+            isAllowed = isAllowed || name.matches(prefix + REGEX_GLB);
+            isAllowed = isAllowed || name.matches(prefix + REGEX_GLTF);
+            isAllowed = isAllowed || name.matches(prefix + REGEX_OBJ);
+            isAllowed = isAllowed || name.matches(prefix + REGEX_PLY);
+            isAllowed = isAllowed || name.matches(prefix + REGEX_STL);
+            isAllowed = isAllowed || name.matches(prefix + REGEX_X3D);
+            isAllowed = isAllowed || name.matches(prefix + REGEX_XML);
+            return isAllowed;
         }
     };
 
@@ -348,25 +323,18 @@ public class NIOFileUtils implements StorageProviderInterface {
         @Override
         public boolean accept(Path path) {
             String baseName = FilenameUtils.getBaseName(path.getFileName().toString());
-            boolean fileOk = false;
+            boolean isAllowed = false;
             if (baseName.equals(mainFileBaseName)) {
                 String prefix = ConfigurationHelper.getInstance().getImagePrefix();
                 String name = path.getFileName().toString();
-                if (name.matches(prefix + REGEX_MTL)) {
-                    fileOk = true;
-                } else if (name.matches(prefix + REGEX_JPEG)) {
-                    fileOk = true;
-                } else if (name.matches(prefix + REGEX_PNG)) {
-                    fileOk = true;
-                } else if (name.matches(prefix + REGEX_X3D)) {
-                    fileOk = true;
-                } else if (name.matches(prefix + REGEX_BIN)) {
-                    fileOk = true;
-                } else if (name.matches(prefix + REGEX_XML)) {
-                    fileOk = true;
-                }
+                isAllowed = isAllowed || name.matches(prefix + REGEX_BIN);
+                isAllowed = isAllowed || name.matches(prefix + REGEX_JPEG);
+                isAllowed = isAllowed || name.matches(prefix + REGEX_MTL);
+                isAllowed = isAllowed || name.matches(prefix + REGEX_PNG);
+                isAllowed = isAllowed || name.matches(prefix + REGEX_X3D);
+                isAllowed = isAllowed || name.matches(prefix + REGEX_XML);
             }
-            return fileOk;
+            return isAllowed;
         }
     }
 
@@ -967,7 +935,7 @@ public class NIOFileUtils implements StorageProviderInterface {
 
     public String getFileCreationTime(Path path) {
         try {
-            BasicFileAttributes            attr = Files.readAttributes(path, BasicFileAttributes.class);
+            BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
             FileTime fileTime = attr.creationTime();
             return fileTime.toInstant().toString();
         } catch (IOException e) {

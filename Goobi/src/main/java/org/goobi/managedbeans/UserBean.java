@@ -595,47 +595,58 @@ public class UserBean extends BasicBean implements Serializable {
 
     /**
      * This method generates a new (random) password for a certain user. It can be called by a button in the user list (visible only for
-     * administrators). The administrator will be asked a last time before this method generates and resets the password. When he/she/it confirms, the
-     * password and salt are generated and reset. At last the new password is shown on screen.
+     * administrators). The administrator will be asked a last time before this method generates and resets the password. If the administrator
+     * confirms, the password and salt are generated and reset. At last the new password is shown in the success message bar.
      * 
-     * @return The next page
+     * @return The user list page
      */
     public String createNewRandomPasswordForUser() {
+        // This boolean flag is set to true if the user password can be reset. If at least one of the criteria is not fulfilled, it is set to false
+        // and the password is not reset
+        boolean passwordChangeable = true;
+
         // Check for administrator rules
-        if (!Helper.getCurrentUser().getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString())) {
+        boolean userIsAdmin = Helper.getCurrentUser().getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString());
+        if (!userIsAdmin) {
             Helper.setFehlerMeldung("You are not allowed to change the user's password!");
-            return RETURN_PAGE_ALL;
+            passwordChangeable = false;
         }
 
         // Get and create user
-        Integer loginID = Integer.valueOf(Helper.getRequestParameter(ID));
-        User userToResetPassword;
-        try {
-            userToResetPassword = UserManager.getUserById(loginID);
-        } catch (DAOException daoe) {
-            Helper.setFehlerMeldung("could not read database", daoe.getMessage());
-            return RETURN_PAGE_ALL;
+        User userToResetPassword = null;
+        if (passwordChangeable) {
+            try {
+                Integer loginID = Integer.valueOf(Helper.getRequestParameter(ID));
+                userToResetPassword = UserManager.getUserById(loginID);
+            } catch (DAOException daoe) {
+                Helper.setFehlerMeldung("Could not read database", daoe.getMessage());
+                passwordChangeable = false;
+            }
+        }
+
+        if (userToResetPassword == null) {
+            Helper.setFehlerMeldung("The selected user account is invalid in the database.");
+            passwordChangeable = false;
         }
 
         // Create the random password and save it
-        if (userToResetPassword != null) {
+        if (passwordChangeable) {
             try {
-
                 // The custom minimum password is >= 1. The random password should have a length of >= 11.
                 int length = ConfigurationHelper.getInstance().getMinimumPasswordLength() + 10;
                 String password = createRandomPassword(length);
 
-                if (AuthenticationType.LDAP.equals(userToResetPassword.getLdapGruppe().getAuthenticationTypeEnum())
-                        && !userToResetPassword.getLdapGruppe().isReadonly()) {
+                AuthenticationType authentication = userToResetPassword.getLdapGruppe().getAuthenticationTypeEnum();
+                if (AuthenticationType.LDAP.equals(authentication) && !userToResetPassword.getLdapGruppe().isReadonly()) {
 
                     LdapAuthentication myLdap = new LdapAuthentication();
                     myLdap.changeUserPassword(userToResetPassword, null, password);
                 }
                 saltAndSaveUserPassword(userToResetPassword, password);
-                // Show password on screen
+                // Show password in message box
                 Helper.setMeldung("Password of user \"" + userToResetPassword.getNachVorname() + "\" was set to: " + password);
             } catch (NoSuchAlgorithmException e) {
-                Helper.setFehlerMeldung("ldap errror", e.getMessage());
+                Helper.setFehlerMeldung("LDAP error", e.getMessage());
             }
         }
         return RETURN_PAGE_ALL;
