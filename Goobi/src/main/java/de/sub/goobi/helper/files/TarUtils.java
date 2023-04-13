@@ -43,16 +43,15 @@ import lombok.extern.log4j.Log4j2;
 public class TarUtils {
 
     /**
-     * Create a tar file for the content of a given folder
+     * Creates a tar file for the content of a given folder
      * 
      * @param sourceDir folder to compress
      * @param tarFile tar file to create
      */
-
     public static void createTar(final Path sourceDir, final Path tarFile) {
         try (OutputStream fos = Files.newOutputStream(tarFile); BufferedOutputStream bof = new BufferedOutputStream(fos);
                 TarArchiveOutputStream tar = new TarArchiveOutputStream(bof)) {
-            handleFiles(sourceDir, tar);
+            createTarOrTarGz(sourceDir, tar);
             tar.finish();
         } catch (IOException e) {
             log.error(e);
@@ -60,24 +59,23 @@ public class TarUtils {
     }
 
     /**
-     * Create a tar.gz file for the content of a given folder
+     * Creates a tar.gz file for the content of a given folder
      * 
      * @param sourceDir folder to compress
      * @param tarFile tar.gz file to create
      */
-
     public static void createTarGz(final Path sourceDir, final Path tarFile) {
         try (OutputStream fos = Files.newOutputStream(tarFile); BufferedOutputStream bof = new BufferedOutputStream(fos);
                 GzipCompressorOutputStream gzos = new GzipCompressorOutputStream(bof);
                 TarArchiveOutputStream tar = new TarArchiveOutputStream(gzos)) {
-            handleFiles(sourceDir, tar);
+            createTarOrTarGz(sourceDir, tar);
             tar.finish();
         } catch (IOException e) {
             log.error(e);
         }
     }
 
-    private static void handleFiles(final Path sourceDir, TarArchiveOutputStream tar) throws IOException {
+    private static void createTarOrTarGz(final Path sourceDir, TarArchiveOutputStream tar) throws IOException {
         Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
 
             @Override
@@ -109,83 +107,86 @@ public class TarUtils {
     }
 
     /**
-     * Extract a tar.gz/tgz file into a folder
+     * Extracts a tar.gz/tgz file into a folder. Symbolic links and insecure directories like "../" are ignored.
      * 
      * @param destinationDir destination folder for the extracted files
      * @param tarFile file to extract
      */
-
     public static void extractTarGz(final Path destinationDir, final Path tarFile) {
         try (InputStream fis = Files.newInputStream(tarFile); BufferedInputStream bis = new BufferedInputStream(fis);
                 GzipCompressorInputStream gzis = new GzipCompressorInputStream(bis); TarArchiveInputStream tis = new TarArchiveInputStream(gzis)) {
 
-            ArchiveEntry entry;
-            while ((entry = tis.getNextEntry()) != null) {
+            // The algorithm is the same as for tar files...
+            extractTarOrTarGz(tis, destinationDir);
 
-                // create a new path, zip slip validate
-                Path newPath = zipSlipProtect(entry, destinationDir);
-
-                if (entry.isDirectory()) {
-                    Files.createDirectories(newPath);
-                } else {
-
-                    // check parent folder again
-                    Path parent = newPath.getParent();
-                    if (parent != null) {
-                        if (Files.notExists(parent)) {
-                            Files.createDirectories(parent);
-                        }
-                    }
-
-                    // copy TarArchiveInputStream to Path newPath
-                    Files.copy(tis, newPath, StandardCopyOption.REPLACE_EXISTING);
-
-                }
-            }
         } catch (IOException e) {
             log.error(e);
         }
     }
 
     /**
-     * Extract a tar file into a folder
+     * Extracts a tar file into a folder. Symbolic links and insecure directories like "../" are ignored.
      * 
      * @param destinationDir destination folder for the extracted files
      * @param tarFile file to extract
      */
-
     public static void extractTar(final Path destinationDir, final Path tarFile) {
         try (InputStream fis = Files.newInputStream(tarFile); BufferedInputStream bis = new BufferedInputStream(fis);
                 TarArchiveInputStream tis = new TarArchiveInputStream(bis)) {
 
-            ArchiveEntry entry;
-            while ((entry = tis.getNextEntry()) != null) {
+            // The algorithm is the same as for tar/gz files...
+            extractTarOrTarGz(tis, destinationDir);
 
-                // create a new path, zip slip validate
-                Path newPath = zipSlipProtect(entry, destinationDir);
-
-                if (entry.isDirectory()) {
-                    Files.createDirectories(newPath);
-                } else {
-
-                    // check parent folder again
-                    Path parent = newPath.getParent();
-                    if (parent != null) {
-                        if (Files.notExists(parent)) {
-                            Files.createDirectories(parent);
-                        }
-                    }
-
-                    // copy TarArchiveInputStream to Path newPath
-                    Files.copy(tis, newPath, StandardCopyOption.REPLACE_EXISTING);
-
-                }
-            }
         } catch (IOException e) {
             log.error(e);
         }
     }
 
+    /**
+     * Extracts a tar file or a tar.gz file to the given destination directory. Symbolic links and insecure directories like "../" are ignored.
+     *
+     * @param tar The input stream of the read tar or tar.gz file
+     * @param destinationDir The directory to where the content should be extracted
+     * @throws IOException If directories in the archive file try to create directories outside the destination directory
+     */
+    private static void extractTarOrTarGz(TarArchiveInputStream tar, Path destinationDir) throws IOException {
+        ArchiveEntry entry;
+        while ((entry = tar.getNextEntry()) != null) {
+
+            // The absolute path is created here, entries like "../" cause an IOException
+            Path newPath = zipSlipProtect(entry, destinationDir);
+
+            if (entry.isDirectory()) {
+                Files.createDirectories(newPath);
+
+            } else if (!Files.isSymbolicLink(newPath)) {
+                // With check for regular file, symbolic links and other file system objects are ignored.
+
+                // check parent folder again
+                Path parent = newPath.getParent();
+                if (parent != null) {
+                    if (Files.notExists(parent)) {
+                        Files.createDirectories(parent);
+                    }
+                }
+
+                // copy TarArchiveInputStream to Path newPath
+                Files.copy(tar, newPath, StandardCopyOption.REPLACE_EXISTING);
+
+            }
+        }
+    }
+
+    /**
+     * Returns the normalized path for the given target directory and the archive file entry. If the file entry is valid (absolute path that directs
+     * into the target directory), the normalized path is returned. Otherwise (if the file uses the parent directory alias ("../"), an IOException is
+     * thrown.
+     * 
+     * @param entry The archive entry to get the name from
+     * @param targetDir The target directory where the entry should be stored
+     * @return The normalized path (if it is valid)
+     * @throws IOException If the path is invalid (outside the target directory)
+     */
     private static Path zipSlipProtect(ArchiveEntry entry, Path targetDir) throws IOException {
 
         Path targetDirResolved = targetDir.resolve(entry.getName());
@@ -195,7 +196,7 @@ public class TarUtils {
         Path normalizePath = targetDirResolved.normalize();
 
         if (!normalizePath.startsWith(targetDir)) {
-            throw new IOException("Bad entry: " + entry.getName());
+            throw new IOException("Bad tar entry: " + entry.getName());
         }
 
         return normalizePath;

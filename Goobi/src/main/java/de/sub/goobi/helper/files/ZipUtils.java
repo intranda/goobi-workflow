@@ -75,22 +75,55 @@ public class ZipUtils {
         try {
             try (ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(zipFile))) {
                 ZipEntry entry;
-                while ((entry = zipInputStream.getNextEntry()) != null) {
-                    final Path toPath = destinationDir.resolve(entry.getName());
+                /*
+                 * Explanation for NOSONAR comment: The sizes are not checked because:
+                 * - zip files may be huge due to lots of images
+                 * - the zip files may contain thousands of images/entries, a threshold would not make sense (or would also be very high)
+                 * - especially master images may be of very large file size. Thresholds would also make no sense for them
+                 * - due to file formats and very efficient compressing rates, very high decompression rates are allowed
+                 * - The total size of the unzipped archive may use hundrets of Gigabytes
+                 *
+                 * Implemented protection:
+                 * - Symlinks are ignored (and can not produce denial of service due to recursion)
+                 * - the absolute path of each file entry is checked (so that "../" entries can not overwrite files outside the target directory)
+                 */
+                while ((entry = zipInputStream.getNextEntry()) != null) {// NOSONAR (see above)
+
+                    // The absolute path is created here, entries like "../" cause an IOException
+                    final Path newPath = zipSlipProtect(entry, destinationDir);
+
                     if (entry.isDirectory()) {
-                        Files.createDirectories(toPath);
-                    } else {
-                        Path directory = toPath.getParent();
-                        if (!Files.exists(directory)) {
+                        Files.createDirectories(newPath);
+
+                    } else if (!Files.isSymbolicLink(newPath)) {
+                        // With check for regular file, symbolic links and other file system objects are ignored.
+
+                        Path directory = newPath.getParent();
+                        if (Files.notExists(directory)) {
                             Files.createDirectories(directory);
                         }
-                        Files.copy(zipInputStream, toPath);
+                        Files.copy(zipInputStream, newPath);
                     }
                 }
             }
         } catch (IOException e) {
             log.error(e);
         }
+    }
+
+    private static Path zipSlipProtect(ZipEntry entry, Path targetDir) throws IOException {
+
+        Path targetDirResolved = targetDir.resolve(entry.getName());
+
+        // make sure normalized file still has targetDir as its prefix,
+        // else throws exception
+        Path normalizePath = targetDirResolved.normalize();
+
+        if (!normalizePath.startsWith(targetDir)) {
+            throw new IOException("Bad zip entry: " + entry.getName());
+        }
+
+        return normalizePath;
     }
 
 }
