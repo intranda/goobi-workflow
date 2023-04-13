@@ -99,7 +99,7 @@ public class ProcessServiceTest extends AbstractTest {
         EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), EasyMock.anyObject())).andReturn(0).anyTimes();
         ProcessManager.saveProcessInformation(EasyMock.anyObject());
         ProcessManager.saveProcessInformation(EasyMock.anyObject());
-
+        ProcessManager.deleteProcess(EasyMock.anyObject());
         PowerMock.mockStatic(ProjectManager.class);
         EasyMock.expect(ProjectManager.getProjectByName(EasyMock.anyString())).andReturn(otherProject).anyTimes();
 
@@ -195,7 +195,12 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testDeleteProcess() {
         service = new ProcessService();
+        resource.setId(0);
         Response response = service.deleteProcess(resource);
-        assertNull(response);
+        assertEquals(400, response.getStatus());
+
+        resource.setId(1);
+        response = service.deleteProcess(resource);
+        assertEquals(200, response.getStatus());
     }
 }

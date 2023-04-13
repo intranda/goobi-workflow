@@ -18,6 +18,9 @@
 
 package org.goobi.api.rest;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -40,7 +43,9 @@ import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
@@ -228,11 +233,15 @@ public class ProcessService {
     @ApiResponse(responseCode = "500", description = "Internal error")
     public Response createProcess(RestProcessResource resource) {
 
+        // validate input data
+
+
         return null;
     }
 
     @DELETE
     @Path("/")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Delete an existing process", description = "Delete an existing process and all its content")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -240,7 +249,26 @@ public class ProcessService {
     @ApiResponse(responseCode = "500", description = "Internal error")
     public Response deleteProcess(RestProcessResource resource) {
 
-        return null;
+        // get id from request
+        int id = resource.getId();
+        if (id == 0) {
+            return Response.status(400).build();
+        }
+        // check if id exists
+        Process process = ProcessManager.getProcessById(id);
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+        // delete process
+        try {
+            StorageProvider.getInstance().deleteDir(Paths.get(process.getProcessDataDirectory()));
+            ProcessManager.deleteProcess(process);
+        } catch (IOException | SwapException e) {
+            log.error(e);
+            return Response.status(500).entity("Process cannot be deleted.").build();
+        }
+
+        return Response.ok().build();
     }
 
 }
