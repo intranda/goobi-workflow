@@ -66,9 +66,9 @@ public class ProcessServiceTest extends AbstractTest {
         service = new ProcessService();
 
         resource = new RestProcessResource();
-        resource.setId(5);
 
         Process process = MockProcess.createProcess();
+        process.setId(5);
         process.setIstTemplate(true);
         process.setSortHelperDocstructs(5);
         process.setSortHelperImages(5);
@@ -94,7 +94,7 @@ public class ProcessServiceTest extends AbstractTest {
         batch.setBatchLabel("label");
 
         PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
+        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
         EasyMock.expect(ProcessManager.getBatchById(EasyMock.anyInt())).andReturn(batch).anyTimes();
         EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), EasyMock.anyObject())).andReturn(0).anyTimes();
         ProcessManager.saveProcessInformation(EasyMock.anyObject());
@@ -133,7 +133,7 @@ public class ProcessServiceTest extends AbstractTest {
         assertNotNull(response);
 
         RestProcessResource res = (RestProcessResource) response.getEntity();
-        assertEquals(1, res.getId());
+        assertEquals(5, res.getId());
         assertEquals("testprocess", res.getTitle());
         assertEquals("project", res.getProjectName());
     }
@@ -147,10 +147,10 @@ public class ProcessServiceTest extends AbstractTest {
         assertNotNull(response);
         assertEquals(400, response.getStatus());
 
-        resource.setId(1);
+        resource.setId(5);
         response = service.updateProcess(resource);
         RestProcessResource res = (RestProcessResource) response.getEntity();
-        assertEquals(1, res.getId());
+        assertEquals(5, res.getId());
         assertEquals("testprocess", res.getTitle());
         assertEquals(5, res.getNumberOfDocstructs().intValue());
         assertEquals(5, res.getNumberOfImages().intValue());

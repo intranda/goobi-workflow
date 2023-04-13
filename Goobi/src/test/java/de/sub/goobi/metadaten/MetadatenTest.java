@@ -90,7 +90,7 @@ import ugh.exceptions.ReadException;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, MetadataManager.class,
-        ProcessManager.class, PropertyManager.class })
+    ProcessManager.class, PropertyManager.class })
 @PowerMockIgnore({ "javax.net.ssl.*" })
 public class MetadatenTest extends AbstractTest {
 
@@ -168,6 +168,9 @@ public class MetadatenTest extends AbstractTest {
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
         EasyMock.expect(Helper.getRequestParameter(EasyMock.anyString())).andReturn("1").anyTimes();
         EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+        Helper.setFehlerMeldung(EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString());
@@ -2085,7 +2088,7 @@ public class MetadatenTest extends AbstractTest {
 
         Metadaten fixture = initMetadaten();
         assertEquals("", fixture.getCommentPropertyForImage());
-        
+
         ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
         assertNotNull(helper);
 
@@ -2093,10 +2096,10 @@ public class MetadatenTest extends AbstractTest {
         String folderName = process.getImagesTifDirectory(false);
         String imageName = fixture.getImage().getImageName();
         String comment = "just some comment";
-        
+
         Processproperty property = new Processproperty();
         property.setProcessId(process.getId());
-        
+
         // prepare title and value for this process property
         String propertyTitle = Whitebox.invokeMethod(helper, "getPropertyTitle", folderName);
         ImageCommentPropertyHelper.ImageComments imageComments = Whitebox.invokeMethod(helper, "getImageComments", property);
