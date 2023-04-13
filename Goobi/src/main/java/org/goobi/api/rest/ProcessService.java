@@ -39,6 +39,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
+import org.goobi.api.mq.QueueType;
 import org.goobi.api.rest.model.RestProcessResource;
 import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
@@ -60,6 +61,7 @@ import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j2;
@@ -515,4 +517,161 @@ public class ProcessService {
         return Response.status(200).entity(entity).build();
     }
 
+    /*
+    JSON:
+    curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/step/67
+
+    XML:
+    curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/step/67
+     */
+
+    @Path("/{processid}/step/{stepid}")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Serves a step resource", description = "Get a specific step")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response getStep(@PathParam("processid") String processid, @PathParam("stepid") String stepid) {
+        // id is empty or value is not numeric
+        if (StringUtils.isBlank(stepid) || !StringUtils.isNumeric(stepid)) {
+            return Response.status(400).build();
+        }
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).build();
+        }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+        id = Integer.parseInt(stepid);
+        Step step = StepManager.getStepById(id);
+        // process does not exist
+        if (step == null) {
+            return Response.status(404).entity("Step not found").build();
+        }
+        return Response.status(200).entity(new RestStepResource(process, step)).build();
+    }
+
+    /*
+    JSON:
+
+    XML:
+
+     */
+    @POST
+    @Path("/")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Update an existing process", description = "Update an existing process, set new name, project, ....")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
+    @ApiResponse(responseCode = "409", description = "New process title already exists.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response updateProcess(RestStepResource resource) {
+        Integer id = resource.getStepId();
+        if (id == null || id.intValue() == 0) {
+            return Response.status(400).build();
+        }
+        Step step = StepManager.getStepById(id);
+        // step does not exist
+        if (step == null) {
+            return Response.status(404).entity("Step not found").build();
+        }
+
+        if (StringUtils.isNotBlank(resource.getStepName())) {
+            step.setTitel(resource.getStepName());
+        }
+        if (StringUtils.isNotBlank(resource.getStatus())) {
+            for (StepStatus status : StepStatus.values()) {
+                if (status.getSearchString().equals(resource.getStatus())) {
+                    step.setBearbeitungsstatusEnum(status);
+                }
+            }
+        }
+        if (resource.getPriority() != null) {
+            step.setPrioritaet(resource.getPriority());
+        }
+        if (resource.getOrder() != null) {
+            step.setReihenfolge(resource.getOrder());
+        }
+        if (resource.getStartDate() != null) {
+            step.setBearbeitungsbeginn(resource.getStartDate());
+        }
+
+        if (resource.getFinishDate() != null) {
+            step.setBearbeitungsende(resource.getFinishDate());
+        }
+        if (StringUtils.isNotBlank(resource.getStepPlugin())) {
+            step.setStepPlugin(resource.getStepPlugin());
+        }
+        if (StringUtils.isNotBlank(resource.getValidationPlugin())) {
+            step.setValidationPlugin(resource.getValidationPlugin());
+        }
+        if (StringUtils.isNotBlank(resource.getQueueType())) {
+            step.setMessageQueue(QueueType.getByName(resource.getQueueType()));
+        }
+        if (resource.getProperties() != null) {
+            Boolean val =  resource.getProperties().get("metadata");
+            if (val != null) {
+                step.setTypMetadaten(val.booleanValue());
+            }
+            val =  resource.getProperties().get("automatic");
+            if (val != null) {
+                step.setTypAutomatisch(val.booleanValue());
+            }
+            val =  resource.getProperties().get("thumbnailGeneration");
+            if (val != null) {
+                step.setTypAutomaticThumbnail(val.booleanValue());
+            }
+            val =  resource.getProperties().get("readAccess");
+            if (val != null) {
+                step.setTypImagesLesen(val.booleanValue());
+            }
+            val =  resource.getProperties().get("writeAccess");
+            if (val != null) {
+                step.setTypImagesSchreiben(val.booleanValue());
+            }
+            val =  resource.getProperties().get("export");
+            if (val != null) {
+                step.setTypExportDMS(val.booleanValue());
+            }
+            val =  resource.getProperties().get("script");
+            if (val != null) {
+                step.setTypScriptStep(val.booleanValue());
+            }
+            val =  resource.getProperties().get("validate");
+            if (val != null) {
+                step.setTypBeimAbschliessenVerifizieren(val.booleanValue());
+            }
+            val =  resource.getProperties().get("batch");
+            if (val != null) {
+                step.setBatchStep(val.booleanValue());
+            }
+            val =  resource.getProperties().get("delayStep");
+            if (val != null) {
+                step.setDelayStep(val.booleanValue());
+            }
+            val =  resource.getProperties().get("updateMetadataIndex");
+            if (val != null) {
+                step.setUpdateMetadataIndex(val.booleanValue());
+            }
+            val =  resource.getProperties().get("generateDocket");
+            if (val != null) {
+                step.setGenerateDocket(val.booleanValue());
+            }
+
+            //TODO scripts
+            //TODO httpStepConfiguration
+            //TODO usergroups
+        }
+
+        return getStep(String.valueOf(resource.getProcessId()), String.valueOf(resource.getStepId()));
+    }
 }

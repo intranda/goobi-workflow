@@ -97,6 +97,11 @@ public class ProcessServiceTest extends AbstractTest {
         batch.setBatchId(1);
         batch.setBatchLabel("label");
 
+        Step step = new Step();
+        step.setTitel("step");
+        step.setReihenfolge(1);
+        step.setPrioritaet(1);
+
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
         EasyMock.expect(ProcessManager.getProcessByExactTitle(EasyMock.anyString())).andReturn(process).anyTimes();
@@ -124,14 +129,12 @@ public class ProcessServiceTest extends AbstractTest {
 
         PowerMock.mockStatic(StepManager.class);
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
+        EasyMock.expect(StepManager.getStepById(EasyMock.anyInt())).andReturn(step).anyTimes();
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();
 
-        Step step = new Step();
-        step.setTitel("step");
-        step.setReihenfolge(1);
-        step.setPrioritaet(1);
+        ;
         process.getSchritte().add(step);
 
     }
@@ -252,5 +255,21 @@ public class ProcessServiceTest extends AbstractTest {
 
         assertEquals(1, data.size());
         assertEquals("step", data.get(0).getStepName());
+    }
+
+    @Test
+    public void testGetStep() {
+        service = new ProcessService();
+        Response response = service.getStep("", "");
+        assertEquals(400, response.getStatus());
+
+
+        response = service.getStep("1", "1");
+        assertNotNull(response);
+
+
+        RestStepResource data = (RestStepResource) response.getEntity();
+
+        assertEquals("step", data.getStepName());
     }
 }
