@@ -120,71 +120,50 @@ public class HelperSchritte {
      */
 
     public void CloseStepObjectAutomatic(Step currentStep) {
-        closeStepObject(currentStep, currentStep.getProcessId());
-    }
-
-    private void closeStepObject(Step currentStep, int processId) {
-        currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
-        Date myDate = new Date();
-
-        currentStep.setBearbeitungszeitpunkt(myDate);
         try {
             User user = Helper.getCurrentUser();
-            if (user != null) {
-                currentStep.setBearbeitungsbenutzer(user);
-            }
+            saveStepStatus(currentStep, user);
         } catch (Exception e) {
             log.warn(e);
         }
+        List<Step> stepsToFinish = closeStepObject(currentStep, currentStep.getProcessId());
+
+        for (Step step : stepsToFinish) {
+            CloseStepObjectAutomatic(step);
+        }
+    }
+
+    public static void saveStepStatus(Step currentStep, User user) {
+        if (user != null) {
+            currentStep.setBearbeitungsbenutzer(user);
+        }
+        currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
+        Date myDate = new Date();
+        currentStep.setBearbeitungszeitpunkt(myDate);
         currentStep.setBearbeitungsende(myDate);
         try {
             StepManager.saveStep(currentStep);
-            Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
+            String message = "Step closed: '" + currentStep.getTitel() + "'.";
+            Helper.addMessageToProcessJournal(currentStep.getProzess().getId(), LogType.DEBUG, message);
         } catch (DAOException e) {
-            log.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID " + processId, e);
+            log.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID "
+                    + currentStep.getProzess().getId(), e);
         }
+    }
+
+    public static List<Step> closeStepObject(Step currentStep, int processId) {
+        Date myDate = currentStep.getBearbeitungszeitpunkt();
 
         if (currentStep.isUpdateMetadataIndex()) {
-            try {
-                String metdatdaPath = currentStep.getProzess().getMetadataFilePath();
-                String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
-                Path metadataFile = Paths.get(metdatdaPath);
-                Path anchorFile = Paths.get(anchorPath);
-                Map<String, List<String>> pairs = new HashMap<>();
-
-                extractMetadata(metadataFile, pairs);
-
-                if (StorageProvider.getInstance().isFileExists(anchorFile)) {
-                    extractMetadata(anchorFile, pairs);
-                }
-
-                MetadataManager.updateMetadata(currentStep.getProzess().getId(), pairs);
-
-                // now add all authority fields to the metadata pairs
-                extractAuthorityMetadata(metadataFile, pairs);
-                if (StorageProvider.getInstance().isFileExists(anchorFile)) {
-                    extractAuthorityMetadata(anchorFile, pairs);
-                }
-                MetadataManager.updateJSONMetadata(processId, pairs);
-
-                HistoryAnalyserJob.updateHistory(currentStep.getProzess());
-
-                if (!currentStep.getProzess().isMediaFolderExists()
-                        && StorageProvider.getInstance().isFileExists(Paths.get(currentStep.getProzess().getImagesDirectory()))) {
-                    currentStep.getProzess().setMediaFolderExists(true);
-                    ProcessManager.saveProcessInformation(currentStep.getProzess());
-                }
-
-            } catch (SwapException | DAOException | IOException e1) {
-                log.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
-            }
+            updateMetadataIndex(currentStep);
         }
 
-        List<Step> automatischeSchritte = new ArrayList<>();
-        List<Step> stepsToFinish = new ArrayList<>();
         SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
         HistoryManager.addHistory(myDate, currentStep.getReihenfolge().doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone.getValue(),
                 processId);
+
+        List<Step> automatischeSchritte = new ArrayList<>();
+        List<Step> stepsToFinish = new ArrayList<>();
 
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
         List<Step> steps = StepManager.getStepsForProcess(processId);
@@ -216,15 +195,18 @@ public class HelperSchritte {
                      */
 
                     if (StepStatus.LOCKED.equals(myStep.getBearbeitungsstatusEnum())) {
-                        myStep.setBearbeitungszeitpunkt(myDate);
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+                        myStep.setBearbeitungszeitpunkt(currentStep.getBearbeitungsende());
+
                         if (myStep.isTypAutomaticThumbnail() && StringUtils.isNotBlank(myStep.getAutomaticThumbnailSettingsYaml())) {
                             myStep.submitAutomaticThumbnailTicket();
                         } else {
                             myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                             SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
+
                             HistoryManager.addHistory(myDate, myStep.getReihenfolge().doubleValue(), myStep.getTitel(),
                                     HistoryEventType.stepOpen.getValue(), processId);
+
                             /* wenn es ein automatischer Schritt mit Script ist */
                             if (myStep.isTypAutomatisch()) {
                                 automatischeSchritte.add(myStep);
@@ -232,6 +214,7 @@ public class HelperSchritte {
                                 stepsToFinish.add(myStep);
                             }
                             try {
+                                SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
                                 StepManager.saveStep(myStep);
                                 Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG,
                                         "Step '" + myStep.getTitel() + "' opened.");
@@ -262,7 +245,7 @@ public class HelperSchritte {
             log.error("An exception occurred while closing a step for process with ID " + po.getId(), e);
         }
 
-        updateProcessStatus(processId);
+        new HelperSchritte().updateProcessStatus(processId);
         for (Step automaticStep : automatischeSchritte) {
             automaticStep.setBearbeitungsbeginn(new Date());
             automaticStep.setBearbeitungsbenutzer(null);
@@ -285,10 +268,43 @@ public class HelperSchritte {
             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
             myThread.startOrPutToQueue();
         }
-        for (Step finish : stepsToFinish) {
-            CloseStepObjectAutomatic(finish);
-        }
+        return stepsToFinish;
+    }
 
+    public static void updateMetadataIndex(Step currentStep) {
+        Process process = currentStep.getProzess();
+        try {
+            String metdatdaPath = currentStep.getProzess().getMetadataFilePath();
+            String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
+            Path metadataFile = Paths.get(metdatdaPath);
+            Path anchorFile = Paths.get(anchorPath);
+            Map<String, List<String>> pairs = new HashMap<>();
+
+            extractMetadata(metadataFile, pairs);
+
+            if (StorageProvider.getInstance().isFileExists(anchorFile)) {
+                extractMetadata(anchorFile, pairs);
+            }
+
+            MetadataManager.updateMetadata(process.getId(), pairs);
+
+            // now add all authority fields to the metadata pairs
+            extractAuthorityMetadata(metadataFile, pairs);
+            if (StorageProvider.getInstance().isFileExists(anchorFile)) {
+                extractAuthorityMetadata(anchorFile, pairs);
+            }
+            MetadataManager.updateJSONMetadata(process.getId(), pairs);
+
+            HistoryAnalyserJob.updateHistory(process);
+
+            if (!process.isMediaFolderExists() && StorageProvider.getInstance().isFileExists(Paths.get(process.getImagesDirectory()))) {
+                process.setMediaFolderExists(true);
+                ProcessManager.saveProcessInformation(process);
+            }
+
+        } catch (SwapException | DAOException | IOException e1) {
+            log.error("An exception occurred while updating the metadata file process with ID " + process.getId(), e1);
+        }
     }
 
     public void updateProcessStatus(int processId) {
