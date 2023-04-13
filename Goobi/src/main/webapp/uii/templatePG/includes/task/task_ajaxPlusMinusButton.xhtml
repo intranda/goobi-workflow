@@ -8,7 +8,7 @@
 	<composite:implementation>
 
 		<button
-			class="btn btn--plusMinus"
+			class="btn btn--plusMinus text-start"
 			jsf:rendered="#{!item.panelAusgeklappt}"
 			title="#{item.titel}"
 			data-bs-toggle="tooltip"
@@ -39,7 +39,7 @@
 
 		<button
 			type="button"
-			class="btn btn--plusMinus mb-2"
+			class="btn btn--plusMinus mb-2 text-start"
 			jsf:rendered="#{item.panelAusgeklappt}"
 			title="#{item.titel}"
 			data-bs-toggle="tooltip"
@@ -57,7 +57,7 @@
 				<i class="fa fa-user-o" title="#{msgs.normalerSchritt}"/>
 			</h:panelGroup>
 			<span>
-				<h:outputText value="#{item.titelLokalisiert}" />
+				<h:outputText value="#{item.titel}" />
 			</span>
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="false"/>
       <f:ajax

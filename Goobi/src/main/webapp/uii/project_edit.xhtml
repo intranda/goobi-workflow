@@ -60,7 +60,8 @@
                         boxType="action"
                         boxForm="true"
                         boxPadding="false"
-                        boxTitle="false">
+                        boxTitle="false"
+                        id="projecteditbox">
 
 
                         <intranda:boxTitle
@@ -524,7 +525,7 @@
                                         required="false" 
                                         style="border-bottom: 1px solid #DDDDDD;"/>
                             </h:panelGroup>
-                            <h:panelGroup
+                            <h:panelGroup id="filegroups1"
                                 rendered="#{ProjekteForm.displayMode eq 'tab4' or ProjekteForm.displayMode eq 'filegroups'}">
 
                                 <!-- ===================== file groups ====================== -->
@@ -538,9 +539,8 @@
                                             value="#{msgs.metsfilegroups}" />
                                     </div>
 
-                                    <div class="col-12 col-md-9">
 
-                                        <h:panelGroup rendered="#{ProjekteForm.displayMode eq 'filegroups'}">
+                                        <h:panelGroup id="filegroups2" styleClass="col-12 col-md-9" rendered="#{ProjekteForm.displayMode eq 'filegroups'}">
 
                                             <intranda:box
                                                 boxType="action"
@@ -548,7 +548,8 @@
                                                 title="#{msgs.metsfilegroups}"
                                                 icon="fa-table"
                                                 boxForm="true"
-                                                boxPadding="false">
+                                                boxPadding="false"
+                                                id="filegroupbox">
 
                                                 <intranda:formInputText
                                                     id="name"
@@ -612,7 +613,7 @@
                                                     help="#{msgs.helpProjectfilegroup_UseOriginalFiles}"
                                                     name="useOriginalFilesName"
                                                     ajaxEvent="click"
-                                                    ajaxRender=":myform:mime_suffix" />
+                                                    ajaxRender="myform:projecteditbox:filegroupbox:mime_suffix" />
 
                                                 <intranda:formInputText
                                                     id="ignoreMimetypes"
@@ -661,8 +662,7 @@
                                         </h:panelGroup>
 
 
-                                        <h:panelGroup rendered="#{ProjekteForm.displayMode ne 'filegroups'}">
-
+                                        <h:panelGroup id="filegroups" styleClass="col-12 col-md-9" rendered="#{ProjekteForm.displayMode ne 'filegroups'}">
 
                                             <intranda:box
                                                 boxScope="box-mets-filegroups"
@@ -757,7 +757,7 @@
                                         </h:panelGroup>
 
                                     </div>
-                                </div>
+                                
                             </h:panelGroup>
                         </div>
 

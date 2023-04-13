@@ -17,10 +17,10 @@
 
 		<script type="text/javascript">
 			function switchExpanded(id) {
-				console.log("called by: " + id);
+				// console.log("called by: " + id);
 				var x = document.getElementById(id).getAttribute(
 						"aria-expanded");
-				console.log(x)
+				// console.log(x)
 				if (x == "true") {
 					x = "false"
 				} else {
@@ -115,7 +115,7 @@
 		
 								<!-- ORDER -->
 								<x:column
-									id="ordercolumn">
+									id="ordercolumn" headerstyleClass="gw-table-fixed__sizeXXS">
 									<f:facet name="header">
 										<h:outputText value="#{msgs.nr}" />
 									</f:facet>
@@ -205,7 +205,7 @@
 		
 										<button
 											jsf:id="expandbutton1"
-											class="btn">
+											class="btn text-start">
 											<h:panelGroup rendered="#{!item.panelAusgeklappt}">
 												<i
 													class="fa fa-angle-right #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
@@ -492,7 +492,7 @@
 								</h:column>
 								<!-- +++++++++++++++++  // alle Eigenschaften auflisten mit CSS ++++++++++++++++++++++++ -->
 		
-								<x:column>
+								<x:column headerstyleClass="gw-table-fixed__sizeXXS">
 									<f:facet name="header">
 										<h:outputText value="#{msgs.status}" />
 									</f:facet>
@@ -607,7 +607,7 @@
 		
 								</x:column>
 		
-								<h:column
+								<x:column headerstyleClass="gw-table-fixed__sizeXXS"
 									rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
 									<f:facet name="header">
 										<h:outputText value="#{msgs.auswahl}" />
@@ -696,7 +696,7 @@
 										<i class="fa fa-globe"></i>
 									</button>
 		
-								</h:column>
+								</x:column>
 		
 							</x:dataTable>
 						</div>

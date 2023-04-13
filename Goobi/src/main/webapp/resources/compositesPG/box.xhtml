@@ -16,6 +16,7 @@
 		<composite:attribute name="boxForm" default="false"/>
 		<composite:attribute name="boxPadding" default="true" />
 		<composite:attribute name="boxSmall" default="false"/>
+        <composite:attribute name="id" default="box"/>
 		<composite:attribute name="boxScope" />
 		<composite:attribute name="icon" />
 		<composite:attribute name="title" />
@@ -25,7 +26,7 @@
 
 	<!-- BOX -->
 	<h:panelGroup
-		id="box"
+		id="#{cc.attrs.id}"
 		layout="block"
 		styleClass="box
 		box--#{cc.attrs.boxType}
