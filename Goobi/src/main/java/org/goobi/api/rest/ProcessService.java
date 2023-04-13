@@ -20,7 +20,9 @@ package org.goobi.api.rest;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -32,11 +34,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.rest.model.RestProcessResource;
+import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
@@ -258,6 +262,16 @@ public class ProcessService {
         return null;
     }
 
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template",
+    "documentType": "Monograph"}'
+
+    XML:
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template
+    </processTemplateName><documentType>Monograph</documentType></process>'
+     */
+
     @PUT
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -423,6 +437,14 @@ public class ProcessService {
         return newProcess;
     }
 
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/ -d '{"id":"123"}'
+
+    XML:
+    curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/ -d '<process><id>1234</id></process>'
+     */
+
     @DELETE
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -453,6 +475,44 @@ public class ProcessService {
         }
 
         return Response.ok().build();
+    }
+
+    /*
+    JSON:
+    curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/steps
+
+    XML:
+    curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/steps
+     */
+
+    @Path("/{processid}/steps")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Serves a step list resource", description = "Get a list of all steps for a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response getStepList(@PathParam("processid") String processid) {
+        // id is empty or value is not numeric
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).build();
+        }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+
+        List<RestStepResource> stepList = new ArrayList<>();
+        for (Step step : process.getSchritte()) {
+            stepList.add(new RestStepResource(process, step));
+        }
+
+        GenericEntity<List<RestStepResource>> entity = new GenericEntity<List<RestStepResource>>(stepList) {
+        };
+        return Response.status(200).entity(entity).build();
     }
 
 }

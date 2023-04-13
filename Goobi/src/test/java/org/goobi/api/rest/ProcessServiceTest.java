@@ -23,17 +23,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.core.Response;
 
 import org.easymock.EasyMock;
 import org.goobi.api.rest.model.RestProcessResource;
+import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.Step;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -125,6 +128,12 @@ public class ProcessServiceTest extends AbstractTest {
         EasyMock.expectLastCall();
         PowerMock.replayAll();
 
+        Step step = new Step();
+        step.setTitel("step");
+        step.setReihenfolge(1);
+        step.setPrioritaet(1);
+        process.getSchritte().add(step);
+
     }
 
     @Test
@@ -195,7 +204,6 @@ public class ProcessServiceTest extends AbstractTest {
     public void testCreateProcess() {
         service = new ProcessService();
 
-
         Response response = service.createProcess(resource);
         // no process template configured
         assertEquals(400, response.getStatus());
@@ -226,5 +234,23 @@ public class ProcessServiceTest extends AbstractTest {
         resource.setId(1);
         response = service.deleteProcess(resource);
         assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    public void testGetStepList() {
+        service = new ProcessService();
+        Response response = service.getStepList("");
+        assertEquals(400, response.getStatus());
+        response = service.getStepList("abc");
+        assertEquals(400, response.getStatus());
+
+        response = service.getStepList("1");
+        assertNotNull(response);
+
+        @SuppressWarnings("unchecked")
+        List<RestStepResource> data = (List<RestStepResource>) response.getEntity();
+
+        assertEquals(1, data.size());
+        assertEquals("step", data.get(0).getStepName());
     }
 }
