@@ -54,6 +54,7 @@ import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
+import de.sub.goobi.helper.CloseStepHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -570,7 +571,7 @@ public class ProcessService {
     @Path("/{processid}/step")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Operation(summary = "Update an existing process", description = "Update an existing process, set new name, project, ....")
+    @Operation(summary = "Update an existing step", description = "Update an existing step")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
@@ -628,7 +629,7 @@ public class ProcessService {
     @Path("/{processid}/step")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Operation(summary = "Update an existing process", description = "Update an existing process, set new name, project, ....")
+    @Operation(summary = "Add a new step", description = "Add a new step to an existing process")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
@@ -702,9 +703,10 @@ public class ProcessService {
     @Path("/{processid}/step")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Operation(summary = "Delete an existing process", description = "Delete an existing process and all its content")
+    @Operation(summary = "Delete a step", description = "Delete a step")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
     public Response deleteStep(RestStepResource resource) {
 
@@ -723,6 +725,94 @@ public class ProcessService {
         StepManager.deleteStep(step);
 
         return Response.ok().build();
+    }
+
+    /*
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/120/step/413/close
+     */
+
+    @POST
+    @Path("/{processid}/step/{stepid}/close")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Close a step", description = "Close a step")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response closeStep(@PathParam("processid") String processid, @PathParam("stepid") String stepid) {
+
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        if (StringUtils.isBlank(stepid) || !StringUtils.isNumeric(stepid)) {
+            return Response.status(400).entity("Step id is missing.").build();
+        }
+        int procId = Integer.parseInt(processid);
+        int taslId = Integer.parseInt(stepid);
+        Step step = StepManager.getStepById(taslId);
+        // step does not exist
+        if (step == null) {
+            return Response.status(404).entity("Step not found").build();
+        }
+        if (step.getProcessId().intValue() != procId) {
+            return Response.status(409).entity("Step belongs to a different process.").build();
+        }
+
+        switch (step.getBearbeitungsstatusEnum()) {
+            case DEACTIVATED:
+            case DONE:
+            case LOCKED:
+                // wrong status
+                return Response.status(409).entity("Step is not in work.").build();
+            case ERROR:
+            case INFLIGHT:
+            case INWORK:
+            case OPEN:
+            default:
+                CloseStepHelper.closeStep(step, null);
+                return Response.ok().build();
+        }
+
+    }
+
+    public Response getJournal() {
+        return null;
+    }
+
+    public Response getJournalEntry() {
+        return null;
+    }
+
+    public Response updateJournalEntry() {
+        return null;
+    }
+
+    public Response createJournalEntry() {
+        return null;
+    }
+
+    public Response deleteJournalEntry() {
+        return null;
+    }
+
+    public Response getProperties() {
+        return null;
+    }
+
+    public Response getProperty() {
+        return null;
+    }
+
+    public Response updateProperty() {
+        return null;
+    }
+
+    public Response createProperty() {
+        return null;
+    }
+
+    public Response deleteProperty() {
+        return null;
     }
 
     private void setStepHttpConfiguration(RestStepResource resource, Step step) {
@@ -842,7 +932,7 @@ public class ProcessService {
         }
         val = resource.getProperties().get("batch");
         if (val != null) {
-            step.setBatchStep(val.booleanValue());
+            step.setBatchStep(val);
         }
         val = resource.getProperties().get("delayStep");
         if (val != null) {

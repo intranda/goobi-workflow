@@ -48,6 +48,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.helper.CloseStepHelper;
+import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
@@ -61,12 +63,15 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-        MasterpieceManager.class, StepManager.class, UsergroupManager.class })
+        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
 
     private ProcessService service;
     private RestProcessResource processResource;
+
+    private Process process;
+    private Step step;
 
     @Before
     public void setUp() throws Exception {
@@ -74,7 +79,7 @@ public class ProcessServiceTest extends AbstractTest {
 
         processResource = new RestProcessResource();
 
-        Process process = MockProcess.createProcess();
+        process = MockProcess.createProcess();
         process.setId(5);
         process.setIstTemplate(true);
         process.setSortHelperDocstructs(5);
@@ -100,10 +105,11 @@ public class ProcessServiceTest extends AbstractTest {
         batch.setBatchId(1);
         batch.setBatchLabel("label");
 
-        Step step = new Step();
+        step = new Step();
         step.setTitel("step");
         step.setReihenfolge(1);
         step.setPrioritaet(1);
+        step.setProcessId(1);
 
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -141,6 +147,9 @@ public class ProcessServiceTest extends AbstractTest {
         Usergroup grp = new Usergroup();
         grp.setTitel("group");
         EasyMock.expect(UsergroupManager.getUsergroupByName(EasyMock.anyString())).andReturn(grp).anyTimes();
+
+        PowerMock.mockStatic(CloseStepHelper.class);
+        EasyMock.expect(CloseStepHelper.closeStep(EasyMock.anyObject(), EasyMock.anyObject())).andReturn(true).anyTimes();
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();
@@ -387,4 +396,89 @@ public class ProcessServiceTest extends AbstractTest {
         assertEquals(200, response.getStatus());
     }
 
+    @Test
+    public void testCloseStep() {
+        // missing/wrong parameter
+        Response response = service.closeStep("", "1");
+        assertEquals(400, response.getStatus());
+        response = service.closeStep("abc", "1");
+        assertEquals(400, response.getStatus());
+        response = service.closeStep("1", "");
+        assertEquals(400, response.getStatus());
+        response = service.closeStep("1", "abc");
+        assertEquals(400, response.getStatus());
+
+        // step belongs to a different process
+        response = service.closeStep("2", "1");
+        assertEquals(409, response.getStatus());
+
+        // step has the wrong status
+        response = service.closeStep("1", "1");
+        assertEquals(409, response.getStatus());
+
+        // step has the correct status
+        step.setBearbeitungsstatusEnum(StepStatus.INWORK);
+        response = service.closeStep("1", "1");
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    public void testGetJournal() {
+        Response response = service.getJournal();
+        assertNull(response);
+    }
+
+    @Test
+    public void testGetJournalEntry() {
+        Response response = service.getJournalEntry();
+        assertNull(response);
+    }
+
+    @Test
+    public void testUpdateJournalEntry() {
+        Response response = service.updateJournalEntry();
+        assertNull(response);
+    }
+
+    @Test
+    public void testCreateJournalEntry() {
+        Response response = service.createJournalEntry();
+        assertNull(response);
+    }
+
+    @Test
+    public void testDeleteJournalEntry() {
+        Response response = service.deleteJournalEntry();
+        assertNull(response);
+    }
+
+    @Test
+    public void testGetProperties() {
+        Response response = service.getProperties();
+        assertNull(response);
+    }
+
+    @Test
+    public void testGetProperty() {
+        Response response = service.getProperty();
+        assertNull(response);
+    }
+
+    @Test
+    public void testUpdateProperty() {
+        Response response = service.updateProperty();
+        assertNull(response);
+    }
+
+    @Test
+    public void testCreateProperty() {
+        Response response = service.createProperty();
+        assertNull(response);
+    }
+
+    @Test
+    public void testDeleteProperty() {
+        Response response = service.deleteProperty();
+        assertNull(response);
+    }
 }
