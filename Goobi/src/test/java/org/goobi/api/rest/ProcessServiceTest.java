@@ -38,6 +38,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
+import org.goobi.beans.Usergroup;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,10 +57,11 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-        MasterpieceManager.class, StepManager.class })
+        MasterpieceManager.class, StepManager.class, UsergroupManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
 
@@ -131,11 +133,18 @@ public class ProcessServiceTest extends AbstractTest {
         PowerMock.mockStatic(StepManager.class);
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
         EasyMock.expect(StepManager.getStepById(EasyMock.anyInt())).andReturn(step).anyTimes();
+        StepManager.saveStep(EasyMock.anyObject());
+        StepManager.saveStep(EasyMock.anyObject());
+        StepManager.deleteStep(EasyMock.anyObject());
+
+        PowerMock.mockStatic(UsergroupManager.class);
+        Usergroup grp = new Usergroup();
+        grp.setTitel("group");
+        EasyMock.expect(UsergroupManager.getUsergroupByName(EasyMock.anyString())).andReturn(grp).anyTimes();
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();
 
-        ;
         process.getSchritte().add(step);
 
     }
@@ -277,14 +286,21 @@ public class ProcessServiceTest extends AbstractTest {
         RestStepResource stepResource = new RestStepResource();
 
         // no step id
-        Response response = service.updateStep(stepResource);
+        Response response = service.updateStep("1", stepResource);
         assertEquals(400, response.getStatus());
 
         stepResource.setStepId(1);
         stepResource.setProcessId(1);
-        response = service.updateStep(stepResource);
+        response = service.updateStep("1", stepResource);
         assertEquals(200, response.getStatus());
 
+        prepareStepObject(stepResource);
+
+        response = service.updateStep("1", stepResource);
+        assertEquals(200, response.getStatus());
+    }
+
+    private void prepareStepObject(RestStepResource stepResource) {
         stepResource.setStepName("new step");
         stepResource.setStatus("stepdone");
 
@@ -320,8 +336,54 @@ public class ProcessServiceTest extends AbstractTest {
         stepResource.getHttpStepConfiguration().put("body", "body");
         stepResource.getHttpStepConfiguration().put("closeStep", "false");
         stepResource.getHttpStepConfiguration().put("escapeBody", "true");
+    }
 
-        response = service.updateStep(stepResource);
+    @Test
+    public void testCreateStep() {
+        RestStepResource stepResource = new RestStepResource();
+
+        // missing process id
+        Response response = service.createStep("", stepResource);
+        assertEquals(400, response.getStatus());
+        response = service.createStep("abc", stepResource);
+        assertEquals(400, response.getStatus());
+
+        // missing step title
+        response = service.createStep("1", stepResource);
+        assertEquals(400, response.getStatus());
+        stepResource.setStepName("new step");
+        // missing step order
+        response = service.createStep("1", stepResource);
+        assertEquals(400, response.getStatus());
+
+        // missing usergroups
+        stepResource.setOrder(10);
+        response = service.createStep("1", stepResource);
+        assertEquals(400, response.getStatus());
+
+        // minimum requirements fulfilled
+        stepResource.getUsergroups().add("Administration");
+        response = service.createStep("1", stepResource);
+        assertEquals(200, response.getStatus());
+
+        // update optional parameter
+        prepareStepObject(stepResource);
+        response = service.createStep("1", stepResource);
+        assertEquals(200, response.getStatus());
+
+    }
+
+    @Test
+    public void testDeleteStep() {
+        RestStepResource stepResource = new RestStepResource();
+
+        // no step id given
+        Response response = service.deleteStep(stepResource);
+        assertEquals(400, response.getStatus());
+
+        // deletion successful
+        stepResource.setStepId(1);
+        response = service.deleteStep(stepResource);
         assertEquals(200, response.getStatus());
     }
 

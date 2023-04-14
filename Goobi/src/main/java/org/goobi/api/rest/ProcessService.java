@@ -561,12 +561,13 @@ public class ProcessService {
 
     /*
     JSON:
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "stepName": "new step name", "processId": 15}'
     
     XML:
-    
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><stepName>new step name</stepName></step>'
      */
     @POST
-    @Path("/")
+    @Path("/{processid}/step")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Update an existing process", description = "Update an existing process, set new name, project, ....")
@@ -577,7 +578,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    public Response updateStep(RestStepResource resource) {
+    public Response updateStep(@PathParam("processid") String processid, RestStepResource resource) {
         Integer id = resource.getStepId();
         if (id == null || id.intValue() == 0) {
             return Response.status(400).build();
@@ -606,7 +607,122 @@ public class ProcessService {
         setStepHttpConfiguration(resource, step);
         // usergroups
         setUserGroups(resource, step);
+        try {
+            StepManager.saveStep(step);
+        } catch (DAOException e) {
+            log.error(e);
+        }
         return getStep(String.valueOf(resource.getProcessId()), String.valueOf(resource.getStepId()));
+    }
+
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"stepName": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
+    
+    
+    XML:
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><stepName>new step name</stepName><usergroups>Administration</usergroups></step>'
+     */
+
+    @PUT
+    @Path("/{processid}/step")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Update an existing process", description = "Update an existing process, set new name, project, ....")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
+    @ApiResponse(responseCode = "409", description = "New process title already exists.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response createStep(@PathParam("processid") String processid, RestStepResource resource) {
+
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).build();
+        }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+        // check required fields
+
+        if (StringUtils.isBlank(resource.getStepName())) {
+            return Response.status(400).entity("Step name is missing").build();
+        }
+        if (resource.getOrder() == null) {
+            return Response.status(400).entity("Step order is missing").build();
+        }
+
+        if (resource.getUsergroups().isEmpty()) {
+            return Response.status(400).entity("Assigned usergroups are missing").build();
+        }
+
+        Step step = new Step();
+        step.setTitel(resource.getStepName());
+        step.setReihenfolge(resource.getOrder());
+        step.setProzess(process);
+        step.setProcessId(process.getId());
+        process.getSchritte().add(step);
+
+        if (StringUtils.isNotBlank(resource.getStatus())) {
+            for (StepStatus status : StepStatus.values()) {
+                if (status.getSearchString().equals(resource.getStatus())) {
+                    step.setBearbeitungsstatusEnum(status);
+                }
+            }
+        }
+        setStepParameter(resource, step);
+        setStepProperties(resource, step);
+        // scripts
+        setScripts(resource, step);
+        // httpStepConfiguration
+        setStepHttpConfiguration(resource, step);
+        // usergroups
+        setUserGroups(resource, step);
+        try {
+            StepManager.saveStep(step);
+        } catch (DAOException e) {
+            log.error(e);
+        }
+        return Response.status(200).entity(new RestStepResource(process, step)).build();
+    }
+
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/step -d '{"stepId":"123"}'
+    
+    XML:
+    curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/step -d '<step><stepId>1234</stepId></step>'
+     */
+
+    @DELETE
+    @Path("/{processid}/step")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Delete an existing process", description = "Delete an existing process and all its content")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response deleteStep(RestStepResource resource) {
+
+        // get id from request
+        Integer id = resource.getStepId();
+        if (id == null || id == 0) {
+            return Response.status(400).build();
+        }
+        // check if id exists
+        Step step = StepManager.getStepById(id);
+        // step does not exist
+        if (step == null) {
+            return Response.status(404).entity("Step not found").build();
+        }
+        // delete step
+        StepManager.deleteStep(step);
+
+        return Response.ok().build();
     }
 
     private void setStepHttpConfiguration(RestStepResource resource, Step step) {
