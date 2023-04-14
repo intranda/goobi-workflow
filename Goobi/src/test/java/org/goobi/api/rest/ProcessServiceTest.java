@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -58,18 +59,18 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-    MasterpieceManager.class, StepManager.class })
+        MasterpieceManager.class, StepManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
 
     private ProcessService service;
-    private RestProcessResource resource;
+    private RestProcessResource processResource;
 
     @Before
     public void setUp() throws Exception {
         service = new ProcessService();
 
-        resource = new RestProcessResource();
+        processResource = new RestProcessResource();
 
         Process process = MockProcess.createProcess();
         process.setId(5);
@@ -160,13 +161,13 @@ public class ProcessServiceTest extends AbstractTest {
     public void testUpdateProcess() {
         service = new ProcessService();
 
-        resource.setId(0);
-        Response response = service.updateProcess(resource);
+        processResource.setId(0);
+        Response response = service.updateProcess(processResource);
         assertNotNull(response);
         assertEquals(400, response.getStatus());
 
-        resource.setId(5);
-        response = service.updateProcess(resource);
+        processResource.setId(5);
+        response = service.updateProcess(processResource);
         RestProcessResource res = (RestProcessResource) response.getEntity();
         assertEquals(5, res.getId());
         assertEquals("testprocess", res.getTitle());
@@ -179,18 +180,18 @@ public class ProcessServiceTest extends AbstractTest {
         assertEquals("docket", res.getDocketName());
         assertNull(res.getBatchNumber());
 
-        resource.setNumberOfDocstructs(10);
-        resource.setNumberOfImages(10);
-        resource.setNumberOfMetadata(10);
-        resource.setStatus("100000000");
-        resource.setProjectName("other");
-        resource.setRulesetName("otherRuleset");
-        resource.setDocketName("otherDocket");
-        resource.setBatchNumber(1);
+        processResource.setNumberOfDocstructs(10);
+        processResource.setNumberOfImages(10);
+        processResource.setNumberOfMetadata(10);
+        processResource.setStatus("100000000");
+        processResource.setProjectName("other");
+        processResource.setRulesetName("otherRuleset");
+        processResource.setDocketName("otherDocket");
+        processResource.setBatchNumber(1);
 
-        resource.setTitle("newTitle");
+        processResource.setTitle("newTitle");
 
-        response = service.updateProcess(resource);
+        response = service.updateProcess(processResource);
         res = (RestProcessResource) response.getEntity();
         assertEquals(10, res.getNumberOfDocstructs().intValue());
         assertEquals(10, res.getNumberOfImages().intValue());
@@ -207,35 +208,35 @@ public class ProcessServiceTest extends AbstractTest {
     public void testCreateProcess() {
         service = new ProcessService();
 
-        Response response = service.createProcess(resource);
+        Response response = service.createProcess(processResource);
         // no process template configured
         assertEquals(400, response.getStatus());
-        resource.setProcessTemplateName("template");
+        processResource.setProcessTemplateName("template");
 
         // no title configured
-        resource.setTitle(null);
-        response = service.createProcess(resource);
+        processResource.setTitle(null);
+        response = service.createProcess(processResource);
         assertEquals(400, response.getStatus());
 
         // invalid title configured
-        resource.setTitle("ÖÄÜ?\"§$%%&");
-        response = service.createProcess(resource);
+        processResource.setTitle("ÖÄÜ?\"§$%%&");
+        response = service.createProcess(processResource);
         assertEquals(406, response.getStatus());
 
-        resource.setTitle("sample");
-        response = service.createProcess(resource);
+        processResource.setTitle("sample");
+        response = service.createProcess(processResource);
         assertEquals(400, response.getStatus());
     }
 
     @Test
     public void testDeleteProcess() {
         service = new ProcessService();
-        resource.setId(0);
-        Response response = service.deleteProcess(resource);
+        processResource.setId(0);
+        Response response = service.deleteProcess(processResource);
         assertEquals(400, response.getStatus());
 
-        resource.setId(1);
-        response = service.deleteProcess(resource);
+        processResource.setId(1);
+        response = service.deleteProcess(processResource);
         assertEquals(200, response.getStatus());
     }
 
@@ -263,13 +264,65 @@ public class ProcessServiceTest extends AbstractTest {
         Response response = service.getStep("", "");
         assertEquals(400, response.getStatus());
 
-
         response = service.getStep("1", "1");
         assertNotNull(response);
-
 
         RestStepResource data = (RestStepResource) response.getEntity();
 
         assertEquals("step", data.getStepName());
     }
+
+    @Test
+    public void testUpdateStep() {
+        RestStepResource stepResource = new RestStepResource();
+
+        // no step id
+        Response response = service.updateStep(stepResource);
+        assertEquals(400, response.getStatus());
+
+        stepResource.setStepId(1);
+        stepResource.setProcessId(1);
+        response = service.updateStep(stepResource);
+        assertEquals(200, response.getStatus());
+
+        stepResource.setStepName("new step");
+        stepResource.setStatus("stepdone");
+
+        stepResource.setPriority(1);
+        stepResource.setOrder(10);
+        stepResource.setStartDate(new Date());
+        stepResource.setFinishDate(new Date());
+        stepResource.setStepPlugin("step plugin");
+        stepResource.setValidationPlugin("validation plugin");
+        stepResource.setQueueType("goobi_fast");
+
+        stepResource.getProperties().put("metadata", true);
+        stepResource.getProperties().put("automatic", false);
+        stepResource.getProperties().put("thumbnailGeneration", true);
+        stepResource.getProperties().put("readAccess", false);
+        stepResource.getProperties().put("writeAccess", true);
+        stepResource.getProperties().put("export", false);
+        stepResource.getProperties().put("script", true);
+        stepResource.getProperties().put("validate", false);
+        stepResource.getProperties().put("batch", true);
+        stepResource.getProperties().put("delayStep", false);
+        stepResource.getProperties().put("updateMetadataIndex", true);
+        stepResource.getProperties().put("generateDocket", false);
+
+        stepResource.getScripts().put("scriptmname1", "/bin/false");
+        stepResource.getScripts().put("scriptmname2", "/bin/false");
+        stepResource.getScripts().put("scriptmname3", "/bin/false");
+        stepResource.getScripts().put("scriptmname4", "/bin/false");
+        stepResource.getScripts().put("scriptmname5", "/bin/false");
+
+        stepResource.getHttpStepConfiguration().put("url", "url");
+        stepResource.getHttpStepConfiguration().put("method", "GET");
+        stepResource.getHttpStepConfiguration().put("body", "body");
+        stepResource.getHttpStepConfiguration().put("closeStep", "false");
+        stepResource.getHttpStepConfiguration().put("escapeBody", "true");
+
+        response = service.updateStep(stepResource);
+        assertEquals(200, response.getStatus());
+    }
+
 }

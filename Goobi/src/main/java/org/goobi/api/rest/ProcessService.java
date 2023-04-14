@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -49,6 +50,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
+import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
@@ -62,6 +64,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j2;
@@ -87,10 +90,10 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15
-
+    
      */
     @Path("/{processid}")
     @GET
@@ -120,7 +123,7 @@ public class ProcessService {
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"id":15,"title":"990743934_1885","projectName":"Archive_Project",
     "creationDate":1643983095000,"status":"020040040","numberOfImages":248,"numberOfMetadata":804,"numberOfDocstructs":67,"rulesetName":"ruleset.xml",
     "docketName":"Standard"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><creationDate>2022-02-04T14:58:15+01:00
     </creationDate><docketName>Standard</docketName><id>15</id><numberOfDocstructs>67</numberOfDocstructs><numberOfImages>248</numberOfImages>
@@ -268,7 +271,7 @@ public class ProcessService {
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template",
     "documentType": "Monograph"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template
     </processTemplateName><documentType>Monograph</documentType></process>'
@@ -442,7 +445,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/ -d '{"id":"123"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/ -d '<process><id>1234</id></process>'
      */
@@ -482,7 +485,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/steps
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/steps
      */
@@ -520,7 +523,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/step/67
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/step/67
      */
@@ -558,9 +561,9 @@ public class ProcessService {
 
     /*
     JSON:
-
+    
     XML:
-
+    
      */
     @POST
     @Path("/")
@@ -574,7 +577,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    public Response updateProcess(RestStepResource resource) {
+    public Response updateStep(RestStepResource resource) {
         Integer id = resource.getStepId();
         if (id == null || id.intValue() == 0) {
             return Response.status(400).build();
@@ -595,6 +598,43 @@ public class ProcessService {
                 }
             }
         }
+        setStepParameter(resource, step);
+        setStepProperties(resource, step);
+        // scripts
+        setScripts(resource, step);
+        // httpStepConfiguration
+        setStepHttpConfiguration(resource, step);
+        // usergroups
+        setUserGroups(resource, step);
+        return getStep(String.valueOf(resource.getProcessId()), String.valueOf(resource.getStepId()));
+    }
+
+    private void setStepHttpConfiguration(RestStepResource resource, Step step) {
+        if (resource.getHttpStepConfiguration().size() > 0) {
+            step.setHttpStep(true);
+            step.setHttpUrl(resource.getHttpStepConfiguration().get("url"));
+            step.setHttpMethod(resource.getHttpStepConfiguration().get("method"));
+            step.setHttpJsonBody(resource.getHttpStepConfiguration().get("body"));
+            step.setHttpCloseStep(Boolean.parseBoolean(resource.getHttpStepConfiguration().get("closeStep")));
+            step.setHttpEscapeBodyJson(Boolean.parseBoolean(resource.getHttpStepConfiguration().get("escapeBody")));
+        }
+    }
+
+    private void setUserGroups(RestStepResource resource, Step step) {
+        if (!resource.getUsergroups().isEmpty()) {
+            // remove all assigned groups
+            step.getBenutzergruppen().clear();
+            // add all configured groups
+            for (String usergroupName : resource.getUsergroups()) {
+                Usergroup ug = UsergroupManager.getUsergroupByName(usergroupName);
+                if (ug != null) {
+                    step.getBenutzergruppen().add(ug);
+                }
+            }
+        }
+    }
+
+    private void setStepParameter(RestStepResource resource, Step step) {
         if (resource.getPriority() != null) {
             step.setPrioritaet(resource.getPriority());
         }
@@ -617,61 +657,88 @@ public class ProcessService {
         if (StringUtils.isNotBlank(resource.getQueueType())) {
             step.setMessageQueue(QueueType.getByName(resource.getQueueType()));
         }
-        if (resource.getProperties() != null) {
-            Boolean val =  resource.getProperties().get("metadata");
-            if (val != null) {
-                step.setTypMetadaten(val.booleanValue());
-            }
-            val =  resource.getProperties().get("automatic");
-            if (val != null) {
-                step.setTypAutomatisch(val.booleanValue());
-            }
-            val =  resource.getProperties().get("thumbnailGeneration");
-            if (val != null) {
-                step.setTypAutomaticThumbnail(val.booleanValue());
-            }
-            val =  resource.getProperties().get("readAccess");
-            if (val != null) {
-                step.setTypImagesLesen(val.booleanValue());
-            }
-            val =  resource.getProperties().get("writeAccess");
-            if (val != null) {
-                step.setTypImagesSchreiben(val.booleanValue());
-            }
-            val =  resource.getProperties().get("export");
-            if (val != null) {
-                step.setTypExportDMS(val.booleanValue());
-            }
-            val =  resource.getProperties().get("script");
-            if (val != null) {
-                step.setTypScriptStep(val.booleanValue());
-            }
-            val =  resource.getProperties().get("validate");
-            if (val != null) {
-                step.setTypBeimAbschliessenVerifizieren(val.booleanValue());
-            }
-            val =  resource.getProperties().get("batch");
-            if (val != null) {
-                step.setBatchStep(val.booleanValue());
-            }
-            val =  resource.getProperties().get("delayStep");
-            if (val != null) {
-                step.setDelayStep(val.booleanValue());
-            }
-            val =  resource.getProperties().get("updateMetadataIndex");
-            if (val != null) {
-                step.setUpdateMetadataIndex(val.booleanValue());
-            }
-            val =  resource.getProperties().get("generateDocket");
-            if (val != null) {
-                step.setGenerateDocket(val.booleanValue());
-            }
+    }
 
-            //TODO scripts
-            //TODO httpStepConfiguration
-            //TODO usergroups
+    private void setScripts(RestStepResource resource, Step step) {
+        List<Entry<String, String>> set = new ArrayList<>(resource.getScripts().entrySet());
+
+        for (int i = 0; i < set.size(); i++) {
+            Entry<String, String> entry = set.get(i);
+            switch (i) {
+                case 0:
+                    step.setScriptname1(entry.getKey());
+                    step.setTypAutomatischScriptpfad(entry.getValue());
+                    break;
+                case 1:
+                    step.setScriptname2(entry.getKey());
+                    step.setTypAutomatischScriptpfad2(entry.getValue());
+                    break;
+                case 2:
+                    step.setScriptname3(entry.getKey());
+                    step.setTypAutomatischScriptpfad3(entry.getValue());
+                    break;
+                case 3:
+                    step.setScriptname4(entry.getKey());
+                    step.setTypAutomatischScriptpfad4(entry.getValue());
+                    break;
+                case 4:
+                    step.setScriptname5(entry.getKey());
+                    step.setTypAutomatischScriptpfad5(entry.getValue());
+                    break;
+                default:
+                    break;
+            }
         }
+    }
 
-        return getStep(String.valueOf(resource.getProcessId()), String.valueOf(resource.getStepId()));
+    private void setStepProperties(RestStepResource resource, Step step) {
+        Boolean val = resource.getProperties().get("metadata");
+        if (val != null) {
+            step.setTypMetadaten(val.booleanValue());
+        }
+        val = resource.getProperties().get("automatic");
+        if (val != null) {
+            step.setTypAutomatisch(val.booleanValue());
+        }
+        val = resource.getProperties().get("thumbnailGeneration");
+        if (val != null) {
+            step.setTypAutomaticThumbnail(val.booleanValue());
+        }
+        val = resource.getProperties().get("readAccess");
+        if (val != null) {
+            step.setTypImagesLesen(val.booleanValue());
+        }
+        val = resource.getProperties().get("writeAccess");
+        if (val != null) {
+            step.setTypImagesSchreiben(val.booleanValue());
+        }
+        val = resource.getProperties().get("export");
+        if (val != null) {
+            step.setTypExportDMS(val.booleanValue());
+        }
+        val = resource.getProperties().get("script");
+        if (val != null) {
+            step.setTypScriptStep(val.booleanValue());
+        }
+        val = resource.getProperties().get("validate");
+        if (val != null) {
+            step.setTypBeimAbschliessenVerifizieren(val.booleanValue());
+        }
+        val = resource.getProperties().get("batch");
+        if (val != null) {
+            step.setBatchStep(val.booleanValue());
+        }
+        val = resource.getProperties().get("delayStep");
+        if (val != null) {
+            step.setDelayStep(val.booleanValue());
+        }
+        val = resource.getProperties().get("updateMetadataIndex");
+        if (val != null) {
+            step.setUpdateMetadataIndex(val.booleanValue());
+        }
+        val = resource.getProperties().get("generateDocket");
+        if (val != null) {
+            step.setGenerateDocket(val.booleanValue());
+        }
     }
 }
