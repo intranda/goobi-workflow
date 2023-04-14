@@ -41,16 +41,20 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mq.QueueType;
+import org.goobi.api.rest.model.RestJournalResource;
 import org.goobi.api.rest.model.RestProcessResource;
 import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
+import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
@@ -61,6 +65,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -291,6 +296,10 @@ public class ProcessService {
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
     public Response createProcess(RestProcessResource resource) {
+
+        //TODO optional metadata
+        //TODO optional properties
+        //TODO save RestProcessResource object in import/ folder
 
         // validate required fields - template name and process title
 
@@ -775,24 +784,168 @@ public class ProcessService {
 
     }
 
-    public Response getJournal() {
-        return null;
+    /*
+    JSON:
+    curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/journal
+    
+    XML:
+    curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/journal
+     */
+
+    @Path("/{processid}/journal")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Get the journal for a process resource", description = "Get a list of all journal entries for a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response getJournal(@PathParam("processid") String processid) {
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        int id = Integer.parseInt(processid);
+        List<JournalEntry> entries = JournalManager.getLogEntriesForProcess(id);
+
+        List<RestJournalResource> answer = new ArrayList<>(entries.size());
+
+        for (JournalEntry entry : entries) {
+            answer.add(new RestJournalResource(entry));
+        }
+
+        GenericEntity<List<RestJournalResource>> entity = new GenericEntity<List<RestJournalResource>>(answer) {
+        };
+        return Response.status(200).entity(entity).build();
+
     }
 
-    public Response getJournalEntry() {
-        return null;
+    /*
+    JSON:
+    curl -H 'Accept: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "logType": "info", "content": "content"}'
+    
+    XML:
+    curl -H 'Accept: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><logType>info</logType><content>content</content></journal>'
+    */
+
+    @Path("/{processid}/journal")
+    @POST
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Update a journal entry", description = "Update an existing journal entry for a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response updateJournalEntry(@PathParam("processid") String processid, RestJournalResource resource) {
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        Integer journalId = resource.getId();
+        if (journalId == null || journalId == 0) {
+            return Response.status(400).entity("Journal id is missing.").build();
+        }
+
+        JournalEntry entry = JournalManager.getJournalEntryById(journalId);
+        if (entry == null) {
+            return Response.status(404).entity("Journal entry not found").build();
+        }
+        // update parameter
+        if (StringUtils.isNotBlank(resource.getContent())) {
+            entry.setContent(resource.getContent());
+        }
+        if (StringUtils.isNotBlank(resource.getUserName())) {
+            entry.setUserName(resource.getUserName());
+        }
+        if (StringUtils.isNotBlank(resource.getLogType())) {
+            entry.setType(LogType.getByTitle(resource.getLogType()));
+        }
+        if (StringUtils.isNotBlank(resource.getFilename())) {
+            entry.setFilename(resource.getFilename());
+        }
+        JournalManager.saveJournalEntry(entry);
+        return Response.status(200).entity(new RestJournalResource(entry)).build();
     }
 
-    public Response updateJournalEntry() {
-        return null;
+    /*
+    JSON:
+    curl -H 'Accept: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "logType": "info", "content": "content"}'
+    
+    XML:
+    curl -H 'Accept: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><logType>info</logType><content>content</content></journal>'
+    */
+
+    @Path("/{processid}/journal")
+    @PUT
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Create a new journal entry", description = "Create a new journal entry for a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response createJournalEntry(@PathParam("processid") String processid, RestJournalResource resource) {
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+
+        Date creationDate = resource.getCreationDate();
+        if (creationDate == null) {
+            creationDate = new Date();
+        }
+        String userName = resource.getUserName();
+        if (StringUtils.isBlank(userName)) {
+            userName = "rest api";
+        }
+        LogType logType = null;
+        if (StringUtils.isNotBlank(resource.getLogType())) {
+            logType = LogType.getByTitle(resource.getLogType());
+        } else {
+            logType = LogType.DEBUG;
+        }
+
+        String content = resource.getContent();
+        String filename = resource.getFilename();
+
+        JournalEntry entry = new JournalEntry(Integer.parseInt(processid), creationDate, userName, logType, content, EntryType.PROCESS);
+        entry.setFilename(filename);
+        JournalManager.saveJournalEntry(entry);
+        return Response.status(200).entity(new RestJournalResource(entry)).build();
     }
 
-    public Response createJournalEntry() {
-        return null;
-    }
+    /*
+    JSON:
+    curl -H 'Accept: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70}'
+    
+    XML:
+    curl -H 'Accept: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id></journal>'
+    */
 
-    public Response deleteJournalEntry() {
-        return null;
+    @Path("/{processid}/journal")
+    @DELETE
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Delete an existing journal entry", description = "Delete an existing journal entry")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Journal entry not found")
+    @ApiResponse(responseCode = "409", description = "Journal entry belongs to a different process.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response deleteJournalEntry(@PathParam("processid") String processid, RestJournalResource resource) {
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        Integer journalId = resource.getId();
+        if (journalId == null || journalId == 0) {
+            return Response.status(400).entity("Journal id is missing.").build();
+        }
+
+        JournalEntry entry = JournalManager.getJournalEntryById(journalId);
+        if (entry == null) {
+            return Response.status(404).entity("Journal entry not found").build();
+        }
+        if (entry.getObjectId().intValue() != Integer.parseInt(processid)) {
+            return Response.status(409).entity("Journal entry belongs to a different process.").build();
+        }
+
+        JournalManager.deleteJournalEntry(entry);
+        return Response.status(200).build();
     }
 
     public Response getProperties() {

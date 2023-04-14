@@ -29,16 +29,20 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 
 import org.easymock.EasyMock;
+import org.goobi.api.rest.model.RestJournalResource;
 import org.goobi.api.rest.model.RestProcessResource;
 import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
+import org.goobi.production.enums.LogType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +56,7 @@ import de.sub.goobi.helper.CloseStepHelper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
@@ -63,7 +68,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class })
+        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
 
@@ -72,6 +77,7 @@ public class ProcessServiceTest extends AbstractTest {
 
     private Process process;
     private Step step;
+    private JournalEntry entry;
 
     @Before
     public void setUp() throws Exception {
@@ -110,6 +116,10 @@ public class ProcessServiceTest extends AbstractTest {
         step.setReihenfolge(1);
         step.setPrioritaet(1);
         step.setProcessId(1);
+
+        entry = new JournalEntry(1, 1, new Date(), "user", LogType.INFO, "content", "filename", EntryType.PROCESS, null);
+        List<JournalEntry> journal = new ArrayList<>();
+        journal.add(entry);
 
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -150,6 +160,12 @@ public class ProcessServiceTest extends AbstractTest {
 
         PowerMock.mockStatic(CloseStepHelper.class);
         EasyMock.expect(CloseStepHelper.closeStep(EasyMock.anyObject(), EasyMock.anyObject())).andReturn(true).anyTimes();
+
+        PowerMock.mockStatic(JournalManager.class);
+        EasyMock.expect(JournalManager.getLogEntriesForProcess(EasyMock.anyInt())).andReturn(journal).anyTimes();
+        EasyMock.expect(JournalManager.getJournalEntryById(EasyMock.anyInt())).andReturn(entry).anyTimes();
+        JournalManager.saveJournalEntry(EasyMock.anyObject());
+        JournalManager.deleteJournalEntry(EasyMock.anyObject());
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();
@@ -424,32 +440,80 @@ public class ProcessServiceTest extends AbstractTest {
 
     @Test
     public void testGetJournal() {
-        Response response = service.getJournal();
-        assertNull(response);
-    }
+        // missing/wrong parameter
+        Response response = service.getJournal("");
+        assertEquals(400, response.getStatus());
+        response = service.getJournal("abc");
+        assertEquals(400, response.getStatus());
 
-    @Test
-    public void testGetJournalEntry() {
-        Response response = service.getJournalEntry();
-        assertNull(response);
+        response = service.getJournal("1");
+        assertEquals(200, response.getStatus());
+        @SuppressWarnings("unchecked")
+        List<RestJournalResource> data = (List<RestJournalResource>) response.getEntity();
+        assertEquals(1, data.size());
+        assertEquals("content", data.get(0).getContent());
     }
 
     @Test
     public void testUpdateJournalEntry() {
-        Response response = service.updateJournalEntry();
-        assertNull(response);
+        RestJournalResource resource = new RestJournalResource();
+        // missing/wrong parameter
+        Response response = service.updateJournalEntry("", resource);
+        assertEquals(400, response.getStatus());
+        response = service.updateJournalEntry("abc", resource);
+        assertEquals(400, response.getStatus());
+
+        // no journal id
+        response = service.updateJournalEntry("1", resource);
+        assertEquals(400, response.getStatus());
+
+        resource.setId(1);
+        resource.setContent("new content");
+
+        response = service.updateJournalEntry("1", resource);
+        assertEquals(200, response.getStatus());
+        assertEquals("new content", ((RestJournalResource) response.getEntity()).getContent());
     }
 
     @Test
     public void testCreateJournalEntry() {
-        Response response = service.createJournalEntry();
-        assertNull(response);
+        RestJournalResource resource = new RestJournalResource();
+
+        resource.setContent("content");
+        resource.setLogType("warn");
+        resource.setUserName("user");
+
+        Response response = service.createJournalEntry("", resource);
+        assertEquals(400, response.getStatus());
+        response = service.createJournalEntry("abc", resource);
+        assertEquals(400, response.getStatus());
+
+        response = service.createJournalEntry("1", resource);
+        assertEquals(200, response.getStatus());
+        assertEquals(200, response.getStatus());
+        assertEquals("content", ((RestJournalResource) response.getEntity()).getContent());
+        assertEquals("warn", ((RestJournalResource) response.getEntity()).getLogType());
+        assertEquals("user", ((RestJournalResource) response.getEntity()).getUserName());
     }
 
     @Test
     public void testDeleteJournalEntry() {
-        Response response = service.deleteJournalEntry();
-        assertNull(response);
+        RestJournalResource resource = new RestJournalResource();
+        resource.setId(1);
+        resource.setProcessId(1);
+
+        // missing/wrong parameter
+        Response response = service.deleteJournalEntry("", resource);
+        assertEquals(400, response.getStatus());
+        response = service.deleteJournalEntry("abc", resource);
+        assertEquals(400, response.getStatus());
+
+        // entry belongs to a different process
+        response = service.deleteJournalEntry("2", resource);
+        assertEquals(409, response.getStatus());
+
+        response = service.deleteJournalEntry("1", resource);
+        assertEquals(200, response.getStatus());
     }
 
     @Test
