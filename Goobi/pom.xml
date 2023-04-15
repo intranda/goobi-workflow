@@ -142,7 +142,7 @@
         <!-- used in goobi-plugin-step-barcode-scanner -->
         <zxing.version>3.5.1</zxing.version>
         <jsch.version>0.2.8</jsch.version>
-        <slf4j.version>2.0.6</slf4j.version>
+        <slf4j.version>2.0.7</slf4j.version>
     </properties>
 
 
