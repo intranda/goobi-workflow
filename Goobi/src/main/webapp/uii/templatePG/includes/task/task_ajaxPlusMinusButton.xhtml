@@ -10,7 +10,7 @@
 		<button
 			class="btn btn--plusMinus text-start"
 			jsf:rendered="#{!item.panelAusgeklappt}"
-			title="#{item.titel}"
+			title="#{msgs.showBoxDetailsOn}"
 			data-bs-toggle="tooltip"
 			jsf:id="displayDetails"
 			aria-haspopup="true"
@@ -41,7 +41,7 @@
 			type="button"
 			class="btn btn--plusMinus mb-2 text-start"
 			jsf:rendered="#{item.panelAusgeklappt}"
-			title="#{item.titel}"
+			title="#{msgs.showBoxDetailsOff}"
 			data-bs-toggle="tooltip"
 			jsf:id="hideDetails"
 			aria-haspopup="true"

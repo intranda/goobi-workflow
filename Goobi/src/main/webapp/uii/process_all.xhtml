@@ -143,35 +143,36 @@
 											<!-- ### Columnheader row ### -->
 											<thead>
 												<tr role="row">
-													<!-- Selection Boxes -->
+                                                
+													<!-- SELECTION COLUMN HEADER -->
 													<th
-														class=" header__selection"
+														class="header__selection"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 														<div class="d-flex">
 
-															<h:outputText value="#{msgs.auswahl2}" />
-
+															<h:outputText value="#{msgs.auswahl2}"/>
+                                                            
 															<button
 																jsf:action="#{ProzessverwaltungForm.selectionAll}"
 																jsf:id="selectall"
 																title="#{msgs.alleAuswaehlen}"
-																class="button-link">
-																<i class="fa fa-check-square-o font-black margin-left-5" />
+																class="btn p-2">
+																<i class="fa fa-check-square-o font-black" />
 															</button>
 															<button
 																jsf:action="#{ProzessverwaltungForm.selectionNone}"
 																jsf:id="selectnone"
 																title="#{msgs.auswahlEntfernen}"
-																class="button-link">
-																<i class="fa fa-square-o font-black margin-left-5" />
+																class="btn p-2">
+																<i class="fa fa-square-o font-black" />
 															</button>
 
 														</div>
 													</th>
 
-													<!-- Process Id -->
+													<!-- PROCESS ID COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=" header__id"
+														addClass="header__id"
 														name="id"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.id}"
@@ -179,30 +180,34 @@
 														ajaxRender="processAllProcessesBox:myform"
 														reverseOrder="true"
 														sortField="prozesse.ProzesseID" />
-													<!-- thumbnail -->
+													
+                                                    <!-- THUMBNAIL COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__thumbnail"
 														value="#{msgs.thumbnail}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
 														sortable="false" />
-													<!-- Embedded Metadata -->
+													
+                                                    <!-- METADATA COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=" header__embedded-metadata"
+														addClass="header__embedded-metadata"
 														value="#{msgs.metadata}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
 														sortable="false" />
-													<!-- Batch Id -->
+													
+                                                    <!-- BATCH ID COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=" header__batch-id"
+														addClass="header__batch-id"
 														name="batch"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.batch}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
 														ajaxRender="processAllProcessesBox:myform"
                                                         sortField="prozesse.batchID" />
-													<!-- Process title -->
+													
+                                                    <!-- PROCESS TITLE COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=" header__title"
+														addClass="header__title"
 														name="titel"
 														form="#{ProzessverwaltungForm}"
 														value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}"
@@ -210,109 +215,121 @@
 														ajaxRender="processAllProcessesBox:myform"
 														id="ajaxcolumn"
                                                         sortField="prozesse.titel" />
-													<!-- Custom Columns -->
+													
+                                                    <!-- CUSTOM COLUMNS HEADER -->
                                                     <c:forEach
                                                         items="#{LoginForm.listOfCustomColumns}"
                                                         var="var">
                                                         <intranda:columnheader
-                                                            addClass="width80"
+                                                            addClass="header__custom-column"
                                                             form="#{ProzessverwaltungForm}"
                                                             ajaxRender="processAllProcessesBox:myform"
                                                             value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
                                                             sortField="#{var}"
                                                             rendered="#{LoginForm.isDisplaySortfield(var)}" />
                                                         <intranda:columnheader
-                                                            addClass="width80"
+                                                            addClass="header__custom-column"
                                                             sortable="false"
                                                             value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
                                                             rendered="#{!LoginForm.isDisplaySortfield(var)}" />
                                                     </c:forEach>
-                                                    <!-- Vorgangsdatum -->
+                                                    
+                                                    <!-- CREATION DATE COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=""
+														addClass="header__date"
 														name="vorgangsdatum"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.vorgangsdatum}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
 														ajaxRender="processAllProcessesBox:myform" 
                                                         sortField="prozesse.erstellungsdatum" />
-													<!-- Ruleset -->
+													
+                                                    <!-- RULESET COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=" header__ruleset"
+														addClass="header__ruleset"
 														value="#{msgs.regelsatz}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
 														sortable="false" />
-													<!-- Status -->
+													
+                                                    <!-- STATUS COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__status"
+														addClass="header__progress"
 														name="fortschritt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.status}"
 														ajaxRender="processAllProcessesBox:myform" 
                                                         sortField="prozesse.sortHelperStatus" />
-													<!-- . -->
+													
+                                                    <!-- PROJECT COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=" #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'}"
+														addClass=" #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'} header__project"
 														name="projekt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.projekt}"
 														ajaxRender="processAllProcessesBox:myform"
                                                         sortField="projekte.titel" />
-													<!-- .. -->
+													
+                                                    <!-- INSTITUTION COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=""
+														addClass="header__institution"
 														name="institution"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.institution}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['institution']}"
 														ajaxRender="processAllProcessesBox:myform"
                                                         sortField="institution.shortName" />
-													<!-- Lockings -->
+													
+                                                    <!-- LOCKINGS COLUMN HEADER -->
 													<intranda:columnheader
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
-														addClass=" header__lockings"
+														addClass="header__lockings"
 														name="sperrungen"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.sperrungen}"
 														ajaxRender="processAllProcessesBox:myform"
                                                         sortable="false" />
-													<!-- .... -->
+													
+                                                    <!-- LAST STATUS UPDATE DATE COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=""
+														addClass="header__update-date"
 														value="#{msgs.lastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionDate']}"
 														sortable="false" />
-													<!-- ..... -->
+                                                        
+													<!-- LAST STATUS UPDATE USER COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=""
+														addClass="header__update-user"
 														value="#{msgs.userLastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionUser']}"
 														sortable="false" />
-													<!-- ...... -->
+													
+                                                    <!-- LAST STATUS UPDATE TASK COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=""
+														addClass="header__update-task"
 														value="#{msgs.taskLastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionTask']}"
 														sortable="false" />
-													<!-- swapped out -->
+                                                        
+													<!-- SWAPPED OUT COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=" header__swapped"
+														addClass="header__swapped"
 														value="#{msgs.ausgelagert}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
 														sortable="false" />
 
-													<!-- number of images -->
+													<!-- NUMBER OF IMAGES COLUMN HEADER -->
 													<intranda:columnheader
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
 														value="#{msgs.NumberOfImages}"
-														addClass=" header__number-of-imgs"
+														addClass="header__number-of-imgs"
 														name="numberOfImages"
                                                         sortField="sortHelperImages"
 														form="#{ProzessverwaltungForm}"
 														ajaxRender="processAllProcessesBox:myform" />
-													<!-- Buttons -->
+													
+                                                    <!-- BUTTONS COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__buttons"
+                                                        addClass="header__buttons"
 														value="#{msgs.auswahl}"
 														sortable="false" />
 												</tr>
@@ -407,8 +424,11 @@
 														<ui:include
 															src="templatePG/includes/ajaxPlusMinusButton.xhtml">
 															<ui:param
-																name="ajaxRender"
-																value="processAllProcessesBox:myform" />
+                                                                name="ajaxRender"
+                                                                value="processAllProcessesBox:myform" />
+                                                            <ui:param
+																name="tooltips"
+																value="#processTable" />
 														</ui:include>
 														<h:panelGroup rendered="#{item.panelAusgeklappt}">
 
@@ -916,20 +936,18 @@
 															</h:commandLink>
 
 															<!--  METADATA MODAL FOR TEMPORARY SAVED DATA  -->
-															<h:panelGroup
-																rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and item.temporaryMetadataFiles}">
-																<a
-																	class="text_head"
-																	rel="tooltip"
-																	title="#{msgs.metadatenBearbeiten}"
-																	data-bs-toggle="tooltip"
-																	href="#"
-																	data-toggle="modal"
-																	data-target="#myModal-#{item.id}">
-																	<i class="fa fa-book " />
-																</a>
-															</h:panelGroup>
-															<div
+                                                            <button 
+                                                                jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and item.temporaryMetadataFiles}"
+                                                                type="button" 
+                                                                class="btn btn-blank" 
+                                                                title="#{msgs.metadatenBearbeiten}"
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#myModal-#{item.id}">
+                                                              <i class="fa fa-book " />
+                                                            </button>
+                                                        	
+                                                            <!-- MODAL TO BE SHOWN EVENTUALLY -->
+                                                            <div
 																class="modal fade"
 																id="myModal-#{item.id}"
 																tabindex="-1"
@@ -939,27 +957,32 @@
 																	class="modal-dialog"
 																	role="document">
 																	<div class="modal-content">
-																		<div class="modal-header">
-
-																			<a
-																				href="#"
-																				class="btn btn-blue pull-right"
-																				title="#{msgs.cancel}"
-																				data-bs-toggle="tooltip"
-																				data-dismiss="modal">
-																				<i class="fa fa-times"></i>
-																			</a>
-																			<h4
-																				class="modal-title"
-																				id="#{msgs.metseditorOpen}-#{item.id}">
-																				<h:outputText value="#{msgs.metseditorOpen}" />
-																			</h4>
-																		</div>
-																		<div class="modal-body">
+																		
+                                                                         <!-- MODAL HEADER -->
+                                                                        <div class="modal-header bg-primary-400 text-white">
+                                                                            <h4
+                                                                                class="modal-title"
+                                                                                id="#{msgs.metseditorOpen}-#{item.id}">
+                                                                                <h:outputText
+                                                                                    value="#{msgs.metseditorOpen}" />
+                                                                            </h4>
+                                                                            <button
+                                                                                type="button"
+                                                                                class="btn-close btn-close-white"
+                                                                                data-bs-dismiss="modal"
+                                                                                aria-label="Close"></button>
+                                                                        </div>
+                                                                        <!-- // MODAL HEADER -->
+                                                                        
+																		 <!-- MODAL BODY -->
+                                                                         <div class="modal-body">
 																			<h:outputText
 																				value="#{msgs.metseditorTemporaryDataExplanation}" />
 																		</div>
-																		<div class="modal-footer">
+																		 <!-- // MODAL BODY -->
+                                                                         
+                                                                         <!-- MODAL FOOTER -->
+                                                                         <div class="modal-footer">
 
 																			<h:commandLink
 																				onclick="sessionStorage.removeItem('columnWidths');"
@@ -969,8 +992,10 @@
 																				title="#{msgs.discard}"
 																				rel="tooltip"
 																				styleClass="btn btn-hot">
-																				<i class="fa fa-trash-o margin-right-10"></i>
-																				<h:outputText value="#{msgs.discard}" />
+																				<i class="fa fa-trash-o"></i>
+																				<span>
+                                                                                    <h:outputText value="#{msgs.discard}" />
+                                                                                </span>
 																				<f:passThroughAttribute
 																					name="data-toggle"
 																					value="tooltip" />
@@ -1010,9 +1035,11 @@
 																				title="#{msgs.overwrite}"
 																				data-bs-toggle="tooltip"
 																				rel="tooltip"
-																				styleClass="btn btn-green">
+																				styleClass="btn btn-success">
 																				<i class="fa fa-floppy-o"></i>
-																				<h:outputText value="#{msgs.overwrite}" />
+																				<span>
+                                                                                    <h:outputText value="#{msgs.overwrite}" />
+                                                                                </span>
 																				<f:passThroughAttribute
 																					name="data-toggle"
 																					value="tooltip" />
@@ -1045,10 +1072,13 @@
 																					target="#{NavigationForm.uiStatus.mets_toc5}" />
 																			</h:commandLink>
 																		</div>
+                                                                        <!-- // MODAL FOOTER -->
+                                                                        
 																	</div>
 																</div>
 															</div>
-
+                                                            <!-- // MODAL TO BE SHOWN EVENTUALLY -->
+                                                            
 															<!-- DMS-EXPORT - ENABLED -->
 															<div
 																jsf:rel="tooltip"
