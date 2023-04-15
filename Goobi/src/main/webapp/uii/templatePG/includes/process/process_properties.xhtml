@@ -35,12 +35,12 @@
 								items="#{ProzessverwaltungForm.displayableMetadataMap}"
 								var="metadata">
 								<tr>
-									<td>
+									<td class="process_propertyName">
 										<span
 											title="#{metadata.key}"
 											data-toggle="tooltip">#{msgs[metadata.key]}</span>
 									</td>
-									<td>
+									<td class="process_propertyValue">
 										<c:forEach
 											items="#{metadata.value}"
 											var="metadataValue">
@@ -123,13 +123,13 @@
 										rowIndexVar="propInd">
 										<h:panelGroup rendered="#{container == 0}">
 											<tr>
-												<td>
+												<td class="process_propertyName">
 													<span
 														title="{processproperty.#{proc.name}}"
 														data-toggle="tooltip"
 														rel="tooltip">#{proc.name}</span>
 												</td>
-												<td>
+												<td class="process_propertyValue">
 													<x:dataList
 														var="val"
 														value="#{proc.valueList}"
@@ -167,7 +167,7 @@
 												</td>
 												<c:if
 													test="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-													<td>
+													<td class="process_propertyAction">
 														<button
 															class="btn btn-blank"
 															jsf:action="process_edit"
@@ -237,12 +237,13 @@
 										rowIndexVar="propInd">
 										<h:panelGroup rendered="#{container != 0}">
 											<tr>
-												<td>
+												<td class="process_propertyName">
 													<span
 														title="{process.#{process_item.name}}"
-														rel="tooltip">#{process_item.name}</span>
+														rel="tooltip" data-toggle="tooltip">#{process_item.name}
+                                                    </span>
 												</td>
-												<td>
+												<td class="process_propertyValue">
 													<x:dataList
 														var="val"
 														value="#{process_item.valueList}"
@@ -284,7 +285,7 @@
 												<h:panelGroup
 													rendered="#{propInd == 0}"
 													id="cont">
-													<td
+													<td class="process_propertyAction"
 														rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
 														<!-- edit container -->
 														<button
