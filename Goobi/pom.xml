@@ -119,7 +119,7 @@
         <jna.version>5.11.0</jna.version>
         <joda.version>2.12.5</joda.version>
         <junit.version>4.13.2</junit.version>
-        <jsonpath.version>2.7.0</jsonpath.version>
+        <jsonpath.version>2.8.0</jsonpath.version>
         <jwks-rsa.version>0.21.2</jwks-rsa.version>
         <log4j.version>2.19.0</log4j.version>
         <lombok.version>1.18.26</lombok.version>
