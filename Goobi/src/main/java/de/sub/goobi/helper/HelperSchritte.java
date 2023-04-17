@@ -119,107 +119,114 @@ public class HelperSchritte {
      * Schritt abschliessen und dabei parallele Schritte berücksichtigen ================================================================
      */
 
-    public void CloseStepObjectAutomatic(Step currentStep) {
-        try {
-            User user = Helper.getCurrentUser();
-            saveStepStatus(currentStep, user);
-        } catch (Exception e) {
-            log.warn(e);
-        }
-        List<Step> stepsToFinish = closeStepObject(currentStep, currentStep.getProcessId());
+    public void CloseStepObjectAutomatic(Step step) {
+        User user = Helper.getCurrentUser();
+        closeStepAndFollowingSteps(step, user);
+    }
 
-        for (Step step : stepsToFinish) {
-            CloseStepObjectAutomatic(step);
+    public void closeStepAndFollowingSteps(Step step, User user) {
+
+        try {
+            saveStepStatus(step, user);
+        } catch (Exception exception) {
+            log.warn(exception);
+        }
+
+        List<Step> stepsToFinish = closeStepObject(step, step.getProcessId());
+
+        for (Step stepToFinish : stepsToFinish) {
+            closeStepAndFollowingSteps(stepToFinish, user);
         }
     }
 
-    public static void saveStepStatus(Step currentStep, User user) {
+    public static void saveStepStatus(Step step, User user) {
         if (user != null) {
-            currentStep.setBearbeitungsbenutzer(user);
+            step.setBearbeitungsbenutzer(user);
         }
-        currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
-        Date myDate = new Date();
-        currentStep.setBearbeitungszeitpunkt(myDate);
-        currentStep.setBearbeitungsende(myDate);
+        step.setBearbeitungsstatusEnum(StepStatus.DONE);
+        Date now = new Date();
+        step.setBearbeitungszeitpunkt(now);
+        step.setBearbeitungsende(now);
         try {
-            StepManager.saveStep(currentStep);
-            String message = "Step closed: '" + currentStep.getTitel() + "'.";
-            Helper.addMessageToProcessJournal(currentStep.getProzess().getId(), LogType.DEBUG, message);
+            StepManager.saveStep(step);
+            String message = "Step closed: '" + step.getTitel() + "'.";
+            Helper.addMessageToProcessJournal(step.getProzess().getId(), LogType.DEBUG, message);
         } catch (DAOException e) {
-            log.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID "
-                    + currentStep.getProzess().getId(), e);
+            String message = "An exception occurred while closing the step '" + step.getTitel();
+            log.error(message + "' of process with ID " + step.getProzess().getId(), e);
         }
     }
 
     public static List<Step> closeStepObject(Step currentStep, int processId) {
-        Date myDate = currentStep.getBearbeitungszeitpunkt();
 
         if (currentStep.isUpdateMetadataIndex()) {
             updateMetadataIndex(currentStep);
         }
 
         SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
-        HistoryManager.addHistory(myDate, currentStep.getReihenfolge().doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone.getValue(),
-                processId);
 
-        List<Step> automatischeSchritte = new ArrayList<>();
+        Date stepEditTimestamp = currentStep.getBearbeitungszeitpunkt();
+        double stepOrder = currentStep.getReihenfolge().doubleValue();
+        HistoryManager.addHistory(stepEditTimestamp, stepOrder, currentStep.getTitel(), HistoryEventType.stepDone.getValue(), processId);
+
+        List<Step> automaticSteps = new ArrayList<>();
         List<Step> stepsToFinish = new ArrayList<>();
 
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
         List<Step> steps = StepManager.getStepsForProcess(processId);
-        List<Step> allehoeherenSchritte = new ArrayList<>();
-        int offeneSchritteGleicherReihenfolge = 0;
-        for (Step so : steps) {
-            if (so.getReihenfolge().equals(currentStep.getReihenfolge())
-                    && !(StepStatus.DONE.equals(so.getBearbeitungsstatusEnum()) || StepStatus.DEACTIVATED.equals(so.getBearbeitungsstatusEnum()))
-                    && !so.getId().equals(currentStep.getId())) {
-                offeneSchritteGleicherReihenfolge++;
-            } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
-                allehoeherenSchritte.add(so);
+        List<Step> nextSteps = new ArrayList<>();
+        int openStepsWithSameOrder = 0;
+        for (Step step : steps) {
+            StepStatus status = step.getBearbeitungsstatusEnum();
+            if (step.getReihenfolge().equals(currentStep.getReihenfolge()) && !(status == StepStatus.DONE || status == StepStatus.DEACTIVATED)
+                    && !step.getId().equals(currentStep.getId())) {
+
+                openStepsWithSameOrder++;
+            } else if (step.getReihenfolge() > currentStep.getReihenfolge()) {
+                nextSteps.add(step);
             }
         }
 
         /* wenn keine offenen parallelschritte vorhanden sind, die nächsten Schritte aktivieren */
-        if (offeneSchritteGleicherReihenfolge == 0) {
-            int reihenfolge = 0;
+        if (openStepsWithSameOrder == 0) {
+            int order = 0;
             boolean matched = false;
-            for (Step myStep : allehoeherenSchritte) {
-                if (reihenfolge < myStep.getReihenfolge() && !matched) {
-                    reihenfolge = myStep.getReihenfolge();
+            for (Step step : nextSteps) {
+                StepStatus status = step.getBearbeitungsstatusEnum();
+                if (order < step.getReihenfolge() && !matched) {
+                    order = step.getReihenfolge();
                 }
 
-                if (reihenfolge == myStep.getReihenfolge() && !(StepStatus.DONE.equals(myStep.getBearbeitungsstatusEnum())
-                        || StepStatus.DEACTIVATED.equals(myStep.getBearbeitungsstatusEnum()))) {
+                if (order == step.getReihenfolge() && !(status == StepStatus.DONE || status == StepStatus.DEACTIVATED)) {
                     /*
                      * open step, if it is locked, otherwise stop
                      */
 
-                    if (StepStatus.LOCKED.equals(myStep.getBearbeitungsstatusEnum())) {
-                        myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
-                        myStep.setBearbeitungszeitpunkt(currentStep.getBearbeitungsende());
+                    if (status == StepStatus.LOCKED) {
+                        step.setEditTypeEnum(StepEditType.AUTOMATIC);
+                        step.setBearbeitungszeitpunkt(currentStep.getBearbeitungsende());
 
-                        if (myStep.isTypAutomaticThumbnail() && StringUtils.isNotBlank(myStep.getAutomaticThumbnailSettingsYaml())) {
-                            myStep.submitAutomaticThumbnailTicket();
+                        if (step.isTypAutomaticThumbnail() && StringUtils.isNotBlank(step.getAutomaticThumbnailSettingsYaml())) {
+                            step.submitAutomaticThumbnailTicket();
                         } else {
-                            myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
-                            SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
+                            step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                            SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.OPEN);
 
-                            HistoryManager.addHistory(myDate, myStep.getReihenfolge().doubleValue(), myStep.getTitel(),
+                            HistoryManager.addHistory(stepEditTimestamp, step.getReihenfolge().doubleValue(), step.getTitel(),
                                     HistoryEventType.stepOpen.getValue(), processId);
 
                             /* wenn es ein automatischer Schritt mit Script ist */
-                            if (myStep.isTypAutomatisch()) {
-                                automatischeSchritte.add(myStep);
-                            } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
-                                stepsToFinish.add(myStep);
+                            if (step.isTypAutomatisch()) {
+                                automaticSteps.add(step);
+                            } else if (step.isTypBeimAnnehmenAbschliessen()) {
+                                stepsToFinish.add(step);
                             }
                             try {
-                                SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
-                                StepManager.saveStep(myStep);
-                                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG,
-                                        "Step '" + myStep.getTitel() + "' opened.");
+                                StepManager.saveStep(step);
+                                String message = "Step '" + step.getTitel() + "' opened.";
+                                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, message);
                             } catch (DAOException e) {
-                                log.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
+                                log.error("An exception occurred while saving a step for process with ID " + step.getProcessId(), e);
                             }
                         }
                     }
@@ -230,23 +237,23 @@ public class HelperSchritte {
                 }
             }
         }
-        Process po = ProcessManager.getProcessById(processId);
+        Process process = ProcessManager.getProcessById(processId);
 
         try {
-            int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
+            int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(process.getImagesOrigDirectory(true)));
             if (numberOfFiles == 0) {
-                numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesTifDirectory(true)));
+                numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(process.getImagesTifDirectory(true)));
             }
-            if (numberOfFiles > 0 && po.getSortHelperImages() != numberOfFiles) {
+            if (numberOfFiles > 0 && process.getSortHelperImages() != numberOfFiles) {
                 ProcessManager.updateImages(numberOfFiles, processId);
             }
 
         } catch (Exception e) {
-            log.error("An exception occurred while closing a step for process with ID " + po.getId(), e);
+            log.error("An exception occurred while closing a step for process with ID " + process.getId(), e);
         }
 
         new HelperSchritte().updateProcessStatus(processId);
-        for (Step automaticStep : automatischeSchritte) {
+        for (Step automaticStep : automaticSteps) {
             automaticStep.setBearbeitungsbeginn(new Date());
             automaticStep.setBearbeitungsbenutzer(null);
             automaticStep.setBearbeitungsstatusEnum(StepStatus.INWORK);
@@ -256,8 +263,8 @@ public class HelperSchritte {
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
                 StepManager.saveStep(automaticStep);
-                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG,
-                        "Step '" + automaticStep.getTitel() + "' started to work automatically.");
+                String message = "Step '" + automaticStep.getTitel() + "' started to work automatically.";
+                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, message);
             } catch (DAOException e) {
                 log.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
@@ -274,7 +281,7 @@ public class HelperSchritte {
     public static void updateMetadataIndex(Step currentStep) {
         Process process = currentStep.getProzess();
         try {
-            String metdatdaPath = currentStep.getProzess().getMetadataFilePath();
+            String metdatdaPath = process.getMetadataFilePath();
             String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
             Path metadataFile = Paths.get(metdatdaPath);
             Path anchorFile = Paths.get(anchorPath);
@@ -309,32 +316,31 @@ public class HelperSchritte {
 
     public void updateProcessStatus(int processId) {
 
-        int offen = 0;
-        int inBearbeitung = 0;
-        int abgeschlossen = 0;
+        int open = 0;
+        int inWork = 0;
+        int done = 0;
         List<Step> stepsForProcess = StepManager.getStepsForProcess(processId);
         for (Step step : stepsForProcess) {
-            if (StepStatus.DONE.equals(step.getBearbeitungsstatusEnum()) || StepStatus.DEACTIVATED.equals(step.getBearbeitungsstatusEnum())) {
-                abgeschlossen++;
-            } else if (StepStatus.LOCKED.equals(step.getBearbeitungsstatusEnum())) {
-                offen++;
+            StepStatus status = step.getBearbeitungsstatusEnum();
+            if (status == StepStatus.DONE || status == StepStatus.DEACTIVATED) {
+                done++;
+            } else if (status == StepStatus.LOCKED) {
+                open++;
             } else {
-                inBearbeitung++;
+                inWork++;
             }
         }
-        double offen2 = 0;
-        double inBearbeitung2 = 0;
-        double abgeschlossen2 = 0;
+        double sum = open + inWork + done;
 
-        if ((offen + inBearbeitung + abgeschlossen) == 0) {
-            offen = 1;
+        if (sum == 0) {
+            open = 1;
         }
 
-        offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
-        inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
-        abgeschlossen2 = 100 - offen2 - inBearbeitung2;
+        double open2 = (open * 100) / sum;
+        double inWork2 = (inWork * 100) / sum;
+        double done2 = 100 - open2 - inWork2;
         java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
-        String value = df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(offen2);
+        String value = df.format(done2) + df.format(inWork2) + df.format(open2);
 
         ProcessManager.updateProcessStatus(value, processId);
     }

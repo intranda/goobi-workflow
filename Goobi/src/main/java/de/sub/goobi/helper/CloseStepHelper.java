@@ -1,12 +1,7 @@
 package de.sub.goobi.helper;
 
-import java.util.List;
-
-import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
-
-import de.sub.goobi.helper.enums.StepStatus;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -62,21 +57,13 @@ public class CloseStepHelper {
     /**
      * main method to close a task.
      * 
-     * @param currentStep
+     * @param step
      * @param user
      * @return
      */
 
-    public static boolean closeStep(Step currentStep, User user) {
-
-        SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
-        HelperSchritte.saveStepStatus(currentStep, user);
-
-        List<Step> stepsToFinish = HelperSchritte.closeStepObject(currentStep, currentStep.getProzess().getId());
-        for (Step step : stepsToFinish) {
-            closeStep(step, user);
-        }
-
+    public static boolean closeStep(Step step, User user) {
+        new HelperSchritte().closeStepAndFollowingSteps(step, user);
         return true;
     }
 
