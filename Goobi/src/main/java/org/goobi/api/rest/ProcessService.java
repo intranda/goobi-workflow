@@ -43,6 +43,7 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.rest.model.RestJournalResource;
 import org.goobi.api.rest.model.RestProcessResource;
+import org.goobi.api.rest.model.RestPropertyResource;
 import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
@@ -50,6 +51,7 @@ import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
@@ -68,6 +70,7 @@ import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
@@ -948,23 +951,108 @@ public class ProcessService {
         return Response.status(200).build();
     }
 
-    public Response getProperties() {
+    /*
+    JSON:
+    curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/properties
+    
+    XML:
+    curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/properties
+     */
+
+    @Path("/{processid}/properties")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Get all properties for a process resource", description = "Get a list of all properties for a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+
+    public Response getProperties(@PathParam("processid") String processid) {
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+
+        List<Processproperty> properties = PropertyManager.getProcessPropertiesForProcess(Integer.parseInt(processid));
+
+        List<RestPropertyResource> answer = new ArrayList<>(properties.size());
+
+        for (Processproperty entry : properties) {
+            answer.add(new RestPropertyResource(entry));
+        }
+
+        GenericEntity<List<RestPropertyResource>> entity = new GenericEntity<List<RestPropertyResource>>(answer) {
+        };
+        return Response.status(200).entity(entity).build();
+    }
+
+    /*
+    JSON:
+    curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/property/76
+    
+    XML:
+    curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/property/76
+     */
+
+    @Path("/{processid}/property/{propertyid}")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Get the property for a process resource", description = "Get a property for a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+
+    public Response getProperty(@PathParam("processid") String processid, @PathParam("propertyid") String propertyid) {
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        if (StringUtils.isBlank(propertyid) || !StringUtils.isNumeric(propertyid)) {
+            return Response.status(400).entity("Property id is missing.").build();
+        }
+        int propId = Integer.parseInt(propertyid);
+        List<Processproperty> properties = PropertyManager.getProcessPropertiesForProcess(Integer.parseInt(processid));
+        for (Processproperty entry : properties) {
+            if (entry.getId().intValue() == propId) {
+                return Response.status(200).entity(new RestPropertyResource(entry)).build();
+            }
+        }
+        return Response.status(404).entity("Property not found").build();
+    }
+
+    @Path("/{processid}/property")
+    @POST
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Update a property", description = "Update an existing property for a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response updateProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         return null;
     }
 
-    public Response getProperty() {
+    @Path("/{processid}/property")
+    @PUT
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Create a property", description = "Create a new property for a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response createProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         return null;
     }
 
-    public Response updateProperty() {
-        return null;
-    }
-
-    public Response createProperty() {
-        return null;
-    }
-
-    public Response deleteProperty() {
+    @Path("/{processid}/property")
+    @DELETE
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Delete a property", description = "Delete a property from a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response deleteProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         return null;
     }
 
