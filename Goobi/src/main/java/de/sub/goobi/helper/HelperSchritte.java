@@ -725,9 +725,7 @@ public class HelperSchritte {
         }
         for (Element meta : authorityMetaXpath.evaluate(doc)) {
             String name = meta.getAttributeValue("name");
-            if (name == null) {
-                continue;
-            } else {
+            if (name != null) {
                 String key = name + "_authority";
                 List<String> values = metadataPairs.get(key);
                 if (values == null) {
@@ -819,7 +817,6 @@ public class HelperSchritte {
             }
 
         }
-        return;
     }
 
 }

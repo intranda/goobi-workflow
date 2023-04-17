@@ -132,7 +132,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.")
                     .build());
-            return;
         }
 
     }

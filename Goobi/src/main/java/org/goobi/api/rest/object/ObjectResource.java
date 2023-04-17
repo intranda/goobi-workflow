@@ -336,7 +336,6 @@ public class ObjectResource {
             try {
                 try (InputStream inputStream = new java.io.FileInputStream(this.filePath.toString())) {
                     IOUtils.copy(inputStream, output);
-                    return;
                 }
             } catch (Throwable e) {
                 throw new WebApplicationException(e);

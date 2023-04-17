@@ -501,10 +501,7 @@ public class PluginInstaller implements Serializable {
         if (mode.equals(FileCommandVisitor.MODE_INSERTION)) {
             lineContent.addAll(visitor.getInsertionSpanTags());
             lineContent.add(new SpanTag(visitor.getCurrentInsertionText(), visitor.getCurrentInsertionMode()));
-        } else if (mode.equals(FileCommandVisitor.MODE_DELETION)) {
-            lineContent.addAll(visitor.getDeltionSpanTags());
-            lineContent.add(new SpanTag(visitor.getCurrentDeletionText(), visitor.getCurrentDeletionMode()));
-        } else if (mode.equals(FileCommandVisitor.MODE_KEEP)) {
+        } else if (mode.equals(FileCommandVisitor.MODE_DELETION) || mode.equals(FileCommandVisitor.MODE_KEEP)) {
             // This is possible because in case of "keep" the text is stored in deletion-text and insertion-text
             lineContent.addAll(visitor.getDeltionSpanTags());
             lineContent.add(new SpanTag(visitor.getCurrentDeletionText(), visitor.getCurrentDeletionMode()));

@@ -1928,9 +1928,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             if (schritte != null) {
                 for (Step step : schritte) {
                     if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
-                        if (date == null) {
-                            date = step.getBearbeitungsende();
-                        } else if (date.before(step.getBearbeitungsende())) {
+                        if (date == null || date.before(step.getBearbeitungsende())) {
                             date = step.getBearbeitungsende();
                         }
                     }
@@ -1951,9 +1949,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             if (schritte != null) {
                 for (Step step : schritte) {
                     if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
-                        if (task == null) {
-                            task = step;
-                        } else if (task.getBearbeitungsende().before(step.getBearbeitungsende())) {
+                        if (task == null || task.getBearbeitungsende().before(step.getBearbeitungsende())) {
                             task = step;
                         }
                     }
@@ -1982,9 +1978,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             if (schritte != null) {
                 for (Step step : schritte) {
                     if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
-                        if (task == null) {
-                            task = step;
-                        } else if (task.getBearbeitungsende().before(step.getBearbeitungsende())) {
+                        if (task == null || task.getBearbeitungsende().before(step.getBearbeitungsende())) {
                             task = step;
                         }
                     }

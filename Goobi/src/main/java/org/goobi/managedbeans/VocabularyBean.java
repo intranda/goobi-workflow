@@ -629,7 +629,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
                                 }
                             }
                         }
-                        continue;
                     } else {
                         // create new record
                         log.debug("create new record.");

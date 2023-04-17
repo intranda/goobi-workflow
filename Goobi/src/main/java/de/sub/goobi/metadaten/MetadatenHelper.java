@@ -238,9 +238,7 @@ public class MetadatenHelper implements Comparator<Object> {
         }
 
         int index = parent.getAllChildren().indexOf(inStruct);
-        if (index == 0) {
-            return;
-        } else {
+        if (index != 0) {
             parent.getAllChildren().remove(inStruct);
             parent.getAllChildren().add(index - 1, inStruct);
 
@@ -258,9 +256,7 @@ public class MetadatenHelper implements Comparator<Object> {
         int max = parent.getAllChildren().size();
         int index = parent.getAllChildren().indexOf(inStruct);
 
-        if (max - 1 <= index) {
-            return;
-        } else {
+        if (max - 1 > index) {
             parent.getAllChildren().remove(inStruct);
             parent.getAllChildren().add(index + 1, inStruct);
         }
@@ -468,9 +464,9 @@ public class MetadatenHelper implements Comparator<Object> {
                         }
                     }
                 } catch (DocStructHasNoTypeException e) {
-                    continue;
+                    log.trace(e);
                 } catch (MetadataTypeNotAllowedException e) {
-                    continue;
+                    log.trace(e);
                 }
             }
             inStruct.setAllMetadata(allMetadata);
@@ -527,9 +523,9 @@ public class MetadatenHelper implements Comparator<Object> {
                         // element
 
                     } catch (DocStructHasNoTypeException e) {
-                        continue;
+                        log.trace(e);
                     } catch (MetadataTypeNotAllowedException e) {
-                        continue;
+                        log.trace(e);
                     }
                 }
 

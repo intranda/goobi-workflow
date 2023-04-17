@@ -391,19 +391,17 @@ public class BatchBean extends BasicBean implements Serializable {
         }
         if (selectedBatches.isEmpty()) {
             Helper.setFehlerMeldung(NO_BATCH_SELECTED);
-            return "";
         } else if (this.selectedBatches.size() > 1) {
             Helper.setFehlerMeldung(TOO_MANY_BATCHES_SELECTED);
-            return "";
         } else if (this.selectedBatches.get(0) != null) {
-            List<Process> propertyBatch = ProcessManager.getProcesses(null,
-                    " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0, getBatchMaxSize(), inst);
+            String sql = " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId();
+            List<Process> propertyBatch = ProcessManager.getProcesses(null, sql, 0, getBatchMaxSize(), inst);
             this.batchHelper = new BatchProcessHelper(propertyBatch, selectedBatches.get(0));
             return "batch_edit";
         } else {
             Helper.setFehlerMeldung(NO_BATCH_SELECTED);
-            return "";
         }
+        return "";
     }
 
 }
