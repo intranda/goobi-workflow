@@ -3,7 +3,7 @@
 var gwAjaxLoader = ( function() {
     'use strict';
     
-    var _debug = true;
+    var _debug = false;
     var _defaultSelector = '#ajaxloader';
 
     function init(selector) {

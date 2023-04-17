@@ -170,15 +170,21 @@
                                                         sortField="sortHelperImages" />
 
 													<!-- Priority -->
-													<intranda:columnheader value="#{msgs.prioritaet}"
-														sortable="false" addClass="gw-table-fixed__sizeXXS"
-                                                         />
+				                                    <intranda:columnheader id="sortStepPriority" name="priority"
+                                                        form="#{AktuelleSchritteForm}"
+                                                        value="#{msgs.prioritaet}"
+                                                        ajaxRender="processAllBox:myform"
+                                                        sortField="schritte.prioritaet" 
+                                                        addClass="gw-table-fixed__sizeXXS"/>
 
 													<!-- Action -->
-													<intranda:columnheader id="sortStatus" name="status"
-														form="#{AktuelleSchritteForm}" value="#{msgs.auswahl}"
-														ajaxRender="processAllBox:myform"
-														addClass="gw-table-fixed__sizeXXS" />
+                                                    <intranda:columnheader id="sortStepStatus" name="status"
+                                                        form="#{AktuelleSchritteForm}"
+                                                        value="#{msgs.auswahl}"
+                                                        ajaxRender="processAllBox:myform"
+                                                        sortField="schritte.bearbeitungsstatus" 
+                                                        addClass="gw-table-fixed__sizeXXXS"/>
+                                                        
 												</tr>
 											</thead>
 

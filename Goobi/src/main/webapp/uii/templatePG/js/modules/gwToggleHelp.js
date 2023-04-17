@@ -3,7 +3,7 @@
 var gwToggleHelp = ( function() {
     'use strict';
     
-    let _debug = true;
+    let _debug = false;
 
     function init(data) {
       if (_debug) console.log('%c## Initialized gwToggleHelp.js ##', 'color: #368ee0')

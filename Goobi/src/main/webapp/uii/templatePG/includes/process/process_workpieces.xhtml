@@ -67,7 +67,8 @@
 						<x:dataTable
 							value="#{item.eigenschaften}"
 							var="prop"
-							styleClass="table table-hover table-bordered">
+							columnClasses="process_propertyName, process_propertyValue"
+                            styleClass="table table-hover table-bordered">
 							<h:column>
 								<span
 									title="{product.#{prop.titel}}"
