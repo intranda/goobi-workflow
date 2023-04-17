@@ -223,7 +223,7 @@ public class HelperSchritte {
                             }
                             try {
                                 StepManager.saveStep(step);
-                                String message = "Step '" + step.getTitel() + "' opened.";
+                                String message = "Opened step '" + step.getTitel() + "'.";
                                 Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, message);
                             } catch (DAOException e) {
                                 log.error("An exception occurred while saving a step for process with ID " + step.getProcessId(), e);
@@ -263,7 +263,7 @@ public class HelperSchritte {
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
                 StepManager.saveStep(automaticStep);
-                String message = "Step '" + automaticStep.getTitel() + "' started to work automatically.";
+                String message = "Started automatic step: '" + automaticStep.getTitel() + "'.";
                 Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, message);
             } catch (DAOException e) {
                 log.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
@@ -330,14 +330,15 @@ public class HelperSchritte {
                 inWork++;
             }
         }
-        double sum = open + inWork + done;
+        int sum = open + inWork + done;
 
         if (sum == 0) {
+            sum = 1;
             open = 1;
         }
 
-        double open2 = (open * 100) / sum;
-        double inWork2 = (inWork * 100) / sum;
+        double open2 = (open * 100) / (double) (sum);
+        double inWork2 = (inWork * 100) / (double) (sum);
         double done2 = 100 - open2 - inWork2;
         java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
         String value = df.format(done2) + df.format(inWork2) + df.format(open2);
@@ -433,12 +434,12 @@ public class HelperSchritte {
         try {
             scsf = new SSLConnectionSocketFactory(SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(),
                     NoopHostnameVerifier.INSTANCE);
-        } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e1) {
-            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR,
-                    "error executing http request: " + e1.getMessage(), EntryType.PROCESS);
-            JournalManager.saveJournalEntry(le);
+        } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException exception) {
+            String message = "error executing http request: " + exception.getMessage();
+            JournalEntry journalEntry = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR, message, EntryType.PROCESS);
+            JournalManager.saveJournalEntry(journalEntry);
             errorStep(step);
-            log.error(e1);
+            log.error(exception);
             return;
         }
         // END dirty hack
@@ -592,7 +593,7 @@ public class HelperSchritte {
                         if (!ivp.validate()) {
                             step.setBearbeitungsstatusEnum(StepStatus.OPEN);
                             StepManager.saveStep(step);
-                            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step '" + step.getTitel() + "' opened.");
+                            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Opened step '" + step.getTitel() + "'.");
                         } else {
                             CloseStepObjectAutomatic(step);
                         }
@@ -662,20 +663,20 @@ public class HelperSchritte {
         try {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
-                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG,
-                        "The export for process with ID '" + step.getProcessId() + "' was done successfully.");
+                String message = "The export for process with ID '" + step.getProcessId() + "' was done successfully.";
+                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, message);
                 CloseStepObjectAutomatic(step);
             } else {
-                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                String message = "The export for process with ID '" + step.getProcessId() + "' was cancelled because of validation errors: ";
+                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, message + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
         } catch (DAOException | UGHException | SwapException | IOException | ExportFileException | DocStructHasNoTypeException
                 | UghHelperException e) {
             log.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
-            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
-                    "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());
+            String message = "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage();
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, message);
             errorStep(step);
             return false;
         } catch (InterruptedException e) {

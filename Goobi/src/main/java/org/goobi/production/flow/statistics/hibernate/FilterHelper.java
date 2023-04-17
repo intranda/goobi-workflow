@@ -861,6 +861,8 @@ public class FilterHelper {
         // this is needed for evaluating a filter string
         while (tokenizer.hasNext()) {
             String tok = tokenizer.nextToken().trim();
+            String suffix = tok.substring(tok.indexOf(":") + 1);
+            String suffixIsNotANumber = "input " + suffix + " is not a number.";
             if ("(".equals(tok)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append("(");
@@ -970,7 +972,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
 
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(suffix)
                         + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith(FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, true);
@@ -981,7 +983,7 @@ public class FilterHelper {
                 filter.append(filterProcessJournal(tok, false));
             } else if (tok.toLowerCase().startsWith(FilterString.BATCH) || tok.toLowerCase().startsWith(FilterString.GRUPPE)) {
                 try {
-                    String substring = tok.substring(tok.indexOf(":") + 1);
+                    String substring = suffix;
                     if (substring.contains(" ")) {
                         substring = substring.substring(0, substring.indexOf(" "));
                     }
@@ -997,7 +999,7 @@ public class FilterHelper {
                     }
 
                 } catch (NumberFormatException e) {
-                    log.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                    log.warn(suffixIsNotANumber);
                 }
 
             } else if (tok.toLowerCase().startsWith(FilterString.WORKPIECE) || tok.toLowerCase().startsWith(FilterString.WERKSTUECK)) {
@@ -1078,7 +1080,7 @@ public class FilterHelper {
                 filter.append(FilterHelper.filterIds(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.BATCH) || tok.toLowerCase().startsWith("-" + FilterString.GRUPPE)) {
                 try {
-                    String substring = tok.substring(tok.indexOf(":") + 1);
+                    String substring = suffix;
                     if (substring.contains(" ")) {
                         substring = substring.substring(0, substring.indexOf(" "));
                     }
@@ -1094,7 +1096,7 @@ public class FilterHelper {
                     }
 
                 } catch (NumberFormatException e) {
-                    log.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                    log.warn(suffixIsNotANumber);
                 }
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
@@ -1174,11 +1176,11 @@ public class FilterHelper {
 
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESS) || tok.toLowerCase().startsWith("|" + FilterString.PROZESS)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(suffix)
                         + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith("|" + FilterString.BATCH) || tok.toLowerCase().startsWith("|" + FilterString.GRUPPE)) {
                 try {
-                    String substring = tok.substring(tok.indexOf(":") + 1);
+                    String substring = suffix;
                     if (substring.contains(" ")) {
                         substring = substring.substring(0, substring.indexOf(" "));
                     }
@@ -1193,7 +1195,7 @@ public class FilterHelper {
                     }
 
                 } catch (NumberFormatException e) {
-                    log.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                    log.warn(suffixIsNotANumber);
                 }
             } else if (tok.toLowerCase().startsWith("|")) {
                 filter = checkStringBuilder(filter, false);
@@ -1201,7 +1203,7 @@ public class FilterHelper {
                         + rightTruncationCharacter + "'");
             } else {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(suffix)
                         + rightTruncationCharacter + "'");
             }
             if (newFilterGroup && !currentDateFilter.isStepFilterPresent() && !currentDateFilter.getDateFilter().isEmpty()) {

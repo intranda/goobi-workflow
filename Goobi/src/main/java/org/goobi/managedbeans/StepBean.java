@@ -668,14 +668,17 @@ public class StepBean extends BasicBean implements Serializable {
         this.mySchritt.setBearbeitungsende(now);
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        User ben = Helper.getCurrentUser();
-        if (ben != null) {
-            mySchritt.setBearbeitungsbenutzer(ben);
+        User user = Helper.getCurrentUser();
+        if (user != null) {
+            mySchritt.setBearbeitungsbenutzer(user);
         }
 
         try {
 
             Step temp = StepManager.getStepById(this.mySolutionID);
+
+            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
+
             /*
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
              */
@@ -701,13 +704,11 @@ public class StepBean extends BasicBean implements Serializable {
                 }
                 ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
-                if (ben != null) {
-                    step.setBearbeitungsbenutzer(ben);
-                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
-                            + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
+                if (user != null) {
+                    step.setBearbeitungsbenutzer(user);
+                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + user.getNachVorname() + "] " + message);
                 } else {
-                    seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
-                            + ": " + this.solutionMessage);
+                    seg.setWert("[" + this.formatter.format(new Date()) + "] " + message);
                 }
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
@@ -719,9 +720,7 @@ public class StepBean extends BasicBean implements Serializable {
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */
-            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
-
-            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null ? ben.getNachVorname() : "",
+            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), user != null ? user.getNachVorname() : "",
                     LogType.INFO, message, EntryType.PROCESS);
             JournalManager.saveJournalEntry(logEntry);
 

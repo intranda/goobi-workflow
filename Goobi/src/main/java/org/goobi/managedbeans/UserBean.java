@@ -132,7 +132,7 @@ public class UserBean extends BasicBean implements Serializable {
 
         resetChangeLists();
 
-        return "user_edit";
+        return RETURN_PAGE_EDIT;
     }
 
     //set up the change recording lists

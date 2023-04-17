@@ -189,22 +189,23 @@ public class PropertyParser {
         int countProperties = config.getMaxIndex("/property");
         for (int i = 0; i <= countProperties; i++) {
             int position = i + 1;
+            String property = "/property[" + position + "]";
             // general values for property
             ProcessProperty pp = new ProcessProperty();
-            pp.setName(config.getString("/property[" + position + "]/@name"));
-            pp.setContainer(config.getInt("/property[" + position + "]/@container"));
+            pp.setName(config.getString(property + "/@name"));
+            pp.setContainer(config.getInt(property + "/@container"));
 
             // projects
-            int count = config.getMaxIndex("/property[" + position + "]/project");
+            int count = config.getMaxIndex(property + "/project");
             for (int j = 0; j <= count; j++) {
 
-                pp.getProjects().add(config.getString("/property[" + position + "]/project[" + (j + 1) + "]"));
+                pp.getProjects().add(config.getString(property + "/project[" + (j + 1) + "]"));
             }
 
             // workflows
-            count = config.getMaxIndex("/property[" + position + "]/workflow");
+            count = config.getMaxIndex(property + "/workflow");
             for (int j = 0; j <= count; j++) {
-                pp.getWorkflows().add(config.getString("/property[" + position + "]/workflow[" + (j + 1) + "]"));
+                pp.getWorkflows().add(config.getString(property + "/workflow[" + (j + 1) + "]"));
             }
 
             // project and workflows are configured correct?
@@ -215,12 +216,13 @@ public class PropertyParser {
 
                 // showStep
                 boolean containsCurrentStepTitle = false;
-                count = config.getMaxIndex("/property[" + position + "]/showStep");
+                count = config.getMaxIndex(property + "/showStep");
                 for (int j = 0; j <= count; j++) {
                     ShowStepCondition ssc = new ShowStepCondition();
-                    ssc.setName(config.getString("/property[" + position + "]/showStep[" + (j + 1) + "]/@name"));
-                    String access = config.getString("/property[" + position + "]/showStep[" + (j + 1) + "]/@access");
-                    boolean duplicate = config.getBoolean("/property[" + position + "]/showStep[" + (j + 1) + "]/@duplicate", false);
+                    String showStep = property + "/showStep[" + (j + 1) + "]";
+                    ssc.setName(config.getString(showStep + "/@name"));
+                    String access = config.getString(showStep + "/@access");
+                    boolean duplicate = config.getBoolean(showStep + "/@duplicate", false);
                     ssc.setAccessCondition(AccessCondition.getAccessConditionByName(access));
                     if (ssc.getName().equals(stepTitle) || ssc.getName().equals("*")) {
                         containsCurrentStepTitle = true;
@@ -234,7 +236,7 @@ public class PropertyParser {
                 // steptitle is configured
                 if (containsCurrentStepTitle) {
                     // showProcessGroupAccessCondition
-                    String groupAccess = config.getString("/property[" + position + "]/showProcessGroup/@access");
+                    String groupAccess = config.getString(property + "/showProcessGroup/@access");
                     if (groupAccess != null) {
                         pp.setShowProcessGroupAccessCondition(AccessCondition.getAccessConditionByName(groupAccess));
                     } else {
@@ -242,11 +244,11 @@ public class PropertyParser {
                     }
 
                     // validation expression
-                    pp.setValidation(config.getString("/property[" + position + "]/validation"));
+                    pp.setValidation(config.getString(property + "/validation"));
                     // type
-                    pp.setType(Type.getTypeByName(config.getString("/property[" + position + "]/type")));
+                    pp.setType(Type.getTypeByName(config.getString(property + "/type")));
                     // (default) value
-                    String defaultValue = config.getString("/property[" + position + "]/defaultvalue");
+                    String defaultValue = config.getString(property + "/defaultvalue");
                     if (pp.getType().equals(Type.METADATA)) {
                         String metadata = MetadataManager.getMetadataValue(mySchritt.getProzess().getId(), defaultValue);
                         pp.setValue(metadata);
@@ -256,9 +258,9 @@ public class PropertyParser {
                     }
 
                     // possible values
-                    count = config.getMaxIndex("/property[" + position + "]/value");
+                    count = config.getMaxIndex(property + "/value");
                     for (int j = 0; j <= count; j++) {
-                        pp.getPossibleValues().add(config.getString("/property[" + position + "]/value[" + (j + 1) + "]"));
+                        pp.getPossibleValues().add(config.getString(property + "/value[" + (j + 1) + "]"));
                     }
                     properties.add(pp);
                 }
@@ -317,31 +319,32 @@ public class PropertyParser {
         int countProperties = config.getMaxIndex("/property");
         for (int i = 0; i <= countProperties; i++) {
             int position = i + 1;
+            String property = "/property[" + position + "]";
             // general values for property
             ProcessProperty pp = new ProcessProperty();
-            pp.setName(config.getString("/property[" + position + "]/@name"));
-            pp.setContainer(config.getInt("/property[" + position + "]/@container"));
+            pp.setName(config.getString(property + "/@name"));
+            pp.setContainer(config.getInt(property + "/@container"));
 
             // projects
-            int count = config.getMaxIndex("/property[" + position + "]/project");
+            int count = config.getMaxIndex(property + "/project");
             for (int j = 0; j <= count; j++) {
-                pp.getProjects().add(config.getString("/property[" + position + "]/project[" + (j + 1) + "]"));
+                pp.getProjects().add(config.getString(property + "/project[" + (j + 1) + "]"));
             }
 
             // project is configured
             if (pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle)) {
-                String groupAccess = config.getString("/property[" + position + "]/showProcessGroup[@access]");
+                String groupAccess = config.getString(property + "/showProcessGroup[@access]");
                 if (groupAccess != null) {
                     pp.setShowProcessGroupAccessCondition(AccessCondition.getAccessConditionByName(groupAccess));
                 } else {
                     pp.setShowProcessGroupAccessCondition(AccessCondition.WRITE);
                 }
                 // validation expression
-                pp.setValidation(config.getString("/property[" + position + "]/validation"));
+                pp.setValidation(config.getString(property + "/validation"));
                 // type
-                pp.setType(Type.getTypeByName(config.getString("/property[" + position + "]/type")));
+                pp.setType(Type.getTypeByName(config.getString(property + "/type")));
                 // (default) value
-                String defaultValue = config.getString("/property[" + position + "]/defaultvalue");
+                String defaultValue = config.getString(property + "/defaultvalue");
                 if (pp.getType().equals(Type.METADATA)) {
                     String metadata = MetadataManager.getMetadataValue(process.getId(), defaultValue);
                     pp.setValue(metadata);
@@ -351,9 +354,9 @@ public class PropertyParser {
                 }
 
                 // possible values
-                count = config.getMaxIndex("/property[" + position + "]/value");
+                count = config.getMaxIndex(property + "/value");
                 for (int j = 0; j <= count; j++) {
-                    pp.getPossibleValues().add(config.getString("/property[" + position + "]/value[" + (j + 1) + "]"));
+                    pp.getPossibleValues().add(config.getString(property + "/value[" + (j + 1) + "]"));
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());

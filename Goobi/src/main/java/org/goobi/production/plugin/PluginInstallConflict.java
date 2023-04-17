@@ -37,6 +37,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class PluginInstallConflict implements Serializable {
     private static final long serialVersionUID = -7844460933499082596L;
+
+    protected final static String SHOW_OLD_AND_NEW_FILE = "show_old_and_new_file";
+    protected final static String SHOW_DEFAULT_AND_CUSTOM_FILE = "show_default_and_custom_file";
+    protected final static String EDIT_EXISTING_FILE = "edit_existing_file";
+
     private String path;
     private ResolveTactic resolveTactic;
     private String archivedVersion;
@@ -50,8 +55,8 @@ public class PluginInstallConflict implements Serializable {
     private List<List<SpanTag>> spanTagsOldOld;
     private List<String> lineNumbersOldOld;
     private List<String> lineTypesOldOld;
-    private String diffMode = "show_old_and_new_file";
-    private String conflictsMode = "edit_existing_file";
+    private String diffMode = SHOW_OLD_AND_NEW_FILE;
+    private String conflictsMode = EDIT_EXISTING_FILE;
     private boolean fixed;
     private int number;
 
@@ -79,7 +84,7 @@ public class PluginInstallConflict implements Serializable {
     }
 
     public void setCurrentVersion(String content) {
-        if (this.conflictsMode.equals("edit_existing_file")) {
+        if (this.conflictsMode.equals(EDIT_EXISTING_FILE)) {
             this.editedExistingVersion = content;
         } else {
             this.editedUploadedVersion = content;
@@ -87,7 +92,7 @@ public class PluginInstallConflict implements Serializable {
     }
 
     public String getCurrentVersion() {
-        if (this.conflictsMode.equals("edit_existing_file")) {
+        if (this.conflictsMode.equals(EDIT_EXISTING_FILE)) {
             return this.editedExistingVersion;
         } else {
             return this.editedUploadedVersion;

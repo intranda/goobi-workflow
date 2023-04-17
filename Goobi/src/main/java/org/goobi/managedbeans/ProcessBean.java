@@ -1168,7 +1168,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.mySchritt.setBearbeitungsstatusUp();
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
             String statusString = this.mySchritt.getBearbeitungsstatusAsString();
-            String message = "Changed status for step '" + mySchritt.getTitel() + "' to " + statusString + " in process details.";
+            String message = "Changed status for step '" + mySchritt.getTitel() + "' to " + statusString + " in process details (moved status up).";
             Helper.addMessageToProcessJournal(mySchritt.getProcessId(), LogType.DEBUG, message);
             if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 new HelperSchritte().CloseStepObjectAutomatic(mySchritt);
@@ -1191,7 +1191,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         this.mySchritt.setBearbeitungsstatusDown();
         String statusString = this.mySchritt.getBearbeitungsstatusAsString();
-        String message = "Changed status for step '" + mySchritt.getTitel() + "' to " + statusString + " in process details.";
+        String message = "Changed status for step '" + mySchritt.getTitel() + "' to " + statusString + " in process details (moved status down).";
         Helper.addMessageToProcessJournal(mySchritt.getProcessId(), LogType.DEBUG, message);
         try {
             StepManager.saveStep(mySchritt);
