@@ -5,7 +5,7 @@
 var gwHandleTooltip = ( function() {
     'use strict';
     
-    var _debug = true;
+    var _debug = false;
     var _defaultSelector = '[data-goobi="handle-tooltip"]'
 
     function init(data, { selector = _defaultSelector, restore = true } = {})  {

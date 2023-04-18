@@ -74,7 +74,7 @@
         <sonar.test.exclusions>src/test/java/**/*</sonar.test.exclusions>
 
         <!-- intranda internal -->
-        <ics.version>3.9.0-SNAPSHOT</ics.version>
+        <ics.version>3.9.0</ics.version>
         <normdataimporter.version>1.9.4</normdataimporter.version>
         <ugh-core.version>5.0.14</ugh-core.version>
         <ugh-marc.version>1.3.2</ugh-marc.version>
@@ -90,9 +90,9 @@
         <h2.version>1.4.200</h2.version>
         <oscache.version>2.3</oscache.version>
         <shiro.version>1.11.0</shiro.version>
-        <activemq.version>5.18.0</activemq.version>
+        <activemq.version>5.18.1</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <aws.version>1.12.440</aws.version>
+        <aws.version>1.12.450</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
         <commons-csv.version>1.10.0</commons-csv.version>
@@ -119,7 +119,7 @@
         <jna.version>5.11.0</jna.version>
         <joda.version>2.12.5</joda.version>
         <junit.version>4.13.2</junit.version>
-        <jsonpath.version>2.7.0</jsonpath.version>
+        <jsonpath.version>2.8.0</jsonpath.version>
         <jwks-rsa.version>0.21.2</jwks-rsa.version>
         <log4j.version>2.19.0</log4j.version>
         <lombok.version>1.18.26</lombok.version>
@@ -132,7 +132,7 @@
         <powermock.version>2.0.9</powermock.version>
         <reflections.version>0.10.2</reflections.version>
         <spark.version>2.9.4</spark.version>
-        <spring.version>5.3.26</spring.version>
+        <spring.version>5.3.27</spring.version>
         <swagger.version>2.2.9</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
         <hk2.version>2.6.1</hk2.version>
@@ -142,7 +142,7 @@
         <!-- used in goobi-plugin-step-barcode-scanner -->
         <zxing.version>3.5.1</zxing.version>
         <jsch.version>0.2.8</jsch.version>
-        <slf4j.version>2.0.6</slf4j.version>
+        <slf4j.version>2.0.7</slf4j.version>
     </properties>
 
 

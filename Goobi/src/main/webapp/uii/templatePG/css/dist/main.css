@@ -2599,33 +2599,69 @@ body .ui-messages .ui-messages-error .ui-messages-error-icon, body .ui-messages 
   width: unset;
 }
 
-#processAll .header__title {
-  --width-table-col: 320px;
+#processAll .header__selection {
+  --width-table-col: 55px;
 }
-#processAll .header__ruleset, #processAll .header__swapped, #processAll .header__lockings, #processAll .header__selection {
-  --width-table-col: 120px;
-}
-#processAll .header__id, #processAll .header__batch-id {
-  --width-table-col: 80px;
+#processAll .header__id {
+  --width-table-col: 25px;
 }
 #processAll .header__thumbnail {
-  --width-table-col: 168px;
-}
-#processAll .header__number-of-imgs {
-  --width-table-col: 140px;
+  --width-table-col: 90px;
 }
 #processAll .header__embedded-metadata {
+  --width-table-col: 200px;
+}
+#processAll .header__batch-id {
+  --width-table-col: 35px;
+}
+#processAll .header__title {
+  --width-table-col: 160px;
+}
+#processAll .header__custom-column {
   --width-table-col: 240px;
 }
-#processAll .header__status, #processAll .header__buttons {
-  --width-table-col: 200px;
+#processAll .header__date {
+  --width-table-col: 60px;
+}
+#processAll .header__ruleset {
+  --width-table-col: 60px;
+}
+#processAll .header__progress {
+  --width-table-col: 70px;
+}
+#processAll .header__project {
+  --width-table-col: 80px;
+}
+#processAll .header__institution {
+  --width-table-col: 80px;
+}
+#processAll .header__lockings {
+  --width-table-col: 60px;
+}
+#processAll .header__update-date {
+  --width-table-col: 60px;
+}
+#processAll .header__update-user {
+  --width-table-col: 60px;
+}
+#processAll .header__update-task {
+  --width-table-col: 60px;
+}
+#processAll .header__swapped {
+  --width-table-col: 40px;
+}
+#processAll .header__number-of-imgs {
+  --width-table-col: 55px;
+}
+#processAll .header__buttons {
+  width: 80px;
 }
 #processAll .metadata-nested-table tr {
   display: flex;
 }
 #processAll .metadata-nested-table tr .data-key {
   white-space: nowrap;
-  min-width: min-content;
+  min-width: 70px;
   font-weight: 700;
   margin-inline-end: 2px;
 }
@@ -2688,6 +2724,23 @@ body .ui-messages .ui-messages-error .ui-messages-error-icon, body .ui-messages 
 .damageBoxThumbnailsCommentField {
   resize: none;
   overflow: auto;
+}
+
+/* ========================================
+ * process_edit.xhmtl
+ * ===================================== */
+.process_propertyName {
+  width: 250px;
+}
+
+.process_propertyValue {
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  min-width: 300px;
+}
+
+.process_propertyAction {
+  width: 90px;
 }
 
 /*# sourceMappingURL=main.css.map */
