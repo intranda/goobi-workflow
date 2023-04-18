@@ -62,6 +62,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.CloseStepHelper;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -99,10 +100,10 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15
-    
+
      */
     @Path("/{processid}")
     @GET
@@ -132,7 +133,7 @@ public class ProcessService {
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"id":15,"title":"990743934_1885","projectName":"Archive_Project",
     "creationDate":1643983095000,"status":"020040040","numberOfImages":248,"numberOfMetadata":804,"numberOfDocstructs":67,"rulesetName":"ruleset.xml",
     "docketName":"Standard"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><creationDate>2022-02-04T14:58:15+01:00
     </creationDate><docketName>Standard</docketName><id>15</id><numberOfDocstructs>67</numberOfDocstructs><numberOfImages>248</numberOfImages>
@@ -280,7 +281,7 @@ public class ProcessService {
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template",
     "documentType": "Monograph"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template
     </processTemplateName><documentType>Monograph</documentType></process>'
@@ -458,7 +459,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/ -d '{"id":"123"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/ -d '<process><id>1234</id></process>'
      */
@@ -498,7 +499,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/steps
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/steps
      */
@@ -536,7 +537,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/step/67
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/step/67
      */
@@ -575,7 +576,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "stepName": "new step name", "processId": 15}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><stepName>new step name</stepName></step>'
      */
@@ -631,8 +632,8 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"stepName": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
-    
-    
+
+
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><stepName>new step name</stepName><usergroups>Administration</usergroups></step>'
      */
@@ -706,7 +707,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/step -d '{"stepId":"123"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/step -d '<step><stepId>1234</stepId></step>'
      */
@@ -790,7 +791,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/journal
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/journal
      */
@@ -824,11 +825,11 @@ public class ProcessService {
 
     /*
     JSON:
-    curl -H 'Accept: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "logType": "info", "content": "content"}'
-    
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "logType": "info", "content": "content"}'
+
     XML:
-    curl -H 'Accept: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><logType>info</logType><content>content</content></journal>'
-    */
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><logType>info</logType><content>content</content></journal>'
+     */
 
     @Path("/{processid}/journal")
     @POST
@@ -870,11 +871,11 @@ public class ProcessService {
 
     /*
     JSON:
-    curl -H 'Accept: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "logType": "info", "content": "content"}'
-    
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "logType": "info", "content": "content"}'
+
     XML:
-    curl -H 'Accept: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><logType>info</logType><content>content</content></journal>'
-    */
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><logType>info</logType><content>content</content></journal>'
+     */
 
     @Path("/{processid}/journal")
     @PUT
@@ -915,11 +916,11 @@ public class ProcessService {
 
     /*
     JSON:
-    curl -H 'Accept: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70}'
-    
+    curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70}'
+
     XML:
-    curl -H 'Accept: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id></journal>'
-    */
+    curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id></journal>'
+     */
 
     @Path("/{processid}/journal")
     @DELETE
@@ -954,7 +955,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/properties
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/properties
      */
@@ -989,7 +990,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/property/76
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/property/76
      */
@@ -1011,14 +1012,22 @@ public class ProcessService {
             return Response.status(400).entity("Property id is missing.").build();
         }
         int propId = Integer.parseInt(propertyid);
-        List<Processproperty> properties = PropertyManager.getProcessPropertiesForProcess(Integer.parseInt(processid));
-        for (Processproperty entry : properties) {
-            if (entry.getId().intValue() == propId) {
-                return Response.status(200).entity(new RestPropertyResource(entry)).build();
-            }
+        Processproperty property = PropertyManager.getProcessPropertyById(propId);
+        if (property == null) {
+            return Response.status(404).entity("Property not found").build();
         }
-        return Response.status(404).entity("Property not found").build();
+
+        return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
+
+
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/property -d '{"id":76,"name":"name","value":"value"}'
+
+    XML:
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/property -d '<property><id>76</id><name>name</name><value>value</value></property>'
+     */
 
     @Path("/{processid}/property")
     @POST
@@ -1029,8 +1038,37 @@ public class ProcessService {
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
     public Response updateProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
-        return null;
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        if (resource.getId() == null || resource.getId().intValue() == 0) {
+            return Response.status(400).entity("Property id is missing.").build();
+        }
+        Processproperty property = PropertyManager.getProcessPropertyById(resource.getId());
+        if (property == null) {
+            return Response.status(404).entity("Property not found").build();
+        }
+        if (property.getProcessId().intValue() != Integer.parseInt(processid)) {
+            return Response.status(409).entity("Property belongs to a different process.").build();
+        }
+        if (StringUtils.isNotBlank(resource.getName())) {
+            property.setTitel(resource.getName());
+        }
+        if (StringUtils.isNotBlank(resource.getValue())) {
+            property.setWert(resource.getValue());
+        }
+
+        PropertyManager.saveProcessProperty(property);
+        return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
+
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/property -d '{"name":"name","value":"value"}'
+
+    XML:
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/property -d '<property><name>name</name><value>value</value></property>'
+     */
 
     @Path("/{processid}/property")
     @PUT
@@ -1041,8 +1079,44 @@ public class ProcessService {
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
     public Response createProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
-        return null;
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        if (StringUtils.isBlank(resource.getName())) {
+            return Response.status(400).entity("Property name is missing.").build();
+        }
+        if (StringUtils.isBlank(resource.getValue())) {
+            return Response.status(400).entity("Property value is missing.").build();
+        }
+
+        Process process = ProcessManager.getProcessById(Integer.parseInt(processid));
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+
+        Processproperty property = new Processproperty();
+        property.setTitel(resource.getName());
+        property.setWert(resource.getValue());
+        property.setProzess(process);
+        property.setType(PropertyType.STRING);
+        if (resource.getCreationDate() != null) {
+            property.setCreationDate(resource.getCreationDate());
+        } else {
+            property.setCreationDate(new Date());
+        }
+        PropertyManager.saveProcessProperty(property);
+        return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
+
+
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/property -d '{"id":"697"}'
+
+    XML:
+    curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/property -d '<property><id>697</id></property>'
+     */
 
     @Path("/{processid}/property")
     @DELETE
@@ -1053,7 +1127,23 @@ public class ProcessService {
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
     public Response deleteProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
-        return null;
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        if (resource.getId() == null || resource.getId().intValue() == 0) {
+            return Response.status(400).entity("Property id is missing.").build();
+        }
+        Processproperty property = PropertyManager.getProcessPropertyById(resource.getId());
+        if (property == null) {
+            return Response.status(404).entity("Property not found").build();
+        }
+        if (property.getProcessId().intValue() != Integer.parseInt(processid)) {
+            return Response.status(409).entity("Property belongs to a different process.").build();
+        }
+
+        PropertyManager.deleteProcessProperty(property);
+
+        return Response.status(200).build();
     }
 
     private void setStepHttpConfiguration(RestStepResource resource, Step step) {

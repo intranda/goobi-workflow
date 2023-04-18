@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
 import org.easymock.EasyMock;
 import org.goobi.api.rest.model.RestJournalResource;
 import org.goobi.api.rest.model.RestProcessResource;
+import org.goobi.api.rest.model.RestPropertyResource;
 import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
@@ -38,6 +39,7 @@ import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
@@ -68,7 +70,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class })
+    MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
 
@@ -117,6 +119,13 @@ public class ProcessServiceTest extends AbstractTest {
         step.setPrioritaet(1);
         step.setProcessId(1);
 
+        Processproperty property = new Processproperty();
+        property.setProzess(process);
+        property.setProcessId(1);
+        property.setCreationDate(new Date());
+        property.setTitel("title");
+        property.setWert("value");
+
         entry = new JournalEntry(1, 1, new Date(), "user", LogType.INFO, "content", "filename", EntryType.PROCESS, null);
         List<JournalEntry> journal = new ArrayList<>();
         journal.add(entry);
@@ -139,12 +148,21 @@ public class ProcessServiceTest extends AbstractTest {
         PowerMock.mockStatic(DocketManager.class);
         EasyMock.expect(DocketManager.getDocketByName(EasyMock.anyString())).andReturn(otherDocket).anyTimes();
 
+        List<Processproperty> props = new ArrayList<>();
+        props.add(property);
+
         PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
+        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(props).anyTimes();
+        EasyMock.expect(PropertyManager.getProcessPropertyById(EasyMock.anyInt())).andReturn(property).anyTimes();
         PowerMock.mockStatic(TemplateManager.class);
         EasyMock.expect(TemplateManager.getTemplatesForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
         PowerMock.mockStatic(MasterpieceManager.class);
         EasyMock.expect(MasterpieceManager.getMasterpiecesForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
+
+        PropertyManager.saveProcessProperty(EasyMock.anyObject());
+        PropertyManager.saveProcessProperty(EasyMock.anyObject());
+        PropertyManager.deleteProcessProperty(EasyMock.anyObject());
+        PropertyManager.deleteProcessProperty(EasyMock.anyObject());
 
         PowerMock.mockStatic(StepManager.class);
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
@@ -518,31 +536,94 @@ public class ProcessServiceTest extends AbstractTest {
 
     @Test
     public void testGetProperties() {
-        //        Response response = service.getProperties("1");
-        //        assertNull(response);
+        Response response = service.getProperties(null);
+        assertEquals(400, response.getStatus());
+
+        response = service.getProperties("1");
+        @SuppressWarnings("unchecked")
+        List<RestPropertyResource> data = (List<RestPropertyResource>) response.getEntity();
+        assertEquals("title", data.get(0).getName());
+        assertEquals("value", data.get(0).getValue());
     }
 
     @Test
     public void testGetProperty() {
-        //        Response response = service.getProperty("1", "1");
-        //        assertNull(response);
+        Response response = service.getProperty(null, "1");
+        assertEquals(400, response.getStatus());
+        response = service.getProperty("1", null);
+        assertEquals(400, response.getStatus());
+        response = service.getProperty("1", "1");
+        assertEquals(200, response.getStatus());
+
+        RestPropertyResource data = (RestPropertyResource) response.getEntity();
+        assertEquals("title", data.getName());
+        assertEquals("value", data.getValue());
     }
 
     @Test
     public void testUpdateProperty() {
-        //        Response response = service.updateProperty();
-        //        assertNull(response);
+
+        RestPropertyResource resource = new RestPropertyResource();
+
+        Response response = service.updateProperty(null, resource);
+        assertEquals(400, response.getStatus());
+        response = service.updateProperty("1", resource);
+        assertEquals(400, response.getStatus());
+        resource.setId(1);
+        response = service.updateProperty("2", resource);
+        assertEquals(409, response.getStatus());
+        resource.setId(1);
+        response = service.updateProperty("1", resource);
+        RestPropertyResource data = (RestPropertyResource) response.getEntity();
+        assertEquals("title", data.getName());
+        assertEquals("value", data.getValue());
+
+        resource.setName("new name");
+        resource.setValue("new value");
+
+        response = service.updateProperty("1", resource);
+        data = (RestPropertyResource) response.getEntity();
+        assertEquals("new name", data.getName());
+        assertEquals("new value", data.getValue());
     }
 
     @Test
     public void testCreateProperty() {
-        //        Response response = service.createProperty();
-        //        assertNull(response);
+
+        RestPropertyResource resource = new RestPropertyResource();
+
+        Response response = service.createProperty("", resource);
+        assertEquals(400, response.getStatus());
+        response = service.createProperty("1", resource);
+        assertEquals(400, response.getStatus());
+
+        resource.setName("name");
+        response = service.createProperty("1", resource);
+        assertEquals(400, response.getStatus());
+
+        resource.setValue("value");
+        response = service.createProperty("1", resource);
+        RestPropertyResource data = (RestPropertyResource) response.getEntity();
+        assertEquals("name", data.getName());
+        assertEquals("value", data.getValue());
     }
 
     @Test
     public void testDeleteProperty() {
-        //        Response response = service.deleteProperty();
-        //        assertNull(response);
+
+        RestPropertyResource resource = new RestPropertyResource();
+
+        Response response = service.deleteProperty("", resource);
+        assertEquals(400, response.getStatus());
+
+        response = service.deleteProperty("2", resource);
+        assertEquals(400, response.getStatus());
+        resource.setId(1);
+        response = service.deleteProperty("2", resource);
+        assertEquals(409, response.getStatus());
+
+        response = service.deleteProperty("1", resource);
+        assertEquals(200, response.getStatus());
+
     }
 }

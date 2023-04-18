@@ -38,7 +38,7 @@ import lombok.Setter;
 public class RestPropertyResource {
 
     private Integer id;
-    private String propertyName;
+    private String name;
     private String value;
     private Date creationDate;
 
@@ -47,7 +47,7 @@ public class RestPropertyResource {
 
     public RestPropertyResource(Processproperty property) {
         id = property.getId();
-        propertyName = property.getTitel();
+        name = property.getTitel();
         value = property.getWert();
         creationDate = property.getCreationDate();
     }
