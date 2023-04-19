@@ -52,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 52;
+    public static final int EXPECTED_VERSION = 53;
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
@@ -386,6 +386,10 @@ public class DatabaseVersion {
                     log.trace("Update database to version 52.");
                     updateToVersion52();
                     tempVersion++;
+                case 53: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 53.");
+                    updateToVersion53();
+                    tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -397,6 +401,27 @@ public class DatabaseVersion {
             log.error(e);
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
+        }
+    }
+
+    private static void updateToVersion53() {
+        if (!DatabaseVersion.checkIfColumnExists("projekte", "dfgViewerUrl")) {
+            try {
+                DatabaseVersion.runSql("alter table projekte add column dfgViewerUrl text DEFAULT null");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+        if (!DatabaseVersion.checkIfIndexExists("history", "type_x_numericvalue")) {
+            if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
+                try {
+                    DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS type_x_numericvalue ON history(type, numericvalue) ");
+                } catch (SQLException e) {
+                    log.error(e);
+                }
+            } else {
+                DatabaseVersion.createIndexOnTable("history", "type_x_numericvalue", "type,numericvalue", null);
+            }
         }
     }
 
@@ -914,7 +939,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -923,15 +948,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 
