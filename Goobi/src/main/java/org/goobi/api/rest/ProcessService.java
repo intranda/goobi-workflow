@@ -229,7 +229,7 @@ public class ProcessService {
         }
         // change batch
         if (resource.getBatchNumber() != null && resource.getBatchNumber() != 0
-                && (process.getBatch() == null || process.getBatch().getBatchId() != resource.getBatchNumber())) {
+                && (process.getBatch() == null || !process.getBatch().getBatchId().equals(resource.getBatchNumber()))) {
             Batch batch = ProcessManager.getBatchById(resource.getBatchNumber());
             if (batch == null) {
                 return Response.status(404).entity("Batch not found").build();

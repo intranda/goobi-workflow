@@ -58,9 +58,6 @@ public class RestStepResource {
     private Date startDate;
     private Date finishDate;
 
-    // do not expose any user data
-    //    private String user;
-
     private Map<String, Boolean> properties = new HashMap<>();
 
     private Map<String, String> scripts = new TreeMap<>();
@@ -86,7 +83,6 @@ public class RestStepResource {
         order = step.getReihenfolge();
         startDate = step.getBearbeitungsbeginn();
         finishDate = step.getBearbeitungsende();
-        //        user = step.getBearbeitungsbenutzer() != null ? step.getBearbeitungsbenutzer().getNachVorname() : null;
 
         properties.put("metadata", step.isTypMetadaten());
         properties.put("automatic", step.isTypAutomatisch());
@@ -126,7 +122,6 @@ public class RestStepResource {
             httpStepConfiguration.put("url", step.getHttpUrl());
             httpStepConfiguration.put("method", step.getHttpMethod());
             httpStepConfiguration.put("body", step.getHttpJsonBody());
-            httpStepConfiguration.put("url", step.getHttpUrl());
             httpStepConfiguration.put("closeStep", String.valueOf(step.isHttpCloseStep()));
             httpStepConfiguration.put("escapeBody", String.valueOf(step.isHttpEscapeBodyJson()));
         }
