@@ -386,7 +386,7 @@ public class DatabaseVersion {
                     log.trace("Update database to version 52.");
                     updateToVersion52();
                     tempVersion++;
-                case 53: //NOSONAR, no break on purpose to run through all cases
+                case 52: //NOSONAR, no break on purpose to run through all cases
                     log.trace("Update database to version 53.");
                     updateToVersion53();
                     tempVersion++;
