@@ -100,10 +100,10 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15
-
+    
      */
     @Path("/{processid}")
     @GET
@@ -133,7 +133,7 @@ public class ProcessService {
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"id":15,"title":"990743934_1885","projectName":"Archive_Project",
     "creationDate":1643983095000,"status":"020040040","numberOfImages":248,"numberOfMetadata":804,"numberOfDocstructs":67,"rulesetName":"ruleset.xml",
     "docketName":"Standard"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><creationDate>2022-02-04T14:58:15+01:00
     </creationDate><docketName>Standard</docketName><id>15</id><numberOfDocstructs>67</numberOfDocstructs><numberOfImages>248</numberOfImages>
@@ -281,7 +281,7 @@ public class ProcessService {
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template",
     "documentType": "Monograph"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template
     </processTemplateName><documentType>Monograph</documentType></process>'
@@ -459,7 +459,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/ -d '{"id":"123"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/ -d '<process><id>1234</id></process>'
      */
@@ -499,7 +499,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/steps
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/steps
      */
@@ -537,7 +537,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/step/67
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/step/67
      */
@@ -575,10 +575,10 @@ public class ProcessService {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "stepName": "new step name", "processId": 15}'
-
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "steptitle": "new step name", "processId": 15}'
+    
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><stepName>new step name</stepName></step>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><steptitle>new step name</steptitle></step>'
      */
     @POST
     @Path("/{processid}/step")
@@ -603,8 +603,8 @@ public class ProcessService {
             return Response.status(404).entity("Step not found").build();
         }
 
-        if (StringUtils.isNotBlank(resource.getStepName())) {
-            step.setTitel(resource.getStepName());
+        if (StringUtils.isNotBlank(resource.getSteptitle())) {
+            step.setTitel(resource.getSteptitle());
         }
         if (StringUtils.isNotBlank(resource.getStatus())) {
             for (StepStatus status : StepStatus.values()) {
@@ -631,11 +631,11 @@ public class ProcessService {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"stepName": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
-
-
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"steptitle": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
+    
+    
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><stepName>new step name</stepName><usergroups>Administration</usergroups></step>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><steptitle>new step name</steptitle><usergroups>Administration</usergroups></step>'
      */
 
     @PUT
@@ -663,7 +663,7 @@ public class ProcessService {
         }
         // check required fields
 
-        if (StringUtils.isBlank(resource.getStepName())) {
+        if (StringUtils.isBlank(resource.getSteptitle())) {
             return Response.status(400).entity("Step name is missing").build();
         }
         if (resource.getOrder() == null) {
@@ -675,7 +675,7 @@ public class ProcessService {
         }
 
         Step step = new Step();
-        step.setTitel(resource.getStepName());
+        step.setTitel(resource.getSteptitle());
         step.setReihenfolge(resource.getOrder());
         step.setProzess(process);
         step.setProcessId(process.getId());
@@ -707,7 +707,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/step -d '{"stepId":"123"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/step -d '<step><stepId>1234</stepId></step>'
      */
@@ -791,7 +791,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/journal
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/journal
      */
@@ -825,10 +825,10 @@ public class ProcessService {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "logType": "info", "content": "content"}'
-
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "type": "info", "message": "content"}'
+    
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><logType>info</logType><content>content</content></journal>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
      */
 
     @Path("/{processid}/journal")
@@ -853,14 +853,14 @@ public class ProcessService {
             return Response.status(404).entity("Journal entry not found").build();
         }
         // update parameter
-        if (StringUtils.isNotBlank(resource.getContent())) {
-            entry.setContent(resource.getContent());
+        if (StringUtils.isNotBlank(resource.getMessage())) {
+            entry.setContent(resource.getMessage());
         }
         if (StringUtils.isNotBlank(resource.getUserName())) {
             entry.setUserName(resource.getUserName());
         }
-        if (StringUtils.isNotBlank(resource.getLogType())) {
-            entry.setType(LogType.getByTitle(resource.getLogType()));
+        if (StringUtils.isNotBlank(resource.getType())) {
+            entry.setType(LogType.getByTitle(resource.getType()));
         }
         if (StringUtils.isNotBlank(resource.getFilename())) {
             entry.setFilename(resource.getFilename());
@@ -871,10 +871,10 @@ public class ProcessService {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "logType": "info", "content": "content"}'
-
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "type": "info", "message": "content"}'
+    
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><logType>info</logType><content>content</content></journal>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
      */
 
     @Path("/{processid}/journal")
@@ -899,13 +899,13 @@ public class ProcessService {
             userName = "rest api";
         }
         LogType logType = null;
-        if (StringUtils.isNotBlank(resource.getLogType())) {
-            logType = LogType.getByTitle(resource.getLogType());
+        if (StringUtils.isNotBlank(resource.getType())) {
+            logType = LogType.getByTitle(resource.getType());
         } else {
             logType = LogType.DEBUG;
         }
 
-        String content = resource.getContent();
+        String content = resource.getMessage();
         String filename = resource.getFilename();
 
         JournalEntry entry = new JournalEntry(Integer.parseInt(processid), creationDate, userName, logType, content, EntryType.PROCESS);
@@ -917,7 +917,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id></journal>'
      */
@@ -955,7 +955,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/properties
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/properties
      */
@@ -990,7 +990,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/property/76
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/property/76
      */
@@ -1020,11 +1020,10 @@ public class ProcessService {
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
 
-
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/property -d '{"id":76,"name":"name","value":"value"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/property -d '<property><id>76</id><name>name</name><value>value</value></property>'
      */
@@ -1065,7 +1064,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/property -d '{"name":"name","value":"value"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/property -d '<property><name>name</name><value>value</value></property>'
      */
@@ -1109,11 +1108,10 @@ public class ProcessService {
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
 
-
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/property -d '{"id":"697"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/property -d '<property><id>697</id></property>'
      */
@@ -1185,8 +1183,8 @@ public class ProcessService {
         if (resource.getFinishDate() != null) {
             step.setBearbeitungsende(resource.getFinishDate());
         }
-        if (StringUtils.isNotBlank(resource.getStepPlugin())) {
-            step.setStepPlugin(resource.getStepPlugin());
+        if (StringUtils.isNotBlank(resource.getPlugin())) {
+            step.setStepPlugin(resource.getPlugin());
         }
         if (StringUtils.isNotBlank(resource.getValidationPlugin())) {
             step.setValidationPlugin(resource.getValidationPlugin());

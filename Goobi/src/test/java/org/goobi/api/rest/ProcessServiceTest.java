@@ -70,7 +70,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-    MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class })
+        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
 
@@ -307,7 +307,7 @@ public class ProcessServiceTest extends AbstractTest {
         List<RestStepResource> data = (List<RestStepResource>) response.getEntity();
 
         assertEquals(1, data.size());
-        assertEquals("step", data.get(0).getStepName());
+        assertEquals("step", data.get(0).getSteptitle());
     }
 
     @Test
@@ -321,7 +321,7 @@ public class ProcessServiceTest extends AbstractTest {
 
         RestStepResource data = (RestStepResource) response.getEntity();
 
-        assertEquals("step", data.getStepName());
+        assertEquals("step", data.getSteptitle());
     }
 
     @Test
@@ -344,14 +344,14 @@ public class ProcessServiceTest extends AbstractTest {
     }
 
     private void prepareStepObject(RestStepResource stepResource) {
-        stepResource.setStepName("new step");
+        stepResource.setSteptitle("new step");
         stepResource.setStatus("stepdone");
 
         stepResource.setPriority(1);
         stepResource.setOrder(10);
         stepResource.setStartDate(new Date());
         stepResource.setFinishDate(new Date());
-        stepResource.setStepPlugin("step plugin");
+        stepResource.setSteptitle("step plugin");
         stepResource.setValidationPlugin("validation plugin");
         stepResource.setQueueType("goobi_fast");
 
@@ -394,7 +394,7 @@ public class ProcessServiceTest extends AbstractTest {
         // missing step title
         response = service.createStep("1", stepResource);
         assertEquals(400, response.getStatus());
-        stepResource.setStepName("new step");
+        stepResource.setSteptitle("new step");
         // missing step order
         response = service.createStep("1", stepResource);
         assertEquals(400, response.getStatus());
@@ -469,7 +469,7 @@ public class ProcessServiceTest extends AbstractTest {
         @SuppressWarnings("unchecked")
         List<RestJournalResource> data = (List<RestJournalResource>) response.getEntity();
         assertEquals(1, data.size());
-        assertEquals("content", data.get(0).getContent());
+        assertEquals("content", data.get(0).getMessage());
     }
 
     @Test
@@ -486,19 +486,19 @@ public class ProcessServiceTest extends AbstractTest {
         assertEquals(400, response.getStatus());
 
         resource.setId(1);
-        resource.setContent("new content");
+        resource.setMessage("new content");
 
         response = service.updateJournalEntry("1", resource);
         assertEquals(200, response.getStatus());
-        assertEquals("new content", ((RestJournalResource) response.getEntity()).getContent());
+        assertEquals("new content", ((RestJournalResource) response.getEntity()).getMessage());
     }
 
     @Test
     public void testCreateJournalEntry() {
         RestJournalResource resource = new RestJournalResource();
 
-        resource.setContent("content");
-        resource.setLogType("warn");
+        resource.setMessage("content");
+        resource.setType("warn");
         resource.setUserName("user");
 
         Response response = service.createJournalEntry("", resource);
@@ -509,8 +509,8 @@ public class ProcessServiceTest extends AbstractTest {
         response = service.createJournalEntry("1", resource);
         assertEquals(200, response.getStatus());
         assertEquals(200, response.getStatus());
-        assertEquals("content", ((RestJournalResource) response.getEntity()).getContent());
-        assertEquals("warn", ((RestJournalResource) response.getEntity()).getLogType());
+        assertEquals("content", ((RestJournalResource) response.getEntity()).getMessage());
+        assertEquals("warn", ((RestJournalResource) response.getEntity()).getType());
         assertEquals("user", ((RestJournalResource) response.getEntity()).getUserName());
     }
 

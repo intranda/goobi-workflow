@@ -41,8 +41,8 @@ public class RestJournalResource {
     private Integer processId;
     private Date creationDate;
     private String userName;
-    private String logType;
-    private String content;
+    private String type;
+    private String message;
     private String filename;
 
     public RestJournalResource() {
@@ -54,8 +54,8 @@ public class RestJournalResource {
         processId = entry.getObjectId();
         creationDate = entry.getCreationDate();
         userName = entry.getUserName();
-        logType = entry.getType().getTitle();
-        content = entry.getContent();
+        type = entry.getType().getTitle();
+        message = entry.getContent();
         filename = entry.getFilename();
     }
 }
