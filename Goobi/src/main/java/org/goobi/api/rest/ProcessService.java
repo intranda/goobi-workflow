@@ -93,7 +93,7 @@ import ugh.fileformats.mets.MetsMods;
 @Log4j2
 @Path("/process")
 
-public class ProcessService {
+public class ProcessService implements IRestAuthentication {
     @Context
     HttpServletRequest request;
 
@@ -1275,5 +1275,55 @@ public class ProcessService {
         if (val != null) {
             step.setGenerateDocket(val.booleanValue());
         }
+    }
+
+    @Override
+    public List<AuthenticationMethodDescription> getAuthenticationMethods() {
+        List<AuthenticationMethodDescription> implementedMethods = new ArrayList<>();
+        // process data
+        AuthenticationMethodDescription md = new AuthenticationMethodDescription("GET", "Get process data", "/process/\\d+");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("POST", "Update an existing process", "/process");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Create a new process", "/process");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("DELETE", "Delete an existing process", "/process");
+        implementedMethods.add(md);
+
+        // step data
+        md = new AuthenticationMethodDescription("GET", "Get a list of all steps for a given process", "/process/\\d+/steps");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("GET", "Get a specific step", "/process/\\d+/step/\\d+");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("POST", "Update an existing step", "/process/\\d+/step");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Add a new step to an existing process", "/process/\\d+/step");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("DELETE", "Delete a step", "/process/\\d+/step");
+        implementedMethods.add(md);
+
+        // journal
+        md = new AuthenticationMethodDescription("GET", "Get the journal for a process", "/process/\\d+/journal");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("POST", "Update an existing journal entry for a given process", "/process/\\d+/journal");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Create a new journal entry for a given process", "/process/\\d+/journal");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("DELETE", "Delete an existing journal entry", "/process/\\d+/journal");
+        implementedMethods.add(md);
+
+        // properties
+        md = new AuthenticationMethodDescription("GET", "Get a list of all properties for a given process", "/process/\\d+/properties");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("GET", "Get a property for a given process", "/process/\\d+/property/\\d+");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("POST", "Update an existing property for a given process", "/process/\\d+/property");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Create a new property for a given process", "/process/\\d+/property");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("DELETE", "Delete a property from a given process", "/process/\\d+/property");
+        implementedMethods.add(md);
+
+        return implementedMethods;
     }
 }
