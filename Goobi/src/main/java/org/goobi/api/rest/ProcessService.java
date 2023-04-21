@@ -77,6 +77,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -105,14 +106,15 @@ public class ProcessService implements IRestAuthentication {
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15
     
      */
-    @Path("/{processid}")
     @GET
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Path("/{processid}")
     @Operation(summary = "Serves a process resource", description = "Serves a process resource consisting of a process name, id, project name")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Tag(name = "process")
     public Response getProcessData(@PathParam("processid") String processid) {
         // id is empty or value is not numeric
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -152,6 +154,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response updateProcess(RestProcessResource resource) {
         int id = resource.getId();
         if (id == 0) {
@@ -299,6 +302,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response createProcess(RestProcessResource resource) {
 
         //TODO optional metadata
@@ -472,6 +476,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response deleteProcess(RestProcessResource resource) {
 
         // get id from request
@@ -512,6 +517,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response getStepList(@PathParam("processid") String processid) {
         // id is empty or value is not numeric
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -550,6 +556,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response getStep(@PathParam("processid") String processid, @PathParam("stepid") String stepid) {
         // id is empty or value is not numeric
         if (StringUtils.isBlank(stepid) || !StringUtils.isNumeric(stepid)) {
@@ -592,6 +599,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response updateStep(@PathParam("processid") String processid, RestStepResource resource) {
         Integer id = resource.getStepId();
         if (id == null || id.intValue() == 0) {
@@ -650,6 +658,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response createStep(@PathParam("processid") String processid, RestStepResource resource) {
 
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -721,6 +730,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response deleteStep(RestStepResource resource) {
 
         // get id from request
@@ -752,6 +762,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response closeStep(@PathParam("processid") String processid, @PathParam("stepid") String stepid) {
 
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -804,6 +815,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response getJournal(@PathParam("processid") String processid) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -839,6 +851,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response updateJournalEntry(@PathParam("processid") String processid, RestJournalResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -885,6 +898,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response createJournalEntry(@PathParam("processid") String processid, RestJournalResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -931,6 +945,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "404", description = "Journal entry not found")
     @ApiResponse(responseCode = "409", description = "Journal entry belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response deleteJournalEntry(@PathParam("processid") String processid, RestJournalResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -968,6 +983,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
 
     public Response getProperties(@PathParam("processid") String processid) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -1003,6 +1019,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
 
     public Response getProperty(@PathParam("processid") String processid, @PathParam("propertyid") String propertyid) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -1036,6 +1053,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response updateProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -1077,6 +1095,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response createProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -1124,6 +1143,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response deleteProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
