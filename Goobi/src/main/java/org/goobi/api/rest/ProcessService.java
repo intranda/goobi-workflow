@@ -61,6 +61,7 @@ import org.goobi.production.enums.LogType;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.CloseStepHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -165,26 +166,95 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
-
         // change project
         if (StringUtils.isNotBlank(resource.getProjectName()) && !process.getProjekt().getTitel().equals(resource.getProjectName())) {
-            // search for new project
-            try {
-                Project newProject = ProjectManager.getProjectByName(resource.getProjectName());
-                if (newProject == null) {
-                    return Response.status(404).entity("Project not found").build();
-                }
-                // check if owning institution is the same as in the old project
-                if (!process.getProjekt().getInstitution().getShortName().equals(newProject.getInstitution().getShortName())) {
-                    return Response.status(403).entity("New project is owned by a different institution").build();
-                }
+            Response resp = changeProject(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
+            }
+        }
+        changeProcessParameter(resource, process);
+        // change ruleset
+        Response resp = changeRuleset(resource, process);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+        // change docket
+        resp = changeDocket(resource, process);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+        // change batch
+        resp = changeBatch(resource, process);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+        // update process title
+        if (StringUtils.isNotBlank(resource.getTitle()) && !process.getTitel().equals(resource.getTitle())) {
+            String newTitle = resource.getTitle();
+            resp = validateProcessTitle(newTitle, process.getProjekt().getInstitution());
+            if (resp != null) {
+                // error found, break up
+                return resp;
+            }
+            // rename folder, update metadata etc
+            process.changeProcessTitle(newTitle);
+        } else {
+            // save process
+            ProcessManager.saveProcessInformation(process);
+        }
 
-                // update project
-                process.setProjekt(newProject);
+        Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Process changed using REST-API.");
+        return Response.status(200).entity(new RestProcessResource(process)).build();
+    }
+
+    private Response changeBatch(RestProcessResource resource, Process process) {
+        if (resource.getBatchNumber() != null && resource.getBatchNumber() != 0
+                && (process.getBatch() == null || !process.getBatch().getBatchId().equals(resource.getBatchNumber()))) {
+            Batch batch = ProcessManager.getBatchById(resource.getBatchNumber());
+            if (batch == null) {
+                return Response.status(404).entity("Batch not found").build();
+            }
+            process.setBatch(batch);
+        }
+        return null;
+    }
+
+    private Response changeDocket(RestProcessResource resource, Process process) {
+        if (StringUtils.isNotBlank(resource.getDocketName()) && !process.getDocket().getName().equals(resource.getDocketName())) {
+            try {
+                Docket docket = DocketManager.getDocketByName(resource.getRulesetName());
+                if (docket == null) {
+                    return Response.status(404).entity("Docket not found").build();
+                }
+                process.setDocket(docket);
             } catch (DAOException e) {
                 log.error(e);
             }
         }
+        return null;
+    }
+
+    private Response changeRuleset(RestProcessResource resource, Process process) {
+        if (StringUtils.isNotBlank(resource.getRulesetName()) && !process.getRegelsatz().getTitel().equals(resource.getRulesetName())) {
+            try {
+                Ruleset ruleset = RulesetManager.getRulesetByName(resource.getRulesetName());
+                if (ruleset == null) {
+                    return Response.status(404).entity("Ruleset not found").build();
+                }
+                process.setRegelsatz(ruleset);
+            } catch (DAOException e) {
+                log.error(e);
+            }
+        }
+        return null;
+    }
+
+    private void changeProcessParameter(RestProcessResource resource, Process process) {
         // change creation date
         if (resource.getCreationDate() != null) {
             process.setErstellungsdatum(resource.getCreationDate());
@@ -206,55 +276,26 @@ public class ProcessService implements IRestAuthentication {
         if (resource.getNumberOfDocstructs() != null) {
             process.setSortHelperDocstructs(resource.getNumberOfDocstructs());
         }
-        // change ruleset
-        if (StringUtils.isNotBlank(resource.getRulesetName()) && !process.getRegelsatz().getTitel().equals(resource.getRulesetName())) {
-            try {
-                Ruleset ruleset = RulesetManager.getRulesetByName(resource.getRulesetName());
-                if (ruleset == null) {
-                    return Response.status(404).entity("Ruleset not found").build();
-                }
-                process.setRegelsatz(ruleset);
-            } catch (DAOException e) {
-                log.error(e);
-            }
-        }
-        // change docket
-        if (StringUtils.isNotBlank(resource.getDocketName()) && !process.getDocket().getName().equals(resource.getDocketName())) {
-            try {
-                Docket docket = DocketManager.getDocketByName(resource.getRulesetName());
-                if (docket == null) {
-                    return Response.status(404).entity("Docket not found").build();
-                }
-                process.setDocket(docket);
-            } catch (DAOException e) {
-                log.error(e);
-            }
-        }
-        // change batch
-        if (resource.getBatchNumber() != null && resource.getBatchNumber() != 0
-                && (process.getBatch() == null || !process.getBatch().getBatchId().equals(resource.getBatchNumber()))) {
-            Batch batch = ProcessManager.getBatchById(resource.getBatchNumber());
-            if (batch == null) {
-                return Response.status(404).entity("Batch not found").build();
-            }
-            process.setBatch(batch);
-        }
+    }
 
-        // update process title
-        if (StringUtils.isNotBlank(resource.getTitle()) && !process.getTitel().equals(resource.getTitle())) {
-            String newTitle = resource.getTitle();
-            Response resp = validateProcessTitle(newTitle, process.getProjekt().getInstitution());
-            if (resp != null) {
-                // error found, break up
-                return resp;
+    private Response changeProject(RestProcessResource resource, Process process) {
+        try {
+            // search for new project
+            Project newProject = ProjectManager.getProjectByName(resource.getProjectName());
+            if (newProject == null) {
+                return Response.status(404).entity("Project not found").build();
             }
-            // rename folder, update metadata etc
-            process.changeProcessTitle(newTitle);
-        } else {
-            // save process
-            ProcessManager.saveProcessInformation(process);
+            // check if owning institution is the same as in the old project
+            if (!process.getProjekt().getInstitution().getShortName().equals(newProject.getInstitution().getShortName())) {
+                return Response.status(403).entity("New project is owned by a different institution").build();
+            }
+
+            // update project
+            process.setProjekt(newProject);
+        } catch (DAOException e) {
+            log.error(e);
         }
-        return getProcessData(String.valueOf(id));
+        return null;
     }
 
     /*
@@ -329,75 +370,54 @@ public class ProcessService implements IRestAuthentication {
             return resp;
         }
 
-        Process newProcess = prepareProcess(processTitle, template);
+        Process process = prepareProcess(processTitle, template);
 
-        try {
-            // optional: change project
-            if (StringUtils.isNotBlank(resource.getProjectName())) {
-                Project newProject = ProjectManager.getProjectByName(resource.getProjectName());
-                if (newProject == null) {
-                    return Response.status(404).entity("Project not found").build();
-                }
-                newProcess.setProjekt(newProject);
+        // optional: change project
+        if (StringUtils.isNotBlank(resource.getProjectName())) {
+            resp = changeProject(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
             }
-            // optional: change ruleset
-            if (StringUtils.isNotBlank(resource.getRulesetName())) {
-                Ruleset ruleset = RulesetManager.getRulesetByName(resource.getRulesetName());
-                if (ruleset == null) {
-                    return Response.status(404).entity("Ruleset not found").build();
-                }
-                newProcess.setRegelsatz(ruleset);
+        }
+        // optional: change ruleset
+        resp = changeRuleset(resource, process);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+        // optional: change docket
+        if (StringUtils.isNotBlank(resource.getDocketName())) {
+            resp = changeDocket(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
             }
-            // optional: change docket
-            if (StringUtils.isNotBlank(resource.getDocketName())) {
-                Docket docket = DocketManager.getDocketByName(resource.getRulesetName());
-                if (docket == null) {
-                    return Response.status(404).entity("Docket not found").build();
-                }
-                newProcess.setDocket(docket);
+        }
+        // optional: add process to a batch
+        if (resource.getBatchNumber() != null) {
+            resp = changeBatch(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
             }
-            // optional: add process to a batch
-            if (resource.getBatchNumber() != null) {
-                Batch batch = ProcessManager.getBatchById(resource.getBatchNumber());
-                if (batch == null) {
-                    batch = new Batch();
-                }
-                newProcess.setBatch(batch);
-            }
-        } catch (DAOException e) {
-            log.error(e);
         }
 
-        // add optional data
-        if (resource.getCreationDate() != null) {
-            newProcess.setErstellungsdatum(resource.getCreationDate());
-        }
-        if (StringUtils.isNotBlank(resource.getStatus()) && StringUtils.isNumeric(resource.getStatus())) {
-            newProcess.setSortHelperStatus(resource.getStatus());
-        }
-        if (resource.getNumberOfImages() != null) {
-            newProcess.setSortHelperImages(resource.getNumberOfImages());
-        }
-        if (resource.getNumberOfMetadata() != null) {
-            newProcess.setSortHelperMetadata(resource.getNumberOfMetadata());
-        }
-        if (resource.getNumberOfDocstructs() != null) {
-            newProcess.setSortHelperDocstructs(resource.getNumberOfDocstructs());
-        }
+        changeProcessParameter(resource, process);
 
         try {
             // save process to create ids and directories
-            ProcessManager.saveProcess(newProcess);
+            ProcessManager.saveProcess(process);
 
             // create dummy metadata file
             if (StringUtils.isNotBlank(resource.getDocumentType())) {
-                createMetadataFile(resource, newProcess);
+                createMetadataFile(resource, process);
             }
         } catch (DAOException | UGHException e) {
             log.error(e);
         }
-
-        return getProcessData(String.valueOf(newProcess.getId()));
+        Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Process created using REST-API.");
+        return Response.status(200).entity(new RestProcessResource(process)).build();
     }
 
     private void createMetadataFile(RestProcessResource resource, Process newProcess)
@@ -634,6 +654,7 @@ public class ProcessService implements IRestAuthentication {
         } catch (DAOException e) {
             log.error(e);
         }
+        Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step changed using REST-API: " + step.getTitel());
         return getStep(String.valueOf(resource.getProcessId()), String.valueOf(resource.getStepId()));
     }
 
@@ -710,6 +731,8 @@ public class ProcessService implements IRestAuthentication {
         } catch (DAOException e) {
             log.error(e);
         }
+
+        Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step added using REST-API: " + step.getTitel());
         return Response.status(200).entity(new RestStepResource(process, step)).build();
     }
 
@@ -746,7 +769,7 @@ public class ProcessService implements IRestAuthentication {
         }
         // delete step
         StepManager.deleteStep(step);
-
+        Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step deleted using REST-API: " + step.getTitel());
         return Response.ok().build();
     }
 
@@ -793,6 +816,7 @@ public class ProcessService implements IRestAuthentication {
             case INWORK:
             case OPEN:
             default:
+                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step closed using REST-API: " + step.getTitel());
                 CloseStepHelper.closeStep(step, null);
                 return Response.ok().build();
         }
@@ -1074,6 +1098,7 @@ public class ProcessService implements IRestAuthentication {
         if (StringUtils.isNotBlank(resource.getValue())) {
             property.setWert(resource.getValue());
         }
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property changed using REST-API: " + property.getTitel());
 
         PropertyManager.saveProcessProperty(property);
         return Response.status(200).entity(new RestPropertyResource(property)).build();
@@ -1123,6 +1148,8 @@ public class ProcessService implements IRestAuthentication {
         } else {
             property.setCreationDate(new Date());
         }
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property added using REST-API: " + property.getTitel());
+
         PropertyManager.saveProcessProperty(property);
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
@@ -1161,6 +1188,7 @@ public class ProcessService implements IRestAuthentication {
 
         PropertyManager.deleteProcessProperty(property);
 
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property deleted using REST-API: " + property.getTitel());
         return Response.status(200).build();
     }
 
