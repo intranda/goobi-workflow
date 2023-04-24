@@ -406,17 +406,14 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     public void updateHistoryForAllProcesses() {
         log.info("start history updating for all processes");
         try {
-            List<Process> processList = ProcessManager.getAllProcesses();
-            for (Process proc : processList) {
+            List<Integer> processIds = ProcessManager.getIdsForFilter(null);
+            for (Integer id : processIds) {
+                Process proc = ProcessManager.getProcessById(id);
                 log.debug("updating history entries for " + proc.getTitel());
                 try {
-                    if (!proc.isSwappedOutGui()) {
-                        boolean updateHistoryForProcess = updateHistory(proc);
-                        boolean updateHistoryForSteps = updateHistoryForSteps(proc);
-                        if (updateHistoryForProcess || updateHistoryForSteps) {
-                            ProcessManager.saveProcess(proc);
-                            log.debug("history updated for process " + proc.getId());
-                        }
+                    if (!proc.isSwappedOutGui() && (updateHistory(proc) || updateHistoryForSteps(proc))) {
+                        ProcessManager.saveProcess(proc);
+                        log.debug("history updated for process " + proc.getId());
                     }
                 } catch (Exception e) {
                     Helper.setFehlerMeldung("An error occured while scheduled storage calculation", e);

@@ -332,7 +332,7 @@ public class UserBean extends BasicBean implements Serializable {
                 }
             }
         } catch (IOException exception) {
-            log.error(exception);
+            log.trace(exception);
         }
         return valide;
     }

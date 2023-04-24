@@ -656,8 +656,7 @@ public class ExportMets {
 
             if (addAnchorFile) {
                 //Anchor exists? Then copy that too, and place both in a zip:
-                String filename = myProzess.getMetadataFilePath();
-                Path anchorFile = Paths.get(filename.replace(xmlEnding, anchorEnding));
+                Path anchorFile = Paths.get(targetFileName.replace(xmlEnding, anchorEnding));
                 if (StorageProvider.getInstance().isFileExists(anchorFile)) {
 
                     Path pathTarget = Paths.get(targetFileName);

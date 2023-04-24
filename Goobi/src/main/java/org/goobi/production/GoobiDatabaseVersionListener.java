@@ -56,14 +56,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         }
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
-
-        if (!DatabaseVersion.checkIfColumnExists("projekte", "dfgViewerUrl")) {
-            try {
-                DatabaseVersion.runSql("alter table projekte add column dfgViewerUrl text DEFAULT null");
-            } catch (SQLException e) {
-                log.error(e);
-            }
-        }
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
