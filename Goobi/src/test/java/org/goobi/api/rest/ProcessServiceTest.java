@@ -55,6 +55,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.CloseStepHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -70,7 +71,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class })
+        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class, Helper.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
 
@@ -184,6 +185,10 @@ public class ProcessServiceTest extends AbstractTest {
         EasyMock.expect(JournalManager.getJournalEntryById(EasyMock.anyInt())).andReturn(entry).anyTimes();
         JournalManager.saveJournalEntry(EasyMock.anyObject());
         JournalManager.deleteJournalEntry(EasyMock.anyObject());
+
+        PowerMock.mockStatic(Helper.class);
+        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyString());
+        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyString());
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();

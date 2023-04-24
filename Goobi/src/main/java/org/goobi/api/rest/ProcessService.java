@@ -417,7 +417,7 @@ public class ProcessService implements IRestAuthentication {
             log.error(e);
         }
         Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Process created using REST-API.");
-        return Response.status(200).entity(new RestProcessResource(process)).build();
+        return getProcessData(String.valueOf(process.getId()));
     }
 
     private void createMetadataFile(RestProcessResource resource, Process newProcess)
