@@ -22,6 +22,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +33,7 @@ import javax.ws.rs.core.Response;
 
 import org.easymock.EasyMock;
 import org.goobi.api.rest.model.RestJournalResource;
+import org.goobi.api.rest.model.RestMetadataResource;
 import org.goobi.api.rest.model.RestProcessResource;
 import org.goobi.api.rest.model.RestPropertyResource;
 import org.goobi.api.rest.model.RestStepResource;
@@ -45,6 +49,7 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +61,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.CloseStepHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -82,6 +88,16 @@ public class ProcessServiceTest extends AbstractTest {
     private Step step;
     private JournalEntry entry;
 
+    @After
+    public void tearDown() throws Exception {
+        // if process folder exists, delete it
+        Path tempFolder = Paths.get(process.getProcessDataDirectory());
+        if (StorageProvider.getInstance().isFileExists(tempFolder)) {
+            StorageProvider.getInstance().deleteDir(tempFolder);
+        }
+
+    }
+
     @Before
     public void setUp() throws Exception {
         service = new ProcessService();
@@ -89,12 +105,23 @@ public class ProcessServiceTest extends AbstractTest {
         processResource = new RestProcessResource();
 
         process = MockProcess.createProcess();
+        String oldMetadata = process.getProcessDataDirectory() + "meta.xml";
         process.setId(5);
         process.setIstTemplate(true);
         process.setSortHelperDocstructs(5);
         process.setSortHelperImages(5);
         process.setSortHelperMetadata(5);
         process.setSortHelperStatus("050050000");
+
+        // copy meta.xml from old folder to new folder
+        Path newDirectory = Paths.get(process.getProcessDataDirectory());
+        Path newMetadata = Paths.get(newDirectory.toString(), "meta.xml");
+        if (!Files.exists(newDirectory)) {
+            Files.createDirectories(newDirectory);
+        }
+        Files.deleteIfExists(newMetadata);
+
+        Files.copy(Paths.get(oldMetadata), Paths.get(newDirectory.toString(), "meta.xml"));
 
         Project otherProject = new Project();
         otherProject.setTitel("other");
@@ -614,21 +641,35 @@ public class ProcessServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testDeleteProperty() {
-
-        RestPropertyResource resource = new RestPropertyResource();
-
-        Response response = service.deleteProperty("", resource);
+    public void testGetMetadata() {
+        Response response = service.getMetadata(null);
         assertEquals(400, response.getStatus());
 
-        response = service.deleteProperty("2", resource);
-        assertEquals(400, response.getStatus());
-        resource.setId(1);
-        response = service.deleteProperty("2", resource);
-        assertEquals(409, response.getStatus());
-
-        response = service.deleteProperty("1", resource);
+        response = service.getMetadata("1");
         assertEquals(200, response.getStatus());
+
+        @SuppressWarnings("unchecked")
+        List<RestMetadataResource> data = (List<RestMetadataResource>) response.getEntity();
+        assertEquals(3, data.size());
+    }
+
+    @Test
+    public void testUpdateMetadata() {
+
+    }
+
+    @Test
+    public void testCreateMetadata() {
+
+    }
+
+    @Test
+    public void testDeleteMetadata() {
+
+    }
+
+    @Test
+    public void testDeleteProperty() {
 
     }
 }

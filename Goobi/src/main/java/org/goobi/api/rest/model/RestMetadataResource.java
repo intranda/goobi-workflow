@@ -29,27 +29,32 @@ import ugh.dl.Corporate;
 import ugh.dl.Metadata;
 import ugh.dl.Person;
 
-@XmlRootElement(name = "property")
+@XmlRootElement(name = "metadata")
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
 public class RestMetadataResource {
 
+    // internal metadata name
     private String name;
+    // value for regular metadata
     private String value;
-    private String metadataType;
+    // anchor or topstruct
+    private String metadataLevel;
+    // normdata
     private String authorityValue;
+    // current value for person metadata
     private String firstname;
     private String lastname;
 
     public RestMetadataResource() {
     }
 
-    public RestMetadataResource(Metadata metadata) {
-
+    public RestMetadataResource(Metadata metadata, String metadataLevel) {
+        this.metadataLevel = metadataLevel;
         name = metadata.getType().getName();
-
+        authorityValue = metadata.getAuthorityValue();
         if (metadata.getType().getIsPerson()) {
             Person p = (Person) metadata;
             firstname = p.getFirstname();
