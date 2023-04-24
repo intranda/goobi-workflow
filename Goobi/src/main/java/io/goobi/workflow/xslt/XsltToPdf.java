@@ -46,7 +46,7 @@ import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopConfParser;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
-import org.apache.fop.apps.MimeConstants;
+import org.apache.xmlgraphics.util.MimeConstants;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;

@@ -387,6 +387,7 @@ public class PluginInstaller implements Serializable {
 
         while (existingLineIndex < linesInExistingFile || uploadedLineIndex < linesInUploadedFile) {
 
+            boolean shouldBreak = true;
             if (existingLineIndex >= linesInExistingFile) {
                 // Output all lines in uploaded file as "deleted"
                 while (uploadedLineIndex < linesInUploadedFile) {
@@ -395,7 +396,6 @@ public class PluginInstaller implements Serializable {
                     lineNumbers.add(String.valueOf(uploadedLineIndex + 1));
                     uploadedLineIndex++;
                 }
-                break;
             } else if (uploadedLineIndex >= linesInUploadedFile) {
                 // Output all lines in uploaded file as "inserted"
                 while (existingLineIndex < linesInExistingFile) {
@@ -404,6 +404,10 @@ public class PluginInstaller implements Serializable {
                     lineNumbers.add(String.valueOf(existingLineIndex + 1));
                     existingLineIndex++;
                 }
+            } else {
+                shouldBreak = false;
+            }
+            if (shouldBreak) {
                 break;
             }
             // Look for the next line in the existing file that is equal to the current line in the uploaded file

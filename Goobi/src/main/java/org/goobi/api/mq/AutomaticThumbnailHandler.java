@@ -67,7 +67,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValue> {
 
-    public static String HANDLERNAME = "automatic_thumbnail";
+    public static final String HANDLERNAME = "automatic_thumbnail";
 
     @Override
     public String getTicketHandlerName() {

@@ -73,15 +73,6 @@ public class FilterHelper {
                 sb.append(")");
 
             }
-            //            if (!aktuellerNutzer.isSuperAdmin()) {
-            //                //             limit result to institution of current user
-            //                if (sb.length() > 0) {
-            //                    sb.append(" AND ");
-            //                }
-            //                sb.append(" prozesse.ProjekteID in (select ProjekteID from projekte WHERE institution_id = ");
-            //                sb.append(aktuellerNutzer.getInstitution().getId());
-            //                sb.append(") ");
-            //            }
         }
         return sb.toString();
     }
@@ -205,7 +196,7 @@ public class FilterHelper {
     /**
      * This enum represents the result of parsing the step<modifier>: filter Restrictions
      ****************************************************************************/
-    protected static enum StepFilter {
+    protected enum StepFilter {
         exact,
         range,
         min,

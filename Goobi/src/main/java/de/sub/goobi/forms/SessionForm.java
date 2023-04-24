@@ -320,7 +320,8 @@ public class SessionForm implements Serializable {
      * @param logKeptSessions Must be true to log all sessions (kept and removed) and must be false to only log removed sessions.
      */
     private void removeAbandonedSessions(boolean logKeptSessions) {
-        for (int index = 0; index < this.sessions.size(); index++) {
+        int index = 0;
+        while (index < this.sessions.size()) {
 
             SessionInfo session = this.sessions.get(index);
             String userName = session.getUserName();
@@ -351,12 +352,12 @@ public class SessionForm implements Serializable {
                 message.append("\nSession " + counter + " will be removed because timeout is exceeded or session is abandoned.");
                 log.trace(message.toString());
                 this.sessions.remove(index);
-                index--;
             } else {
                 message.append("\nSession " + counter + " is valid and is kept in the sessions list.");
                 if (logKeptSessions) {
                     log.trace(message.toString());
                 }
+                index++;
             }
         }
     }

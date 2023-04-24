@@ -654,10 +654,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
      */
 
     public Boolean getBatchStep() {
-        if (this.batchStep == null) {
-            this.batchStep = Boolean.valueOf(false);
-        }
-        return this.batchStep;
+        return this.isBatchStep();
     }
 
     public Boolean isBatchStep() {

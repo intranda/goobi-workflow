@@ -199,9 +199,9 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e1) {
-            Helper.addMessageToProcessJournal(p.getId(), LogType.ERROR,
-                    "Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), username);
-            log.error("Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), e1);
+            String message = "Problem while adding the metadata using GoobiScript for process with id: " + p.getId();
+            Helper.addMessageToProcessJournal(p.getId(), LogType.ERROR, message, username);
+            log.error(message, e1);
             gsr.setResultMessage("Error while adding metadata: " + e1.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e1.getMessage());

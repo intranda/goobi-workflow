@@ -136,9 +136,7 @@ public class PluginInstallBean implements Serializable {
                     .stream()
                     .map(v -> v.getTextTrim())
                     .filter(v -> !v.endsWith("SNAPSHOT"))
-                    .sorted((v1, v2) -> {
-                        return PluginsBean.compareGoobiVersions(v1, v2);
-                    })
+                    .sorted((v1, v2) -> PluginsBean.compareGoobiVersions(v1, v2))
                     .findFirst();
         }
     }

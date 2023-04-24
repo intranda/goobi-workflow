@@ -68,7 +68,6 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
     private static Namespace xmlns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
 
     private MetadatenHelper metahelper;
-    private Prefs prefs;
 
     /**
      * This method exports the METS metadata as xml to a given directory
@@ -99,7 +98,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
     @Override
     public void startExport(Process process, OutputStream os, String xslt) throws IOException {
         try {
-            this.prefs = process.getRegelsatz().getPreferences();
+            Prefs prefs = process.getRegelsatz().getPreferences();
             Fileformat ff = process.readMetadataFile();
             DigitalDocument document = ff.getDigitalDocument();
             this.metahelper = new MetadatenHelper(prefs, document);

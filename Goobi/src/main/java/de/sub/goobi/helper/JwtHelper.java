@@ -282,23 +282,18 @@ public class JwtHelper {
             // TODO Auto-generated catch block
             log.error(e1);
         }
-        Algorithm algorithm = null;
-        DecodedJWT decodedJwt = JWT.decode(token);
 
+        DecodedJWT decodedJwt = JWT.decode(token);
         String strAlgorithm = decodedJwt.getAlgorithm();
 
-        switch (strAlgorithm) {
-            case "RS256":
-                algorithm = Algorithm.RSA256(keyProvider);
-                break;
-            default:
-                algorithm = null;
-        }
-
-        if (algorithm == null) {
+        Algorithm algorithm = null;
+        if ("RS256".equals(strAlgorithm)) {
+            algorithm = Algorithm.RSA256(keyProvider);
+        } else {
             log.error("JWT algorithm not supported: \"" + strAlgorithm + "\"");
             return null;
         }
+
         try {
             JWTVerifier verifier = JWT.require(algorithm).withIssuer(config.getOIDCIssuer()).build();
             return verifier.verify(decodedJwt);

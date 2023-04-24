@@ -124,7 +124,7 @@ public class TreeNode {
 
         if (node.getHasChildren() && node.expanded) {
             for (Iterator<TreeNode> iterator = node.getChildren().iterator(); iterator.hasNext();) {
-                TreeNode child = (TreeNode) iterator.next();
+                TreeNode child = iterator.next();
                 getChildrenAsListMitStrichen(nodes, niveau + 1, child, !iterator.hasNext(), isLast, lines);
             }
         }
@@ -140,7 +140,7 @@ public class TreeNode {
 
         if (node.getHasChildren()) {
             for (Iterator<TreeNode> iterator = node.getChildren().iterator(); iterator.hasNext();) {
-                TreeNode child = (TreeNode) iterator.next();
+                TreeNode child = iterator.next();
                 getChildrenAsListAlle(nodes, niveau + 1, child, !iterator.hasNext(), isLast, lines);
             }
         }

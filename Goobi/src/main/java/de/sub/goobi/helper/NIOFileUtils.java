@@ -240,9 +240,8 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     public static boolean checkImageType(String name) {
-        boolean isAllowed = false;
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        isAllowed = isAllowed || name.matches(prefix + REGEX_GIF);
+        boolean isAllowed = name.matches(prefix + REGEX_GIF);
         isAllowed = isAllowed || name.matches(prefix + REGEX_JP2);
         isAllowed = isAllowed || name.matches(prefix + REGEX_JPEG);
         isAllowed = isAllowed || name.matches(prefix + REGEX_PNG);
@@ -251,9 +250,8 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     public static boolean check3DType(String name) {
-        boolean isAllowed = false;
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        isAllowed = isAllowed || name.matches(prefix + REGEX_3DS);
+        boolean isAllowed = name.matches(prefix + REGEX_3DS);
         isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);
         isAllowed = isAllowed || name.matches(prefix + REGEX_GLB);
         isAllowed = isAllowed || name.matches(prefix + REGEX_GLTF);
@@ -279,10 +277,9 @@ public class NIOFileUtils implements StorageProviderInterface {
     public static final DirectoryStream.Filter<Path> objectNameFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) {
-            boolean isAllowed = false;
             String prefix = ConfigurationHelper.getInstance().getImagePrefix();
             String name = path.getFileName().toString();
-            isAllowed = isAllowed || name.matches(prefix + REGEX_3DS);
+            boolean isAllowed = name.matches(prefix + REGEX_3DS);
             isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);
             isAllowed = isAllowed || name.matches(prefix + REGEX_GLB);
             isAllowed = isAllowed || name.matches(prefix + REGEX_GLTF);
@@ -327,7 +324,7 @@ public class NIOFileUtils implements StorageProviderInterface {
             if (baseName.equals(mainFileBaseName)) {
                 String prefix = ConfigurationHelper.getInstance().getImagePrefix();
                 String name = path.getFileName().toString();
-                isAllowed = isAllowed || name.matches(prefix + REGEX_BIN);
+                isAllowed = name.matches(prefix + REGEX_BIN);
                 isAllowed = isAllowed || name.matches(prefix + REGEX_JPEG);
                 isAllowed = isAllowed || name.matches(prefix + REGEX_MTL);
                 isAllowed = isAllowed || name.matches(prefix + REGEX_PNG);

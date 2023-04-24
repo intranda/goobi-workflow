@@ -86,10 +86,10 @@ public class MetadatenImagesHelper {
     private static final String METADATA_PHYSICAL_PAGE_NUMBER = "physPageNumber";
     private static final String METADATA_LOGICAL_PAGE_NUMBER = "logicalPageNumber";
 
-    private static DocStructType TYPE_PAGE;
-    private static DocStructType TYPE_AUDIO;
-    private static DocStructType TYPE_VIDEO;
-    private static DocStructType TYPE_3D_OBJECT;
+    private static DocStructType docStructPage;
+    private static DocStructType docStructAudio;
+    private static DocStructType docStructVideo;
+    private static DocStructType docStructObject;
 
     private Prefs myPrefs;
     private DigitalDocument mydocument;
@@ -292,20 +292,20 @@ public class MetadatenImagesHelper {
             checkIfImagesValid(inProzess.getTitel(), folderToCheck.toString());
         }
 
-        TYPE_PAGE = this.myPrefs.getDocStrctTypeByName("page");
-        TYPE_AUDIO = this.myPrefs.getDocStrctTypeByName("audio");
-        TYPE_VIDEO = this.myPrefs.getDocStrctTypeByName("video");
-        TYPE_3D_OBJECT = this.myPrefs.getDocStrctTypeByName("object");
+        docStructPage = this.myPrefs.getDocStrctTypeByName("page");
+        docStructAudio = this.myPrefs.getDocStrctTypeByName("audio");
+        docStructVideo = this.myPrefs.getDocStrctTypeByName("video");
+        docStructObject = this.myPrefs.getDocStrctTypeByName("object");
 
         // use fallback to 'page', if additional types are not configured in ruleset
-        if (TYPE_AUDIO == null) {
-            TYPE_AUDIO = TYPE_PAGE;
+        if (docStructAudio == null) {
+            docStructAudio = docStructPage;
         }
-        if (TYPE_VIDEO == null) {
-            TYPE_VIDEO = TYPE_PAGE;
+        if (docStructVideo == null) {
+            docStructVideo = docStructPage;
         }
-        if (TYPE_3D_OBJECT == null) {
-            TYPE_3D_OBJECT = TYPE_PAGE;
+        if (docStructObject == null) {
+            docStructObject = docStructPage;
         }
 
         /*-------------------------------
@@ -532,18 +532,18 @@ public class MetadatenImagesHelper {
     private DocStruct createDocStruct(String mimetype) throws TypeNotAllowedForParentException {
         // TODO check mimetypes of all 3d object files
         if (mimetype.startsWith("image")) {
-            return this.mydocument.createDocStruct(TYPE_PAGE);
+            return this.mydocument.createDocStruct(docStructPage);
         } else if (mimetype.startsWith("video") || mimetype.equals("application/mxf")) {
-            return this.mydocument.createDocStruct(TYPE_VIDEO);
+            return this.mydocument.createDocStruct(docStructVideo);
         } else if (mimetype.startsWith("audio")) {
-            return this.mydocument.createDocStruct(TYPE_AUDIO);
+            return this.mydocument.createDocStruct(docStructAudio);
         } else if (mimetype.startsWith("object")) {
-            return this.mydocument.createDocStruct(TYPE_3D_OBJECT);
+            return this.mydocument.createDocStruct(docStructObject);
         } else if (mimetype.startsWith("model")) {
-            return this.mydocument.createDocStruct(TYPE_3D_OBJECT);
+            return this.mydocument.createDocStruct(docStructObject);
         } else {
             // use old implementation as default
-            return this.mydocument.createDocStruct(TYPE_PAGE);
+            return this.mydocument.createDocStruct(docStructPage);
         }
     }
 

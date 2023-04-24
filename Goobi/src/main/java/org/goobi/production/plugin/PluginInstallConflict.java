@@ -38,9 +38,9 @@ import lombok.extern.log4j.Log4j2;
 public class PluginInstallConflict implements Serializable {
     private static final long serialVersionUID = -7844460933499082596L;
 
-    protected final static String SHOW_OLD_AND_NEW_FILE = "show_old_and_new_file";
-    protected final static String SHOW_DEFAULT_AND_CUSTOM_FILE = "show_default_and_custom_file";
-    protected final static String EDIT_EXISTING_FILE = "edit_existing_file";
+    protected static final String SHOW_OLD_AND_NEW_FILE = "show_old_and_new_file";
+    protected static final String SHOW_DEFAULT_AND_CUSTOM_FILE = "show_default_and_custom_file";
+    protected static final String EDIT_EXISTING_FILE = "edit_existing_file";
 
     private String path;
     private ResolveTactic resolveTactic;
@@ -107,7 +107,7 @@ public class PluginInstallConflict implements Serializable {
         return this.fixed;
     }
 
-    public static enum ResolveTactic {
+    public enum ResolveTactic {
         unknown,
         useMaintainer,
         useCurrent,

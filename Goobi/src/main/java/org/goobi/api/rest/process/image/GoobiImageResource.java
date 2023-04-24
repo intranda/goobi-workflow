@@ -78,6 +78,7 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerPdfBinding;
+import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerResource;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -112,7 +113,7 @@ public class GoobiImageResource {
 
     private static final Map<String, Dimension> IMAGE_SIZES = new ConcurrentHashMap<>();
     private static Map<String, List<String>> availableThumbnailFolders = new ConcurrentHashMap<>();
-    private static Map<String, Long[]> FILE_LAST_EDITED_TIMES = new ConcurrentHashMap<>();
+    private static final Map<String, Long[]> FILE_LAST_EDITED_TIMES = new ConcurrentHashMap<>();
 
     private static final Path metadataFolderPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
 
@@ -131,7 +132,7 @@ public class GoobiImageResource {
     @Operation(summary = "Returns information about an image", description = "Returns information about an image in JSON or JSONLD format")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
+    @Produces({ ContentServerResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
     public ImageInformation getInfoAsJson(@PathParam("process") String processIdString, @PathParam("folder") String folder,
             @PathParam("filename") String filename) throws ContentLibException {
@@ -177,7 +178,7 @@ public class GoobiImageResource {
 
     @GET
     @javax.ws.rs.Path("/{process}/{folder}/{filename}")
-    @Produces({ MediaType.APPLICATION_JSON, ImageResource.MEDIA_TYPE_APPLICATION_JSONLD })
+    @Produces({ MediaType.APPLICATION_JSON, ContentServerResource.MEDIA_TYPE_APPLICATION_JSONLD })
     public Response redirectToCanonicalImageInfo() throws ContentLibException {
         try {
             return Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))

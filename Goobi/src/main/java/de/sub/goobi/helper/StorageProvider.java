@@ -63,7 +63,7 @@ public class StorageProvider {
 
     private static StorageProviderInterface instance;
 
-    public static enum StorageType {
+    public enum StorageType {
         LOCAL,
         S3,
         BOTH
@@ -83,8 +83,7 @@ public class StorageProvider {
 
     public static boolean dataFilterString(String name) {
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        boolean isAllowed = false;
-        isAllowed = isAllowed || name.matches(prefix + REGEX_AVI);
+        boolean isAllowed = name.matches(prefix + REGEX_AVI);
         isAllowed = isAllowed || name.matches(prefix + REGEX_DOCX);
         isAllowed = isAllowed || name.matches(prefix + REGEX_EPUB);
         isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);

@@ -705,12 +705,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
 
                 if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isNotEmpty(getLabelList())) {
-                    findPrioritisedMetadata: for (String fieldName : getLabelList()) {
+                    for (String fieldName : getLabelList()) {
                         for (NormData normdata : currentData) {
                             if (normdata.getKey().equals(fieldName)) {
                                 String value = normdata.getValues().get(0).getText();
                                 md.setValue(filter(value));
-                                break findPrioritisedMetadata;
+                                normdataList = new ArrayList<>();
+                                return "";
                             }
                         }
                     }
@@ -769,15 +770,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         md.setValue(field.getValue());
                     }
                 }
-                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUser())
-                        && StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl())) {
-                    md.setAutorityFile(vocabulary, ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl(),
-                            ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl()
-                                    + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
-                                    + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
+                String url = ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl();
+                String user = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();
+                Integer vocabularyId = selectedVocabularyRecord.getVocabularyId();
+                Integer recordId = selectedVocabularyRecord.getId();
+                if (StringUtils.isNotBlank(user) && StringUtils.isNotBlank(url)) {
+                    md.setAutorityFile(vocabulary, url, url + user + "/vocabularies/" + vocabularyId + "/records/" + recordId);
                 } else {
-                    md.setAutorityFile(vocabulary, vocabularyUrl,
-                            vocabularyUrl + "/jskos/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
+                    md.setAutorityFile(vocabulary, vocabularyUrl, vocabularyUrl + "/jskos/" + vocabularyId + "/" + recordId);
                 }
                 break;
             default:

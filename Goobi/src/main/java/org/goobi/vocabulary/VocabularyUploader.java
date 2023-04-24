@@ -113,9 +113,9 @@ public class VocabularyUploader {
         WebTarget target = client.target(strURL).path(strUsername).path(vocabTable).path(strVocabId);
 
         String message = "failed to connect to goobi_authority_server while requesting vocabulary";
-        Response response = RetryUtils.retry(new JMSException(message), Duration.ofSeconds(1), 5, () -> {
-            return target.request().accept(MediaType.APPLICATION_JSON).get(Response.class);
-        });
+        JMSException exception = new JMSException(message);
+        Duration oneSecond = Duration.ofSeconds(1);
+        Response response = RetryUtils.retry(exception, oneSecond, 5, () -> target.request().accept(MediaType.APPLICATION_JSON).get(Response.class));
 
         return vocabFromResponse(response);
     }
@@ -132,9 +132,10 @@ public class VocabularyUploader {
         WebTarget target = client.target(strURL).path(strUsername).path(vocabTable).path(strVocabId);
 
         String message = "failed to connect to goobi_authority_server while updating vocabulary";
-        Response response = RetryUtils.retry(new JMSException(message), Duration.ofSeconds(1), 5, () -> {
-            return target.request().header(HttpHeaders.AUTHORIZATION, strAuthorization).put(Entity.json(vocab));
-        });
+        JMSException exception = new JMSException(message);
+        Duration oneSecond = Duration.ofSeconds(1);
+        Response response = RetryUtils.retry(exception, oneSecond, 5,
+                () -> target.request().header(HttpHeaders.AUTHORIZATION, strAuthorization).put(Entity.json(vocab)));
 
         return response.getStatus() == Response.Status.OK.getStatusCode();
     }
@@ -156,9 +157,10 @@ public class VocabularyUploader {
         WebTarget target = client.target(strURL).path(strUsername).path(vocabTable);
 
         String message = "failed to connect to goobi_authority_server while creating new vocabulary";
-        Response response = RetryUtils.retry(new JMSException(message), Duration.ofSeconds(1), 5, () -> {
-            return target.request().header(HttpHeaders.AUTHORIZATION, strAuthorization).post(Entity.json(vocab));
-        });
+        JMSException exception = new JMSException(message);
+        Duration oneSecond = Duration.ofSeconds(1);
+        Response response = RetryUtils.retry(exception, oneSecond, 5,
+                () -> target.request().header(HttpHeaders.AUTHORIZATION, strAuthorization).post(Entity.json(vocab)));
 
         return response.getStatus() == Response.Status.OK.getStatusCode();
     }

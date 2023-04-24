@@ -32,7 +32,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -57,9 +56,9 @@ import lombok.extern.log4j.Log4j2;
 public class ProjectStatusDraw {
     private static final long MILLICSECS_PER_DAY = 1000l * 60l * 60l * 24l;
     private static final int BORDERTOP = 50;
-    private static int BORDERRIGHT = 50;
-    private static int BARWIDTH = 15;
-    private static int BARSPACING = 3 * BARWIDTH;
+    private static final int BORDERRIGHT = 50;
+    private static final int BARWIDTH = 15;
+    private static final int BARSPACING = 3 * BARWIDTH;
 
     private Graphics2D g2d;
     private ProjectStatusDataTable dataTable;
@@ -174,12 +173,12 @@ public class ProjectStatusDraw {
             drawHorizontalBar(borderLeft, y, t.getStepsCompleted() * chartWidth / nonNullMaxSteps, BARWIDTH, chartcolor.getColor());
 
             // Print number of steps completed
-            NumberFormat formatter = DecimalFormat.getInstance(FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale());
+            NumberFormat formatter = NumberFormat.getInstance(FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale());
 
             String stepsCompletedString =
                     formatter.format(t.getStepsCompleted()) + " (" + (formatter.format(t.getStepsCompleted() - (double) t.getConfiguredMax())) + ")";
             if ((borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps + fm.getHeight()
-            + fm.stringWidth(stepsCompletedString)) >= borderLeft + chartWidth) {
+                    + fm.stringWidth(stepsCompletedString)) >= borderLeft + chartWidth) {
                 g2d.setColor(Color.white);
                 drawRightAlignedString(stepsCompletedString,
                         borderLeft + t.getStepsCompleted() * chartWidth / (double) nonNullMaxSteps - fm.getHeight(), y);

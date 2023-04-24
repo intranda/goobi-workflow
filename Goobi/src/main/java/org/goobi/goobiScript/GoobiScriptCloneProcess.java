@@ -51,8 +51,6 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
 
     private static final String CONTENT_ALL = "all"; // all data completely
     private static final String CONTENT_EMPTY = "empty"; // just the metadata
-    private static final String CONTENT_PART = "part"; // still unused
-    private static final String CONTENT_MORE = "more"; // still unused
 
     @Override
     public String getAction() {

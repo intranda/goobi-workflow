@@ -480,7 +480,7 @@ public class Metadaten implements Serializable {
 
     private transient PageAreaManager pageAreaManager;
 
-    private ImageCommentPropertyHelper commentPropertyHelper;
+    private transient ImageCommentPropertyHelper commentPropertyHelper;
 
     //this is set whenever setImage() is called.
     @Getter
@@ -1457,9 +1457,7 @@ public class Metadaten implements Serializable {
          * -------------------------------- alle Typen, die einen Unterstrich haben nochmal rausschmeissen --------------------------------
          */
         SelectItem[] myTypenOhneUnterstrich = new SelectItem[zaehler];
-        for (int i = 0; i < zaehler; i++) {
-            myTypenOhneUnterstrich[i] = myTypen[i];
-        }
+        System.arraycopy(myTypen, 0, myTypenOhneUnterstrich, 0, zaehler);
         return myTypenOhneUnterstrich;
     }
 
@@ -1501,9 +1499,7 @@ public class Metadaten implements Serializable {
          * -------------------------------- alle Typen, die einen Unterstrich haben nochmal rausschmeissen --------------------------------
          */
         SelectItem[] myTypenOhneUnterstrich = new SelectItem[zaehler];
-        for (int i = 0; i < zaehler; i++) {
-            myTypenOhneUnterstrich[i] = myTypen[i];
-        }
+        System.arraycopy(myTypen, 0, myTypenOhneUnterstrich, 0, zaehler);
         return myTypenOhneUnterstrich;
     }
 
@@ -1936,9 +1932,7 @@ public class Metadaten implements Serializable {
         return REDIRECT_TO_METSEDITOR;
     }
 
-    @SuppressWarnings("rawtypes")
     private TreeNodeStruct3 buildTree(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct, boolean expandAll) {
-        HashMap map;
         TreeNodeStruct3 knoten;
         List<DocStruct> status = new ArrayList<>();
 
@@ -1946,9 +1940,8 @@ public class Metadaten implements Serializable {
          * -------------------------------- den Ausklapp-Zustand aller Knoten erfassen --------------------------------
          */
         if (inTree != null) {
-            for (Object element : inTree.getChildrenAsList()) {
-                map = (HashMap) element;
-                knoten = (TreeNodeStruct3) map.get("node");
+            for (HashMap<String, Object> hashMap : inTree.getChildrenAsList()) {
+                knoten = (TreeNodeStruct3) hashMap.get("node");
                 if (knoten.isExpanded()) {
                     status.add(knoten.getStruct());
                 }
@@ -1972,9 +1965,8 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- den Ausklappzustand nach dem neu-Einlesen wieder herstellen --------------------------------
          */
-        for (Object element : inTree.getChildrenAsListAlle()) {
-            map = (HashMap) element;
-            knoten = (TreeNodeStruct3) map.get("node");
+        for (HashMap<String, Object> hashMap : inTree.getChildrenAsListAlle()) {
+            knoten = (TreeNodeStruct3) hashMap.get("node");
             // Ausklappstatus wiederherstellen
             if (status.contains(knoten.getStruct()) || expandAll) {
                 knoten.setExpanded(true);
@@ -2083,7 +2075,6 @@ public class Metadaten implements Serializable {
         return bld.toString().trim();
     }
 
-    @SuppressWarnings("rawtypes")
     public void setMyStrukturelement(DocStruct inStruct) {
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
@@ -2092,10 +2083,9 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- die Selektion kenntlich machen --------------------------------
          */
-        for (Object element : this.tree3.getChildrenAsListAlle()) {
+        for (HashMap<String, Object> hashMap : this.tree3.getChildrenAsListAlle()) {
 
-            HashMap map = (HashMap) element;
-            TreeNodeStruct3 knoten = (TreeNodeStruct3) map.get("node");
+            TreeNodeStruct3 knoten = (TreeNodeStruct3) hashMap.get("node");
             // Selection wiederherstellen
             knoten.setSelected(this.myDocStruct == knoten.getStruct());
         }
@@ -3944,7 +3934,7 @@ public class Metadaten implements Serializable {
             if (!temp.getType().getAllAllowedDocStructTypes().contains(docStruct.getType().getName())) {
                 inTreeStruct.setEinfuegenErlaubt(false);
             }
-            for (Object element : inTreeStruct.getChildren()) {
+            for (TreeNode element : inTreeStruct.getChildren()) {
                 TreeNodeStruct3 kind = (TreeNodeStruct3) element;
                 List<DocStruct> list = new ArrayList<>();
                 list.add(docStruct);
@@ -4550,7 +4540,7 @@ public class Metadaten implements Serializable {
 
     private void activateAllTreeElements(TreeNodeStruct3 inTreeStruct) {
         inTreeStruct.setEinfuegenErlaubt(true);
-        for (Object element : inTreeStruct.getChildren()) {
+        for (TreeNode element : inTreeStruct.getChildren()) {
             TreeNodeStruct3 kind = (TreeNodeStruct3) element;
             activateAllTreeElements(kind);
         }

@@ -49,7 +49,7 @@ import lombok.extern.log4j.Log4j2;
 public class EntityLoggingFilter implements ClientRequestFilter, ClientResponseFilter, WriterInterceptor {
     private static final String ENTITY_STREAM_PROPERTY = "EntityLoggingFilter.entityStream";
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private final int maxEntitySize = 1024 * 8;
+    private static final int maxEntitySize = 1024 * 8;
 
     private void log(StringBuilder sb) {
         log.info(sb.toString());

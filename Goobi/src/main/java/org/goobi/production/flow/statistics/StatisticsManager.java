@@ -133,23 +133,18 @@ public class StatisticsManager implements Serializable {
         }
 
         if (Boolean.TRUE.equals(inMode.getIsSimple())) {
-            switch (inMode) {
+            filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
 
-                case SIMPLE_RUNTIME_STEPS:
-                    try {
-                        filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
-                        List<Integer> processList = ProcessManager.getProcessIdList(null, filter, 0, Integer.MAX_VALUE);
-                        jfreeImage = StatistikLaufzeitSchritte.createChart(processList);
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
-                    break;
-
-                default:
-                    filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
-                    List<org.goobi.beans.Process> processList = ProcessManager.getProcesses(null, filter, 0, Integer.MAX_VALUE, inst);
-                    jfreeDataset = StatistikStatus.getDiagramm(processList);
-                    break;
+            if (inMode == StatisticsMode.SIMPLE_RUNTIME_STEPS) {
+                try {
+                    List<Integer> processList = ProcessManager.getProcessIdList(null, filter, 0, Integer.MAX_VALUE);
+                    jfreeImage = StatistikLaufzeitSchritte.createChart(processList);
+                } catch (IOException e) {
+                    log.error(e);
+                }
+            } else {
+                List<org.goobi.beans.Process> processList = ProcessManager.getProcesses(null, filter, 0, Integer.MAX_VALUE, inst);
+                jfreeDataset = StatistikStatus.getDiagramm(processList);
             }
         }
         if (myLocale == null) {
@@ -314,6 +309,8 @@ public class StatisticsManager implements Serializable {
                         calculatedEndDate = calulateStartDateForTimeFrame(cl);
                         calculatedStartDate = calculateEndDateForTimeFrame(cl, Calendar.YEAR, -1);
                         break;
+                    default:
+                        log.trace("Unused field in StatisticsManager.setTimeFrameToStatisticalQuestion(): " + sourceTimeUnit);
                 }
 
             } else {

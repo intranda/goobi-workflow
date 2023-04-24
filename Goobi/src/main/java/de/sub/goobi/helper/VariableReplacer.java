@@ -112,17 +112,18 @@ public class VariableReplacer {
     public static Pattern piiifMediaFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMediaFolder(?:\\}|\\))");
     public static Pattern piiifMasterFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMasterFolder(?:\\}|\\))");
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String SEPARATOR = ",";
 
     private DigitalDocument dd;
     private Prefs prefs;
     private UghHelper uhelp;
     // $(meta.abc)
-    private final String namespaceMeta = "\\$?(?:\\(|\\{)meta\\.([\\w.-]*)(?:\\}|\\))";
+    private static final String namespaceMeta = "\\$?(?:\\(|\\{)meta\\.([\\w.-]*)(?:\\}|\\))";
 
     // $(metas.abc)
-    private final String namespaceMetaMultiValue = "\\$?(?:\\(|\\{)metas\\.([\\w.-]*)(?:\\}|\\))";
+    private static final String namespaceMetaMultiValue = "\\$?(?:\\(|\\{)metas\\.([\\w.-]*)(?:\\}|\\))";
 
     // $(folder.xyz) or {folder.xyz} are both ok
     private static final String folderExpression = "\\$?(?:\\(|\\{)folder\\.([^)]+)(?:\\}|\\))";
@@ -196,7 +197,7 @@ public class VariableReplacer {
         /*
          * replace metadata, usage: $(meta.firstchild.METADATANAME)
          */
-        for (MatchResult r : findRegexMatches(this.namespaceMeta, inString)) {
+        for (MatchResult r : findRegexMatches(namespaceMeta, inString)) {
             if (r.group(1).toLowerCase().startsWith("firstchild.")) {
                 inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), false));
             } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
@@ -206,7 +207,7 @@ public class VariableReplacer {
             }
         }
 
-        for (MatchResult r : findRegexMatches(this.namespaceMetaMultiValue, inString)) {
+        for (MatchResult r : findRegexMatches(namespaceMetaMultiValue, inString)) {
             if (r.group(1).toLowerCase().startsWith("firstchild.")) {
                 inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), true));
             } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
@@ -460,6 +461,7 @@ public class VariableReplacer {
 
     /**
      * get one single metadata from given docstruct
+     * 
      * @param inDocstruct
      * @param mdt
      * @return
@@ -482,6 +484,7 @@ public class VariableReplacer {
 
     /**
      * get multiple metadata from given docstruct, separated with semicolon
+     * 
      * @param inDocstruct
      * @param mdt
      * @return

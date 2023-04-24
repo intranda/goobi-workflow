@@ -354,7 +354,7 @@ public class HelperSchritte {
         int count = 1;
         int size = scriptpaths.size();
         ShellScriptReturnValue returnParameter = null;
-        outerloop: for (String script : scriptpaths) {
+        for (String script : scriptpaths) {
             if (log.isDebugEnabled()) {
                 log.debug("Starting script " + script + " for process with ID " + step.getProcessId());
             }
@@ -383,7 +383,7 @@ public class HelperSchritte {
                     // everything else: error
                     default:
                         errorStep(step);
-                        break outerloop;
+                        return returnParameter;
 
                 }
             }

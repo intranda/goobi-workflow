@@ -52,12 +52,9 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
     private static final String GROUP = "group";
 
     /**
-     * The cache only works if the status is Status.STATUS_ALIVE. The status is Status.STATUS_ALIVE after it was registered in the cache manager.
-     */
-    private CacheManager cacheManager = null;
-    /**
      * The cache stores all user groups that should be added with one or multiple goobi script instances. If the same group should be added to
-     * multiple steps, the group is loaded from the database into the cache once and reused each time. This saves lots of database requests.
+     * multiple steps, the group is loaded from the database into the cache once and reused each time. This saves lots of database requests. The cache
+     * only works if the status is Status.STATUS_ALIVE. The status is Status.STATUS_ALIVE after it was registered in the cache manager.
      */
     private Cache userGroupCache = null;
 
@@ -126,8 +123,8 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         long timeToIdleSeconds = 3600;
 
         this.userGroupCache = new Cache(name, maxElementsInMemory, overflowToDisk, eternal, timeToLiveSeconds, timeToIdleSeconds);
-        this.cacheManager = new CacheManager();
-        this.cacheManager.addCache(this.userGroupCache);
+        CacheManager cacheManager = new CacheManager();
+        cacheManager.addCache(this.userGroupCache);
     }
 
     @Override

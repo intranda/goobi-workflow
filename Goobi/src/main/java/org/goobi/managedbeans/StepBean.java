@@ -156,7 +156,7 @@ public class StepBean extends BasicBean implements Serializable {
     @Setter
     private String scriptPath;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static String DONEDIRECTORYNAME = "fertig/";
+    private String doneDirectoryName = "fertig/";
     @Getter
     @Setter
     private BatchStepHelper batchHelper;
@@ -217,7 +217,7 @@ public class StepBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
         }
-        DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
+        this.doneDirectoryName = ConfigurationHelper.getInstance().getDoneDirectoryName();
     }
 
     /*
@@ -772,7 +772,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public String uploadFromHomeAlle() throws NumberFormatException, DAOException {
 
-        List<String> fertigListe = this.myDav.UploadFromHomeAlle(DONEDIRECTORYNAME);
+        List<String> fertigListe = this.myDav.UploadFromHomeAlle(this.doneDirectoryName);
         List<String> geprueft = new ArrayList<>();
         /*
          * -------------------------------- die hochgeladenen Prozess-IDs durchlaufen und auf abgeschlossen setzen --------------------------------
@@ -798,8 +798,8 @@ public class StepBean extends BasicBean implements Serializable {
             }
         }
 
-        this.myDav.removeFromHomeAlle(geprueft, DONEDIRECTORYNAME);
-        Helper.setMeldung(null, "removed " + geprueft.size() + " directories from user home:", DONEDIRECTORYNAME);
+        this.myDav.removeFromHomeAlle(geprueft, this.doneDirectoryName);
+        Helper.setMeldung(null, "removed " + geprueft.size() + " directories from user home:", this.doneDirectoryName);
         return FilterAlleStart();
     }
 

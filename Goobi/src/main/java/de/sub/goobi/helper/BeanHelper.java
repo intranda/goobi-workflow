@@ -329,16 +329,18 @@ public class BeanHelper implements Serializable {
         // add text to process log
         User user = Helper.getCurrentUser();
         JournalEntry logEntry =
-                new JournalEntry(processToChange.getId(), new Date(), user != null ? user.getNachVorname() : "", LogType.DEBUG, "Changed process template to " + template.getTitel(), EntryType.PROCESS);
+                new JournalEntry(processToChange.getId(), new Date(), user != null ? user.getNachVorname() : "", LogType.DEBUG,
+                        "Changed process template to " + template.getTitel(), EntryType.PROCESS);
         processToChange.getJournal().add(logEntry);
 
         try {
-            // if no open task was found, open first locked  task
+            // if no open task was found, open first locked task
             for (Step newTask : processToChange.getSchritte()) {
-                if (StepStatus.OPEN.equals(newTask.getBearbeitungsstatusEnum())) {
-                    break;
-                } else if (StepStatus.LOCKED.equals(newTask.getBearbeitungsstatusEnum())) {
-                    newTask.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                StepStatus status = newTask.getBearbeitungsstatusEnum();
+                if (status == StepStatus.OPEN || status == StepStatus.LOCKED) {
+                    if (status == StepStatus.LOCKED) {
+                        newTask.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                    }
                     break;
                 }
             }

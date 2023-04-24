@@ -411,7 +411,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export": //NOSONAR
                             configuredFolderNames
-                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -453,8 +453,8 @@ public class ProzesskopieForm implements Serializable {
         if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
             filter.append(" AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ")
-            .append(aktuellerNutzer.getId())
-            .append(")");
+                    .append(aktuellerNutzer.getId())
+                    .append(")");
         }
         Institution inst = null;
         if (aktuellerNutzer != null && !aktuellerNutzer.isSuperAdmin()) {
@@ -1436,29 +1436,22 @@ public class ProzesskopieForm implements Serializable {
                 isnotdoctype = "";
             }
 
+            boolean containsDoctype = StringUtils.containsIgnoreCase(isdoctype, this.docType);
+            boolean containsNotDoctype = StringUtils.containsIgnoreCase(isnotdoctype, this.docType);
+
             /* wenn nix angegeben wurde, dann anzeigen */
-            if ("".equals(isdoctype) && "".equals(isnotdoctype)) {
-                titeldefinition = titel;
-                replacement = replacementText;
-                break;
-            }
+            boolean useTitle = "".equals(isdoctype) && "".equals(isnotdoctype);
 
             /* wenn beides angegeben wurde */
-            if (!"".equals(isdoctype) && !"".equals(isnotdoctype) && StringUtils.containsIgnoreCase(isdoctype, this.docType)
-                    && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
-                titeldefinition = titel;
-                replacement = replacementText;
-                break;
-            }
+            useTitle = useTitle || (!"".equals(isdoctype) && !"".equals(isnotdoctype) && containsDoctype && !containsNotDoctype);
 
             /* wenn nur pflicht angegeben wurde */
-            if ("".equals(isnotdoctype) && StringUtils.containsIgnoreCase(isdoctype, this.docType)) {
-                titeldefinition = titel;
-                replacement = replacementText;
-                break;
-            }
+            useTitle = useTitle || ("".equals(isnotdoctype) && containsDoctype);
+
             /* wenn nur "darf nicht" angegeben wurde */
-            if ("".equals(isdoctype) && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
+            useTitle = useTitle || ("".equals(isdoctype) && !containsNotDoctype);
+
+            if (useTitle) {
                 titeldefinition = titel;
                 replacement = replacementText;
                 break;

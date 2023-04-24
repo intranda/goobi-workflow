@@ -60,10 +60,8 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiExternalJobQueueDLQListener {
     Gson gson = new Gson();
 
-    private Connection conn;
-
     public void register(String username, String password) throws JMSException {
-        this.conn = ExternalConnectionFactory.createConnection(username, password);
+        Connection conn = ExternalConnectionFactory.createConnection(username, password);
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);

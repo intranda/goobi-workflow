@@ -43,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ExternalMQMysqlHelper {
     public static void insertTicket(ExternalCommandResult message) throws SQLException {
-        String sql = "INSERT INTO external_mq_results " + generateInsertQuery() + generateValueQuery();
+        String sql = "INSERT INTO external_mq_results (ProzesseID, SchritteID, time, scriptName) VALUES (?,?,?,?)";
         Object[] param = generateParameter(message);
         Connection connection = null;
         try {
@@ -80,14 +80,6 @@ public class ExternalMQMysqlHelper {
 
     private static Object[] generateParameter(ExternalCommandResult message) {
         return new Object[] { message.getProcessId(), message.getStepId(), new Date(), message.getScriptName() };
-    }
-
-    private static String generateInsertQuery() {
-        return "(ProzesseID, SchritteID, time, scriptName) VALUES ";
-    }
-
-    private static String generateValueQuery() {
-        return "(?,?,?,?)";
     }
 
     public static int getMessagesCount(String filter) throws SQLException {

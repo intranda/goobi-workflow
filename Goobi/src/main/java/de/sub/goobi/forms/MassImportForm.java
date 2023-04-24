@@ -378,8 +378,8 @@ public class MassImportForm implements Serializable {
                         goobiScriptManager.startWork();
                     }
                     return "";
-                } // END if (plugin2.isRunnableAsGoobiScript()) AT LINE 327
-            } // END if (this.plugin instanceof IImportPluginVersion2) AT LINE 325
+                }
+            }
 
             // if not runnable as GoobiScript run it in the regular MassImport GUI
             List<ImportObject> answer = new ArrayList<>();
@@ -465,14 +465,12 @@ public class MassImportForm implements Serializable {
                     }
                 }
                 currentProcessNo = currentProcessNo + 1;
-            } // END for (ImportObject io : answer) AT LINE 445
+            }
             if (answer.size() != this.processList.size()) {
                 // some error on process generation, don't go to next page
                 return "";
             }
-        } // END if (testForData()) AT LINE 319
-          // missing data
-        else {
+        } else {
             Helper.setFehlerMeldung("missingData");
             return "";
         }

@@ -30,11 +30,14 @@ import java.util.List;
 
 import org.apache.commons.text.diff.CommandVisitor;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * This class stores two file contents and their result from comparison via CommandVisitor.
  *
  * @author Maurice Mueller
  */
+@Log4j2
 public class FileCommandVisitor implements CommandVisitor<Character> {
 
     protected static final String MODE_KEEP = "keep";
@@ -123,6 +126,8 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
                 case SpanTag.TEXT_DELETED_PASSIVE:
                     mode = SpanTag.SPACE_DELETED_PASSIVE;
                     break;
+                default:
+                    log.trace("Unused span tag in FileCommandVisitor.handleCharacter(): " + mode);
             }
         }
         if (which.equals(MODE_KEEP) || which.equals(MODE_INSERTION)) {

@@ -1810,29 +1810,25 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             }
         }
         try {
-            {
-                // renaming image directories
-                String imageDirectory = getImagesDirectory();
-                Path dir = Paths.get(imageDirectory);
-                if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
-                    List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
-                    for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
-                            StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
-                        }
+            // renaming image directories
+            String imageDirectoryName = getImagesDirectory();
+            Path imageDirectory = Paths.get(imageDirectoryName);
+            if (StorageProvider.getInstance().isFileExists(imageDirectory) && StorageProvider.getInstance().isDirectory(imageDirectory)) {
+                List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectoryName);
+                for (Path imagedir : subdirs) {
+                    if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
+                        StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                     }
                 }
             }
-            {
-                // renaming ocr directories
-                String ocrDirectory = getOcrDirectory();
-                Path dir = Paths.get(ocrDirectory);
-                if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
-                    List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
-                    for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
-                            StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
-                        }
+            // renaming ocr directories
+            String ocrDirectoryName = getOcrDirectory();
+            Path ocrDirectory = Paths.get(ocrDirectoryName);
+            if (StorageProvider.getInstance().isFileExists(ocrDirectory) && StorageProvider.getInstance().isDirectory(ocrDirectory)) {
+                List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectoryName);
+                for (Path imagedir : subdirs) {
+                    if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
+                        StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                     }
                 }
             }
@@ -2066,11 +2062,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * @return true if the process is set up to perform a pre-export validation, false if not
      */
     public boolean isConfiguredWithExportValidator() {
-        if (getExportValidator() != null && getExportValidator().getLabel() != null && getExportValidator().getCommand() != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return getExportValidator() != null && getExportValidator().getLabel() != null && getExportValidator().getCommand() != null;
     }
 
     /**

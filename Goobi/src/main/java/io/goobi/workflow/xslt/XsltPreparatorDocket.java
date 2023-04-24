@@ -1347,9 +1347,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             content.setText(entry.getContent());
             // processlog.creationDate
             Element entryCreationDate = new Element(ELEMENT_CREATION_DATE, xmlns);
-            if (entry.getCreationDate() != null) {
-                entryCreationDate.setText(dateConverter.format(entry.getCreationDate()));
-            }
+            // entry.creationDate is marked with @NonNull
+            entryCreationDate.setText(dateConverter.format(entry.getCreationDate()));
             entryElement.addContent(entryCreationDate);
             // processlog.type
             Element entryType = new Element(ELEMENT_TYPE, xmlns);

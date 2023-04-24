@@ -1150,26 +1150,22 @@ public class CopyProcess {
                 isnotdoctype = "";
             }
 
+            boolean containsDoctype = StringUtils.containsIgnoreCase(isdoctype, this.docType);
+            boolean containsNotDoctype = StringUtils.containsIgnoreCase(isnotdoctype, this.docType);
+
             /* wenn nix angegeben wurde, dann anzeigen */
-            if ("".equals(isdoctype) && "".equals(isnotdoctype)) {
-                titeldefinition = titel;
-                break;
-            }
+            boolean useTitle = "".equals(isdoctype) && "".equals(isnotdoctype);
 
             /* wenn beides angegeben wurde */
-            if (!"".equals(isdoctype) && !"".equals(isnotdoctype) && StringUtils.containsIgnoreCase(isdoctype, this.docType)
-                    && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
-                titeldefinition = titel;
-                break;
-            }
+            useTitle = useTitle || (!"".equals(isdoctype) && !"".equals(isnotdoctype) && containsDoctype && !containsNotDoctype);
 
             /* wenn nur pflicht angegeben wurde */
-            if ("".equals(isnotdoctype) && StringUtils.containsIgnoreCase(isdoctype, this.docType)) {
-                titeldefinition = titel;
-                break;
-            }
+            useTitle = useTitle || ("".equals(isnotdoctype) && containsDoctype);
+
             /* wenn nur "darf nicht" angegeben wurde */
-            if ("".equals(isdoctype) && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
+            useTitle = useTitle || ("".equals(isdoctype) && !containsNotDoctype);
+
+            if (useTitle) {
                 titeldefinition = titel;
                 break;
             }

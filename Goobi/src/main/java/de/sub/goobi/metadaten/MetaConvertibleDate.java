@@ -54,15 +54,15 @@ public class MetaConvertibleDate {
     }
 
     public boolean isJulian() {
-        return this.type == DateType.JULIAN ? true : false;
+        return this.type == DateType.JULIAN;
     }
 
     public boolean isBritish() {
-        return this.type == DateType.BRITISH ? true : false;
+        return this.type == DateType.BRITISH;
     }
 
     public boolean isGregorian() {
-        return this.type == DateType.GREGORIAN ? true : false;
+        return this.type == DateType.GREGORIAN;
     }
 
     /**
