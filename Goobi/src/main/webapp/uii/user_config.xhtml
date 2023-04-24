@@ -130,8 +130,7 @@
                                         </h:commandLink></li>
                                 </h:panelGroup>
 
-                                <h:panelGroup rendered="false">
-                                    <!-- TODO only if role is active -->
+                                <h:panelGroup rendered="#{LoginForm.hasRole('Admin_ApiKey')}">
                                     <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab7'?'active':''}"><h:commandLink
                                             id="tab7"
                                             action="#{NavigationForm.Reload}"
@@ -764,14 +763,16 @@
                                 <hr />
 
                                 <!-- generate new api token -->
-                                <button
-                                    jsf:id="newApiToken"
-                                    class="btn btn-primary-400 me-auto"
-                                    jsf:action="#{LoginForm.myBenutzer.createNewToken}"
-                                    jsf:immediate="true">
-                                    <i class="fa fa-plus"></i> <span>#{msgs.user_config_newApiToken}</span>
+                                <div class="form-actions">
+                                    <button
+                                        jsf:id="newApiToken"
+                                        class="btn btn-primary-400 me-auto"
+                                        jsf:action="#{LoginForm.myBenutzer.createNewToken}"
+                                        jsf:immediate="true">
+                                        <i class="fa fa-plus"></i> <span>#{msgs.user_config_newApiToken}</span>
 
-                                </button>
+                                    </button>
+                                </div>
                             </h:panelGroup>
                         </div>
 
