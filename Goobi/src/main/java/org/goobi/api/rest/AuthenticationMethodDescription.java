@@ -27,6 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuthenticationMethodDescription {
+
     private Integer methodID;
     private Integer apiTokenId;
     @NonNull
