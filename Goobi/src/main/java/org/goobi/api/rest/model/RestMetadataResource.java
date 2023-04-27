@@ -18,44 +18,52 @@
 
 package org.goobi.api.rest.model;
 
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.goobi.beans.JournalEntry;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Getter;
 import lombok.Setter;
+import ugh.dl.Corporate;
+import ugh.dl.Metadata;
+import ugh.dl.Person;
 
-@XmlRootElement(name = "journal")
+@XmlRootElement(name = "metadata")
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public class RestJournalResource {
+public class RestMetadataResource {
 
-    private Integer id;
-    private Integer processId;
-    private Date creationDate;
-    private String userName;
-    private String type;
-    private String message;
-    private String filename;
+    // internal metadata name
+    private String name;
+    // value for regular metadata
+    private String value;
+    // anchor or topstruct
+    private String metadataLevel;
+    // normdata
+    private String authorityValue;
+    // current value for person metadata
+    private String firstname;
+    private String lastname;
 
-    public RestJournalResource() {
-
+    public RestMetadataResource() {
     }
 
-    public RestJournalResource(JournalEntry entry) {
-        id = entry.getId();
-        processId = entry.getObjectId();
-        creationDate = entry.getCreationDate();
-        userName = entry.getUserName();
-        type = entry.getType().getTitle();
-        message = entry.getContent();
-        filename = entry.getFilename();
+    public RestMetadataResource(Metadata metadata, String metadataLevel) {
+        this.metadataLevel = metadataLevel;
+        name = metadata.getType().getName();
+        authorityValue = metadata.getAuthorityValue();
+        if (metadata.getType().getIsPerson()) {
+            Person p = (Person) metadata;
+            firstname = p.getFirstname();
+            lastname = p.getLastname();
+        } else if (metadata.getType().isCorporate()) {
+            Corporate c = (Corporate) metadata;
+            value = c.getMainName();
+        } else {
+            value = metadata.getValue();
+        }
     }
 }

@@ -16,46 +16,25 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package org.goobi.api.rest.model;
-
-import java.util.Date;
-
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.goobi.beans.JournalEntry;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+package org.goobi.api.rest;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@XmlRootElement(name = "journal")
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@RequiredArgsConstructor
 @Getter
 @Setter
-public class RestJournalResource {
+public class AuthenticationMethodDescription {
 
-    private Integer id;
-    private Integer processId;
-    private Date creationDate;
-    private String userName;
-    private String type;
-    private String message;
-    private String filename;
-
-    public RestJournalResource() {
-
-    }
-
-    public RestJournalResource(JournalEntry entry) {
-        id = entry.getId();
-        processId = entry.getObjectId();
-        creationDate = entry.getCreationDate();
-        userName = entry.getUserName();
-        type = entry.getType().getTitle();
-        message = entry.getContent();
-        filename = entry.getFilename();
-    }
+    private Integer methodID;
+    private Integer apiTokenId;
+    @NonNull
+    private String methodType;
+    @NonNull
+    private String description;
+    @NonNull
+    private String url;
+    private boolean selected;
 }

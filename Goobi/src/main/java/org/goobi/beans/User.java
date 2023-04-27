@@ -37,12 +37,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.api.rest.AuthenticationToken;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
@@ -291,6 +293,10 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
 
     @Getter
     @Setter
+    private transient List<AuthenticationToken> apiToken = new ArrayList<>();
+
+    @Getter
+    @Setter
     // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
     // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from benutzer'
     private Map<String, String> additionalData = new HashMap<>();
@@ -389,13 +395,13 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         if (inPasswort == null || inPasswort.length() == 0) {
             return false;
         } else /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
-            if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
-                LdapAuthentication myldap = new LdapAuthentication();
-                return myldap.isUserPasswordCorrect(this, inPasswort);
-            } else {
-                String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
-                return this.encryptedPassword.equals(hashedPasswordBase64);
-            }
+        if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
+            LdapAuthentication myldap = new LdapAuthentication();
+            return myldap.isUserPasswordCorrect(this, inPasswort);
+        } else {
+            String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
+            return this.encryptedPassword.equals(hashedPasswordBase64);
+        }
     }
 
     public String getPasswordHash(String plainTextPassword) {
@@ -759,5 +765,12 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         }
         return answer;
     }
+
+    public void createNewToken() {
+        AuthenticationToken token = new AuthenticationToken(UUID.randomUUID().toString(), id);
+        apiToken.add(token);
+    }
+
+    // TODO delete token
 
 }

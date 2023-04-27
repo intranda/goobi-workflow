@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.api.rest.AuthenticationMethodDescription;
+import org.goobi.api.rest.AuthenticationToken;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry.EntryType;
@@ -252,10 +254,13 @@ public class UserManager implements IManager, Serializable {
         r.setAdditionalData(MySQLHelper.convertStringToMap(rs.getString("additional_data")));
         r.setJournal(JournalManager.getLogEntriesForUser(r.getId()));
         r.setAdditionalSearchFields(rs.getString("additional_search_fields"));
+
+        List<AuthenticationToken> apiToken = getAuthenticationTokenForUser(r);
+        r.setApiToken(apiToken);
         return r;
     }
 
-    public static ResultSetHandler<User> resultSetToUserHandler = new ResultSetHandler<User>() {
+    public static final ResultSetHandler<User> resultSetToUserHandler = new ResultSetHandler<User>() {
         @Override
         public User handle(ResultSet rs) throws SQLException {
             try {
@@ -269,7 +274,7 @@ public class UserManager implements IManager, Serializable {
         }
     };
 
-    public static ResultSetHandler<List<User>> resultSetToUserListHandler = new ResultSetHandler<List<User>>() {
+    public static final ResultSetHandler<List<User>> resultSetToUserListHandler = new ResultSetHandler<List<User>>() {
         @Override
         public List<User> handle(ResultSet rs) throws SQLException {
             List<User> answer = new ArrayList<>();
@@ -284,6 +289,82 @@ public class UserManager implements IManager, Serializable {
             return answer;
         }
     };
+
+    public static AuthenticationToken convertToken(ResultSet rs) throws SQLException {
+        if (rs != null) {
+            String tokenName = rs.getString("token_name");
+            int userId = rs.getInt("user_id");
+            AuthenticationToken token = new AuthenticationToken(tokenName, userId);
+            token.setTokenId(rs.getInt("id"));
+            token.setDescription(rs.getString("token_description"));
+
+            List<AuthenticationMethodDescription> configuredMethods = getConfiguredMethods(token.getTokenId());
+            for (AuthenticationMethodDescription desc : token.getMethods()) {
+                for (AuthenticationMethodDescription configured : configuredMethods) {
+                    if (desc.getDescription().equals(configured.getDescription()) &&
+                            desc.getMethodType().equals(configured.getMethodType()) &&
+                            desc.getUrl().equals(configured.getUrl())) {
+                        desc.setApiTokenId(configured.getApiTokenId());
+                        desc.setMethodID(configured.getMethodID());
+                        desc.setSelected(configured.isSelected());
+                    }
+                }
+            }
+            return token;
+        }
+        return null;
+    }
+
+    public static final ResultSetHandler<AuthenticationToken> resultSetToAuthenticationTokenHandler = new ResultSetHandler<AuthenticationToken>() {
+        @Override
+        public AuthenticationToken handle(ResultSet rs) throws SQLException {
+            try {
+                if (rs.next()) { // implies that rs != null
+                    return convertToken(rs);
+                }
+            } finally {
+                rs.close();
+            }
+            return null;
+        }
+    };
+
+    public static final ResultSetHandler<List<AuthenticationToken>> resultSetToAuthenticationTokenListHandler =
+            new ResultSetHandler<List<AuthenticationToken>>() {
+                @Override
+                public List<AuthenticationToken> handle(ResultSet rs) throws SQLException {
+                    List<AuthenticationToken> answer = new ArrayList<>();
+                    try {
+                        while (rs.next()) {
+                            answer.add(convertToken(rs));
+                        }
+                    } finally {
+                        rs.close();
+                    }
+                    return answer;
+                }
+            };
+
+    public static final ResultSetHandler<List<AuthenticationMethodDescription>> resultSetToAuthenticationTokenMethodListHandler =
+            new ResultSetHandler<List<AuthenticationMethodDescription>>() {
+                @Override
+                public List<AuthenticationMethodDescription> handle(ResultSet rs) throws SQLException {
+                    List<AuthenticationMethodDescription> answer = new ArrayList<>();
+                    try {
+                        while (rs.next()) {
+                            AuthenticationMethodDescription o = new AuthenticationMethodDescription(rs.getString("method_type"),
+                                    rs.getString("method_description"), rs.getString("method_url"));
+                            o.setMethodID(rs.getInt("id"));
+                            o.setApiTokenId(rs.getInt("token_id"));
+                            o.setSelected(rs.getBoolean("selected"));
+                            answer.add(o);
+                        }
+                    } finally {
+                        rs.close();
+                    }
+                    return answer;
+                }
+            };
 
     public static void addUsergroupAssignment(User user, Integer gruppenID) {
         try {
@@ -402,4 +483,35 @@ public class UserManager implements IManager, Serializable {
             log.error(e);
         }
     }
+
+    public static AuthenticationToken getAuthenticationToken(String tokenName) {
+        try {
+            return UserMysqlHelper.getAuthenticationToken(tokenName);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    public static List<AuthenticationToken> getAuthenticationTokenForUser(User user) {
+        List<AuthenticationToken> answer = new ArrayList<>();
+        try {
+            answer = UserMysqlHelper.getAuthenticationTokenForUser(user.getId());
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return answer;
+    }
+
+    public static List<AuthenticationMethodDescription> getConfiguredMethods(Integer tokenID) {
+        List<AuthenticationMethodDescription> answer = new ArrayList<>();
+        try {
+            answer = UserMysqlHelper.getConfiguredMethods(tokenID);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return answer;
+
+    }
+
 }

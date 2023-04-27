@@ -48,6 +48,7 @@ import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.persistence.managers.UserManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
@@ -72,6 +73,7 @@ public class Login {
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "login")
     public void openIdLogin(@FormParam("error") String error, @FormParam("id_token") String idToken) throws IOException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         String clientID = config.getOIDCClientID();
@@ -124,6 +126,7 @@ public class Login {
     @Operation(summary = "Header login", description = "Checks a configurable header for a username and logs in the user if it is found in the DB")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "login")
     public String apacheHeaderLogin() throws IOException {
         log.debug(LoginBean.LOGIN_LOG_PREFIX + "User tries to login via SSO Login.");
         ConfigurationHelper config = ConfigurationHelper.getInstance();

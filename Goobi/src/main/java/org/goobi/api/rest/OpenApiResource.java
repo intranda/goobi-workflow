@@ -79,6 +79,7 @@ public class OpenApiResource {
             SwaggerConfiguration oasConfig = new SwaggerConfiguration()
                     .prettyPrint(true)
                     .readAllResources(false)
+
                     .resourcePackages(Stream.of("org.goobi.api.rest").collect(Collectors.toSet()));
 
             OpenAPI openApi = new JaxrsOpenApiContextBuilder<>()
@@ -91,8 +92,10 @@ public class OpenApiResource {
             //authentication
             SecurityScheme queryScheme = new SecurityScheme().type(Type.APIKEY).in(In.QUERY).name("token");
             SecurityScheme headerScheme = new SecurityScheme().type(Type.APIKEY).in(In.HEADER).name("token");
+            SecurityScheme basicSchema = new SecurityScheme().type(Type.APIKEY).in(In.HEADER).name("Authorization");
             openApi.getComponents().addSecuritySchemes("query", queryScheme);
             openApi.getComponents().addSecuritySchemes("header", headerScheme);
+            openApi.getComponents().addSecuritySchemes("basic", basicSchema);
 
             SecurityRequirement securityItem = new SecurityRequirement().addList("query").addList("header");
             openApi.setSecurity(Collections.singletonList(securityItem));

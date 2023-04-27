@@ -42,6 +42,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.rest.model.RestJournalResource;
+import org.goobi.api.rest.model.RestMetadataResource;
 import org.goobi.api.rest.model.RestProcessResource;
 import org.goobi.api.rest.model.RestPropertyResource;
 import org.goobi.api.rest.model.RestStepResource;
@@ -61,6 +62,7 @@ import org.goobi.production.enums.LogType;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.CloseStepHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -77,12 +79,15 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
+import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
+import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
@@ -93,26 +98,27 @@ import ugh.fileformats.mets.MetsMods;
 @Log4j2
 @Path("/process")
 
-public class ProcessService {
+public class ProcessService implements IRestAuthentication {
     @Context
     HttpServletRequest request;
 
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15
-
+    
      */
-    @Path("/{processid}")
     @GET
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Path("/{processid}")
     @Operation(summary = "Serves a process resource", description = "Serves a process resource consisting of a process name, id, project name")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Tag(name = "process")
     public Response getProcessData(@PathParam("processid") String processid) {
         // id is empty or value is not numeric
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -133,7 +139,7 @@ public class ProcessService {
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"id":15,"title":"990743934_1885","projectName":"Archive_Project",
     "creationDate":1643983095000,"status":"020040040","numberOfImages":248,"numberOfMetadata":804,"numberOfDocstructs":67,"rulesetName":"ruleset.xml",
     "docketName":"Standard"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><creationDate>2022-02-04T14:58:15+01:00
     </creationDate><docketName>Standard</docketName><id>15</id><numberOfDocstructs>67</numberOfDocstructs><numberOfImages>248</numberOfImages>
@@ -152,6 +158,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response updateProcess(RestProcessResource resource) {
         int id = resource.getId();
         if (id == 0) {
@@ -162,26 +169,95 @@ public class ProcessService {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
-
         // change project
         if (StringUtils.isNotBlank(resource.getProjectName()) && !process.getProjekt().getTitel().equals(resource.getProjectName())) {
-            // search for new project
-            try {
-                Project newProject = ProjectManager.getProjectByName(resource.getProjectName());
-                if (newProject == null) {
-                    return Response.status(404).entity("Project not found").build();
-                }
-                // check if owning institution is the same as in the old project
-                if (!process.getProjekt().getInstitution().getShortName().equals(newProject.getInstitution().getShortName())) {
-                    return Response.status(403).entity("New project is owned by a different institution").build();
-                }
+            Response resp = changeProject(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
+            }
+        }
+        changeProcessParameter(resource, process);
+        // change ruleset
+        Response resp = changeRuleset(resource, process);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+        // change docket
+        resp = changeDocket(resource, process);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+        // change batch
+        resp = changeBatch(resource, process);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+        // update process title
+        if (StringUtils.isNotBlank(resource.getTitle()) && !process.getTitel().equals(resource.getTitle())) {
+            String newTitle = resource.getTitle();
+            resp = validateProcessTitle(newTitle, process.getProjekt().getInstitution());
+            if (resp != null) {
+                // error found, break up
+                return resp;
+            }
+            // rename folder, update metadata etc
+            process.changeProcessTitle(newTitle);
+        } else {
+            // save process
+            ProcessManager.saveProcessInformation(process);
+        }
 
-                // update project
-                process.setProjekt(newProject);
+        Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Process changed using REST-API.");
+        return Response.status(200).entity(new RestProcessResource(process)).build();
+    }
+
+    private Response changeBatch(RestProcessResource resource, Process process) {
+        if (resource.getBatchNumber() != null && resource.getBatchNumber() != 0
+                && (process.getBatch() == null || !process.getBatch().getBatchId().equals(resource.getBatchNumber()))) {
+            Batch batch = ProcessManager.getBatchById(resource.getBatchNumber());
+            if (batch == null) {
+                return Response.status(404).entity("Batch not found").build();
+            }
+            process.setBatch(batch);
+        }
+        return null;
+    }
+
+    private Response changeDocket(RestProcessResource resource, Process process) {
+        if (StringUtils.isNotBlank(resource.getDocketName()) && !process.getDocket().getName().equals(resource.getDocketName())) {
+            try {
+                Docket docket = DocketManager.getDocketByName(resource.getRulesetName());
+                if (docket == null) {
+                    return Response.status(404).entity("Docket not found").build();
+                }
+                process.setDocket(docket);
             } catch (DAOException e) {
                 log.error(e);
             }
         }
+        return null;
+    }
+
+    private Response changeRuleset(RestProcessResource resource, Process process) {
+        if (StringUtils.isNotBlank(resource.getRulesetName()) && !process.getRegelsatz().getTitel().equals(resource.getRulesetName())) {
+            try {
+                Ruleset ruleset = RulesetManager.getRulesetByName(resource.getRulesetName());
+                if (ruleset == null) {
+                    return Response.status(404).entity("Ruleset not found").build();
+                }
+                process.setRegelsatz(ruleset);
+            } catch (DAOException e) {
+                log.error(e);
+            }
+        }
+        return null;
+    }
+
+    private void changeProcessParameter(RestProcessResource resource, Process process) {
         // change creation date
         if (resource.getCreationDate() != null) {
             process.setErstellungsdatum(resource.getCreationDate());
@@ -203,55 +279,26 @@ public class ProcessService {
         if (resource.getNumberOfDocstructs() != null) {
             process.setSortHelperDocstructs(resource.getNumberOfDocstructs());
         }
-        // change ruleset
-        if (StringUtils.isNotBlank(resource.getRulesetName()) && !process.getRegelsatz().getTitel().equals(resource.getRulesetName())) {
-            try {
-                Ruleset ruleset = RulesetManager.getRulesetByName(resource.getRulesetName());
-                if (ruleset == null) {
-                    return Response.status(404).entity("Ruleset not found").build();
-                }
-                process.setRegelsatz(ruleset);
-            } catch (DAOException e) {
-                log.error(e);
-            }
-        }
-        // change docket
-        if (StringUtils.isNotBlank(resource.getDocketName()) && !process.getDocket().getName().equals(resource.getDocketName())) {
-            try {
-                Docket docket = DocketManager.getDocketByName(resource.getRulesetName());
-                if (docket == null) {
-                    return Response.status(404).entity("Docket not found").build();
-                }
-                process.setDocket(docket);
-            } catch (DAOException e) {
-                log.error(e);
-            }
-        }
-        // change batch
-        if (resource.getBatchNumber() != null && resource.getBatchNumber() != 0
-                && (process.getBatch() == null || !process.getBatch().getBatchId().equals(resource.getBatchNumber()))) {
-            Batch batch = ProcessManager.getBatchById(resource.getBatchNumber());
-            if (batch == null) {
-                return Response.status(404).entity("Batch not found").build();
-            }
-            process.setBatch(batch);
-        }
+    }
 
-        // update process title
-        if (StringUtils.isNotBlank(resource.getTitle()) && !process.getTitel().equals(resource.getTitle())) {
-            String newTitle = resource.getTitle();
-            Response resp = validateProcessTitle(newTitle, process.getProjekt().getInstitution());
-            if (resp != null) {
-                // error found, break up
-                return resp;
+    private Response changeProject(RestProcessResource resource, Process process) {
+        try {
+            // search for new project
+            Project newProject = ProjectManager.getProjectByName(resource.getProjectName());
+            if (newProject == null) {
+                return Response.status(404).entity("Project not found").build();
             }
-            // rename folder, update metadata etc
-            process.changeProcessTitle(newTitle);
-        } else {
-            // save process
-            ProcessManager.saveProcessInformation(process);
+            // check if owning institution is the same as in the old project
+            if (!process.getProjekt().getInstitution().getShortName().equals(newProject.getInstitution().getShortName())) {
+                return Response.status(403).entity("New project is owned by a different institution").build();
+            }
+
+            // update project
+            process.setProjekt(newProject);
+        } catch (DAOException e) {
+            log.error(e);
         }
-        return getProcessData(String.valueOf(id));
+        return null;
     }
 
     /*
@@ -281,7 +328,7 @@ public class ProcessService {
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template",
     "documentType": "Monograph"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template
     </processTemplateName><documentType>Monograph</documentType></process>'
@@ -299,6 +346,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response createProcess(RestProcessResource resource) {
 
         //TODO optional metadata
@@ -325,75 +373,54 @@ public class ProcessService {
             return resp;
         }
 
-        Process newProcess = prepareProcess(processTitle, template);
+        Process process = prepareProcess(processTitle, template);
 
-        try {
-            // optional: change project
-            if (StringUtils.isNotBlank(resource.getProjectName())) {
-                Project newProject = ProjectManager.getProjectByName(resource.getProjectName());
-                if (newProject == null) {
-                    return Response.status(404).entity("Project not found").build();
-                }
-                newProcess.setProjekt(newProject);
+        // optional: change project
+        if (StringUtils.isNotBlank(resource.getProjectName())) {
+            resp = changeProject(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
             }
-            // optional: change ruleset
-            if (StringUtils.isNotBlank(resource.getRulesetName())) {
-                Ruleset ruleset = RulesetManager.getRulesetByName(resource.getRulesetName());
-                if (ruleset == null) {
-                    return Response.status(404).entity("Ruleset not found").build();
-                }
-                newProcess.setRegelsatz(ruleset);
+        }
+        // optional: change ruleset
+        resp = changeRuleset(resource, process);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+        // optional: change docket
+        if (StringUtils.isNotBlank(resource.getDocketName())) {
+            resp = changeDocket(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
             }
-            // optional: change docket
-            if (StringUtils.isNotBlank(resource.getDocketName())) {
-                Docket docket = DocketManager.getDocketByName(resource.getRulesetName());
-                if (docket == null) {
-                    return Response.status(404).entity("Docket not found").build();
-                }
-                newProcess.setDocket(docket);
+        }
+        // optional: add process to a batch
+        if (resource.getBatchNumber() != null) {
+            resp = changeBatch(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
             }
-            // optional: add process to a batch
-            if (resource.getBatchNumber() != null) {
-                Batch batch = ProcessManager.getBatchById(resource.getBatchNumber());
-                if (batch == null) {
-                    batch = new Batch();
-                }
-                newProcess.setBatch(batch);
-            }
-        } catch (DAOException e) {
-            log.error(e);
         }
 
-        // add optional data
-        if (resource.getCreationDate() != null) {
-            newProcess.setErstellungsdatum(resource.getCreationDate());
-        }
-        if (StringUtils.isNotBlank(resource.getStatus()) && StringUtils.isNumeric(resource.getStatus())) {
-            newProcess.setSortHelperStatus(resource.getStatus());
-        }
-        if (resource.getNumberOfImages() != null) {
-            newProcess.setSortHelperImages(resource.getNumberOfImages());
-        }
-        if (resource.getNumberOfMetadata() != null) {
-            newProcess.setSortHelperMetadata(resource.getNumberOfMetadata());
-        }
-        if (resource.getNumberOfDocstructs() != null) {
-            newProcess.setSortHelperDocstructs(resource.getNumberOfDocstructs());
-        }
+        changeProcessParameter(resource, process);
 
         try {
             // save process to create ids and directories
-            ProcessManager.saveProcess(newProcess);
+            ProcessManager.saveProcess(process);
 
             // create dummy metadata file
             if (StringUtils.isNotBlank(resource.getDocumentType())) {
-                createMetadataFile(resource, newProcess);
+                createMetadataFile(resource, process);
             }
         } catch (DAOException | UGHException e) {
             log.error(e);
         }
-
-        return getProcessData(String.valueOf(newProcess.getId()));
+        Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Process created using REST-API.");
+        return getProcessData(String.valueOf(process.getId()));
     }
 
     private void createMetadataFile(RestProcessResource resource, Process newProcess)
@@ -459,7 +486,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/ -d '{"id":"123"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/ -d '<process><id>1234</id></process>'
      */
@@ -472,6 +499,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response deleteProcess(RestProcessResource resource) {
 
         // get id from request
@@ -499,7 +527,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/steps
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/steps
      */
@@ -512,6 +540,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response getStepList(@PathParam("processid") String processid) {
         // id is empty or value is not numeric
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -537,7 +566,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/step/67
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/step/67
      */
@@ -550,6 +579,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response getStep(@PathParam("processid") String processid, @PathParam("stepid") String stepid) {
         // id is empty or value is not numeric
         if (StringUtils.isBlank(stepid) || !StringUtils.isNumeric(stepid)) {
@@ -575,10 +605,10 @@ public class ProcessService {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "stepName": "new step name", "processId": 15}'
-
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "steptitle": "new step name", "processId": 15}'
+    
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><stepName>new step name</stepName></step>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><steptitle>new step name</steptitle></step>'
      */
     @POST
     @Path("/{processid}/step")
@@ -592,6 +622,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response updateStep(@PathParam("processid") String processid, RestStepResource resource) {
         Integer id = resource.getStepId();
         if (id == null || id.intValue() == 0) {
@@ -603,8 +634,8 @@ public class ProcessService {
             return Response.status(404).entity("Step not found").build();
         }
 
-        if (StringUtils.isNotBlank(resource.getStepName())) {
-            step.setTitel(resource.getStepName());
+        if (StringUtils.isNotBlank(resource.getSteptitle())) {
+            step.setTitel(resource.getSteptitle());
         }
         if (StringUtils.isNotBlank(resource.getStatus())) {
             for (StepStatus status : StepStatus.values()) {
@@ -626,16 +657,17 @@ public class ProcessService {
         } catch (DAOException e) {
             log.error(e);
         }
+        Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step changed using REST-API: " + step.getTitel());
         return getStep(String.valueOf(resource.getProcessId()), String.valueOf(resource.getStepId()));
     }
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"stepName": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
-
-
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"steptitle": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
+    
+    
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><stepName>new step name</stepName><usergroups>Administration</usergroups></step>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><steptitle>new step name</steptitle><usergroups>Administration</usergroups></step>'
      */
 
     @PUT
@@ -650,6 +682,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response createStep(@PathParam("processid") String processid, RestStepResource resource) {
 
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -663,7 +696,7 @@ public class ProcessService {
         }
         // check required fields
 
-        if (StringUtils.isBlank(resource.getStepName())) {
+        if (StringUtils.isBlank(resource.getSteptitle())) {
             return Response.status(400).entity("Step name is missing").build();
         }
         if (resource.getOrder() == null) {
@@ -675,7 +708,7 @@ public class ProcessService {
         }
 
         Step step = new Step();
-        step.setTitel(resource.getStepName());
+        step.setTitel(resource.getSteptitle());
         step.setReihenfolge(resource.getOrder());
         step.setProzess(process);
         step.setProcessId(process.getId());
@@ -701,13 +734,15 @@ public class ProcessService {
         } catch (DAOException e) {
             log.error(e);
         }
+
+        Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step added using REST-API: " + step.getTitel());
         return Response.status(200).entity(new RestStepResource(process, step)).build();
     }
 
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/step -d '{"stepId":"123"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/step -d '<step><stepId>1234</stepId></step>'
      */
@@ -721,6 +756,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response deleteStep(RestStepResource resource) {
 
         // get id from request
@@ -736,7 +772,7 @@ public class ProcessService {
         }
         // delete step
         StepManager.deleteStep(step);
-
+        Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step deleted using REST-API: " + step.getTitel());
         return Response.ok().build();
     }
 
@@ -752,6 +788,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response closeStep(@PathParam("processid") String processid, @PathParam("stepid") String stepid) {
 
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -782,6 +819,7 @@ public class ProcessService {
             case INWORK:
             case OPEN:
             default:
+                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step closed using REST-API: " + step.getTitel());
                 CloseStepHelper.closeStep(step, null);
                 return Response.ok().build();
         }
@@ -791,7 +829,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/journal
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/journal
      */
@@ -804,6 +842,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response getJournal(@PathParam("processid") String processid) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -825,10 +864,10 @@ public class ProcessService {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "logType": "info", "content": "content"}'
-
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "type": "info", "message": "content"}'
+    
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><logType>info</logType><content>content</content></journal>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
      */
 
     @Path("/{processid}/journal")
@@ -839,6 +878,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response updateJournalEntry(@PathParam("processid") String processid, RestJournalResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -853,14 +893,14 @@ public class ProcessService {
             return Response.status(404).entity("Journal entry not found").build();
         }
         // update parameter
-        if (StringUtils.isNotBlank(resource.getContent())) {
-            entry.setContent(resource.getContent());
+        if (StringUtils.isNotBlank(resource.getMessage())) {
+            entry.setContent(resource.getMessage());
         }
         if (StringUtils.isNotBlank(resource.getUserName())) {
             entry.setUserName(resource.getUserName());
         }
-        if (StringUtils.isNotBlank(resource.getLogType())) {
-            entry.setType(LogType.getByTitle(resource.getLogType()));
+        if (StringUtils.isNotBlank(resource.getType())) {
+            entry.setType(LogType.getByTitle(resource.getType()));
         }
         if (StringUtils.isNotBlank(resource.getFilename())) {
             entry.setFilename(resource.getFilename());
@@ -871,10 +911,10 @@ public class ProcessService {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "logType": "info", "content": "content"}'
-
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "type": "info", "message": "content"}'
+    
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><logType>info</logType><content>content</content></journal>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
      */
 
     @Path("/{processid}/journal")
@@ -885,6 +925,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response createJournalEntry(@PathParam("processid") String processid, RestJournalResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -899,13 +940,13 @@ public class ProcessService {
             userName = "rest api";
         }
         LogType logType = null;
-        if (StringUtils.isNotBlank(resource.getLogType())) {
-            logType = LogType.getByTitle(resource.getLogType());
+        if (StringUtils.isNotBlank(resource.getType())) {
+            logType = LogType.getByTitle(resource.getType());
         } else {
             logType = LogType.DEBUG;
         }
 
-        String content = resource.getContent();
+        String content = resource.getMessage();
         String filename = resource.getFilename();
 
         JournalEntry entry = new JournalEntry(Integer.parseInt(processid), creationDate, userName, logType, content, EntryType.PROCESS);
@@ -917,7 +958,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id></journal>'
      */
@@ -931,6 +972,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "404", description = "Journal entry not found")
     @ApiResponse(responseCode = "409", description = "Journal entry belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response deleteJournalEntry(@PathParam("processid") String processid, RestJournalResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -955,7 +997,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/properties
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/properties
      */
@@ -968,6 +1010,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
 
     public Response getProperties(@PathParam("processid") String processid) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -990,7 +1033,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/property/76
-
+    
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/property/76
      */
@@ -1003,6 +1046,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
 
     public Response getProperty(@PathParam("processid") String processid, @PathParam("propertyid") String propertyid) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -1020,11 +1064,10 @@ public class ProcessService {
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
 
-
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/property -d '{"id":76,"name":"name","value":"value"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/property -d '<property><id>76</id><name>name</name><value>value</value></property>'
      */
@@ -1037,6 +1080,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response updateProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -1057,6 +1101,7 @@ public class ProcessService {
         if (StringUtils.isNotBlank(resource.getValue())) {
             property.setWert(resource.getValue());
         }
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property changed using REST-API: " + property.getTitel());
 
         PropertyManager.saveProcessProperty(property);
         return Response.status(200).entity(new RestPropertyResource(property)).build();
@@ -1065,7 +1110,7 @@ public class ProcessService {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/property -d '{"name":"name","value":"value"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/property -d '<property><name>name</name><value>value</value></property>'
      */
@@ -1078,6 +1123,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response createProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -1105,15 +1151,16 @@ public class ProcessService {
         } else {
             property.setCreationDate(new Date());
         }
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property added using REST-API: " + property.getTitel());
+
         PropertyManager.saveProcessProperty(property);
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
 
-
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/property -d '{"id":"697"}'
-
+    
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/property -d '<property><id>697</id></property>'
      */
@@ -1126,6 +1173,7 @@ public class ProcessService {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
     public Response deleteProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -1143,6 +1191,7 @@ public class ProcessService {
 
         PropertyManager.deleteProcessProperty(property);
 
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property deleted using REST-API: " + property.getTitel());
         return Response.status(200).build();
     }
 
@@ -1185,8 +1234,8 @@ public class ProcessService {
         if (resource.getFinishDate() != null) {
             step.setBearbeitungsende(resource.getFinishDate());
         }
-        if (StringUtils.isNotBlank(resource.getStepPlugin())) {
-            step.setStepPlugin(resource.getStepPlugin());
+        if (StringUtils.isNotBlank(resource.getPlugin())) {
+            step.setStepPlugin(resource.getPlugin());
         }
         if (StringUtils.isNotBlank(resource.getValidationPlugin())) {
             step.setValidationPlugin(resource.getValidationPlugin());
@@ -1277,5 +1326,381 @@ public class ProcessService {
         if (val != null) {
             step.setGenerateDocket(val.booleanValue());
         }
+    }
+
+    /*
+    JSON:
+    curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/metadata
+    
+    XML:
+    curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/metadata
+     */
+
+    @Path("/{processid}/metadata")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Get metadata for a process resource", description = "Get a list of metadata for a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response getMetadata(@PathParam("processid") String processid) {
+
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+        // load metadata file
+        try {
+            Fileformat fileformat = process.readMetadataFile();
+
+            DocStruct logical = fileformat.getDigitalDocument().getLogicalDocStruct();
+            List<RestMetadataResource> metadataList = new ArrayList<>();
+            if (logical.getType().isAnchor()) {
+
+                metadataList.addAll(extractMetadata(logical, "anchor"));
+
+                DocStruct child = logical.getAllChildren().get(id);
+
+                metadataList.addAll(extractMetadata(child, "topstruct"));
+            } else {
+                metadataList.addAll(extractMetadata(logical, "topstruct"));
+            }
+            GenericEntity<List<RestMetadataResource>> entity = new GenericEntity<List<RestMetadataResource>>(metadataList) {
+            };
+            return Response.status(200).entity(entity).build();
+        } catch (IOException | SwapException | UGHException e) {
+            return Response.status(500).entity("Cannot read metadata").build();
+        }
+    }
+
+    private List<RestMetadataResource> extractMetadata(DocStruct docstruct, String metadataLevel) {
+        List<RestMetadataResource> metadataList = new ArrayList<>();
+        if (docstruct.getAllMetadata() != null) {
+            for (Metadata md : docstruct.getAllMetadata()) {
+                metadataList.add(new RestMetadataResource(md, metadataLevel));
+            }
+        }
+
+        if (docstruct.getAllPersons() != null) {
+            for (Person md : docstruct.getAllPersons()) {
+                metadataList.add(new RestMetadataResource(md, metadataLevel));
+            }
+        }
+
+        if (docstruct.getAllCorporates() != null) {
+            for (Corporate md : docstruct.getAllCorporates()) {
+                metadataList.add(new RestMetadataResource(md, metadataLevel));
+            }
+        }
+
+        return metadataList;
+    }
+
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"_VolumeBoxNumber","value":"19","metadataLevel":"topstruct"}'
+    
+    XML:
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>_VolumeBoxNumber</name><value>19</value></metadata>'
+     */
+
+    @Path("/{processid}/metadata")
+    @POST
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Update a property", description = "Update an existing property for a given process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response updateMetadata(@PathParam("processid") String processid, RestMetadataResource resource) {
+
+        if (StringUtils.isBlank(resource.getName())) {
+            return Response.status(400).entity("Metadata name is missing.").build();
+        }
+
+        if (StringUtils.isBlank(resource.getMetadataLevel())) {
+            return Response.status(400).entity("Metadata level is missing.").build();
+        }
+
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+        // load metadata file
+        try {
+            Fileformat fileformat = process.readMetadataFile();
+            DocStruct logical = fileformat.getDigitalDocument().getLogicalDocStruct();
+            if (logical.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
+                logical = logical.getAllChildren().get(id);
+            }
+
+            if (updateMetadata(logical, resource)) {
+                process.writeMetadataFile(fileformat);
+                return Response.status(200).entity("Metadata updated").build();
+            } else {
+                return Response.status(500).entity("Metadata to update not found").build();
+            }
+
+        } catch (IOException | SwapException | UGHException e) {
+            return Response.status(500).entity("Cannot read metadata").build();
+        }
+    }
+
+    private boolean updateMetadata(DocStruct docstruct, RestMetadataResource resource) {
+        if (docstruct.getAllMetadata() != null) {
+            for (Metadata md : docstruct.getAllMetadata()) {
+                if (md.getType().getName().equals(resource.getName())) {
+                    md.setAuthorityValue(resource.getAuthorityValue());
+                    md.setValue(resource.getValue());
+                    return true;
+                }
+            }
+        }
+
+        if (docstruct.getAllPersons() != null) {
+            for (Person md : docstruct.getAllPersons()) {
+                if (md.getType().getName().equals(resource.getName())) {
+                    md.setAuthorityValue(resource.getAuthorityValue());
+                    md.setFirstname(resource.getFirstname());
+                    md.setLastname(resource.getLastname());
+                    return true;
+                }
+            }
+        }
+
+        if (docstruct.getAllCorporates() != null) {
+            for (Corporate md : docstruct.getAllCorporates()) {
+                if (md.getType().getName().equals(resource.getName())) {
+                    md.setAuthorityValue(resource.getAuthorityValue());
+                    md.setMainName(resource.getValue());
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"DisplayLayout","value":"1","metadataLevel":"topstruct"}'
+    
+    XML:
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>DisplayLayout</name><value>1</value></metadata>'
+     */
+
+    @Path("/{processid}/metadata")
+    @PUT
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Add metadata to a docstruct", description = "Create a new metadata field and add it to the given docstruct")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response createMetadata(@PathParam("processid") String processid, RestMetadataResource resource) {
+
+        if (StringUtils.isBlank(resource.getName())) {
+            return Response.status(400).entity("Metadata name is missing.").build();
+        }
+
+        if (StringUtils.isBlank(resource.getMetadataLevel())) {
+            return Response.status(400).entity("Metadata level is missing.").build();
+        }
+
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+        // load metadata file
+        try {
+            Fileformat fileformat = process.readMetadataFile();
+            DocStruct logical = fileformat.getDigitalDocument().getLogicalDocStruct();
+            if (logical.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
+                logical = logical.getAllChildren().get(id);
+            }
+
+            Prefs prefs = process.getRegelsatz().getPreferences();
+            MetadataType type = prefs.getMetadataTypeByName(resource.getName());
+            if (type == null) {
+                return Response.status(400).entity("Metadata type is unknown in ruleset.").build();
+            }
+            if (type.getIsPerson()) {
+                Person p = new Person(type);
+                p.setFirstname(resource.getFirstname());
+                p.setLastname(resource.getLastname());
+                p.setAuthorityValue(resource.getAuthorityValue());
+                logical.addPerson(p);
+            } else if (type.isCorporate()) {
+                Corporate c = new Corporate(type);
+                c.setMainName(resource.getValue());
+                c.setAuthorityValue(resource.getAuthorityValue());
+                logical.addCorporate(c);
+            } else {
+                Metadata md = new Metadata(type);
+                md.setValue(resource.getValue());
+                md.setAuthorityValue(resource.getAuthorityValue());
+                logical.addMetadata(md);
+            }
+
+            process.writeMetadataFile(fileformat);
+            return Response.status(200).entity("Metadata added").build();
+
+        } catch (IOException | SwapException | UGHException e) {
+            return Response.status(500).entity("Cannot read metadata").build();
+        }
+    }
+
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"DisplayLayout","metadataLevel":"topstruct"}'
+    
+    XML:
+    curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>DisplayLayout</name></metadata>'
+     */
+
+    @Path("/{processid}/metadata")
+    @DELETE
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Add metadata to a docstruct", description = "Create a new metadata field and add it to the given docstruct")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response deleteMetadata(@PathParam("processid") String processid, RestMetadataResource resource) {
+        if (StringUtils.isBlank(resource.getName())) {
+            return Response.status(400).entity("Metadata name is missing.").build();
+        }
+
+        if (StringUtils.isBlank(resource.getMetadataLevel())) {
+            return Response.status(400).entity("Metadata level is missing.").build();
+        }
+
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+        // load metadata file
+        try {
+            Fileformat fileformat = process.readMetadataFile();
+            DocStruct docstruct = fileformat.getDigitalDocument().getLogicalDocStruct();
+            if (docstruct.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
+                docstruct = docstruct.getAllChildren().get(id);
+            }
+            boolean metadataDeleted = false;
+            if (docstruct.getAllMetadata() != null) {
+                for (Metadata md : docstruct.getAllMetadata()) {
+                    if (md.getType().getName().equals(resource.getName())) {
+                        docstruct.removeMetadata(md, true);
+                        metadataDeleted = true;
+                        break;
+                    }
+                }
+            }
+
+            if (docstruct.getAllPersons() != null) {
+                for (Person md : docstruct.getAllPersons()) {
+                    if (md.getType().getName().equals(resource.getName())) {
+                        docstruct.removePerson(md, true);
+                        metadataDeleted = true;
+                        break;
+                    }
+                }
+            }
+
+            if (docstruct.getAllCorporates() != null) {
+                for (Corporate md : docstruct.getAllCorporates()) {
+                    if (md.getType().getName().equals(resource.getName())) {
+                        docstruct.removeCorporate(md);
+                        metadataDeleted = true;
+                        break;
+                    }
+                }
+            }
+            if (metadataDeleted) {
+                process.writeMetadataFile(fileformat);
+                return Response.status(200).entity("Metadata deleted.").build();
+            } else {
+                return Response.status(400).entity("Metadata not found.").build();
+            }
+        } catch (IOException | SwapException | UGHException e) {
+            return Response.status(500).entity("Cannot read metadata").build();
+        }
+
+    }
+
+    @Override
+    public List<AuthenticationMethodDescription> getAuthenticationMethods() {
+        List<AuthenticationMethodDescription> implementedMethods = new ArrayList<>();
+        // process data
+        AuthenticationMethodDescription md = new AuthenticationMethodDescription("GET", "Get process data", "/process/\\d+");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("POST", "Update an existing process", "/process");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Create a new process", "/process");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("DELETE", "Delete an existing process", "/process");
+        implementedMethods.add(md);
+
+        // step data
+        md = new AuthenticationMethodDescription("GET", "Get a list of all steps for a given process", "/process/\\d+/steps");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("GET", "Get a specific step", "/process/\\d+/step/\\d+");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("POST", "Update an existing step", "/process/\\d+/step");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Add a new step to an existing process", "/process/\\d+/step");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("DELETE", "Delete a step", "/process/\\d+/step");
+        implementedMethods.add(md);
+
+        // journal
+        md = new AuthenticationMethodDescription("GET", "Get the journal for a process", "/process/\\d+/journal");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("POST", "Update an existing journal entry for a given process", "/process/\\d+/journal");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Create a new journal entry for a given process", "/process/\\d+/journal");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("DELETE", "Delete an existing journal entry", "/process/\\d+/journal");
+        implementedMethods.add(md);
+
+        // properties
+        md = new AuthenticationMethodDescription("GET", "Get a list of all properties for a given process", "/process/\\d+/properties");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("GET", "Get a property for a given process", "/process/\\d+/property/\\d+");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("POST", "Update an existing property for a given process", "/process/\\d+/property");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Create a new property for a given process", "/process/\\d+/property");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("DELETE", "Delete a property from a given process", "/process/\\d+/property");
+        implementedMethods.add(md);
+
+        return implementedMethods;
     }
 }

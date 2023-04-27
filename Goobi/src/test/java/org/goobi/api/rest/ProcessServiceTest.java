@@ -22,6 +22,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +33,7 @@ import javax.ws.rs.core.Response;
 
 import org.easymock.EasyMock;
 import org.goobi.api.rest.model.RestJournalResource;
+import org.goobi.api.rest.model.RestMetadataResource;
 import org.goobi.api.rest.model.RestProcessResource;
 import org.goobi.api.rest.model.RestPropertyResource;
 import org.goobi.api.rest.model.RestStepResource;
@@ -45,6 +49,7 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +60,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.CloseStepHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -70,7 +77,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-    MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class })
+        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class, Helper.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
 
@@ -81,6 +88,16 @@ public class ProcessServiceTest extends AbstractTest {
     private Step step;
     private JournalEntry entry;
 
+    @After
+    public void tearDown() throws Exception {
+        // if process folder exists, delete it
+        Path tempFolder = Paths.get(process.getProcessDataDirectory());
+        if (StorageProvider.getInstance().isFileExists(tempFolder)) {
+            StorageProvider.getInstance().deleteDir(tempFolder);
+        }
+
+    }
+
     @Before
     public void setUp() throws Exception {
         service = new ProcessService();
@@ -88,12 +105,23 @@ public class ProcessServiceTest extends AbstractTest {
         processResource = new RestProcessResource();
 
         process = MockProcess.createProcess();
+        String oldMetadata = process.getProcessDataDirectory() + "meta.xml";
         process.setId(5);
         process.setIstTemplate(true);
         process.setSortHelperDocstructs(5);
         process.setSortHelperImages(5);
         process.setSortHelperMetadata(5);
         process.setSortHelperStatus("050050000");
+
+        // copy meta.xml from old folder to new folder
+        Path newDirectory = Paths.get(process.getProcessDataDirectory());
+        Path newMetadata = Paths.get(newDirectory.toString(), "meta.xml");
+        if (!Files.exists(newDirectory)) {
+            Files.createDirectories(newDirectory);
+        }
+        Files.deleteIfExists(newMetadata);
+
+        Files.copy(Paths.get(oldMetadata), Paths.get(newDirectory.toString(), "meta.xml"));
 
         Project otherProject = new Project();
         otherProject.setTitel("other");
@@ -184,6 +212,10 @@ public class ProcessServiceTest extends AbstractTest {
         EasyMock.expect(JournalManager.getJournalEntryById(EasyMock.anyInt())).andReturn(entry).anyTimes();
         JournalManager.saveJournalEntry(EasyMock.anyObject());
         JournalManager.deleteJournalEntry(EasyMock.anyObject());
+
+        PowerMock.mockStatic(Helper.class);
+        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyString());
+        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyString());
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();
@@ -307,7 +339,7 @@ public class ProcessServiceTest extends AbstractTest {
         List<RestStepResource> data = (List<RestStepResource>) response.getEntity();
 
         assertEquals(1, data.size());
-        assertEquals("step", data.get(0).getStepName());
+        assertEquals("step", data.get(0).getSteptitle());
     }
 
     @Test
@@ -321,7 +353,7 @@ public class ProcessServiceTest extends AbstractTest {
 
         RestStepResource data = (RestStepResource) response.getEntity();
 
-        assertEquals("step", data.getStepName());
+        assertEquals("step", data.getSteptitle());
     }
 
     @Test
@@ -344,14 +376,14 @@ public class ProcessServiceTest extends AbstractTest {
     }
 
     private void prepareStepObject(RestStepResource stepResource) {
-        stepResource.setStepName("new step");
+        stepResource.setSteptitle("new step");
         stepResource.setStatus("stepdone");
 
         stepResource.setPriority(1);
         stepResource.setOrder(10);
         stepResource.setStartDate(new Date());
         stepResource.setFinishDate(new Date());
-        stepResource.setStepPlugin("step plugin");
+        stepResource.setSteptitle("step plugin");
         stepResource.setValidationPlugin("validation plugin");
         stepResource.setQueueType("goobi_fast");
 
@@ -394,7 +426,7 @@ public class ProcessServiceTest extends AbstractTest {
         // missing step title
         response = service.createStep("1", stepResource);
         assertEquals(400, response.getStatus());
-        stepResource.setStepName("new step");
+        stepResource.setSteptitle("new step");
         // missing step order
         response = service.createStep("1", stepResource);
         assertEquals(400, response.getStatus());
@@ -469,7 +501,7 @@ public class ProcessServiceTest extends AbstractTest {
         @SuppressWarnings("unchecked")
         List<RestJournalResource> data = (List<RestJournalResource>) response.getEntity();
         assertEquals(1, data.size());
-        assertEquals("content", data.get(0).getContent());
+        assertEquals("content", data.get(0).getMessage());
     }
 
     @Test
@@ -486,19 +518,19 @@ public class ProcessServiceTest extends AbstractTest {
         assertEquals(400, response.getStatus());
 
         resource.setId(1);
-        resource.setContent("new content");
+        resource.setMessage("new content");
 
         response = service.updateJournalEntry("1", resource);
         assertEquals(200, response.getStatus());
-        assertEquals("new content", ((RestJournalResource) response.getEntity()).getContent());
+        assertEquals("new content", ((RestJournalResource) response.getEntity()).getMessage());
     }
 
     @Test
     public void testCreateJournalEntry() {
         RestJournalResource resource = new RestJournalResource();
 
-        resource.setContent("content");
-        resource.setLogType("warn");
+        resource.setMessage("content");
+        resource.setType("warn");
         resource.setUserName("user");
 
         Response response = service.createJournalEntry("", resource);
@@ -509,8 +541,8 @@ public class ProcessServiceTest extends AbstractTest {
         response = service.createJournalEntry("1", resource);
         assertEquals(200, response.getStatus());
         assertEquals(200, response.getStatus());
-        assertEquals("content", ((RestJournalResource) response.getEntity()).getContent());
-        assertEquals("warn", ((RestJournalResource) response.getEntity()).getLogType());
+        assertEquals("content", ((RestJournalResource) response.getEntity()).getMessage());
+        assertEquals("warn", ((RestJournalResource) response.getEntity()).getType());
         assertEquals("user", ((RestJournalResource) response.getEntity()).getUserName());
     }
 
@@ -609,21 +641,35 @@ public class ProcessServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testDeleteProperty() {
-
-        RestPropertyResource resource = new RestPropertyResource();
-
-        Response response = service.deleteProperty("", resource);
+    public void testGetMetadata() {
+        Response response = service.getMetadata(null);
         assertEquals(400, response.getStatus());
 
-        response = service.deleteProperty("2", resource);
-        assertEquals(400, response.getStatus());
-        resource.setId(1);
-        response = service.deleteProperty("2", resource);
-        assertEquals(409, response.getStatus());
-
-        response = service.deleteProperty("1", resource);
+        response = service.getMetadata("1");
         assertEquals(200, response.getStatus());
+
+        @SuppressWarnings("unchecked")
+        List<RestMetadataResource> data = (List<RestMetadataResource>) response.getEntity();
+        assertEquals(3, data.size());
+    }
+
+    @Test
+    public void testUpdateMetadata() {
+
+    }
+
+    @Test
+    public void testCreateMetadata() {
+
+    }
+
+    @Test
+    public void testDeleteMetadata() {
+
+    }
+
+    @Test
+    public void testDeleteProperty() {
 
     }
 }

@@ -45,7 +45,7 @@ import lombok.Setter;
 @Setter
 public class RestStepResource {
     private Integer stepId;
-    private String stepName;
+    private String steptitle;
 
     private Integer processId;
     private String processName;
@@ -63,7 +63,7 @@ public class RestStepResource {
     private Map<String, String> scripts = new TreeMap<>();
     private Map<String, String> httpStepConfiguration = new HashMap<>();
 
-    private String stepPlugin;
+    private String plugin;
     private String validationPlugin;
 
     private String queueType;
@@ -75,7 +75,7 @@ public class RestStepResource {
 
     public RestStepResource(Process process, Step step) {
         stepId = step.getId();
-        stepName = step.getTitel();
+        steptitle = step.getTitel();
         processId = process.getId();
         processName = process.getTitel();
         status = step.getBearbeitungsstatusEnum().getSearchString();
@@ -87,16 +87,16 @@ public class RestStepResource {
         properties.put("metadata", step.isTypMetadaten());
         properties.put("automatic", step.isTypAutomatisch());
         properties.put("thumbnailGeneration", step.isTypAutomaticThumbnail());
-        properties.put("readAccess", step.isTypImagesLesen());
-        properties.put("writeAccess", step.isTypImagesSchreiben());
-        properties.put("export", step.isTypExportDMS());
+        properties.put("readimages", step.isTypImagesLesen());
+        properties.put("writeimages", step.isTypImagesSchreiben());
+        properties.put("exportdms", step.isTypExportDMS());
         properties.put("script", step.isTypScriptStep());
         properties.put("validate", step.isTypBeimAbschliessenVerifizieren());
         properties.put("batch", step.isBatchStep());
 
-        properties.put("delayStep", step.isDelayStep());
-        properties.put("updateMetadataIndex", step.isUpdateMetadataIndex());
-        properties.put("generateDocket", step.isGenerateDocket());
+        properties.put("delay", step.isDelayStep());
+        properties.put("updatemetadataindex", step.isUpdateMetadataIndex());
+        properties.put("generatedocket", step.isGenerateDocket());
 
         if (StringUtils.isNotBlank(step.getScriptname1()) && StringUtils.isNotBlank(step.getTypAutomatischScriptpfad())) {
             scripts.put(step.getScriptname1(), step.getTypAutomatischScriptpfad());
@@ -126,7 +126,7 @@ public class RestStepResource {
             httpStepConfiguration.put("escapeBody", String.valueOf(step.isHttpEscapeBodyJson()));
         }
 
-        stepPlugin = step.getStepPlugin();
+        plugin = step.getStepPlugin();
         validationPlugin = step.getValidationPlugin();
 
         queueType = step.getMessageQueue() != null ? step.getMessageQueue().getName() : null;
