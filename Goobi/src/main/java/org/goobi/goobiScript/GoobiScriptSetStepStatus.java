@@ -68,7 +68,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 
     @Override
     public String getSampleCall() {
-        StringBuffer options = new StringBuffer();
+        StringBuilder options = new StringBuilder();
         options.append("`" + STATUS_NUMBER_LOCKED + "` (" + STATUS_TEXT_LOCKED + "), ");
         options.append("`" + STATUS_NUMBER_OPEN + "` (" + STATUS_TEXT_OPEN + "), ");
         options.append("`" + STATUS_NUMBER_IN_WORK + "` (" + STATUS_TEXT_IN_WORK + "), ");
@@ -101,7 +101,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
         }
 
         if (!status.equals("0") && !status.equals("1") && !status.equals("2") && !status.equals("3") && !status.equals("4") && !status.equals("5")) {
-            StringBuffer options = new StringBuffer();
+            StringBuilder options = new StringBuilder();
             options.append(STATUS_NUMBER_LOCKED + "=" + STATUS_TEXT_LOCKED + ", ");
             options.append(STATUS_NUMBER_OPEN + "=" + STATUS_TEXT_OPEN + ", ");
             options.append(STATUS_NUMBER_IN_WORK + "=" + STATUS_TEXT_IN_WORK + ", ");

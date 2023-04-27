@@ -285,26 +285,24 @@ public class BatchBean extends BasicBean implements Serializable {
         } else {
             Helper.setFehlerMeldung(TOO_MANY_BATCHES_SELECTED);
         }
-        if (!docket.isEmpty()) {
-            if (!facesContext.getResponseComplete()) {
-                HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-                String fileName = "batch_docket" + ".pdf";
-                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-                String contentType = servletContext.getMimeType(fileName);
-                response.setContentType(contentType);
-                response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+        if (!docket.isEmpty() && !facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            String fileName = "batch_docket" + ".pdf";
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
-                try {
-                    ServletOutputStream out = response.getOutputStream();
-                    XsltToPdf ern = new XsltToPdf();
-                    ern.startExport(docket, out, xsltfile.toString());
-                    out.flush();
-                } catch (IOException e) {
-                    log.error("IOException while exporting run note", e);
-                }
-
-                facesContext.responseComplete();
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                XsltToPdf ern = new XsltToPdf();
+                ern.startExport(docket, out, xsltfile.toString());
+                out.flush();
+            } catch (IOException e) {
+                log.error("IOException while exporting run note", e);
             }
+
+            facesContext.responseComplete();
         }
         return "";
     }

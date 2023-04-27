@@ -151,7 +151,7 @@ public class HistoryMysqlHelper {
 
         @Override
         public List<HistoryEvent> handle(ResultSet rs) throws SQLException {
-            List<HistoryEvent> answer = new ArrayList<HistoryEvent>();
+            List<HistoryEvent> answer = new ArrayList<>();
             try {
                 while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int historyId = rs.getInt("historyid");

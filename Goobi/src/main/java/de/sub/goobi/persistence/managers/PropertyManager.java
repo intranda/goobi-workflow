@@ -34,7 +34,7 @@ public class PropertyManager implements Serializable {
     private static final long serialVersionUID = 900347502238407686L;
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) {
-        List<Processproperty> propertyList = new ArrayList<Processproperty>();
+        List<Processproperty> propertyList = new ArrayList<>();
         try {
             propertyList = PropertyMysqlHelper.getProcessPropertiesForProcess(processId);
         } catch (SQLException e) {
@@ -60,7 +60,7 @@ public class PropertyManager implements Serializable {
     }
 
     public static List<String> getDistinctProcessPropertyTitles() {
-        List<String> titleList = new ArrayList<String>();
+        List<String> titleList = new ArrayList<>();
         try {
             titleList = PropertyMysqlHelper.getDistinctPropertyTitles();
         } catch (SQLException e) {
@@ -70,7 +70,7 @@ public class PropertyManager implements Serializable {
     }
 
     public static List<String> getDistinctTemplatePropertyTitles() {
-        List<String> titleList = new ArrayList<String>();
+        List<String> titleList = new ArrayList<>();
         try {
             titleList = PropertyMysqlHelper.getDistinctTemplatePropertyTitles();
         } catch (SQLException e) {
@@ -80,7 +80,7 @@ public class PropertyManager implements Serializable {
     }
 
     public static List<String> getDistinctMasterpiecePropertyTitles() {
-        List<String> titleList = new ArrayList<String>();
+        List<String> titleList = new ArrayList<>();
         try {
             titleList = PropertyMysqlHelper.getDistinctMasterpiecePropertyTitles();
         } catch (SQLException e) {
@@ -90,7 +90,7 @@ public class PropertyManager implements Serializable {
     }
 
     public static List<Templateproperty> getTemplateProperties(int templateId) {
-        List<Templateproperty> propertyList = new ArrayList<Templateproperty>();
+        List<Templateproperty> propertyList = new ArrayList<>();
         try {
             propertyList = PropertyMysqlHelper.getTemplateProperties(templateId);
         } catch (SQLException e) {
@@ -118,7 +118,7 @@ public class PropertyManager implements Serializable {
     }
 
     public static List<Masterpieceproperty> getMasterpieceProperties(int templateId) {
-        List<Masterpieceproperty> propertyList = new ArrayList<Masterpieceproperty>();
+        List<Masterpieceproperty> propertyList = new ArrayList<>();
         try {
             propertyList = PropertyMysqlHelper.getMasterpieceProperties(templateId);
         } catch (SQLException e) {

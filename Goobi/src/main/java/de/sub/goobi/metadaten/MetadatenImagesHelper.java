@@ -105,10 +105,8 @@ public class MetadatenImagesHelper {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
         DocStruct logical = this.mydocument.getLogicalDocStruct();
-        if (logical.getType().isAnchor()) {
-            if (logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
-                logical = logical.getAllChildren().get(0);
-            }
+        if (logical.getType().isAnchor() && logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
+            logical = logical.getAllChildren().get(0);
         }
         if (physical == null) {
             createPagination(myProzess, directoryName);
@@ -246,10 +244,8 @@ public class MetadatenImagesHelper {
         DocStruct physicaldocstruct = this.mydocument.getPhysicalDocStruct();
 
         DocStruct logical = this.mydocument.getLogicalDocStruct();
-        if (logical.getType().isAnchor()) {
-            if (logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
-                logical = logical.getAllChildren().get(0);
-            }
+        if (logical.getType().isAnchor() && logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
+            logical = logical.getAllChildren().get(0);
         }
         MetadataType metadataTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
 
@@ -518,7 +514,6 @@ public class MetadatenImagesHelper {
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
                 List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
                 if (pageNoMetadata == null || pageNoMetadata.isEmpty()) {
-                    currentPhysicalOrder++;
                     break;
                 }
                 for (Metadata pageNo : pageNoMetadata) {
@@ -635,15 +630,12 @@ public class MetadatenImagesHelper {
             if (dateien.isEmpty()) {
                 String[] parameters = { String.valueOf(dateien2.size()), dir.toString() };
 
-                String value = Helper.getTranslation("noObjectsFound", title);
-
                 //true if list is truly empty
                 if (dateien.size() == dateien2.size()) {
-                    value = Helper.getTranslation("imagesFolderEmpty", parameters);
+                    Helper.setFehlerMeldung(Helper.getTranslation("imagesFolderEmpty", parameters));
                 } else {
-                    value = Helper.getTranslation("fileNameValidationError", parameters);
+                    Helper.setFehlerMeldung(Helper.getTranslation("fileNameValidationError", parameters));
                 }
-                Helper.setFehlerMeldung(value);
                 return false;
             }
 

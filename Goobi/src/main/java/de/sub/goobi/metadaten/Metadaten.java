@@ -2719,10 +2719,8 @@ public class Metadaten implements Serializable {
                         Metadata meineSeite = listMetadaten.get(0);
                         page2 = Integer.parseInt(meineSeite.getValue());
                     }
-                    if (page1.equals(page2)) {
-                        if ("div".equals(r1.getTarget().getDocstructType())) {
-                            page1 = 0;
-                        }
+                    if (page1.equals(page2) && "div".equals(r1.getTarget().getDocstructType())) {
+                        page1 = 0;
                     }
 
                     return page1.compareTo(page2);
@@ -3137,20 +3135,19 @@ public class Metadaten implements Serializable {
         /*
          * wenn die Sperrung noch aktiv ist und auch für den aktuellen Nutzer gilt, Sperrung aktualisieren
          */
-        if (MetadatenSperrung.isLocked(this.myProzess.getId().intValue())) {
-            if (!this.sperrung.getLockBenutzer(this.myProzess.getId().intValue()).equals(this.myBenutzerID)) {
-                // locked by someone else
-                return false;
-            }
+        int processId = this.myProzess.getId().intValue();
+        if (MetadatenSperrung.isLocked(processId) && !this.sperrung.getLockBenutzer(processId).equals(this.myBenutzerID)) {
+            // locked by someone else
+            return false;
         }
-        this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
+        this.sperrung.setLocked(processId, this.myBenutzerID);
         return true;
     }
 
     private void SperrungAufheben() {
-        if (MetadatenSperrung.isLocked(this.myProzess.getId().intValue())
-                && this.sperrung.getLockBenutzer(this.myProzess.getId().intValue()).equals(this.myBenutzerID)) {
-            this.sperrung.setFree(this.myProzess.getId().intValue());
+        int processId = this.myProzess.getId().intValue();
+        if (MetadatenSperrung.isLocked(processId) && this.sperrung.getLockBenutzer(processId).equals(this.myBenutzerID)) {
+            this.sperrung.setFree(processId);
         }
     }
 
@@ -3974,11 +3971,9 @@ public class Metadaten implements Serializable {
     }
 
     public String getOpacKatalog() {
-        if (StringUtils.isBlank(opacKatalog)) {
-            if (!getAllOpacCatalogues().isEmpty() && !catalogues.isEmpty()) {
-                opacKatalog = getAllOpacCatalogues().get(0);
-                currentCatalogue = catalogues.get(0);
-            }
+        if (StringUtils.isBlank(opacKatalog) && !getAllOpacCatalogues().isEmpty() && !catalogues.isEmpty()) {
+            opacKatalog = getAllOpacCatalogues().get(0);
+            currentCatalogue = catalogues.get(0);
         }
         return this.opacKatalog;
     }
@@ -4066,12 +4061,7 @@ public class Metadaten implements Serializable {
     }
 
     public boolean getIsNotRootElement() {
-        if (this.myDocStruct != null) {
-            if (this.myDocStruct.getParent() == null) {
-                return false;
-            }
-        }
-        return true;
+        return this.myDocStruct == null || this.myDocStruct.getParent() != null;
     }
 
     public void updateRepresentativePage() {
@@ -4146,15 +4136,14 @@ public class Metadaten implements Serializable {
         }
     }
 
-    public void moveSelectedPages(String inDirection, int inTimes) {
-        long times = inTimes;
+    public void moveSelectedPages(String direction, int times) {
         if (times < 1) {
             times = 1;
         }
-        if ("up".equals(inDirection)) {
-            moveSeltectedPagesUp(inTimes);
+        if ("up".equals(direction)) {
+            moveSeltectedPagesUp(times);
         } else {
-            moveSeltectedPagesDown(inTimes);
+            moveSeltectedPagesDown(times);
         }
     }
 
@@ -4257,7 +4246,6 @@ public class Metadaten implements Serializable {
             for (DocStruct page : allPages) {
                 List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
                 if (pageNoMetadata == null || pageNoMetadata.isEmpty()) {
-                    currentPhysicalOrder++;
                     break;
                 }
                 for (Metadata pageNoMD : pageNoMetadata) {
@@ -4725,13 +4713,13 @@ public class Metadaten implements Serializable {
     }
 
     public List<Image> getPaginatorList() {
-        List<Image> subList = new ArrayList<>();
         for (Image currentImage : allImages) {
             if (sizeChanged) {
                 currentImage.createThumbnailUrls(thumbnailSizeInPixel);
             }
         }
 
+        List<Image> subList;
         if (allImages.size() > (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage) {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage);
         } else {
@@ -4936,10 +4924,9 @@ public class Metadaten implements Serializable {
         this.image = image;
 
         showImageComments = false;
-        if (ConfigurationHelper.getInstance().getMetsEditorShowImageComments()) {
-            if (myProzess != null && image != null) {
-                showImageComments = true;
-            }
+        boolean showComments = ConfigurationHelper.getInstance().getMetsEditorShowImageComments();
+        if (showComments && myProzess != null && image != null) {
+            showImageComments = true;
         }
     }
 

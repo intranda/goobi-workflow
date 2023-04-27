@@ -147,7 +147,7 @@ public class GoobiImageResource {
         ImageInformation info = imageResource.getInfoAsJson();
 
         double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
-        List<Dimension> sizes = new ArrayList<>();
+        List<Dimension> sizes;
 
         setImageSize(imageResource.getImageURI().toString(), new Dimension(info.getWidth(), info.getHeight()));
         if (thumbnailFolder != null && StorageProvider.getInstance().isDirectory(thumbnailFolder)) {
@@ -157,9 +157,7 @@ public class GoobiImageResource {
             }
             sizes = getImageSizes(suggestedSizes, heightToWidthRatio);
         } else {
-            sizes = getImageSizes(
-                    ConfigurationHelper.getInstance().getMetsEditorImageSizes(),
-                    heightToWidthRatio);
+            sizes = getImageSizes(ConfigurationHelper.getInstance().getMetsEditorImageSizes(), heightToWidthRatio);
         }
         if (!sizes.isEmpty()) {
             info.setSizesFromDimensions(sizes);
@@ -683,7 +681,7 @@ public class GoobiImageResource {
      * @param name1
      * @return the size as int, or 0 if no size could be determined
      */
-    private Integer getSize(String foldername) {
+    private static Integer getSize(String foldername) {
         if (foldername.matches(".*_\\d+")) {
             return Integer.parseInt(foldername.substring(foldername.lastIndexOf("_") + 1));
         } else {
@@ -691,13 +689,13 @@ public class GoobiImageResource {
         }
     }
 
-    private List<Path> getMatchingThumbnailFolders(Path imageFolder, Path thumbsFolder) {
+    private static List<Path> getMatchingThumbnailFolders(Path imageFolder, Path thumbsFolder) {
         return StorageProvider.getInstance()
                 .listFiles(thumbsFolder.toString(),
                         dirname -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
     }
 
-    private List<String> getThumbnailFolders(Path imageFolder, Path thumbnailFolder) {
+    private static List<String> getThumbnailFolders(Path imageFolder, Path thumbnailFolder) {
         List<String> sizes = availableThumbnailFolders.get(imageFolder.toString());
         if (sizes == null) {
             setThumbnailFolders(imageFolder, thumbnailFolder);
@@ -711,7 +709,7 @@ public class GoobiImageResource {
         return sizes;
     }
 
-    private void setThumbnailFolders(Path imageFolder, Path thumbsFolder) {
+    private static void setThumbnailFolders(Path imageFolder, Path thumbsFolder) {
         if (availableThumbnailFolders.size() >= IMAGE_SIZES_MAX_SIZE) {
             List<String> keysToDelete =
                     availableThumbnailFolders.keySet().stream().limit(IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW).collect(Collectors.toList());

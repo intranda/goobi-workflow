@@ -381,58 +381,48 @@ public class NIOFileUtils implements StorageProviderInterface {
                 FileStore fileStore = Files.getFileStore(targetDir);
                 if (copyPermissions) {
                     AclFileAttributeView acl = Files.getFileAttributeView(dir, AclFileAttributeView.class);
-                    if (acl != null) {
-                        if (fileStore.supportsFileAttributeView(AclFileAttributeView.class)) {
-                            AclFileAttributeView aclFileAttributeView = Files.getFileAttributeView(targetDir, AclFileAttributeView.class);
-                            aclFileAttributeView.setAcl(acl.getAcl());
-                        }
+                    if (acl != null && fileStore.supportsFileAttributeView(AclFileAttributeView.class)) {
+                        AclFileAttributeView aclFileAttributeView = Files.getFileAttributeView(targetDir, AclFileAttributeView.class);
+                        aclFileAttributeView.setAcl(acl.getAcl());
                     }
 
                     DosFileAttributeView dosAttrs = Files.getFileAttributeView(dir, DosFileAttributeView.class);
-                    if (dosAttrs != null) {
-                        if (fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {
-                            DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
-                            DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
-                            targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
-                            targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
-                            targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
-                            targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
-                        }
+                    if (dosAttrs != null && fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {
+                        DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
+                        DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
+                        targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
+                        targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
+                        targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
+                        targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
                     }
                     try {
                         FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
-                        if (ownerAttrs != null) {
-                            if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
-                                FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
-                                targetOwner.setOwner(ownerAttrs.getOwner());
-                            }
+                        if (ownerAttrs != null && fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
+                            FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
+                            targetOwner.setOwner(ownerAttrs.getOwner());
                         }
                     } catch (AccessDeniedException | FileNotFoundException exception) {
                         // do nothing
                     }
                     try {
                         PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
-                        if (posixAttrs != null) {
-                            if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
-                                PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
-                                PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
-                                targetPosix.setPermissions(sourcePosix.permissions());
-                                targetPosix.setGroup(sourcePosix.group());
-                            }
+                        if (posixAttrs != null && fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
+                            PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
+                            PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
+                            targetPosix.setPermissions(sourcePosix.permissions());
+                            targetPosix.setGroup(sourcePosix.group());
                         }
                     } catch (AccessDeniedException | FileNotFoundException exception) {
                         // do nothing
                     }
                     UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
-                    if (userAttrs != null) {
-                        if (fileStore.supportsFileAttributeView(UserDefinedFileAttributeView.class)) {
-                            UserDefinedFileAttributeView targetUser = Files.getFileAttributeView(targetDir, UserDefinedFileAttributeView.class);
-                            for (String key : userAttrs.list()) {
-                                ByteBuffer buffer = ByteBuffer.allocate(userAttrs.size(key));
-                                userAttrs.read(key, buffer);
-                                buffer.flip();
-                                targetUser.write(key, buffer);
-                            }
+                    if (userAttrs != null && fileStore.supportsFileAttributeView(UserDefinedFileAttributeView.class)) {
+                        UserDefinedFileAttributeView targetUser = Files.getFileAttributeView(targetDir, UserDefinedFileAttributeView.class);
+                        for (String key : userAttrs.list()) {
+                            ByteBuffer buffer = ByteBuffer.allocate(userAttrs.size(key));
+                            userAttrs.read(key, buffer);
+                            buffer.flip();
+                            targetUser.write(key, buffer);
                         }
                     }
                     // Must be done last, otherwise last-modified time may be

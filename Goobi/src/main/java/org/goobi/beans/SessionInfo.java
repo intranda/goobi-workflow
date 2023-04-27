@@ -137,9 +137,4 @@ public class SessionInfo implements Serializable {
     @Setter
     private String browserIconFileName;
 
-    /**
-     * A constructor to get a SessionInfo object. All object variables can be set separately.
-     */
-    public SessionInfo() {
-    }
 }

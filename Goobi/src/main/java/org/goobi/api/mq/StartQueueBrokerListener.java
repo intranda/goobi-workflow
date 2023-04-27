@@ -71,7 +71,7 @@ public class StartQueueBrokerListener implements ServletContextListener {
 
                 LocateRegistry.createRegistry(namingPort, null, serverFactory);
 
-                StringBuffer url = new StringBuffer();
+                StringBuilder url = new StringBuilder();
                 url.append("service:jmx:");
                 url.append("rmi://").append(address).append(':').append(protocolPort).append("/jndi/");
                 url.append("rmi://").append(address).append(':').append(namingPort).append("/connector");

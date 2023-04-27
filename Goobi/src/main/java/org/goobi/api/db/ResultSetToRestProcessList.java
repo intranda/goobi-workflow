@@ -39,9 +39,6 @@ import org.goobi.api.rest.model.RestProcess;
 
 public class ResultSetToRestProcessList implements ResultSetHandler<List<RestProcess>> {
 
-    public ResultSetToRestProcessList() {
-    }
-
     @Override
     public List<RestProcess> handle(ResultSet rs) throws SQLException {
         Map<Integer, RestProcess> resultMap = new LinkedHashMap<>();

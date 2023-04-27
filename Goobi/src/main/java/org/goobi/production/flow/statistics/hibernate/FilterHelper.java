@@ -66,13 +66,10 @@ public class FilterHelper {
         StringBuilder sb = new StringBuilder();
         User aktuellerNutzer = Helper.getCurrentUser();
 
-        if (aktuellerNutzer != null) {
-            if (!Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
-                sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
-                sb.append(aktuellerNutzer.getId());
-                sb.append(")");
-
-            }
+        if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+            sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
+            sb.append(aktuellerNutzer.getId());
+            sb.append(")");
         }
         return sb.toString();
     }

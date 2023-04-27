@@ -81,10 +81,6 @@ public class LdapAuthentication {
     private static final String TLS_ERROR = "TLS negotiation error: ";
     private static final String JNDI_ERROR = "JNDI error: ";
 
-    public LdapAuthentication() {
-
-    }
-
     private String getUserDN(User inBenutzer) {
         String userDN = inBenutzer.getLdapGruppe().getUserDN();
         userDN = userDN.replace("{login}", inBenutzer.getLogin());
@@ -391,11 +387,11 @@ public class LdapAuthentication {
                     log.debug(">>>" + sr.getName());
                 }
                 Attributes attrs = sr.getAttributes();
-                String givenName = " ";
-                String surName = " ";
-                String mail = " ";
-                String cn = " ";
-                String hd = " ";
+                String givenName;
+                String surName;
+                String mail;
+                String cn;
+                String hd;
                 try {
                     givenName = attrs.get("givenName").toString();
                 } catch (Exception err) {

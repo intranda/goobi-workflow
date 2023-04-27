@@ -413,10 +413,9 @@ public class CopyProcess {
 
     private void fillFieldsFromConfig() {
         for (AdditionalField field : this.additionalFields) {
-            if (!field.isUghbinding() && field.getShowDependingOnDoctype(getDocType())) {
-                if (field.getSelectList() != null && !field.getSelectList().isEmpty()) {
-                    field.setWert((String) field.getSelectList().get(0).getValue());
-                }
+            boolean listNotEmpty = field.getSelectList() != null && !field.getSelectList().isEmpty();
+            if (!field.isUghbinding() && field.getShowDependingOnDoctype(getDocType()) && listNotEmpty) {
+                field.setWert((String) field.getSelectList().get(0).getValue());
 
             }
         }

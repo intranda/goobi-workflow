@@ -147,11 +147,9 @@ public class Vocabulary implements Serializable, DatabaseObject {
         if (StringUtils.isNotBlank(searchValue)) {
             for (VocabRecord rec : records) {
                 for (Field f : rec.getMainFields()) {
-                    if (StringUtils.isNotBlank(f.getValue())) {
-                        if (f.getValue().toLowerCase().contains(searchValue.toLowerCase())) {
-                            filteredRecords.add(rec);
-                            break;
-                        }
+                    if (StringUtils.isNotBlank(f.getValue()) && f.getValue().toLowerCase().contains(searchValue.toLowerCase())) {
+                        filteredRecords.add(rec);
+                        break;
                     }
                 }
             }
@@ -205,11 +203,9 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     public void setTxtMoveTo(Integer neueSeite) {
-        if (neueSeite != null) {
-            if ((this.pageNo != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
-                this.pageNo = neueSeite - 1;
-                runFilter();
-            }
+        if (neueSeite != null && (this.pageNo != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
+            this.pageNo = neueSeite - 1;
+            runFilter();
         }
     }
 

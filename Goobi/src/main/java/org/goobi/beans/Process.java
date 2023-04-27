@@ -197,7 +197,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     private Integer projectId;
     @Getter
     @Setter
-    private Integer MetadatenKonfigurationID;
+    private Integer metadatenKonfigurationID;
     @Getter
     @Setter
     private Integer docketId;
@@ -355,7 +355,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                     .stream()
                     .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
                     .map(Entry::getValue)
-                    .map(string -> Paths.get(string))
+                    .map(Paths::get)
                     .filter(StorageProvider.getInstance()::isDirectory)
                     .findFirst()
                     .orElse(null);
@@ -387,10 +387,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public Boolean getDisplayMETSButton() {
-        if (sortHelperImages == null || sortHelperImages == 0) {
-            if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
-                return getTifDirectoryExists();
-            }
+        if ((sortHelperImages == null || sortHelperImages == 0) && ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
+            return getTifDirectoryExists();
         }
         return true;
     }
@@ -403,12 +401,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public Boolean getDisplayDMSButton() {
-        if (sortHelperDocstructs == null || sortHelperDocstructs == 0) {
-            if (ConfigurationHelper.getInstance().isExportValidateImages()) {
-                if (sortHelperImages == null || sortHelperImages == 0) {
-                    return getTifDirectoryExists();
-                }
-            }
+        boolean zeroDocStructs = sortHelperDocstructs == null || sortHelperDocstructs == 0;
+        if (zeroDocStructs && ConfigurationHelper.getInstance().isExportValidateImages() && (sortHelperImages == null || sortHelperImages == 0)) {
+            return getTifDirectoryExists();
         }
         return true;
     }
@@ -441,7 +436,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                         .stream()
                         .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
                         .map(Entry::getValue)
-                        .map(string -> Paths.get(string))
+                        .map(Paths::get)
                         .filter(StorageProvider.getInstance()::isDirectory)
                         .findFirst()
                         .orElse(null);
@@ -699,7 +694,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                     .stream()
                     .sorted((e1, e2) -> Integer.compare(e2.getKey(), e1.getKey()))
                     .findFirst()
-                    .map(entry -> entry.getValue())
+                    .map(Entry::getValue)
                     .orElse(null);
         }
     }
@@ -1782,10 +1777,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         /* Prozesseigenschaften */
         if (getEigenschaftenList() != null && !getEigenschaftenList().isEmpty()) {
             for (Processproperty pe : this.getEigenschaftenList()) {
-                if (pe != null && pe.getWert() != null) {
-                    if (pe.getWert().contains(this.getTitel())) {
-                        pe.setWert(pe.getWert().replaceAll(this.getTitel(), newTitle));
-                    }
+                if (pe != null && pe.getWert() != null && pe.getWert().contains(this.getTitel())) {
+                    pe.setWert(pe.getWert().replaceAll(this.getTitel(), newTitle));
                 }
             }
         }
@@ -1920,14 +1913,11 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     public String getLastStatusChangeDate() {
         Date date = null;
-        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
-            if (schritte != null) {
-                for (Step step : schritte) {
-                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
-                        if (date == null || date.before(step.getBearbeitungsende())) {
-                            date = step.getBearbeitungsende();
-                        }
-                    }
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData() && schritte != null) {
+            for (Step step : schritte) {
+                Date end = step.getBearbeitungsende();
+                if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && end != null && (date == null || date.before(end))) {
+                    date = end;
                 }
             }
         }
@@ -1944,10 +1934,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             Step task = null;
             if (schritte != null) {
                 for (Step step : schritte) {
-                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
-                        if (task == null || task.getBearbeitungsende().before(step.getBearbeitungsende())) {
-                            task = step;
-                        }
+                    Date stepEnd = step.getBearbeitungsende();
+                    Date taskEnd = task.getBearbeitungsende();
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && stepEnd != null && (task == null || taskEnd.before(stepEnd))) {
+                        task = step;
                     }
                 }
             }
@@ -1973,10 +1963,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             Step task = null;
             if (schritte != null) {
                 for (Step step : schritte) {
-                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
-                        if (task == null || task.getBearbeitungsende().before(step.getBearbeitungsende())) {
-                            task = step;
-                        }
+                    Date stepEnd = step.getBearbeitungsende();
+                    Date taskEnd = task.getBearbeitungsende();
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && stepEnd != null && (task == null || taskEnd.before(stepEnd))) {
+                        task = step;
                     }
                 }
             }

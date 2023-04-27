@@ -32,7 +32,7 @@ public class MasterpieceManager implements Serializable {
     private static final long serialVersionUID = -8123847555204812322L;
 
     public static List<Masterpiece> getMasterpiecesForProcess(int processId) {
-        List<Masterpiece> list = new ArrayList<Masterpiece>();
+        List<Masterpiece> list = new ArrayList<>();
         try {
             list = MasterpieceMysqlHelper.getMasterpiecesForProcess(processId);
         } catch (SQLException e) {

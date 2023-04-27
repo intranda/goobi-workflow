@@ -52,9 +52,6 @@ public class KulturNavImporter extends JsonDataLoader {
     public static final String BASE_URL = "https://kulturnav.org/";
     public static final String SUMMARY_URL = BASE_URL + "api/summary/";
 
-    public KulturNavImporter() {
-    }
-
     /**
      * Creates a norm data record based on the structure of the jsonMap
      *

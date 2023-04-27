@@ -249,7 +249,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         }
 
         // initialize process search
-        initSearch();
         if (metadataDisplaytype == DisplayType.easydb) {
             easydbSearch.prepare();
         } else if (metadataDisplaytype == DisplayType.process) {
@@ -756,7 +755,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 dataList = new ArrayList<>();
                 break;
             case process:
-                initSearch();
                 break;
             case viaf:
                 viafSearch.getMetadata(md);
@@ -856,10 +854,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         normdataList = new ArrayList<>();
         viafSearch.clearResults();
         easydbSearch.clearResults();
-    }
-
-    private void initSearch() {
-
     }
 
     public void linkProcess(RestProcess rp) {
@@ -1016,7 +1010,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     if (use != null) {
                         List<String> whitelist = Arrays.asList(use.getStringArray("searchableField"));
                         if (!whitelist.isEmpty()) {
-                            this.possibleFields = this.possibleFields.stream().filter(x -> whitelist.contains(x)).collect(Collectors.toList());
+                            this.possibleFields = this.possibleFields.stream().filter(whitelist::contains).collect(Collectors.toList());
                         }
                     }
                 }

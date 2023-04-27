@@ -295,7 +295,7 @@ public class BeanHelper implements Serializable {
         List<Step> oldTaskList = new ArrayList<>(processToChange.getSchritte());
 
         // remove tasks from process
-        processToChange.setSchritte(new ArrayList<Step>());
+        processToChange.setSchritte(new ArrayList<>());
         // copy tasks from template to process
         SchritteKopieren(template, processToChange);
 

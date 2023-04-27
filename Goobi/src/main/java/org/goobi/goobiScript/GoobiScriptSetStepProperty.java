@@ -69,7 +69,7 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
 
     @Override
     public String getSampleCall() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append("`" + PROPERTY_METADATA + "` ");
         buffer.append("`" + PROPERTY_READ_IMAGES + "` ");
         buffer.append("`" + PROPERTY_WRITE_IMAGES + "` ");
@@ -139,7 +139,7 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
             case PROPERTY_GENERATE_DOCKET:
                 break;
             default:
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 buffer.append(PROPERTY_METADATA + ", ");
                 buffer.append(PROPERTY_READ_IMAGES + ", ");
                 buffer.append(PROPERTY_WRITE_IMAGES + ", ");

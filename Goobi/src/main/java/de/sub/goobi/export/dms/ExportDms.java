@@ -383,7 +383,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             if (exitVal == 0 && errorStreamAsString.isBlank()) {
                 Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
             } else {
-                StringBuffer errorMessage = new StringBuffer();
+                StringBuilder errorMessage = new StringBuilder();
                 errorMessage.append("XML validation error for process \"");
                 errorMessage.append(myProzess.getTitel());
                 errorMessage.append("\" with validation command: \"");
@@ -560,7 +560,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 .listDirNames(tiffDirectory.toString())
                 .stream()
                 .filter(dirName -> dirName.equals(baseName))
-                .map(filename -> tiffDirectory.resolve(filename))
+                .map(tiffDirectory::resolve)
                 .collect(Collectors.toList());
         for (Path helperFile : helperFiles) {
             Path helperTarget = Paths.get(zielTif.toString(), helperFile.getFileName().toString());

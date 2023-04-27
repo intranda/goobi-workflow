@@ -611,10 +611,9 @@ public class ExportMets {
         mm.setIIIFUrl(vp.replace(myProzess.getProjekt().getMetsIIIFUrl()));
         mm.setSruUrl(vp.replace(myProzess.getProjekt().getMetsSruUrl()));
 
-        List<String> images = new ArrayList<>();
         if (config.isExportValidateImages()) {
             try {
-                images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess, imageFolderPath);
+                List<String> images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess, imageFolderPath);
 
                 int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
                 if (images != null) {

@@ -164,10 +164,8 @@ public class TarUtils {
 
                 // check parent folder again
                 Path parent = newPath.getParent();
-                if (parent != null) {
-                    if (Files.notExists(parent)) {
-                        Files.createDirectories(parent);
-                    }
+                if (parent != null && Files.notExists(parent)) {
+                    Files.createDirectories(parent);
                 }
 
                 // copy TarArchiveInputStream to Path newPath

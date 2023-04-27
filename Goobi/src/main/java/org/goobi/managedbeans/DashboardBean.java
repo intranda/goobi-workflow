@@ -57,10 +57,6 @@ public class DashboardBean implements Serializable {
     @Getter
     private IDashboardPlugin plugin = null;
 
-    public DashboardBean() {
-
-    }
-
     @PostConstruct
     public void initializePlugins() {
 

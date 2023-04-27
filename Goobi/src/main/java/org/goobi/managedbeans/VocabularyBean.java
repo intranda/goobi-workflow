@@ -538,10 +538,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     private void updateFieldList(MatchingField currentField) {
         for (MatchingField other : headerOrder) {
-            if (!other.equals(currentField) && other.getAssignedField() != null) {
-                if (other.getCurrentDefinition().equals(currentField.getCurrentDefinition())) {
-                    other.setAssignedField(null);
-                }
+            if (!other.equals(currentField) && other.getAssignedField() != null
+                    && other.getCurrentDefinition().equals(currentField.getCurrentDefinition())) {
+                other.setAssignedField(null);
             }
         }
     }

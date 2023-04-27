@@ -194,7 +194,7 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
         s.setReihenfolge(order);
         s.setProzess(p);
         if (p.getSchritte() == null) {
-            p.setSchritte(new ArrayList<Step>());
+            p.setSchritte(new ArrayList<>());
         }
         p.getSchritte().add(s);
         String info = "'" + s.getTitel() + "' at position '" + s.getReihenfolge() + "'";

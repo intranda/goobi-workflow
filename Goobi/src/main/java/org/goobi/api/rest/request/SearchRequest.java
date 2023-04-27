@@ -140,7 +140,6 @@ public class SearchRequest {
             if (!firstWhere) {
                 b.append("AND ");
             }
-            firstWhere = false;
             for (int i = 0; i < metadataFilters.size(); i++) {
                 SearchGroup sg = metadataFilters.get(i);
                 sg.createSqlClause(b);

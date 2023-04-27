@@ -134,9 +134,9 @@ public class PluginInstallBean implements Serializable {
             Document doc = saxB.build(in);
             return versionXpath.evaluate(doc)
                     .stream()
-                    .map(v -> v.getTextTrim())
+                    .map(Element::getTextTrim)
                     .filter(v -> !v.endsWith("SNAPSHOT"))
-                    .sorted((v1, v2) -> PluginsBean.compareGoobiVersions(v1, v2))
+                    .sorted(PluginsBean::compareGoobiVersions)
                     .findFirst();
         }
     }

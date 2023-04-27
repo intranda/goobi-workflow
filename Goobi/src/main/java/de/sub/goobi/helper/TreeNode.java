@@ -67,13 +67,13 @@ public class TreeNode {
 
     public List<HashMap<String, Object>> getChildrenAsList() {
         List<HashMap<String, Object>> nodes = new ArrayList<>();
-        getChildrenAsListMitStrichen(nodes, 0, this, true, true, new ArrayList<Boolean>());
+        getChildrenAsListMitStrichen(nodes, 0, this, true, true, new ArrayList<>());
         return nodes;
     }
 
     public List<HashMap<String, Object>> getChildrenAsListAlle() {
         List<HashMap<String, Object>> nodes = new ArrayList<>();
-        getChildrenAsListAlle(nodes, 0, this, true, true, new ArrayList<Boolean>());
+        getChildrenAsListAlle(nodes, 0, this, true, true, new ArrayList<>());
         return nodes;
     }
 

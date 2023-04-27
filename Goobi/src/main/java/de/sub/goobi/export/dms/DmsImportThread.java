@@ -94,17 +94,17 @@ public class DmsImportThread extends Thread {
                             && StorageProvider.getInstance().getLastModifiedDate(fileError) > this.timeFileError) {
                         this.cancel = true;
                         /* die Logdatei mit der Fehlerbeschreibung einlesen */
-                        StringBuffer myBuf = new StringBuffer();
-                        myBuf.append("Beim Import ist ein Importfehler aufgetreten: ");
+                        StringBuilder buffer = new StringBuilder();
+                        buffer.append("Beim Import ist ein Importfehler aufgetreten: ");
                         try (BufferedReader r = Files.newBufferedReader(fileError, StandardCharsets.UTF_8)) {
                             String aLine = r.readLine();
                             while (aLine != null) {
-                                myBuf.append(aLine);
-                                myBuf.append(" ");
+                                buffer.append(aLine);
+                                buffer.append(" ");
                                 aLine = r.readLine();
                             }
                         }
-                        this.rueckgabe = myBuf.toString();
+                        this.rueckgabe = buffer.toString();
 
                     }
                     if (StorageProvider.getInstance().isFileExists(this.fileSuccess)

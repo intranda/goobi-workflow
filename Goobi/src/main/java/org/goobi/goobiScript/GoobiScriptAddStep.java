@@ -104,7 +104,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
         s.setReihenfolge(Integer.parseInt(parameters.get(NUMBER)));
         s.setProzess(p);
         if (p.getSchritte() == null) {
-            p.setSchritte(new ArrayList<Step>());
+            p.setSchritte(new ArrayList<>());
         }
         p.getSchritte().add(s);
         String info = "'" + s.getTitel() + "' at position '" + s.getReihenfolge() + "'";

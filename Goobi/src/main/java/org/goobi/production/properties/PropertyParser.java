@@ -275,22 +275,20 @@ public class PropertyParser {
         for (Processproperty pe : plist) {
 
             for (ProcessProperty pp : listClone) {
-                if (pe.getTitel() != null) {
+                if (pe.getTitel() != null && pe.getTitel().equals(pp.getName())) {
 
-                    if (pe.getTitel().equals(pp.getName())) {
-                        // pp has no pe assigned
-                        if (pp.getProzesseigenschaft() == null) {
-                            pp.setProzesseigenschaft(pe);
-                            pp.setValue(pe.getWert());
-                            pp.setContainer(pe.getContainer());
-                        } else {
-                            // clone pp
-                            ProcessProperty pnew = pp.getClone(pe.getContainer());
-                            pnew.setProzesseigenschaft(pe);
-                            pnew.setValue(pe.getWert());
-                            pnew.setContainer(pe.getContainer());
-                            properties.add(pnew);
-                        }
+                    // pp has no pe assigned
+                    if (pp.getProzesseigenschaft() == null) {
+                        pp.setProzesseigenschaft(pe);
+                        pp.setValue(pe.getWert());
+                        pp.setContainer(pe.getContainer());
+                    } else {
+                        // clone pp
+                        ProcessProperty pnew = pp.getClone(pe.getContainer());
+                        pnew.setProzesseigenschaft(pe);
+                        pnew.setValue(pe.getWert());
+                        pnew.setContainer(pe.getContainer());
+                        properties.add(pnew);
                     }
                 }
             }

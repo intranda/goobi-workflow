@@ -531,7 +531,7 @@ public @Data class Image {
             this.layerSizes = ConfigurationHelper.getInstance()
                     .getMetsEditorImageSizes()
                     .stream()
-                    .map(i -> i.toString())
+                    .map(Object::toString)
                     .collect(Collectors.toList());
         }
         return this.layerSizes;

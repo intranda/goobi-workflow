@@ -46,10 +46,6 @@ public class DeveloperModeBean {
         return ConfigurationHelper.getInstance().isDeveloping();
     }
 
-    public void setDeveloperMode() {
-
-    }
-
     public void reload() {
         developerMessageChannel.send("reload");
     }

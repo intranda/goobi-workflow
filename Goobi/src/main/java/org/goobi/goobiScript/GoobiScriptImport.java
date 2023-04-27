@@ -134,8 +134,6 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
         plugin.setPrefs(proc.getRegelsatz().getPreferences());
         plugin.setForm(mi);
 
-        List<ImportObject> answer = new ArrayList<>();
-
         String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
         plugin.setImportFolder(tempfolder);
 
@@ -162,7 +160,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
         recordList.add(r);
 
-        answer = plugin.generateFiles(recordList);
+        List<ImportObject> answer = plugin.generateFiles(recordList);
 
         for (ImportObject io : answer) {
             if (batch != null) {

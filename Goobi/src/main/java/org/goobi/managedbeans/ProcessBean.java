@@ -626,7 +626,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         boolean isTemplate = MODUS_ANZEIGE_VORLAGEN.equals(this.modusAnzeige);
         String sql = FilterHelper.criteriaBuilder(searchValue, isTemplate, null, null, null, true, false);
-        StringBuffer buffer = new StringBuffer(sql);
+        StringBuilder buffer = new StringBuilder(sql);
 
         if (!this.showClosedProcesses && !isTemplate) {
             buffer.append(" AND ");

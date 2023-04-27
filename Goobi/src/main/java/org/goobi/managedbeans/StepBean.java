@@ -343,7 +343,7 @@ public class StepBean extends BasicBean implements Serializable {
         } else {
             return SchrittDurchBenutzerUebernehmen();
         }
-        // if only one step is asigned for this batch, use the single
+        // if only one step is assigned for this batch, use the single
 
         if (currentStepsOfBatch.isEmpty()) {
             return "";
@@ -371,7 +371,7 @@ public class StepBean extends BasicBean implements Serializable {
                     try {
                         Paths.get(s.getProzess().getImagesOrigDirectory(false));
                     } catch (Exception e1) {
-                        // TODO: what should be done?
+                        log.warn("Cannot find imagesOrigDirectory for process '" + s.getProzess().getTitel() + "': ", e1);
                     }
 
                     this.myDav.DownloadToHome(s.getProzess(), s.getId().intValue(), !s.isTypImagesSchreiben());
@@ -405,7 +405,6 @@ public class StepBean extends BasicBean implements Serializable {
 
     public String BatchesEdit() {
         // find all steps with same batch id and step status
-        List<Step> currentStepsOfBatch = new ArrayList<>();
         Institution institution = null;
         User user = Helper.getCurrentUser();
         if (user != null && !user.isSuperAdmin()) {
@@ -416,6 +415,7 @@ public class StepBean extends BasicBean implements Serializable {
         if (mySchritt.getProzess().getBatch() != null) {
             batchNumber = this.mySchritt.getProzess().getBatch().getBatchId();
         }
+        List<Step> currentStepsOfBatch;
         if (batchNumber != null) {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,

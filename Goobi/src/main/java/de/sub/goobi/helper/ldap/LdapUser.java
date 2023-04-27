@@ -245,11 +245,11 @@ public class LdapUser implements DirContext {
     }
 
     public static String toHexString(byte[] bytes) {
-        StringBuffer retString = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < bytes.length; ++i) {
-            retString.append(Integer.toHexString(0x0100 + (bytes[i] & 0x00FF)).substring(1));
+            buffer.append(Integer.toHexString(0x0100 + (bytes[i] & 0x00FF)).substring(1));
         }
-        return retString.toString().toUpperCase();
+        return buffer.toString().toUpperCase();
     }
 
     @Override

@@ -42,7 +42,7 @@ public class HistoryManager implements Serializable {
         } catch (SQLException e) {
             log.error(e);
         }
-        return new ArrayList<HistoryEvent>();
+        return new ArrayList<>();
     }
 
     public static void addHistory(Date myDate, double order, String value, int type, int processId) {

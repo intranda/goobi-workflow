@@ -43,9 +43,6 @@ import javax.servlet.http.HttpSessionListener;
  */
 public class GoobiVersionListener implements ServletContextListener, HttpSessionListener, HttpSessionAttributeListener {
 
-    public GoobiVersionListener() {
-    }
-
     @Override
     public void contextInitialized(ServletContextEvent sce) {
 

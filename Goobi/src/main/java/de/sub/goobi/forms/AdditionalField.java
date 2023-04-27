@@ -71,9 +71,6 @@ public class AdditionalField {
     @Setter
     private boolean multiselect = true;
 
-    public AdditionalField() {
-    }
-
     public void setInitStart(String newValue) {
         this.initStart = newValue;
         if (this.initStart == null) {

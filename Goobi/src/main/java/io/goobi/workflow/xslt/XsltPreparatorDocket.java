@@ -790,7 +790,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @throws IOException
      */
     public void XmlTransformation(OutputStream out, Document doc, String filename) throws XSLTransformException, IOException {
-        Document docTrans = new Document();
+        Document docTrans;
         if (filename != null && "".equals(filename)) {
             XSLTransformer transformer;
             transformer = new XSLTransformer(filename);

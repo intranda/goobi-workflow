@@ -168,10 +168,6 @@ public class MassImportForm implements Serializable {
     @Inject
     private NavigationForm bean;
 
-    public MassImportForm() {
-
-    }
-
     @PostConstruct
     public void init() {
         this.usablePluginsForRecords = this.ipl.getPluginsForType(ImportType.Record);
@@ -366,7 +362,7 @@ public class MassImportForm implements Serializable {
                     myParameters.put("plugin", plugin2.getTitle());
                     myParameters.put("projectId", String.valueOf(this.template.getProjectId()));
 
-                    List<GoobiScriptResult> newScripts = igs.prepare(new ArrayList<Integer>(),
+                    List<GoobiScriptResult> newScripts = igs.prepare(new ArrayList<>(),
                             "action:import plugin:" + plugin2.getTitle() + " template:" + this.template.getId() + " identifiers:" + myIdentifiers,
                             myParameters);
                     for (GoobiScriptResult gsr : newScripts) {
@@ -442,11 +438,10 @@ public class MassImportForm implements Serializable {
                 if (ImportReturnValue.ExportFinished.equals(io.getImportReturnValue())) {
                     Process p = JobCreation.generateProcess(io, this.template);
                     if (p == null) {
-                        if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
-                                && !selectedFilenames.isEmpty()) {
-                            if (selectedFilenames.contains(io.getImportFileName())) {
-                                selectedFilenames.remove(io.getImportFileName());
-                            }
+                        boolean validImportFileName = io.getImportFileName() != null && !io.getImportFileName().isEmpty();
+                        boolean validSelectedFileNames = selectedFilenames != null && !selectedFilenames.isEmpty();
+                        if (validImportFileName && validSelectedFileNames && selectedFilenames.contains(io.getImportFileName())) {
+                            selectedFilenames.remove(io.getImportFileName());
                         }
                         Helper.setFehlerMeldung("Import failed for " + io.getProcessTitle() + ", process generation failed");
 
@@ -457,11 +452,10 @@ public class MassImportForm implements Serializable {
                 } else {
                     String[] parameter = { io.getProcessTitle(), io.getErrorMessage() };
                     Helper.setFehlerMeldung(Helper.getTranslation("importFailedError", parameter));
-                    if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
-                            && !selectedFilenames.isEmpty()) {
-                        if (selectedFilenames.contains(io.getImportFileName())) {
-                            selectedFilenames.remove(io.getImportFileName());
-                        }
+                    boolean validImportFileName = io.getImportFileName() != null && !io.getImportFileName().isEmpty();
+                    boolean validSelectedFileNames = selectedFilenames != null && !selectedFilenames.isEmpty();
+                    if (validImportFileName && validSelectedFileNames && selectedFilenames.contains(io.getImportFileName())) {
+                        selectedFilenames.remove(io.getImportFileName());
                     }
                 }
                 currentProcessNo = currentProcessNo + 1;

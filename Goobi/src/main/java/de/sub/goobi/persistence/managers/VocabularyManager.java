@@ -210,7 +210,7 @@ public class VocabularyManager implements IManager, Serializable {
         vocab.setTitle(strVocabTitle);
         vocab.setDescription(strDescription);
         vocab.setStruct(lstDefs);
-        vocab.setRecords(new ArrayList<VocabRecord>());
+        vocab.setRecords(new ArrayList<>());
         return vocab;
     }
 
