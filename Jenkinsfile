@@ -49,6 +49,14 @@ pipeline {
         sh 'mvn -f Goobi/pom.xml -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy'
       }
     }
+    stage('trigger pull-requester') {
+      when {
+        tag "v*"
+      }
+      steps {
+        build wait: false, job: '../goobi-plugins-pull-requester/master'
+      }
+    }
   }
   post {
     always {
