@@ -38,18 +38,18 @@ public class VocabularyFieldValidator {
      * validation message is set to an empty string.
      *
      * @param vocabulary The current vocabulary to validate
-     * @param record The current vocabulary record to validate
+     * @param vocabRecord The current vocabulary record to validate
      * @param field The field to validate
      * @param fieldValue The value that should be set to that field
      * @return true If currentVocabRecord is valid and its fields are valid or false if they are invalid or distinctive fields have the same content
      *         as fields of other vocabulary records
      */
-    public static boolean validateFieldInRecords(Vocabulary vocabulary, VocabRecord record, Field field, String fieldValue) {
+    public static boolean validateFieldInRecords(Vocabulary vocabulary, VocabRecord vocabRecord, Field field, String fieldValue) {
 
         // If field is required and empty, it gets marked as invalid
         if (field.getDefinition().isRequired() && StringUtils.isBlank(fieldValue)) {
             field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
-            record.setValid(false);
+            vocabRecord.setValid(false);
             return false;
         }
 
@@ -59,7 +59,7 @@ public class VocabularyFieldValidator {
         if (field.getDefinition().isDistinctive() && StringUtils.isNotBlank(fieldValue)) {
             for (VocabRecord other : vocabulary.getRecords()) {
 
-                if (record.equals(other)) {
+                if (vocabRecord.equals(other)) {
                     continue;
                 }
 
@@ -67,7 +67,7 @@ public class VocabularyFieldValidator {
                 if (fieldValue.equals(otherFieldValue)) {
                     field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
                     other.setValid(false);
-                    record.setValid(false);
+                    vocabRecord.setValid(false);
                     valid = false;
                 }
             }

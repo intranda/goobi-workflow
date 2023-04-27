@@ -349,11 +349,11 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
         int rowCounter = 1;
         // add records
-        for (VocabRecord record : recordList) {
+        for (VocabRecord vocabRecord : recordList) {
             Row resultRow = sheet.createRow(rowCounter);
             columnCounter = 0;
             for (Definition definition : definitionList) {
-                resultRow.createCell(columnCounter).setCellValue(record.getFieldValue(definition));
+                resultRow.createCell(columnCounter).setCellValue(vocabRecord.getFieldValue(definition));
                 columnCounter = columnCounter + 1;
             }
             rowCounter = rowCounter + 1;
@@ -560,7 +560,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         if (importType.equals(IMPORT_TYPE_REMOVE) || importType.equals(IMPORT_TYPE_ADD)) {
             List<VocabRecord> recordsToAdd = new ArrayList<>(rowsToImport.size());
             for (Row row : rowsToImport) {
-                VocabRecord record = new VocabRecord();
+                VocabRecord vocabRecord = new VocabRecord();
                 List<Field> fieldList = new ArrayList<>();
                 for (MatchingField mf : headerOrder) {
                     if (mf.getAssignedField() != null) {
@@ -573,9 +573,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
                     }
                 }
                 if (!fieldList.isEmpty()) {
-                    recordsToAdd.add(record);
+                    recordsToAdd.add(vocabRecord);
                     log.debug("Created record");
-                    addFieldToRecord(record, fieldList);
+                    addFieldToRecord(vocabRecord, fieldList);
                 }
             }
             VocabularyManager.insertNewRecords(recordsToAdd, currentVocabulary.getId());
@@ -631,7 +631,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                     } else {
                         // create new record
                         log.debug("create new record.");
-                        VocabRecord record = new VocabRecord();
+                        VocabRecord vocabRecord = new VocabRecord();
                         List<Field> fieldList = new ArrayList<>();
                         for (MatchingField mf : headerOrder) {
                             if (mf.getAssignedField() != null) {
@@ -645,8 +645,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
                             }
                         }
                         if (!fieldList.isEmpty()) {
-                            addFieldToRecord(record, fieldList);
-                            newRecords.add(record);
+                            addFieldToRecord(vocabRecord, fieldList);
+                            newRecords.add(vocabRecord);
                         }
                     }
                 }
@@ -666,10 +666,10 @@ public class VocabularyBean extends BasicBean implements Serializable {
     /**
      * method to add a field to the existing record
      * 
-     * @param record Record to use
+     * @param vocabRecord Record to use
      * @param fieldList List of fields to add to the record
      */
-    private void addFieldToRecord(VocabRecord record, List<Field> fieldList) {
+    private void addFieldToRecord(VocabRecord vocabRecord, List<Field> fieldList) {
         for (Definition def : currentVocabulary.getStruct()) {
             boolean fieldExists = false;
             for (Field f : fieldList) {
@@ -683,8 +683,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 fieldList.add(emptyField);
             }
         }
-        record.setFields(fieldList);
-        currentVocabulary.getRecords().add(record);
+        vocabRecord.setFields(fieldList);
+        currentVocabulary.getRecords().add(vocabRecord);
     }
 
     /**
@@ -803,8 +803,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public void setCurrentVocabRecord(VocabRecord currentVocabRecord) {
 
         // Set records to valid because validation errors are discarded
-        for (VocabRecord record : this.currentVocabulary.getRecords()) {
-            record.setValid(true);
+        for (VocabRecord vocabRecord : this.currentVocabulary.getRecords()) {
+            vocabRecord.setValid(true);
         }
 
         this.currentVocabRecord = currentVocabRecord;

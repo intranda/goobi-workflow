@@ -234,7 +234,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                 List<Metadata> metadatalist = new ArrayList<>();
                 String tmpValue = value;
                 if (tmpValue.contains("metadata.")) {
-                    for (Matcher m = Pattern.compile("\\$?(?:\\(|\\{)metadata\\.([\\w.-]*)(?:\\}|\\))").matcher(tmpValue); m.find();) {
+                    for (Matcher m = VariableReplacer.getMetadataPattern().matcher(tmpValue); m.find();) {
                         String metadataName = m.group(1);
                         if (StringUtils.isNotBlank(groupName)) {
                             for (MetadataGroup grp : ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(field))) {

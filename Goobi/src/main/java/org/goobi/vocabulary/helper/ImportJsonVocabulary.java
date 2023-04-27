@@ -56,7 +56,7 @@ public class ImportJsonVocabulary {
             List<Object> records = JsonPath.read(oldVocabulary, "records");
             recordList = new ArrayList<>(records.size());
 
-            for (Object record : records) {
+            for (Object recordObject : records) {
                 VocabRecord rec = new VocabRecord();
                 List<Field> fieldList = new ArrayList<>();
                 for (Definition definition : vocabulary.getStruct()) {
@@ -67,7 +67,7 @@ public class ImportJsonVocabulary {
                 vocabulary.getRecords().add(rec);
                 recordList.add(rec);
 
-                List<Object> fields = JsonPath.read(record, "fields");
+                List<Object> fields = JsonPath.read(recordObject, "fields");
 
                 for (Object field : fields) {
                     String label = JsonPath.read(field, "label");

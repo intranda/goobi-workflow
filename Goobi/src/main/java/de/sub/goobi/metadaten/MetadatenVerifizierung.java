@@ -496,8 +496,8 @@ public class MetadatenVerifizierung {
                 VocabularyManager.getAllRecords(vocabulary);
                 List<VocabRecord> records = vocabulary.getRecords();
                 List<String> allowedValues = new ArrayList<>();
-                for (VocabRecord record : records) {
-                    for (Field field : record.getFields()) {
+                for (VocabRecord vocabularyRecord : records) {
+                    for (Field field : vocabularyRecord.getFields()) {
                         allowedValues.add(field.getValue());
                     }
                 }

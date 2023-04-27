@@ -148,8 +148,8 @@ public class VocabularyResource {
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRecord(@PathParam("vocabulary") Integer vocabularyId, @PathParam("record") Integer recordId) {
-        VocabRecord record = VocabularyManager.getRecord(vocabularyId, recordId);
-        return Response.ok(record).build();
+        VocabRecord recordRecord = VocabularyManager.getRecord(vocabularyId, recordId);
+        return Response.ok(recordRecord).build();
     }
 
     @GET
@@ -160,8 +160,8 @@ public class VocabularyResource {
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRecordAsJskos(@Context UriInfo uriInfo, @PathParam("vocabulary") Integer vocabularyId, @PathParam("record") Integer recordId) {
-        VocabRecord record = VocabularyManager.getRecord(vocabularyId, recordId);
-        if (record == null) {
+        VocabRecord recordRecord = VocabularyManager.getRecord(vocabularyId, recordId);
+        if (recordRecord == null) {
             return Response.status(404).build();
         }
         Vocabulary vocabulary = VocabularyManager.getVocabularyById(vocabularyId);
@@ -206,7 +206,7 @@ public class VocabularyResource {
         }
         Map<String, String> mainFields = new HashMap<>();
         List<String> otherFields = new ArrayList<>();
-        for (Field field : record.getFields()) {
+        for (Field field : recordRecord.getFields()) {
             if (field.getLabel().equals(mainFieldName)) {
                 mainFields.put(StringUtils.isBlank(field.getLanguage()) ? "-" : field.getLanguage(), field.getValue());
             } else if (!otherFields.contains(field.getLabel())) {
@@ -224,7 +224,7 @@ public class VocabularyResource {
         Map<String, Fields> otherFieldValues = new HashMap<>();
         for (String fieldName : otherFields) {
             Map<String, String> values = new HashMap<>();
-            for (Field field : record.getFields()) {
+            for (Field field : recordRecord.getFields()) {
                 if (field.getLabel().equals(fieldName)) {
                     values.put(StringUtils.isBlank(field.getLanguage()) ? "-" : field.getLanguage(), field.getValue());
                 }

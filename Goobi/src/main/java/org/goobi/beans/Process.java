@@ -1934,9 +1934,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             Step task = null;
             if (schritte != null) {
                 for (Step step : schritte) {
+                    boolean isDone = step.getBearbeitungsstatusEnum() == StepStatus.DONE;
                     Date stepEnd = step.getBearbeitungsende();
-                    Date taskEnd = task.getBearbeitungsende();
-                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && stepEnd != null && (task == null || taskEnd.before(stepEnd))) {
+                    if (isDone && stepEnd != null && (task == null || task.getBearbeitungsende().before(stepEnd))) {
                         task = step;
                     }
                 }
@@ -1963,9 +1963,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             Step task = null;
             if (schritte != null) {
                 for (Step step : schritte) {
+                    boolean isDone = step.getBearbeitungsstatusEnum() == StepStatus.DONE;
                     Date stepEnd = step.getBearbeitungsende();
-                    Date taskEnd = task.getBearbeitungsende();
-                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && stepEnd != null && (task == null || taskEnd.before(stepEnd))) {
+                    if (isDone && stepEnd != null && (task == null || task.getBearbeitungsende().before(stepEnd))) {
                         task = step;
                     }
                 }

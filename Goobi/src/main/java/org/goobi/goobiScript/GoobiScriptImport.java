@@ -142,9 +142,9 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
         // there are records already so lets find the right one
         if (records != null) {
-            for (Record record : records) {
-                if (record.getId().equals(gsr.getProcessTitle())) {
-                    r = record;
+            for (Record rec : records) {
+                if (rec.getId().equals(gsr.getProcessTitle())) {
+                    r = rec;
                     break;
                 }
             }

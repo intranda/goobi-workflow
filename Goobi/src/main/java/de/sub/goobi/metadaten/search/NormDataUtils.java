@@ -61,8 +61,7 @@ public class NormDataUtils {
      * @return a list of norm data
      */
     @SuppressWarnings("unchecked")
-    private static NormData getNormData(String label, Object object,
-            boolean useAsId, boolean useAsUrl) {
+    private static NormData getNormData(String label, Object object, boolean useAsId, boolean useAsUrl) {
         NormData normData = new NormData();
         if (Objects.nonNull(object)) {
             List<NormDataValue> normDataValues = new ArrayList<>();
@@ -111,8 +110,7 @@ public class NormDataUtils {
      * @return a list of norm data
      */
     @SuppressWarnings("unchecked")
-    public static List<NormData> createNormData(String label, Object javaObject,
-            boolean useAsId, boolean useAsUrl) {
+    public static List<NormData> createNormData(String label, Object javaObject, boolean useAsId, boolean useAsUrl) {
         List<NormData> normDataList = new ArrayList<>();
         if (Objects.nonNull(javaObject)) {
             if (javaObject instanceof Map) {
@@ -166,11 +164,11 @@ public class NormDataUtils {
     /**
      * Prints the content of record of type NormDataRecord
      *
-     * @param record a norm data record to print
+     * @param normDataRecord a norm data record to print
      */
-    public static void printRecord(NormDataRecord record) {
-        if (Objects.nonNull(record)) {
-            for (NormData normData : record.getNormdataList()) {
+    public static void printRecord(NormDataRecord normDataRecord) {
+        if (Objects.nonNull(normDataRecord)) {
+            for (NormData normData : normDataRecord.getNormdataList()) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(normData.getKey()).append(" : ");
                 for (NormDataValue value : normData.getValues()) {

@@ -517,8 +517,8 @@ public class HelperSchritte {
                     JsonPrimitive jPrim = objEntry.getValue().getAsJsonPrimitive();
                     if (jPrim.isString()) {
                         String newVal = replacer.replace(jPrim.getAsString());
-                        if (VariableReplacer.piiifMasterFolder.matcher(jPrim.getAsString()).matches()
-                                || VariableReplacer.piiifMediaFolder.matcher(jPrim.getAsString()).matches()) {
+                        if (VariableReplacer.getPiiifMasterFolder().matcher(jPrim.getAsString()).matches()
+                                || VariableReplacer.getPiiifMediaFolder().matcher(jPrim.getAsString()).matches()) {
                             Gson gson = new Gson();
                             JsonArray iiifArr = gson.fromJson("[" + newVal + "]", JsonArray.class);
                             obj.add(objEntry.getKey(), iiifArr);
@@ -538,8 +538,8 @@ public class HelperSchritte {
                     JsonPrimitive jPrim = innerJel.getAsJsonPrimitive();
                     if (jPrim.isString()) {
                         String newVal = replacer.replace(jPrim.getAsString());
-                        if (VariableReplacer.piiifMasterFolder.matcher(jPrim.getAsString()).matches()
-                                || VariableReplacer.piiifMediaFolder.matcher(jPrim.getAsString()).matches()) {
+                        if (VariableReplacer.getPiiifMasterFolder().matcher(jPrim.getAsString()).matches()
+                                || VariableReplacer.getPiiifMediaFolder().matcher(jPrim.getAsString()).matches()) {
                             Gson gson = new Gson();
                             JsonArray iiifArr = gson.fromJson("[" + newVal + "]", JsonArray.class);
                             jArr.set(i, iiifArr);

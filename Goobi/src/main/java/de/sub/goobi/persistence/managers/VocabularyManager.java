@@ -349,10 +349,10 @@ public class VocabularyManager implements IManager, Serializable {
         }
     }
 
-    public static void deleteRecord(VocabRecord record) {
+    public static void deleteRecord(VocabRecord vocabRecord) {
         try {
-            VocabularyMysqlHelper.deleteRecord(record);
-            setVocabularyLastAltered(record.getVocabularyId());
+            VocabularyMysqlHelper.deleteRecord(vocabRecord);
+            setVocabularyLastAltered(vocabRecord.getVocabularyId());
         } catch (SQLException e) {
             log.error(e);
         }
@@ -377,9 +377,9 @@ public class VocabularyManager implements IManager, Serializable {
         }
     }
 
-    public static void saveRecord(Integer vocabularyId, VocabRecord record) {
+    public static void saveRecord(Integer vocabularyId, VocabRecord vocabRecord) {
         try {
-            VocabularyMysqlHelper.saveRecord(vocabularyId, record);
+            VocabularyMysqlHelper.saveRecord(vocabularyId, vocabRecord);
             setVocabularyLastAltered(vocabularyId);
         } catch (SQLException e) {
             log.error(e);
