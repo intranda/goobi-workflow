@@ -67,6 +67,7 @@ import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -77,7 +78,8 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class, Helper.class })
+        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class, Helper.class,
+        MetadataManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
 
@@ -216,6 +218,11 @@ public class ProcessServiceTest extends AbstractTest {
         PowerMock.mockStatic(Helper.class);
         Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyString());
         Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyString());
+
+        PowerMock.mockStatic(MetadataManager.class);
+
+        MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject());
+        MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject());
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();
@@ -655,21 +662,95 @@ public class ProcessServiceTest extends AbstractTest {
 
     @Test
     public void testUpdateMetadata() {
+        RestMetadataResource resource = new RestMetadataResource();
+        resource.setValue("value");
 
+        Response response = service.updateMetadata(null, resource);
+        assertEquals(400, response.getStatus());
+
+        resource.setName("invalid");
+        response = service.updateMetadata(null, resource);
+        assertEquals(400, response.getStatus());
+
+        resource.setMetadataLevel("topstruct");
+        response = service.updateMetadata(null, resource);
+        assertEquals(400, response.getStatus());
+
+        response = service.updateMetadata("", resource);
+        assertEquals(400, response.getStatus());
+        response = service.updateMetadata("abc", resource);
+        assertEquals(400, response.getStatus());
+
+        response = service.updateMetadata("1", resource);
+        assertEquals(500, response.getStatus());
+
+        resource.setName("TitleDocMain");
+        resource.setAuthorityValue("value");
+        response = service.updateMetadata("1", resource);
+        assertEquals(200, response.getStatus());
     }
 
     @Test
     public void testCreateMetadata() {
+        RestMetadataResource resource = new RestMetadataResource();
+        resource.setValue("value");
+        resource.setAuthorityValue("value");
 
+        Response response = service.createMetadata(null, resource);
+        assertEquals(400, response.getStatus());
+
+        resource.setName("invalid");
+        response = service.createMetadata(null, resource);
+        assertEquals(400, response.getStatus());
+
+        resource.setMetadataLevel("topstruct");
+        response = service.createMetadata(null, resource);
+        assertEquals(400, response.getStatus());
+
+        response = service.createMetadata("", resource);
+        assertEquals(400, response.getStatus());
+        response = service.createMetadata("abc", resource);
+        assertEquals(400, response.getStatus());
+
+        response = service.createMetadata("1", resource);
+        assertEquals(400, response.getStatus());
+
+        resource.setName("TitleDocMain");
+        response = service.createMetadata("1", resource);
+        assertEquals(500, response.getStatus());
+
+        resource.setName("PublicationYear");
+        response = service.createMetadata("1", resource);
+        assertEquals(200, response.getStatus());
     }
 
     @Test
     public void testDeleteMetadata() {
+        RestMetadataResource resource = new RestMetadataResource();
+        resource.setValue("value");
+        resource.setAuthorityValue("value");
 
-    }
+        Response response = service.deleteMetadata(null, resource);
+        assertEquals(400, response.getStatus());
 
-    @Test
-    public void testDeleteProperty() {
+        resource.setName("invalid");
+        response = service.deleteMetadata(null, resource);
+        assertEquals(400, response.getStatus());
 
+        resource.setMetadataLevel("topstruct");
+        response = service.deleteMetadata(null, resource);
+        assertEquals(400, response.getStatus());
+
+        response = service.deleteMetadata("", resource);
+        assertEquals(400, response.getStatus());
+        response = service.deleteMetadata("abc", resource);
+        assertEquals(400, response.getStatus());
+
+        response = service.deleteMetadata("1", resource);
+        assertEquals(400, response.getStatus());
+
+        resource.setName("TitleDocMain");
+        response = service.deleteMetadata("1", resource);
+        assertEquals(200, response.getStatus());
     }
 }
