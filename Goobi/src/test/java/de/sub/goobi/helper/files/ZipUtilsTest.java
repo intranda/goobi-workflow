@@ -62,7 +62,7 @@ public class ZipUtilsTest extends AbstractTest {
         dest.mkdirs();
         destinationFolder = dest.toPath();
         // copy some sample files to source folder
-        Path samplexml = Paths.get(resourceFolder.toString(), "metadata/0/meta.xml");
+        Path samplexml = Paths.get(resourceFolder.toString(), "metadata/1/meta.xml");
         Path sampleImage = Paths.get(resourceFolder.toString(), "file_example_TIFF_1MB.tif");
 
         Files.copy(samplexml, Paths.get(sourceFolder.toString(), "meta.xml"));

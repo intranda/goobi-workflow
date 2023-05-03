@@ -107,4 +107,12 @@ public interface IImportPlugin extends IPlugin, Serializable {
      * @throws ImportPluginException
      */
     public Fileformat convertData() throws ImportPluginException;
+
+
+    /**
+     * Option to set the selected workflow name to the plugin. This might be used to select the correct configuration.
+     */
+    default void setWorkflowTitle(String workflowTitle) {
+        // the default implementation ignores this call
+    };
 }
