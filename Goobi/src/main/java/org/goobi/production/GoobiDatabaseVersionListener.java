@@ -56,30 +56,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         }
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
-
-        if (!DatabaseVersion.checkIfTableExists("api_token")) {
-
-            //            CREATE TABLE api_token (
-            //                    id INT(11)  unsigned NOT NULL AUTO_INCREMENT,
-            //                    user_id INT(11),
-            //                    token_name VARCHAR(255),
-            //                    token_description VARCHAR(255),
-            //                    PRIMARY KEY (id)
-            //                ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
-            //
-            //                CREATE TABLE api_token_method (
-            //                    id INT(11)  unsigned NOT NULL AUTO_INCREMENT,
-            //                    token_id INT(11),
-            //                    method_type VARCHAR(255),
-            //                    method_description VARCHAR(255),
-            //                    method_url VARCHAR(255),
-            //                    selected tinyint(1),
-            //                    PRIMARY KEY (id),
-            //                    KEY `tokenid` (`token_id`)
-            //                ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
-
-        }
-
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
