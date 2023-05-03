@@ -114,6 +114,15 @@ public class JournalManager implements IManager, Serializable {
         throw new UnsupportedOperationException();
     }
 
+    public static JournalEntry getJournalEntryById(int id) {
+        try {
+            return JournalMysqlHelper.getJournalEntryById(id);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
     public static final ResultSetHandler<List<JournalEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<List<JournalEntry>>() {
         @Override
         public List<JournalEntry> handle(ResultSet rs) throws SQLException {
@@ -147,7 +156,5 @@ public class JournalManager implements IManager, Serializable {
             return answer;
         }
     };
-
-
 
 }

@@ -40,6 +40,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpHeaders;
 import org.apache.logging.log4j.util.Strings;
 import org.goobi.managedbeans.LoginBean;
 
@@ -50,10 +51,12 @@ import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;
 import com.github.jgonian.ipmath.Ipv6;
 import com.github.jgonian.ipmath.Ipv6Range;
+import com.rometools.rome.io.impl.Base64;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.JwtHelper;
+import de.sub.goobi.persistence.managers.UserManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -66,11 +69,46 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
+        // first try to get basic authentication
+        String authentication = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+
+        // get token, decode it, check if token exists in db
+        if (StringUtils.isNotBlank(authentication)) {
+
+            authentication = authentication.replace("Basic ", "");
+            String keyName = Base64.decode(authentication);
+            AuthenticationToken token = UserManager.getAuthenticationToken(keyName);
+            if (token == null) {
+                // token does not exist, abort
+                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("API Token is invalid.")
+                        .build());
+            }
+            //if token exists, check if token has the permission to access the current request
+            String methodType = requestContext.getMethod();
+            String requestUri = req.getPathInfo();
+            for (AuthenticationMethodDescription method : token.getMethods()) {
+                if (method.isSelected()) {
+                    if (methodType.equalsIgnoreCase(method.getMethodType())) {
+                        if (Pattern.matches(method.getUrl(), requestUri)) {
+                            return;
+                        }
+                    }
+                }
+            }
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("The API token has no access to the Goobi REST API for " + requestUri)
+                    .build());
+            return;
+        }
+
+        // get token
         String token = requestContext.getHeaderString("token");
         if (StringUtils.isBlank(token)) {
             token = req.getParameter("token");
         }
 
+        // get jwt token
         String jwt = requestContext.getHeaderString("jwt");
         if (StringUtils.isBlank(jwt)) {
             jwt = req.getParameter("jwt");
@@ -107,7 +145,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             ip = req.getRemoteAddr();
         }
         //all is OK until now. Now check if this is an OPTIONS request (mostly issued by browsers as preflight request for CORS).
-        if (method.equals("OPTIONS")) {
+        if ("OPTIONS".equals(method)) {
             //check the CORS config if this is allowed.
             RestEndpointConfig conf = null;
             try {
@@ -132,7 +170,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.")
                     .build());
-            return;
         }
 
     }
