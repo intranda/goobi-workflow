@@ -75,7 +75,20 @@ public class ZipUtils {
         try {
             try (ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(zipFile))) {
                 ZipEntry entry;
-                while ((entry = zipInputStream.getNextEntry()) != null) { //NOSONAR
+                /*
+                 * Explanation for NOSONAR comment: The sizes are not checked because:
+                 * - zip files may be huge due to lots of images
+                 * - the zip files may contain thousands of images/entries, a threshold would not make sense (or would also be very high)
+                 * - especially master images may be of very large file size. Thresholds would also make no sense for them
+                 * - due to file formats and very efficient compressing rates, very high decompression rates are allowed
+                 * - The total size of the unzipped archive may use hundrets of Gigabytes
+                 *
+                 * Implemented protection:
+                 * - Symlinks are ignored (and can not produce denial of service due to recursion)
+                 * - the absolute path of each file entry is checked (so that "../" entries can not overwrite files outside the target directory)
+                 */
+
+                while ((entry = zipInputStream.getNextEntry()) != null) { //NOSONAR (see above)
                     final Path toPath = destinationDir.resolve(entry.getName());
                     if (entry.isDirectory()) {
                         Files.createDirectories(toPath);

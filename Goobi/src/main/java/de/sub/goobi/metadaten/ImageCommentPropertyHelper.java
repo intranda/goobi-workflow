@@ -135,8 +135,10 @@ public class ImageCommentPropertyHelper {
         int lastUnderscoreIndex = folderName.lastIndexOf("_");
         String imageCommentsTail = folderName.substring(lastUnderscoreIndex + 1);
 
-        // remove non-letter characters from the tail
-        imageCommentsTail = imageCommentsTail.replaceAll("[\\W]*$", ""); //NOSONAR
+        // remove path separator if present
+        if (imageCommentsTail.endsWith("/") || imageCommentsTail.endsWith("\\")) {
+            imageCommentsTail = imageCommentsTail.substring(0, imageCommentsTail.length() - 1);
+        }
 
         String propertyTitle = IMAGE_COMMENTS_HEADER + imageCommentsTail;
         log.debug("propertyTitle = " + propertyTitle);
