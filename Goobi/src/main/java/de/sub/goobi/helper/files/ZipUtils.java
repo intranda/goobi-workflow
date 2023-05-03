@@ -53,7 +53,7 @@ public class ZipUtils {
                             outputStream.write(bytes, 0, bytes.length);
                             outputStream.closeEntry();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            log.error(e);
                         }
                         return FileVisitResult.CONTINUE;
                     }
@@ -75,7 +75,7 @@ public class ZipUtils {
         try {
             try (ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(zipFile))) {
                 ZipEntry entry;
-                while ((entry = zipInputStream.getNextEntry()) != null) {
+                while ((entry = zipInputStream.getNextEntry()) != null) { //NOSONAR
                     final Path toPath = destinationDir.resolve(entry.getName());
                     if (entry.isDirectory()) {
                         Files.createDirectories(toPath);

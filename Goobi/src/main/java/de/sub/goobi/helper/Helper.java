@@ -120,9 +120,6 @@ public class Helper implements Serializable, ServletContextListener {
     private static final String MESSAGES = "messages";
     private static final String AUTOMATIC = "- automatic -";
 
-    private static final SimpleDateFormat dateFormatterDE = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    private static final SimpleDateFormat dateFormatterEN = new SimpleDateFormat("MM/dd/yyyy h:mm:ss");
-
     private static final DateTimeFormatter formatterDEDateTime = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     private static final DateTimeFormatter formatterENDateTime = DateTimeFormatter.ofPattern("MM/dd/yyyy h:mm:ss a").withLocale(Locale.ENGLISH);
 
@@ -346,11 +343,11 @@ public class Helper implements Serializable, ServletContextListener {
             msg = msg.replace("\n", "<br />");
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
         } else // wenn kein Kontext da ist, dann die Meldungen in Log
-        if (nurInfo) {
-            log.info(compoundMessage);
-        } else {
-            log.error(compoundMessage);
-        }
+            if (nurInfo) {
+                log.info(compoundMessage);
+            } else {
+                log.error(compoundMessage);
+            }
     }
 
     private static String getMessage(Locale language, String key) {
@@ -417,9 +414,9 @@ public class Helper implements Serializable, ServletContextListener {
             return "-";
         }
         if (Locale.GERMAN == Helper.getSessionLocale()) {
-            return dateFormatterDE.format(inDate);
+            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(inDate);
         }
-        return dateFormatterEN.format(inDate);
+        return new SimpleDateFormat("MM/dd/yyyy h:mm:ss").format(inDate);
     }
 
     public static String getLocalDateTimeAsFormattedString(LocalDateTime inDate) {

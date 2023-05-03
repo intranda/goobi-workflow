@@ -136,7 +136,7 @@ public class ImageCommentPropertyHelper {
         String imageCommentsTail = folderName.substring(lastUnderscoreIndex + 1);
 
         // remove non-letter characters from the tail
-        imageCommentsTail = imageCommentsTail.replaceAll("[\\W]*$", "");
+        imageCommentsTail = imageCommentsTail.replaceAll("[\\W]*$", ""); //NOSONAR
 
         String propertyTitle = IMAGE_COMMENTS_HEADER + imageCommentsTail;
         log.debug("propertyTitle = " + propertyTitle);
