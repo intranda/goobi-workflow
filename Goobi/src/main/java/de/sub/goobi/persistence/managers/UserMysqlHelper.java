@@ -35,6 +35,8 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.api.rest.AuthenticationMethodDescription;
+import org.goobi.api.rest.AuthenticationToken;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
@@ -172,7 +174,6 @@ class UserMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
 
             String additionalData = MySQLHelper.convertDataToString(ro.getAdditionalData());
-
             if (ro.getId() == null) {
 
                 String propNames = "Vorname, Nachname, login, Standort, metadatensprache, "
@@ -199,20 +200,20 @@ class UserMysqlHelper implements Serializable {
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getVorname(), ro.getNachname(),
                         ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(), ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(),
                         ro.getSessiontimeout(), ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), ro.getLdaplogin(),
-                                ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
-                                ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
-                                ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
+                        ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
+                        ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
+                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
+                        ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
 
-                                ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(), ro.getMetsEditorTime(),
-                                        ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(),
-                                        ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
-                                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
-                                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
-                                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
-                                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
-                                        ro.getStatus().getName(), additionalData, ro.getAdditionalSearchFields());
+                        ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(), ro.getMetsEditorTime(),
+                        ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(),
+                        ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
+                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
+                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
+                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
+                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
+                        ro.getStatus().getName(), additionalData, ro.getAdditionalSearchFields());
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -276,18 +277,18 @@ class UserMysqlHelper implements Serializable {
                 run.update(connection, sql.toString(), ro.getVorname(), ro.getNachname(), ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(),
                         ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(), ro.getSessiontimeout(),
                         ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), ro.getLdaplogin(), ro.isDisplayAutomaticTasks(),
-                                ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
-                                ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
-                                ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
-                                ro.isHideCorrectionTasks(), ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                                        ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(),
-                                        ro.isMetsLinkImage(), ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
-                                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
-                                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
-                                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
-                                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
-                                        ro.getStatus().getName(), additionalData, ro.getAdditionalSearchFields());
+                        ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
+                        ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
+                        ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                        ro.isHideCorrectionTasks(), ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
+                        ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(),
+                        ro.isMetsLinkImage(), ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
+                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
+                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
+                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
+                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
+                        ro.getStatus().getName(), additionalData, ro.getAdditionalSearchFields());
 
             }
 
@@ -310,6 +311,11 @@ class UserMysqlHelper implements Serializable {
                             }
                         }
                     }
+                }
+            }
+            if (ro.getApiToken() != null) {
+                for (AuthenticationToken token : ro.getApiToken()) {
+                    saveAuthenticationToken(token);
                 }
             }
         } finally
@@ -368,6 +374,11 @@ class UserMysqlHelper implements Serializable {
                     log.trace(sql);
                 }
                 run.update(connection, sql);
+                if (ro.getApiToken() != null) {
+                    for (AuthenticationToken token : ro.getApiToken()) {
+                        deleteAuthenticationToken(token);
+                    }
+                }
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
@@ -818,7 +829,95 @@ class UserMysqlHelper implements Serializable {
                 }
             }
         }
+    }
 
+    public static AuthenticationToken getAuthenticationToken(String tokenName) throws SQLException {
+        String sql = "select * from api_token where token_name = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, UserManager.resultSetToAuthenticationTokenHandler, tokenName);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static List<AuthenticationToken> getAuthenticationTokenForUser(Integer userId) throws SQLException {
+        String sql = "select * from api_token where user_id = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, UserManager.resultSetToAuthenticationTokenListHandler, userId);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void saveAuthenticationToken(AuthenticationToken token) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            if (token.getTokenId() == null) {
+                // insert
+                String insert = "INSERT INTO api_token (user_id, token_name, token_description) VALUES (?, ?, ?)";
+                Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, token.getUserId(), token.getTokenName(),
+                        token.getDescription());
+                if (id != null) {
+                    token.setTokenId(id);
+                }
+            } else {
+                // update
+                String update = "UPDATE api_token set token_name = ?, token_description = ? WHERE id = ?";
+                run.update(connection, update, token.getTokenName(), token.getDescription(), token.getTokenId());
+            }
+
+            for (AuthenticationMethodDescription description : token.getMethods()) {
+                if (description.getMethodID() == null) {
+                    // insert
+                    String insert =
+                            "INSERT INTO api_token_method (token_id, method_type, method_description, method_url, selected) VALUES (?, ?, ?, ?, ?);";
+                    Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, token.getTokenId(),
+                            description.getMethodType(), description.getDescription(), description.getUrl(), description.isSelected());
+                    if (id != null) {
+                        description.setMethodID(id);
+                    }
+                } else {
+                    // update
+                    String update = "UPDATE api_token_method SET selected = ?  WHERE id = ?";
+                    run.update(connection, update, description.isSelected(), description.getMethodID());
+                }
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void deleteAuthenticationToken(AuthenticationToken token) {
+        if (token.getTokenId() != null) {
+            // TODO
+            // delete from api_token_method where token_id = ?;
+            // delete from api_token where token_id = ?;
+        }
+    }
+
+    public static List<AuthenticationMethodDescription> getConfiguredMethods(Integer tokenID) throws SQLException {
+        String sql = "SELECT * FROM api_token_method WHERE token_id = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, UserManager.resultSetToAuthenticationTokenMethodListHandler, tokenID);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
     }
 
 }

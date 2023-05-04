@@ -26,6 +26,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 
@@ -121,5 +122,20 @@ class JournalMysqlHelper implements Serializable {
             }
         }
 
+    }
+
+    public static JournalEntry getJournalEntryById(int id) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM journal WHERE id = " + id);
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            return new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(JournalEntry.class));
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
     }
 }
