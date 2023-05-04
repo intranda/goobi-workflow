@@ -27,7 +27,6 @@ package de.sub.goobi.metadaten.search;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,36 +52,6 @@ public class KulturNavImporter extends JsonDataLoader {
     public static final String SUMMARY_URL = BASE_URL + "api/summary/";
 
     /**
-     * Creates a norm data record based on the structure of the jsonMap
-     *
-     * @param jsonMap a JSON map
-     * @param defaultLabelList a default list of preferred values that will be shown to the search box. Default are values from getValueList()
-     * @return a record of type NormDataRecord
-     */
-    private static NormDataRecord createNormDataRecord(Map<String, Object> jsonMap,
-            List<String> defaultLabelList) {
-        NormDataRecord normDataRecord = new NormDataRecord();
-        List<NormData> normDataValuesList = new ArrayList<>();
-
-        normDataValuesList.addAll(
-                NormDataUtils.createNormData("NORM_LABEL", jsonMap.get("name")));
-        normDataValuesList.addAll(
-                NormDataUtils.createNormData("NORM_ALTLABEL", jsonMap.get("caption")));
-        normDataValuesList.addAll(NormDataUtils.createNormData(
-                "URI",
-                BASE_URL + jsonMap.get("uuid"),
-                false,
-                true));
-        normDataRecord.setNormdataList(normDataValuesList);
-
-        // Used as preferred values in the search box
-        Set<String> valuesForLabel = NormDataUtils.getValuesForLabel(
-                normDataValuesList, "NORM_LABEL", "NORM_ALTLABEL");
-        normDataRecord.getValueList().addAll(valuesForLabel);
-        return normDataRecord;
-    }
-
-    /**
      * Extracts UUID from KulturNav Url, which is in the form: BASE_URL + "uuid"
      *
      * @param url an Url to extract from
@@ -105,7 +74,18 @@ public class KulturNavImporter extends JsonDataLoader {
      * @return a record of type NormDataRecord
      */
     public static NormDataRecord createNormDataRecord(Map<String, Object> jsonMap) {
-        return createNormDataRecord(jsonMap, Collections.emptyList());
+        NormDataRecord normDataRecord = new NormDataRecord();
+        List<NormData> normDataValuesList = new ArrayList<>();
+
+        normDataValuesList.addAll(NormDataUtils.createNormData("NORM_LABEL", jsonMap.get("name")));
+        normDataValuesList.addAll(NormDataUtils.createNormData("NORM_ALTLABEL", jsonMap.get("caption")));
+        normDataValuesList.addAll(NormDataUtils.createNormData("URI", BASE_URL + jsonMap.get("uuid"), false, true));
+        normDataRecord.setNormdataList(normDataValuesList);
+
+        // Used as preferred values in the search box
+        Set<String> valuesForLabel = NormDataUtils.getValuesForLabel(normDataValuesList, "NORM_LABEL", "NORM_ALTLABEL");
+        normDataRecord.getValueList().addAll(valuesForLabel);
+        return normDataRecord;
     }
 
     /**

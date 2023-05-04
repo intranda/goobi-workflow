@@ -104,10 +104,6 @@ public class MetadatenImagesHelper {
             throws TypeNotAllowedForParentException, SwapException, DAOException, IOException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
-        DocStruct logical = this.mydocument.getLogicalDocStruct();
-        if (logical.getType().isAnchor() && logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
-            logical = logical.getAllChildren().get(0);
-        }
         if (physical == null) {
             createPagination(myProzess, directoryName);
             return Collections.emptyList();
@@ -156,8 +152,8 @@ public class MetadatenImagesHelper {
         List<DocStruct> pagesWithoutFiles = new LinkedList<>();
 
         // search for page objects with invalid image names
-        for (String imageNameInMets : imageNamesInMetsFile.keySet()) {
-            String currentImagePrefix = imageNameInMets.replace(Metadaten.getFileExtension(imageNameInMets), "");
+        for (Map.Entry<String, DocStruct> entry : imageNamesInMetsFile.entrySet()) {
+            String currentImagePrefix = entry.getKey().replace(Metadaten.getFileExtension(entry.getKey()), "");
             boolean match = false;
             for (String imageNameInDirectory : imagenames) {
                 if (currentImagePrefix.equals(imageNameInDirectory.replace(Metadaten.getFileExtension(imageNameInDirectory), ""))) {
@@ -167,9 +163,9 @@ public class MetadatenImagesHelper {
             }
             if (!match) {
                 if (log.isDebugEnabled()) {
-                    log.debug("adding docstruct with missing file " + imageNameInMets + " to abandoned list.");
+                    log.debug("adding docstruct with missing file " + entry.getKey() + " to abandoned list.");
                 }
-                pagesWithoutFiles.add(imageNamesInMetsFile.get(imageNameInMets));
+                pagesWithoutFiles.add(entry.getValue());
             }
         }
 

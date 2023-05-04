@@ -56,7 +56,7 @@ public class ExternalConnectionFactory {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         if ("SQS".equals(config.getExternalQueueType())) {
-            return createSQSConnection(username, password);
+            return createSQSConnection();
         } else {
             return createActiveMQConnection(username, password);
         }
@@ -75,7 +75,7 @@ public class ExternalConnectionFactory {
         return activeMQconn;
     }
 
-    private static Connection createSQSConnection(String username, String password) throws JMSException {
+    private static Connection createSQSConnection() throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         AmazonSQS client;
         if (config.isUseLocalSQS()) {

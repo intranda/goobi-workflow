@@ -45,7 +45,7 @@ public class MQResultMysqlHelper {
 
     public static void insertMessage(MqStatusMessage message) throws SQLException {
         String sql = "INSERT INTO mq_results (ticket_id, time, status, message, original_message) VALUES (?,?,?,?,?)";
-        Object[] param = generateParameter(message, false, false);
+        Object[] param = generateParameter(message);
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -82,9 +82,14 @@ public class MQResultMysqlHelper {
         return new MqStatusMessage(ticketId, time, status, message, origMessage);
     }
 
-    private static Object[] generateParameter(MqStatusMessage message, boolean b, boolean c) {
-        return new Object[] { message.getTicketId(), message.getTime(), message.getStatus().getName(), message.getMessage(),
-                message.getOriginalMessage() };
+    private static Object[] generateParameter(MqStatusMessage message) {
+        return new Object[] {
+                message.getTicketId(),
+                message.getTime(),
+                message.getStatus().getName(),
+                message.getMessage(),
+                message.getOriginalMessage()
+        };
     }
 
     public static int getMessagesCount(String filter) throws SQLException {

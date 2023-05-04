@@ -117,8 +117,8 @@ public class JwtHelper {
         Algorithm algorithm = createSigningAlgorithm(secret);
 
         Builder tokenBuilder = JWT.create().withIssuer(DEAULT_ISSUER);
-        for (String key : map.keySet()) {
-            tokenBuilder = tokenBuilder.withClaim(key, map.get(key));
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            tokenBuilder = tokenBuilder.withClaim(entry.getKey(), entry.getValue());
         }
         return tokenBuilder.withExpiresAt(expiryDate).sign(algorithm);
     }
@@ -140,10 +140,10 @@ public class JwtHelper {
         try {
             DecodedJWT jwt = verifyToken(token, secret, System::currentTimeMillis);
             if (jwt != null) {
-                for (String key : map.keySet()) {
-                    String tokenValue = jwt.getClaim(key).asString();
-                    if (StringUtils.isBlank(tokenValue) || !tokenValue.equals(map.get(key))) {
-                        log.debug("token rejected: parameter " + key + " with value " + tokenValue + " does not match " + map.get(key));
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    String value = jwt.getClaim(entry.getKey()).asString();
+                    if (StringUtils.isBlank(value) || !value.equals(entry.getValue())) {
+                        log.debug("token rejected: parameter " + entry.getKey() + " with value " + value + " does not match " + entry.getValue());
                         return false;
                     }
                 }

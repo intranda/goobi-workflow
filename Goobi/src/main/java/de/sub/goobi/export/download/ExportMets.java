@@ -376,7 +376,6 @@ public class ExportMets {
                     }
                 } else {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": could not find any referenced images, export aborted");
-                    dd = null;
                     return null;
                 }
             }

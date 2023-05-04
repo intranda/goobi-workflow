@@ -124,8 +124,9 @@ public class EasydbResponseObject {
 
     @SuppressWarnings("unchecked")
     private void readObjectValues(String prefix, Map<String, Object> objectValue) {
-        for (String key : objectValue.keySet()) {
-            Object value = objectValue.get(key);
+        for (Map.Entry<String, Object> entry : objectValue.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
             if (value != null) {
                 if (value instanceof LinkedHashMap) {
                     readObjectValues(prefix + key + ".", (LinkedHashMap<String, Object>) value);

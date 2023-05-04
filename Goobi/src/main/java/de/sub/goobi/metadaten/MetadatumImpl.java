@@ -877,9 +877,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         }
         Prefs prefs = this.getBean().getMyPrefs();
         DocStruct ds = this.getBean().getMyDocStruct();
-        for (String name : addMetadata.keySet()) {
+        for (Map.Entry<String, List<RestMetadata>> entry : addMetadata.entrySet()) {
+            String name = entry.getKey();
             try {
-                for (RestMetadata rmd : addMetadata.get(name)) {
+                for (RestMetadata rmd : entry.getValue()) {
                     if (!rmd.anyValue()) {
                         continue;
                     }

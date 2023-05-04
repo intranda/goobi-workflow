@@ -99,14 +99,12 @@ public class UsergroupManager implements IManager, Serializable {
 
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
-        int num = 0;
         try {
-            num = UsergroupMysqlHelper.getUsergroupCount(order, filter, institution);
+            return UsergroupMysqlHelper.getUsergroupCount(filter, institution);
         } catch (SQLException e) {
             log.error("error while getting Usergroup hit size", e);
             throw new DAOException(e);
         }
-        return num;
     }
 
     /* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */

@@ -26,7 +26,7 @@
 package de.sub.goobi.forms;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
+import java.util.List;
 
 import org.goobi.beans.Process;
 
@@ -45,7 +45,7 @@ public class LongRunningTasksForm {
     @Setter
     private LongRunningTask task;
 
-    public LinkedList<LongRunningTask> getTasks() {
+    public List<LongRunningTask> getTasks() {
         return LongRunningTaskManager.getInstance().getTasks();
     }
 

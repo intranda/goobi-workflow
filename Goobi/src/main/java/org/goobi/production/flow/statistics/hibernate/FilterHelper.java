@@ -262,7 +262,7 @@ public class FilterHelper {
         return sb.toString();
     }
 
-    protected static String filterAutomaticSteps(String tok, boolean flagSteps, List<String> dateFilter) {
+    protected static String filterAutomaticSteps(String tok, List<String> dateFilter) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("prozesse.ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = ");
@@ -902,7 +902,7 @@ public class FilterHelper {
             else if (tok.toLowerCase().startsWith(FilterString.STEP) || tok.toLowerCase().startsWith(FilterString.SCHRITT)) {
                 if (flagSteps) {
                     filter = checkStringBuilder(filter, true);
-                    filter.append(createHistoricFilter(tok, flagSteps));
+                    filter.append(createHistoricFilter(tok));
                 }
             } else if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
@@ -944,7 +944,7 @@ public class FilterHelper {
                 filter.append(FilterHelper.filterStepDoneUser(tok));
             } else if (tok.toLowerCase().startsWith(FilterString.STEPAUTOMATIC) || tok.toLowerCase().startsWith(FilterString.SCHRITTAUTOMATISCH)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(FilterHelper.filterAutomaticSteps(tok, flagSteps, currentDateFilter.getDateFilter()));
+                filter.append(FilterHelper.filterAutomaticSteps(tok, currentDateFilter.getDateFilter()));
             } else if (tok.toLowerCase().startsWith(FilterString.PROJECT) || tok.toLowerCase().startsWith(FilterString.PROJEKT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterProject(tok, false));
@@ -1220,11 +1220,10 @@ public class FilterHelper {
 
     /**
      * 
-     * @param conjSteps
      * @param filterPart
      * @return
      */
-    private static String createHistoricFilter(String filterPart, Boolean stepCriteria) {
+    private static String createHistoricFilter(String filterPart) {
 
         String stepTitle = filterPart.substring(filterPart.indexOf(":") + 1);
         String andFittingStepStatus = " AND (schritte.Bearbeitungsstatus = 1 OR schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4";

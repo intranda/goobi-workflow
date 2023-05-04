@@ -83,6 +83,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                         .entity("API Token is invalid.")
                         .build());
+                return;
             }
             //if token exists, check if token has the permission to access the current request
             String methodType = requestContext.getMethod();

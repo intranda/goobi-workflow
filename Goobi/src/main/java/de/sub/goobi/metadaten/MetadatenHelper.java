@@ -688,7 +688,7 @@ public class MetadatenHelper implements Comparator<Object> {
      * @param Rollenname der aktuellen Person, damit diese ggf. in die Liste mit übernommen wird ================================================
      *            ================
      */
-    public ArrayList<SelectItem> getAddablePersonRoles(HoldingElement myDocStruct, String inRoleName) {
+    public List<SelectItem> getAddablePersonRoles(HoldingElement myDocStruct, String inRoleName) {
         ArrayList<SelectItem> myList = new ArrayList<>();
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------

@@ -70,7 +70,7 @@ public class VocabularyManager implements IManager, Serializable {
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
-            return VocabularyMysqlHelper.getVocabularyCount(order, filter);
+            return VocabularyMysqlHelper.getVocabularyCount(filter);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -90,7 +90,7 @@ public class VocabularyManager implements IManager, Serializable {
 
     public int getHitSize(String order, String filter) throws DAOException {
         try {
-            return VocabularyMysqlHelper.getVocabularyCount(order, filter);
+            return VocabularyMysqlHelper.getVocabularyCount(filter);
         } catch (SQLException e) {
             log.error(e);
         }

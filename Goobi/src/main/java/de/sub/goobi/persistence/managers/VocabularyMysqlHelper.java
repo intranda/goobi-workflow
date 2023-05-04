@@ -143,7 +143,7 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    static int getVocabularyCount(String order, String filter) throws SQLException {
+    static int getVocabularyCount(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM vocabulary");

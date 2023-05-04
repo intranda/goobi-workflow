@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 
@@ -658,11 +659,11 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             List<Namespace> namespaces = getNamespacesFromConfig();
 
             HashMap<String, String> fields = getMetsFieldsFromConfig(false);
-            for (String key : fields.keySet()) {
-                List<Element> metsValues = getMetsValues(fields.get(key), metsDoc, namespaces);
+            for (Map.Entry<String, String> entry : fields.entrySet()) {
+                List<Element> metsValues = getMetsValues(entry.getValue(), metsDoc, namespaces);
                 for (Element element : metsValues) {
                     Element ele = new Element(ELEMENT_PROPERTY, xmlns);
-                    ele.setAttribute(ATTRIBUTE_NAME, key);
+                    ele.setAttribute(ATTRIBUTE_NAME, entry.getKey());
                     ele.addContent(element.getTextTrim());
                     metadataElements.add(ele);
                 }
@@ -670,11 +671,11 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
             if (anchorDoc != null) {
                 fields = getMetsFieldsFromConfig(true);
-                for (String key : fields.keySet()) {
-                    List<Element> metsValues = getMetsValues(fields.get(key), anchorDoc, namespaces);
+                for (Map.Entry<String, String> entry : fields.entrySet()) {
+                    List<Element> metsValues = getMetsValues(entry.getValue(), anchorDoc, namespaces);
                     for (Element element : metsValues) {
                         Element ele = new Element(ELEMENT_PROPERTY, xmlns);
-                        ele.setAttribute(ATTRIBUTE_NAME, key);
+                        ele.setAttribute(ATTRIBUTE_NAME, entry.getKey());
                         ele.addContent(element.getTextTrim());
                         metadataElements.add(ele);
                     }

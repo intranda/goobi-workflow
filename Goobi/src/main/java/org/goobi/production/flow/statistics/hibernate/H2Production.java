@@ -131,6 +131,7 @@ class H2Production extends H2Generator implements IProduction {
 
     @Override
     public String getSQL(String stepname) {
+
         String subQuery = "";
         String outerWhereClause = "";
         String outerWhereClauseTimeFrame = getWhereClauseForTimeFrame(this.myTimeFrom, this.myTimeTo, "timeLimiter");
@@ -160,4 +161,5 @@ class H2Production extends H2Generator implements IProduction {
                 + outerWhereClause + " GROUP BY intervall ";
         return this.mySql;
     }
+
 }

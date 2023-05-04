@@ -323,7 +323,6 @@ public class StepBean extends BasicBean implements Serializable {
 
     public String TakeOverBatch() {
         // find all steps with same batch id and step status
-        List<Step> currentStepsOfBatch = new ArrayList<>();
         Institution institution = null;
         User user = Helper.getCurrentUser();
         if (user != null && !user.isSuperAdmin()) {
@@ -334,11 +333,11 @@ public class StepBean extends BasicBean implements Serializable {
         if (mySchritt.getProzess().getBatch() != null) {
             batchNumber = this.mySchritt.getProzess().getBatch().getBatchId();
         }
+        List<Step> currentStepsOfBatch;
         if (batchNumber != null) {
             // only steps with same title
-            currentStepsOfBatch =
-                    StepManager.getSteps(null, "schritte.titel = '" + steptitle + "' and prozesse.batchID = " + batchNumber, 0, Integer.MAX_VALUE,
-                            institution);
+            String sql = "schritte.titel = '" + steptitle + "' and prozesse.batchID = " + batchNumber;
+            currentStepsOfBatch = StepManager.getSteps(null, sql, 0, Integer.MAX_VALUE, institution);
 
         } else {
             return SchrittDurchBenutzerUebernehmen();

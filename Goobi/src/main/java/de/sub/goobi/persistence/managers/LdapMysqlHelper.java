@@ -76,7 +76,7 @@ class LdapMysqlHelper implements Serializable {
         }
     }
 
-    public static int getLdapCount(String order, String filter, Institution institution) throws SQLException {
+    public static int getLdapCount(String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         boolean whereSet = false;

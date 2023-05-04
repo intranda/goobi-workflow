@@ -1812,7 +1812,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -2730,11 +2730,10 @@ public class Metadaten implements Serializable {
             /* die Größe der Arrays festlegen */
             this.structSeiten = new SelectItem[listReferenzen.size()];
             this.structSeitenNeu = new MetadatumImpl[listReferenzen.size()];
-            List<DocStruct> pageList = document.getPhysicalDocStruct().getAllChildrenAsFlatList();
             /* alle Referenzen durchlaufen und deren Metadaten ermitteln */
             for (Reference ref : listReferenzen) {
                 DocStruct target = ref.getTarget();
-                StructSeitenErmitteln2(target, zaehler, pageList);
+                StructSeitenErmitteln2(target, zaehler);
                 if (imageNr == 0) {
                     imageNr = StructSeitenErmitteln3(target);
                 }
@@ -2767,7 +2766,7 @@ public class Metadaten implements Serializable {
     /**
      * alle Seiten des aktuellen Strukturelements ermitteln 2 ================================================================
      */
-    private void StructSeitenErmitteln2(DocStruct inStrukturelement, int inZaehler, List<DocStruct> physicalDocStructs) {
+    private void StructSeitenErmitteln2(DocStruct inStrukturelement, int inZaehler) {
         MetadataType mdt = this.myPrefs.getMetadataTypeByName("logicalPageNumber");
         List<? extends Metadata> listMetadaten = inStrukturelement.getAllMetadataByType(mdt);
         if (listMetadaten == null || listMetadaten.isEmpty()) {
@@ -4291,8 +4290,8 @@ public class Metadaten implements Serializable {
             // get all folders to check and rename images
             Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
             // check size of folders, remove them if they don't match the expected number of files
-            for (Path p : allFolderAndAllFiles.keySet()) {
-                List<Path> files = allFolderAndAllFiles.get(p);
+            for (Map.Entry<Path, List<Path>> entry : allFolderAndAllFiles.entrySet()) {
+                List<Path> files = allFolderAndAllFiles.get(entry.getKey());
                 if (oldfilenames.size() != files.size()) {
                     files.clear();
                 }
@@ -4303,13 +4302,13 @@ public class Metadaten implements Serializable {
             currentImageNo = 0;
 
             boolean isWriteable = true;
-            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+            for (Map.Entry<Path, List<Path>> entry : allFolderAndAllFiles.entrySet()) {
                 // check if folder is writeable
-                if (!StorageProvider.getInstance().isWritable(currentFolder)) {
+                if (!StorageProvider.getInstance().isWritable(entry.getKey())) {
                     isWriteable = false;
-                    Helper.setFehlerMeldung(Helper.getTranslation("folderNoWriteAccess", currentFolder.getFileName().toString()));
+                    Helper.setFehlerMeldung(Helper.getTranslation("folderNoWriteAccess", entry.getKey().getFileName().toString()));
                 }
-                List<Path> files = allFolderAndAllFiles.get(currentFolder);
+                List<Path> files = entry.getValue();
                 for (Path file : files) {
                     // check if folder is writeable
                     if (!StorageProvider.getInstance().isWritable(file)) {
@@ -4329,9 +4328,9 @@ public class Metadaten implements Serializable {
                 currentImageNo++;
 
                 // check all folder
-                for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+                for (Map.Entry<Path, List<Path>> entry : allFolderAndAllFiles.entrySet()) {
                     // check files in current folder
-                    List<Path> files = allFolderAndAllFiles.get(currentFolder);
+                    List<Path> files = entry.getValue();
                     for (Path file : files) {
                         String filenameToCheck = file.getFileName().toString();
                         String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
@@ -4339,7 +4338,7 @@ public class Metadaten implements Serializable {
                         // find the current file the folder
                         if (filenamePrefixToCheck.equals(filenamePrefix)) {
                             // found file to rename
-                            Path tmpFileName = Paths.get(currentFolder.toString(), filenamePrefix + fileExtension + "_bak");
+                            Path tmpFileName = Paths.get(entry.getKey().toString(), filenamePrefix + fileExtension + "_bak");
                             try {
                                 StorageProvider.getInstance().move(file, tmpFileName);
                             } catch (IOException e) {
@@ -4361,9 +4360,9 @@ public class Metadaten implements Serializable {
                 document.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(newFilenamePrefix + originalExtension);
 
                 // check all folder
-                for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+                for (Map.Entry<Path, List<Path>> entry : allFolderAndAllFiles.entrySet()) {
                     // check files in current folder
-                    List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString(), NIOFileUtils.fileFilter);
+                    List<Path> files = StorageProvider.getInstance().listFiles(entry.getKey().toString(), NIOFileUtils.fileFilter);
                     for (Path file : files) {
                         String filenameToCheck = file.getFileName().toString();
                         if (filenameToCheck.contains(".")) {
@@ -4372,7 +4371,7 @@ public class Metadaten implements Serializable {
                             // found right file
                             if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
                                 // generate new file name
-                                Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
+                                Path renamedFile = Paths.get(entry.getKey().toString(), newFilenamePrefix + fileExtension.toLowerCase());
                                 try {
                                     StorageProvider.getInstance().move(file, renamedFile);
                                 } catch (IOException e) {
@@ -4380,7 +4379,7 @@ public class Metadaten implements Serializable {
                                 }
                             }
                         } else {
-                            log.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
+                            log.debug("the file to be renamed does not contain a '.': " + entry.getKey().toString() + filenameToCheck);
                         }
                     }
                 }
@@ -4414,9 +4413,9 @@ public class Metadaten implements Serializable {
         // check size of folders, remove them if they don't match the expected number of files
 
         // check all folder
-        for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+        for (Map.Entry<Path, List<Path>> entry : allFolderAndAllFiles.entrySet()) {
             // check files in current folder
-            List<Path> files = allFolderAndAllFiles.get(currentFolder);
+            List<Path> files = entry.getValue();
             if (totalNumberOfFiles == files.size()) {
                 for (Path file : files) {
                     String filenameToCheck = file.getFileName().toString();
@@ -4433,8 +4432,8 @@ public class Metadaten implements Serializable {
                     }
                 }
             } else {
-                Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + entry.getKey().toString()
+                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 

@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
@@ -436,9 +437,9 @@ public class FileManipulation {
         }
         if (deleteFilesAfterMove) {
             OrderedKeyMap<String, PhysicalObject> pageMap = metadataBean.getPageMap();
-            for (String pageName : pageMap.keySet()) {
-                PhysicalObject po = pageMap.get(pageName);
-                po.setSelected(selectedFiles.contains(pageName));
+            for (Map.Entry<String, PhysicalObject> entry : pageMap.entrySet()) {
+                PhysicalObject physivalObject = entry.getValue();
+                physivalObject.setSelected(selectedFiles.contains(entry.getKey()));
             }
 
             metadataBean.deleteSeltectedPages();

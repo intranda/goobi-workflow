@@ -193,7 +193,7 @@ public class MetaPerson implements SearchableMetadata {
 
     }
 
-    public ArrayList<SelectItem> getAddableRollen() {
+    public List<SelectItem> getAddableRollen() {
         return this.mdh.getAddablePersonRoles(this.myDocStruct, this.p.getRole());
     }
 

@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -559,8 +558,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         this.bearbeitungsstatus = Integer.parseInt(inbearbeitungsstatus);
     }
 
-    public ArrayList<String> getAllScriptPaths() {
-        ArrayList<String> answer = new ArrayList<>();
+    public List<String> getAllScriptPaths() {
+        List<String> answer = new ArrayList<>();
         if (this.typAutomatischScriptpfad != null && !"".equals(this.typAutomatischScriptpfad)) {
             answer.add(this.typAutomatischScriptpfad);
         }
@@ -579,8 +578,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return answer;
     }
 
-    public HashMap<String, String> getAllScripts() {
-        LinkedHashMap<String, String> answer = new LinkedHashMap<>();
+    public Map<String, String> getAllScripts() {
+        Map<String, String> answer = new LinkedHashMap<>();
         if (this.typAutomatischScriptpfad != null && !"".equals(this.typAutomatischScriptpfad)) {
             answer.put(this.scriptname1, this.typAutomatischScriptpfad);
         }
@@ -599,7 +598,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return answer;
     }
 
-    public void setAllScripts(HashMap<String, String> paths) {
+    public void setAllScripts(Map<String, String> paths) {
         Set<String> keys = paths.keySet();
         ArrayList<String> keyList = new ArrayList<>();
         for (String key : keys) {
