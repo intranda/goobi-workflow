@@ -132,9 +132,20 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private String vocabulary; // source
     private String field; // should be unsused
 
-    @Deprecated
+    /**
+     * The table of available normdata objects
+     *
+     * @deprecated This table is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     private List<List<NormData>> dataList;
-    @Deprecated
+
+    /**
+     * The list of current normdata objects
+     *
+     * @deprecated This list is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     private List<NormData> currentData;
 
     private List<NormDataRecord> normdataList;

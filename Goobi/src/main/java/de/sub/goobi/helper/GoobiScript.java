@@ -65,12 +65,14 @@ public class GoobiScript {
 
     /**
      * executes the list of GoobiScript commands for all processes that were selected
-     * 
+     *
+     * @deprecated This method is replaced by execute(List<Integer>, String, GoobiScriptManager)
+     *
      * @param processes List of process identifiers
      * @param allScripts all goobiScript calls that were used
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String execute(List<Integer> processes, String allScripts) {
         GoobiScriptManager gsm = Helper.getBeanByClass(GoobiScriptManager.class);
         return execute(processes, allScripts, gsm);

@@ -219,7 +219,7 @@ public @Data class Image {
      * @param tooltip The tooltip to display
      * @deprecated Use {@link #Image(Process, String, String, int)} instead
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public Image(String imageName, int order, String thumbnailUrl, String largeThumbnailUrl, String tooltip) {
         this.imageName = imageName;
         this.type = getType(imageName);

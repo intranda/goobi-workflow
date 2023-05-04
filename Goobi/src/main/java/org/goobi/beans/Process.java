@@ -536,7 +536,12 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         return ocrTxtDirectory;
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getOcrWcDirectory() throws SwapException, IOException {
         return getOcrDirectory() + this.titel + "_wc" + FileSystems.getDefault().getSeparator();
     }
@@ -2059,8 +2064,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * 
      * @deprecated use getJournal() instead
      */
-
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public List<JournalEntry> getProcessLog() {
         return journal;
     }
@@ -2069,8 +2073,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * 
      * @deprecated use setJournal() instead
      */
-
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public void setProcessLog(List<JournalEntry> journal) {
         this.journal = journal;
     }

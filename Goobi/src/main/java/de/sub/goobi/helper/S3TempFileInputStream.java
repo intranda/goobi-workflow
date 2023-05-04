@@ -66,8 +66,12 @@ public class S3TempFileInputStream extends InputStream {
 
     @Override
     public int read() throws IOException {
-
         return inputStream.read();
+    }
+
+    @Override
+    public int read(byte[] b, int off, int len) throws IOException {
+        return inputStream.read(b, off, len);
     }
 
     @Override

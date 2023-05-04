@@ -38,10 +38,20 @@ public interface IValidatorPlugin extends IPlugin {
 
     public void setStep(Step step);
 
-    @Deprecated
+    /**
+     * This method is not used anymore
+     * 
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public Step getStepObject();
 
-    @Deprecated
+    /**
+     * This method is not used anymore
+     * 
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public void setStepObject(Step so);
 
 }

@@ -89,12 +89,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             String methodType = requestContext.getMethod();
             String requestUri = req.getPathInfo();
             for (AuthenticationMethodDescription method : token.getMethods()) {
-                if (method.isSelected()) {
-                    if (methodType.equalsIgnoreCase(method.getMethodType())) {
-                        if (Pattern.matches(method.getUrl(), requestUri)) {
-                            return;
-                        }
-                    }
+                if (method.isSelected() && methodType.equalsIgnoreCase(method.getMethodType()) && Pattern.matches(method.getUrl(), requestUri)) {
+                    return;
                 }
             }
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)

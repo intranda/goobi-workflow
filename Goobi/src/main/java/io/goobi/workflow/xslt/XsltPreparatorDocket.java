@@ -823,7 +823,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return
      * @deprecated This also breaks normal metadata including these characters. Replace characters in xslt instead.
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     @SuppressWarnings("unused")
     private String replacer(String in) {
         in = in.replace("°", "?");

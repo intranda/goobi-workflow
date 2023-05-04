@@ -291,7 +291,7 @@ public class Helper implements Serializable, ServletContextListener {
      * @deprecated use addMessageToProcessJournal instead
      */
 
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
         addMessageToProcessJournal(processId, type, message);
     }
@@ -301,7 +301,7 @@ public class Helper implements Serializable, ServletContextListener {
      * 
      * @deprecated use addMessageToProcessJournal instead
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
         addMessageToProcessJournal(processId, type, message, username);
     }
@@ -343,11 +343,11 @@ public class Helper implements Serializable, ServletContextListener {
             msg = msg.replace("\n", "<br />");
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
         } else // wenn kein Kontext da ist, dann die Meldungen in Log
-            if (nurInfo) {
-                log.info(compoundMessage);
-            } else {
-                log.error(compoundMessage);
-            }
+        if (nurInfo) {
+            log.info(compoundMessage);
+        } else {
+            log.error(compoundMessage);
+        }
     }
 
     private static String getMessage(Locale language, String key) {
@@ -614,7 +614,14 @@ public class Helper implements Serializable, ServletContextListener {
         }
     }
 
-    @Deprecated
+    /**
+     * @deprecated Use other methods with different parameters instead
+     *
+     * @param dbTitel
+     * @param parameterList
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public static String getTranslation(String dbTitel, List<String> parameterList) {
         String[] values = parameterList.toArray(new String[parameterList.size()]);
         return getTranslation(dbTitel, values);

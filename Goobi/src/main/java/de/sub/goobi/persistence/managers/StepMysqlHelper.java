@@ -1301,7 +1301,7 @@ class StepMysqlHelper implements Serializable {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             String sql = "UPDATE schritte SET paused=? WHERE schritteid = ?";
             QueryRunner run = new QueryRunner();
-            run.update(connection, sql, new Object[] { paused, stepId });
+            run.update(connection, sql, paused, stepId);
         }
     }
 

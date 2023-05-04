@@ -56,9 +56,6 @@ import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
  */
 class VocabularyMysqlHelper implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 5141386688477409583L;
 
     private static final Integer MAXIMAL_QUERY_RESULTS = 10_000;
@@ -262,7 +259,13 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param vocabulary
+     * @param gson
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     static void saveVocabulary(Vocabulary vocabulary, Gson gson) throws SQLException {
         StringBuilder sql = new StringBuilder();
 
@@ -336,7 +339,12 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param vocabulary
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     static void loadRecordsForVocabulary(Vocabulary vocabulary) throws SQLException {
         if (vocabulary != null && vocabulary.getId() != null) {
             String sql = "SELECT * FROM vocabularyRecords WHERE vocabId = ?";
@@ -358,7 +366,13 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param vocabulary
+     * @param rec
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     private static void mergeRecordAndVocabulary(Vocabulary vocabulary, VocabRecord rec) {
         for (Definition definition : vocabulary.getStruct()) {
             boolean fieldFound = false;
@@ -622,7 +636,12 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param vocabulary
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     static void getRecords(Vocabulary vocabulary) throws SQLException {
         String likeStr = "like";
         if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {

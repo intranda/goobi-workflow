@@ -49,9 +49,6 @@ import lombok.Setter;
 @XmlRootElement
 public class Vocabulary implements Serializable, DatabaseObject {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -86569570995051824L;
 
     private Integer id;
@@ -71,16 +68,27 @@ public class Vocabulary implements Serializable, DatabaseObject {
     public void lazyLoad() {
     }
 
+    /**
+     * This field is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     @JsonIgnore
-    @Deprecated
     private String mainFieldName;
 
+    /**
+     * This field is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     @JsonIgnore
-    @Deprecated
     private String searchField;
+
+    /**
+     * This field is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     @JsonIgnore
-    @Deprecated
     private String order; // blank, ASC, DESC
+
     @JsonIgnore
     private int totalNumberOfRecords;
 

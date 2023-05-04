@@ -573,10 +573,11 @@ public class MassImportForm implements Serializable {
     }
 
     /**
-     * 
-     * @return current format
+     * @deprecated This method is replaced by getFormat()
+     *
+     * @return The current format
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getCurrentFormat() {
         if (this.format != null) {
             return this.format.getTitle();
@@ -586,15 +587,21 @@ public class MassImportForm implements Serializable {
     }
 
     /**
-     * 
+     * @deprecated This method is replaced by setFormat(String)
+     *
      * @param formatTitle current format
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public void setCurrentFormat(String formatTitle) {
         this.format = ImportFormat.getTypeFromTitle(formatTitle);
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param processes The list of processes
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public void setProcesses(List<Process> processes) {
         this.process = processes;
     }
@@ -755,7 +762,12 @@ public class MassImportForm implements Serializable {
         return getDocstructs().size();
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @return The include path for a plugin page
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getInclude() {
         return "plugins/" + plugin.getTitle() + ".jsp";
     }

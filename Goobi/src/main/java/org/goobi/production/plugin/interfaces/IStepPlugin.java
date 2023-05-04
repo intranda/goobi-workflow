@@ -55,7 +55,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return true if successful, false in error case
      */
-
     public boolean execute();
 
     /**
@@ -63,7 +62,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return the path to return e.g. task_edit.xhtml or process_edit.xhtml
      */
-
     public String cancel();
 
     /**
@@ -71,7 +69,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return the path to return e.g. task_edit.xhtml or process_edit.xhtml
      */
-
     public String finish();
 
     /**
@@ -79,8 +76,7 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return
      */
-
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public HashMap<String, StepReturnValue> validate();
 
     /**
@@ -88,7 +84,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return step the {@link Step} for which the plugin is started
      */
-
     public Step getStep();
 
     /**
@@ -96,7 +91,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return the {@link PluginGuiType} of the plugin
      */
-
     public PluginGuiType getPluginGuiType();
 
     /**
@@ -104,7 +98,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return path to the xhtml page
      */
-
     public String getPagePath();
 
 }

@@ -69,7 +69,7 @@ public class DisplayCase {
      * @param bind The bind value - is not used anymore
      * @param metaType The meta type that should be assigned to this display case
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public DisplayCase(Process process, String bind, String metaType) {
         this.initializeDisplayCase(process, metaType);
     }

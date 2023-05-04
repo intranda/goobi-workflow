@@ -347,7 +347,7 @@ public class MetadatenHelper implements Comparator<Object> {
     /**
      * die erste Imagenummer zurückgeben ================================================================
      */
-    // FIXME: alphanumerisch
+    // TODO: alphanumerisch
 
     public MutablePair<String, String> getImageNumber(DocStruct inStrukturelement, int inPageNumber) {
         String physical = "";

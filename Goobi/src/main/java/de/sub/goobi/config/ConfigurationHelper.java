@@ -324,7 +324,12 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("doneDirectoryName", "fertig/");
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method will be removed since this configuration is not read from goobi_config.properties anymore
+     *
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public boolean isUseSwapping() {
         return getLocalBoolean("useSwapping", false);
     }
@@ -430,11 +435,12 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /**
-     * This method is deprecated. The information was moved to the user table in the database. The method is still needed during the migration.
+     * @deprecated This method is deprecated. The information was moved to the user table in the database. The method is still needed during the
+     *             migration.
      * 
      * @return The name of the dashboard plugin or null in case of no configured plugin
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getDashboardPlugin() {
         return getLocalString("dashboardPlugin", null);
     }
@@ -472,151 +478,151 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getLdapUrl() {
         return getLocalString("ldap_url");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getLdapAdminLogin() {
         return getLocalString("ldap_adminLogin");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getLdapAdminPassword() {
         return getLocalString("ldap_adminPassword");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getLdapAttribute() {
         return getLocalString("ldap_AttributeToTest", null);
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getLdapAttributeValue() {
         return getLocalString("ldap_ValueOfAttribute");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getLdapNextId() {
         return getLocalString("ldap_nextFreeUnixId");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getLdapRootCert() {
         return getLocalString("ldap_cert_root");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getLdapPdcCert() {
         return getLocalString("ldap_cert_pdc");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getLdapEncryption() {
         return getLocalString("ldap_encryption", "SHA");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public boolean isUseLdapSSLConnection() {
         return getLocalBoolean("ldap_sslconnection", false);
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public boolean isLdapReadOnly() {
         return getLocalBoolean("ldap_readonly", false);
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public boolean isLdapReadDirectoryAnonymous() {
         return getLocalBoolean("ldap_readDirectoryAnonymous", false);
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public boolean isLdapUseLocalDirectory() {
         return getLocalBoolean("useLocalDirectory", false);
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getLdapHomeDirectory() {
         return getLocalString("ldap_homeDirectory", "homeDirectory");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public boolean isLdapUseTLS() {
         return getLocalBoolean("ldap_useTLS", false);
     }
@@ -938,7 +944,12 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("geonames_account", null);
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public int getGoobiModuleServerPort() {
         return getLocalInt("goobiModuleServerPort");
     }

@@ -435,7 +435,10 @@ public class StepBean extends BasicBean implements Serializable {
         return RETURN_PAGE_EDIT_BATCH;
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public void saveProperties() {
     }
 
@@ -868,15 +871,16 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     /**
-     * call module for this step ================================================================
-     * 
-     * @throws IOException
+     * @deprecated This method is not used anymore
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public void executeModule() {
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public int getHomeBaende() {
         return 0;
     }
