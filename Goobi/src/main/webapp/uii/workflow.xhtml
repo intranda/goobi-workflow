@@ -4,7 +4,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:of="http://omnifaces.org/functions"
-	template="#{NavigationForm.workflowPlugin.title eq 'intranda_workflow_barcode_generator' ? '/uii/templatePG/templatePG.html' : '/uii/template/template.html'}"
+	template="#{NavigationForm.workflowPlugin.title eq 'intranda_workflow_barcode_generator' or NavigationForm.workflowPlugin.title eq 'intranda_workflow_aeon_process_creation' ? '/uii/templatePG/templatePG.html' : '/uii/template/template.html'}"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
