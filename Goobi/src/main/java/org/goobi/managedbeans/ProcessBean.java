@@ -510,10 +510,35 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     private void deleteMetadataDirectory() {
+        // get all assigned users
+        List<User> assignedUsers = new ArrayList<>();
         for (Step step : this.myProzess.getSchritteList()) {
-            this.mySchritt = step;
-            deleteSymlinksFromUserHomes();
+
+            if (step.isTypImagesLesen() || step.isTypImagesSchreiben()) {
+                for (User b : step.getBenutzerList()) {
+                    if (!assignedUsers.contains(b)) {
+                        assignedUsers.add(b);
+                    }
+                }
+                for (Usergroup bg : step.getBenutzergruppenList()) {
+                    for (User b : bg.getBenutzer()) {
+                        if (!assignedUsers.contains(b)) {
+                            assignedUsers.add(b);
+                        }
+                    }
+                }
+            }
         }
+        // remove any symlinks/mounts
+        WebDav myDav = new WebDav();
+        for (User b : assignedUsers) {
+            try {
+                myDav.UploadFromHome(b, this.mySchritt.getProzess());
+            } catch (RuntimeException exception) {
+                log.warn(exception);
+            }
+        }
+        // delete process folder
         try {
             StorageProvider.getInstance().deleteDir(Paths.get(this.myProzess.getProcessDataDirectory()));
         } catch (Exception e) {
@@ -2199,8 +2224,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
                 XWPFDocument wb =
-                        sch.getResultAsWord(prepareSearchColumnData(), this.filter, sortField, this.showClosedProcesses,
-                                this.showArchivedProjects);
+                        sch.getResultAsWord(prepareSearchColumnData(), this.filter, sortField, this.showClosedProcesses, this.showArchivedProjects);
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
@@ -2226,8 +2250,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.rtf\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                sch.getResultAsRtf(prepareSearchColumnData(), this.filter, sortField, this.showClosedProcesses, this.showArchivedProjects,
-                        out);
+                sch.getResultAsRtf(prepareSearchColumnData(), this.filter, sortField, this.showClosedProcesses, this.showArchivedProjects, out);
                 out.flush();
                 facesContext.responseComplete();
 
@@ -2580,8 +2603,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             dms.startExport(mySchritt.getProzess());
         } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ReadException
-                | TypeNotAllowedForParentException | IOException | ExportFileException | UghHelperException | SwapException
-                | DAOException e) {
+                | TypeNotAllowedForParentException | IOException | ExportFileException | UghHelperException | SwapException | DAOException e) {
             log.error(e);
             Helper.setFehlerMeldung("Can't load export plugin.");
         } catch (InterruptedException e) {
