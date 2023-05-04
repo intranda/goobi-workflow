@@ -55,7 +55,7 @@
 					pt:aria-label="#{cc.attrs.label}"
 					validator="#{cc.attrs.validationMethod}"
 					idForValidator="#{cc.attrs.idForValidator}" />
-
+                <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />
 				<!-- Help messages, inline + warning -->
 				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
 			</div>

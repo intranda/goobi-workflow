@@ -133,6 +133,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
         Process proc = ProcessManager.getProcessById(gsr.getProcessId());
         plugin.setPrefs(proc.getRegelsatz().getPreferences());
         plugin.setForm(mi);
+        plugin.setWorkflowTitle(template.getTitel());
 
         String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
         plugin.setImportFolder(tempfolder);

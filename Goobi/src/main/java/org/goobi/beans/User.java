@@ -37,12 +37,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.api.rest.AuthenticationToken;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
@@ -288,6 +290,10 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     private UserStatus status = UserStatus.ACTIVE;
 
     private List<SelectItem> availableUiModes = null;
+
+    @Getter
+    @Setter
+    private transient List<AuthenticationToken> apiToken = new ArrayList<>();
 
     @Getter
     @Setter
@@ -758,5 +764,12 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         }
         return answer;
     }
+
+    public void createNewToken() {
+        AuthenticationToken token = new AuthenticationToken(UUID.randomUUID().toString(), id);
+        apiToken.add(token);
+    }
+
+    // TODO delete token
 
 }

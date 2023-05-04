@@ -44,7 +44,9 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -117,6 +119,9 @@ public class Helper implements Serializable, ServletContextListener {
     private static final Map<Path, Thread> watcherMap = new ConcurrentHashMap<>();
     private static final String MESSAGES = "messages";
     private static final String AUTOMATIC = "- automatic -";
+
+    private static final DateTimeFormatter formatterDEDateTime = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private static final DateTimeFormatter formatterENDateTime = DateTimeFormatter.ofPattern("MM/dd/yyyy h:mm:ss a").withLocale(Locale.ENGLISH);
 
     /**
      * Ermitteln eines bestimmten Paramters des Requests
@@ -337,15 +342,12 @@ public class Helper implements Serializable, ServletContextListener {
         if (context != null) {
             msg = msg.replace("\n", "<br />");
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
-        } else {
-            // wenn kein Kontext da ist, dann die Meldungen in Log
+        } else // wenn kein Kontext da ist, dann die Meldungen in Log
             if (nurInfo) {
                 log.info(compoundMessage);
             } else {
                 log.error(compoundMessage);
             }
-
-        }
     }
 
     private static String getMessage(Locale language, String key) {
@@ -410,9 +412,21 @@ public class Helper implements Serializable, ServletContextListener {
     public static String getDateAsFormattedString(Date inDate) {
         if (inDate == null) {
             return "-";
-        } else {
-            return DateFormat.getDateInstance().format(inDate) + " " + DateFormat.getTimeInstance(DateFormat.MEDIUM).format(inDate);
         }
+        if (Locale.GERMAN == Helper.getSessionLocale()) {
+            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(inDate);
+        }
+        return new SimpleDateFormat("MM/dd/yyyy h:mm:ss").format(inDate);
+    }
+
+    public static String getLocalDateTimeAsFormattedString(LocalDateTime inDate) {
+        if (inDate == null) {
+            return "-";
+        }
+        if (Locale.GERMAN == Helper.getSessionLocale()) {
+            return formatterDEDateTime.format(inDate);
+        }
+        return formatterENDateTime.format(inDate);
     }
 
     /**
@@ -476,8 +490,8 @@ public class Helper implements Serializable, ServletContextListener {
             path += separator;
         }
 
-        for (int l = 0; l < languages.length; l++) {
-            String fileName = "messages_" + languages[l] + ".properties";
+        for (String language : languages) {
+            String fileName = "messages_" + language + ".properties";
             Path messagesFile = Paths.get(path + fileName);
             if (!Files.isRegularFile(messagesFile)) {
                 try {

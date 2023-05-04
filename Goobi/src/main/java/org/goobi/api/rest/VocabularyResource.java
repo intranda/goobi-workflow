@@ -59,6 +59,7 @@ import org.goobi.vocabulary.Vocabulary;
 import de.sub.goobi.persistence.managers.VocabularyManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Path("/vocabulary")
 public class VocabularyResource {
@@ -79,6 +80,7 @@ public class VocabularyResource {
     @ApiResponse(responseCode = "400", description = "Bad Request")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "vocabulary")
     public Response findRecords(@PathParam("vocabulary") String vocabulary, @PathParam("searchvalue") String searchvalue) {
         List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, searchvalue);
         return Response.ok(records).build();
@@ -101,6 +103,7 @@ public class VocabularyResource {
     @ApiResponse(responseCode = "400", description = "Bad Request")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "vocabulary")
     public Response findRecords(@PathParam("vocabulary") String vocabulary, @PathParam("fieldname") String fieldname,
             @PathParam("searchvalue") String searchvalue) {
         List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, searchvalue, fieldname);
@@ -111,6 +114,7 @@ public class VocabularyResource {
     @Path("{vocabulary}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "vocabulary")
     public Response findRecords(@PathParam("vocabulary") String vocabulary, List<StringPair> data) {
         List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, data);
         return Response.ok(records).build();
@@ -129,6 +133,7 @@ public class VocabularyResource {
     @ApiResponse(responseCode = "400", description = "Bad Request")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "vocabulary")
     public Response getVocabularyByName(@PathParam("vocabulary") String vocabularyName) {
         Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
         VocabularyManager.getAllRecords(vocabulary);
@@ -147,6 +152,7 @@ public class VocabularyResource {
     @ApiResponse(responseCode = "400", description = "Bad Request")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "vocabulary")
     public Response getRecord(@PathParam("vocabulary") Integer vocabularyId, @PathParam("record") Integer recordId) {
         VocabRecord recordRecord = VocabularyManager.getRecord(vocabularyId, recordId);
         return Response.ok(recordRecord).build();
@@ -159,6 +165,7 @@ public class VocabularyResource {
     @ApiResponse(responseCode = "400", description = "Bad Request")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "vocabulary")
     public Response getRecordAsJskos(@Context UriInfo uriInfo, @PathParam("vocabulary") Integer vocabularyId, @PathParam("record") Integer recordId) {
         VocabRecord recordRecord = VocabularyManager.getRecord(vocabularyId, recordId);
         if (recordRecord == null) {

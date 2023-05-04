@@ -122,9 +122,9 @@ public class BagCreationTest extends AbstractTest {
         creation.addMetadata("Internal-Sender-Description", "Main title");
 
         // add some files
-        Path p = Paths.get("src/test/resources/metadata/0/meta.xml");
+        Path p = Paths.get("src/test/resources/metadata/1/meta.xml");
         if (!Files.exists(p)) {
-            p = Paths.get("target/test-classes/metadata/0/meta.xml");
+            p = Paths.get("target/test-classes/metadata/1/meta.xml");
         }
         Files.copy(p, Paths.get(creation.getMetadataFolder().toString(), "mets.xml"));
 

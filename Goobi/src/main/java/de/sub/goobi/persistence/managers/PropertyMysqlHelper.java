@@ -72,6 +72,20 @@ class PropertyMysqlHelper implements Serializable {
         }
     }
 
+    public static Processproperty getProcessPropertyById(int propertyId) throws SQLException {
+        String sql = "SELECT * FROM prozesseeigenschaften WHERE prozesseeigenschaftenID = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, resultSetToPropertyHandler, propertyId);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
     public static final ResultSetHandler<Processproperty> resultSetToPropertyHandler = new ResultSetHandler<Processproperty>() {
         @Override
         public Processproperty handle(ResultSet resultSet) throws SQLException {

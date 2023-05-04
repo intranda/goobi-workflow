@@ -52,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 53;
+    public static final int EXPECTED_VERSION = 54;
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
@@ -390,6 +390,10 @@ public class DatabaseVersion {
                     log.trace("Update database to version 53.");
                     updateToVersion53();
                     tempVersion++;
+                case 53: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 54.");
+                    updateToVersion54();
+                    tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -401,6 +405,38 @@ public class DatabaseVersion {
             log.error(e);
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
+        }
+    }
+
+    private static void updateToVersion54() {
+        try {
+            if (!DatabaseVersion.checkIfTableExists("api_token")) {
+                StringBuilder sql = new StringBuilder();
+                sql.append(" CREATE TABLE api_token (");
+                sql.append(" id INT(11)  unsigned NOT NULL AUTO_INCREMENT,");
+                sql.append(" user_id INT(11),");
+                sql.append(" token_name VARCHAR(255),");
+                sql.append(" token_description VARCHAR(255),");
+                sql.append(" PRIMARY KEY (id)");
+                sql.append(" ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;");
+                DatabaseVersion.runSql(sql.toString());
+            }
+            if (!DatabaseVersion.checkIfTableExists("api_token_method")) {
+                StringBuilder sql = new StringBuilder();
+                sql.append(" CREATE TABLE api_token_method (");
+                sql.append(" id INT(11)  unsigned NOT NULL AUTO_INCREMENT,");
+                sql.append(" token_id INT(11),");
+                sql.append(" method_type VARCHAR(255),");
+                sql.append(" method_description VARCHAR(255),");
+                sql.append(" method_url VARCHAR(255),");
+                sql.append(" selected tinyint(1),");
+                sql.append(" PRIMARY KEY (id),");
+                sql.append(" KEY `tokenid` (`token_id`)");
+                sql.append(" ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8; ");
+                DatabaseVersion.runSql(sql.toString());
+            }
+        } catch (SQLException e) {
+            log.error(e);
         }
     }
 
