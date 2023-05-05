@@ -28,7 +28,7 @@ pipeline {
     stage('sonarcloud') {
       when {
         anyOf {
-          tag "v*"
+          branch 'master'
           branch 'sonar_*'
         }
       }
@@ -41,7 +41,7 @@ pipeline {
     stage('deployment to maven repository') {
       when {
         anyOf {
-        tag "v*"
+        branch 'master'
         branch 'develop'
         }
       }
@@ -51,7 +51,7 @@ pipeline {
     }
     stage('trigger pull-requester') {
       when {
-        tag "v*"
+        branch 'master'
       }
       steps {
         build wait: false, job: '../goobi-plugins-pull-requester/master'
