@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
@@ -42,7 +42,7 @@ public class HistoryManager implements Serializable {
         } catch (SQLException e) {
             log.error(e);
         }
-        return new ArrayList<HistoryEvent>();
+        return new ArrayList<>();
     }
 
     public static void addHistory(Date myDate, double order, String value, int type, int processId) {
@@ -80,5 +80,14 @@ public class HistoryManager implements Serializable {
             log.error(IMAGE_NUMBER_ERROR, e);
         }
         return 0;
+    }
+
+    public static void addAllEvents(List<HistoryEvent> eventList) {
+        try {
+            HistoryMysqlHelper.addAllHistoryEvents(eventList);
+        } catch (SQLException e) {
+            log.error(HISTORY_EVENT_SAVE_ERROR, e);
+        }
+
     }
 }
