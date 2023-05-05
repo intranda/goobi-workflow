@@ -5,7 +5,7 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
 	<composite:interface>
 		<composite:attribute name="name" />
@@ -19,42 +19,61 @@
 		<composite:attribute name="required" default="false" />
 		<composite:attribute name="displayAsRequired" default="false" />
 		<composite:attribute name="classLeft" default="col-12 col-md-3" />
-		<composite:attribute name="classRight" default="col-md-9" />
+		<composite:attribute name="classRight" default="col-12 col-md-9" />
 		<composite:attribute name="tabindex" default="0" />
+		<composite:attribute
+			name="validationMethod"
+			default="null"
+			method-signature="java.lang.Object action(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)" />
+		<composite:attribute name="idForValidator" default="" />
+		<!-- "idForValidator" can be requested by the validator with uiComponent.getAttributes().get("idForValidator"); -->
 	</composite:interface>
 
 	<composite:implementation>
 
-		<div class="row" style="#{cc.attrs.style}">
-			<div class="#{cc.attrs.classLeft} control-label" tabindex="-1">
+        <!-- ROW -->
+        <div
+            class="row"
+            style="#{cc.attrs.style}">
 
-				<!-- LABEL -->
-				<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
-					<ui:param name="labelFor" value="#{cc.attrs.name}" />
-					<ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
-					<ui:param name="labelLabel" value="#{cc.attrs.label}" />
-				</ui:include>
+            <!-- LABEL -->
+            <div
+                class="#{cc.attrs.classLeft}"
+                tabindex="-1">
+                <intranda:formLabel
+                    label="#{cc.attrs.label}"
+                    labelFor="#{cc.attrs.name}"
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
+            </div>
+            <!-- // LABEL -->
 
-			</div>
+            <!-- CONTENT -->
+            <div class="#{cc.attrs.classRight}">
+                <h:selectOneMenu
+                    id="#{cc.attrs.name}"
+                    styleClass="#{cc.attrs.fieldStyle}"
+                    value="#{cc.attrs.field}"
+                    tabindex="#{cc.attrs.tabindex}"
+                    readonly="#{cc.attrs.readonly}"
+                    validator="#{cc.attrs.validationMethod}"
+                    idForValidator="#{cc.attrs.idForValidator}">
+                    <f:selectItem
+                        itemValue="null"
+                        itemLabel="#{msgs.bitteAuswaehlen}" />
+                    <f:selectItems value="#{cc.attrs.selectItems}" />
+                </h:selectOneMenu>
+                <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />
+                <!-- Help messages, inline + warning -->
+                <intranda:formHelp
+                    content="#{cc.attrs.help}"
+                    msgFor="#{cc.attrs.name}" />
+            </div>
+            <!-- // CONTENT -->
 
-			<div class="#{cc.attrs.classRight}">
-				<h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}"
-					value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}" readonly="#{cc.attrs.readonly}">
-					<f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
-					<f:selectItems value="#{cc.attrs.selectItems}" />
-				</h:selectOneMenu>
+        </div>
+        <!-- // ROW -->
 
-				<!-- Help messages, inline + warning -->
-				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
-					<ui:param name="msgFor" value="#{cc.attrs.name}" />
-					<ui:param name="helpContent" value="#{cc.attrs.help}" />
-				</ui:include>
-
-			</div>
-
-		</div>
-
-	</composite:implementation>
+    </composite:implementation>
 
 </ui:composition>
 

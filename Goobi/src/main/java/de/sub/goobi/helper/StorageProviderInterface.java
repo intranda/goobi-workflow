@@ -141,4 +141,10 @@ public interface StorageProviderInterface {
     public OutputStream newOutputStream(Path dest) throws IOException;
 
     public URI getURI(Path path);
+
+    public String createSha1Checksum(Path path);
+
+    public String createSha256Checksum(Path path);
+
+    public String getFileCreationTime(Path path);
 }

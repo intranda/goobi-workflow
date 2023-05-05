@@ -37,12 +37,9 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +57,6 @@ import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
-import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
@@ -133,10 +129,10 @@ public class UserBean extends BasicBean implements Serializable {
 
     //set up the change recording lists
     private void resetChangeLists() {
-        addedToGroups.put(myClass.getId(), new ArrayList<Integer>());
-        addedToProjects.put(myClass.getId(), new ArrayList<Integer>());
-        removedFromGroups.put(myClass.getId(), new ArrayList<Integer>());
-        removedFromProjects.put(myClass.getId(), new ArrayList<Integer>());
+        addedToGroups.put(myClass.getId(), new ArrayList<>());
+        addedToProjects.put(myClass.getId(), new ArrayList<>());
+        removedFromGroups.put(myClass.getId(), new ArrayList<>());
+        removedFromProjects.put(myClass.getId(), new ArrayList<>());
     }
 
     private String getBasicFilter() {
@@ -152,9 +148,9 @@ public class UserBean extends BasicBean implements Serializable {
     public String FilterKein() {
         displayMode = "";
         this.filter = null;
-        this.sortierung = "nachname, vorname";
+        this.sortField = "nachname, vorname";
         UserManager m = new UserManager();
-        paginator = new DatabasePaginator(sortierung, getBasicFilter(), m, "user_all");
+        paginator = new DatabasePaginator(sortField, getBasicFilter(), m, "user_all");
         return "user_all";
     }
 
@@ -192,60 +188,9 @@ public class UserBean extends BasicBean implements Serializable {
             sqlQuery = sqlQueryBuilder.toString();
         }
 
-        this.paginator = new DatabasePaginator(this.getSortTitle(), sqlQuery, m, "user_all");
-        List<? extends DatabaseObject> users = paginator.getList();
+        this.paginator = new DatabasePaginator(sortField, sqlQuery, m, "user_all");
 
-        boolean sortProjects = this.sortierung.startsWith("projects");
-        boolean sortUserGroups = this.sortierung.startsWith("group");
-        if (sortProjects || sortUserGroups) {
-            List<User> list = new ArrayList<>();
-            for (int index = 0; index < users.size(); index++) {
-                list.add((User) (users.get(index)));
-            }
-            this.sortUserListByProjectOrGroup(list);
-            this.paginator.setList(list);
-        } else {
-            if (this.sortierung.endsWith("Desc")) {
-                Collections.reverse(users);
-            }
-            this.paginator.setList(users);
-        }
         return "user_all";
-    }
-
-    private String getSortTitle() {
-        String sort = "";
-        if (this.sortierung.startsWith("name")) {
-            sort = "benutzer.Nachname, benutzer.Vorname";
-        } else if (this.sortierung.startsWith("login")) {
-            sort = "benutzer.login";
-        } else if (this.sortierung.startsWith("location")) {
-            sort = "benutzer.Standort";
-        } else if (this.sortierung.startsWith("institution")) {
-            sort = "institution.shortName";
-        }
-        return sort;
-    }
-
-    private void sortUserListByProjectOrGroup(List<User> users) {
-        // Find the fitting User-getter-method for the sorting routine depending on the sort strategy
-        Function<User, String> function = null;
-        if (this.sortierung.startsWith("group")) {
-            function = User::getFirstUserGroupTitle;
-        } else if (this.sortierung.startsWith("projects")) {
-            function = User::getFirstProjectTitle;
-        }
-
-        // When there is no sorting routine, don't sort and return the original list
-        if (function != null) {
-            Comparator<User> comparator = Comparator.comparing(function);
-
-            // Only when the sorting routine is descending, replace comparator by reversed comparator.
-            if (this.sortierung.endsWith("Desc")) {
-                comparator = Collections.reverseOrder(comparator);
-            }
-            Collections.sort(users, comparator);
-        }
     }
 
     public String Speichern() {
@@ -379,7 +324,7 @@ public class UserBean extends BasicBean implements Serializable {
                 }
             }
         } catch (IOException exception) {
-            log.error(exception);
+            log.trace(exception);
         }
         return valide;
     }

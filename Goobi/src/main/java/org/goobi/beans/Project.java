@@ -166,6 +166,10 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
     @Setter
     private String metsIIIFUrl = "";
 
+    @Getter
+    @Setter
+    private String dfgViewerUrl = "";
+
     @Override
     public void lazyLoad() {
 
@@ -340,6 +344,25 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         return result;
     }
 
+    /**
+     * This constructor clones all metadata of the given project to a new instance (this project). Most of the properties are cloned, including the
+     * user assignments and file groups.
+     *
+     * Differences between this project and source:<br />
+     * - the project title is reused, but with the suffix "_copy"<br />
+     * - If the project title is already in use, a number is added until there is no existing project with that name<br />
+     *
+     * Following properties are NOT cloned to another project:<br />
+     * - this.id (is created in the database afterwards)<br />
+     * - this.prozesse (the project is going to get own processes)<br />
+     * - this.commonWorkFlow (statistics for this.prozesse, does not make sense without this.prozesse)<br />
+     *
+     * <b>Attention:</b><br />
+     * The metadata of file groups is also cloned with the responsible constructor!<br />
+     * If metadata is added to file groups, check that constructor too!<br />
+     *
+     * @param source The source project to clone the data from
+     */
     public Project(Project source) {
         setDmsImportCreateProcessFolder(source.isDmsImportCreateProcessFolder());
         setDmsImportErrorPath(source.getDmsImportErrorPath());
@@ -375,10 +398,13 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         setNumberOfVolumes(source.getNumberOfVolumes());
         setProjectIsArchived(source.getProjectIsArchived());
         setStartDate(source.getStartDate());
-        setTitel(source.getTitel() + "_copy");
+        setTitel(cloneProjectTitleWithoutNameConflict(source.getTitel()));
         setUseDmsImport(source.isUseDmsImport());
         setInstitution(source.getInstitution());
         setProjectIdentifier(source.getProjectIdentifier());
+        setMetsSruUrl(source.getMetsSruUrl());
+        setMetsIIIFUrl(source.getMetsIIIFUrl());
+        dfgViewerUrl = source.getDfgViewerUrl();
         try {
             ProjectManager.saveProject(this);
         } catch (DAOException e) {
@@ -407,8 +433,6 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         ProjectManager.saveProjectFileGroups(projectFileGroupList);
     }
 
-
-
     @Override
     public EntryType getEntryType() {
         return EntryType.PROJECT;
@@ -418,4 +442,28 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
     public Path getDownloadFolder() {
         return Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "project", titel.replace(" ", "_"));
     }
+
+    /**
+     * Returns a project title for the case that the project with the given source project title is cloned. The returned title is generated so that is
+     * unused in the current list of (active and inactive) projects in the goobi database. If a normal project title is cloned for the first time,
+     * this method returns sourceProjectTitle + "_copy". If there is already a project with that title, an index is added to the title
+     * (sourceProjectTitle + "_copy_" + index) until there is no project with that name.
+     *
+     * @param sourceProjectTitle The title of the project that should be cloned
+     * @return The new name for a cloned project, the name does not exist until now
+     */
+    private String cloneProjectTitleWithoutNameConflict(String sourceProjectTitle) {
+        String newProjectTitle = sourceProjectTitle + "_copy";
+        List<String> existingProjectTitles = ProjectManager.getAllProjectTitles(false);
+        if (!existingProjectTitles.contains(newProjectTitle)) {
+            return newProjectTitle;
+        }
+        newProjectTitle += "_";
+        int cloneIndex = 1;
+        do {
+            cloneIndex++;
+        } while (existingProjectTitles.contains(newProjectTitle + cloneIndex));
+        return newProjectTitle + cloneIndex;
+    }
+
 }

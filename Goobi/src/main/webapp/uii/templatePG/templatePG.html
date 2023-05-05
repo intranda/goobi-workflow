@@ -63,52 +63,37 @@
 
     <!-- Bootstrap -->
 
-    <!-- BS 3 -->
-    <!--
-    <script src="template/js/bootstrap.min.js?v=#{HelperForm.buildVersion}"></script>
-    -->
+    <!-- Bootstrap 5 -->
+    <script src="templatePG/js/bootstrap.bundle.min.js?v=#{HelperForm.buildVersion}"></script>
 
-    <!-- BS 5 -->
-    <script src="template/js/PG/bootstrap.bundle.min.js?v=#{HelperForm.buildVersion}"></script>
-
+    <!-- HC-Sticky -->
+    <script src="templatePG/js/hc-sticky.js?v=#{HelperForm.buildVersion}"></script>
 
     <!-- INTRANDA JS -->
     <script src="template/js/intranda.js?v=1.2"></script>
 
     <!-- jQuery -->
     <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
-    <!-- Mobile nav swipe -->
-    <script src="template/js/plugins/touchwipe/touchwipe.min.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- Nice Scroll -->
-    <script src="template/js/plugins/nicescroll/jquery.nicescroll.min.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- imagesLoaded -->
+
+    <!-- imagesLoaded => used in application.js -->
     <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js?v=#{HelperForm.buildVersion}"></script>
+
     <!-- jQuery UI -->
     <script src="template/js/plugins/jquery-ui/jquery-ui.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- slimScroll -->
+
+    <!-- slimScroll => used in application.js -->
     <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js?v=#{HelperForm.buildVersion}"></script>
 
-
-
-
-
+    <!--
+      ==> used in formInputSlider.xhtml, however the plugin only supports bs4!
     <script src="template/js/bootstrap-slider.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- Bootbox -->
-    <script src="template/js/plugins/bootbox/jquery.bootbox.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- Bootbox -->
-    <script src="template/js/plugins/form/jquery.form.min.js?v=#{HelperForm.buildVersion}"></script>
+    -->
+
     <!-- Reactive rx -->
-     <script src="template/js/reactiveX/rx.lite.min.js"></script>
+    <script src="template/js/reactiveX/rx.lite.min.js"></script>
 
-    <!-- Validation -->
-    <script src="template/js/plugins/validation/jquery.validate.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/plugins/validation/additional-methods.min.js?v=#{HelperForm.buildVersion}"></script>
-
-  <!-- shortcuts -->
-  <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
-
-    <!-- Theme framework -->
-    <!-- <script src="template/js/eakroko.js?v=#{HelperForm.buildVersion}"></script> -->
+    <!-- shortcuts ==> used in several templates (also plugins) + _metseditor.xhtml -->
+    <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
 
     <!-- Theme scripts -->
     <script src="template/js/application.js?v=#{HelperForm.buildVersion}"></script>
@@ -141,139 +126,150 @@
     <f:view locale="#{SpracheForm.locale}">
 
         <h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
-            <ui:include src="../template/inc_login.xhtml" />
+            <ui:include src="inc_login.xhtml" />
         </h:panelGroup>
 
         <c:if test="#{LoginForm.myBenutzer!=null}">
             <ui:include src="inc_menu.xhtml" />
 
             <div class="container-fluid" id="content" style="padding-bottom:20px">
-                <!-- 				<div id="left"> -->
-                <!-- 					<ui:insert name="sidebar"> -->
-                <!-- 						<ui:include src="inc_sidebar.xhtml" /> -->
-                <!-- 					</ui:insert> -->
-                <!-- 				</div> -->
                 <div id="main" style="margin-right: 0px;">
                     <div class="flow container-fluid">
 
                         <h:form id="header">
 
-											                  <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
-
-                                            <div class="d-none">
-
-                                                <o:socket channel="goobiscriptUpdateChannel">
-                                                    <f:ajax render="goobiScriptResults2" event="update"/>
-                                                </o:socket>
-                                                <o:commandScript name="updateGoobiScriptIndicator"  render="goobiScriptResults2" />
-
-                                            </div>
-	                                        </ui:fragment>
+                            <!-- GOOBI SCRIPT RUNNING -->
+                            <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+                                <div class="d-none">
+                                    <o:socket channel="goobiscriptUpdateChannel">
+                                        <f:ajax render="goobiScriptResults2" event="update"/>
+                                    </o:socket>
+                                    <o:commandScript name="updateGoobiScriptIndicator"  render="goobiScriptResults2" />
+                                </div>
+                              </ui:fragment>
+                            <!-- // GOOBI SCRIPT RUNNING -->
 
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
-                            <header>
-                                <div class="flow page-header">
-                                    <h:panelGroup id="globalWarningMessage">
-                                        <h:panelGroup rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
-                                            <i class="fa fa-exclamation-triangle margin-right-10"></i>
-                                            <h:outputText value="#{SessionForm.logoutMessage}" />
-                                        </h:panelGroup>
+
+                            <!-- HEADER -->
+                            <header class="header">
+
+                              <!-- GLOBAL WARNING MESSAGE -->
+                              <div class="header__top">
+                                <h:panelGroup layout="block" id="globalWarningMessage" styleClass="mt-4">
+                                    <h:panelGroup layout="block" rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger" style="line-height:40px;font-size:24px;">
+                                      <i class="fa fa-exclamation-triangle"></i>
+                                      <span>
+                                        <h:outputText value="#{SessionForm.logoutMessage}" />
+                                      </span>
                                     </h:panelGroup>
-                                    <o:socket channel="adminMessageChannel">
-                                        <f:ajax event="update" render="globalWarningMessage"/>
-                                    </o:socket>
-	                                <div class="pull-left">
-	                                    <h1>
-	                                        <ui:insert name="title">
-	                                            <h:outputText value="#{myPageTitle}" />
-	                                        </ui:insert>
-	                                    </h1>
-	                                </div>
-	                                <div class="pull-right">
-	                                    <ui:insert name="info" />
-	                                    <ul class="stats">
+                                </h:panelGroup>
+                                <o:socket channel="adminMessageChannel">
+                                    <f:ajax event="update" render="globalWarningMessage"/>
+                                </o:socket>
+                              </div> 
+                              <!-- // GLOBAL WARNING MESSAGE -->
 
-	                                        <li id="ajaxloader" class='' style="display: none;">
-	                                            <img src="template/img/goobi/ajaxloader2.gif" />
-	                                        </li>
+	                            <div class="header__bottom">
+                                    <h1>
+                                      <ui:insert name="title">
+                                        <h:outputText value="#{myPageTitle}" />
+                                      </ui:insert>
+                                    </h1>
 
-											                  <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+                                <ui:insert name="info" />
+	                                <ul class="stats">
 
+                                    <!-- AJAX LOADER -->
+                                    <li id="ajaxloader" class='' style="display: none;">
+                                        <img src="template/img/goobi/ajaxloader2.gif" />
+                                    </li>
+                                    <!-- // AJAX LOADER -->
 
-	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script">
-		                                            <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
-		                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
-		                                                    <div class="details">
-		                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
-		                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
-		                                                    </div>
-		                                                </button>
-		                                        </li>
-	                                        </ui:fragment>
+                                    <!-- GOOBI SCRIPT -->
+                                    <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+	                                  <li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script">
+                                      <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
+                                        <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
+                                        <div class="details">
+                                          <span class="big">#{msgs.goobiScript_isActive}</span>
+                                          <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
+                                        </div>
+                                      </button>
+                                    </li>
+                                    </ui:fragment>
 
+                                    <!-- CURRENT USERS -->
+                                    <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
+                                      <li class='bg-neutral-400 stats__current-users'>
+                                        <button jsf:action="currentUsers" jsf:id="currentUsers">
+                                          <i class="fa fa-users"></i>
+                                          <div class="details">
+                                            <span>#{msgs.aktiveBenutzer}</span>
+                                            <span>#{SessionForm.numberOfSessions}</span>
+                                            <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
+                                          </div>
+                                        </button>
+                                      </li>
+                                    </h:panelGroup>
+                                    <!-- // CURRENT USERS -->
+                                    
+                                    <!-- DATE -->
+                                    <li class="bg-neutral-400 stats__date">
+                                      <i class="fa fa-calendar"></i>
+                                      <div class="details">
+                                        <span class="big">
+                                        <h:outputText value="#{SessionForm.currentTime}" />
+                                        <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
+                                          <div style="height: 12px;width: 20px;display: inline-block;"></div>
+                                        </a>
+                                        </span>
+                                        <span>
+                                        <h:outputText value="#{SessionForm.date}">
+                                          <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+                                          </h:outputText>
+                                        </span>
+                                      </div>
+                                    </li>
+                                    <!-- // DATE -->
+                                    
+                                  </ul>
+                                </div>
 
-	                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
-	                                            <li class='bg-neutral-400 stats__current-users'>
-	                                                <button jsf:action="currentUsers" jsf:id="currentUsers" class="button-no-style">
-	                                                    <i class="fa fa-users" style="margin-top:3px;"></i>
-	                                                    <div class="details">
-	                                                        <span>#{msgs.aktiveBenutzer}</span>
-	                                                        <span class="big pull-left">#{SessionForm.numberOfSessions}</span>
-	                                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
-	                                                    </div>
-	                                                </button>
-	                                            </li>
-	                                        </h:panelGroup>
-	                                        <li class="bg-neutral-400 stats__date">
-	                                            <i class="fa fa-calendar" style="margin-top:3px;"></i>
-	                                            <div class="details">
-	                                                <span class="big">
-	                                                    <h:outputText value="#{SessionForm.currentTime}" />
-	                                                    <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
-                                                        <div style="height: 12px;width: 20px;display: inline-block;"></div>
-                                                    </a>
-	                                                </span>
-	                                                <span>
-	                                                    <h:outputText value="#{SessionForm.date}">
-	                                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
-		                                                </h:outputText>
-	                                                </span>
-	                                            </div>
-	                                        </li>
-
-	                                    </ul>
-	                                </div>
-	                            </div>
-                            </header>
+                              </header>
+                              <!-- // HEADER -->
+                              
                         </h:form>
+                        
+                        <!-- BREADCRUMB -->
                         <nav class="navigation-breadcrumb" aria-label="navigationBreadcrumb">
 	                        <h:form style="margin:0px;" id="breadcrumb">
-
 	                            <div class="breadcrumbs">
 	                                <ul>
 	                                    <ui:insert name="breadcrumb" />
 	                                </ul>
-
-	                                <!--                                 <div class="close-bread" style="float: right;"> -->
-	                                <!--                                     <a href="#"> -->
-	                                <!--                                         <i class="fa fa-remove"></i> -->
-	                                <!--                                     </a> -->
-	                                <!--                                 </div> -->
 	                            </div>
 	                        </h:form>
 						</nav>
+                        <!-- // BREADCRUMB -->
+
+                        <!-- MESSAGES -->
 						<div role="complementary">
 							<h:panelGroup id="globalMessage" style="display: inline">
                         		<h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
 			             	</h:panelGroup>
 			            </div>
+                        <!-- // MESSAGES -->
+                        
+                        <!-- CONTENT -->
                         <div jsf:id="main-content" tabindex="-1">
                             <ui:insert name="content" />
                         </div>
+                        <!-- // CONTENT -->
+                        
                     </div>
                 </div>
             </div>
-
 
         </c:if>
 
@@ -287,6 +283,12 @@
         </script>
         <script>
      // <![CDATA[
+
+            // THIS CODE HAS BEEN REFACTORED INTO MODULES (see below)
+            // IT REMAINS FOR REFERENCE
+            // FEEL FREE TO DELETE IT, IF YOU DO NOT NEED IT ANYMORE
+
+            /*
             jsf.ajax.addOnEvent(function (data) {
                 var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                 var ajaxloader = document.getElementById("ajaxloader");
@@ -310,6 +312,7 @@
                         // NOOP.
                         $(function () {
                             $('[data-toggle="tooltip"]').tooltip();
+                            $('[data-toggle="tooltip"]').tooltip();
                             $('[data-toggle="popover"]').popover();
                             if ($('.popover.fade.right.in').length > 0) {
                                 $('.popover.fade.right.in').remove();
@@ -320,10 +323,9 @@
                             loadImages();
                         }
                         break;
+
                 }
             });
-
-
 
 
             function toggle_help(data) {
@@ -357,25 +359,40 @@
                     myButton.click();
                 }
             });
+            */
 
+            // WHAT DOES IT DO?
             window.myfaces = window.myfaces || {};
             myfaces.config = myfaces.config || {};
             //set the config part
             myfaces.config.no_portlet_env = true;
 
-
-
-            /*
-            Initialize all BS Tooltips
-            [data-bs-toggle="tooltip"] => also grab legacy tool tips
-            */
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"], [data-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-              return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
-
          // ]]>
         </script>
+
+
+        <!--Show and hide help messages-->
+        <!--toggle_help is the legacy name for this function, it is used in most views, use gwToggleHelp.init in new markup-->
+        <script src="templatePG/js/modules/gwToggleHelp.js?v=#{HelperForm.buildVersion}" />
+        <script>
+            const toggle_help = gwToggleHelp.init;
+        </script>
+
+        <!--Show and hide goobi ajax loader-->
+        <script src="templatePG/js/modules/gwAjaxLoader.js?v=#{HelperForm.buildVersion}" />
+        <script>
+            gwAjaxLoader.init();
+        </script>
+
+        <!--TOOLTIPS-->
+        <!--Initialize Bootstrap tooltips-->
+        <script src="templatePG/js/modules/gwInitTooltips.js?v=#{HelperForm.buildVersion}" />
+        <script>
+            gwInitTooltips.init();
+        </script>
+
+        <!--Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)-->
+        <script src="templatePG/js/modules/gwHandleTooltip.js?v=#{HelperForm.buildVersion}"></script>
 
 
     </f:view>

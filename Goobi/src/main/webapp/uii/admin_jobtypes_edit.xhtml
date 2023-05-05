@@ -1,5 +1,6 @@
 <ui:composition
 	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -11,12 +12,12 @@
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
-    <ui:param name="myPageTitle" value="#{msgs.manageAutomaticTasks}" />
+	<ui:param name="myPageTitle" value="#{JobTypesBean.currentJobType.name == null?msgs.createNewJobType:msgs.editJobType}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
         <intranda:breadcrumb id="admin_jobtypes_all" label="#{msgs.automaticTasks}" action="admin_jobtypes_all.xhtml" />
-        <intranda:breadcrumb id="admin_jobtypes_edit" label="#{msgs.editJobType}" action="admin_jobtypes_edit.xhtml" noSeparator="#{true}" />
+        <intranda:breadcrumb id="admin_jobtypes_edit" label="#{myPageTitle}" action="admin_jobtypes_edit.xhtml" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
@@ -30,9 +31,9 @@
 				<intranda:box
 					boxType="action"
 					icon="fa-gears"
-					title="#{msgs.editJobType}"
-					scope="form-box"
-					padding="false">
+					title="#{myPageTitle}"
+					boxScope="form-box"
+					boxPadding="false">
 
                 	<intranda:formInputText
                 		label="#{msgs.titel}"
@@ -55,26 +56,26 @@
 						<div class="col-12 col-md-3 label-col">
 							<label>#{msgs.steps}</label>
 						</div>
-						<div class="col-9">
+						<div class="col-9 p-0">
 							<div class="d-flex">
-								<div class="col-12 col-md-6">
+								<div class="col-12 col-md-6 gw-col-padding gw-border-right">
 									<h3 tabindex="0" class="fs-600">#{msgs.jobtypes_assignedSteps}</h3>
 									<ui:repeat var="stepTitle" value="#{JobTypesBean.currentJobType.stepNameList}">
-										<button class="badge text-primary-400"
+										<button class="badge badge-light-blue"
 											   jsf:action="#{JobTypesBean.removeStepFromCurrentJobType(stepTitle)}">
 											   <f:ajax render="@form" execute="@form"/>
-											   #{stepTitle}
+												 <span>#{stepTitle}</span>
 											   <i class="fa fa-minus margin-left-5"></i>
 										   </button>
 									</ui:repeat>
 								</div>
-								<div class="col-12 col-md-6">
+								<div class="col-12 col-md-6 gw-col-padding">
 									<h3 tabindex="0" class="fs-600">#{msgs.jobtypes_availableSteps}</h3>
 									<ui:repeat var="stepTitle" value="#{JobTypesBean.availableStepTitles}">
-										<button class="badge text-primary-400"
+										<button class="badge badge-light-blue"
 											   jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
 											   <f:ajax render="@form" execute="@form"/>
-											   #{stepTitle}
+												 <span>#{stepTitle}</span>
 											   <i class="fa fa-plus margin-left-5"></i>
 										   </button>
 									</ui:repeat>
@@ -82,28 +83,27 @@
 							</div>
 						</div> <!-- end row -->
 				    </div>
-				    <div class="form-actions">
-                        <button class="btn btn-hot"
-                            onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
-                            jsf:action="#{JobTypesBean.deleteCurrentJobType}"
-                            jsf:rendered="#{not JobTypesBean.currentJobTypeNew}">
-                            <i class="fa fa-trash"></i>
-                            <span>#{msgs.loeschen}</span>
-                        </button>
-					    <button class="btn btn-blank"
-                            jsf:immediate="true"
-                            jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
+
+				    <div class="box__actions">
+					    <a
+								class="btn btn-blank"
+								jsf:immediate="true"
+								jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
 					    	<span>#{msgs.cancel}</span>
-					    </button>
+					    </a>
 					    <button class="btn btn-success" jsf:action="#{JobTypesBean.saveCurrentJobType}">
 					    	<i class="fa fa-save"></i>
 					    	<span>#{msgs.save}</span>
 					    </button>
+							<button
+								class="btn btn-hot box__actions__delete"
+								onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
+								jsf:action="#{JobTypesBean.deleteCurrentJobType}"
+								jsf:rendered="#{not JobTypesBean.currentJobTypeNew}">
+								<i class="fa fa-trash"></i>
+								<span>#{msgs.loeschen}</span>
+							</button>
 				    </div>
-						<!--
-                </div>
-        	</div>
-						-->
 					</intranda:box>
         	</div>
         	</div>

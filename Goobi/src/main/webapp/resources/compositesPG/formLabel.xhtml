@@ -1,0 +1,30 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <composite:interface>
+        <composite:attribute name="content" />
+    </composite:interface>
+
+    <composite:implementation>
+		
+		<ui:fragment rendered="#{!cc.attrs.labelRequired}">
+			<label for="#{cc.attrs.labelFor}" class="form__label">
+				#{cc.attrs.label}
+			</label>
+		</ui:fragment>
+
+		<ui:fragment rendered="#{cc.attrs.labelRequired}">
+			<label
+				for="#{cc.attrs.labelFor}"
+				class="form__label">
+				#{cc.attrs.label}
+                <i class="ms-2 text-primary fa fa-asterisk" aria-hidden="true" title="#{msgs.requiredField}" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+			</label>
+		</ui:fragment>
+		
+    </composite:implementation>
+
+</ui:composition>
+
+

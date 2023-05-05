@@ -69,7 +69,7 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
 
     public Processproperty() {
         this.istObligatorisch = false;
-        this.datentyp = PropertyType.String.getId();
+        this.datentyp = PropertyType.STRING.getId();
         this.creationDate = new Date();
     }
 
@@ -102,7 +102,7 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
     @Override
     public PropertyType getType() {
         if (this.datentyp == null) {
-            this.datentyp = PropertyType.String.getId();
+            this.datentyp = PropertyType.STRING.getId();
         }
         return PropertyType.getById(this.datentyp);
     }

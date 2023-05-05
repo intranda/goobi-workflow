@@ -1,9 +1,7 @@
-package de.sub.goobi.persistence.managers;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
@@ -18,6 +16,9 @@ package de.sub.goobi.persistence.managers;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+
+package de.sub.goobi.persistence.managers;
+
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -34,13 +35,22 @@ public class PropertyManager implements Serializable {
     private static final long serialVersionUID = 900347502238407686L;
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) {
-        List<Processproperty> propertyList = new ArrayList<Processproperty>();
+        List<Processproperty> propertyList = new ArrayList<>();
         try {
             propertyList = PropertyMysqlHelper.getProcessPropertiesForProcess(processId);
         } catch (SQLException e) {
             log.error(e);
         }
         return propertyList;
+    }
+
+    public static Processproperty getProcessPropertyById(int propertyId) {
+        try {
+            return PropertyMysqlHelper.getProcessPropertyById(propertyId);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return null;
     }
 
     public static void saveProcessProperty(Processproperty pe) {
@@ -60,7 +70,7 @@ public class PropertyManager implements Serializable {
     }
 
     public static List<String> getDistinctProcessPropertyTitles() {
-        List<String> titleList = new ArrayList<String>();
+        List<String> titleList = new ArrayList<>();
         try {
             titleList = PropertyMysqlHelper.getDistinctPropertyTitles();
         } catch (SQLException e) {
@@ -70,7 +80,7 @@ public class PropertyManager implements Serializable {
     }
 
     public static List<String> getDistinctTemplatePropertyTitles() {
-        List<String> titleList = new ArrayList<String>();
+        List<String> titleList = new ArrayList<>();
         try {
             titleList = PropertyMysqlHelper.getDistinctTemplatePropertyTitles();
         } catch (SQLException e) {
@@ -80,7 +90,7 @@ public class PropertyManager implements Serializable {
     }
 
     public static List<String> getDistinctMasterpiecePropertyTitles() {
-        List<String> titleList = new ArrayList<String>();
+        List<String> titleList = new ArrayList<>();
         try {
             titleList = PropertyMysqlHelper.getDistinctMasterpiecePropertyTitles();
         } catch (SQLException e) {
@@ -90,7 +100,7 @@ public class PropertyManager implements Serializable {
     }
 
     public static List<Templateproperty> getTemplateProperties(int templateId) {
-        List<Templateproperty> propertyList = new ArrayList<Templateproperty>();
+        List<Templateproperty> propertyList = new ArrayList<>();
         try {
             propertyList = PropertyMysqlHelper.getTemplateProperties(templateId);
         } catch (SQLException e) {
@@ -118,7 +128,7 @@ public class PropertyManager implements Serializable {
     }
 
     public static List<Masterpieceproperty> getMasterpieceProperties(int templateId) {
-        List<Masterpieceproperty> propertyList = new ArrayList<Masterpieceproperty>();
+        List<Masterpieceproperty> propertyList = new ArrayList<>();
         try {
             propertyList = PropertyMysqlHelper.getMasterpieceProperties(templateId);
         } catch (SQLException e) {

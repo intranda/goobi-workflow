@@ -1,0 +1,85 @@
+#processAll {
+  // Custom column widths
+  .header {
+    &__selection {
+      --width-table-col: 55px;
+    }
+    &__id {
+      --width-table-col: 25px;
+    }
+    &__thumbnail {
+      --width-table-col: 90px;
+    }
+    &__embedded-metadata {
+      --width-table-col: 200px;
+    }
+    &__batch-id {
+      --width-table-col: 35px;
+    }
+    &__title {
+      --width-table-col: 160px;
+    }
+    &__custom-column {
+      --width-table-col: 240px;
+    }
+    &__date {
+      --width-table-col: 60px;
+    }
+    &__ruleset {
+      --width-table-col: 60px;
+    }
+    &__progress {
+      --width-table-col: 70px;
+    }
+    &__project {
+      --width-table-col: 80px;
+    }
+    &__institution {
+      --width-table-col: 80px;
+    }
+    &__lockings {
+      --width-table-col: 60px;
+    }
+    &__update-date {
+      --width-table-col: 60px;
+    }
+    &__update-user {
+      --width-table-col: 60px;
+    }
+    &__update-task {
+      --width-table-col: 60px;
+    }
+    &__swapped {
+      --width-table-col: 40px;
+    }
+    &__number-of-imgs {
+      --width-table-col: 55px;
+    }
+    &__buttons {
+      width: 80px;
+    }
+  }
+
+  .metadata-nested-table {
+    tr {
+      display: flex;
+      .data-key {
+        white-space: nowrap;
+        min-width: 70px;
+        font-weight: 700;
+        margin-inline-end: 2px;
+      }
+    }
+  }
+  // Small nested box with details on processes
+  .boxTitleDetails {
+    th:first-child,
+    th:last-child {
+      --width-table-col: 80px;
+    }
+  }
+  .list-of-goobi-scripts .badge {
+    cursor: pointer;
+    border: 0;
+  }
+}

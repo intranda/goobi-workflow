@@ -960,4 +960,19 @@ public class S3FileUtils implements StorageProviderInterface {
         return uri;
     }
 
+    @Override
+    public String createSha1Checksum(Path path) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String createSha256Checksum(Path path) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getFileCreationTime(Path path) {
+        throw new UnsupportedOperationException();
+    }
+
 }

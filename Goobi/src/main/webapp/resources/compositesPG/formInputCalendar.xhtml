@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+
+	<composite:interface>
+		<composite:attribute name="name" />
+		<composite:attribute name="label" />
+		<composite:attribute name="field" />
+		<composite:attribute name="help" />
+		<composite:attribute name="fieldStyle" />
+		<composite:attribute name="required" default="true"/>
+		<composite:attribute name="displayAsRequired" default="false" />
+		<composite:attribute name="classLeft" default="col-12 col-md-3" />
+		<composite:attribute name="classRight" default="col-12 col-md-9" />
+	</composite:interface>
+
+	<composite:implementation>
+		<script type="text/javascript">PrimeFaces.locales['de'] = {
+		    closeText: 'Schließen',
+		    prevText: 'Zurück',
+		    nextText: 'Weiter',
+		    monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+		    monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+		    dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+		    dayNamesShort: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+		    dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
+		    weekHeader: 'Woche',
+		    firstDay: 1,
+		    isRTL: false,
+		    showMonthAfterYear: false,
+		    yearSuffix: '',
+		    timeOnlyTitle: 'Nur Zeit',
+		    timeText: 'Zeit',
+		    hourText: 'Stunde',
+		    minuteText: 'Minute',
+		    secondText: 'Sekunde',
+		    currentText: 'Aktuelles Datum',
+		    ampm: false,
+		    month: 'Monat',
+		    week: 'Woche',
+		    day: 'Tag',
+		    allDayText: 'Ganzer Tag'
+		};
+		</script>
+		
+		<!-- ROW -->
+		<div class="row">
+			
+			<!-- LABEL -->
+			<div class="#{cc.attrs.classLeft}">
+				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
+			</div>
+			<!-- // LABEL -->
+			
+			<!-- CONTENT -->
+			<div class="#{cc.attrs.classRight}">
+				<p:calendar id="#{cc.attrs.name}" value="#{cc.attrs.field}" styleClass="ff-goobi">
+		        	<f:passThroughAttribute name="autocomplete" value="off" />
+		        </p:calendar>
+				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
+			</div>
+			<!-- // CONTENT -->
+
+		</div>
+		<!-- // ROW -->
+		
+	</composite:implementation>
+</ui:composition>
+
+

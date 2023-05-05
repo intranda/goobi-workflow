@@ -51,7 +51,6 @@ import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.persistence.managers.MySQLHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -701,16 +700,6 @@ public class ConfigurationHelper implements Serializable {
      * category in goobi_config.properties: DATABASE SEARCH
      */
 
-    /**
-     * Check if Mysql or H2 is used as internal database
-     *
-     * @deprecated use MySQLHelper.isUsingH2() for this instead
-     */
-    @Deprecated
-    public boolean isUseH2DB() {
-        return MySQLHelper.isUsingH2();
-    }
-
     public boolean isUseFulltextSearch() {
         return getLocalBoolean("useFulltextSearch", false);
     }
@@ -771,8 +760,8 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ProcesslistShowEditionData", false);
     }
 
-    public long getJobStartTime(String jobname) {
-        return getLocalLong(jobname, -1);
+    public String getJobStartTime(String jobname) {
+        return getLocalString(jobname, null);
     }
 
     public List<String> getDownloadColumnWhitelist() {
@@ -1183,6 +1172,10 @@ public class ConfigurationHelper implements Serializable {
         String exportInstitutionMetadataName = getLocalString("ExportMetadataForInstitution", null);
         if (StringUtils.isNotBlank(exportInstitutionMetadataName)) {
             answer.put("Institution", exportInstitutionMetadataName);
+        }
+        String exportMetadataForDfgViewerUrl = getLocalString("ExportMetadataForDfgViewerUrl", null);
+        if (StringUtils.isNotBlank(exportMetadataForDfgViewerUrl)) {
+            answer.put("dfgViewerUrl", exportMetadataForDfgViewerUrl);
         }
         return answer;
     }

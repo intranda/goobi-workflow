@@ -89,7 +89,6 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
-import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.TreeNode;
@@ -103,6 +102,7 @@ import de.sub.goobi.metadaten.MetaConvertibleDate.DateType;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
+import io.goobi.workflow.api.connection.HttpUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -480,7 +480,8 @@ public class Metadaten implements Serializable {
 
     private transient PageAreaManager pageAreaManager;
 
-    private transient ImageCommentHelper commentHelper;
+    private ImageCommentPropertyHelper commentPropertyHelper;
+
     //this is set whenever setImage() is called.
     @Getter
     private boolean showImageComments = false;
@@ -669,7 +670,7 @@ public class Metadaten implements Serializable {
                 }
                 this.document.getPhysicalDocStruct().addMetadata(md);
             } catch (MetadataTypeNotAllowedException exception) {
-                log.error(exception);
+                // ignore this
             }
 
         }
@@ -1808,7 +1809,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -3608,7 +3609,7 @@ public class Metadaten implements Serializable {
             try {
                 client = HttpClientBuilder.create().build();
 
-                stream = client.execute(method, HttpClientHelper.streamResponseHandler);
+                stream = client.execute(method, HttpUtils.streamResponseHandler);
                 if (stream != null) {
                     ocrResult = IOUtils.toString(stream, StandardCharsets.UTF_8);
                 }
@@ -4448,7 +4449,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
@@ -5088,38 +5089,39 @@ public class Metadaten implements Serializable {
         }
     }
 
-    private ImageCommentHelper getCommentHelper() {
+    // =========================== Use ImageCommentPropertyHelper To Save Comments =========================== //
 
-        if (commentHelper == null) {
-            commentHelper = new ImageCommentHelper();
+    private ImageCommentPropertyHelper getCommentPropertyHelper() {
+        if (commentPropertyHelper == null) {
+            commentPropertyHelper = new ImageCommentPropertyHelper(myProzess);
         }
 
-        return commentHelper;
+        return commentPropertyHelper;
     }
 
-    public String getCommentForImage() {
-
+    public String getCommentPropertyForImage() {
         if (myProzess == null || getImage() == null) {
             return null;
         }
 
-        return getCommentHelper().getComment(this.imageFolderName, getImage().getImageName());
+        return getCommentPropertyHelper().getComment(currentTifFolder, getImage().getImageName());
     }
 
-    public void setCommentForImage(String comment) {
-
+    public void setCommentPropertyForImage(String comment) {
         if (myProzess == null || getImage() == null) {
             return;
         }
 
-        //only save new log entry if the comment has changed
-        String oldComment = getCommentForImage();
+        // only save new log entry if the comment has changed
+        String oldComment = getCommentPropertyForImage();
         if (comment == null || (oldComment != null && comment.contentEquals(oldComment)) || (oldComment == null && comment.isBlank())) {
             return;
         }
 
-        getCommentHelper().setComment(this.imageFolderName, getImage().getImageName(), comment);
+        getCommentPropertyHelper().setComment(currentTifFolder, getImage().getImageName(), comment);
     }
+
+    // =========================== Use ImageCommentPropertyHelper To Save Comments =========================== //
 
     public void refresh() {
         // do nothing, this is needed for jsf calls

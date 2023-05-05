@@ -1,507 +1,704 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	template="/uii/template/template.html"
+	template="/uii/templatePG/templatePG.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-    <ui:param name="myPageTitle" value="#{msgs.aktuelleSchritte}" />
+	<ui:param name="myPageTitle" value="#{msgs.aktuelleSchritte}" />
 
-    <ui:define name="breadcrumb">
-        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="taskAll" label="#{myPageTitle}" action="task_all" noSeparator="#{true}" />
-    </ui:define>
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb id="index"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index" navId="a0" />
+		<intranda:breadcrumb id="taskAll" label="#{myPageTitle}"
+			action="task_all" noSeparator="#{true}" />
+	</ui:define>
 
-    <ui:define name="info">
-    </ui:define>
-    <ui:define name="content">
-	<main role="main" id="tasksAll">
-		<c:if test="#{LoginForm.hasRole('Task_List')}">
+	<ui:define name="info"></ui:define>
 
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="box box-color box-bordered">
-                    <div class="box-title">
-                        <h2>
-                            <i class="fa fa-list"></i>
-                            <h:outputText value="#{myPageTitle}" />
-                        </h2>
-                    </div>
-                    <div class="box-content nopadding">
-                        <div class="dataTables_wrapper">
-                            <h:form id="searchform">
-                                <div class="dataTables_length" style="margin-bottom: 10px;">
-                                    <h:outputText value="#{msgs.treffer}: #{AktuelleSchritteForm.paginator.totalResults}" />
-                                </div>
-
-                                <x:aliasBeansScope>
-                                    <x:aliasBean alias="#{Form}" value="#{AktuelleSchritteForm}" />
-                                    <x:aliasBean alias="#{label}" value="#{msgs.filterTasks}" />
-                                    <f:subview id="sub1">
-                                        <ui:include src="includes/task/list_searchAndSave.xhtml" />
-                                    </f:subview>
-                                </x:aliasBeansScope>
-
-                                <ui:include src="includes/task/list_filterAndDisplay.xhtml" />
-                            </h:form>
-                            <h:form id="myform" prependId="false">
-                            	<!-- table -->
-                                <table role="grid" id="tasks"
-								class="table table-hover table-nomargin dataTable table-bordered responsive">
-									<!-- +++++++++++++++++++ Columnheader row ++++++++++++++++++++++++ -->
-									<thead>
-										<tr role="row">
-											<!-- Select boxes -->
-											<th jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['selectionBoxes']}">
-												<x:div>
-	                                                <h:outputText value="#{msgs.auswahl2}" styleClass="" />
-	                                                <button class="button-no-style font-black" jsf:action="#{AktuelleSchritteForm.SelectionNone}" jsf:id="selectnone" title="#{msgs.auswahlEntfernen}">
-	                                                    <i class="fa fa-square-o margin-left-5" />
-	                                                </button>
-	                                                <button class="button-no-style font-black" jsf:action="#{AktuelleSchritteForm.SelectionAll}" jsf:id="selectAll" title="#{msgs.alleAuswaehlen}">
-	                                                    <i class="fa fa-check-square-o margin-left-5" />
-	                                                </button>
-	                                            </x:div>
-											</th>
-											<!-- ProzessID -->
-											<intranda:columnheader
-												rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}"
-												id="my_tasks_process"
-		                                        name="id"
-		                                        form="#{AktuelleSchritteForm}"
-		                                        value="#{msgs.id}"
-		                                        ajaxRender=":myform"
-		                                        reverseOrder="true"/>
-		                                    <!-- Task -->
-		                                    <intranda:columnheader
-												id="sortStepTitle"
-		                                        name="schritt"
-		                                        form="#{AktuelleSchritteForm}"
-		                                        value="#{msgs.arbeitsschritt}"
-		                                        ajaxRender=":myform" />
-		                                    <!-- Process -->
-		                                    <intranda:columnheader
-		                                    	class="tableColumnMaxWidthLong"
-												id="sortProcessTitle"
-		                                        name="prozess"
-		                                        form="#{AktuelleSchritteForm}"
-		                                        value="#{msgs.prozessTitel}"
-		                                        ajaxRender=":myform" />
-		                                    <!-- Custom columns -->
-		                                    <c:forEach items="#{LoginForm.listOfCustomColumns}" var="var">
-			                                    <intranda:columnheader
-			                                        value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
-			                                        sortable="false"/>
-			                                </c:forEach>
-			                                <!-- Process date -->
-			                                <intranda:columnheader
-		                                    	rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}"
-												id="sortDate"
-		                                        name="prozessdate"
-		                                        form="#{AktuelleSchritteForm}"
-		                                        value="#{msgs.vorgangsdatum}"
-		                                        ajaxRender=":myform" />
-		                                    <!-- Modules / Plugins -->
-			                                <!-- <intranda:columnheader
-		                                    	rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}"
-												id="sortModule"
-		                                        name="module"
-		                                        form="#{AktuelleSchritteForm}"
-		                                        value="#{msgs.module}"
-		                                        ajaxRender=":myform" /> -->
-		                                    <!-- Project -->
-			                                <intranda:columnheader
-												id="sortProject"
-		                                        name="projekt"
-		                                        form="#{AktuelleSchritteForm}"
-		                                        value="#{msgs.projekt}"
-		                                        ajaxRender=":myform" />
-		                                    <intranda:columnheader
-		                                    	rendered="#{AktuelleSchritteForm.anzeigeAnpassen['institution']}"
-		                                    	class="tableColumnOverflow maxWidth120"
-		                                        name="institution"
-		                                        form="#{AktuelleSchritteForm}"
-		                                        value="#{msgs.institution}"
-		                                        ajaxRender=":myform" />
-		                                    <!-- Lockings -->
-		                                    <intranda:columnheader
-		                                    	rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}"
-												id="sortLocking"
-		                                        name="sperrungen"
-		                                        form="#{AktuelleSchritteForm}"
-		                                        value="#{msgs.sperrungen}"
-		                                        ajaxRender=":myform" />
-		                                    <!-- Batch -->
-		                                    <intranda:columnheader
-		                                    	rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}"
-												id="sortBatch"
-		                                        name="batch"
-		                                        form="#{AktuelleSchritteForm}"
-		                                        value="#{msgs.batch}"
-		                                        ajaxRender=":myform" />
-
-                                            <!-- number of images -->
-                                            <intranda:columnheader
-                                                rendered="#{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}"
-                                                value="#{msgs.NumberOfImages}"
-                                                addClass="tableColumnOverflow maxWidth120"
-                                                name="numberOfImages"
-                                                form="#{AktuelleSchritteForm}"
-                                                ajaxRender=":myform" />
-
-                                                    <!-- Status -->
-		                                    <intranda:columnheader
-		                                        value="#{msgs.prioritaet}"
-		                                        sortable="false" />
-		                                    <!-- Action -->
-		                                    <intranda:columnheader
-												id="sortStatus"
-		                                        name="status"
-		                                        form="#{AktuelleSchritteForm}"
-		                                        value="#{msgs.auswahl}"
-		                                        ajaxRender=":myform" />
-										</tr>
-									</thead>
-									<!-- +++++++++++++++++++++++ Content row +++++++++++++++++++ -->
-									<ui:repeat var="item"
-										value="#{AktuelleSchritteForm.paginator.list}"
-										varStatus="status">
-										<tr>
-											<!-- ===================== Select boxes ===================== -->
-											<td jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['selectionBoxes']}">
-												<button jsf:id="selection" class="button-no-style font-black" style="padding:10px">
-		                                            <i class="#{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
-		                                            <f:setPropertyActionListener target="#{item.selected}" value="#{item.selected?false:true}" />
-		                                            <f:ajax render=":myform" />
-		                                        </button>
-											</td>
-											<!-- ===================== ProzessID ===================== -->
-											<td jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}">
-												<h:outputText value="#{item.prozess.id}" />
-											</td>
-											<!-- ===================== Task ===================== -->
-											<td>
-												<ui:include src="includes/ajaxPlusMinusButtonTask.xhtml" />
-
-		                                        <h:panelGroup styleClass="margin-top-10 block" id="auflistungIntern" rendered="#{item.panelAusgeklappt}">
-
-		                                            <div class="box box-small box-color box-bordered">
-		                                                <div class="box-title">
-		                                                    <h3>
-		                                                        <i class="fa fa-table"></i>
-		                                                        #{msgs.details}
-		                                                    </h3>
-		                                                </div>
-		                                                <div class="box-content nopadding">
-		                                                    <h:panelGrid columns="2" class="table table-hover table-bordered">
-
-		                                                        <h:outputText value="#{msgs.titel}:" />
-		                                                        <h:outputText value="#{item.titelLokalisiert}" title="#{item.titel}"/>
-		                                                        <h:outputText value="#{msgs.bearbeitungsbeginn}:" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
-		                                                        <h:outputText value="#{item.bearbeitungsbeginnAsFormattedString}" rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" >
-																<!--  <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-		                                                        </h:outputText>
-		                                                        <h:outputText value="#{msgs.zuletztBearbeitet}:" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
-		                                                        <h:outputText value="#{item.bearbeitungszeitpunktAsFormattedString}" rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" >
-																<!--  <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-		                                                        </h:outputText>
-		                                                        <h:outputText value="#{msgs.letzteAktualisierungDurch}:" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
-		                                                        <h:outputText value="#{item.bearbeitungsbenutzer.nachVorname}" rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
-		                                                        <h:outputText value="#{msgs.aktualisierungstyp}:" />
-		                                                        <h:outputText value="#{item.editTypeEnum.title}" />
-		                                                        <h:outputText value="#{msgs.typ}:" />
-		                                                        <h:panelGroup>
-										                            <h:outputText styleClass="block" value="#{msgs.metadaten}" rendered="#{item.typMetadaten}" />
-										                            <h:outputText styleClass="block" value="#{msgs.importMittelsFileUpload}" rendered="#{item.typImportFileUpload}" />
-										                            <h:outputText styleClass="block" value="#{msgs.exportDMS}" rendered="#{item.typExportDMS}" />
-										                            <h:outputText styleClass="block" value="#{msgs.schrittBeimAnnehmenAbschliessen}" rendered="#{item.typBeimAnnehmenAbschliessen}" />
-										                            <h:outputText styleClass="block" value="#{msgs.beimAnnehmenModulStarten}" rendered="#{item.typBeimAnnehmenModul}" />
-										                            <h:outputText styleClass="block" value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}" rendered="#{item.typBeimAnnehmenModulUndAbschliessen}" />
-										                            <h:outputText styleClass="block" value="#{msgs.imagesLesen}" rendered="#{item.typImagesLesen}" />
-										                            <h:outputText styleClass="block" value="#{msgs.imagesSchreiben}" rendered="#{item.typImagesSchreiben}" />
-										                            <h:outputText styleClass="block" value="#{msgs.beimAbschliessenVerifizieren}" rendered="#{item.typBeimAbschliessenVerifizieren}" />
-										                            <h:outputText styleClass="block" value="#{msgs.automatischerSchritt}" rendered="#{item.typAutomatisch}" />
-										                            <h:outputText styleClass="block" value="#{msgs.typScriptStep}" rendered="#{item.typScriptStep}" />
-										                            <h:outputText styleClass="block" value="#{msgs.modulSchritt}: #{item.typModulName}" rendered="#{item.typModulName!=null and item.typModulName!=''}" />
-										                            <h:outputText styleClass="block" value="#{msgs.stepPlugin}: #{item.stepPlugin}" rendered="#{item.stepPlugin!=null and item.stepPlugin!=''}" />
-										                            <h:outputText styleClass="block" value="#{msgs.validationPlugin}" rendered="#{item.validationPlugin!=null and item.validationPlugin!=''}" />
-										                            <h:outputText styleClass="block" value="#{msgs.timeDelayPlugin}" rendered="#{item.delayStep!=null and item.delayStep!='' and item.delayStep}" />
-										                            <h:outputText styleClass="block" value="#{msgs.batchStep}" rendered="#{item.batchStep}" />
-										                            <h:outputText styleClass="block" value="#{msgs.updateMetadataIndex}" rendered="#{item.updateMetadataIndex}" />
-										                        </h:panelGroup>
-
-		                                                    </h:panelGrid>
-
-		                                                </div>
-		                                            </div>
-
-		                                        </h:panelGroup>
-											</td>
-											<!-- ===================== Process ===================== -->
-											<td>
-												<!-- Bearbeiten-Schaltknopf: konkrete Prozesse -->
-			                                    <button jsf:action="process_edit" class="button-no-style" jsf:rel="tooltip" jsf:id="edit1" aria-label="#{msgs.prozessBearbeiten}" title="#{msgs.prozessBearbeiten}" jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
-		                                            <i class="fa fa-tasks margin-right-10 btn" />
-		                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-		                                            <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item.prozess}" />
-		                                            <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusAnzeige}" value="aktuell" />
-		                                            <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-		                                        </button>
-		                                        <h:outputText value="#{item.prozess.titel}" title="#{item.prozess.titel}" />
-											</td>
-											<!-- ===================== Custom columns ===================== -->
-											<c:forEach items="#{LoginForm.listOfCustomColumns}" var="var">
-												<td>
-													<h:outputText value="#{item.prozess.getReplacedVariable(var)}" />
-												</td>
-											</c:forEach>
-											<!-- ===================== Process date ===================== -->
-											<td jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}">
-												<h:outputText value="#{item.prozess.erstellungsdatum}" />
-											</td>
-											<!-- ===================== Modules / Plugins ===================== -->
-											<!-- <td jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}">
-												<h:outputText value="#{item.typModulName}" />
-											</td> -->
-											<!-- ===================== Project ===================== -->
-											<td>
-												<h:outputText value="#{item.prozess.projekt.titel}" />
-											</td>
-											<td jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['institution']}">
-												<h:outputText value="#{item.prozess.projekt.institution.shortName}" />
-											</td>
-											<!-- ===================== Lockings ===================== -->
-											<td jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}">
-												<h:outputText value="#{item.prozess.benutzerGesperrt.nachVorname}" rendered="#{item.prozess.benutzerGesperrt != null}" />
-											</td>
-											<!-- ===================== Batch ===================== -->
-											<td jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}">
-												<h:outputText value="#{item.prozess.batch.batchId}" rendered="#{item.prozess.batch != null}"/>
-	                                        	<h:outputText value=" (#{item.prozess.batch.batchName})" rendered="#{item.prozess.batch != null and item.prozess.batch.batchName != null}"/>
-											</td>
-
-                                            <td jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}">
-                                                <h:outputText value="#{item.prozess.sortHelperImages}" />
-                                            </td>
-
-                                                    <!-- ===================== Status ===================== -->
-											<td>
-												<h:panelGroup rendered="#{item.prioritaet == 0}" class="badge badge-intranda-ultralight">
-	 											<h:outputText value="#{msgs.normalePrioritaet}" />
-												</h:panelGroup>
-
-		                                        <h:panelGroup rendered="#{item.prioritaet == 1}" class="badge badge-intranda-orange">
-		                                            <i class="fa fa-lightbulb-o"></i>
-														#{msgs.badgePriority1}
-												</h:panelGroup>
-
-		                                        <h:panelGroup rendered="#{item.prioritaet == 2}" class="badge badge-intranda-orange">
-		                                            <i class="fa fa-lightbulb-o" />
-														#{msgs.badgePriority2}
-		                                        </h:panelGroup>
+	<ui:define name="content">
 
 
-		                                        <h:panelGroup rendered="#{item.prioritaet gt 2 and item.prioritaet lt 10}" class="badge badge-intranda-orange">
-		                                            <i class="fa fa-lightbulb-o"></i>
-														#{msgs.badgePriority3}
-		                                        </h:panelGroup>
+		<main role="main" id="tasksAll">
+			<c:if test="#{LoginForm.hasRole('Task_List')}">
 
-		                                        <h:panelGroup styleClass="popover-div" style="display:none;" rendered="#{false}">
-			                                            <ui:repeat var="intern" value="#{item.eigenschaftenList}" rendered="#{item.eigenschaftenSize!=0}" id="propList">
-		                                                <span class="block margin-bottom-10">
-		                                                    <i class="btn btn-red margin-right-10 fa fa-bullhorn fa-lg width-40"></i>
-		                                                    <h:outputText class="font-red" value="#{intern.titel}" />
-		                                                    <h:outputText class="block margin-top-5" value="#{intern.wert}" />
-		                                                </span>
-		                                            </ui:repeat>
-		                                        </h:panelGroup>
+				<div class="row">
+					<div class="col-12">
 
-		                                        <!-- Popup -->
-		                                        <x:popup id="popup" closePopupOnExitingElement="true" closePopupOnExitingPopup="true" displayAtDistanceX="-320" displayAtDistanceY="-160" rendered="#{item.prioritaet gt 9}">
+						<intranda:box id="processAllBox" boxType="primary" icon="fa-list"
+							title="#{myPageTitle}">
 
-		                                            <f:facet name="popup">
+							<div class="gw-table gw-table-fixed">
 
-		                                                <div class="box box-small box-color red box-bordered">
-		                                                    <div class="box-title">
-		                                                        <h3>
-		                                                            <i class="fa fa-bullhorn"></i>
-		                                                            #{msgs.badgeCorrection}
-		                                                        </h3>
-		                                                    </div>
-		                                                    <div class="box-content nopadding">
-		                                                        <x:dataTable var="intern" style="width:400px" rendered="#{item.eigenschaftenSize!=0}" value="#{item.eigenschaftenList}" styleClass="table table-hover table-bordered">
-		                                                            <x:column style="vertical-align: top;">
-		                                                                <h:outputText value="#{intern.titel}:" />
-		                                                            </x:column>
-		                                                            <x:column style="vertical-align: top;">
-		                                                                <h:outputText value="#{intern.wert}" />
-		                                                            </x:column>
-		                                                        </x:dataTable>
-
-		                                                    </div>
-		                                                </div>
-
-		                                            </f:facet>
-		                                            <h:panelGroup class="badge badge-intranda-red">
-		                                                <i class="fa fa-bullhorn"></i>
-															#{msgs.badgeCorrection}
-		                                            </h:panelGroup>
-		                                        </x:popup>
-											</td>
-											<!-- ===================== Action ===================== -->
-											<td>
-												 <!-- Bearbeitung übernehmen-Schaltknopf -->
-		                                        <button jsf:id="take" aria-label="#{msgs.bearbeitungDiesesSchrittsUebernehmen}" class="btn btn-primary" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" jsf:rendered="#{(item.bearbeitungsstatusEnum == 'OPEN' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
-		                                            <i class="fa fa-check"></i>
-		                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-		                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-		                                        </button>
-
-		                                        <button class="btn btn-red" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" jsf:rendered="#{(item.bearbeitungsstatusEnum == 'ERROR' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
-		                                            <i class="fa fa-check"></i>
-		                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-		                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-		                                        </button>
+								<h:form id="searchform">
+									<div class="gw-table__search">
+										<div class="gw-table__search__length">
+											<h:outputText
+												value="#{msgs.treffer}: #{AktuelleSchritteForm.paginator.totalResults}" />
+										</div>
 
 
-		                                        <!-- Bearbeiten-Schaltknopf (eigener Schritt) -->
-		                                        <button jsf:action="#{AktuelleSchritteForm.EditStep}" jsf:id="view1" aria-label="#{msgs.diesenSchrittBearbeiten}" class="btn btn-warning" jsf:rel="tooltip" jsf:rendered="#{(item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and !item.batchStep) or (item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and !item.batchSize)}" title="#{msgs.inBearbeitungDurch}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname:''}">
-		                                            <i class="fa fa-cog"></i>
-		                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-		                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-		                                        </button>
+										<x:aliasBeansScope>
+											<x:aliasBean alias="#{Form}" value="#{AktuelleSchritteForm}" />
+											<x:aliasBean alias="#{label}" value="#{msgs.filterTasks}" />
+											<f:subview id="sub1">
 
-		                                        <!-- Bearbeiten-Schaltknopf (fremder Schritt) -->
-		                                        <button jsf:action="#{AktuelleSchritteForm.EditStep}" jsf:id="view2" aria-label="#{msgs.diesenSchrittBearbeiten}" class="btn" jsf:rel="tooltip" jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and (!item.batchStep or !item.batchSize)}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-		                                            <i class="fa fa-cog" style="color:#aaaaaa"></i>
-		                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-		                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-		                                        </button>
+												<div class="gw-table__filters">
+													<ui:include
+														src="templatePG/includes/task/list_filterAndDisplay.xhtml" />
+													<ui:include
+														src="templatePG/includes/task/list_searchAndSave.xhtml" />
+												</div>
 
-		                                        <!-- edit batch step -->
-		                                        <button jsf:id="batch" class="btn btn-primary" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.TakeOverBatch}" jsf:rendered="#{item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and item.batchSize}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
-		                                            <i class="fa fa-check" style="margin-left: -6px"></i>
-		                                            <i class="fa fa-check" style="margin-left: -5px; margin-right: -6px"></i>
-		                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-		                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-		                                        </button>
-
-		                                        <!-- edit batch step -->
-		                                        <button jsf:id="batch-error" class="btn btn-red" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.TakeOverBatch}" jsf:rendered="#{item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and item.batchSize}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
-		                                            <i class="fa fa-check" style="margin-left: -6px"></i>
-		                                            <i class="fa fa-check" style="margin-left: -5px; margin-right: -6px"></i>
-		                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-		                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-		                                        </button>
-
-		                                        <!-- edit batch step -->
-		                                        <button jsf:id="batchInWork" class="btn btn-warning" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.BatchesEdit}" jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-		                                            <i class="fa fa-cogs"></i>
-		                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-		                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-		                                        </button>
-
-		                                        <!-- edit batch step -->
-		                                        <button jsf:id="batchInWorkOther" class="btn" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.BatchesEdit}" jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-		                                             <i class="fa fa-cogs" style="color:#aaaaaa"></i>
-		                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-		                                            <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-		                                        </button>
-
-		<!--                                       	<h:panelGroup rendered="#{item.bearbeitungsstatusEnum.title eq 'statusError'}"> -->
-		<!--                                             <i class="fa fa-life-ring font-red pull-right" style="font-size:30px;"/> -->
-		<!--                                         </h:panelGroup> -->
-											</td>
-										</tr>
-									</ui:repeat>
-								</table>
-
-                                <div class="dataTables_paginate">
-                                    <!-- paginator -->
-                                    <intranda:tablePaginator id="steps" paginator="#{AktuelleSchritteForm.paginator}" />
-                                    <!-- /paginator -->
-                                </div>
-
-                            </h:form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <h:form id="actionform">
-            <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload  and AktuelleSchritteForm.paginator.totalResults > 0 }">
-                <div class="row">
-                    <div class="col-sm-12">
-
-                        <div class="box box-color orange box-bordered">
-                            <div class="box-title">
-                                <h3>
-                                    <i class="fa fa-wrench"></i>
-                                    <h:outputText value="#{msgs.moeglicheAktionen}" />
-                                </h3>
-                            </div>
-                            <div class="box-content">
-
-                                <h:panelGroup styleClass="pull-right">
-                                    <h:outputText value="#{msgs.anzahlDerImagesAllerTreffer}:" />
-                                    <h:outputText id="calcNumber" styleClass="margin-left-5 margin-right-5" value="#{AktuelleSchritteForm.allImages}" />
-                                    <button jsf:id="calc" jsf:action="#{AktuelleSchritteForm.calcHomeImages}" class="btn">
-                                        <i class="fa fa-refresh" />
-                                    </button>
-                                </h:panelGroup>
-
-                                <ul class="action-ul">
-                                    <li class="action-li">
-                                        <button jsf:id="uploadAll" jsf:action="#{AktuelleSchritteForm.UploadFromHomeAlle}" class="btn btn-lightred" title="#{msgs.verzeichnisFertigHochladen}" onclick="if (!confirm('#{msgs.upload}')) return false">
-                                            <span class="margin-right-10 fa fa-cloud-upload fa-lg" />
-                                            <h:outputText value="#{msgs.verzeichnisFertigHochladen}" />
-                                        </button>
-                                    </li>
-                                    <li class="action-li">
-                                        <button jsf:id="downloadPage" jsf:action="#{AktuelleSchritteForm.DownloadToHomePage}" class="btn btn-green" title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
-                                            <span class="margin-right-10 fa fa-cloud-download fa-lg" />
-                                            <h:outputText value="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" />
-                                        </button>
-                                    </li>
-                                    <li class="action-li">
-                                        <button jsf:id="downloadAll" jsf:action="#{AktuelleSchritteForm.DownloadToHomeHits}" class="btn btn-green" title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
-                                            <span class="margin-right-10 fa fa-cloud-download fa-lg" />
-                                            <h:outputText value="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" />
-                                        </button>
-                                    </li>
-                                </ul>
+											</f:subview>
+										</x:aliasBeansScope>
 
 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </h:panelGroup>
+									</div>
+									<!--/.gw-table__search-->
+								</h:form>
 
-        </h:form>
 
-        <script type="text/javascript">
-									$('.popover-jsf')
-											.popover(
-													{
-														html : true,
-														title : "#{msgs.badgeCorrection}",
-														trigger : 'hover',
-														placement : 'left',
-														content : function() {
-															return $(this)
-																	.next(
-																			'.popover-div')
-																	.html();
-														}
-													});
-								</script>
-		</c:if>
-	</main>
-    </ui:define>
+								<h:form id="myform" prependId="false">
+									<div class="gw-table__wrapper">
+										<!-- table -->
+										<table id="tasks" class="table table-hover table-bordered">
+											<!-- +++++++++++++++++++ Columnheader row ++++++++++++++++++++++++ -->
+											<thead>
+												<tr role="row">
+													
+													<!-- ProzessID -->
+													<intranda:columnheader
+														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}"
+														id="my_tasks_process" name="id"
+														form="#{AktuelleSchritteForm}" value="#{msgs.id}"
+														ajaxRender="processAllBox:myform" reverseOrder="true"
+                                                        sortField="prozesse.ProzesseID" 
+                                                        addClass="gw-table-fixed__sizeXXXXS"/>
+
+													<!-- Task -->
+													<intranda:columnheader id="sortStepTitle" name="schritt"
+														form="#{AktuelleSchritteForm}"
+														value="#{msgs.arbeitsschritt}"
+														ajaxRender="processAllBox:myform"
+                                                        sortField="schritte.titel" 
+                                                        addClass="gw-table-fixed__sizeM"/>
+
+													<!-- Process -->
+													<intranda:columnheader 
+														id="sortProcessTitle" name="prozes"
+														form="#{AktuelleSchritteForm}"
+														value="#{msgs.prozessTitel}"
+														ajaxRender="processAllBox:myform"
+														addClass="gw-table-fixed__sizeM"
+                                                        sortField="prozesse.titel" />
+
+													<!-- Custom Columns -->
+                                                    <c:forEach
+                                                        items="#{LoginForm.listOfCustomColumns}"
+                                                        var="var">
+                                                        <intranda:columnheader
+                                                            addClass="gw-table-fixed__sizeS"
+                                                            form="#{ProzessverwaltungForm}"
+                                                            ajaxRender="processAllProcessesBox:myform"
+                                                            value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
+                                                            sortField="#{var}"
+                                                            rendered="#{LoginForm.isDisplaySortfield(var)}" />
+                                                        <intranda:columnheader
+                                                            addClass="gw-table-fixed__sizeS"
+                                                            sortable="false"
+                                                            value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
+                                                            rendered="#{!LoginForm.isDisplaySortfield(var)}" />
+                                                    </c:forEach>
+
+													<!-- Process date -->
+													<intranda:columnheader
+														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}"
+														id="sortDate" name="prozessdate"
+														form="#{AktuelleSchritteForm}"
+														value="#{msgs.vorgangsdatum}"
+														ajaxRender="processAllBox:myform"
+                                                        sortField="prozesse.erstellungsdatum" 
+                                                        addClass="gw-table-fixed__sizeXXS"/>
+
+													<!-- Project -->
+													<intranda:columnheader id="sortProject" name="projekt"
+														form="#{AktuelleSchritteForm}" value="#{msgs.projekt}"
+														ajaxRender="processAllBox:myform"
+														addClass="gw-table-fixed__sizeS"
+                                                        sortField="projekte.titel" />
+
+                                                    <!-- Institution -->
+													<intranda:columnheader
+														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['institution']}"
+														addClass="gw-table-fixed__sizeXS" name="institution"
+														form="#{AktuelleSchritteForm}" value="#{msgs.institution}"
+														ajaxRender="processAllBox:myform"
+                                                        sortField="institution.shortName" />
+
+													<!-- Lockings -->
+													<intranda:columnheader
+														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}"
+														id="sortLocking" name="sperrungen"
+														form="#{AktuelleSchritteForm}" value="#{msgs.sperrungen}"
+														ajaxRender="processAllBox:myform"
+                                                        addClass="gw-table-fixed__sizeXS"
+                                                        sortable="false" />
+
+													<!-- Batch -->
+													<intranda:columnheader
+														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}"
+														id="sortBatch" name="batch" form="#{AktuelleSchritteForm}"
+														value="#{msgs.batch}" ajaxRender="processAllBox:myform"
+                                                        sortField="prozesse.batchID" 
+                                                        addClass="gw-table-fixed__sizeXXS"/>
+
+													<!-- number of images -->
+													<intranda:columnheader
+														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}"
+														value="#{msgs.NumberOfImages}"
+														addClass="gw-table-fixed__sizeXXS"
+														name="numberOfImages" form="#{AktuelleSchritteForm}"
+														ajaxRender="processAllBox:myform"
+                                                        sortField="sortHelperImages" />
+
+													<!-- Priority -->
+				                                    <intranda:columnheader id="sortStepPriority" name="priority"
+                                                        form="#{AktuelleSchritteForm}"
+                                                        value="#{msgs.prioritaet}"
+                                                        ajaxRender="processAllBox:myform"
+                                                        sortField="schritte.prioritaet" 
+                                                        addClass="gw-table-fixed__sizeXXS"/>
+
+													<!-- Action -->
+                                                    <intranda:columnheader id="sortStepStatus" name="status"
+                                                        form="#{AktuelleSchritteForm}"
+                                                        value="#{msgs.auswahl}"
+                                                        ajaxRender="processAllBox:myform"
+                                                        sortField="schritte.bearbeitungsstatus" 
+                                                        addClass="gw-table-fixed__sizeXXXS"/>
+                                                        
+												</tr>
+											</thead>
+
+											<!-- +++++++++++++++++++++++ Content row +++++++++++++++++++ -->
+											<ui:repeat var="item"
+												value="#{AktuelleSchritteForm.paginator.list}"
+												varStatus="status">
+
+												<tr>
+													
+													<!-- ID -->
+													<td
+														jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}">
+														<h:outputText value="#{item.prozess.id}" />
+													</td>
+													<!-- // ID -->
+													
+													
+													<!-- TITLE -->
+													<td>
+														<ui:include
+															src="templatePG/includes/task/task_ajaxPlusMinusButton.xhtml">
+															<ui:param name="ajaxRender" value="processAllBox:myform" />
+														</ui:include> 
+														<h:panelGroup
+															id="auflistungIntern" rendered="#{item.panelAusgeklappt}">
+
+															<intranda:box boxType="primary" boxSmall="true"
+																boxPadding="false" icon="fa-table"
+																title="#{msgs.details}">
+
+																<div class="gw-table">
+																	<h:panelGrid columns="2"
+																		class="table table-hover table-bordered">
+
+																		<!-- TITLE -->
+																		<h:outputText value="#{msgs.titel}:" />
+																		<h:outputText value="#{item.titel}" />
+																		
+																		<!-- TAST BEGINN -->
+																		<h:outputText value="#{msgs.bearbeitungsbeginn}:"
+																			rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+																		<h:outputText
+																			value="#{item.bearbeitungsbeginnAsFormattedString}"
+																			rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+																			<!--  <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+																		</h:outputText>
+																		
+																		<!-- UPDATE DATE -->
+																		<h:outputText value="#{msgs.zuletztBearbeitet}:"
+																			rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+																		<h:outputText
+																			value="#{item.bearbeitungszeitpunktAsFormattedString}"
+																			rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
+																			<!--  <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+																		</h:outputText>
+																		
+																		<!-- UPDATE BY -->
+																		<h:outputText
+																			value="#{msgs.letzteAktualisierungDurch}:"
+																			rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
+																		<h:outputText
+																			value="#{item.bearbeitungsbenutzer.nachVorname}"
+																			rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
+
+																		<!-- UPDATE TYPE -->
+																		<h:outputText value="#{msgs.aktualisierungstyp}:" />
+																		<h:outputText value="#{item.editTypeEnum.title}" />
+																		
+																		<!-- TYPE -->
+																		<h:outputText value="#{msgs.typ}:" />
+																		<h:panelGroup>
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.metadaten}"
+																				rendered="#{item.typMetadaten}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.importMittelsFileUpload}"
+																				rendered="#{item.typImportFileUpload}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.exportDMS}"
+																				rendered="#{item.typExportDMS}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.schrittBeimAnnehmenAbschliessen}"
+																				rendered="#{item.typBeimAnnehmenAbschliessen}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.beimAnnehmenModulStarten}"
+																				rendered="#{item.typBeimAnnehmenModul}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}"
+																				rendered="#{item.typBeimAnnehmenModulUndAbschliessen}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.imagesLesen}"
+																				rendered="#{item.typImagesLesen}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.imagesSchreiben}"
+																				rendered="#{item.typImagesSchreiben}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.beimAbschliessenVerifizieren}"
+																				rendered="#{item.typBeimAbschliessenVerifizieren}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.automatischerSchritt}"
+																				rendered="#{item.typAutomatisch}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.typScriptStep}"
+																				rendered="#{item.typScriptStep}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.modulSchritt}: #{item.typModulName}"
+																				rendered="#{item.typModulName!=null and item.typModulName!=''}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.stepPlugin}: #{item.stepPlugin}"
+																				rendered="#{item.stepPlugin!=null and item.stepPlugin!=''}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.validationPlugin}"
+																				rendered="#{item.validationPlugin!=null and item.validationPlugin!=''}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.timeDelayPlugin}"
+																				rendered="#{item.delayStep!=null and item.delayStep!='' and item.delayStep}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.batchStep}"
+																				rendered="#{item.batchStep}" />
+																			<h:outputText styleClass="d-block"
+																				value="#{msgs.updateMetadataIndex}"
+																				rendered="#{item.updateMetadataIndex}" />
+																		</h:panelGroup>
+
+																	</h:panelGrid>
+
+																</div>
+															</intranda:box>
+														</h:panelGroup>
+													</td>
+													<!--//  TITLE -->
+													
+													
+													<!-- PROCESS -->
+													<td>
+														<div class="d-flex gap-2 align-items-center">
+															<!-- BUTTON TO PROCESS -->
+															<button jsf:action="process_edit" class="btn btn-blank"
+																jsf:rel="tooltip" jsf:id="edit1"
+																aria-label="#{msgs.prozessBearbeiten}"
+																title="#{msgs.prozessBearbeiten}"
+																jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
+																<i class="fa fa-tasks" />
+																<f:passThroughAttribute name="data-toggle"
+																	value="tooltip" />
+																<f:setPropertyActionListener
+																	target="#{ProzessverwaltungForm.myProzess}"
+																	value="#{item.prozess}" />
+																<f:setPropertyActionListener
+																	target="#{ProzessverwaltungForm.modusAnzeige}"
+																	value="aktuell" />
+																<f:setPropertyActionListener
+																	target="#{ProzessverwaltungForm.modusBearbeiten}"
+																	value="" />
+															</button>
+															<!-- PROCESS TITLE -->
+															<h:outputText value="#{item.prozess.titel}"/>
+														</div>
+													</td>
+													<!-- // PROCESS -->
+
+
+													<!-- CUSTOM COLUMNS -->
+													<c:forEach items="#{LoginForm.listOfCustomColumns}"
+														var="var">
+														<td><h:outputText
+																value="#{item.prozess.getReplacedVariable(var)}" /></td>
+													</c:forEach>
+													<!-- // CUSTOM COLUMNS -->
+													
+													
+													<!-- PROCESS DATE -->
+													<td
+														jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}">
+														<h:outputText value="#{item.prozess.erstellungsdatum}" />
+													</td>
+													<!-- //PROCESS DATE -->
+													
+													
+													<!-- PROJECT -->
+													<td>
+														<h:outputText value="#{item.prozess.projekt.titel}" />
+													</td>
+													<!-- // PROJECT -->
+													
+													
+													<!-- INSTITUTION -->
+													<td
+														jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['institution']}">
+														<h:outputText
+															value="#{item.prozess.projekt.institution.shortName}" />
+													</td>
+													<!-- // INSTITUTION -->
+													
+													
+													<!-- LOCKINGS -->
+													<td
+														jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}">
+														<h:outputText
+															value="#{item.prozess.benutzerGesperrt.nachVorname}"
+															rendered="#{item.prozess.benutzerGesperrt != null}" />
+													</td>
+													<!-- // LOCKINGS -->
+
+
+													<!-- BATCH -->
+													<td
+														jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}">
+														<h:outputText value="#{item.prozess.batch.batchId}"
+															rendered="#{item.prozess.batch != null}" /> <h:outputText
+															value=" (#{item.prozess.batch.batchName})"
+															rendered="#{item.prozess.batch != null and item.prozess.batch.batchName != null}" />
+													</td>
+													<!-- // BATCH -->
+
+
+													<!-- NUMBER OF IMAGES -->
+													<td
+														jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}">
+														<h:outputText value="#{item.prozess.sortHelperImages}" />
+													</td>
+													<!-- // NUMBER OF IMAGES -->
+
+
+													<!-- STATUS -->
+													<td>
+														<h:panelGroup rendered="#{item.prioritaet == 0}"
+															class="badge badge-intranda-ultralight">
+															<h:outputText value="#{msgs.normalePrioritaet}" />
+														</h:panelGroup> 
+														<h:panelGroup rendered="#{item.prioritaet == 1}"
+															class="badge badge-intranda-orange">
+															<i class="fa fa-lightbulb-o"></i>
+															 #{msgs.badgePriority1}
+														 </h:panelGroup> 
+														 <h:panelGroup rendered="#{item.prioritaet == 2}"
+															class="badge badge-intranda-orange">
+															<i class="fa fa-lightbulb-o" />
+															 #{msgs.badgePriority2}
+														 </h:panelGroup> 
+														 <h:panelGroup
+															rendered="#{item.prioritaet gt 2 and item.prioritaet lt 10}"
+															class="badge badge-intranda-orange">
+															<i class="fa fa-lightbulb-o"></i>
+														 	#{msgs.badgePriority3}
+														 </h:panelGroup> 
+														 <!-- Popup --> 
+														<x:popup id="popup"
+															closePopupOnExitingElement="true"
+															closePopupOnExitingPopup="true" displayAtDistanceX="-320"
+															displayAtDistanceY="-160"
+															style="z-index:9"
+															rendered="#{item.prioritaet gt 9}">
+
+															<f:facet name="popup">
+																<intranda:box
+																  boxType="hot"
+																  boxSmall="true"
+																  title="#{msgs.badgeCorrection}"
+																  icon="fa-bullhorn"
+																  boxScope="bg-white"> 
+																	<x:dataTable var="intern" style="width:400px;"
+																		rendered="#{item.eigenschaftenSize!=0}"
+																		value="#{item.eigenschaftenList}"
+																		styleClass="table table-hover table-bordered">
+																		<x:column style="vertical-align: top;">
+																			<h:outputText value="#{intern.titel}:" />
+																		</x:column>
+																		<x:column style="vertical-align: top;">
+																			<h:outputText value="#{intern.wert}" />
+																		</x:column>
+																	</x:dataTable>
+																</intranda:box>
+															</f:facet>
+															<h:panelGroup class="badge badge-intranda-red">
+																<i class="fa fa-bullhorn"></i>
+																 #{msgs.badgeCorrection}
+															 </h:panelGroup>
+														</x:popup>
+													</td>
+													<!-- // STATUS -->
+													
+													<!-- ACTION -->
+													<td>
+														
+														<!-- ACCEPT TASK -->
+														<button jsf:id="take"
+															aria-label="#{msgs.bearbeitungDiesesSchrittsUebernehmen}"
+															class="btn btn-primary" jsf:rel="tooltip"
+															jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}"
+															jsf:rendered="#{(item.bearbeitungsstatusEnum == 'OPEN' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and !item.batchSize)}"
+															title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+															<i class="fa fa-check"></i>
+															<f:passThroughAttribute name="data-toggle"
+																value="tooltip" />
+															<f:setPropertyActionListener
+																target="#{AktuelleSchritteForm.mySchritt}"
+																value="#{item}" />
+															<f:setPropertyActionListener
+																target="#{NavigationForm.uiStatus.taskActionBox_view}"
+																value="" />
+														</button>
+
+														<!-- ACCEPT TASK IN ERROR STATUS -->
+														<button class="btn btn-hot" jsf:rel="tooltip"
+															jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}"
+															jsf:rendered="#{(item.bearbeitungsstatusEnum == 'ERROR' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and !item.batchSize)}"
+															title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+															<i class="fa fa-check"></i>
+															<f:passThroughAttribute name="data-toggle"
+																value="tooltip" />
+															<f:setPropertyActionListener
+																target="#{AktuelleSchritteForm.mySchritt}"
+																value="#{item}" />
+															<f:setPropertyActionListener
+																target="#{NavigationForm.uiStatus.taskActionBox_view}"
+																value="" />
+														</button> 
+														
+														<!-- KEEP ON WORKING ON TASK -->
+														<button jsf:action="#{AktuelleSchritteForm.EditStep}"
+															jsf:id="view1"
+															aria-label="#{msgs.diesenSchrittBearbeiten}"
+															class="btn btn-action" jsf:rel="tooltip"
+															jsf:rendered="#{(item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and !item.batchStep) or (item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and !item.batchSize)}"
+															title="#{msgs.inBearbeitungDurch}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname:''}">
+															<i class="fa fa-cog"></i>
+															<f:passThroughAttribute name="data-toggle"
+																value="tooltip" />
+															<f:setPropertyActionListener
+																target="#{AktuelleSchritteForm.mySchritt}"
+																value="#{item}" />
+															<f:setPropertyActionListener
+																target="#{NavigationForm.uiStatus.taskActionBox_view}"
+																value="" />
+														</button> 
+														
+														<!-- PEEK INTO TASK OF ANOTHER ONE -->
+														<button jsf:action="#{AktuelleSchritteForm.EditStep}"
+															jsf:id="view2"
+															aria-label="#{msgs.diesenSchrittBearbeiten}" class="btn btn-blank"
+															jsf:rel="tooltip"
+															jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and (!item.batchStep or !item.batchSize)}"
+															title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
+															<i class="fa fa-cog" style="color: #aaaaaa"></i>
+															<f:passThroughAttribute name="data-toggle"
+																value="tooltip" />
+															<f:setPropertyActionListener
+																target="#{AktuelleSchritteForm.mySchritt}"
+																value="#{item}" />
+															<f:setPropertyActionListener
+																target="#{NavigationForm.uiStatus.taskActionBox_view}"
+																value="" />
+														</button> 
+														
+														<!-- ACCEPT TASK IN BATCH -->
+														<button jsf:id="batch" class="btn btn-primary"
+															jsf:rel="tooltip"
+															jsf:action="#{AktuelleSchritteForm.TakeOverBatch}"
+															jsf:rendered="#{item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and item.batchSize}"
+															title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+															<i class="fa fa-check" style="margin-left: -6px"></i>
+															<i class="fa fa-check"
+																style="margin-left: -5px; margin-right: -6px"></i>
+															<f:passThroughAttribute name="data-toggle"
+																value="tooltip" />
+															<f:setPropertyActionListener
+																target="#{AktuelleSchritteForm.mySchritt}"
+																value="#{item}" />
+															<f:setPropertyActionListener
+																target="#{NavigationForm.uiStatus.taskActionBox_view}"
+																value="" />
+														</button> 
+														
+														<!-- ACCEPT TASK IN ERROR STATUS IN BATCH -->
+														<button jsf:id="batch-error" class="btn btn-hot"
+															jsf:rel="tooltip"
+															jsf:action="#{AktuelleSchritteForm.TakeOverBatch}"
+															jsf:rendered="#{item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and item.batchSize}"
+															title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+															<i class="fa fa-check" style="margin-left: -6px"></i>
+															<i class="fa fa-check"
+																style="margin-left: -5px; margin-right: -6px"></i>
+															<f:passThroughAttribute name="data-toggle"
+																value="tooltip" />
+															<f:setPropertyActionListener
+																target="#{AktuelleSchritteForm.mySchritt}"
+																value="#{item}" />
+															<f:setPropertyActionListener
+																target="#{NavigationForm.uiStatus.taskActionBox_view}"
+																value="" />
+														</button> 
+
+														<!-- KEEP ON WORKING ON TASK IN BATCH -->
+														<button jsf:id="batchInWork" class="btn btn-action"
+															jsf:rel="tooltip"
+															jsf:action="#{AktuelleSchritteForm.BatchesEdit}"
+															jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and item.batchSize}"
+															title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
+															<i class="fa fa-cogs"></i>
+															<f:passThroughAttribute name="data-toggle"
+																value="tooltip" />
+															<f:setPropertyActionListener
+																target="#{AktuelleSchritteForm.mySchritt}"
+																value="#{item}" />
+															<f:setPropertyActionListener
+																target="#{NavigationForm.uiStatus.taskActionBox_view}"
+																value="" />
+														</button> 
+														
+														<!-- PEEK INTO TASK IN BATCH OF ANOTHER ONE -->
+														<button jsf:id="batchInWorkOther" class="btn btn-blank"
+															jsf:rel="tooltip"
+															jsf:action="#{AktuelleSchritteForm.BatchesEdit}"
+															jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and item.batchStep and item.batchSize}"
+															title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
+															<i class="fa fa-cogs" style="color: #aaaaaa"></i>
+															<f:passThroughAttribute name="data-toggle"
+																value="tooltip" />
+															<f:setPropertyActionListener
+																target="#{AktuelleSchritteForm.mySchritt}"
+																value="#{item}" />
+															<f:setPropertyActionListener
+																target="#{NavigationForm.uiStatus.taskActionBox_view}"
+																value="" />
+														</button> 
+													</td>
+													<!-- // ACTION -->
+
+												</tr>
+											</ui:repeat>
+										</table>
+
+									</div>
+
+									<!-- PAGINATOR -->
+									<div class="box__actions">
+										<intranda:tablePaginator id="steps"
+											paginator="#{AktuelleSchritteForm.paginator}" />
+									</div>
+									<!-- // PAGINATOR -->
+
+								</h:form>
+							</div>
+						</intranda:box>
+
+					</div>
+				</div>
+				
+				<!-- ACTION BOX -->
+				<div class="row mt-4">
+					<div class="col-12">
+						<intranda:box id="boxTaskAllActions" boxType="action"
+							icon="fa-wrench" title="#{msgs.moeglicheAktionen}">
+							<h:form id="actionForm2" prependId="false">
+								
+								<!-- NUMBER OF IMAGES -->
+								<h:panelGroup styleClass="pull-right">
+									<h:outputText value="#{msgs.anzahlDerImagesAllerTreffer}:" />
+									<h:outputText id="calcNumber"
+										styleClass="mx-3"
+										value="#{AktuelleSchritteForm.allImages}" />
+									<button jsf:id="calc"
+										jsf:action="#{AktuelleSchritteForm.calcHomeImages}"
+										class="btn btn-blank">
+										<i class="fa fa-refresh" />
+									</button>
+								</h:panelGroup>
+								
+								<!-- UPLOAD FROM DONE FOLDER -->
+								<button jsf:id="uploadAll"
+									jsf:action="#{AktuelleSchritteForm.uploadFromHomeAlle}"
+									class="btn d-block"
+									title="#{msgs.verzeichnisFertigHochladen}"
+									onclick="if (!confirm('#{msgs.upload}')) return false">
+									<i class="btn btn-hot fa fa-cloud-upload" />
+									<span>
+										<h:outputText value="#{msgs.verzeichnisFertigHochladen}" />
+									</span>
+								</button>
+								
+								<!-- DOWNLOAD PAGE HITS INTO USERS HOME -->
+								<button jsf:id="downloadPage"
+									jsf:action="#{AktuelleSchritteForm.downloadToHomePage}"
+									class="btn d-block"
+									title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}"
+									onclick="if (!confirm('#{msgs.upload}')) return false">
+									<i class="btn btn-success fa fa-cloud-download" />
+									<span>
+										<h:outputText value="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" />
+									</span>
+								</button>
+
+								<!-- DOWNLOAD ALL HITS INTO USERS HOME -->
+								<button jsf:id="downloadAll"
+									jsf:action="#{AktuelleSchritteForm.downloadToHomeHits}"
+									class="btn d-block"
+									title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}"
+									onclick="if (!confirm('#{msgs.upload}')) return false">
+									<i class="btn btn-success fa fa-cloud-download" />
+									<span>
+										<h:outputText value="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" />
+									</span>
+								</button>
+							</h:form>
+	
+						</intranda:box>
+	
+					</div>
+				</div>						
+				<!-- // ACTION BOX -->
+				
+			</c:if>
+		</main>
+	</ui:define>
 </ui:composition>

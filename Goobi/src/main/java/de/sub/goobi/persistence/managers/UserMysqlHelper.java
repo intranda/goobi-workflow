@@ -31,9 +31,12 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.api.rest.AuthenticationMethodDescription;
+import org.goobi.api.rest.AuthenticationToken;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
@@ -49,7 +52,20 @@ class UserMysqlHelper implements Serializable {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM benutzer LEFT JOIN institution ON benutzer.institution_id = institution.id");
+        sql.append("SELECT * FROM benutzer LEFT JOIN institution ON benutzer.institution_id = institution.id ");
+        String sortField = order;
+
+        if (StringUtils.isNotBlank(order) && order.contains("groups")) {
+            sql.append(" LEFT JOIN (SELECT BenutzerID, GROUP_CONCAT(titel order by titel) as groups FROM benutzergruppenmitgliedschaft LEFT JOIN ");
+            sql.append("benutzergruppen ON benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzerGruppenID GROUP BY ");
+            sql.append("BenutzerID) as grp ON grp.BenutzerID = benutzer.BenutzerID ");
+            sortField = "case when groups = '' or groups is null then 1 else 0 end, " + order;
+        } else if (StringUtils.isNotBlank(order) && order.contains("projects")) {
+            sql.append(" LEFT JOIN (SELECT BenutzerID, GROUP_CONCAT(titel order by titel) as projects  FROM projektbenutzer LEFT JOIN projekte ON ");
+            sql.append("projektbenutzer.ProjekteID = projekte.ProjekteID GROUP BY BenutzerID) as grp ON grp.BenutzerID = benutzer.BenutzerID ");
+            sortField = "case when projects = '' or projects is null then 1 else 0 end, " + order;
+        }
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
@@ -65,8 +81,8 @@ class UserMysqlHelper implements Serializable {
             sql.append(institution.getId());
         }
 
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        if (StringUtils.isNotBlank(sortField)) {
+            sql.append(" ORDER BY " + sortField);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
@@ -88,7 +104,7 @@ class UserMysqlHelper implements Serializable {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(BenutzerID) FROM benutzer");
+        sql.append("SELECT COUNT(1) FROM benutzer");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
@@ -158,7 +174,6 @@ class UserMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
 
             String additionalData = MySQLHelper.convertDataToString(ro.getAdditionalData());
-
             if (ro.getId() == null) {
 
                 String propNames = "Vorname, Nachname, login, Standort, metadatensprache, "
@@ -298,6 +313,11 @@ class UserMysqlHelper implements Serializable {
                     }
                 }
             }
+            if (ro.getApiToken() != null) {
+                for (AuthenticationToken token : ro.getApiToken()) {
+                    saveAuthenticationToken(token);
+                }
+            }
         } finally
 
         {
@@ -354,6 +374,11 @@ class UserMysqlHelper implements Serializable {
                     log.trace(sql);
                 }
                 run.update(connection, sql);
+                if (ro.getApiToken() != null) {
+                    for (AuthenticationToken token : ro.getApiToken()) {
+                        deleteAuthenticationToken(token);
+                    }
+                }
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
@@ -697,7 +722,7 @@ class UserMysqlHelper implements Serializable {
                 if (showAllItems) {
                     sql.append("SELECT id, sub.projekteID as projectId, sub.titel AS stepName, open, inWork, done, error FROM ( ");
                     sql.append("select p.projekteID, s.titel from schritte s left join prozesse p on s.ProzesseID = p.ProzesseID ");
-                    sql.append("group by p.projekteID, s.titel) sub LEFT JOIN");
+                    sql.append("group by p.projekteID, s.titel) sub LEFT JOIN ");
                     sql.append("user_email_configuration uec ON sub.titel = uec.stepname AND uec.projectid = sub.projekteID AND uec.userid = ? ");
                     stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), id);
 
@@ -804,7 +829,95 @@ class UserMysqlHelper implements Serializable {
                 }
             }
         }
+    }
 
+    public static AuthenticationToken getAuthenticationToken(String tokenName) throws SQLException {
+        String sql = "select * from api_token where token_name = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, UserManager.resultSetToAuthenticationTokenHandler, tokenName);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static List<AuthenticationToken> getAuthenticationTokenForUser(Integer userId) throws SQLException {
+        String sql = "select * from api_token where user_id = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, UserManager.resultSetToAuthenticationTokenListHandler, userId);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void saveAuthenticationToken(AuthenticationToken token) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            if (token.getTokenId() == null) {
+                // insert
+                String insert = "INSERT INTO api_token (user_id, token_name, token_description) VALUES (?, ?, ?)";
+                Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, token.getUserId(), token.getTokenName(),
+                        token.getDescription());
+                if (id != null) {
+                    token.setTokenId(id);
+                }
+            } else {
+                // update
+                String update = "UPDATE api_token set token_name = ?, token_description = ? WHERE id = ?";
+                run.update(connection, update, token.getTokenName(), token.getDescription(), token.getTokenId());
+            }
+
+            for (AuthenticationMethodDescription description : token.getMethods()) {
+                if (description.getMethodID() == null) {
+                    // insert
+                    String insert =
+                            "INSERT INTO api_token_method (token_id, method_type, method_description, method_url, selected) VALUES (?, ?, ?, ?, ?);";
+                    Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, token.getTokenId(),
+                            description.getMethodType(), description.getDescription(), description.getUrl(), description.isSelected());
+                    if (id != null) {
+                        description.setMethodID(id);
+                    }
+                } else {
+                    // update
+                    String update = "UPDATE api_token_method SET selected = ?  WHERE id = ?";
+                    run.update(connection, update, description.isSelected(), description.getMethodID());
+                }
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void deleteAuthenticationToken(AuthenticationToken token) {
+        if (token.getTokenId() != null) {
+            // TODO
+            // delete from api_token_method where token_id = ?;
+            // delete from api_token where token_id = ?;
+        }
+    }
+
+    public static List<AuthenticationMethodDescription> getConfiguredMethods(Integer tokenID) throws SQLException {
+        String sql = "SELECT * FROM api_token_method WHERE token_id = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, UserManager.resultSetToAuthenticationTokenMethodListHandler, tokenID);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
     }
 
 }

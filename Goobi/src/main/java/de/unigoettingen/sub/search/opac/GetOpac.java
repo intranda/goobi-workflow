@@ -59,7 +59,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.HttpClientHelper;
+import io.goobi.workflow.api.connection.HttpUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -646,7 +646,7 @@ public class GetOpac {
                 }
             }
 
-            String result = this.opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
+            String result = this.opacClient.execute(opacRequest, HttpUtils.stringResponseHandler);
             result = StringEscapeUtils.unescapeHtml(result);
             return result;
         } finally {

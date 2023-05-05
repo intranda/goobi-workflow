@@ -51,7 +51,7 @@ public class BasicBean implements Serializable {
 
     @Getter
     @Setter
-    protected String sortierung = "";
+    protected String sortField = "";
 
     @Getter
     @Setter

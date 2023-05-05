@@ -46,12 +46,13 @@ import org.goobi.vocabulary.Vocabulary;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 51;
+    public static final int EXPECTED_VERSION = 54;
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
@@ -381,6 +382,18 @@ public class DatabaseVersion {
                     log.trace("Update database to version 51.");
                     updateToVersion51();
                     tempVersion++;
+                case 51: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 52.");
+                    updateToVersion52();
+                    tempVersion++;
+                case 52: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 53.");
+                    updateToVersion53();
+                    tempVersion++;
+                case 53: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 54.");
+                    updateToVersion54();
+                    tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -395,10 +408,74 @@ public class DatabaseVersion {
         }
     }
 
+    private static void updateToVersion54() {
+        try {
+            if (!DatabaseVersion.checkIfTableExists("api_token")) {
+                StringBuilder sql = new StringBuilder();
+                sql.append(" CREATE TABLE api_token (");
+                sql.append(" id INT(11)  unsigned NOT NULL AUTO_INCREMENT,");
+                sql.append(" user_id INT(11),");
+                sql.append(" token_name VARCHAR(255),");
+                sql.append(" token_description VARCHAR(255),");
+                sql.append(" PRIMARY KEY (id)");
+                sql.append(" ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;");
+                DatabaseVersion.runSql(sql.toString());
+            }
+            if (!DatabaseVersion.checkIfTableExists("api_token_method")) {
+                StringBuilder sql = new StringBuilder();
+                sql.append(" CREATE TABLE api_token_method (");
+                sql.append(" id INT(11)  unsigned NOT NULL AUTO_INCREMENT,");
+                sql.append(" token_id INT(11),");
+                sql.append(" method_type VARCHAR(255),");
+                sql.append(" method_description VARCHAR(255),");
+                sql.append(" method_url VARCHAR(255),");
+                sql.append(" selected tinyint(1),");
+                sql.append(" PRIMARY KEY (id),");
+                sql.append(" KEY `tokenid` (`token_id`)");
+                sql.append(" ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8; ");
+                DatabaseVersion.runSql(sql.toString());
+            }
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    private static void updateToVersion53() {
+        if (!DatabaseVersion.checkIfColumnExists("projekte", "dfgViewerUrl")) {
+            try {
+                DatabaseVersion.runSql("alter table projekte add column dfgViewerUrl text DEFAULT null");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+        if (!DatabaseVersion.checkIfIndexExists("history", "type_x_numericvalue")) {
+            if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
+                try {
+                    DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS type_x_numericvalue ON history(type, numericvalue) ");
+                } catch (SQLException e) {
+                    log.error(e);
+                }
+            } else {
+                DatabaseVersion.createIndexOnTable("history", "type_x_numericvalue", "type,numericvalue", null);
+            }
+        }
+    }
+
+    private static void updateToVersion52() {
+        DatabaseVersion.createTableForBackgroundJobs();
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "additional_search_fields")) {
+            try {
+                DatabaseVersion.runSql("alter table benutzer add column additional_search_fields text DEFAULT null");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+    }
+
     private static void updateToVersion51() throws SQLException {
         if (DatabaseVersion.checkIfTableExists("processlog")) {
             try {
-                if (MySQLHelper.isUsingH2()) {
+                if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
                     DatabaseVersion.runSql("alter table processlog rename to journal; ");
                 } else {
                     DatabaseVersion.runSql("RENAME TABLE processlog TO journal;");
@@ -753,7 +830,7 @@ public class DatabaseVersion {
             // change length of sortHelperStatus to allow a complete index field in utf8mb4
             runner.update(connection, "alter table prozesse change column sortHelperStatus sortHelperStatus varchar(20);");
             runner.update(connection, "alter table benutzereigenschaften change column Wert Wert text;");
-            if (MySQLHelper.isUsingH2()) {
+            if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
                 runner.update(connection, "CREATE INDEX IF NOT EXISTS status ON prozesse(sortHelperStatus)");
             } else {
                 // create a new index
@@ -898,7 +975,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -907,15 +984,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 
@@ -965,7 +1042,7 @@ public class DatabaseVersion {
     private static void updateToVersion33() {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             QueryRunner runner = new QueryRunner();
-            if (MySQLHelper.isUsingH2()) {
+            if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
                 runner.update(connection,
                         "CREATE TABLE IF NOT EXISTS mq_results ( ticket_id varchar(255), time datetime, status varchar(25), message text, original_message text );");
             } else {
@@ -1056,7 +1133,7 @@ public class DatabaseVersion {
                 runner.update(connection, "alter table schritte add column httpEscapeBodyJson tinyint(1);");
             }
             // run conversion only on mysql/mariadb
-            if (!MySQLHelper.isUsingH2()) {
+            if (MySQLHelper.getInstance().getSqlType() != SQLTYPE.H2) {
                 // delete old, incompatible indexes
                 try {
                     runner.update(connection, "ALTER TABLE benutzer DROP INDEX id_x_login");
@@ -1266,7 +1343,7 @@ public class DatabaseVersion {
 
     private static void updateToVersion20() {
         // just enhance the fulltext index for mysql databases
-        if (!MySQLHelper.isUsingH2()) {
+        if (MySQLHelper.getInstance().getSqlType() != SQLTYPE.H2) {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
@@ -1289,7 +1366,7 @@ public class DatabaseVersion {
     private static void updateToVersion19() {
         String dropBatches = "drop table if exists batches;";
         StringBuilder createBatches = new StringBuilder();
-        if (MySQLHelper.isUsingH2()) {
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
             createBatches.append("CREATE TABLE `batches` (");
             createBatches.append("`id` int(11) NOT NULL AUTO_INCREMENT,");
             createBatches.append("`startDate` DATETIME DEFAULT NULL,");
@@ -1507,7 +1584,7 @@ public class DatabaseVersion {
     private static void updateToVersion13() {
         Connection connection = null;
         String sqlStatement = null;
-        if (MySQLHelper.isUsingH2()) {
+        if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
             sqlStatement =
                     "CREATE TABLE 'processlog' ('id' int(10) unsigned NOT NULL AUTO_INCREMENT,'processID' int(10) unsigned NOT NULL,'creationDate' datetime DEFAULT NULL,'userName' varchar(255) DEFAULT NULL,'type' varchar(255) DEFAULT NULL,'content' text DEFAULT NULL,'secondContent' text DEFAULT NULL,'thirdContent' text DEFAULT NULL,PRIMARY KEY ('id'),KEY 'processID' ('processID')) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
 
@@ -1971,6 +2048,53 @@ public class DatabaseVersion {
         }
     }
 
+    private static void createTableForBackgroundJobs() {
+        if (!checkIfTableExists("background_job")) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE background_job ( ");
+            sb.append("id INT(11) unsigned NOT NULL AUTO_INCREMENT, ");
+            sb.append("jobname VARCHAR(255), ");
+            sb.append("jobtype VARCHAR(255), ");
+            sb.append("jobstatus INT(11), ");
+            sb.append("retrycount INT(11), ");
+            sb.append("lastAltered DATETIME, ");
+            sb.append("PRIMARY KEY (id) ); ");
+            executeStatement(sb);
+        }
+
+        if (!checkIfTableExists("background_job_properties")) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE background_job_properties ( ");
+            sb.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sb.append("job_id INT(11), ");
+            sb.append("title VARCHAR(255), ");
+            sb.append("value TEXT, ");
+            sb.append("PRIMARY KEY (id), ");
+            sb.append("KEY job_id (job_id) ");
+            sb.append("); ");
+            executeStatement(sb);
+        }
+    }
+
+    private static void executeStatement(StringBuilder sb) {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, sb.toString());
+        } catch (SQLException e) {
+            log.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                    log.error(e);
+                }
+            }
+        }
+    }
+
     public static void checkIfEmptyDatabase() {
         try {
             int num = new UserManager().getHitSize(null, null, null);
@@ -2021,7 +2145,7 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (MySQLHelper.isUsingH2()) {
+            if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
                 ResultSet rset = connection.getMetaData().getTables(null, null, tableName, null);
                 if (rset.next()) {
                     return true;
@@ -2057,7 +2181,7 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (MySQLHelper.isUsingH2()) {
+            if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
                 ResultSet rset = connection.getMetaData().getColumns(null, null, tableName, columnName);
                 if (rset.next()) {
                     return true;

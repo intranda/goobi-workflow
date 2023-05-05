@@ -61,12 +61,12 @@
 /* box header in edit pages */
 .box.box-bordered.box-color.orange .box-title {
  	background: #cb4e00 !important;
-	border-color: #cb4e00 !important; 
+	border-color: #cb4e00 !important;
 }
 
 /* box border in edit pages */
 .box.box-bordered.box-color.orange .box-content {
-	border-color: #cb4e00 !important; 
+	border-color: #cb4e00 !important;
 }
 
 /* active and hover Links in box header */
@@ -77,12 +77,12 @@
 
 .box.box-color .box-title .tabs > li.active > button:hover,
 .box.box-color .box-title .tabs > li > a:hover {
-	color: #2a2a2a;   
+	color: #2a2a2a;
 }
 
 /* user groups apply button */
 .box.box-color.orange .btn.btn-primary {
-	background: #cb4e00 !important;  
+	background: #cb4e00 !important;
 }
 
 /* box header tabs */
@@ -206,7 +206,7 @@ div.modal-header button.close {
 h3 {
 	font-size: 14px;
 	margin-top: 10px;
-} 
+}
 
 /* file upload button */
 #upload .ui-fileupload-choose {

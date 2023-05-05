@@ -4,14 +4,14 @@
     <parent>
         <groupId>de.intranda.goobi.workflow</groupId>
         <artifactId>goobi-core</artifactId>
-        <version>23.03.2</version>
+        <version>23.03.3-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
 
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core-ci</artifactId>
-    <version>23.03.2</version>
+    <version>23.03.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
 
@@ -128,7 +128,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
+                <version>3.0.0-M8</version>
                 <configuration>
                     <skipTests>${skipTests}</skipTests>
                     <excludes>
@@ -179,9 +179,14 @@
             <!-- Show deprecation information during compilation -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.10.1</version>
                 <configuration>
-                    <compilerArgument>-Xlint:deprecation</compilerArgument>
+                    <release>11</release>
+                    <compilerArgs>
+                        <arg>-Xlint:deprecation</arg>
+                        <arg>-Xlint:unchecked</arg>
+                        <arg>-Xlint:removal</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <!-- Use single version-number-rules.xml for entire project -->

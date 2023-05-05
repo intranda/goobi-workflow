@@ -130,7 +130,7 @@ Sequence for determining the right <project> element:
                 <!-- that is shown in the user interface if a file could not be uploaded because it did not match -->
                 <!-- to the regular expression. The messages can then be provided in the messages_xx.properties files for all languages. -->
                 <folder regex="/^.*$/" messageKey="uploadFileErrorIntern">intern</folder>
-                <folder regex="/^.*\\.(jpg|jpeg|png|tif|jp2)$/" messageKey="uploadFileErrorMaster">master</folder>
+                <folder regex="/^.*\\.(jpg\|jpeg\|png\|tif\|jp2)$/" messageKey="uploadFileErrorMaster">master</folder>
                 <folder regex="/^.*\\.jpg$/" messageKey="uploadFileErrorMedia">media</folder>
                 <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorExport">export</folder>
                 

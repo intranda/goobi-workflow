@@ -2,10 +2,10 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	template="/uii/template/template.html"
+	template="/uii/templatePG/templatePG.html"
 	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -25,125 +25,166 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<script type="text/javascript">
-			window.onload = function() {
-				document.getElementById('titel').focus();
-			}
-		</script>
+
 		<h:form id="myform" styleClass="form-horizontal form-bordered"
 			onkeypress="submitOnEnter(event);"
 			rendered="#{LoginForm.hasRole('Admin_Usergroups')}">
 
-			<div class="row" role="main">
-				<div class="col-sm-12">
-					<div class="box box-color box-bordered orange">
-						<div class="box-title">
-							<h2>
-								<i class="fa fa-users"></i>
-								<h:outputText value="#{myPageTitle}" />
-								<h:outputText value=": #{BenutzergruppenForm.myBenutzergruppe.titel}" rendered="#{BenutzergruppenForm.myBenutzergruppe.id != null}" />
-							</h2>
-						</div>
-						<div class="box-content nopadding">
+			<main class="row">
+				<div class="col-12">
 
-							<intranda:formInputText label="#{msgs.titel}" id="title"
-								field="#{BenutzergruppenForm.myBenutzergruppe.titel}"
-								help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control" />
-
-                            <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{BenutzergruppenForm.currentInstitutionID}" 
-                                    help="#{msgs.helpUserInstitution}" name="institutionName" 
-                                    rendered="#{BenutzergruppenForm.institutionsAsSelectList.size()>1}"
-                                    selectItems="#{BenutzergruppenForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
+					<intranda:box
+						boxScope="form-box"
+						boxType="action"
+						title="#{myPageTitle}"
+						icon="fa-users"
+						boxPadding="false"
+					>
 
 
-							<div class="form-group">
-								<h:outputLabel for="userRoles" styleClass="control-label col-sm-3" tabindex="0"
-									value="#{msgs.usergroup_userRoles}" />
-								<div class="col-sm-9">
-								
-									<h:panelGroup id="rolediv" styleClass="row" style="margin-left:0px;margin-right:0px;">
-										
-										<div class="col-sm-6" style="border-right:0px solid #ccc;padding-right:10px;">
-											<h3 tabindex="0">#{msgs.usergroup_assignedRoles}</h3>
-											<ui:repeat var="role" value="#{BenutzergruppenForm.myBenutzergruppe.userRoles}" varStatus="row">
-				                            	<button jsf:action="#{BenutzergruppenForm.removeRole}"
-				                            		class="remove_role_#{role} badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
-					                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
-					                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
-					                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
-                                                        fn:startsWith(role,'goobiscript_') ? 'badge-light-blue' : 
-					                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
-					                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
-					                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
-					                            		'badge-light-greengrey'}" >
-													<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" />
-													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
-													<i class="fa fa-trash margin-left-5"></i>
-													 <f:ajax render="myform:rolediv" />
-												</button>
-				                            </ui:repeat>
+					<intranda:formInputText
+						id="title"
+						label="#{msgs.titel}"
+						field="#{BenutzergruppenForm.myBenutzergruppe.titel}"
+						help="#{msgs.helpTitel}"
+						name="titel"
+						fieldStyle="form-control"
+						/>
+
+					<intranda:formInputDropDown
+						id="institution"
+						label="#{msgs.institution}"
+						field="#{BenutzergruppenForm.currentInstitutionID}"
+						help="#{msgs.helpUserInstitution}"
+						name="institutionName"
+						rendered="#{BenutzergruppenForm.institutionsAsSelectList.size()>1}"
+						selectItems="#{BenutzergruppenForm.institutionsAsSelectList}"
+						fieldStyle="form-control"
+						required="true"
+					/>
+
+
+					<div class="row">
+
+						<div class="col-12 col-md-3 align-items-start">
+							<h:outputLabel
+								for="userRoles"
+								styleClass="control-label col-sm-3"
+								tabindex="0"
+								value="#{msgs.usergroup_userRoles}"
+								/>
+						</div> <!-- end col-md-3 -->
+
+						<div class="col-12 col-md-9 p-0">
+
+							<h:panelGroup id="rolediv" styleClass="row border-0 " style="margin-left:0px;margin-right:0px;">
+
+								<div class="col-12 col-lg-6 border-right">
+									<h3 tabindex="0" class="heading-3">#{msgs.usergroup_assignedRoles}</h3>
+
+									<ui:repeat
+										var="role"
+										value="#{BenutzergruppenForm.myBenutzergruppe.userRoles}"
+										varStatus="row"
+										>
+										<button
+											jsf:action="#{BenutzergruppenForm.removeRole}"
+											class="remove_role_#{role} badge #{fn:startsWith(role,'Admin_') ? 'badge-light-red' :
+														fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
+														fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' :
+														fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' :
+																					fn:startsWith(role,'goobiscript_') ? 'badge-light-blue' :
+														fn:startsWith(role,'Workflow_') ? 'badge-light-purple' :
+														fn:startsWith(role,'Task_') ? 'badge-light-orange' :
+														fn:startsWith(role,'Plugin_') ? 'badge-light-lila' :
+														'badge-light-greengrey'}" >
+														<span>
+														<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" />
+														</span>
+														<i class="fa fa-trash"></i>
+														<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
+														<f:ajax render="@form" />
+											</button>
+				            </ui:repeat>
+
+										<div class="pb-4">
+											<h:message for="userRoles" showDetail="true" styleClass="help-inline font-danger" />
+											<intranda:formHelp content="#{msgs.helpUserRoles}" />
 										</div>
-										<div class="col-sm-6" style="border-left:1px solid #ccc;padding-left:10px;">
-											<h3 tabindex="0">#{msgs.usergroup_availableRoles}</h3>
-											<ui:repeat var="role" value="#{BenutzergruppenForm.allAvailableRoles}" varStatus="row">
-				                            	<button jsf:action="#{BenutzergruppenForm.addRole}"
-				                            		class="add_role_#{role} badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
-					                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
-					                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
-                                                        fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
-					                            		fn:startsWith(role,'goobiscript_') ? 'badge-light-blue' : 
-					                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
-					                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
-					                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
-					                            		'badge-light-greengrey'}" >
-													<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" />
-													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
-													<i class="fa fa-plus margin-left-5"></i>
-													<f:ajax render="myform:rolediv" />
-												</button>
-				                            </ui:repeat>
-																				
-											<h:outputText rendered="#{BenutzergruppenForm.allAvailableRoles.size() == 0}"
-												styleClass="alert alert-info alert-dismissable margin-bottom-10 margin-top-10"
-												value="#{msgs.usergroup_allRolesAssigned}"/>
-										
-											<hr style="border-top: 1px solid #ccc;"/>
-										
-											<h3 tabindex="0">#{msgs.usergroup_individualRoles}</h3>
-											<div class="input-group" style="margin-top:10px;">
-                                      			<h:inputText id="userRoles" value="#{BenutzergruppenForm.tempRole}" styleClass="form-control"/>
-                                      			<div class="input-group-addon" style="padding: 0px; margin: 0;">
-		                                            <button class="btn btn-primary" tabindex="-1" title="#{msgs.usergroup_addRole}" 
-		                                            	jsf:action="#{BenutzergruppenForm.addRole}" 
-		                                            	style="padding-right:9px; padding-top: 1px; padding-bottom: 2px; height: 100%">
-		                                                <i class="fa fa-plus" style="margin-left: 3px; margin-right:3px" />
-		                                            </button>
-		                                        </div>
-                                  			</div>
-                                  			
-                                  			<br/>
-                                  			<br/>
-										</div>
-									</h:panelGroup>
-								
-									<h:message for="userRoles" showDetail="true"
-										styleClass="help-inline font-danger" />
-									<intranda:formHelp content="#{msgs.helpUserRoles}" />
-								</div>
-							</div>
 
-							<intranda:formButtonArea
-								id="buttons"
-								form="#{BenutzergruppenForm}"
-								object="#{BenutzergruppenForm.myBenutzergruppe.id}"
-								actionCancel="#{BenutzergruppenForm.Cancel}"
-								grayeddelete="#{!BenutzergruppenForm.myBenutzergruppe.isDeletable()}"
-								grayeddeletetooltip="#{msgs.userGroupNotDeletable}"/>
-						</div>
-					</div>
+
+								</div> <!-- end col -->
+
+								<div class="col-12 col-lg-6">
+
+									<div class="col-12 pb-4 border-bottom">
+
+									<h3 tabindex="0" class="heading-3">#{msgs.usergroup_availableRoles}</h3>
+									<ui:repeat var="role" value="#{BenutzergruppenForm.allAvailableRoles}" varStatus="row">
+										<button jsf:action="#{BenutzergruppenForm.addRole}"
+											class="add_role_#{role} badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' :
+												fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
+												fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' :
+																			fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' :
+												fn:startsWith(role,'goobiscript_') ? 'badge-light-blue' :
+												fn:startsWith(role,'Workflow_') ? 'badge-light-purple' :
+												fn:startsWith(role,'Task_') ? 'badge-light-orange' :
+												fn:startsWith(role,'Plugin_') ? 'badge-light-lila' :
+												'badge-light-greengrey'}" >
+												<span>
+													<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" />
+												</span>
+												<i class="fa fa-plus"></i>
+												<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
+												<f:ajax render="@form" />
+												</button>
+											</ui:repeat>
+
+											<h:panelGroup
+												layout="block"
+												rendered="#{BenutzergruppenForm.allAvailableRoles.size() == 0}"
+												styleClass="alert alert-info alert-dismissable"
+												>
+												#{msgs.usergroup_allRolesAssigned}
+											</h:panelGroup>
+
+											</div>
+
+											<div class="col-12 pt-4">
+												<h3 tabindex="0" class="heading-3">#{msgs.usergroup_individualRoles}</h3>
+												<div class="input-group">
+													<h:inputText id="userRoles" value="#{BenutzergruppenForm.tempRole}" styleClass="form-control"/>
+													<div class="input-group-addon">
+														<button
+															class="btn btn-action"
+															tabindex="-1"
+															title="#{msgs.usergroup_addRole}"
+															jsf:action="#{BenutzergruppenForm.addRole}">
+															<i class="fa fa-plus" />
+														</button>
+													</div>
+												</div>
+											</div>
+
+									</div>
+								</h:panelGroup>
+
+							</div> <!-- end col-md-9 -->
+						</div> <!-- end row -->
+
+
+						<intranda:formButtonArea
+							id="buttons"
+							form="#{BenutzergruppenForm}"
+							object="#{BenutzergruppenForm.myBenutzergruppe.id}"
+							actionCancel="#{BenutzergruppenForm.Cancel}"
+							grayeddelete="#{!BenutzergruppenForm.myBenutzergruppe.isDeletable()}"
+							grayeddeletetooltip="#{msgs.userGroupNotDeletable}"/>
+
+					</intranda:box>
 				</div>
 
-			</div>
+			</main>
 		</h:form>
 
 	</ui:define>

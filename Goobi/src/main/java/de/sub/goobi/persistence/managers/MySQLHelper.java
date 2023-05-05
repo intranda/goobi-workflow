@@ -69,6 +69,34 @@ public class MySQLHelper implements Serializable {
         this.cm = new ConnectionManager();
     }
 
+    public enum SQLTYPE {
+        H2,
+        MYSQL,
+        MARIADB;
+    }
+
+    private SQLTYPE type = null;
+
+    public SQLTYPE getSqlType() {
+        if (type == null) {
+            try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+                DatabaseMetaData meta = connection.getMetaData();
+                String dbType = meta.getDatabaseProductName();
+                if ("H2".equals(dbType)) {
+                    type = SQLTYPE.H2;
+                } else if ("MySQL".equals(dbType)) {
+                    type = SQLTYPE.MYSQL;
+                } else {
+                    type = SQLTYPE.MARIADB;
+                }
+
+            } catch (SQLException e) {
+                log.error("Error getting database provider information", e);
+            }
+        }
+        return type;
+    }
+
     /**
      * Check if current database connection is based on H2. Otherwise it is Mysql or Mariadb
      * 
@@ -78,7 +106,7 @@ public class MySQLHelper implements Serializable {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             DatabaseMetaData meta = connection.getMetaData();
             String dbType = meta.getDatabaseProductName();
-            return (dbType.equals("H2"));
+            return ("H2".equals(dbType));
         } catch (SQLException e) {
             log.error("Error getting database provider information", e);
         }
@@ -485,5 +513,56 @@ public class MySQLHelper implements Serializable {
             return map;
         }
 
+    }
+
+    /**
+     * Prepare the SQL query and generate order statement
+     * 
+     * If a regular column is used, nothing gets changed. But if a custom column is used, the query gets extended to include the data into the result
+     * list, so ordering by this data is possible.
+     * 
+     * @param order column name to order
+     * @param sql prepared sql statement, gets extended if needed
+     * @return order statement
+     */
+
+    public static String prepareSortField(String order, StringBuilder sql) {
+        if (StringUtils.isBlank(order) || !order.startsWith("{")) {
+            return order;
+        }
+
+        String sortfield = "";
+        boolean reverse = false;
+        if (order.endsWith(" desc")) {
+            reverse = true;
+            order = order.replace(" desc", "");
+        }
+
+        String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
+        if (order.startsWith("{db_meta")) {
+            sql.append("LEFT JOIN (SELECT processid, MAX(value) AS value FROM metadata WHERE metadata.name = '");
+            sql.append(fieldname);
+            sql.append("' GROUP BY processid) AS field ON field.processid = prozesse.prozesseID ");
+        } else if (order.startsWith("{process.")) {
+            sql.append("LEFT JOIN (SELECT prozesseID, MAX(WERT) AS value FROM prozesseeigenschaften WHERE prozesseeigenschaften.Titel = '");
+            sql.append(fieldname);
+            sql.append("' GROUP BY prozesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
+        } else if (order.startsWith("{template.")) {
+            sql.append("LEFT JOIN (SELECT  ProzesseID, MAX(WERT) AS value FROM vorlageneigenschaften LEFT JOIN vorlagen ON ");
+            sql.append("vorlagen.VorlagenID = vorlageneigenschaften.VorlagenID WHERE titel = '");
+            sql.append(fieldname);
+            sql.append("' GROUP BY ProzesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
+        } else if (order.startsWith("{product.")) {
+            sql.append("LEFT JOIN (SELECT  ProzesseID, MAX(WERT) AS value FROM werkstueckeeigenschaften LEFT JOIN werkstuecke ON ");
+            sql.append("werkstuecke.werkstueckeID = werkstueckeeigenschaften.werkstueckeID WHERE titel = '");
+            sql.append(fieldname);
+            sql.append("' GROUP BY ProzesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
+        }
+        if (reverse) {
+            sortfield = " case when field.value = '' or field.value is null then 1 else 0 end, field.value desc ";
+        } else {
+            sortfield = " case when field.value = '' or field.value is null then 1 else 0 end, field.value ";
+        }
+        return sortfield;
     }
 }
