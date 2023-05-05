@@ -311,4 +311,13 @@ public class StepManager implements IManager, Serializable {
         }
     }
 
+    public static void deleteAllSteps(List<Step> steps) {
+        try {
+            StepMysqlHelper.deleteAllSteps(steps);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+
+    }
+
 }
