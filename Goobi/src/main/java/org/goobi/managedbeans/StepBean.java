@@ -175,8 +175,6 @@ public class StepBean extends BasicBean implements Serializable {
     @Setter
     private String content = "";
 
-    private IExportPlugin exportPlugin = null;
-
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
@@ -928,7 +926,6 @@ public class StepBean extends BasicBean implements Serializable {
 
     public void setMySchritt(Step mySchritt) {
         myPlugin = null;
-        exportPlugin = null;
         this.modusBearbeiten = "";
         this.mySchritt = mySchritt;
         loadProcessProperties();
@@ -936,6 +933,7 @@ public class StepBean extends BasicBean implements Serializable {
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
 
+            IExportPlugin exportPlugin = null;
             if (myPlugin == null) {
                 exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
             }

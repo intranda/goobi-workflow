@@ -1023,26 +1023,22 @@ public class MetadatenHelper implements Comparator<Object> {
     }
 
     private static void addAuthorityFromPerson(Map<String, List<String>> metadataList, Person p) {
+
         if (StringUtils.isNotBlank(p.getAuthorityID())) {
+
             String key = p.getType().getName() + "_authority";
-            List<String> value = metadataList.get(key);
-            if (value == null) {
-                value = new ArrayList<>();
-                metadataList.put(key, value);
-            }
-            value.add(p.getAuthorityID());
+            metadataList.computeIfAbsent(key, k -> new ArrayList<>());
+            metadataList.get(key).add(p.getAuthorityID());
         }
     }
 
     private static void addAuthorityFromMeta(Map<String, List<String>> metadataList, Metadata md) {
+
         if (StringUtils.isNotBlank(md.getAuthorityID())) {
+
             String key = md.getType().getName() + "_authority";
-            List<String> value = metadataList.get(key);
-            if (value == null) {
-                value = new ArrayList<>();
-                metadataList.put(key, value);
-            }
-            value.add(md.getAuthorityID());
+            metadataList.computeIfAbsent(key, k -> new ArrayList<>());
+            metadataList.get(key).add(md.getAuthorityID());
         }
     }
 

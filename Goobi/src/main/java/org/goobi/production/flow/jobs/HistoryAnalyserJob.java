@@ -331,7 +331,6 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
         HistoryEvent he = new HistoryEvent(timeStamp, stepOrder, stepName, type, inProcess);
 
         if (!getHistoryContainsEventAlready(he, inProcess)) {
-            //            HistoryManager.addHistoryEvent(he);
             return he;
         } else {
             return null;

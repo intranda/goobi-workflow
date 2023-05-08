@@ -43,9 +43,6 @@ import lombok.Setter;
 
 public class Institution extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Institution> {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -2608701994741239302L;
 
     @Getter
@@ -93,6 +90,17 @@ public class Institution extends AbstractJournal implements Serializable, Databa
     @Override
     public int compareTo(Institution o) {
         return this.shortName.compareTo(o.getShortName());
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object.getClass().equals(this.getClass()))) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        Institution institution = (Institution) (object);
+        return institution.id.equals(this.id);
     }
 
     @Override

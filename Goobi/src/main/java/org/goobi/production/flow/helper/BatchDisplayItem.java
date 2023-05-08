@@ -54,8 +54,23 @@ public class BatchDisplayItem implements Comparable<BatchDisplayItem> {
 
     @Override
     public int compareTo(BatchDisplayItem o) {
-
         return this.getStepOrder().compareTo(o.getStepOrder());
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object.getClass().equals(this.getClass()))) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        BatchDisplayItem item = (BatchDisplayItem) (object);
+        boolean equal = item.stepTitle.equals(this.stepTitle);
+        equal = equal && item.stepOrder.equals(this.stepOrder);
+        equal = equal && item.stepStatus.equals(this.stepStatus);
+        equal = equal && item.scripts.equals(this.scripts);
+        equal = equal && item.exportDMS == this.exportDMS;
+        return equal;
     }
 
     public int getScriptSize() {

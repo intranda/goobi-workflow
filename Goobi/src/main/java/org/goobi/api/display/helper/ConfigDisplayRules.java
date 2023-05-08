@@ -222,10 +222,7 @@ public final class ConfigDisplayRules {
         if (!allValues.isEmpty()) {
             synchronized (this.allValues) {
                 // search for configured value in current project configuration
-                if (!allValues.containsKey(myproject)) {
-                    // add new empty entry
-                    allValues.put(myproject, new HashMap<>());
-                }
+                allValues.computeIfAbsent(myproject, key -> new HashMap<>());
 
                 Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(myproject);
                 Set<String> itemTypes = itemsByType.keySet();
@@ -244,13 +241,10 @@ public final class ConfigDisplayRules {
                         return;
                     }
                 }
+
                 // finally add it as input text field
-                Map<String, List<Item>> typeList = itemsByType.get(FIELD_INPUT);
-                if (typeList == null) {
-                    typeList = new HashMap<>();
-                    itemsByType.put(FIELD_INPUT, typeList);
-                }
-                typeList.put(myelementName, Collections.emptyList());
+                itemsByType.computeIfAbsent(FIELD_INPUT, key -> new HashMap<>());
+                itemsByType.get(FIELD_INPUT).put(myelementName, Collections.emptyList());
 
             }
         }

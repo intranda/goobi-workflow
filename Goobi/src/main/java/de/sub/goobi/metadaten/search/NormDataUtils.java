@@ -34,7 +34,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import de.intranda.digiverso.normdataimporter.model.NormData;
-import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.intranda.digiverso.normdataimporter.model.NormDataValue;
 
 /**
@@ -161,21 +160,4 @@ public class NormDataUtils {
         return allValues;
     }
 
-    /**
-     * Prints the content of record of type NormDataRecord
-     *
-     * @param normDataRecord a norm data record to print
-     */
-    public static void printRecord(NormDataRecord normDataRecord) {
-        if (Objects.nonNull(normDataRecord)) {
-            for (NormData normData : normDataRecord.getNormdataList()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(normData.getKey()).append(" : ");
-                for (NormDataValue value : normData.getValues()) {
-                    sb.append(value.getText()).append(", ");
-                }
-                System.out.println(sb.toString());
-            }
-        }
-    }
 }

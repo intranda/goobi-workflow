@@ -202,15 +202,4 @@ public class KulturNavImporter extends JsonDataLoader {
         return source;
     }
 
-    // Main method for easy debugging
-    public static void main(String[] args) throws Exception {
-        String encoded = parseSearchString("Almaas OR Øyvind 1939");
-        String url = SUMMARY_URL + "entityType:Person,compoundName:" + encoded;
-        // Print the content of record
-        List<NormDataRecord> records = importNormData(url);
-        for (NormDataRecord normDataRecord : records) {
-            System.out.println("--------------------");
-            NormDataUtils.printRecord(normDataRecord);
-        }
-    }
 }

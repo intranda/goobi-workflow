@@ -677,6 +677,17 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object.getClass().equals(this.getClass()))) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        Step step = (Step) (object);
+        return step.id.equals(this.id);
+    }
+
+    @Override
     public void lazyLoad() {
         if (processId != null) {
             prozess = ProcessManager.getProcessById(processId);

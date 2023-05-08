@@ -1401,6 +1401,17 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object.getClass().equals(this.getClass()))) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        Process process = (Process) (object);
+        return process.id.equals(this.id);
+    }
+
+    @Override
     public void lazyLoad() {
     }
 

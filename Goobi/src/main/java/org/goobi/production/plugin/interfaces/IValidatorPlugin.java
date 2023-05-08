@@ -40,7 +40,9 @@ public interface IValidatorPlugin extends IPlugin {
 
     /**
      * This method is not used anymore
-     * 
+     *
+     * @deprecated The step object is not used anymore.
+     *
      * @return
      */
     @Deprecated(since = "23.05", forRemoval = true)
@@ -48,7 +50,9 @@ public interface IValidatorPlugin extends IPlugin {
 
     /**
      * This method is not used anymore
-     * 
+     *
+     * @deprecated The step object is not used anymore.
+     *
      * @return
      */
     @Deprecated(since = "23.05", forRemoval = true)

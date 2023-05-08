@@ -46,7 +46,6 @@ public class Ruleset implements Serializable, DatabaseObject {
     @Getter
     @Setter
     private String datei;
-    private Prefs mypreferences;
     private Boolean orderMetadataByRuleset = false;
 
     @Override
@@ -55,13 +54,15 @@ public class Ruleset implements Serializable, DatabaseObject {
     }
 
     public Prefs getPreferences() {
-        this.mypreferences = new Prefs();
+        String preferencesFile = ConfigurationHelper.getInstance().getRulesetFolder() + this.datei;
         try {
-            this.mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder() + this.datei);
+            Prefs preferences = new Prefs();
+            preferences.loadPrefs(preferencesFile);
+            return preferences;
         } catch (PreferencesException e) {
             log.error(e);
+            return null;
         }
-        return this.mypreferences;
     }
 
     public boolean isOrderMetadataByRuleset() {

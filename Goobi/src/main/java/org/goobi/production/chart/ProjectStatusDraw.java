@@ -56,6 +56,7 @@ import lombok.extern.log4j.Log4j2;
 public class ProjectStatusDraw {
     private static final long MILLICSECS_PER_DAY = 1000l * 60l * 60l * 24l;
     private static final int BORDERTOP = 50;
+    private static final int BORDERLEFT = 50;
     private static final int BORDERRIGHT = 50;
     private static final int BARWIDTH = 15;
     private static final int BARSPACING = 3 * BARWIDTH;
@@ -71,9 +72,6 @@ public class ProjectStatusDraw {
 
     // dimensions of the chart
     private int chartWidth;
-
-    // border values
-    private int borderLeft;
 
     private FontMetrics fm;
 
@@ -110,7 +108,7 @@ public class ProjectStatusDraw {
         }
 
         // Adjust left border to length of task titles
-        borderLeft = maxTitleLength + 50;
+        int borderLeft = maxTitleLength + BORDERLEFT;
 
         // Compute width of the chart (without the borders)
         chartWidth = width - borderLeft - BORDERRIGHT;

@@ -130,20 +130,6 @@ class PropertyMysqlHelper implements Serializable {
         }
     };
 
-    private static final ResultSetHandler<Templateproperty> templatePropertyHandler = new ResultSetHandler<Templateproperty>() {
-        @Override
-        public Templateproperty handle(ResultSet resultSet) throws SQLException {
-            try {
-                if (resultSet.next()) {
-                    return PropertyMysqlHelper.createTemplateProperty(resultSet);
-                }
-            } finally {
-                resultSet.close();
-            }
-            return null;
-        }
-    };
-
     private static final ResultSetHandler<List<Masterpieceproperty>> masterpiecePropertyListHandler =
             new ResultSetHandler<List<Masterpieceproperty>>() {
                 @Override
@@ -159,20 +145,6 @@ class PropertyMysqlHelper implements Serializable {
                     return properties;
                 }
             };
-
-    private static final ResultSetHandler<Masterpieceproperty> masterpiecePropertyHandler = new ResultSetHandler<Masterpieceproperty>() {
-        @Override
-        public Masterpieceproperty handle(ResultSet resultSet) throws SQLException {
-            try {
-                if (resultSet.next()) {
-                    return PropertyMysqlHelper.createMasterpieceProperty(resultSet);
-                }
-            } finally {
-                resultSet.close();
-            }
-            return null;
-        }
-    };
 
     private static Processproperty createProcessProperty(ResultSet result) throws SQLException {
         Processproperty property = new Processproperty();

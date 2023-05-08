@@ -69,21 +69,21 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     /**
-     * This field is not used anymore
+     * @deprecated This field is not used anymore
      */
     @Deprecated(since = "23.05", forRemoval = true)
     @JsonIgnore
     private String mainFieldName;
 
     /**
-     * This field is not used anymore
+     * @deprecated This field is not used anymore
      */
     @Deprecated(since = "23.05", forRemoval = true)
     @JsonIgnore
     private String searchField;
 
     /**
-     * This field is not used anymore
+     * @deprecated This field is not used anymore
      */
     @Deprecated(since = "23.05", forRemoval = true)
     @JsonIgnore

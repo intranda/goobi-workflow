@@ -989,21 +989,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     private Set<String> loadWantedFields(HierarchicalConfiguration projectConf) {
-        Set<String> wantedFields = new HashSet<>();
-        String[] wfArr = projectConf.getStringArray("wantedField");
-        for (String wf : wfArr) {
-            wantedFields.add(wf);
-        }
-        return wantedFields;
+        return Set.of(projectConf.getStringArray("wantedField"));
     }
 
     private List<String> loadFilterProjects(HierarchicalConfiguration projectConf) {
-        List<String> projects = new ArrayList<>();
-        String[] projArr = projectConf.getStringArray("searchableProject");
-        for (String proj : projArr) {
-            projects.add(proj);
-        }
-        return projects;
+        return Arrays.asList(projectConf.getStringArray("searchableProject"));
     }
 
     public List<String> getPossibleFields() {

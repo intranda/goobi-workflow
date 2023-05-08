@@ -486,29 +486,15 @@ public class MassImportForm implements Serializable {
      * File upload with binary copying.
      */
     public void uploadFile() {
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-        try {
-            if (this.uploadedFile == null) {
-                Helper.setFehlerMeldung("noFileSelected");
-                return;
-            }
 
-            String basename = getFileName(this.uploadedFile);
-            if (basename.startsWith(".")) {
-                basename = basename.substring(1);
-            }
-            if (basename.contains("/")) {
-                basename = basename.substring(basename.lastIndexOf("/") + 1);
-            }
-            if (basename.contains("\\")) {
-                basename = basename.substring(basename.lastIndexOf("\\") + 1);
-            }
+        if (this.uploadedFile == null) {
+            Helper.setFehlerMeldung("noFileSelected");
+            return;
+        }
+        String filename = this.createUploadFileName();
 
-            String filename = ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
-
-            inputStream = this.uploadedFile.getInputStream();
-            outputStream = new FileOutputStream(filename);
+        try (InputStream inputStream = this.uploadedFile.getInputStream();
+                OutputStream outputStream = new FileOutputStream(filename)) {
 
             byte[] buf = new byte[1024];
             int len;
@@ -520,24 +506,21 @@ public class MassImportForm implements Serializable {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed");
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-
         }
+    }
 
+    private String createUploadFileName() {
+        String basename = getFileName(this.uploadedFile);
+        if (basename.startsWith(".")) {
+            basename = basename.substring(1);
+        }
+        if (basename.contains("/")) {
+            basename = basename.substring(basename.lastIndexOf("/") + 1);
+        }
+        if (basename.contains("\\")) {
+            basename = basename.substring(basename.lastIndexOf("\\") + 1);
+        }
+        return ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
     }
 
     private String getFileName(final Part part) {

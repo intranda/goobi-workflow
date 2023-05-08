@@ -1632,7 +1632,7 @@ public class DatabaseVersion {
                             else {
                                 type = LogType.INFO;
                             }
-                            entry = entry.replaceAll("<font color.*?>", "").replace("</font>", "");
+                            entry = entry.replaceAll("<font color[^>]+>", "").replace("</font>", "");
                             String dateString = "";
                             String username = "automatic";
                             Date date = null;

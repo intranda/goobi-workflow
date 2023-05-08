@@ -73,7 +73,9 @@ public interface IStepPlugin extends IPlugin {
 
     /**
      * This method is not used by Goobi. It may be used by the plugin during initialize
-     * 
+     *
+     * @deprecated The validation method is not used anymore. If a step should be used for validation, the IValidatorPlugin should be used instead.
+     *
      * @return
      */
     @Deprecated(since = "23.05", forRemoval = true)

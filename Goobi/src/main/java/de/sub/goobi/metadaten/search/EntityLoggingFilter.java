@@ -131,5 +131,11 @@ public class EntityLoggingFilter implements ClientRequestFilter, ClientResponseF
             }
             out.write(i);
         }
+
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException {
+            baos.write(b, off, len);
+        }
+
     }
 }

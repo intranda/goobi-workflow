@@ -96,4 +96,19 @@ public class OrderedKeyMap<K, V> extends HashMap<K, V> {
         keyList.remove(key);
         return super.remove(key);
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!super.equals(object)) {
+            return false;
+        } else if (!object.getClass().equals(this.getClass())) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        OrderedKeyMap<K, V> otherMap = (OrderedKeyMap<K, V>) (object);
+        List<K> otherKeyList = otherMap.keyList;
+        return (!this.keyList.equals(otherKeyList));
+
+    }
 }
