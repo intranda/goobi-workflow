@@ -361,26 +361,24 @@ public class MetadatenHelper implements Comparator<Object> {
             /*
              * -------------------------------- Referenzen sortieren --------------------------------
              */
-            Collections.sort(listReferenzen, new Comparator<Reference>() {
-                @Override
-                public int compare(final Reference o1, final Reference o2) {
-                    final Reference r1 = o1;
-                    final Reference r2 = o2;
-                    Integer page1 = 0;
-                    Integer page2 = 0;
-                    final MetadataType mdt = MetadatenHelper.this.myPrefs.getMetadataTypeByName("physPageNumber");
-                    List<? extends Metadata> listMetadaten = r1.getTarget().getAllMetadataByType(mdt);
-                    if (listMetadaten != null && !listMetadaten.isEmpty()) {
-                        final Metadata meineSeite = listMetadaten.get(0);
-                        page1 = Integer.parseInt(meineSeite.getValue());
-                    }
-                    listMetadaten = r2.getTarget().getAllMetadataByType(mdt);
-                    if (listMetadaten != null && !listMetadaten.isEmpty()) {
-                        final Metadata meineSeite = listMetadaten.get(0);
-                        page2 = Integer.parseInt(meineSeite.getValue());
-                    }
-                    return page1.compareTo(page2);
+            Collections.sort(listReferenzen, (o1, o2) -> {
+                final Reference r1 = o1;
+                final Reference r2 = o2;
+                Integer page1 = 0;
+                Integer page2 = 0;
+
+                final MetadataType mdt = MetadatenHelper.this.myPrefs.getMetadataTypeByName("physPageNumber");
+                List<? extends Metadata> listMetadaten = r1.getTarget().getAllMetadataByType(mdt);
+                if (listMetadaten != null && !listMetadaten.isEmpty()) {
+                    final Metadata meineSeite = listMetadaten.get(0);
+                    page1 = Integer.parseInt(meineSeite.getValue());
                 }
+                listMetadaten = r2.getTarget().getAllMetadataByType(mdt);
+                if (listMetadaten != null && !listMetadaten.isEmpty()) {
+                    final Metadata meineSeite = listMetadaten.get(0);
+                    page2 = Integer.parseInt(meineSeite.getValue());
+                }
+                return page1.compareTo(page2);
             });
 
             MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");

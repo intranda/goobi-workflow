@@ -73,6 +73,17 @@ public class BatchDisplayItem implements Comparable<BatchDisplayItem> {
         return equal;
     }
 
+    @Override
+    public int hashCode() {
+        int hashCode = super.hashCode();
+        hashCode = hashCode * 71 + this.stepTitle.hashCode();
+        hashCode = hashCode * 73 + this.stepOrder.hashCode();
+        hashCode = hashCode * 79 + this.stepStatus.hashCode();
+        hashCode = hashCode * 83 + this.scripts.hashCode();
+        hashCode = hashCode * (this.exportDMS ? 89 : 97);
+        return hashCode;
+    }
+
     public int getScriptSize() {
         return this.scripts.size();
     }

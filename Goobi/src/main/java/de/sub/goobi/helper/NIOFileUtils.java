@@ -150,11 +150,8 @@ public class NIOFileUtils implements StorageProviderInterface {
             /* --------------------------------
              * die Images zählen
              * --------------------------------*/
-            anzahl = list(dir.toString(), new DirectoryStream.Filter<Path>() {
-                @Override
-                public boolean accept(Path path) {
-                    return Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix));
-                }
+            anzahl = list(dir.toString(), path -> {
+                return Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix));
             }
 
             ).size();
@@ -267,29 +264,23 @@ public class NIOFileUtils implements StorageProviderInterface {
         return this.list(folder, folderFilter);
     }
 
-    public static final DirectoryStream.Filter<Path> imageNameFilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            return checkImageType(path.getFileName().toString());
-        }
+    public static final DirectoryStream.Filter<Path> imageNameFilter = path -> {
+        return checkImageType(path.getFileName().toString());
     };
 
-    public static final DirectoryStream.Filter<Path> objectNameFilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-            String name = path.getFileName().toString();
-            boolean isAllowed = name.matches(prefix + REGEX_3DS);
-            isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);
-            isAllowed = isAllowed || name.matches(prefix + REGEX_GLB);
-            isAllowed = isAllowed || name.matches(prefix + REGEX_GLTF);
-            isAllowed = isAllowed || name.matches(prefix + REGEX_OBJ);
-            isAllowed = isAllowed || name.matches(prefix + REGEX_PLY);
-            isAllowed = isAllowed || name.matches(prefix + REGEX_STL);
-            isAllowed = isAllowed || name.matches(prefix + REGEX_X3D);
-            isAllowed = isAllowed || name.matches(prefix + REGEX_XML);
-            return isAllowed;
-        }
+    public static final DirectoryStream.Filter<Path> objectNameFilter = path -> {
+        String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+        String name = path.getFileName().toString();
+        boolean isAllowed = name.matches(prefix + REGEX_3DS);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GLB);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GLTF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_OBJ);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PLY);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_STL);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_X3D);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_XML);
+        return isAllowed;
     };
 
     public static final DirectoryStream.Filter<Path> multimediaNameFilter = new DirectoryStream.Filter<Path>() {
@@ -342,28 +333,17 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
     };
 
-    public static final DirectoryStream.Filter<Path> folderFilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            return path.toFile().isDirectory();
-        }
+    public static final DirectoryStream.Filter<Path> folderFilter = path -> {
+        return path.toFile().isDirectory();
     };
 
-    public static final DirectoryStream.Filter<Path> fileFilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            return path.toFile().isFile();
-        }
+    public static final DirectoryStream.Filter<Path> fileFilter = path -> {
+        return path.toFile().isFile();
     };
 
-    public static final DirectoryStream.Filter<Path> DATA_FILTER = new DirectoryStream.Filter<Path>() {
-
-        @Override
-        public boolean accept(Path path) {
-            String name = path.getFileName().toString();
-            return StorageProvider.dataFilterString(name);
-        }
-
+    public static final DirectoryStream.Filter<Path> DATA_FILTER = path -> {
+        String name = path.getFileName().toString();
+        return StorageProvider.dataFilterString(name);
     };
 
     @Override

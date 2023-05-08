@@ -647,11 +647,11 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
 
     public List<SelectItem> getAvailableDashboards() {
         List<SelectItem> dashboards = new ArrayList<>();
-        Institution institution = Helper.getCurrentUser().getInstitution();
-        List<InstitutionConfigurationObject> configuredDashboards = institution.getAllowedDashboardPlugins();
+        Institution currentInstitution = Helper.getCurrentUser().getInstitution();
+        List<InstitutionConfigurationObject> configuredDashboards = currentInstitution.getAllowedDashboardPlugins();
         dashboards.add(new SelectItem("", Helper.getTranslation("user_noDashboad")));
         for (InstitutionConfigurationObject ico : configuredDashboards) {
-            if (institution.isAllowAllPlugins() || ico.isSelected()) {
+            if (currentInstitution.isAllowAllPlugins() || ico.isSelected()) {
                 dashboards.add(new SelectItem(ico.getObject_name(), Helper.getTranslation(ico.getObject_name())));
             }
         }

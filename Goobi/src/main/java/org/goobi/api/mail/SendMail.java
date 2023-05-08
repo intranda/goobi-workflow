@@ -145,34 +145,34 @@ public class SendMail {
             String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_mail.xml";
             if (StorageProvider.getInstance().isFileExists(Paths.get(configurationFile))) {
 
-                XMLConfiguration config = new XMLConfiguration();
+                XMLConfiguration xml = new XMLConfiguration();
                 try {
-                    config.setDelimiterParsingDisabled(true);
-                    config.load(configurationFile);
+                    xml.setDelimiterParsingDisabled(true);
+                    xml.load(configurationFile);
                 } catch (ConfigurationException e) {
                     log.error(e);
                 }
-                config.setExpressionEngine(new XPathExpressionEngine());
-                config.setReloadingStrategy(new FileChangedReloadingStrategy());
+                xml.setExpressionEngine(new XPathExpressionEngine());
+                xml.setReloadingStrategy(new FileChangedReloadingStrategy());
 
-                enableMail = config.getBoolean("/configuration/@enabled", false);
+                enableMail = xml.getBoolean("/configuration/@enabled", false);
 
-                smtpServer = config.getString("/configuration/smtpServer", null);
-                smtpUser = config.getString("/configuration/smtpUser", null);
-                smtpPassword = config.getString("/configuration/smtpPassword", null);
-                smtpUseStartTls = config.getBoolean("/configuration/smtpUseStartTls", false);
-                smtpUseSsl = config.getBoolean("/configuration/smtpUseSsl", false);
-                smtpSenderAddress = config.getString("/configuration/smtpSenderAddress", null);
-                apiUrl = config.getString("/apiUrl", null);
+                smtpServer = xml.getString("/configuration/smtpServer", null);
+                smtpUser = xml.getString("/configuration/smtpUser", null);
+                smtpPassword = xml.getString("/configuration/smtpPassword", null);
+                smtpUseStartTls = xml.getBoolean("/configuration/smtpUseStartTls", false);
+                smtpUseSsl = xml.getBoolean("/configuration/smtpUseSsl", false);
+                smtpSenderAddress = xml.getString("/configuration/smtpSenderAddress", null);
+                apiUrl = xml.getString("/apiUrl", null);
 
-                userCreationMailSubject = config.getString("/userCreation/subject", null);
-                userCreationMailBody = config.getString("/userCreation/body", null);
+                userCreationMailSubject = xml.getString("/userCreation/subject", null);
+                userCreationMailBody = xml.getString("/userCreation/body", null);
 
-                userActivationMailSubject = config.getString("/userActivation/subject", null);
-                userActivationMailBody = config.getString("/userActivation/body", null);
+                userActivationMailSubject = xml.getString("/userActivation/subject", null);
+                userActivationMailBody = xml.getString("/userActivation/body", null);
 
-                passwordResetSubject = config.getString("/resetPassword/subject", null);
-                passwordResetBody = config.getString("/resetPassword/body", null);
+                passwordResetSubject = xml.getString("/resetPassword/subject", null);
+                passwordResetBody = xml.getString("/resetPassword/body", null);
 
             }
         }

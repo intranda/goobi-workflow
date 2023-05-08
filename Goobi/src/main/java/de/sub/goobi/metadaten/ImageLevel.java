@@ -89,4 +89,11 @@ public class ImageLevel implements Comparable<ImageLevel> {
         return this.url.equals(imageLevel.url) && this.size.equals(imageLevel.size);
     }
 
+    @Override
+    public int hashCode() {
+        int prime1 = 31;
+        int prime2 = 37;
+        return super.hashCode() + prime1 * this.url.hashCode() + prime2 * this.size.hashCode();
+    }
+
 }

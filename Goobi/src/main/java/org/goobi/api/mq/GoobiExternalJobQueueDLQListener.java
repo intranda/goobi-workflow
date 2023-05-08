@@ -69,39 +69,36 @@ public class GoobiExternalJobQueueDLQListener {
 
         final MessageConsumer cons = sess.createConsumer(dest);
 
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                while (true) { //NOSONAR, no abort condition is needed
-                    try {
-                        Message message = cons.receive();
-                        // check command and if the token allows this.
-                        String strMessage = null;
-                        if (message instanceof TextMessage) {
-                            TextMessage tm = (TextMessage) message;
-                            strMessage = tm.getText();
-                        }
-                        if (message instanceof BytesMessage) {
-                            BytesMessage bm = (BytesMessage) message;
-                            byte[] bytes = new byte[(int) bm.getBodyLength()];
-                            bm.readBytes(bytes);
-                            strMessage = new String(bytes);
-                        }
-                        ExternalScriptTicket t = gson.fromJson(strMessage, ExternalScriptTicket.class);
-                        Step step = StepManager.getStepById(t.getStepId());
-                        step.setBearbeitungsstatusEnum(StepStatus.ERROR);
-                        step.setBearbeitungsende(new Date());
-                        StepManager.saveStep(step);
-
-                        JournalEntry logEntry = new JournalEntry(step.getProcessId(), new Date(), "Goobi DLQ listener", LogType.ERROR,
-                                "Script ticket failed after retries", EntryType.PROCESS);
-                        JournalManager.saveJournalEntry(logEntry);
-
-                        message.acknowledge();
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        log.error(e);
+        Runnable run = () -> {
+            while (true) { //NOSONAR, no abort condition is needed
+                try {
+                    Message message = cons.receive();
+                    // check command and if the token allows this.
+                    String strMessage = null;
+                    if (message instanceof TextMessage) {
+                        TextMessage tm = (TextMessage) message;
+                        strMessage = tm.getText();
                     }
+                    if (message instanceof BytesMessage) {
+                        BytesMessage bm = (BytesMessage) message;
+                        byte[] bytes = new byte[(int) bm.getBodyLength()];
+                        bm.readBytes(bytes);
+                        strMessage = new String(bytes);
+                    }
+                    ExternalScriptTicket t = gson.fromJson(strMessage, ExternalScriptTicket.class);
+                    Step step = StepManager.getStepById(t.getStepId());
+                    step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                    step.setBearbeitungsende(new Date());
+                    StepManager.saveStep(step);
+
+                    JournalEntry logEntry = new JournalEntry(step.getProcessId(), new Date(), "Goobi DLQ listener", LogType.ERROR,
+                            "Script ticket failed after retries", EntryType.PROCESS);
+                    JournalManager.saveJournalEntry(logEntry);
+
+                    message.acknowledge();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    log.error(e);
                 }
             }
         };

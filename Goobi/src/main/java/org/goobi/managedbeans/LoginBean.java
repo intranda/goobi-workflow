@@ -432,11 +432,8 @@ public class LoginBean implements Serializable {
         }
     }
 
-    private static final DirectoryStream.Filter<Path> pngfilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            return (path.toString().endsWith(".png"));
-        }
+    private static final DirectoryStream.Filter<Path> pngfilter = path -> {
+        return (path.toString().endsWith(".png"));
     };
 
     public int getMaximaleBerechtigung() {

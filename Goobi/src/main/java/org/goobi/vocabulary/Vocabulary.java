@@ -250,35 +250,31 @@ public class Vocabulary implements Serializable, DatabaseObject {
         runFilter();
     }
 
-    private transient Comparator<VocabRecord> recordComparator = new Comparator<VocabRecord>() {
-
-        @Override
-        public int compare(VocabRecord o1, VocabRecord o2) {
-            if (internalSortField == null) {
-                if (sortOrder) {
-                    return o1.getId().compareTo(o2.getId());
-                } else {
-                    return o2.getId().compareTo(o1.getId());
-                }
-            }
-            String value1 = "";
-            String value2 = "";
-
-            for (Field f : o1.getFields()) {
-                if (f.getDefinition().getId().intValue() == internalSortField.intValue()) {
-                    value1 = f.getValue().toLowerCase();
-                }
-            }
-            for (Field f : o2.getFields()) {
-                if (f.getDefinition().getId().intValue() == internalSortField.intValue()) {
-                    value2 = f.getValue().toLowerCase();
-                }
-            }
+    private transient Comparator<VocabRecord> recordComparator = (vocabRecord1, vocabRecord2) -> {
+        if (internalSortField == null) {
             if (sortOrder) {
-                return value1.compareTo(value2);
+                return vocabRecord1.getId().compareTo(vocabRecord2.getId());
             } else {
-                return value2.compareTo(value1);
+                return vocabRecord2.getId().compareTo(vocabRecord1.getId());
             }
+        }
+        String value1 = "";
+        String value2 = "";
+
+        for (Field f : vocabRecord1.getFields()) {
+            if (f.getDefinition().getId().intValue() == internalSortField.intValue()) {
+                value1 = f.getValue().toLowerCase();
+            }
+        }
+        for (Field f : vocabRecord2.getFields()) {
+            if (f.getDefinition().getId().intValue() == internalSortField.intValue()) {
+                value2 = f.getValue().toLowerCase();
+            }
+        }
+        if (sortOrder) {
+            return value1.compareTo(value2);
+        } else {
+            return value2.compareTo(value1);
         }
     };
 

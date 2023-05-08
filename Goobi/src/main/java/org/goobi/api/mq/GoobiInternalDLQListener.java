@@ -66,41 +66,38 @@ public class GoobiInternalDLQListener {
 
         consumer = sess.createConsumer(dest);
 
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                while (!shouldStop) {
-                    try {
-                        Message message = consumer.receive();
-                        // write to DB that there was a poison ACK for this JMS message ID
-                        if (message != null) {
-                            String id = message.getJMSMessageID();
-                            String origMessage = null;
-                            if (message instanceof TextMessage) {
-                                TextMessage tm = (TextMessage) message;
-                                origMessage = tm.getText();
-                            }
-                            if (message instanceof BytesMessage) {
-                                BytesMessage bm = (BytesMessage) message;
-                                byte[] bytes = new byte[(int) bm.getBodyLength()];
-                                bm.readBytes(bytes);
-                                origMessage = new String(bytes);
-                            }
-                            MqStatusMessage statusMessage =
-                                    new MqStatusMessage(id, new Date(), MessageStatus.ERROR_DLQ, "Message failed after retries.", origMessage);
-                            MQResultManager.insertResult(statusMessage);
+        Runnable run = () -> {
+            while (!shouldStop) {
+                try {
+                    Message message = consumer.receive();
+                    // write to DB that there was a poison ACK for this JMS message ID
+                    if (message != null) {
+                        String id = message.getJMSMessageID();
+                        String origMessage = null;
+                        if (message instanceof TextMessage) {
+                            TextMessage tm = (TextMessage) message;
+                            origMessage = tm.getText();
                         }
-                    } catch (JMSException e) {
+                        if (message instanceof BytesMessage) {
+                            BytesMessage bm = (BytesMessage) message;
+                            byte[] bytes = new byte[(int) bm.getBodyLength()];
+                            bm.readBytes(bytes);
+                            origMessage = new String(bytes);
+                        }
+                        MqStatusMessage statusMessage =
+                                new MqStatusMessage(id, new Date(), MessageStatus.ERROR_DLQ, "Message failed after retries.", origMessage);
+                        MQResultManager.insertResult(statusMessage);
+                    }
+                } catch (JMSException e) {
+                    if (!shouldStop) {
+                        // back off a little bit, maybe we have a problem with the connection or we are shutting down
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e1) {
+                            Thread.currentThread().interrupt();
+                        }
                         if (!shouldStop) {
-                            // back off a little bit, maybe we have a problem with the connection or we are shutting down
-                            try {
-                                Thread.sleep(1500);
-                            } catch (InterruptedException e1) {
-                                Thread.currentThread().interrupt();
-                            }
-                            if (!shouldStop) {
-                                log.error(e);
-                            }
+                            log.error(e);
                         }
                     }
                 }

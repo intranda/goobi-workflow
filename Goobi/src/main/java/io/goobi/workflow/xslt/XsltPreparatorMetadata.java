@@ -129,8 +129,8 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
 
         mainElement.setAttribute(XsltPreparatorDocket.ATTRIBUTE_PROCESS_ID, String.valueOf(process.getId()));
 
-        Namespace xmlns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
-        mainElement.setNamespace(xmlns);
+        Namespace namespace = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
+        mainElement.setNamespace(namespace);
         // namespace declaration
         if (addNamespace) {
             Namespace xsi = Namespace.getNamespace(XsltPreparatorDocket.NAMESPACE_XSI, XsltPreparatorDocket.FILE_SCHEMA);
@@ -141,28 +141,28 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
         }
 
         // process information
-        Element processTitle = new Element(XsltPreparatorDocket.ELEMENT_TITLE, xmlns);
+        Element processTitle = new Element(XsltPreparatorDocket.ELEMENT_TITLE, namespace);
         processTitle.setText(process.getTitel());
         mainElement.addContent(processTitle);
 
-        Element project = new Element(XsltPreparatorDocket.ELEMENT_PROJECT, xmlns);
+        Element project = new Element(XsltPreparatorDocket.ELEMENT_PROJECT, namespace);
         project.setText(process.getProjekt().getTitel());
         mainElement.addContent(project);
 
-        Element date = new Element(XsltPreparatorDocket.ELEMENT_CREATION_DATE, xmlns);
+        Element date = new Element(XsltPreparatorDocket.ELEMENT_CREATION_DATE, namespace);
         date.setText(String.valueOf(process.getErstellungsdatum()));
         mainElement.addContent(date);
 
-        Element pdfdate = new Element(XsltPreparatorDocket.ELEMENT_PDF_GENERATION_DATE, xmlns);
+        Element pdfdate = new Element(XsltPreparatorDocket.ELEMENT_PDF_GENERATION_DATE, namespace);
         pdfdate.setText(String.valueOf(new Date()));
         mainElement.addContent(pdfdate);
 
-        Element ruleset = new Element(XsltPreparatorDocket.ELEMENT_RULESET, xmlns);
+        Element ruleset = new Element(XsltPreparatorDocket.ELEMENT_RULESET, namespace);
         ruleset.setText(process.getRegelsatz().getDatei());
         mainElement.addContent(ruleset);
 
         try {
-            Element representative = new Element(XsltPreparatorDocket.ELEMENT_REPRESENTATIVE, xmlns);
+            Element representative = new Element(XsltPreparatorDocket.ELEMENT_REPRESENTATIVE, namespace);
             Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
             String folderName;
             if (process.getImagesTifDirectory(true).equals(repImagePath.getParent().toString() + "/")) {
@@ -279,11 +279,11 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
         Document answer = new Document();
         Element root = new Element(XsltPreparatorDocket.ELEMENT_PROCESSES);
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
+        Namespace namespace = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
 
         Namespace xsi = Namespace.getNamespace(XsltPreparatorDocket.NAMESPACE_XSI, XsltPreparatorDocket.FILE_SCHEMA);
         root.addNamespaceDeclaration(xsi);
-        root.setNamespace(xmlns);
+        root.setNamespace(namespace);
         Attribute attSchema = new Attribute(XsltPreparatorDocket.ATTRIBUTE_SCHEMA_LOCATION,
                 XsltPreparatorDocket.FILE_LOG + " " + XsltPreparatorDocket.XSD_ENDING, xsi);
         root.setAttribute(attSchema);

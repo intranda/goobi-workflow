@@ -809,17 +809,14 @@ public class ProcessBean extends BasicBean implements Serializable {
         return PAGE_PROCESS_EDIT_STEP;
     }
 
-    // Increment the order of all steps coming after this.mySchritt
-    // this.mySchritt is explicitly excluded here, that means
-    // when you insert this.mySchritt into this.myProzess before calling this method,
-    // this.mySchritt will keep its order
+    /**
+     * Increments the order of all steps coming after this.mySchritt. this.mySchritt is explicitly expluded here, that means this.mySchritt always
+     * keeps its order, even if it is inserted directly before the current step.
+     */
     public void incrementOrderOfHigherSteps() {
         List<Step> steps = this.myProzess.getSchritte();
-        Step step;
-        int order;
-        for (Step step2 : steps) {
-            step = step2;
-            order = step.getReihenfolge();
+        for (Step step : steps) {
+            int order = step.getReihenfolge();
             if (order >= this.mySchritt.getReihenfolge() && step != this.mySchritt) {
                 step.setReihenfolge(order + 1);
                 this.saveStepInStepManager(step);

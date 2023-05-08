@@ -270,10 +270,8 @@ public class PluginInstaller implements Serializable {
     }
 
     public static String getContentFromFileInArchive(Path archivePath, String fileName) {
-        TarArchiveInputStream tarInputStream = null;
         String content = "";
-        try {
-            tarInputStream = new TarArchiveInputStream(Files.newInputStream(archivePath));
+        try (TarArchiveInputStream tarInputStream = new TarArchiveInputStream(Files.newInputStream(archivePath))) {
             TarArchiveEntry tarEntry;
             do {
                 tarEntry = (TarArchiveEntry) (tarInputStream.getNextEntry());
@@ -284,14 +282,6 @@ public class PluginInstaller implements Serializable {
             } while (tarEntry != null);
         } catch (IOException ioException) {
             log.error(ioException);
-        } finally {
-            try {
-                if (tarInputStream != null) {
-                    tarInputStream.close();
-                }
-            } catch (IOException ioException) {
-                log.error(ioException);
-            }
         }
         return content;
     }

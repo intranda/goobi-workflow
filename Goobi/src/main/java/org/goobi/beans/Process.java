@@ -1412,6 +1412,12 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+        // TODO: Implement this method fitting to all member variables
+    }
+
+    @Override
     public void lazyLoad() {
     }
 

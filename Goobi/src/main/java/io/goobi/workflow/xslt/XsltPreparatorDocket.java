@@ -381,8 +381,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         mainElement.setAttribute(ATTRIBUTE_PROCESS_ID, String.valueOf(process.getId()));
 
-        Namespace xmlns = Namespace.getNamespace(FILE_LOG);
-        mainElement.setNamespace(xmlns);
+        Namespace namespace = Namespace.getNamespace(FILE_LOG);
+        mainElement.setNamespace(namespace);
         // namespace declaration
         if (addNamespace) {
             Namespace xsi = Namespace.getNamespace(NAMESPACE_XSI, FILE_SCHEMA);
@@ -393,31 +393,31 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         // add some general process information
         ArrayList<Element> elements = new ArrayList<>();
-        Element processTitle = new Element(ELEMENT_TITLE, xmlns);
+        Element processTitle = new Element(ELEMENT_TITLE, namespace);
         processTitle.setText(process.getTitel());
         elements.add(processTitle);
 
-        Element project = new Element(ELEMENT_PROJECT, xmlns);
+        Element project = new Element(ELEMENT_PROJECT, namespace);
         project.setText(process.getProjekt().getTitel());
         elements.add(project);
 
-        Element date = new Element(ELEMENT_CREATION_DATE, xmlns);
+        Element date = new Element(ELEMENT_CREATION_DATE, namespace);
         date.setText(String.valueOf(process.getErstellungsdatum()));
         elements.add(date);
 
-        Element pdfdate = new Element(ELEMENT_PDF_GENERATION_DATE, xmlns);
+        Element pdfdate = new Element(ELEMENT_PDF_GENERATION_DATE, namespace);
         pdfdate.setText(String.valueOf(new Date()));
         elements.add(pdfdate);
 
-        Element ruleset = new Element(ELEMENT_RULESET, xmlns);
+        Element ruleset = new Element(ELEMENT_RULESET, namespace);
         ruleset.setText(process.getRegelsatz().getDatei());
         elements.add(ruleset);
 
         // add user comments from the process log
-        Element comment = new Element(ELEMENT_COMMENTS, xmlns);
+        Element comment = new Element(ELEMENT_COMMENTS, namespace);
         List<JournalEntry> logEntry = process.getJournal();
         for (JournalEntry entry : logEntry) {
-            Element commentLine = new Element(ELEMENT_COMMENT, xmlns);
+            Element commentLine = new Element(ELEMENT_COMMENT, namespace);
             commentLine.setAttribute(ATTRIBUTE_TYPE, entry.getType().getTitle());
             if (StringUtils.isNotBlank(entry.getUserName())) {
                 commentLine.setAttribute(ATTRIBUTE_USER, entry.getUserName());
@@ -433,7 +433,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         elements.add(comment);
 
         if (process.getBatch() != null) {
-            Element batch = new Element(ELEMENT_BATCH, xmlns);
+            Element batch = new Element(ELEMENT_BATCH, namespace);
             batch.setText(String.valueOf(process.getBatch().getBatchId()));
             if (StringUtils.isNotBlank(process.getBatch().getBatchName())) {
                 batch.setAttribute(ATTRIBUTE_BATCH_NAME, process.getBatch().getBatchName());
@@ -452,7 +452,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         List<Element> processProperties = new ArrayList<>();
         List<ProcessProperty> propertyList = PropertyParser.getInstance().getPropertiesForProcess(process);
         for (ProcessProperty prop : propertyList) {
-            Element property = new Element(ELEMENT_PROPERTY, xmlns);
+            Element property = new Element(ELEMENT_PROPERTY, namespace);
             property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getName());
             if (prop.getValue() != null) {
                 property.setAttribute(ATTRIBUTE_VALUE, prop.getValue());
@@ -460,49 +460,49 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 property.setAttribute(ATTRIBUTE_VALUE, "");
             }
 
-            Element label = new Element(ELEMENT_LABEL, xmlns);
+            Element label = new Element(ELEMENT_LABEL, namespace);
 
             label.setText(prop.getName());
             property.addContent(label);
             processProperties.add(property);
         }
         if (!processProperties.isEmpty()) {
-            Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
+            Element properties = new Element(ELEMENT_PROPERTIES, namespace);
             properties.addContent(processProperties);
             elements.add(properties);
         }
 
         // step information
-        Element steps = new Element(ELEMENT_STEPS, xmlns);
+        Element steps = new Element(ELEMENT_STEPS, namespace);
         List<Element> stepElements = new ArrayList<>();
         for (Step s : process.getSchritteList()) {
-            Element stepElement = new Element(ELEMENT_STEP, xmlns);
+            Element stepElement = new Element(ELEMENT_STEP, namespace);
             stepElement.setAttribute(ATTRIBUTE_STEP_ID, String.valueOf(s.getId()));
 
-            Element steptitle = new Element(ELEMENT_TITLE, xmlns);
+            Element steptitle = new Element(ELEMENT_TITLE, namespace);
             steptitle.setText(s.getTitel());
             stepElement.addContent(steptitle);
 
-            Element state = new Element(ELEMENT_PROCESSINGSTATUS, xmlns);
+            Element state = new Element(ELEMENT_PROCESSINGSTATUS, namespace);
             state.setText(s.getBearbeitungsstatusAsString());
             stepElement.addContent(state);
 
-            Element begin = new Element(ELEMENT_TIME, xmlns);
+            Element begin = new Element(ELEMENT_TIME, namespace);
             begin.setAttribute(ATTRIBUTE_TYPE, "start time");
             begin.setText(s.getBearbeitungsbeginnAsFormattedString());
             stepElement.addContent(begin);
 
-            Element end = new Element(ELEMENT_TIME, xmlns);
+            Element end = new Element(ELEMENT_TIME, namespace);
             end.setAttribute(ATTRIBUTE_TYPE, "end time");
             end.setText(s.getBearbeitungsendeAsFormattedString());
             stepElement.addContent(end);
 
             if (s.getBearbeitungsbenutzer() != null && s.getBearbeitungsbenutzer().getNachVorname() != null) {
-                Element user = new Element(ELEMENT_USER, xmlns);
+                Element user = new Element(ELEMENT_USER, namespace);
                 user.setText(s.getBearbeitungsbenutzer().getNachVorname());
                 stepElement.addContent(user);
             }
-            Element editType = new Element(ELEMENT_EDITTYPE, xmlns);
+            Element editType = new Element(ELEMENT_EDITTYPE, namespace);
             editType.setText(s.getEditTypeEnum().getTitle());
             stepElement.addContent(editType);
 
@@ -514,15 +514,15 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         // template information
-        Element templates = new Element(ELEMENT_ORIGINALS, xmlns);
+        Element templates = new Element(ELEMENT_ORIGINALS, namespace);
         List<Element> templateElements = new ArrayList<>();
         for (Template v : process.getVorlagenList()) {
-            Element template = new Element(ELEMENT_ORIGINAL, xmlns);
+            Element template = new Element(ELEMENT_ORIGINAL, namespace);
             template.setAttribute(ATTRIBUTE_ORIGINAL_ID, String.valueOf(v.getId()));
 
             List<Element> templateProperties = new ArrayList<>();
             for (Templateproperty prop : v.getEigenschaftenList()) {
-                Element property = new Element(ELEMENT_PROPERTY, xmlns);
+                Element property = new Element(ELEMENT_PROPERTY, namespace);
                 property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel());
                 if (prop.getWert() != null) {
                     property.setAttribute(ATTRIBUTE_VALUE, prop.getWert());
@@ -530,18 +530,18 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     property.setAttribute(ATTRIBUTE_VALUE, "");
                 }
 
-                Element label = new Element(ELEMENT_LABEL, xmlns);
+                Element label = new Element(ELEMENT_LABEL, namespace);
 
                 label.setText(prop.getTitel());
                 property.addContent(label);
 
                 templateProperties.add(property);
                 if ("Signatur".equals(prop.getTitel())) {
-                    Element secondProperty = new Element(ELEMENT_PROPERTY, xmlns);
+                    Element secondProperty = new Element(ELEMENT_PROPERTY, namespace);
                     secondProperty.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel() + "Encoded");
                     if (prop.getWert() != null) {
                         secondProperty.setAttribute(ATTRIBUTE_VALUE, "vorl:" + prop.getWert());
-                        Element secondLabel = new Element(ELEMENT_LABEL, xmlns);
+                        Element secondLabel = new Element(ELEMENT_LABEL, namespace);
                         secondLabel.setText(prop.getTitel());
                         secondProperty.addContent(secondLabel);
                         templateProperties.add(secondProperty);
@@ -549,7 +549,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 }
             }
             if (!templateProperties.isEmpty()) {
-                Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
+                Element properties = new Element(ELEMENT_PROPERTIES, namespace);
                 properties.addContent(templateProperties);
                 template.addContent(properties);
             }
@@ -561,15 +561,15 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         // digital document information
-        Element digdoc = new Element(ELEMENT_DIGITAL_DOCUMENTS, xmlns);
+        Element digdoc = new Element(ELEMENT_DIGITAL_DOCUMENTS, namespace);
         List<Element> docElements = new ArrayList<>();
         for (Masterpiece w : process.getWerkstueckeList()) {
-            Element dd = new Element(ELEMENT_DIGITAL_DOCUMENT, xmlns);
+            Element dd = new Element(ELEMENT_DIGITAL_DOCUMENT, namespace);
             dd.setAttribute(ATTRIBUTE_DIGITAL_DOCUMENT_ID, String.valueOf(w.getId()));
 
             List<Element> docProperties = new ArrayList<>();
             for (Masterpieceproperty prop : w.getEigenschaftenList()) {
-                Element property = new Element(ELEMENT_PROPERTY, xmlns);
+                Element property = new Element(ELEMENT_PROPERTY, namespace);
                 property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel());
                 if (prop.getWert() != null) {
                     property.setAttribute(ATTRIBUTE_VALUE, prop.getWert());
@@ -577,14 +577,14 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     property.setAttribute(ATTRIBUTE_VALUE, "");
                 }
 
-                Element label = new Element(ELEMENT_LABEL, xmlns);
+                Element label = new Element(ELEMENT_LABEL, namespace);
 
                 label.setText(prop.getTitel());
                 property.addContent(label);
                 docProperties.add(property);
             }
             if (!docProperties.isEmpty()) {
-                Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
+                Element properties = new Element(ELEMENT_PROPERTIES, namespace);
                 properties.addContent(docProperties);
                 dd.addContent(properties);
             }
@@ -600,7 +600,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             List<Element> eventElementList = new ArrayList<>(eventList.size());
 
             for (HistoryEvent event : eventList) {
-                Element element = new Element(ELEMENT_HISTORY_EVENT, xmlns);
+                Element element = new Element(ELEMENT_HISTORY_EVENT, namespace);
                 element.setAttribute(ATTRIBUTE_ID, "" + event.getId());
                 element.setAttribute(ATTRIBUTE_DATE, Helper.getDateAsFormattedString(event.getDate()));
                 element.setAttribute(ATTRIBUTE_TYPE, event.getHistoryType().getTitle());
@@ -615,7 +615,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             }
 
             if (!eventElementList.isEmpty()) {
-                Element metadataElement = new Element(ELEMENT_HISTORY, xmlns);
+                Element metadataElement = new Element(ELEMENT_HISTORY, namespace);
                 metadataElement.addContent(eventElementList);
                 elements.add(metadataElement);
             }
@@ -629,20 +629,20 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 String name = md.getOne();
                 String value = md.getTwo();
                 if (StringUtils.isNotBlank(value) && StringUtils.isNotBlank(name)) {
-                    Element element = new Element(ELEMENT_METADATA, xmlns);
+                    Element element = new Element(ELEMENT_METADATA, namespace);
                     element.setAttribute(ATTRIBUTE_NAME, name);
                     element.addContent(value);
                     mdlist.add(element);
                 }
             }
             if (!mdlist.isEmpty()) {
-                Element metadataElement = new Element(ELEMENT_METADATALIST, xmlns);
+                Element metadataElement = new Element(ELEMENT_METADATALIST, namespace);
                 metadataElement.addContent(mdlist);
                 elements.add(metadataElement);
             }
         }
         // METS information
-        Element metsElement = new Element(ELEMENT_METS_INFORMATION, xmlns);
+        Element metsElement = new Element(ELEMENT_METS_INFORMATION, namespace);
         List<Element> metadataElements = new ArrayList<>();
 
         try {
@@ -662,7 +662,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             for (Map.Entry<String, String> entry : fields.entrySet()) {
                 List<Element> metsValues = getMetsValues(entry.getValue(), metsDoc, namespaces);
                 for (Element element : metsValues) {
-                    Element ele = new Element(ELEMENT_PROPERTY, xmlns);
+                    Element ele = new Element(ELEMENT_PROPERTY, namespace);
                     ele.setAttribute(ATTRIBUTE_NAME, entry.getKey());
                     ele.addContent(element.getTextTrim());
                     metadataElements.add(ele);
@@ -674,7 +674,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 for (Map.Entry<String, String> entry : fields.entrySet()) {
                     List<Element> metsValues = getMetsValues(entry.getValue(), anchorDoc, namespaces);
                     for (Element element : metsValues) {
-                        Element ele = new Element(ELEMENT_PROPERTY, xmlns);
+                        Element ele = new Element(ELEMENT_PROPERTY, namespace);
                         ele.setAttribute(ATTRIBUTE_NAME, entry.getKey());
                         ele.addContent(element.getTextTrim());
                         metadataElements.add(ele);
@@ -694,7 +694,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         try {
             // add the representative image
             if (includeImages) {
-                Element representative = new Element(ELEMENT_REPRESENTATIVE, xmlns);
+                Element representative = new Element(ELEMENT_REPRESENTATIVE, namespace);
                 Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
                 String folderName;
                 if ((repImagePath.getParent().toString() + "/").equals(process.getImagesTifDirectory(true))) {
@@ -722,10 +722,10 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 elements.add(getContentFiles(process, FOLDER_MEDIA, process.getImagesTifDirectory(false)));
             }
             // all log files together with their comments
-            Element logfiles = new Element(ELEMENT_LOG, xmlns);
+            Element logfiles = new Element(ELEMENT_LOG, namespace);
             for (JournalEntry entry : process.getJournal()) {
                 if (entry.getType() == LogType.FILE) {
-                    Element cf = new Element(ELEMENT_FILE, xmlns);
+                    Element cf = new Element(ELEMENT_FILE, namespace);
                     if (entry.getContent() != null) {
                         cf.setAttribute(ATTRIBUTE_COMMENT, entry.getContent());
                     }
@@ -845,11 +845,11 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Document answer = new Document();
         Element root = new Element(ELEMENT_PROCESSES);
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace(FILE_LOG);
+        Namespace namespace = Namespace.getNamespace(FILE_LOG);
 
         Namespace xsi = Namespace.getNamespace(NAMESPACE_XSI, FILE_SCHEMA);
         root.addNamespaceDeclaration(xsi);
-        root.setNamespace(xmlns);
+        root.setNamespace(namespace);
         Attribute attSchema = new Attribute(ATTRIBUTE_SCHEMA_LOCATION, FILE_LOG + " " + XSD_ENDING, xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {
@@ -882,11 +882,11 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Document answer = new Document();
         Element root = new Element(ELEMENT_PROCESSES);
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace(FILE_LOG);
+        Namespace namespace = Namespace.getNamespace(FILE_LOG);
 
         Namespace xsi = Namespace.getNamespace(NAMESPACE_XSI, FILE_SCHEMA);
         root.addNamespaceDeclaration(xsi);
-        root.setNamespace(xmlns);
+        root.setNamespace(namespace);
         Attribute attSchema = new Attribute(ATTRIBUTE_SCHEMA_LOCATION, FILE_LOG + " " + XSD_ENDING, xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {

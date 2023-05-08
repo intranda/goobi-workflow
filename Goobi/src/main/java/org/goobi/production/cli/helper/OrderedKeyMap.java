@@ -98,6 +98,7 @@ public class OrderedKeyMap<K, V> extends HashMap<K, V> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean equals(Object object) {
         if (!super.equals(object)) {
             return false;
@@ -109,6 +110,11 @@ public class OrderedKeyMap<K, V> extends HashMap<K, V> {
         OrderedKeyMap<K, V> otherMap = (OrderedKeyMap<K, V>) (object);
         List<K> otherKeyList = otherMap.keyList;
         return (!this.keyList.equals(otherKeyList));
-
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() * 31 + this.keyList.hashCode();
+    }
+
 }

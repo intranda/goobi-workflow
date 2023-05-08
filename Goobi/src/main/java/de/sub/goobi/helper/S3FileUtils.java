@@ -943,14 +943,11 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         final PipedInputStream in = new PipedInputStream(); //NOSONAR, it gets closed when PipedOutputStream gets closed
         PipedOutputStream out = new PipedOutputStream(in);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    StorageProvider.getInstance().uploadFile(in, dest);
-                } catch (IOException e) {
-                    log.error(e);
-                }
+        new Thread(() -> {
+            try {
+                StorageProvider.getInstance().uploadFile(in, dest);
+            } catch (IOException e) {
+                log.error(e);
             }
         }).start();
         return out;

@@ -110,11 +110,8 @@ public class ViafSearch {
         }
     }
 
-    private static Comparator<SelectItem> selectItemComparator = new Comparator<SelectItem>() {
-        @Override
-        public int compare(SelectItem s1, SelectItem s2) {
-            return s1.getLabel().compareTo(s2.getLabel());
-        }
+    private static Comparator<SelectItem> selectItemComparator = (item1, item2) -> {
+        return item1.getLabel().compareTo(item2.getLabel());
     };
 
     public void performSearchRequest() {

@@ -68,32 +68,29 @@ public class GoobiCommandListener {
 
         final MessageConsumer cons = sess.createConsumer(dest);
 
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                while (true) { //NOSONAR, no abort condition is needed
-                    try {
-                        Message message = cons.receive();
-                        // check command and if the token allows this.
-                        String strMessage = null;
-                        if (message instanceof TextMessage) {
-                            TextMessage tm = (TextMessage) message;
-                            strMessage = tm.getText();
-                        }
-                        if (message instanceof BytesMessage) {
-                            BytesMessage bm = (BytesMessage) message;
-                            byte[] bytes = new byte[(int) bm.getBodyLength()];
-                            bm.readBytes(bytes);
-                            strMessage = new String(bytes);
-                        }
-                        CommandTicket t = gson.fromJson(strMessage, CommandTicket.class);
-
-                        handleCommandTicket(t);
-                        message.acknowledge();
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        log.error(e);
+        Runnable run = () -> {
+            while (true) { //NOSONAR, no abort condition is needed
+                try {
+                    Message message = cons.receive();
+                    // check command and if the token allows this.
+                    String strMessage = null;
+                    if (message instanceof TextMessage) {
+                        TextMessage tm = (TextMessage) message;
+                        strMessage = tm.getText();
                     }
+                    if (message instanceof BytesMessage) {
+                        BytesMessage bm = (BytesMessage) message;
+                        byte[] bytes = new byte[(int) bm.getBodyLength()];
+                        bm.readBytes(bytes);
+                        strMessage = new String(bytes);
+                    }
+                    CommandTicket t = gson.fromJson(strMessage, CommandTicket.class);
+
+                    handleCommandTicket(t);
+                    message.acknowledge();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    log.error(e);
                 }
             }
         };

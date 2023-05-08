@@ -360,7 +360,7 @@ public class CopyProcess {
      */
     private void fillFieldsFromMetadataFile(Fileformat myRdf) throws PreferencesException {
         if (myRdf != null) {
-            UghHelper ughHelp = new UghHelper();
+            UghHelper ughHelper = new UghHelper();
 
             for (AdditionalField field : this.additionalFields) {
                 if (field.isUghbinding() && field.getShowDependingOnDoctype(getDocType())) {
@@ -397,8 +397,8 @@ public class CopyProcess {
                             field.setWert(authorBuilder.toString());
                         } else {
                             /* bei normalen Feldern die Inhalte auswerten */
-                            MetadataType mdt = ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), field.getMetadata());
-                            Metadata md = ughHelp.getMetadata(myTempStruct, mdt);
+                            MetadataType mdt = ughHelper.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), field.getMetadata());
+                            Metadata md = ughHelper.getMetadata(myTempStruct, mdt);
                             if (md != null) {
                                 field.setWert(md.getValue());
                             }

@@ -234,18 +234,18 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     private void initializeValues() {
         if (myValues.getDisplayType() == DisplayType.select || myValues.getDisplayType() == DisplayType.select1) {
-            List<String> selectedItems = new ArrayList<>();
-            List<SelectItem> items = new ArrayList<>();
+            List<String> selectedItemList = new ArrayList<>();
+            List<SelectItem> itemList = new ArrayList<>();
             for (Item i : this.myValues.getItemList()) {
-                items.add(new SelectItem(i.getLabel(), i.getValue()));
+                itemList.add(new SelectItem(i.getLabel(), i.getValue()));
                 if (i.isSelected()) {
-                    selectedItems.add(i.getValue());
+                    selectedItemList.add(i.getValue());
                 }
             }
-            setPossibleItems(items);
-            setDefaultItems(selectedItems);
-            if (selectedItems.size() == 1) {
-                setDefaultValue(selectedItems.get(0));
+            setPossibleItems(itemList);
+            setDefaultItems(selectedItemList);
+            if (selectedItemList.size() == 1) {
+                setDefaultValue(selectedItemList.get(0));
             }
             setSource(myValues.getItemList().get(0).getSource());
             setField(myValues.getItemList().get(0).getField());
@@ -277,12 +277,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
         } else if (metadataDisplaytype == DisplayType.vocabularyList) {
 
-            String vocabularyName = myValues.getItemList().get(0).getSource();
+            String vocabularyTitle = myValues.getItemList().get(0).getSource();
 
             String fields = myValues.getItemList().get(0).getField();
 
             if (StringUtils.isBlank(fields)) {
-                Vocabulary currentVocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
+                Vocabulary currentVocabulary = VocabularyManager.getVocabularyByTitle(vocabularyTitle);
                 VocabularyManager.getAllRecords(currentVocabulary);
 
                 if (currentVocabulary != null && currentVocabulary.getId() != null) {
@@ -291,10 +291,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                     List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
 
-                    String defaultValue = myValues.getItemList().get(0).getLabel();
-                    if (StringUtils.isNotBlank(defaultValue)) {
+                    String defaultLabel = myValues.getItemList().get(0).getLabel();
+                    if (StringUtils.isNotBlank(defaultLabel)) {
                         List<String> defaultitems = new ArrayList<>();
-                        defaultitems.add(defaultValue);
+                        defaultitems.add(defaultLabel);
                         setDefaultItems(defaultitems);
                     }
                     itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
@@ -305,7 +305,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                             if (f.getDefinition().isMainEntry()) {
                                 selectItems.add(new SelectItem(f.getValue(), f.getValue()));
                                 Item item = new Item(f.getValue(), f.getValue(), false, "", "");
-                                if (StringUtils.isNotBlank(defaultValue) && defaultValue.equals(f.getValue())) {
+                                if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(f.getValue())) {
                                     item.setSelected(true);
                                 }
                                 itemList.add(item);
@@ -316,7 +316,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     setPossibleItems(selectItems);
                     myValues.setItemList(itemList);
                 } else {
-                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyName));
+                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyTitle));
                     metadataDisplaytype = DisplayType.input;
                     myValues.overwriteConfiguredElement(myProcess, md.getType());
                 }
@@ -332,13 +332,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         vocabularySearchFields.add(sp);
                     }
                 }
-                List<VocabRecord> records = VocabularyManager.findRecords(vocabularyName, vocabularySearchFields);
-                Collections.sort(records);
+                List<VocabRecord> recordList = VocabularyManager.findRecords(vocabularyTitle, vocabularySearchFields);
+                Collections.sort(recordList);
 
-                if (records != null && !records.isEmpty()) {
-                    ArrayList<Item> itemList = new ArrayList<>(records.size());
-                    List<SelectItem> selectItems = new ArrayList<>(records.size());
-                    for (VocabRecord vr : records) {
+                if (recordList != null && !recordList.isEmpty()) {
+                    ArrayList<Item> itemList = new ArrayList<>(recordList.size());
+                    List<SelectItem> selectItems = new ArrayList<>(recordList.size());
+                    for (VocabRecord vr : recordList) {
                         for (Field f : vr.getFields()) {
                             if (f.getDefinition().isMainEntry()) {
                                 selectItems.add(new SelectItem(f.getValue(), f.getValue()));
@@ -350,7 +350,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     setPossibleItems(selectItems);
                     myValues.setItemList(itemList);
                 } else {
-                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyName));
+                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyTitle));
                     metadataDisplaytype = DisplayType.input;
                     myValues.overwriteConfiguredElement(myProcess, md.getType());
                 }
@@ -774,9 +774,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 easydbSearch.getMetadata(md);
                 break;
             case vocabularySearch:
-                for (Field field : selectedVocabularyRecord.getFields()) {
-                    if (field.getDefinition().isMainEntry()) {
-                        md.setValue(field.getValue());
+                for (Field currentField : selectedVocabularyRecord.getFields()) {
+                    if (currentField.getDefinition().isMainEntry()) {
+                        md.setValue(currentField.getValue());
                     }
                 }
                 String url = ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl();
@@ -903,41 +903,41 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         MetadataGroup addGroup = null;
                         addGroup = new MetadataGroup(mgt);
                         List<Metadata> metaList = addGroup.getMetadataByType(metaName);
-                        Metadata md;
+                        Metadata currentMetadata;
                         if (metaList.isEmpty()) {
-                            md = new Metadata(prefs.getMetadataTypeByName(metaName));
-                            addGroup.addMetadata(md);
+                            currentMetadata = new Metadata(prefs.getMetadataTypeByName(metaName));
+                            addGroup.addMetadata(currentMetadata);
                         } else {
-                            md = metaList.get(0);
+                            currentMetadata = metaList.get(0);
                         }
                         if (rmd.getValue() != null) {
-                            md.setValue(rmd.getValue());
+                            currentMetadata.setValue(rmd.getValue());
                         }
                         if (rmd.getAuthorityID() != null) {
-                            md.setAuthorityID(rmd.getAuthorityID());
+                            currentMetadata.setAuthorityID(rmd.getAuthorityID());
                         }
                         if (rmd.getAuthorityURI() != null) {
-                            md.setAuthorityURI(rmd.getAuthorityURI());
+                            currentMetadata.setAuthorityURI(rmd.getAuthorityURI());
                         }
                         if (rmd.getAuthorityValue() != null) {
-                            md.setAuthorityValue(rmd.getAuthorityValue());
+                            currentMetadata.setAuthorityValue(rmd.getAuthorityValue());
                         }
                         ds.addMetadataGroup(addGroup);
                     } else {
-                        Metadata md = new Metadata(prefs.getMetadataTypeByName(name));
+                        Metadata currentMetadata = new Metadata(prefs.getMetadataTypeByName(name));
                         if (rmd.getValue() != null) {
-                            md.setValue(rmd.getValue());
+                            currentMetadata.setValue(rmd.getValue());
                         }
                         if (rmd.getAuthorityID() != null) {
-                            md.setAuthorityID(rmd.getAuthorityID());
+                            currentMetadata.setAuthorityID(rmd.getAuthorityID());
                         }
                         if (rmd.getAuthorityURI() != null) {
-                            md.setAuthorityURI(rmd.getAuthorityURI());
+                            currentMetadata.setAuthorityURI(rmd.getAuthorityURI());
                         }
                         if (rmd.getAuthorityValue() != null) {
-                            md.setAuthorityValue(rmd.getAuthorityValue());
+                            currentMetadata.setAuthorityValue(rmd.getAuthorityValue());
                         }
-                        ds.addMetadata(md);
+                        ds.addMetadata(currentMetadata);
                     }
                 }
             } catch (MetadataTypeNotAllowedException e) {

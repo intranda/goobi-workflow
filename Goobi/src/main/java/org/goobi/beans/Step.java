@@ -688,6 +688,12 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+        // TODO: Implement this method fitting to all member variables
+    }
+
+    @Override
     public void lazyLoad() {
         if (processId != null) {
             prozess = ProcessManager.getProcessById(processId);

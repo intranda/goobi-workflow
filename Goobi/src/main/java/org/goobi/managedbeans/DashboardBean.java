@@ -50,10 +50,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DashboardBean implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -8555010017712925180L;
+
     @Getter
     private IDashboardPlugin plugin = null;
 
@@ -66,9 +64,9 @@ public class DashboardBean implements Serializable {
 
             if (StringUtils.isNotBlank(pluginName)
                     && (user.getInstitution().isAllowAllPlugins() || user.getInstitution().isDashboardPluginAllowed(pluginName))) {
-                IDashboardPlugin plugin = (IDashboardPlugin) PluginLoader.getPluginByTitle(PluginType.Dashboard, pluginName);
-                if (plugin != null) {
-                    this.plugin = plugin;
+                IDashboardPlugin newPlugin = (IDashboardPlugin) PluginLoader.getPluginByTitle(PluginType.Dashboard, pluginName);
+                if (newPlugin != null) {
+                    this.plugin = newPlugin;
                 }
             }
         }

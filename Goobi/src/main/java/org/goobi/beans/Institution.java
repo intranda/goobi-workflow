@@ -104,6 +104,27 @@ public class Institution extends AbstractJournal implements Serializable, Databa
     }
 
     @Override
+    public int hashCode() {
+        // The numbers here are prime numbers (from 19 to 97)
+        int hashCode = super.hashCode();
+        hashCode = hashCode + 19 * this.id.hashCode();
+        hashCode = hashCode + 23 * this.shortName.hashCode();
+        hashCode = hashCode + 29 * this.longName.hashCode();
+        hashCode = hashCode + (this.allowAllRulesets ? 31 : 37);
+        hashCode = hashCode + (this.allowAllDockets ? 41 : 43);
+        hashCode = hashCode + (this.allowAllAuthentications ? 47 : 53);
+        hashCode = hashCode + (this.allowAllPlugins ? 59 : 61);
+        hashCode = hashCode + 67 * this.allowedRulesets.hashCode();
+        hashCode = hashCode + 71 * this.allowedDockets.hashCode();
+        hashCode = hashCode + 73 * this.allowedAuthentications.hashCode();
+        hashCode = hashCode + 79 * this.allowedAdministrationPlugins.hashCode();
+        hashCode = hashCode + 83 * this.allowedStatisticsPlugins.hashCode();
+        hashCode = hashCode + 89 * this.allowedDashboardPlugins.hashCode();
+        hashCode = hashCode + 97 * this.allowedWorkflowPlugins.hashCode();
+        return hashCode;
+    }
+
+    @Override
     public void lazyLoad() {
         // do nothing
 

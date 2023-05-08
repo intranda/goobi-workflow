@@ -172,17 +172,14 @@ public class MetadatenImagesHelper {
         // find abandoned image names in directory
         if (!pagesWithoutFiles.isEmpty()) {
 
-            Collections.sort(pagesWithoutFiles, new Comparator<DocStruct>() {
+            Collections.sort(pagesWithoutFiles, (docstruct1, docstruct2) -> {
 
-                @Override
-                public int compare(DocStruct o1, DocStruct o2) {
-                    MetadataType mdt = myPrefs.getMetadataTypeByName(METADATA_PHYSICAL_PAGE_NUMBER);
-                    String value1 = o1.getAllMetadataByType(mdt).get(0).getValue();
-                    String value2 = o2.getAllMetadataByType(mdt).get(0).getValue();
-                    Integer order1 = Integer.parseInt(value1);
-                    Integer order2 = Integer.parseInt(value2);
-                    return order1.compareTo(order2);
-                }
+                MetadataType mdt = myPrefs.getMetadataTypeByName(METADATA_PHYSICAL_PAGE_NUMBER);
+                String value1 = docstruct1.getAllMetadataByType(mdt).get(0).getValue();
+                String value2 = docstruct2.getAllMetadataByType(mdt).get(0).getValue();
+                Integer order1 = Integer.parseInt(value1);
+                Integer order2 = Integer.parseInt(value2);
+                return order1.compareTo(order2);
             });
 
             for (String imagename : imagenames) {
