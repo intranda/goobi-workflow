@@ -1331,4 +1331,57 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
+    /**
+     * Delete a list of steps in a single statement
+     * 
+     * @param steps
+     * @throws SQLException
+     */
+
+    public static void deleteAllSteps(List<Step> steps) throws SQLException {
+        // step list is empty
+        if (steps == null || steps.isEmpty()) {
+            return;
+        }
+        StringBuilder ids = new StringBuilder();
+        // collect all step ids
+        for (Step step : steps) {
+            if (step.getId() != null) {
+                if (ids.length() > 0) {
+                    ids.append(", ");
+                }
+                ids.append(step.getId());
+            }
+        }
+
+        // steps have no ids (steps are new, and not saved yet)
+        if (ids.length() == 0) {
+            return;
+        }
+
+        // delete error properties
+        String deleteProperties = "DELETE FROM schritteeigenschaften WHERE schritteID in (" + ids.toString() + ")";
+        // delete assigned users
+        String deleteUserAssignment = "DELETE FROM schritteberechtigtebenutzer WHERE schritteID in (" + ids.toString() + ")";
+        // delete assigned user groups
+        String deleteGroupAssignment = "DELETE FROM schritteberechtigtegruppen WHERE schritteID in (" + ids.toString() + ")";
+        // delete steps itself
+        String deleteSteps = "DELETE FROM schritte WHERE SchritteID in (" + ids.toString() + ")";
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            run.update(connection, deleteProperties);
+            run.update(connection, deleteUserAssignment);
+            run.update(connection, deleteGroupAssignment);
+            run.update(connection, deleteSteps);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
 }

@@ -213,17 +213,15 @@ class ProcessMysqlHelper implements Serializable {
 
     public static void deleteProcess(Process o) throws SQLException {
         if (o.getId() != null) {
-
             // delete metadata
             MetadataManager.deleteMetadata(o.getId());
 
             // delete properties
-
             for (Processproperty object : o.getEigenschaften()) {
                 PropertyManager.deleteProcessProperty(object);
             }
-            // delete templates
 
+            // delete templates
             for (Template object : o.getVorlagen()) {
                 TemplateManager.deleteTemplate(object);
             }
@@ -233,9 +231,7 @@ class ProcessMysqlHelper implements Serializable {
                 MasterpieceManager.deleteMasterpiece(object);
             }
 
-            for (Step object : o.getSchritte()) {
-                StepManager.deleteStep(object);
-            }
+            StepManager.deleteAllSteps(o.getSchritte());
 
             JournalManager.deleteAllJournalEntries(o.getId(), EntryType.PROCESS);
 

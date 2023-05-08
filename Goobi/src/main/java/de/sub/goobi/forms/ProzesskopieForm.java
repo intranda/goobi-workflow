@@ -979,7 +979,7 @@ public class ProzesskopieForm implements Serializable {
         }
 
         // Adding process to history
-        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie))) {
+        if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
             Helper.setFehlerMeldung("historyNotUpdated");
             return "";
         } else {

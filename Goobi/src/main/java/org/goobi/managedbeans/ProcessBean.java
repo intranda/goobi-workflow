@@ -563,7 +563,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             try {
                 myDav.UploadFromHome(b, this.mySchritt.getProzess());
             } catch (RuntimeException exception) {
-                log.warn(exception);
+                // ignore this
             }
         }
         // delete process folder
@@ -843,7 +843,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             try {
                 myDav.UploadFromHome(b, this.mySchritt.getProzess());
             } catch (RuntimeException exception) {
-                log.warn(exception);
+                // ignore this
             }
         }
         /* alle Benutzergruppen mit ihren Benutzern */
@@ -852,7 +852,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     myDav.UploadFromHome(b, this.mySchritt.getProzess());
                 } catch (RuntimeException exception) {
-                    log.warn(exception);
+                    // ignore this
                 }
             }
         }

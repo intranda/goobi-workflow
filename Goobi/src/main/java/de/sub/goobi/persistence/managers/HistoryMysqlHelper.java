@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
@@ -174,4 +174,38 @@ public class HistoryMysqlHelper {
             return answer;
         }
     };
+
+    public static void addAllHistoryEvents(List<HistoryEvent> eventList) throws SQLException {
+        StringBuilder parameterList = new StringBuilder();
+        List<Object> values = new ArrayList<>(eventList.size() * 5);
+        for (HistoryEvent he : eventList) {
+            if (parameterList.length() > 0) {
+                parameterList.append(", ");
+            }
+            parameterList.append("(?, ?, ?, ?, ?)");
+            values.add(he.getNumericValue());
+            values.add(he.getStringValue());
+            values.add(he.getHistoryType().getValue());
+            Timestamp datetime = new Timestamp(he.getDate().getTime());
+            values.add(datetime);
+            values.add(he.getProcess().getId());
+        }
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO history  (numericValue, stringvalue, type, date, processId) VALUES ");
+        sql.append(parameterList.toString());
+
+        Connection connection = null;
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+
+            run.update(connection, sql.toString(), values.toArray());
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }

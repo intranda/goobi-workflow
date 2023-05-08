@@ -28,6 +28,7 @@ package org.goobi.production.flow.jobs;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -146,8 +147,9 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      */
     private static boolean updateHistoryForSteps(Process inProcess) {
         boolean isDirty = false;
-        HistoryEvent he = null;
 
+        List<HistoryEvent> eventList = new ArrayList<>();
+        HistoryEvent he = null;
         /**
          * These are the patterns, which must be set, if a pattern differs from these something is wrong, timestamp pattern overrules status, in that
          * case status gets changed to match one of these pattern
@@ -198,6 +200,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                     he = addHistoryEvent(step.getBearbeitungsende(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepDone, inProcess);
 
                     if (he != null) {
+                        eventList.add(he);
                         isDirty = true;
                     }
 
@@ -207,6 +210,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                             HistoryEventType.stepOpen, inProcess);
 
                     if (he != null) {
+                        eventList.add(he);
                         isDirty = true;
                     }
 
@@ -240,6 +244,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                             inProcess);
 
                     if (he != null) {
+                        eventList.add(he);
                         isDirty = true;
                     }
 
@@ -251,6 +256,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                             HistoryEventType.stepOpen, inProcess);
 
                     if (he != null) {
+                        eventList.add(he);
                         isDirty = true;
                     }
 
@@ -275,6 +281,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                         he = addHistoryEvent(step.getBearbeitungszeitpunkt(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepOpen,
                                 inProcess);
                         if (he != null) {
+                            eventList.add(he);
                             isDirty = true;
                         }
                     }
@@ -292,8 +299,14 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
             he = addHistoryEvent(inProcess.getErstellungsdatum(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepLocked, inProcess);
 
             if (he != null) {
+                eventList.add(he);
                 isDirty = true;
             }
+        }
+
+        // save event list
+        if (!eventList.isEmpty()) {
+            HistoryManager.addAllEvents(eventList);
         }
 
         // this method removes duplicate items from the history list, which
@@ -318,7 +331,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
         HistoryEvent he = new HistoryEvent(timeStamp, stepOrder, stepName, type, inProcess);
 
         if (!getHistoryContainsEventAlready(he, inProcess)) {
-            HistoryManager.addHistoryEvent(he);
+            //            HistoryManager.addHistoryEvent(he);
             return he;
         } else {
             return null;
