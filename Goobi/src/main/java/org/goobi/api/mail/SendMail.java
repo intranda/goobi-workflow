@@ -195,6 +195,11 @@ public class SendMail {
             return config.getString("/resetPassword/body", null);
         }
 
+        // enable/diable status change emails
+        public boolean isEnableStatusChangeMail() {
+            return config.getBoolean("/enableStatusChange", false);
+        }
+
     }
 
     /**
@@ -253,7 +258,7 @@ public class SendMail {
                 String cancelStepUrl = config.getApiUrl() + "/step/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + URLEncoder.encode(step.getTitel(), StandardCharsets.UTF_8.toString()) + "/" + deactivateStepToken;
                 String cancelProjectUrl = config.getApiUrl() + "/project/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString())
-                        + "/" + StringEscapeUtils.escapeHtml(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
+                + "/" + StringEscapeUtils.escapeHtml(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
                 String cancelAllUrl = config.getApiUrl() + "/all/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + deactivateAllToken;
 

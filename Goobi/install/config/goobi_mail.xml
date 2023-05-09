@@ -9,7 +9,7 @@
         <smtpSenderAddress>do-not-reply@example.com</smtpSenderAddress>
     </configuration>
     <apiUrl>https://example.com/goobi/api/mails/disable</apiUrl>
-    
+    <enableStatusChange>false</enableStatusChange>    
     
     <userCreation>
         <subject>Registration successful</subject>
