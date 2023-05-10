@@ -528,7 +528,7 @@ public class UserTest extends AbstractTest {
     @Test
     public void testProcessListDefaultSortOrder() throws Exception {
         User user = new User();
-        assertEquals("", user.getProcessListDefaultSortOrder());
+        assertEquals(" asc", user.getProcessListDefaultSortOrder());
         user.setProcessListDefaultSortOrder(" desc");
         assertEquals(" desc", user.getProcessListDefaultSortOrder());
     }
