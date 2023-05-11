@@ -138,7 +138,7 @@ public class VocabularyManager implements IManager, Serializable {
     /**
      * @deprecated This handler is not used anymore
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public static ResultSetHandler<List<Vocabulary>> resultSetToVocabularyListHandler = new ResultSetHandler<List<Vocabulary>>() {
 
         @Override
@@ -155,7 +155,7 @@ public class VocabularyManager implements IManager, Serializable {
     /**
      * @deprecated This handler is not used anymore
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public static ResultSetHandler<Vocabulary> resultSetToVocabularyHandler = new ResultSetHandler<Vocabulary>() {
 
         @Override
@@ -173,7 +173,7 @@ public class VocabularyManager implements IManager, Serializable {
      * @param rs
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     @SuppressWarnings("unchecked")
     private static Vocabulary convert(ResultSet rs) throws SQLException {
         int vocabId = rs.getInt("vocabId");
@@ -268,7 +268,7 @@ public class VocabularyManager implements IManager, Serializable {
     /**
      * @deprecated This handler is not used anymore
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public static ResultSetHandler<List<VocabRecord>> resultSetToVocabularyRecordListHandler = new ResultSetHandler<List<VocabRecord>>() {
 
         @Override
@@ -288,7 +288,7 @@ public class VocabularyManager implements IManager, Serializable {
     /**
      * @deprecated This handler is not used anymore
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public static ResultSetHandler<VocabRecord> resultSetToVocabularyRecordHandler = new ResultSetHandler<VocabRecord>() {
 
         @Override
@@ -307,7 +307,7 @@ public class VocabularyManager implements IManager, Serializable {
      * @param rs
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     private static VocabRecord convertRecord(ResultSet rs) throws SQLException {
 
         int iRecordId = rs.getInt("recordId");
@@ -361,7 +361,7 @@ public class VocabularyManager implements IManager, Serializable {
      *
      * @param vocabulary
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public static void loadRecordsForVocabulary(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.loadRecordsForVocabulary(vocabulary);
@@ -505,7 +505,7 @@ public class VocabularyManager implements IManager, Serializable {
      *
      * @param vocabulary
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public static void getPaginatedRecords(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.getRecords(vocabulary);

@@ -55,10 +55,10 @@ public class WebDav implements Serializable {
      * Kopieren bzw. symbolische Links für einen Prozess in das Benutzerhome
      */
 
-    private String doneDirectoryName = "fertig/";
+    private static String doneDirectoryName = "fertig/";
 
     public WebDav() {
-        this.doneDirectoryName = ConfigurationHelper.getInstance().getDoneDirectoryName();
+        doneDirectoryName = ConfigurationHelper.getInstance().getDoneDirectoryName();
     }
 
     /**
@@ -182,7 +182,7 @@ public class WebDav implements Serializable {
                 }
                 FilesystemHelper.createDirectoryForUser(projekt, aktuellerBenutzer.getLogin());
 
-                String doneDir = Paths.get(userHome + this.doneDirectoryName).toString();
+                String doneDir = Paths.get(userHome + doneDirectoryName).toString();
                 FilesystemHelper.createDirectoryForUser(doneDir, aktuellerBenutzer.getLogin());
             }
 

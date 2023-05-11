@@ -336,11 +336,12 @@ public class BeanHelper implements Serializable {
         try {
             // if no open task was found, open first locked task
             for (Step newTask : processToChange.getSchritte()) {
+
                 StepStatus status = newTask.getBearbeitungsstatusEnum();
-                if (status == StepStatus.OPEN || status == StepStatus.LOCKED) {
-                    if (status == StepStatus.LOCKED) {
-                        newTask.setBearbeitungsstatusEnum(StepStatus.OPEN);
-                    }
+                if (status == StepStatus.OPEN) {
+                    break;
+                } else if (status == StepStatus.LOCKED) {
+                    newTask.setBearbeitungsstatusEnum(StepStatus.OPEN);
                     break;
                 }
             }

@@ -113,7 +113,7 @@ public class InstitutionBean extends BasicBean implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String Speichern() {
         return saveInstitution();
     }
@@ -125,7 +125,7 @@ public class InstitutionBean extends BasicBean implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String Loeschen() {
         return deleteInstitution();
     }

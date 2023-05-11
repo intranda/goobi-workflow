@@ -83,34 +83,34 @@ public class StorageProvider {
 
     public static boolean dataFilterString(String name) {
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        boolean isAllowed = name.matches(prefix + REGEX_AVI);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_DOCX);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_EPUB);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_FLV);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_GIF);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_GLB);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_GLTF);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_JP2);
+        boolean isAllowed = name.matches(prefix + REGEX_TIFF);
         isAllowed = isAllowed || name.matches(prefix + REGEX_JPEG);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_MP3);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_MP4);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_MPEG);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_MXF);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_OBJ);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_OGG);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_PDF);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_PLY);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_PPTX);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_JP2);
         isAllowed = isAllowed || name.matches(prefix + REGEX_PNG);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_STL);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_TIFF);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_TXT);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GIF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PDF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_AVI);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_MPEG);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_MP4);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_MP3);
         isAllowed = isAllowed || name.matches(prefix + REGEX_WAV);
         isAllowed = isAllowed || name.matches(prefix + REGEX_WMV);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_FLV);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_OGG);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_DOCX);
         isAllowed = isAllowed || name.matches(prefix + REGEX_XLSX);
-        isAllowed = isAllowed || name.matches(prefix + REGEX_X3D);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PPTX);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_TXT);
         isAllowed = isAllowed || name.matches(prefix + REGEX_XML);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_OBJ);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PLY);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_X3D);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_STL);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GLTF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GLB);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_MXF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_EPUB);
         return isAllowed;
     }
 

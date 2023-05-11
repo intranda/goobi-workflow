@@ -78,7 +78,7 @@ public interface IStepPlugin extends IPlugin {
      *
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public HashMap<String, StepReturnValue> validate();
 
     /**

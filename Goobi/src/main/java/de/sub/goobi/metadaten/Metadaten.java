@@ -4919,8 +4919,8 @@ public class Metadaten implements Serializable {
         this.image = image;
 
         showImageComments = false;
-        boolean showComments = ConfigurationHelper.getInstance().getMetsEditorShowImageComments();
-        if (showComments && myProzess != null && image != null) {
+        boolean commentsEnabledInConfig = ConfigurationHelper.getInstance().getMetsEditorShowImageComments();
+        if (commentsEnabledInConfig && myProzess != null && image != null) {
             showImageComments = true;
         }
     }

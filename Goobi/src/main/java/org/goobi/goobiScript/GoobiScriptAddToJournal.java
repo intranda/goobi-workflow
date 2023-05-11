@@ -46,11 +46,6 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
     private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
     private static final String MESSAGE = "message";
     private static final String TYPE = "type";
-    private static final String ERROR = "error";
-    private static final String WARN = "warn";
-    private static final String INFO = "info";
-    private static final String DEBUG = "debug";
-    private static final String USER = "user";
 
     @Override
     public String getAction() {
@@ -61,8 +56,8 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to add messages to the Goobi process journal.");
-        String list = "`" + ERROR + "` `" + WARN + "` `" + INFO + "` `" + DEBUG + "` and `" + USER + "`";
-        addParameterToSampleCall(sb, TYPE, "info", "Define the type for the message here. Possible values are: " + list);
+        addParameterToSampleCall(sb, TYPE, "info",
+                "Define the type for the message here. Possible values are: `error` `warn` `info` `debug` and `user`");
         addParameterToSampleCall(sb, MESSAGE, "\"This is my message\"",
                 "This parameter allows to define the message itself that shall be added to the process log. To write special characters like # put it into quotes.");
         return sb.toString();
@@ -83,9 +78,8 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, TYPE);
             return new ArrayList<>();
         }
-        if (!type.equals(ERROR) && !type.equals(WARN) && !type.equals(INFO) && !type.equals(DEBUG) && !type.equals(USER)) {
-            String list = ERROR + ", " + WARN + ", " + INFO + ", " + DEBUG + " and " + USER;
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Wrong parameter for type. Allowed values are: " + list);
+        if (!type.equals("error") && !type.equals("warn") && !type.equals("info") && !type.equals("debug") && !type.equals("user")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Wrong parameter for type. Allowed values are: error, warn, info, debug and user");
             return new ArrayList<>();
         }
 

@@ -64,7 +64,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { processId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, propertyListHandler, param);
+            return new QueryRunner().query(connection, sql, resultSetToPropertyListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -77,7 +77,7 @@ class PropertyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, propertyHandler, propertyId);
+            return new QueryRunner().query(connection, sql, resultSetToPropertyHandler, propertyId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -86,12 +86,12 @@ class PropertyMysqlHelper implements Serializable {
 
     }
 
-    private static final ResultSetHandler<Processproperty> propertyHandler = new ResultSetHandler<Processproperty>() {
+    private static final ResultSetHandler<Processproperty> resultSetToPropertyHandler = new ResultSetHandler<Processproperty>() {
         @Override
         public Processproperty handle(ResultSet resultSet) throws SQLException {
             try {
                 if (resultSet.next()) {
-                    return PropertyMysqlHelper.createProcessProperty(resultSet);
+                    return PropertyMysqlHelper.parseProcessProperty(resultSet);
                 }
             } finally {
                 resultSet.close();
@@ -100,13 +100,13 @@ class PropertyMysqlHelper implements Serializable {
         }
     };
 
-    private static final ResultSetHandler<List<Processproperty>> propertyListHandler = new ResultSetHandler<List<Processproperty>>() {
+    private static final ResultSetHandler<List<Processproperty>> resultSetToPropertyListHandler = new ResultSetHandler<List<Processproperty>>() {
         @Override
         public List<Processproperty> handle(ResultSet resultSet) throws SQLException {
             List<Processproperty> properties = new ArrayList<>();
             try {
                 while (resultSet.next()) {
-                    properties.add(PropertyMysqlHelper.createProcessProperty(resultSet));
+                    properties.add(PropertyMysqlHelper.parseProcessProperty(resultSet));
                 }
             } finally {
                 resultSet.close();
@@ -115,29 +115,14 @@ class PropertyMysqlHelper implements Serializable {
         }
     };
 
-    private static final ResultSetHandler<List<Templateproperty>> templatePropertyListHandler = new ResultSetHandler<List<Templateproperty>>() {
-        @Override
-        public List<Templateproperty> handle(ResultSet resultSet) throws SQLException {
-            List<Templateproperty> properties = new ArrayList<>();
-            try {
-                while (resultSet.next()) {
-                    properties.add(PropertyMysqlHelper.createTemplateProperty(resultSet));
-                }
-            } finally {
-                resultSet.close();
-            }
-            return properties;
-        }
-    };
-
-    private static final ResultSetHandler<List<Masterpieceproperty>> masterpiecePropertyListHandler =
-            new ResultSetHandler<List<Masterpieceproperty>>() {
+    private static final ResultSetHandler<List<Templateproperty>> resultSetToTemplatePropertyListHandler =
+            new ResultSetHandler<List<Templateproperty>>() {
                 @Override
-                public List<Masterpieceproperty> handle(ResultSet resultSet) throws SQLException {
-                    List<Masterpieceproperty> properties = new ArrayList<>();
+                public List<Templateproperty> handle(ResultSet resultSet) throws SQLException {
+                    List<Templateproperty> properties = new ArrayList<>();
                     try {
                         while (resultSet.next()) {
-                            properties.add(PropertyMysqlHelper.createMasterpieceProperty(resultSet));
+                            properties.add(PropertyMysqlHelper.parseTemplateProperty(resultSet));
                         }
                     } finally {
                         resultSet.close();
@@ -146,7 +131,23 @@ class PropertyMysqlHelper implements Serializable {
                 }
             };
 
-    private static Processproperty createProcessProperty(ResultSet result) throws SQLException {
+    private static final ResultSetHandler<List<Masterpieceproperty>> resultSetToMasterpiecePropertyListHandler =
+            new ResultSetHandler<List<Masterpieceproperty>>() {
+                @Override
+                public List<Masterpieceproperty> handle(ResultSet resultSet) throws SQLException {
+                    List<Masterpieceproperty> properties = new ArrayList<>();
+                    try {
+                        while (resultSet.next()) {
+                            properties.add(PropertyMysqlHelper.parseMasterpieceProperty(resultSet));
+                        }
+                    } finally {
+                        resultSet.close();
+                    }
+                    return properties;
+                }
+            };
+
+    private static Processproperty parseProcessProperty(ResultSet result) throws SQLException {
         Processproperty property = new Processproperty();
         property.setId(result.getInt(prozesseeigenschaftenID));
         property.setTitel(result.getString(Titel));
@@ -165,7 +166,7 @@ class PropertyMysqlHelper implements Serializable {
         return property;
     }
 
-    private static Templateproperty createTemplateProperty(ResultSet result) throws SQLException {
+    private static Templateproperty parseTemplateProperty(ResultSet result) throws SQLException {
         Templateproperty property = new Templateproperty();
         property.setId(result.getInt(vorlageneigenschaftenID));
         property.setTitel(result.getString(Titel));
@@ -184,7 +185,7 @@ class PropertyMysqlHelper implements Serializable {
         return property;
     }
 
-    private static Masterpieceproperty createMasterpieceProperty(ResultSet result) throws SQLException {
+    private static Masterpieceproperty parseMasterpieceProperty(ResultSet result) throws SQLException {
         Masterpieceproperty property = new Masterpieceproperty();
         property.setId(result.getInt(werkstueckeeigenschaftenID));
         property.setTitel(result.getString(Titel));
@@ -327,7 +328,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { templateId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, templatePropertyListHandler, param);
+            return new QueryRunner().query(connection, sql, resultSetToTemplatePropertyListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -411,7 +412,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { templateId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, masterpiecePropertyListHandler, param);
+            return new QueryRunner().query(connection, sql, resultSetToMasterpiecePropertyListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

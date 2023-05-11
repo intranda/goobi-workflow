@@ -226,10 +226,10 @@ public class FilterHelper {
                 sb.append(date);
             }
         }
-        if (!negate) {
-            sb.append(")");
-        } else {
+        if (negate) {
             sb.append("))");
+        } else {
+            sb.append(")");
         }
         return sb.toString();
     }
@@ -305,10 +305,10 @@ public class FilterHelper {
                 sb.append(date);
             }
         }
-        if (!negate) {
-            sb.append(")");
-        } else {
+        if (negate) {
             sb.append("))");
+        } else {
+            sb.append(")");
         }
         return sb.toString();
     }
@@ -336,10 +336,10 @@ public class FilterHelper {
                 sb.append(date);
             }
         }
-        if (!negate) {
-            sb.append(")");
-        } else {
+        if (negate) {
             sb.append("))");
+        } else {
+            sb.append(")");
         }
         return sb.toString();
     }
@@ -382,9 +382,9 @@ public class FilterHelper {
          */
 
         String login = tok.substring(tok.indexOf(":") + 1).replace("\\_", "_");
-        login = "(select BenutzerID from benutzer where benutzer.login = '" + login + "')";
 
-        return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = " + login + ")";
+        return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = '"
+                + login + "'))";
     }
 
     /**

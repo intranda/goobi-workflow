@@ -31,22 +31,26 @@ public class CloseStepHelper {
     /**
      * This class is added to replace {@link HelperSchritte} class. The main goal is to use a singleton and/or static methods to close tasks
      */
-
     private static CloseStepHelper instance = null;
+
+    /**
+     * This HelperSchritte instance is used in synchronized way to ensure that multiple close-step-interactions (at the same time) do not get into
+     * conflicts.
+     */
+    private HelperSchritte helperSchritteInstance;
 
     /**
      * private constructor to prevent instantiation from outside
      */
-
     private CloseStepHelper() {
+        this.helperSchritteInstance = new HelperSchritte();
     }
 
     /**
-     * get the only instance of this class
-     * 
-     * @return
+     * Returns the only instance of this class. If it is not initialized, the HelperSchritte instance is initialized in synchronized way.
+     *
+     * @return The static instance of this CloseStepHelper
      */
-
     public static synchronized CloseStepHelper getInstance() {
         if (CloseStepHelper.instance == null) {
             CloseStepHelper.instance = new CloseStepHelper();
@@ -55,15 +59,15 @@ public class CloseStepHelper {
     }
 
     /**
-     * main method to close a task.
-     * 
-     * @param step
-     * @param user
-     * @return
+     * Closes a task and following tasks (if possible) in a synchronized way. This method can be called from the GUI, from plugins, or from other code
+     * locations. The closing of tasks is ensured to be secure, even if multiple clients access the same process at the same time.
+     *
+     * @param step The step that should be closed (and following ones, if possible)
+     * @param user The user that requested to close the step(s)
+     * @return Currently always true, this value is meant to be used for success or failure information in future versions
      */
-
-    public static boolean closeStep(Step step, User user) {
-        new HelperSchritte().closeStepAndFollowingSteps(step, user);
+    public static synchronized boolean closeStep(Step step, User user) {
+        CloseStepHelper.instance.helperSchritteInstance.closeStepAndFollowingSteps(step, user);
         return true;
     }
 

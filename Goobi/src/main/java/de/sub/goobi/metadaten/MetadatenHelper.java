@@ -462,9 +462,9 @@ public class MetadatenHelper implements Comparator<Object> {
                         }
                     }
                 } catch (DocStructHasNoTypeException e) {
-                    log.trace(e);
+                    // do nothing
                 } catch (MetadataTypeNotAllowedException e) {
-                    log.trace(e);
+                    // do nothing
                 }
             }
             inStruct.setAllMetadata(allMetadata);
@@ -521,9 +521,9 @@ public class MetadatenHelper implements Comparator<Object> {
                         // element
 
                     } catch (DocStructHasNoTypeException e) {
-                        log.trace(e);
+                        // do nothing
                     } catch (MetadataTypeNotAllowedException e) {
-                        log.trace(e);
+                        // do nothing
                     }
                 }
 
@@ -1025,8 +1025,12 @@ public class MetadatenHelper implements Comparator<Object> {
         if (StringUtils.isNotBlank(p.getAuthorityID())) {
 
             String key = p.getType().getName() + "_authority";
-            metadataList.computeIfAbsent(key, k -> new ArrayList<>());
-            metadataList.get(key).add(p.getAuthorityID());
+            List<String> value = metadataList.get(key);
+            if (value == null) {
+                value = new ArrayList<>();
+                metadataList.put(key, value);
+            }
+            value.add(p.getAuthorityID());
         }
     }
 
@@ -1035,8 +1039,12 @@ public class MetadatenHelper implements Comparator<Object> {
         if (StringUtils.isNotBlank(md.getAuthorityID())) {
 
             String key = md.getType().getName() + "_authority";
-            metadataList.computeIfAbsent(key, k -> new ArrayList<>());
-            metadataList.get(key).add(md.getAuthorityID());
+            List<String> value = metadataList.get(key);
+            if (value == null) {
+                value = new ArrayList<>();
+                metadataList.put(key, value);
+            }
+            value.add(md.getAuthorityID());
         }
     }
 

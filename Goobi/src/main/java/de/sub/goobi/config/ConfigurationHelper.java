@@ -482,7 +482,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapUrl() {
         return getLocalString("ldap_url");
     }
@@ -492,7 +492,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAdminLogin() {
         return getLocalString("ldap_adminLogin");
     }
@@ -502,7 +502,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAdminPassword() {
         return getLocalString("ldap_adminPassword");
     }
@@ -512,7 +512,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAttribute() {
         return getLocalString("ldap_AttributeToTest", null);
     }
@@ -522,7 +522,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAttributeValue() {
         return getLocalString("ldap_ValueOfAttribute");
     }
@@ -532,7 +532,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapNextId() {
         return getLocalString("ldap_nextFreeUnixId");
     }
@@ -542,7 +542,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapRootCert() {
         return getLocalString("ldap_cert_root");
     }
@@ -552,7 +552,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapPdcCert() {
         return getLocalString("ldap_cert_pdc");
     }
@@ -562,7 +562,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapEncryption() {
         return getLocalString("ldap_encryption", "SHA");
     }
@@ -572,7 +572,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public boolean isUseLdapSSLConnection() {
         return getLocalBoolean("ldap_sslconnection", false);
     }
@@ -582,7 +582,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapReadOnly() {
         return getLocalBoolean("ldap_readonly", false);
     }
@@ -592,7 +592,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapReadDirectoryAnonymous() {
         return getLocalBoolean("ldap_readDirectoryAnonymous", false);
     }
@@ -602,7 +602,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapUseLocalDirectory() {
         return getLocalBoolean("useLocalDirectory", false);
     }
@@ -612,7 +612,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapHomeDirectory() {
         return getLocalString("ldap_homeDirectory", "homeDirectory");
     }
@@ -622,7 +622,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapUseTLS() {
         return getLocalBoolean("ldap_useTLS", false);
     }
