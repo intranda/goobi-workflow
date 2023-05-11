@@ -185,7 +185,7 @@ public class NavigationForm implements Serializable {
     }
 
     public boolean isEmailActive() {
-        return SendMail.getInstance().getConfig().isEnableMail();
+        return SendMail.getInstance().getConfig().isEnableStatusChangeMail();
     }
 
 }

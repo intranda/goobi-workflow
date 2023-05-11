@@ -435,6 +435,7 @@ public class DatabaseVersion {
                 sql.append(" ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8; ");
                 DatabaseVersion.runSql(sql.toString());
             }
+            runSql("update benutzer set processses_sort_field='titel', processes_sort_order=' asc', tasks_sort_field='prioritaet', tasks_sort_order=' desc';");
         } catch (SQLException e) {
             log.error(e);
         }
