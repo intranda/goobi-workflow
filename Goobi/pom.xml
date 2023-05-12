@@ -263,6 +263,12 @@
             <artifactId>amazon-sqs-java-messaging-lib</artifactId>
             <version>1.0.8</version>
             <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-jms_1.1_spec</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>net.sf.barcode4j</groupId>
