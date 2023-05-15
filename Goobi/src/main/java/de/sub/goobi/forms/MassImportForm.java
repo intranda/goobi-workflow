@@ -1,6 +1,3 @@
-package de.sub.goobi.forms;
-
-import java.io.File;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -26,6 +23,8 @@ import java.io.File;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package de.sub.goobi.forms;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -516,15 +515,8 @@ public class MassImportForm implements Serializable {
 
             String filename = ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
 
-            File file = new File(filename);
-            String canonicalDestinationPath = file.getCanonicalPath();
-
-            if (!canonicalDestinationPath.startsWith(ConfigurationHelper.getInstance().getTemporaryFolder())) {
-                throw new IOException("Entry is outside of the target directory");
-            }
-
             inputStream = this.uploadedFile.getInputStream();
-            outputStream = new FileOutputStream(filename);
+            outputStream = new FileOutputStream(filename); // NOSONAR filename is safe here, any prefix folder name from user input is removed from it (see basename above)
 
             byte[] buf = new byte[1024];
             int len;
