@@ -68,7 +68,7 @@ public class ExternalConnectionFactory {
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
         connFactory.setTrustedPackages(Arrays.asList("org.goobi.managedbeans", "org.goobi.api.mq", "org.goobi.api.mq.ticket"));
 
-        ActiveMQConnection activeMQconn = (ActiveMQConnection) connFactory.createConnection(username, password);
+        ActiveMQConnection activeMQconn = (ActiveMQConnection) connFactory.createConnection(username, password); //NOSONAR do not close this connection, it is needed and taken care of outside of this class.
         ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
         prefetchPolicy.setAll(0);
         activeMQconn.setPrefetchPolicy(prefetchPolicy);

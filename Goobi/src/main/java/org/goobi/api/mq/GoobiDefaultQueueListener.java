@@ -72,66 +72,67 @@ public class GoobiDefaultQueueListener {
         conn.setPrefetchPolicy(prefetchPolicy);
         RedeliveryPolicy policy = conn.getRedeliveryPolicy();
         policy.setMaximumRedeliveries(0);
-        final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-        final Destination dest = sess.createQueue(queue.toString());
+        try (final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE)) {
+            final Destination dest = sess.createQueue(queue.toString());
 
-        consumer = sess.createConsumer(dest);
+            consumer = sess.createConsumer(dest);
 
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                while (!shouldStop) {
-                    try {
-                        Message message = consumer.receive();
-                        Optional<TaskTicket> optTicket = Optional.empty();
-                        if (message instanceof TextMessage) {
-                            TextMessage tm = (TextMessage) message;
-                            optTicket = Optional.of(gson.fromJson(tm.getText(), TaskTicket.class));
-                        }
-                        if (message instanceof BytesMessage) {
-                            BytesMessage bm = (BytesMessage) message;
-                            byte[] bytes = new byte[(int) bm.getBodyLength()];
-                            bm.readBytes(bytes);
-                            optTicket = Optional.of(gson.fromJson(new String(bytes), TaskTicket.class));
-                        }
-                        if (optTicket.isPresent()) {
-                            log.debug("Handling ticket {}", optTicket.get());
-                            try {
-                                PluginReturnValue result = handleTicket(optTicket.get());
-                                if (result == PluginReturnValue.FINISH) {
-                                    //acknowledge message, it is done
-                                    message.acknowledge();
-                                } else {
-                                    //error or wait => put back to queue and retry by redeliveryPolicy
+            Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    while (!shouldStop) {
+                        try {
+                            Message message = consumer.receive();
+                            Optional<TaskTicket> optTicket = Optional.empty();
+                            if (message instanceof TextMessage) {
+                                TextMessage tm = (TextMessage) message;
+                                optTicket = Optional.of(gson.fromJson(tm.getText(), TaskTicket.class));
+                            }
+                            if (message instanceof BytesMessage) {
+                                BytesMessage bm = (BytesMessage) message;
+                                byte[] bytes = new byte[(int) bm.getBodyLength()];
+                                bm.readBytes(bytes);
+                                optTicket = Optional.of(gson.fromJson(new String(bytes), TaskTicket.class));
+                            }
+                            if (optTicket.isPresent()) {
+                                log.debug("Handling ticket {}", optTicket.get());
+                                try {
+                                    PluginReturnValue result = handleTicket(optTicket.get());
+                                    if (result == PluginReturnValue.FINISH) {
+                                        //acknowledge message, it is done
+                                        message.acknowledge();
+                                    } else {
+                                        //error or wait => put back to queue and retry by redeliveryPolicy
+                                        sess.recover();
+                                    }
+                                } catch (Throwable t) {
+                                    log.error("Error handling ticket " + message.getJMSMessageID() + ": ", t);
                                     sess.recover();
                                 }
-                            } catch (Throwable t) {
-                                log.error("Error handling ticket " + message.getJMSMessageID() + ": ", t);
-                                sess.recover();
                             }
-                        }
-                    } catch (JMSException e) {
-                        if (!shouldStop) {
-                            // back off a little bit, maybe we have a problem with the connection or we are shutting down
-                            try {
-                                Thread.sleep(1500);
-                            } catch (InterruptedException e1) {
-                                Thread.currentThread().interrupt();
-                            }
+                        } catch (JMSException e) {
                             if (!shouldStop) {
-                                log.error(e);
+                                // back off a little bit, maybe we have a problem with the connection or we are shutting down
+                                try {
+                                    Thread.sleep(1500);
+                                } catch (InterruptedException e1) {
+                                    Thread.currentThread().interrupt();
+                                }
+                                if (!shouldStop) {
+                                    log.error(e);
+                                }
                             }
                         }
                     }
+
                 }
+            };
+            thread = new Thread(run);
+            thread.setDaemon(true);
 
-            }
-        };
-        thread = new Thread(run);
-        thread.setDaemon(true);
-
-        conn.start();
-        thread.start();
+            conn.start();
+            thread.start();
+        }
     }
 
     private PluginReturnValue handleTicket(TaskTicket ticket) {

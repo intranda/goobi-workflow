@@ -1,5 +1,6 @@
 package de.sub.goobi.forms;
 
+import java.io.File;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -514,6 +515,13 @@ public class MassImportForm implements Serializable {
             }
 
             String filename = ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
+
+            File file = new File(filename);
+            String canonicalDestinationPath = file.getCanonicalPath();
+
+            if (!canonicalDestinationPath.startsWith(ConfigurationHelper.getInstance().getTemporaryFolder())) {
+                throw new IOException("Entry is outside of the target directory");
+            }
 
             inputStream = this.uploadedFile.getInputStream();
             outputStream = new FileOutputStream(filename);
