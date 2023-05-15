@@ -727,8 +727,12 @@ public class HelperSchritte {
             String name = meta.getAttributeValue("name");
             if (name != null) {
                 String key = name + "_authority";
-                metadataPairs.computeIfAbsent(key, k -> new ArrayList<>());
-                metadataPairs.get(key).add(meta.getChildText("authorityValue", goobiNamespace));
+                List<String> values = metadataPairs.get(key);
+                if (values == null) {
+                    values = new ArrayList<>();
+                    metadataPairs.put(key, values);
+                }
+                values.add(meta.getChildText("authorityValue", goobiNamespace));
             }
         }
     }
