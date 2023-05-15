@@ -253,11 +253,8 @@ public class GoobiImageResource {
 
     private URI createGoobiImageURI(HttpServletRequest request, Path processFolder, String folder, String filename) throws ContentLibException {
         try {
-            this.imageFolder = getImagesFolder(processFolder, folder);
-            if (!imageFolder.normalize().startsWith(processFolder)) {
-                throw new IOException("Requested image is outside of the process folder");
-            }
 
+            imageFolder = Paths.get(getImagesFolder(processFolder, folder).toString(), processFolder.toString());
             Path imagePath = imageFolder.resolve(filename);
 
             if (ConfigurationHelper.getInstance().isUseImageThumbnails()) {
