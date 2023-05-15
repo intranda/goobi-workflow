@@ -157,7 +157,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -965,14 +965,24 @@ public class NIOFileUtils implements StorageProviderInterface {
         return sha1;
     }
 
+    @Override
     public String getFileCreationTime(Path path) {
         try {
-            BasicFileAttributes            attr = Files.readAttributes(path, BasicFileAttributes.class);
+            BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
             FileTime fileTime = attr.creationTime();
             return fileTime.toInstant().toString();
         } catch (IOException e) {
             log.error(e);
         }
         return null;
+    }
+
+    public static String sanitizePath(String path, String basePath) throws IOException {
+        String normalizedPath = Paths.get(path).normalize().toString();
+        if (normalizedPath.startsWith(basePath)) {
+            return normalizedPath;
+        } else {
+            throw new IOException("Entry is outside of the target directory");
+        }
     }
 }
