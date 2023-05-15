@@ -34,7 +34,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.jms.BytesMessage;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -58,7 +57,6 @@ public class GoobiDefaultQueueListener {
     private Gson gson = new Gson();
     private Thread thread;
     private ActiveMQConnection conn;
-    private MessageConsumer consumer;
     private volatile boolean shouldStop = false;
 
     private static Map<String, TicketHandler<PluginReturnValue>> instances = new HashMap<>();
@@ -72,66 +70,77 @@ public class GoobiDefaultQueueListener {
         conn.setPrefetchPolicy(prefetchPolicy);
         RedeliveryPolicy policy = conn.getRedeliveryPolicy();
         policy.setMaximumRedeliveries(0);
-        try (final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE)) {
-            final Destination dest = sess.createQueue(queue.toString());
+        thread = new Thread(() -> startMessageLoop(queue.toString(), conn));
+        thread.setDaemon(true);
+        thread.start();
+    }
 
-            consumer = sess.createConsumer(dest);
-
-            Runnable run = new Runnable() {
-                @Override
-                public void run() {
-                    while (!shouldStop) {
-                        try {
-                            Message message = consumer.receive();
-                            Optional<TaskTicket> optTicket = Optional.empty();
-                            if (message instanceof TextMessage) {
-                                TextMessage tm = (TextMessage) message;
-                                optTicket = Optional.of(gson.fromJson(tm.getText(), TaskTicket.class));
-                            }
-                            if (message instanceof BytesMessage) {
-                                BytesMessage bm = (BytesMessage) message;
-                                byte[] bytes = new byte[(int) bm.getBodyLength()];
-                                bm.readBytes(bytes);
-                                optTicket = Optional.of(gson.fromJson(new String(bytes), TaskTicket.class));
-                            }
-                            if (optTicket.isPresent()) {
-                                log.debug("Handling ticket {}", optTicket.get());
-                                try {
-                                    PluginReturnValue result = handleTicket(optTicket.get());
-                                    if (result == PluginReturnValue.FINISH) {
-                                        //acknowledge message, it is done
-                                        message.acknowledge();
-                                    } else {
-                                        //error or wait => put back to queue and retry by redeliveryPolicy
-                                        sess.recover();
-                                    }
-                                } catch (Throwable t) {
-                                    log.error("Error handling ticket " + message.getJMSMessageID() + ": ", t);
-                                    sess.recover();
-                                }
-                            }
-                        } catch (JMSException e) {
-                            if (!shouldStop) {
-                                // back off a little bit, maybe we have a problem with the connection or we are shutting down
-                                try {
-                                    Thread.sleep(1500);
-                                } catch (InterruptedException e1) {
-                                    Thread.currentThread().interrupt();
-                                }
-                                if (!shouldStop) {
-                                    log.error(e);
-                                }
-                            }
-                        }
-                    }
-
-                }
-            };
-            thread = new Thread(run);
-            thread.setDaemon(true);
-
+    void startMessageLoop(String queueType, ActiveMQConnection conn) {
+        try {
             conn.start();
-            thread.start();
+            startListener(queueType, conn);
+            log.info("Exiting listener thread for message queue {}", queueType);
+        } catch (JMSException e) {
+            log.error("Error starting listener for queue {}. Aborting listerner startup", e.toString(), e);
+        }
+    }
+
+    void startListener(String queueType, ActiveMQConnection conn) throws JMSException {
+        try (Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+                MessageConsumer consumer = sess.createConsumer(sess.createQueue(queueType));) {
+            while (!shouldStop) {
+                waitForMessage(sess, consumer);
+                if (Thread.interrupted()) {
+                    log.info("Queue listener for queue {} interrupted: exiting listener", queueType);
+                    return;
+                }
+            }
+        }
+    }
+
+    void waitForMessage(Session sess, MessageConsumer consumer) {
+
+        try {
+            Message message = consumer.receive();
+            Optional<TaskTicket> optTicket = Optional.empty();
+            if (message instanceof TextMessage) {
+                TextMessage tm = (TextMessage) message;
+                optTicket = Optional.of(gson.fromJson(tm.getText(), TaskTicket.class));
+            }
+            if (message instanceof BytesMessage) {
+                BytesMessage bm = (BytesMessage) message;
+                byte[] bytes = new byte[(int) bm.getBodyLength()];
+                bm.readBytes(bytes);
+                optTicket = Optional.of(gson.fromJson(new String(bytes), TaskTicket.class));
+            }
+            if (optTicket.isPresent()) {
+                log.debug("Handling ticket {}", optTicket.get());
+                try {
+                    PluginReturnValue result = handleTicket(optTicket.get());
+                    if (result == PluginReturnValue.FINISH) {
+                        //acknowledge message, it is done
+                        message.acknowledge();
+                    } else {
+                        //error or wait => put back to queue and retry by redeliveryPolicy
+                        sess.recover();
+                    }
+                } catch (Throwable t) {
+                    log.error("Error handling ticket " + message.getJMSMessageID() + ": ", t);
+                    sess.recover();
+                }
+            }
+        } catch (JMSException e) {
+            if (!shouldStop) {
+                // back off a little bit, maybe we have a problem with the connection or we are shutting down
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e1) {
+                    Thread.currentThread().interrupt();
+                }
+                if (!shouldStop) {
+                    log.error(e);
+                }
+            }
         }
     }
 
@@ -148,7 +157,6 @@ public class GoobiDefaultQueueListener {
 
     public void close() throws JMSException {
         this.shouldStop = true;
-        this.consumer.close();
         this.conn.close();
         try {
             this.thread.join(1000);
