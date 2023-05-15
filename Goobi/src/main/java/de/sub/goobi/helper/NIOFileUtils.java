@@ -40,6 +40,7 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore;
+import java.nio.file.FileSystems;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -157,7 +158,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -965,14 +966,38 @@ public class NIOFileUtils implements StorageProviderInterface {
         return sha1;
     }
 
+    @Override
     public String getFileCreationTime(Path path) {
         try {
-            BasicFileAttributes            attr = Files.readAttributes(path, BasicFileAttributes.class);
+            BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
             FileTime fileTime = attr.creationTime();
             return fileTime.toInstant().toString();
         } catch (IOException e) {
             log.error(e);
         }
         return null;
+    }
+
+    /**
+     * Checks if the given path is within a base path.
+     * 
+     * This method removes "." or "../" from the path and validates that we are still in the same directory. If not, an IOException is thrown
+     * 
+     * @param filePath
+     * @param basePath
+     * @return
+     * @throws IOException
+     */
+
+    public static String sanitizePath(String filePath, String basePath) throws IOException {
+        if (!basePath.endsWith("/")) {
+            basePath = basePath + FileSystems.getDefault().getSeparator();
+        }
+        String normalizedPath = Paths.get(filePath).normalize().toString();
+        if (normalizedPath.startsWith(basePath)) {
+            return normalizedPath;
+        } else {
+            throw new IOException("Entry is outside of the target directory");
+        }
     }
 }

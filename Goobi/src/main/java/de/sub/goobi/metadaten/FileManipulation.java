@@ -154,7 +154,7 @@ public class FileManipulation {
             basename = basename.replace("[\\:\\*\\?\\|\\/]", "_").replace(" ", "_");
             log.trace("folder to import: " + currentFolder);
             String filename = metadataBean.getMyProzess().getImagesDirectory() + currentFolder + FileSystems.getDefault().getSeparator() + basename;
-
+            filename = NIOFileUtils.sanitizePath(filename, metadataBean.getMyProzess().getImagesDirectory());
             log.trace("filename to import: " + filename);
 
             if (StorageProvider.getInstance().isFileExists(Paths.get(filename))) {
@@ -166,9 +166,9 @@ public class FileManipulation {
             StorageProvider.getInstance().uploadFile(inputStream, Paths.get(filename));
             log.trace(filename + " was imported");
             // if file was uploaded into media folder, update pagination sequence
-            if (metadataBean.getMyProzess()
-                    .getImagesTifDirectory(false)
-                    .equals(metadataBean.getMyProzess().getImagesDirectory() + currentFolder + FileSystems.getDefault().getSeparator())) {
+            if ((metadataBean.getMyProzess().getImagesDirectory() + currentFolder + FileSystems.getDefault().getSeparator())
+                    .equals(metadataBean.getMyProzess()
+                            .getImagesTifDirectory(false))) {
                 log.trace("update pagination for " + metadataBean.getMyProzess().getTitel());
                 updatePagination(filename);
 
@@ -216,7 +216,7 @@ public class FileManipulation {
             return;
         }
 
-        if (insertPage.equals("lastPage")) {
+        if ("lastPage".equals(insertPage)) {
             metadataBean.createPagination();
         } else {
 
@@ -248,7 +248,7 @@ public class FileManipulation {
 
                     mdTemp = new Metadata(logicalPageNoType);
 
-                    if (insertMode.equalsIgnoreCase(UNCOUNTED)) {
+                    if (UNCOUNTED.equalsIgnoreCase(insertMode)) {
                         mdTemp.setValue(UNCOUNTED);
                     } else {
                         // set new logical no. for new and old page
@@ -275,7 +275,7 @@ public class FileManipulation {
                     DocStruct currentPage = pageList.get(index);
                     // check if element is last element
                     currentPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(index + 2));
-                    if (!insertMode.equalsIgnoreCase(UNCOUNTED)) {
+                    if (!UNCOUNTED.equalsIgnoreCase(insertMode)) {
                         if (index + 1 == pageList.size()) {
                             currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue(UNCOUNTED);
                         } else {
@@ -506,49 +506,45 @@ public class FileManipulation {
                         } catch (SwapException | DAOException | IOException e) {
                             log.error(e);
                         }
-                    } else {
-                        if (subfolder.getFileName().toString().contains("_")) {
-                            String folderSuffix =
-                                    subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_") + 1);
-                            String folderName = currentProcess.getMethodFromName(folderSuffix);
-                            if (folderName != null) {
-                                try {
-                                    Path directory = Paths.get(folderName);
-                                    List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
-                                    for (Path object : objectInFolder) {
-                                        if (currentProcess.getImagesTifDirectory(false)
-                                                .equals(folderName + FileSystems.getDefault().getSeparator())) {
-                                            importedFilenames.add(object.getFileName().toString());
-                                        }
-                                        Path dest = Paths.get(directory.toString(), object.getFileName().toString());
-                                        StorageProvider.getInstance().copyFile(object, dest);
-                                    }
-
-                                } catch (IOException | SwapException e) {
-                                    log.error(e);
-                                }
-
-                            }
-                        }
-                    }
-
-                } else {
-                    if (subfolder.getFileName().toString().contains("_")) {
-                        String folderSuffix = subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_") + 1);
+                    } else if (subfolder.getFileName().toString().contains("_")) {
+                        String folderSuffix =
+                                subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_") + 1);
                         String folderName = currentProcess.getMethodFromName(folderSuffix);
                         if (folderName != null) {
-                            Path directory = Paths.get(folderName);
-                            List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
-                            for (Path object : objectInFolder) {
-                                try {
-                                    if (currentProcess.getImagesTifDirectory(false).equals(folderName + FileSystems.getDefault().getSeparator())) {
+                            try {
+                                Path directory = Paths.get(folderName);
+                                List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
+                                for (Path object : objectInFolder) {
+                                    if ((folderName + FileSystems.getDefault().getSeparator())
+                                            .equals(currentProcess.getImagesTifDirectory(false))) {
                                         importedFilenames.add(object.getFileName().toString());
                                     }
                                     Path dest = Paths.get(directory.toString(), object.getFileName().toString());
                                     StorageProvider.getInstance().copyFile(object, dest);
-                                } catch (IOException | SwapException e) {
-                                    log.error(e);
                                 }
+
+                            } catch (IOException | SwapException e) {
+                                log.error(e);
+                            }
+
+                        }
+                    }
+
+                } else if (subfolder.getFileName().toString().contains("_")) {
+                    String folderSuffix = subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_") + 1);
+                    String folderName = currentProcess.getMethodFromName(folderSuffix);
+                    if (folderName != null) {
+                        Path directory = Paths.get(folderName);
+                        List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
+                        for (Path object : objectInFolder) {
+                            try {
+                                if ((folderName + FileSystems.getDefault().getSeparator()).equals(currentProcess.getImagesTifDirectory(false))) {
+                                    importedFilenames.add(object.getFileName().toString());
+                                }
+                                Path dest = Paths.get(directory.toString(), object.getFileName().toString());
+                                StorageProvider.getInstance().copyFile(object, dest);
+                            } catch (IOException | SwapException e) {
+                                log.error(e);
                             }
                         }
                     }
@@ -557,7 +553,7 @@ public class FileManipulation {
         }
         // update pagination
         try {
-            if (insertPage == null || insertPage.isEmpty() || insertPage.equals("lastPage")) {
+            if (insertPage == null || insertPage.isEmpty() || "lastPage".equals(insertPage)) {
                 metadataBean.createPagination();
             } else {
                 int indexToImport = Integer.parseInt(insertPage);

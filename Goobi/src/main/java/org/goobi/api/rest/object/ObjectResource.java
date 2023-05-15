@@ -57,6 +57,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.goobi.beans.Process;
 
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -86,6 +87,9 @@ public class ObjectResource {
         }
 
         try {
+            foldername =
+                    NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername).toString(),
+                            process.getImagesDirectory());
             List<URI> resourceURIs = getResources(Paths.get(process.getImagesDirectory(), foldername).toString(), baseFilename, baseURI);
             ObjectInfo info = new ObjectInfo(objectURI);
             info.setResources(resourceURIs);
@@ -241,7 +245,10 @@ public class ObjectResource {
 
         foldername = Paths.get(foldername).getFileName().toString();
         Process process = ProcessManager.getProcessById(processId);
-        java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
+        java.nio.file.Path objectPath =
+                Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, filename).toString(),
+                        process.getImagesDirectory()));
+
         if (!objectPath.toFile().isFile()) {
             //try subfolders
             DirectoryStream.Filter<? super java.nio.file.Path> filter = new DirectoryStream.Filter<java.nio.file.Path>() {
@@ -277,7 +284,9 @@ public class ObjectResource {
             @PathParam("filename") final String filename) throws IOException, InterruptedException, SwapException, DAOException {
 
         Process process = ProcessManager.getProcessById(processId);
-        java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder, filename);
+        java.nio.file.Path objectPath =
+                Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, filename).toString(),
+                        process.getImagesDirectory()));
         if (!objectPath.toFile().isFile()) {
             throw new FileNotFoundException("File " + objectPath + " not found in file system");
         } else {
@@ -303,7 +312,9 @@ public class ObjectResource {
             throws IOException, InterruptedException, SwapException, DAOException {
 
         Process process = ProcessManager.getProcessById(processId);
-        java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder1, subfolder2, filename);
+        java.nio.file.Path objectPath =
+                Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, filename).toString(),
+                        process.getImagesDirectory()));
         if (!objectPath.toFile().isFile()) {
             throw new FileNotFoundException("File " + objectPath + " not found in file system");
         } else {
