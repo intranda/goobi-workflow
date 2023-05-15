@@ -117,19 +117,19 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             try {
                 connection.start();
                 Queue queue = queueSession.createQueue("goobi_fast");
-                QueueBrowser browser = queueSession.createBrowser(queue);
-                Enumeration<?> messagesInQueue = browser.getEnumeration();
-                while (messagesInQueue.hasMoreElements()) {
-                    ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
+                try (QueueBrowser browser = queueSession.createBrowser(queue)) {
+                    Enumeration<?> messagesInQueue = browser.getEnumeration();
+                    while (messagesInQueue.hasMoreElements()) {
+                        ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
 
-                    String type = queueMessage.getStringProperty("JMSType");
-                    if (fastQueueContent.containsKey(type)) {
-                        fastQueueContent.put(type, fastQueueContent.get(type) + 1);
-                    } else {
-                        fastQueueContent.put(type, 1);
+                        String type = queueMessage.getStringProperty("JMSType");
+                        if (fastQueueContent.containsKey(type)) {
+                            fastQueueContent.put(type, fastQueueContent.get(type) + 1);
+                        } else {
+                            fastQueueContent.put(type, 1);
+                        }
                     }
                 }
-                browser.close();
                 connection.stop();
             } catch (JMSException e) {
                 log.error(e);
@@ -144,19 +144,19 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             try {
                 connection.start();
                 Queue queue = queueSession.createQueue("goobi_slow");
-                QueueBrowser browser = queueSession.createBrowser(queue);
-                Enumeration<?> messagesInQueue = browser.getEnumeration();
-                while (messagesInQueue.hasMoreElements()) {
-                    ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
+                try (QueueBrowser browser = queueSession.createBrowser(queue)) {
+                    Enumeration<?> messagesInQueue = browser.getEnumeration();
+                    while (messagesInQueue.hasMoreElements()) {
+                        ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
 
-                    String type = queueMessage.getStringProperty("JMSType");
-                    if (fastQueueContent.containsKey(type)) {
-                        fastQueueContent.put(type, fastQueueContent.get(type) + 1);
-                    } else {
-                        fastQueueContent.put(type, 1);
+                        String type = queueMessage.getStringProperty("JMSType");
+                        if (fastQueueContent.containsKey(type)) {
+                            fastQueueContent.put(type, fastQueueContent.get(type) + 1);
+                        } else {
+                            fastQueueContent.put(type, 1);
+                        }
                     }
                 }
-                browser.close();
                 connection.stop();
             } catch (JMSException e) {
                 log.error(e);
@@ -189,16 +189,16 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             try {
                 connection.start();
                 Queue queue = queueSession.createQueue("goobi_slow");
-                QueueBrowser browser = queueSession.createBrowser(queue, "JMSType = '" + messageType + "'");
-                Enumeration<?> messagesInQueue = browser.getEnumeration();
-                while (messagesInQueue.hasMoreElements() && answer.size() < 100) {
-                    ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
-                    TaskTicket ticket = gson.fromJson(queueMessage.getText(), TaskTicket.class);
-                    ticket.setMessageId(queueMessage.getJMSMessageID());
+                try (QueueBrowser browser = queueSession.createBrowser(queue, "JMSType = '" + messageType + "'")) {
+                    Enumeration<?> messagesInQueue = browser.getEnumeration();
+                    while (messagesInQueue.hasMoreElements() && answer.size() < 100) {
+                        ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
+                        TaskTicket ticket = gson.fromJson(queueMessage.getText(), TaskTicket.class);
+                        ticket.setMessageId(queueMessage.getJMSMessageID());
 
-                    answer.add(ticket);
+                        answer.add(ticket);
+                    }
                 }
-                browser.close();
                 connection.stop();
             } catch (JMSException e) {
                 log.error(e);
@@ -215,15 +215,16 @@ public class MessageQueueBean extends BasicBean implements Serializable {
         if (StringUtils.isNotBlank(messageType)) {
             try {
                 Queue queue = queueSession.createQueue(queueType);
-                MessageConsumer consumer = queueSession.createConsumer(queue, "JMSType='" + messageType + "'");
-                connection.start();
-                Message message = consumer.receiveNoWait();
-                while (message != null) {
-                    message.acknowledge();
-                    message = consumer.receiveNoWait();
-                    // TODO get step, set step status to open
-                    // TODO write cancel message to process log
+                try (MessageConsumer consumer = queueSession.createConsumer(queue, "JMSType='" + messageType + "'")) {
+                    connection.start();
+                    Message message = consumer.receiveNoWait();
+                    while (message != null) {
+                        message.acknowledge();
+                        message = consumer.receiveNoWait();
+                        // TODO get step, set step status to open
+                        // TODO write cancel message to process log
 
+                    }
                 }
                 connection.stop();
             } catch (JMSException e) {
@@ -247,17 +248,17 @@ public class MessageQueueBean extends BasicBean implements Serializable {
                 connection.start();
                 Queue queue = queueSession.createQueue("goobi_fast");
 
-                QueueBrowser browser = queueSession.createBrowser(queue, "JMSType = '" + messageType + "'");
-                Enumeration<?> messagesInQueue = browser.getEnumeration();
-                // get up to 100 messages
-                while (messagesInQueue.hasMoreElements() && answer.size() < 100) {
-                    ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
-                    TaskTicket ticket = gson.fromJson(queueMessage.getText(), TaskTicket.class);
-                    ticket.setMessageId(queueMessage.getJMSMessageID());
+                try (QueueBrowser browser = queueSession.createBrowser(queue, "JMSType = '" + messageType + "'")) {
+                    Enumeration<?> messagesInQueue = browser.getEnumeration();
+                    // get up to 100 messages
+                    while (messagesInQueue.hasMoreElements() && answer.size() < 100) {
+                        ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
+                        TaskTicket ticket = gson.fromJson(queueMessage.getText(), TaskTicket.class);
+                        ticket.setMessageId(queueMessage.getJMSMessageID());
 
-                    answer.add(ticket);
+                        answer.add(ticket);
+                    }
                 }
-                browser.close();
                 connection.stop();
             } catch (JMSException e) {
                 log.error(e);
@@ -277,11 +278,12 @@ public class MessageQueueBean extends BasicBean implements Serializable {
         try {
             connection.start();
             Queue queue = queueSession.createQueue(queueType);
-            QueueReceiver receiver = queueSession.createReceiver(queue, "JMSMessageID='" + ticket.getMessageId() + "'");
-            Message message = receiver.receiveNoWait();
+            try (QueueReceiver receiver = queueSession.createReceiver(queue, "JMSMessageID='" + ticket.getMessageId() + "'")) {
+                Message message = receiver.receiveNoWait();
 
-            if (message != null) {
-                message.acknowledge();
+                if (message != null) {
+                    message.acknowledge();
+                }
             }
             connection.stop();
 
