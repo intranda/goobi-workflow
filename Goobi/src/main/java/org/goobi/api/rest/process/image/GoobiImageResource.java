@@ -61,6 +61,7 @@ import org.apache.commons.io.FilenameUtils;
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -191,7 +192,7 @@ public class GoobiImageResource {
     public Boolean isInCache(@PathParam("process") String processIdString, @PathParam("folder") String folder, @PathParam("filename") String filename,
             @PathParam("region") String region, @PathParam("size") String size, @PathParam("rotation") String rotation,
             @PathParam("quality") String quality, @PathParam("format") String format, @PathParam("cacheCommand") String command)
-            throws ContentLibException {
+                    throws ContentLibException {
         try {
             filename = URLDecoder.decode(filename, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -253,8 +254,8 @@ public class GoobiImageResource {
 
     private URI createGoobiImageURI(HttpServletRequest request, Path processFolder, String folder, String filename) throws ContentLibException {
         try {
+            imageFolder = Paths.get(NIOFileUtils.sanitizePath(getImagesFolder(processFolder, folder).toString(), processFolder.toString()));
 
-            imageFolder = Paths.get(getImagesFolder(processFolder, folder).toString(), processFolder.toString());
             Path imagePath = imageFolder.resolve(filename);
 
             if (ConfigurationHelper.getInstance().isUseImageThumbnails()) {
@@ -297,8 +298,8 @@ public class GoobiImageResource {
                             // size on the original image
                             Dimension size = requestedImageSize.orElse(null);
                             getThumbnailSize(imagePath.getParent().getFileName().toString())
-                                    .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
-                                    .ifPresent(scale -> setThumbnailScale(scale, request));
+                            .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
+                            .ifPresent(scale -> setThumbnailScale(scale, request));
                             log.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
                                     requestedImageSize.map(Object::toString).orElse("max"),
                                     requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
@@ -719,10 +720,10 @@ public class GoobiImageResource {
         List<Path> thumbFolderPaths = getMatchingThumbnailFolders(imageFolder, thumbsFolder);
         availableThumbnailFolders.put(imageFolder.toString(),
                 thumbFolderPaths.stream()
-                        .map(Path::getFileName)
-                        .map(Path::toString)
-                        .sorted((name1, name2) -> getSize(name1).compareTo(getSize(name2)))
-                        .collect(Collectors.toList()));
+                .map(Path::getFileName)
+                .map(Path::toString)
+                .sorted((name1, name2) -> getSize(name1).compareTo(getSize(name2)))
+                .collect(Collectors.toList()));
     }
 
     private List<ImageTile> getImageTiles(List<Integer> tileSizes, List<Integer> scales) {
