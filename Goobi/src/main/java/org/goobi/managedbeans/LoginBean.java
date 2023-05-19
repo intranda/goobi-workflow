@@ -161,10 +161,7 @@ public class LoginBean implements Serializable {
             } else {
                 ec.redirect(applicationPath + "/uii/logout.xhtml");
             }
-        } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
-            log.error(e);
-        } catch (IOException e) {
+        } catch (URISyntaxException | IOException e) {
             // TODO Auto-generated catch block
             log.error(e);
         }
@@ -240,7 +237,7 @@ public class LoginBean implements Serializable {
         log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login type: " + user.getLdapGruppe().getAuthenticationType());
 
         String dashboard = user.getDashboardPlugin();
-        if (StringUtils.isBlank(dashboard) || dashboard.equals("null")) {
+        if (StringUtils.isBlank(dashboard) || "null".equals(dashboard)) {
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Loading start page...");
         } else {
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Trying to load dashboard plugin: " + dashboard);
@@ -398,10 +395,7 @@ public class LoginBean implements Serializable {
             builder.addParameter("nonce", nonce);
 
             ec.redirect(builder.build().toString());
-        } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
-            log.error(e);
-        } catch (IOException e) {
+        } catch (URISyntaxException | IOException e) {
             // TODO Auto-generated catch block
             log.error(e);
         }
@@ -555,7 +549,16 @@ public class LoginBean implements Serializable {
         String messageBody =
                 SendMail.getInstance().getConfig().getPasswordResetBody().replace("{password}", password).replace("{login}", user.getLogin());
         SendMail.getInstance().sendMailToUser(messageSubject, messageBody, email);
+    }
 
+    public String openUserSettings() {
+        // reload current user from database to reset all changed, but not submitted values
+        try {
+            myBenutzer = UserManager.getUserById(myBenutzer.getId());
+        } catch (DAOException e) {
+            log.error(e);
+        }
+        return "user_config";
     }
 
 }
