@@ -54,6 +54,10 @@ public class AuthenticationToken {
     @Setter
     private List<AuthenticationMethodDescription> methods = new ArrayList<>();
 
+    public AuthenticationToken() {
+        // used in database requests
+    }
+
     public AuthenticationToken(String tokenName, Integer userId) {
         this.tokenName = tokenName;
         this.userId = userId;

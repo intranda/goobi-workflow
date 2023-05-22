@@ -707,15 +707,45 @@
                                 <ui:repeat
                                     var="token"
                                     value="#{LoginForm.myBenutzer.apiToken}">
+                                    <div class="row" style="border-top: 1px solid var(--clr-neutral-300);">
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{msgs.user_config_tokenname}"
+                                                labelFor="tokenName"
+                                                labelRequired="false" />
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <h:inputText
+                                                id="tokenName"
+                                                styleClass="form-control form__input #{cc.attrs.fieldStyle}"
+                                                value="#{token.encodedTokenName}"
+                                                required="false"
+                                                readonly="true">
+                                            </h:inputText>
+                                            <h:message
+                                                for="tokenName"
+                                                showDetail="true"
+                                                styleClass="help-inline text-danger" />
+                                            <!-- Help messages, inline + warning -->
+                                            <intranda:formHelp
+                                                content="#{msgs.user_config_tokenname}"
+                                                msgFor="tokenName" />
+                                        </div>
+                                        <div class="col-12 col-md-1">
+                                            <button
+                                                style="float: right"
+                                                jsf:id="deleteToken"
+                                                class="btn btn-danger"
+                                                title="#{msgs.loeschen}"
+                                                jsf:action="#{LoginForm.myBenutzer.deleteToken}">
+                                                <f:setPropertyActionListener
+                                                    target="#{LoginForm.myBenutzer.token}"
+                                                    value="#{token}" />
+                                                <i class="fa fa-trash-o" />
+                                            </button>
+                                        </div>
+                                    </div>
 
-                                    <intranda:formInputText
-                                        label="#{msgs.user_config_tokenname}"
-                                        id="tokenName"
-                                        field="#{token.encodedTokenName}"
-                                        help="#{msgs.user_config_tokenname}"
-                                        name="tokenName"
-                                        readonly="true"
-                                        required="false" />
                                     <intranda:formInputText
                                         label="#{msgs.user_config_token_description}"
                                         id="tokenDescrption"
@@ -728,7 +758,7 @@
                                     <ui:repeat
                                         var="method"
                                         value="#{token.methods}">
-                                        <div  class="row">
+                                        <div class="row">
                                             <div
                                                 class="col-12 col-md-3"
                                                 tabindex="-1">
@@ -741,14 +771,12 @@
                                                     id="selectMethod"
                                                     styleClass="form-check-input"
                                                     value="#{method.selected}"
-                                                    disabled="false"
+                                                    disabled="#{token.tokenId != null}"
                                                     tabindex="0"
                                                     pt:aria-label="#{msgs.user_config_methodSelection}" />
-
                                                 <h:outputText
                                                     style="width: 80%; margin-left: 10px;"
                                                     value="#{method.description} (#{method.methodType} request to #{method.url})" />
-
                                                 <intranda:formHelp
                                                     content="#{msgs.help_user_config_methodSelection}"
                                                     msgFor="selectMethod" />
@@ -757,10 +785,10 @@
                                     </ui:repeat>
 
 
+                                <br />
 
                                 </ui:repeat>
 
-                                <hr />
 
                                 <!-- generate new api token -->
                                 <div class="form-actions">
