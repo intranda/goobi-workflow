@@ -18,35 +18,94 @@ public class ProcessTitleGenerator {
 
     private String uuid = null;
 
-    private String titleWithUuid = null;
+    private String alternativeTitle = null;
 
     private String separator = "_";
 
+    /**
+     * use default settings or use setters to initialize individually
+     */
     public ProcessTitleGenerator() {
 
     }
 
-    public ProcessTitleGenerator(boolean signature, int limit) {
-        useSignature = signature;
-        lengthLimit = limit;
+    /**
+     * 
+     * @param useSignature whether or not to use signature as part of the process title
+     * @param limit maximum length of the title name excluding its head
+     */
+    public ProcessTitleGenerator(boolean useSignature, int limit) {
+        this.useSignature = useSignature;
+        this.lengthLimit = limit;
     }
 
+    /**
+     * 
+     * @param useSignature whether or not to use signature as part of the process title
+     * @param separator string that should be used to connect tokens
+     */
+    public ProcessTitleGenerator(boolean useSignature, String separator) {
+        this.useSignature = useSignature;
+        this.separator = separator;
+    }
+
+    /**
+     * 
+     * @param limit maximum length of the title name excluding its head
+     * @param separator string that should be used to connect tokens
+     */
+    public ProcessTitleGenerator(int limit, String separator) {
+        this.lengthLimit = limit;
+        this.separator = separator;
+    }
+
+    /**
+     * 
+     * @param useSignature whether or not to use signature as part of the process title
+     * @param limit maximum length of the title name excluding its head
+     * @param separator string that should be used to connect tokens
+     */
+    public ProcessTitleGenerator(boolean useSignature, int limit, String separator) {
+        this.useSignature = useSignature;
+        this.lengthLimit = limit;
+        this.separator = separator;
+    }
+
+    /**
+     * 
+     * @param limit maximum length of the title name excluding its head
+     */
     public void setLengthLimit(int limit) {
         if (limit > 0) {
             lengthLimit = limit;
         }
     }
 
-    public void setUseSignature(boolean b) {
-        useSignature = b;
+    /**
+     * 
+     * @param useSignature whether or not to use signature as part of the process title
+     */
+    public void setUseSignature(boolean useSignature) {
+        this.useSignature = useSignature;
     }
 
+    /**
+     * 
+     * @param separator string that should be used to connect tokens
+     */
     public void setSeparator(String separator) {
         if (separator != null) {
             this.separator = separator;
         }
     }
 
+    /**
+     * add a new token whose value is to be modified regarding its ManipulationType
+     * 
+     * @param value value of the new token
+     * @param type ManipulationType
+     * @return true if the new token is successfully added, false if the new token is not addable
+     */
     public boolean addToken(String value, ManipulationType type) {
         // preparation
         // 1. there should not be more than one AFTER_LAST_SEPARATOR or BEFORE_FIRST_SEPARATOR
@@ -76,6 +135,12 @@ public class ProcessTitleGenerator {
         return true;
     }
 
+    /**
+     * check if a new token of the input ManipulationType is still addable
+     * 
+     * @param type ManipulationType
+     * @return true if a new token of the input ManipulationType is still addable, false otherwise
+     */
     private boolean checkAddability(ManipulationType type) {
         switch (type) {
             case AFTER_LAST_SEPARATOR:
@@ -87,6 +152,13 @@ public class ProcessTitleGenerator {
         }
     }
 
+    /**
+     * modify the input value according to its ManipulationType
+     * 
+     * @param value value of the token that is to be modified
+     * @param type ManipulationType
+     * @return modified value as String
+     */
     private String modifyValueGivenType(String value, ManipulationType type) {
         String result = value;
 
@@ -112,6 +184,12 @@ public class ProcessTitleGenerator {
         return result;
     }
 
+    /**
+     * simplify the value of the head token
+     * 
+     * @param value value of the head token that should be modified
+     * @return simplified value of the head token
+     */
     private String getSimplifiedHead(String value) {
         // use signature
         if (useSignature) {
@@ -126,6 +204,12 @@ public class ProcessTitleGenerator {
         return value.substring(value.lastIndexOf("-") + 1);
     }
 
+    /**
+     * replace all umlauts
+     * 
+     * @param value string whose umlauts should be replaced
+     * @return string with all of its umlauts replaced
+     */
     private String replaceUmlauts(String value) {
         return value.replace("ä", "ae")
                 .replace("ö", "oe")
@@ -136,10 +220,22 @@ public class ProcessTitleGenerator {
                 .replace("Ü", "Ue");
     }
 
+    /**
+     * replace special letters and space letters with _
+     * 
+     * @param value string whose special and space letters should be replaced
+     * @return string with all of its special and space letters replaced
+     */
     private String replaceSpecialAndSpaceChars(String value) {
         return value.replaceAll("[^a-zA-Z0-9]", "_");
     }
 
+    /**
+     * get the camel string of the input string
+     * 
+     * @param value string that should be camel-formated
+     * @return the camel-formated string
+     */
     private String getCamelString(String value) {
         String[] words = value.split("_");
         StringBuilder sb = new StringBuilder();
@@ -152,14 +248,31 @@ public class ProcessTitleGenerator {
         return sb.toString();
     }
 
+    /**
+     * cut string short if it is too long
+     * 
+     * @param value string whose length should be limited
+     * @return the string that is not longer than lengthLimit
+     */
     private String cutString(String value) {
         return value.substring(0, Math.min(value.length(), lengthLimit));
     }
 
+    /**
+     * generate the title using the default separator settings
+     * 
+     * @return generated title as a string
+     */
     public String generateTitle() {
         return generateTitle(this.separator);
     }
 
+    /**
+     * generate the title using the input separator
+     * 
+     * @param separator string that should be used to connect tokens
+     * @return generated title as a string
+     */
     public String generateTitle(String separator) {
         String titleBody = generateTitleBody(separator);
 
@@ -171,20 +284,31 @@ public class ProcessTitleGenerator {
             originalHead = uuid + separator;
         }
 
-        titleWithUuid = originalHead + titleBody;
+        alternativeTitle = originalHead + titleBody;
 
         return simplifiedHead + titleBody;
     }
 
-    public String getTitleWithUuid() {
-        if (titleWithUuid == null) {
+    /**
+     * retrieve the alternative title generated in parallel
+     * 
+     * @return the alternative title
+     */
+    public String getAlternativeTitle() {
+        if (alternativeTitle == null) {
             // title is not generated yet, report this
             return "";
         }
 
-        return titleWithUuid;
+        return alternativeTitle;
     }
 
+    /**
+     * generate the title's body, which consists of all tokens except the heading one
+     * 
+     * @param separator string that should be used to connect tokens
+     * @return
+     */
     private String generateTitleBody(String separator) {
         StringBuilder sb = new StringBuilder();
         // add values of all body tokens
