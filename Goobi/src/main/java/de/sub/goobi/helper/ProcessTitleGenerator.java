@@ -36,7 +36,9 @@ public class ProcessTitleGenerator {
      */
     public ProcessTitleGenerator(boolean useSignature, int limit) {
         this.useSignature = useSignature;
-        this.lengthLimit = limit;
+        if (limit > 0) {
+            lengthLimit = limit;
+        }
     }
 
     /**
@@ -46,7 +48,9 @@ public class ProcessTitleGenerator {
      */
     public ProcessTitleGenerator(boolean useSignature, String separator) {
         this.useSignature = useSignature;
-        this.separator = separator;
+        if (separator != null) {
+            this.separator = separator;
+        }
     }
 
     /**
@@ -55,8 +59,12 @@ public class ProcessTitleGenerator {
      * @param separator string that should be used to connect tokens
      */
     public ProcessTitleGenerator(int limit, String separator) {
-        this.lengthLimit = limit;
-        this.separator = separator;
+        if (limit > 0) {
+            lengthLimit = limit;
+        }
+        if (separator != null) {
+            this.separator = separator;
+        }
     }
 
     /**
@@ -67,8 +75,12 @@ public class ProcessTitleGenerator {
      */
     public ProcessTitleGenerator(boolean useSignature, int limit, String separator) {
         this.useSignature = useSignature;
-        this.lengthLimit = limit;
-        this.separator = separator;
+        if (limit > 0) {
+            lengthLimit = limit;
+        }
+        if (separator != null) {
+            this.separator = separator;
+        }
     }
 
     /**
