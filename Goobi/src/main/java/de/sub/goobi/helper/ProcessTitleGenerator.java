@@ -22,23 +22,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.sub.goobi.helper.enums.ManipulationType;
+import lombok.Data;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class ProcessTitleGenerator {
+    @Getter
     private int lengthLimit = 10;
+    @Getter
     private boolean isAfterLastAddable = true;
+    @Getter
     private boolean isBeforeFirstAddable = true;
-    private List<Token> tokens = new ArrayList<>();
-
+    @Getter
+    private List<Token> bodyTokens = new ArrayList<>();
+    @Getter
     private boolean useSignature = false;
-
+    @Getter
     private Token headToken = null;
+    @Getter
     private Token tailToken = null;
-
+    @Getter
     private String uuid = null;
+    @Getter
+    private String separator = "_";
 
     private String alternativeTitle = null;
-
-    private String separator = "_";
 
     /**
      * use default settings or use setters to initialize individually
@@ -141,9 +150,14 @@ public class ProcessTitleGenerator {
         // 1. there should not be more than one AFTER_LAST_SEPARATOR or BEFORE_FIRST_SEPARATOR
         // 2. for cases NORMAL, CAMEL_CASE, CAMEL_CASE_LENGTH_LIMITED, all umlauts should be replaced 
         // 3. for cases NORMAL, CAMEL_CASE, CAMEL_CASE_LENGTH_LIMITED, all special and space chars should be replaced with _ for the moment
+        if (value == null) {
+            log.debug("token value can not be null");
+            return false;
+        }
 
         // check addability
         if (!checkAddability(type)) {
+            log.debug("another token of type " + type + " is not addable");
             return false;
         }
 
@@ -159,7 +173,7 @@ public class ProcessTitleGenerator {
             isBeforeFirstAddable = false;
             headToken = token;
         } else {
-            tokens.add(token);
+            bodyTokens.add(token);
         }
 
         return true;
@@ -304,6 +318,10 @@ public class ProcessTitleGenerator {
      * @return generated title as a string
      */
     public String generateTitle(String separator) {
+        if (separator == null) {
+            log.debug("separator can not be null");
+            separator = this.separator;
+        }
         String titleBody = generateTitleBody(separator);
 
         String simplifiedHead = "";
@@ -327,7 +345,7 @@ public class ProcessTitleGenerator {
     public String getAlternativeTitle() {
         if (alternativeTitle == null) {
             // title is not generated yet, report this
-            return "";
+            log.debug("there is no alternative title available, since the title itself is not generated yet");
         }
 
         return alternativeTitle;
@@ -342,7 +360,7 @@ public class ProcessTitleGenerator {
     private String generateTitleBody(String separator) {
         StringBuilder sb = new StringBuilder();
         // add values of all body tokens
-        for (Token token : tokens) {
+        for (Token token : bodyTokens) {
             if (sb.length() > 0) {
                 sb.append(separator);
             }
@@ -360,17 +378,14 @@ public class ProcessTitleGenerator {
         return sb.toString();
     }
 
-    private class Token {
+    @Data
+    protected class Token {
         private String value;
         private ManipulationType type;
 
         public Token(String value, ManipulationType type) {
             this.value = value;
             this.type = type;
-        }
-
-        public String getValue() {
-            return value;
         }
     }
 }
