@@ -372,12 +372,12 @@
 
                                         </td>
 
-                                        <td>
+                                        <td class="gw-width8">
                                             <!-- delete button, removed for some folder -->
                                             <button
                                                 jsf:id="deleteFile2"
                                                 jsf:rendered="#{bean.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
-                                                class="button-no-style btn-mini pull-right margin-right-10"
+                                                class="btn btn-blank"
                                                 style="color: #333;"
                                                 jsf:action="#{bean.deleteFile(entry)}"
                                                 title="#{msgs.deleteFile}">
@@ -386,7 +386,7 @@
                                             <!-- download button -->
                                             <button
                                                 jsf:id="downloadFile"
-                                                class="button-no-style btn-mini pull-right margin-right-10"
+                                                class="btn btn-blank"
                                                 style="color: #333;"
                                                 jsf:action="#{bean.downloadFile(entry)}"
                                                 title="#{msgs.downloadFile}">
