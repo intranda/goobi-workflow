@@ -271,6 +271,7 @@
 									<!-- EXPORT BUTTON -->
 									<div
 										jsf:rel="tooltip"
+                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}"
 										title="#{!ProzessverwaltungForm.myProzess.containsExportStep ? msgs.noExportTask : ''}"
 										class="btn d-flex align-items-center btn--title-action"
 										style="padding: 0;">
@@ -282,8 +283,7 @@
 											class="btn btn-mini font-light"
 											title="#{msgs.exportDMS}"
 											jsf:rel="tooltip"
-											jsf:disabled="#{!ProzessverwaltungForm.myProzess.containsExportStep}"
-											jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
+											jsf:disabled="#{!ProzessverwaltungForm.myProzess.containsExportStep}">
 											<i class="fa fa-globe"></i>
 											<f:passThroughAttribute
 												name="data-toggle"
