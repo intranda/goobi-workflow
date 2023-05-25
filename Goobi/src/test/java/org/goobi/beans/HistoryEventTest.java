@@ -47,6 +47,18 @@ public class HistoryEventTest extends AbstractTest {
         HistoryEventTest.event3 = new HistoryEvent(now, 2, "different event", HistoryEventType.stepInWork, new Process());
     }
 
+    /**
+     * This unit test tests whether the setter and getter for for HistoryEventType work. The HistoryEventType is internally stored via its integer
+     * value, not directly as enum item.
+     */
+    @Test
+    public void testHistoryEventType() {
+        HistoryEvent event = new HistoryEvent(new Date(), 1, "test event", HistoryEventType.stepOpen, new Process());
+        assertEquals(event.getHistoryType(), HistoryEventType.stepOpen);
+        event.setHistoryType(HistoryEventType.stepLocked);
+        assertEquals(event.getHistoryType(), HistoryEventType.stepLocked);
+    }
+
     @Test
     public void testHashCode() {
 
