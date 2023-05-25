@@ -206,12 +206,12 @@ public class ProcessTitleGenerator {
     private String modifyValueGivenType(String value, ManipulationType type) {
         String result = value;
 
-        if (type == ManipulationType.AFTER_LAST_SEPARATOR) {
-            return result;
-        }
-
         if (type == ManipulationType.BEFORE_FIRST_SEPARATOR) {
             return getSimplifiedHead(result);
+        }
+
+        if (type == ManipulationType.AFTER_LAST_SEPARATOR) {
+            return getSimplifiedTail(result);
         }
 
         result = replaceUmlauts(result);
@@ -246,6 +246,16 @@ public class ProcessTitleGenerator {
         uuid = value;
         // simplified uuid = substring of uuid following the last -
         return value.substring(value.lastIndexOf("-") + 1);
+    }
+
+    /**
+     * simplify the value of the tail token
+     * 
+     * @param value value of the tail token that should be modified
+     * @return simplified value of the tail token
+     */
+    private String getSimplifiedTail(String value) {
+        return replaceSpecialAndSpaceChars(value);
     }
 
     /**
@@ -319,8 +329,8 @@ public class ProcessTitleGenerator {
      */
     public String generateTitle(String separator) {
         if (separator == null) {
-            log.debug("separator can not be null");
-            separator = this.separator;
+            log.debug("separator can not be null, the default method will be used instead");
+            return generateTitle();
         }
         String titleBody = generateTitleBody(separator);
 
