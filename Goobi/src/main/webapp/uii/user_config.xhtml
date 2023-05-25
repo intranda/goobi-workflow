@@ -58,8 +58,7 @@
                             title="#{myPageTitle}"
                             icon="fa-cog">
                             <ul class="tabs">
-                                <li
-                                    class="tab #{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6' and NavigationForm.uiStatus.user_config ne 'tab7'?'active':''}">
+                                <li class="tab #{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6' and NavigationForm.uiStatus.user_config ne 'tab7'?'active':''}">
                                     <h:commandLink
                                         id="tab1"
                                         action="#{NavigationForm.Reload}"
@@ -72,7 +71,8 @@
                                             execute=":myform" />
                                     </h:commandLink>
                                 </li>
-                                <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab2'?'active':''}"><h:commandLink
+                                <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab2'?'active':''}">
+                                    <h:commandLink
                                         id="tab2"
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.user_config_display_general}">
@@ -82,8 +82,10 @@
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink></li>
-                                <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab3'?'active':''}"><h:commandLink
+                                    </h:commandLink>
+                                </li>
+                                <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab3'?'active':''}">
+                                    <h:commandLink
                                         id="tab3"
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.user_config_display_processes}">
@@ -93,8 +95,10 @@
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink></li>
-                                <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab4'?'active':''}"><h:commandLink
+                                    </h:commandLink>
+                                </li>
+                                <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab4'?'active':''}">
+                                    <h:commandLink
                                         id="tab4"
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.user_config_display_tasks}">
@@ -104,8 +108,10 @@
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink></li>
-                                <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab5'?'active':''}"><h:commandLink
+                                    </h:commandLink>
+                                </li>
+                                <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab5'?'active':''}">
+                                    <h:commandLink
                                         id="tab5"
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.user_config_metseditor}">
@@ -115,9 +121,11 @@
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink></li>
+                                    </h:commandLink>
+                                </li>
                                 <h:panelGroup rendered="#{NavigationForm.emailActive}">
-                                    <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab6'?'active':''}"><h:commandLink
+                                    <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab6'?'active':''}">
+                                        <h:commandLink
                                             id="tab6"
                                             action="#{NavigationForm.Reload}"
                                             value="#{msgs.mail_notification_user_config_mail}">
@@ -127,11 +135,13 @@
                                             <f:ajax
                                                 render=":myform"
                                                 execute=":myform" />
-                                        </h:commandLink></li>
+                                        </h:commandLink>
+                                    </li>
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{LoginForm.hasRole('Admin_ApiKey')}">
-                                    <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab7'?'active':''}"><h:commandLink
+                                    <li class="tab #{NavigationForm.uiStatus.user_config eq 'tab7'?'active':''}">
+                                        <h:commandLink
                                             id="tab7"
                                             action="#{NavigationForm.Reload}"
                                             value="#{msgs.user_config_api_token}">
@@ -141,7 +151,8 @@
                                             <f:ajax
                                                 render=":myform"
                                                 execute=":myform" />
-                                        </h:commandLink></li>
+                                        </h:commandLink>
+                                    </li>
                                 </h:panelGroup>
                             </ul>
                         </intranda:boxTitle>
@@ -149,8 +160,7 @@
                         <div class="tab-content">
 
                             <!-- TAB 1 -->
-                            <h:panelGroup
-                                rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6' and NavigationForm.uiStatus.user_config ne 'tab7'}">
+                            <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6' and NavigationForm.uiStatus.user_config ne 'tab7'}">
                                 <intranda:formInputText
                                     label="#{msgs.vorname}"
                                     id="firstname"
@@ -160,9 +170,8 @@
                                     readonly="false" />
 
                                 <script>
-																																	gwFocusOnLoad
-																																			.init('[id*="firstname"]')
-																																</script>
+                                                                                                                                    gwFocusOnLoad.init( '[id*="firstname"]' )
+                                                                                                                                </script>
 
                                 <intranda:formInputText
                                     label="#{msgs.nachname}"
@@ -358,9 +367,8 @@
                                     selectItems="#{LoginForm.myBenutzer.availableUiModes}" />
 
                                 <script>
-																																	gwFocusOnLoad
-																																			.init('[id*="sessionTimeout"]');
-																																</script>
+                                                                                                                                    gwFocusOnLoad.init( '[id*="sessionTimeout"]' );
+                                                                                                                                </script>
                             </h:panelGroup>
 
 
@@ -518,9 +526,9 @@
                                 </div>
 
                                 <script>
-																																	gwFocusOnLoad
-																																			.init('[id*="displayDeactivatedProjects"]')
-																																</script>
+                                                                                                                                    gwFocusOnLoad
+                                                                                                                                            .init( '[id*="displayDeactivatedProjects"]' )
+                                                                                                                                </script>
 
                             </h:panelGroup>
 
@@ -535,9 +543,9 @@
                                     name="hideCorrectionTasksName" />
 
                                 <script>
-																																	gwFocusOnLoad
-																																			.init('[id*="hideCorrectionTasks"]')
-																																</script>
+                                                                                                                                    gwFocusOnLoad
+                                                                                                                                            .init( '[id*="hideCorrectionTasks"]' )
+                                                                                                                                </script>
 
                                 <intranda:formInputCheckBox
                                     id="displayOnlySelectedTasks"
@@ -620,9 +628,9 @@
                                 <!-- <intranda:formInputText label="#{msgs.metadataSaveTime}" field="#{LoginForm.myBenutzer.metsEditorTime}" help="#{msgs.helpMetadataSaveTime}" name="metadataSaveTime" /> -->
 
                                 <script>
-																																	gwFocusOnLoad
-																																			.init('[id*="spracheFuerMetadaten"]')
-																																</script>
+                                                                                                                                    gwFocusOnLoad
+                                                                                                                                            .init( '[id*="spracheFuerMetadaten"]' )
+                                                                                                                                </script>
 
                                 <div class="row">
                                     <div class="col-12 col-md-3">
@@ -707,29 +715,32 @@
                                 <ui:repeat
                                     var="token"
                                     value="#{LoginForm.myBenutzer.apiToken}">
-                                    <div class="row" style="border-top: 1px solid var(--clr-neutral-300);">
+                                    <div
+                                        class="row"
+                                        style="border-top: 1px solid var(--clr-neutral-300);"
+                                        jsf:rendered="#{token.tokenId != null}">
                                         <div class="col-12 col-md-3">
                                             <intranda:formLabel
-                                                label="#{msgs.user_config_tokenname}"
+                                                label="#{msgs.user_config_token_description}"
                                                 labelFor="tokenName"
                                                 labelRequired="false" />
                                         </div>
                                         <div class="col-12 col-md-8">
                                             <h:inputText
-                                                id="tokenName"
+                                                id="tokenDescription"
                                                 styleClass="form-control form__input #{cc.attrs.fieldStyle}"
-                                                value="#{token.encodedTokenName}"
+                                                value="#{token.description}"
                                                 required="false"
                                                 readonly="true">
                                             </h:inputText>
                                             <h:message
-                                                for="tokenName"
+                                                for="tokenDescription"
                                                 showDetail="true"
                                                 styleClass="help-inline text-danger" />
                                             <!-- Help messages, inline + warning -->
                                             <intranda:formHelp
-                                                content="#{msgs.user_config_tokenname}"
-                                                msgFor="tokenName" />
+                                                content="#{msgs.help_user_config_token_description}"
+                                                msgFor="tokenDescription" />
                                         </div>
                                         <div class="col-12 col-md-1">
                                             <button
@@ -744,20 +755,71 @@
                                                 <i class="fa fa-trash-o" />
                                             </button>
                                         </div>
-                                    </div>
 
+                                        <div class="col-12 col-md-3">allowed methods</div>
+                                        <div class="col-12 col-md-9">
+                                            <ui:repeat
+                                                var="method"
+                                                value="#{token.methods}">
+                                                <div jsf:rendered="#{method.selected}" style="width: 100%">
+                                                    <h:outputText 
+                                                        style="margin-left: 10px; display:block"
+                                                        value="#{method.description} (#{method.methodType} request to #{method.url})" />
+                                                </div>
+                                            </ui:repeat>
+                                        </div>
+                                    </div>
+                                </ui:repeat>
+
+                                <!-- new token -->
+                                <ui:fragment rendered="#{LoginForm.myBenutzer.token != null and LoginForm.myBenutzer.token.tokenId == null}">
+                               	    <br />
+                                    <div
+                                        class="row"
+                                        style="border-top: 1px solid var(--clr-neutral-300);">
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{msgs.user_config_tokenname}"
+                                                labelFor="tokenName"
+                                                labelRequired="false" />
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <h:inputText
+                                                id="tokenName"
+                                                styleClass="form-control form__input"
+                                                value="#{LoginForm.myBenutzer.token.encodedTokenName}"
+                                                required="false"
+                                                readonly="true">
+                                            </h:inputText>
+                                            <h:outputText styleClass="help-inline text-danger" value="#{msgs.user_config_tokennameWarning}" />
+                                        </div>
+                                        <div class="col-12 col-md-1">
+                                            <button
+                                                style="float: right"
+                                                jsf:id="deleteToken"
+                                                class="btn btn-danger"
+                                                title="#{msgs.loeschen}"
+                                                jsf:action="#{LoginForm.myBenutzer.deleteToken}">
+                                                <f:setPropertyActionListener
+                                                    target="#{LoginForm.myBenutzer.token}"
+                                                    value="#{LoginForm.myBenutzer.token}" />
+                                                <i class="fa fa-trash-o" />
+                                            </button>
+                                        </div>
+
+                                    </div>
                                     <intranda:formInputText
                                         label="#{msgs.user_config_token_description}"
                                         id="tokenDescrption"
-                                        field="#{token.description}"
+                                        field="#{LoginForm.myBenutzer.token.description}"
                                         help="#{msgs.help_user_config_token_description}"
                                         name="tokenDescrption"
                                         readonly="false"
-                                        required="false" />
+                                        required="true" />
 
                                     <ui:repeat
                                         var="method"
-                                        value="#{token.methods}">
+                                        value="#{LoginForm.myBenutzer.token.methods}">
                                         <div class="row">
                                             <div
                                                 class="col-12 col-md-3"
@@ -771,7 +833,7 @@
                                                     id="selectMethod"
                                                     styleClass="form-check-input"
                                                     value="#{method.selected}"
-                                                    disabled="#{token.tokenId != null}"
+                                                    disabled="#{LoginForm.myBenutzer.token.tokenId != null}"
                                                     tabindex="0"
                                                     pt:aria-label="#{msgs.user_config_methodSelection}" />
                                                 <h:outputText
@@ -784,10 +846,7 @@
                                         </div>
                                     </ui:repeat>
 
-
-                                <br />
-
-                                </ui:repeat>
+                                </ui:fragment>
 
 
                                 <!-- generate new api token -->
@@ -797,7 +856,8 @@
                                         class="btn btn-primary-400 me-auto"
                                         jsf:action="#{LoginForm.myBenutzer.createNewToken}"
                                         jsf:immediate="true">
-                                        <i class="fa fa-plus"></i> <span>#{msgs.user_config_newApiToken}</span>
+                                        <i class="fa fa-plus"></i>
+                                        <span>#{msgs.user_config_newApiToken}</span>
 
                                     </button>
                                 </div>
@@ -817,7 +877,9 @@
                                 class="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
                                 jsf:id="absenden"
                                 jsf:action="#{LoginForm.BenutzerkonfigurationSpeichern}">
-                                <i class="fa fa-save"></i> <span> <h:outputText value="#{msgs.speichern}" />
+                                <i class="fa fa-save"></i>
+                                <span>
+                                    <h:outputText value="#{msgs.speichern}" />
                                 </span>
                             </button>
                         </div>

@@ -297,6 +297,11 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
 
     @Getter
     @Setter
+    private AuthenticationToken token;
+
+
+    @Getter
+    @Setter
     // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
     // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from benutzer'
     private Map<String, String> additionalData = new HashMap<>();
@@ -395,13 +400,13 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         if (inPasswort == null || inPasswort.length() == 0) {
             return false;
         } else /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
-        if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
-            LdapAuthentication myldap = new LdapAuthentication();
-            return myldap.isUserPasswordCorrect(this, inPasswort);
-        } else {
-            String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
-            return this.encryptedPassword.equals(hashedPasswordBase64);
-        }
+            if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
+                LdapAuthentication myldap = new LdapAuthentication();
+                return myldap.isUserPasswordCorrect(this, inPasswort);
+            } else {
+                String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
+                return this.encryptedPassword.equals(hashedPasswordBase64);
+            }
     }
 
     public String getPasswordHash(String plainTextPassword) {
@@ -767,16 +772,11 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     }
 
     public void createNewToken() {
-        AuthenticationToken token = new AuthenticationToken(UUID.randomUUID().toString(), id);
+        token = new AuthenticationToken(UUID.randomUUID().toString(), id);
         apiToken.add(token);
     }
 
-    @Getter
-    @Setter
-    private AuthenticationToken token;
-
     public void deleteToken() {
-        System.out.println(token.getTokenId());
         apiToken.remove(token);
         UserManager.deleteApiToken(token);
         token = null;
