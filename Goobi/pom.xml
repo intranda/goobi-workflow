@@ -1320,7 +1320,7 @@
         <dependency>
             <groupId>de.intranda.goobi</groupId>
             <artifactId>alto</artifactId>
-            <version>1.5.9</version>
+            <version>1.5.10</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
