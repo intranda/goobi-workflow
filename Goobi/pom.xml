@@ -92,7 +92,7 @@
         <shiro.version>1.11.0</shiro.version>
         <activemq.version>5.18.1</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <aws.version>1.12.450</aws.version>
+        <aws.version>1.12.475</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
         <commons-csv.version>1.10.0</commons-csv.version>
