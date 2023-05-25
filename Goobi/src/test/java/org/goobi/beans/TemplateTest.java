@@ -58,6 +58,8 @@ public class TemplateTest extends AbstractTest {
         Templateproperty property1 = new Templateproperty();
         Templateproperty property2 = new Templateproperty();
         List<Templateproperty> propertyList = new ArrayList<>();
+        propertyList.add(property1);
+        propertyList.add(property2);
 
         // Create a template with property list
         Template template = new Template();
