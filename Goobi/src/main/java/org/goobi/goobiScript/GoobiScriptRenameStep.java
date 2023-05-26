@@ -25,6 +25,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,10 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoobiScript {
     // action:renameProcess search:415121809 replace:1659235871 type:contains|full
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String OLD_STEP_NAME = "oldStepName";
+    private static final String NEW_STEP_NAME = "newStepName";
+
     @Override
     public String getAction() {
         return "renameStep";
@@ -53,8 +58,8 @@ public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoob
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allow to rename an existing workflow step.");
-        addParameterToSampleCall(sb, "oldStepName", "Scanning", "Define the current title of the workflow step here.");
-        addParameterToSampleCall(sb, "newStepName", "Image upload", "Define how the title of the workflow step shall be from now on.");
+        addParameterToSampleCall(sb, OLD_STEP_NAME, "Scanning", "Define the current title of the workflow step here.");
+        addParameterToSampleCall(sb, NEW_STEP_NAME, "Image upload", "Define how the title of the workflow step shall be from now on.");
         return sb.toString();
     }
 
@@ -62,13 +67,15 @@ public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoob
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (StringUtils.isBlank(parameters.get("oldStepName"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "oldStepName");
-            return new ArrayList<>();
+        String missingParameter = "Missing parameter: ";
+        if (StringUtils.isBlank(parameters.get(OLD_STEP_NAME))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, OLD_STEP_NAME);
+            return Collections.emptyList();
         }
-        if (StringUtils.isBlank(parameters.get("newStepName"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "newStepName");
-            return new ArrayList<>();
+
+        if (StringUtils.isBlank(parameters.get(NEW_STEP_NAME))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, NEW_STEP_NAME);
+            return Collections.emptyList();
         }
 
         // add all valid commands to list
@@ -89,8 +96,8 @@ public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoob
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        String oldStepName = parameters.get("oldStepName");
-        String newStepName = parameters.get("newStepName");
+        String oldStepName = parameters.get(OLD_STEP_NAME);
+        String newStepName = parameters.get(NEW_STEP_NAME);
         for (Step step : p.getSchritte()) {
             if (step.getTitel().equalsIgnoreCase(oldStepName)) {
                 step.setTitel(newStepName);

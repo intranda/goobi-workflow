@@ -90,7 +90,7 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-    public static int getStepCount(String order, String filter, Institution institution) throws SQLException {
+    public static int getStepCount(String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM schritte ");
@@ -171,7 +171,7 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-    public static ResultSetHandler<List<Step>> resultSetToStepListHandler = new ResultSetHandler<List<Step>>() {
+    public static final ResultSetHandler<List<Step>> resultSetToStepListHandler = new ResultSetHandler<List<Step>>() {
 
         @Override
         public List<Step> handle(ResultSet rs) throws SQLException {
@@ -188,7 +188,7 @@ class StepMysqlHelper implements Serializable {
 
     };
 
-    public static ResultSetHandler<List<Step>> resultSetIdsToStepListHandler = new ResultSetHandler<List<Step>>() {
+    public static final ResultSetHandler<List<Step>> resultSetIdsToStepListHandler = new ResultSetHandler<List<Step>>() {
 
         @Override
         public List<Step> handle(ResultSet rs) throws SQLException {
@@ -267,7 +267,7 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-    public static ResultSetHandler<Step> resultSetToStepHandler = new ResultSetHandler<Step>() {
+    public static final ResultSetHandler<Step> resultSetToStepHandler = new ResultSetHandler<Step>() {
         @Override
         public Step handle(ResultSet rs) throws SQLException {
             try {
@@ -385,7 +385,7 @@ class StepMysqlHelper implements Serializable {
         return s;
     }
 
-    public static ResultSetHandler<List<ErrorProperty>> resultSetToErrorPropertyListHandler = new ResultSetHandler<List<ErrorProperty>>() {
+    public static final ResultSetHandler<List<ErrorProperty>> resultSetToErrorPropertyListHandler = new ResultSetHandler<List<ErrorProperty>>() {
 
         @Override
         public List<ErrorProperty> handle(ResultSet rs) throws SQLException {
@@ -422,7 +422,7 @@ class StepMysqlHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<Boolean>() {
+    public static final ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<Boolean>() {
 
         @Override
         public Boolean handle(ResultSet rs) throws SQLException {
@@ -818,7 +818,7 @@ class StepMysqlHelper implements Serializable {
     }
 
     public static void updateBatchList(List<Step> stepList) throws SQLException {
-        String tablename = "a" + String.valueOf(new Date().getTime());
+        String tablename = "a" + new Date().getTime();
         String tempTable = "CREATE TEMPORARY TABLE IF NOT EXISTS " + tablename + " LIKE schritte;";
 
         StringBuilder sql = new StringBuilder();
@@ -1167,7 +1167,7 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-    public static ResultSetHandler<List<String>> resultSetToScriptsHandler = new ResultSetHandler<List<String>>() {
+    public static final ResultSetHandler<List<String>> resultSetToScriptsHandler = new ResultSetHandler<List<String>>() {
         @Override
         public List<String> handle(ResultSet rs) throws SQLException {
             List<String> answer = new ArrayList<>();
@@ -1301,7 +1301,7 @@ class StepMysqlHelper implements Serializable {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             String sql = "UPDATE schritte SET paused=? WHERE schritteid = ?";
             QueryRunner run = new QueryRunner();
-            run.update(connection, sql, new Object[] { paused, stepId });
+            run.update(connection, sql, paused, stepId);
         }
     }
 

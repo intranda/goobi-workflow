@@ -85,7 +85,15 @@ import lombok.extern.log4j.Log4j2;
 @WindowScoped
 @Log4j2
 public class UserBean extends BasicBean implements Serializable {
+
     private static final long serialVersionUID = -3635859455444639614L;
+
+    private static final String RETURN_PAGE_ALL = "user_all";
+    private static final String RETURN_PAGE_EDIT = "user_edit";
+
+    private static final String ID = "ID";
+    private static final String TITLE = "titel";
+
     @Getter
     private User myClass = new User();
     @Getter
@@ -124,7 +132,7 @@ public class UserBean extends BasicBean implements Serializable {
 
         resetChangeLists();
 
-        return "user_edit";
+        return RETURN_PAGE_EDIT;
     }
 
     //set up the change recording lists
@@ -150,8 +158,8 @@ public class UserBean extends BasicBean implements Serializable {
         this.filter = null;
         this.sortField = "nachname, vorname";
         UserManager m = new UserManager();
-        paginator = new DatabasePaginator(sortField, getBasicFilter(), m, "user_all");
-        return "user_all";
+        paginator = new DatabasePaginator(sortField, getBasicFilter(), m, RETURN_PAGE_ALL);
+        return RETURN_PAGE_ALL;
     }
 
     public String FilterKeinMitZurueck() {
@@ -188,9 +196,9 @@ public class UserBean extends BasicBean implements Serializable {
             sqlQuery = sqlQueryBuilder.toString();
         }
 
-        this.paginator = new DatabasePaginator(sortField, sqlQuery, m, "user_all");
+        this.paginator = new DatabasePaginator(sortField, sqlQuery, m, RETURN_PAGE_ALL);
 
-        return "user_all";
+        return RETURN_PAGE_ALL;
     }
 
     public String Speichern() {
@@ -277,10 +285,10 @@ public class UserBean extends BasicBean implements Serializable {
 
         if (this.displayMode.equals("") && creatingUser) {
             this.displayMode = "tab2";
-            return "user_edit";
+            return RETURN_PAGE_EDIT;
         } else {
             this.displayMode = "";
-            return "user_all";
+            return RETURN_PAGE_ALL;
         }
     }
 
@@ -360,7 +368,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String AusGruppeLoeschen() {
-        int gruppenID = Integer.parseInt(Helper.getRequestParameter("ID"));
+        int gruppenID = Integer.parseInt(Helper.getRequestParameter(ID));
         String strResult = AusGruppeLoeschen(gruppenID);
 
         if (strResult != null) {
@@ -415,7 +423,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String ZuGruppeHinzufuegen() {
-        Integer gruppenID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        Integer gruppenID = Integer.valueOf(Helper.getRequestParameter(ID));
         String strResult = ZuGruppeHinzufuegen(gruppenID);
 
         if (strResult != null) {
@@ -443,7 +451,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String AusProjektLoeschen() {
-        int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
+        int projektID = Integer.parseInt(Helper.getRequestParameter(ID));
         String strResult = AusProjektLoeschen(projektID); // strResult == ""
 
         removedFromProjects.get(myClass.getId()).add(projektID);
@@ -468,7 +476,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String ZuProjektHinzufuegen() {
-        Integer projektID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        Integer projektID = Integer.valueOf(Helper.getRequestParameter(ID));
 
         String strResult = ZuProjektHinzufuegen(projektID);
 
@@ -526,25 +534,27 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public void validateAuthenticationSelection(FacesContext context, UIComponent component, Object value) {
-        FacesMessage message = null;
+        boolean valid = true;
         if (value == null) {
-            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value", Helper.getTranslation("javax.faces.component.UIInput.REQUIRED"));
-        } else {
+            valid = false;
+        }
+        if (valid) {
             Integer intValue = (Integer) value;
             if (intValue.intValue() == 0) {
-                message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value",
-                        Helper.getTranslation("javax.faces.component.UIInput.REQUIRED"));
+                valid = false;
             }
         }
-        if (message != null) {
-            throw new ValidatorException(message);
+        if (!valid) {
+            String message = Helper.getTranslation("javax.faces.component.UIInput.REQUIRED");
+            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value", message);
+            throw new ValidatorException(facesMessage);
         }
     }
 
     public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
         List<SelectItem> myLdapGruppen = new ArrayList<>();
         myLdapGruppen.add(new SelectItem(0, Helper.getTranslation("bitteAuswaehlen")));
-        List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null,
+        List<Ldap> temp = LdapManager.getLdaps(TITLE, null, null, null,
                 Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
         for (Ldap gru : temp) {
             myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));
@@ -585,50 +595,61 @@ public class UserBean extends BasicBean implements Serializable {
 
     /**
      * This method generates a new (random) password for a certain user. It can be called by a button in the user list (visible only for
-     * administrators). The administrator will be asked a last time before this method generates and resets the password. When he/she/it confirms, the
-     * password and salt are generated and reset. At last the new password is shown on screen.
+     * administrators). The administrator will be asked a last time before this method generates and resets the password. If the administrator
+     * confirms, the password and salt are generated and reset. At last the new password is shown in the success message bar.
      * 
-     * @return The next page
+     * @return The user list page
      */
     public String createNewRandomPasswordForUser() {
+        // This boolean flag is set to true if the user password can be reset. If at least one of the criteria is not fulfilled, it is set to false
+        // and the password is not reset
+        boolean passwordChangeable = true;
+
         // Check for administrator rules
-        if (!Helper.getCurrentUser().getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString())) {
+        boolean userIsAdmin = Helper.getCurrentUser().getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString());
+        if (!userIsAdmin) {
             Helper.setFehlerMeldung("You are not allowed to change the user's password!");
-            return "user_all";
+            passwordChangeable = false;
         }
 
         // Get and create user
-        Integer loginID = Integer.valueOf(Helper.getRequestParameter("ID"));
-        User userToResetPassword;
-        try {
-            userToResetPassword = UserManager.getUserById(loginID);
-        } catch (DAOException daoe) {
-            Helper.setFehlerMeldung("could not read database", daoe.getMessage());
-            return "user_all";
+        User userToResetPassword = null;
+        if (passwordChangeable) {
+            try {
+                Integer loginID = Integer.valueOf(Helper.getRequestParameter(ID));
+                userToResetPassword = UserManager.getUserById(loginID);
+            } catch (DAOException daoe) {
+                Helper.setFehlerMeldung("Could not read database", daoe.getMessage());
+                passwordChangeable = false;
+            }
+        }
+
+        if (userToResetPassword == null) {
+            Helper.setFehlerMeldung("The selected user account is invalid in the database.");
+            passwordChangeable = false;
         }
 
         // Create the random password and save it
-        if (userToResetPassword != null) {
+        if (passwordChangeable) {
             try {
-
                 // The custom minimum password is >= 1. The random password should have a length of >= 11.
                 int length = ConfigurationHelper.getInstance().getMinimumPasswordLength() + 10;
                 String password = createRandomPassword(length);
 
-                if (AuthenticationType.LDAP.equals(userToResetPassword.getLdapGruppe().getAuthenticationTypeEnum())
-                        && !userToResetPassword.getLdapGruppe().isReadonly()) {
+                AuthenticationType authentication = userToResetPassword.getLdapGruppe().getAuthenticationTypeEnum();
+                if (AuthenticationType.LDAP.equals(authentication) && !userToResetPassword.getLdapGruppe().isReadonly()) {
 
                     LdapAuthentication myLdap = new LdapAuthentication();
                     myLdap.changeUserPassword(userToResetPassword, null, password);
                 }
                 saltAndSaveUserPassword(userToResetPassword, password);
-                // Show password on screen
+                // Show password in message box
                 Helper.setMeldung("Password of user \"" + userToResetPassword.getNachVorname() + "\" was set to: " + password);
             } catch (NoSuchAlgorithmException e) {
-                Helper.setFehlerMeldung("ldap errror", e.getMessage());
+                Helper.setFehlerMeldung("LDAP error", e.getMessage());
             }
         }
-        return "user_all";
+        return RETURN_PAGE_ALL;
     }
 
     /**
@@ -687,7 +708,7 @@ public class UserBean extends BasicBean implements Serializable {
                     + "benutzergruppenmitgliedschaft where benutzergruppenmitgliedschaft.BenutzerID = " + myClass.getId() + ")";
         }
         UsergroupManager m = new UsergroupManager();
-        usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
+        usergroupPaginator = new DatabasePaginator(TITLE, filter, m, "");
 
         unsubscribedGroupsExist = usergroupPaginator.getTotalResults() > 0;
     }
@@ -699,7 +720,7 @@ public class UserBean extends BasicBean implements Serializable {
                     + myClass.getId() + ")";
         }
         ProjectManager m = new ProjectManager();
-        projectPaginator = new DatabasePaginator("titel", filter, m, "");
+        projectPaginator = new DatabasePaginator(TITLE, filter, m, "");
 
         unsubscribedProjectsExist = projectPaginator.getTotalResults() > 0;
     }
@@ -761,6 +782,6 @@ public class UserBean extends BasicBean implements Serializable {
         }
 
         resetChangeLists();
-        return "user_all";
+        return RETURN_PAGE_ALL;
     }
 }

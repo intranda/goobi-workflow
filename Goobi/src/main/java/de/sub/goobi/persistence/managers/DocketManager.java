@@ -86,7 +86,7 @@ public class DocketManager implements IManager, Serializable {
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = DocketMysqlHelper.getDocketCount(order, filter, institution);
+            num = DocketMysqlHelper.getDocketCount(filter, institution);
         } catch (SQLException e) {
             log.error("error while getting Docket hit size", e);
             throw new DAOException(e);

@@ -67,13 +67,13 @@ public class TreeNode {
 
     public List<HashMap<String, Object>> getChildrenAsList() {
         List<HashMap<String, Object>> nodes = new ArrayList<>();
-        getChildrenAsListMitStrichen(nodes, 0, this, true, true, new ArrayList<Boolean>());
+        getChildrenAsListMitStrichen(nodes, 0, this, true, true, new ArrayList<>());
         return nodes;
     }
 
     public List<HashMap<String, Object>> getChildrenAsListAlle() {
         List<HashMap<String, Object>> nodes = new ArrayList<>();
-        getChildrenAsListAlle(nodes, 0, this, true, true, new ArrayList<Boolean>());
+        getChildrenAsListAlle(nodes, 0, this, true, true, new ArrayList<>());
         return nodes;
     }
 
@@ -124,7 +124,7 @@ public class TreeNode {
 
         if (node.getHasChildren() && node.expanded) {
             for (Iterator<TreeNode> iterator = node.getChildren().iterator(); iterator.hasNext();) {
-                TreeNode child = (TreeNode) iterator.next();
+                TreeNode child = iterator.next();
                 getChildrenAsListMitStrichen(nodes, niveau + 1, child, !iterator.hasNext(), isLast, lines);
             }
         }
@@ -140,7 +140,7 @@ public class TreeNode {
 
         if (node.getHasChildren()) {
             for (Iterator<TreeNode> iterator = node.getChildren().iterator(); iterator.hasNext();) {
-                TreeNode child = (TreeNode) iterator.next();
+                TreeNode child = iterator.next();
                 getChildrenAsListAlle(nodes, niveau + 1, child, !iterator.hasNext(), isLast, lines);
             }
         }

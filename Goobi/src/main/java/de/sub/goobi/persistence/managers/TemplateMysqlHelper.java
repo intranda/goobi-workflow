@@ -55,7 +55,7 @@ class TemplateMysqlHelper implements Serializable {
 
     }
 
-    public static ResultSetHandler<List<Template>> resultSetToTemplateListHandler = new ResultSetHandler<List<Template>>() {
+    public static final ResultSetHandler<List<Template>> resultSetToTemplateListHandler = new ResultSetHandler<List<Template>>() {
         @Override
         public List<Template> handle(ResultSet rs) throws SQLException {
             List<Template> answer = new ArrayList<>();
@@ -79,7 +79,7 @@ class TemplateMysqlHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Template> resultSetToTemplateHandler = new ResultSetHandler<Template>() {
+    public static final ResultSetHandler<Template> resultSetToTemplateHandler = new ResultSetHandler<Template>() {
         @Override
         public Template handle(ResultSet rs) throws SQLException {
             try {

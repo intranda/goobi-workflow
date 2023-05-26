@@ -35,9 +35,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.jdom2.Document;
@@ -62,13 +60,9 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class SRUClient {
-    /** Logging **/
 
     /** A SAX Reader for XML parsing **/
     private SAXBuilder saxReader;
-
-    /** Namespaces for XML parsing **/
-    private Map<String, String> namespaces;
 
     private String baseUrl = "";
 
@@ -161,14 +155,18 @@ public class SRUClient {
         if (packing != null) {
             responsePacking = packing;
         }
-        //        http://sru.gbv.de/gvk?version=1.1&recordSchema=picaxml&operation=searchRetrieve&query=pica.ppn%3D380872331&maximumRecords=10
-        //        http://sru.gbv.de/gvk?version=1.1&recordSchema=picaxml&operation=searchRetrieve&query=pica.ppn%3D380872331
+
+        // Example URLs:
+        //   http://sru.gbv.de/gvk?version=1.1&recordSchema=picaxml&operation=searchRetrieve&query=pica.ppn%3D380872331&maximumRecords=10
+        //   http://sru.gbv.de/gvk?version=1.1&recordSchema=picaxml&operation=searchRetrieve&query=pica.ppn%3D380872331
+
+        // Example namespace:
+        //   namespace: srw
+        //   URL: http://www.loc.gov/zing/srw/
         saxInit();
     }
 
     private void saxInit() {
-        namespaces = new HashMap<>();
-        namespaces.put("srw", "http://www.loc.gov/zing/srw/");
         saxReader = XmlTools.getSAXBuilder();
         saxReader.setXMLReaderFactory(XMLReaders.NONVALIDATING);
     }

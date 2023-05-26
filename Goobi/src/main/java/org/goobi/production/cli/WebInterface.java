@@ -233,12 +233,7 @@ public class WebInterface extends HttpServlet {
         }
     }
 
-    private static Comparator<IPlugin> pluginComparator = new Comparator<IPlugin>() {
-
-        @Override
-        public int compare(IPlugin o1, IPlugin o2) {
-
-            return o1.getTitle().compareTo(o2.getTitle());
-        }
+    private static Comparator<IPlugin> pluginComparator = (plugin1, plugin2) -> {
+        return plugin1.getTitle().compareTo(plugin2.getTitle());
     };
 }

@@ -89,15 +89,14 @@ public class ScriptThreadWithoutHibernate extends Thread {
         }
         if (!step.getProzess().isPauseAutomaticExecution()) {
 
-            if (this.step.getMessageQueue() == QueueType.EXTERNAL_QUEUE) {
+            QueueType queueType = this.step.getMessageQueue();
+            if (queueType == QueueType.EXTERNAL_QUEUE && !this.step.getAllScriptPaths().isEmpty() && StringUtils.isBlank(this.step.getStepPlugin())) {
                 // check if this is a script-step and has no additional plugin set
-                if (!this.step.getAllScriptPaths().isEmpty() && StringUtils.isBlank(this.step.getStepPlugin())) {
-                    // put this to the external queue and continue
-                    addStepScriptsToExternalQueue(this.step);
-                    return;
-                }
+                // put this to the external queue and continue
+                addStepScriptsToExternalQueue(this.step);
+                return;
             }
-            if (this.step.getMessageQueue() == QueueType.SLOW_QUEUE || this.step.getMessageQueue() == QueueType.FAST_QUEUE) {
+            if (queueType == QueueType.SLOW_QUEUE || queueType == QueueType.FAST_QUEUE) {
                 if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
                     this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                     String message = "Step '" + this.step.getTitel() + "' should be executed in a message queue but message queues are switched off.";
@@ -116,7 +115,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 t.setProcessId(this.step.getProzess().getId());
                 t.setStepName(this.step.getTitel());
                 try {
-                    TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
+                    TicketGenerator.submitInternalTicket(t, queueType, step.getTitel(), step.getProzess().getId());
                     step.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
                     step.setBearbeitungsbeginn(new Date());
                     StepManager.saveStep(step);
@@ -129,7 +128,9 @@ public class ScriptThreadWithoutHibernate extends Thread {
                     }
                     log.error("Error adding TaskTicket to queue: ", e);
 
-                    JournalEntry errorEntry = new JournalEntry(step.getProcessId(), new Date(), "automatic", LogType.ERROR, "Error reading metadata for step" + this.step.getTitel(), EntryType.PROCESS);
+                    String message = "Error reading metadata for step" + this.step.getTitel();
+                    JournalEntry errorEntry =
+                            new JournalEntry(step.getProcessId(), new Date(), "automatic", LogType.ERROR, message, EntryType.PROCESS);
 
                     JournalManager.saveJournalEntry(errorEntry);
                 }
@@ -243,7 +244,8 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 log.error(e1);
             }
             log.error("Error adding TaskTicket to queue: ", e);
-            JournalEntry errorEntry = new JournalEntry(step.getProcessId(), new Date(), "automatic", LogType.ERROR, "Error trying to put script-step to external queue: " + this.step.getTitel(), EntryType.PROCESS);
+            JournalEntry errorEntry = new JournalEntry(step.getProcessId(), new Date(), "automatic", LogType.ERROR,
+                    "Error trying to put script-step to external queue: " + this.step.getTitel(), EntryType.PROCESS);
             JournalManager.saveJournalEntry(errorEntry);
         }
     }

@@ -33,6 +33,7 @@ import javax.enterprise.inject.Alternative;
 
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
+import de.sub.goobi.helper.enums.HistoryEventType;
 import lombok.Setter;
 
 /**
@@ -125,16 +126,16 @@ public abstract class H2Generator implements IGenerator {
         // FROM NOW ON: timeFrom != null || timeTo != null //NOSONAR
 
         if (timeFrom != null && timeTo != null) {
-            return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '" + dateToSqlTimestamp(timeTo) + "'";
+            return " " + timeLimiter + " between '" + dateToSqlTimestamp(timeFrom) + "' and '" + dateToSqlTimestamp(timeTo) + "'";
         }
         // FROM NOW ON: ( timeFrom != null && timeTo == null ) OR ( timeFrom == null && timeTo != null ) //NOSONAR
 
         if (timeFrom != null) {
-            return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '9999-12-31 23:59:59.999'";
+            return " " + timeLimiter + " between '" + dateToSqlTimestamp(timeFrom) + "' and '9999-12-31 23:59:59.999'";
         }
         // FROM NOW ON: timeFrom == null && timeTo != null //NOSONAR
 
-        return " timeLimiter between '0000-01-01 00:00:00.000' and '" + dateToSqlTimestamp(timeTo) + "'";
+        return " " + timeLimiter + " between '0000-01-01 00:00:00.000' and '" + dateToSqlTimestamp(timeTo) + "'";
     }
 
     /*****************************************************************
@@ -186,6 +187,26 @@ public abstract class H2Generator implements IGenerator {
     public void setMyIdFieldName(String name) {
         myIdFieldName = name;
         conditionGeneration();
+    }
+
+    protected String createMinOrMaxStepOrder(HistoryEventType eventSelection, boolean max) {
+        String timeRestriction;
+        String innerWhereClause = null;
+        if (this.myIdsCondition != null) {
+            // adding ids to the where clause
+            innerWhereClause = "(history.type=" + eventSelection.getValue().toString() + ")  AND (" + this.myIdsCondition + ") ";
+        } else {
+            innerWhereClause = "(history.type=" + eventSelection.getValue().toString() + ") ";
+        }
+
+        timeRestriction = getWhereClauseForTimeFrame(this.myTimeFrom, this.myTimeTo, "history.date");
+
+        if (timeRestriction.length() > 0) {
+            innerWhereClause = innerWhereClause.concat(" AND " + timeRestriction);
+        }
+
+        String minOrMax = (max ? "max" : "min");
+        return "SELECT " + minOrMax + "(history.numericvalue) AS " + minOrMax + "Step FROM history WHERE " + innerWhereClause;
     }
 
 }

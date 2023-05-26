@@ -62,7 +62,7 @@ public class MD4 {
         int AA, BB, CC, DD; // NOSONAR
 
         for (j = 0; j < 16; j++) {
-            X[j] = M[j];
+            X[j] = M[j]; // NOSONAR
         }
 
         AA = A;

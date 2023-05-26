@@ -291,7 +291,7 @@ public class Helper implements Serializable, ServletContextListener {
      * @deprecated use addMessageToProcessJournal instead
      */
 
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
         addMessageToProcessJournal(processId, type, message);
     }
@@ -301,7 +301,7 @@ public class Helper implements Serializable, ServletContextListener {
      * 
      * @deprecated use addMessageToProcessJournal instead
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
         addMessageToProcessJournal(processId, type, message, username);
     }
@@ -343,11 +343,11 @@ public class Helper implements Serializable, ServletContextListener {
             msg = msg.replace("\n", "<br />");
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
         } else // wenn kein Kontext da ist, dann die Meldungen in Log
-            if (nurInfo) {
-                log.info(compoundMessage);
-            } else {
-                log.error(compoundMessage);
-            }
+        if (nurInfo) {
+            log.info(compoundMessage);
+        } else {
+            log.error(compoundMessage);
+        }
     }
 
     private static String getMessage(Locale language, String key) {
@@ -440,38 +440,33 @@ public class Helper implements Serializable, ServletContextListener {
         if (watcherMap.containsKey(path)) {
             return;
         }
-        Runnable watchRunnable = new Runnable() {
 
-            @Override
-            public void run() {
-                try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
-                    path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
-                    while (true) {
-                        final WatchKey wk = watchService.take();
-                        for (WatchEvent<?> event : wk.pollEvents()) {
-                            final Path changed = (Path) event.context();
-                            final String fileName = changed.getFileName().toString();
-                            if (fileName.startsWith("messages_")) {
-                                final String language = fileName.substring(9, 11);
-                                reloadNeededMap.put(language, true);
-                                log.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...",
-                                        changed.getFileName().toString(), language));
-                            }
-                        }
-                        if (!wk.reset()) {
-                            break;
+        Thread watcherThread = new Thread(() -> {
+            try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
+                path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+                while (true) {
+                    final WatchKey wk = watchService.take();
+                    for (WatchEvent<?> event : wk.pollEvents()) {
+                        final Path changed = (Path) event.context();
+                        final String fileName = changed.getFileName().toString();
+                        if (fileName.startsWith("messages_")) {
+                            final String language = fileName.substring(9, 11);
+                            reloadNeededMap.put(language, true);
+                            log.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...",
+                                    changed.getFileName().toString(), language));
                         }
                     }
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                } catch (InterruptedException e) {
-                    //Is thrown on tomcat destroy, does not need to be handled
-                    Thread.currentThread().interrupt();
+                    if (!wk.reset()) {
+                        break;
+                    }
                 }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            } catch (InterruptedException e) {
+                //Is thrown on tomcat destroy, does not need to be handled
+                Thread.currentThread().interrupt();
             }
-        };
-
-        Thread watcherThread = new Thread(watchRunnable);
+        });
         watcherMap.put(path, watcherThread);
         watcherThread.start();
     }
@@ -614,7 +609,14 @@ public class Helper implements Serializable, ServletContextListener {
         }
     }
 
-    @Deprecated
+    /**
+     * @deprecated Use other methods with different parameters instead
+     *
+     * @param dbTitel
+     * @param parameterList
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public static String getTranslation(String dbTitel, List<String> parameterList) {
         String[] values = parameterList.toArray(new String[parameterList.size()]);
         return getTranslation(dbTitel, values);

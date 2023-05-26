@@ -70,15 +70,18 @@ import lombok.extern.log4j.Log4j2;
 @SessionScoped
 @Log4j2
 public class LoginBean implements Serializable {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = -6036632431688990910L;
+
+    private static final String RETURN_PAGE = "index";
 
     /**
      * The login log prefix is used in each login log output line. This makes it possible to filter the whole log file for login log output lines.
      */
     public static final String LOGIN_LOG_PREFIX = "LOGIN PROCESS: ";
+
+    private static final String HTML_LOGIN_FIELD_ID = "login";
+    private static final String WRONG_LOGIN = "wrongLogin";
 
     @Getter
     @Setter
@@ -129,7 +132,7 @@ public class LoginBean implements Serializable {
             sessionBean.updateSessionUserName(mySession, null);
             mySession.invalidate();
         }
-        return "index";
+        return RETURN_PAGE;
     }
 
     public String logoutExternalUser() {
@@ -153,13 +156,14 @@ public class LoginBean implements Serializable {
         String applicationPath = ec.getApplicationContextPath();
         HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
         try {
+            String logoutPath = applicationPath + "/uii/logout.xhtml";
             if (config.isUseOIDCSSOLogout()) {
                 URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
-                builder.addParameter("post_logout_redirect_uri",
-                        hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
+                String protocolDomainPort = hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort();
+                builder.addParameter("post_logout_redirect_uri", protocolDomainPort + logoutPath);
                 ec.redirect(builder.build().toString());
             } else {
-                ec.redirect(applicationPath + "/uii/logout.xhtml");
+                ec.redirect(logoutPath);
             }
         } catch (URISyntaxException | IOException e) {
             // TODO Auto-generated catch block
@@ -176,7 +180,7 @@ public class LoginBean implements Serializable {
 
         // Check valid login information
         if (this.login == null || this.passwort == null) {
-            Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because login name or password was null.");
             return "";
         }
@@ -199,12 +203,12 @@ public class LoginBean implements Serializable {
         // check if user is allwed to log in
         if (user.getStatus() == User.UserStatus.REGISTERED) {
             // registration not finished, login not allowed
-            Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not activated.");
             return "";
         } else if (user.getStatus() == User.UserStatus.DELETED || user.getStatus() == User.UserStatus.INACTIVE) {
             // disabled, login not allowed
-            Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not active.");
             return "";
         }
@@ -213,7 +217,7 @@ public class LoginBean implements Serializable {
 
         // Check the password
         if (!user.istPasswortKorrekt(this.passwort)) {
-            Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongLogin"));
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. Password of user with login " + this.login + " was not correct.");
             return "";
         }
@@ -254,7 +258,7 @@ public class LoginBean implements Serializable {
                 log.debug(LoginBean.LOGIN_LOG_PREFIX + "Found user with login name " + login + " in database.");
                 return users.get(0);
             } else {
-                Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+                Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
                 log.error(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User with login name " + login + " does not exist.");
                 return null;
             }
@@ -274,7 +278,7 @@ public class LoginBean implements Serializable {
                 log.debug(LoginBean.LOGIN_LOG_PREFIX + "Found user with email " + email + " in database.");
                 return users.get(0);
             } else {
-                Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+                Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
                 log.error(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User with email " + email + " does not exist.");
                 return null;
             }
@@ -288,7 +292,7 @@ public class LoginBean implements Serializable {
 
     public String EinloggenAls() {
         if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
-            return "index";
+            return RETURN_PAGE;
         }
         this.myBenutzer = null;
         Integer loginID = Integer.valueOf(Helper.getRequestParameter("ID"));
@@ -302,11 +306,11 @@ public class LoginBean implements Serializable {
             Helper.setFehlerMeldung("could not read database", e.getMessage());
             return "";
         }
-        return "index";
+        return RETURN_PAGE;
     }
 
     public String PasswortAendernAbbrechen() {
-        return "index";
+        return RETURN_PAGE;
     }
 
     public String PasswortAendernSpeichern() {
@@ -422,11 +426,8 @@ public class LoginBean implements Serializable {
         }
     }
 
-    private static final DirectoryStream.Filter<Path> pngfilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            return (path.toString().endsWith(".png"));
-        }
+    private static final DirectoryStream.Filter<Path> pngfilter = path -> {
+        return (path.toString().endsWith(".png"));
     };
 
     public int getMaximaleBerechtigung() {
@@ -495,12 +496,12 @@ public class LoginBean implements Serializable {
 
     public void resetPassword() {
         if (StringUtils.isBlank(login)) {
-            Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
             return;
         }
 
         if (!SendMail.getInstance().getConfig().isEnableMail()) {
-            Helper.setFehlerMeldung("login", "", Helper.getTranslation("mailConfigurationDisabled"));
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation("mailConfigurationDisabled"));
             return;
         }
 
@@ -519,14 +520,14 @@ public class LoginBean implements Serializable {
 
         // check if mail address was filled
         if (StringUtils.isBlank(user.getEmail())) {
-            Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginNoEmail"));
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation("loginNoEmail"));
             return;
         }
 
         // check if value is an email
         String email = user.getEmail();
         if (!EmailValidator.getInstance().isValid(email)) {
-            Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginInvalidEmail"));
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation("loginInvalidEmail"));
             return;
         }
 

@@ -44,11 +44,7 @@ public class RestProcess {
     }
 
     public void addMetadata(String name, RestMetadata value) {
-        List<RestMetadata> values = this.metadata.get(name);
-        if (values == null) {
-            values = new ArrayList<>();
-            this.metadata.put(name, values);
-        }
-        values.add(value);
+        this.metadata.computeIfAbsent(name, key -> new ArrayList<>());
+        this.metadata.get(name).add(value);
     }
 }

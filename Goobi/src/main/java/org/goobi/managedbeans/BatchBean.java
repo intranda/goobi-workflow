@@ -71,6 +71,12 @@ public class BatchBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = 8234897225425856549L;
 
+    private static final String NO_BATCH_SELECTED = "noBatchSelected";
+    // TODO: Rename this key so that it does not use an 'Ḿ' with accent
+    private static final String TOO_MANY_BATCHES_SELECTED = "tooḾanyBatchesSelected";
+
+    private static final String DEFAULT_BATCH_NAME = "-batch-";
+
     private List<Process> currentProcesses = new ArrayList<>();
     private List<Process> selectedProcesses = new ArrayList<>();
     private List<Batch> currentBatches = new ArrayList<>();
@@ -259,7 +265,7 @@ public class BatchBean extends BasicBean implements Serializable {
         Institution inst = null;
         User user = Helper.getCurrentUser();
         if (user != null && !user.isSuperAdmin()) {
-            //             limit result to institution of current user
+            // limit result to institution of current user
             inst = user.getInstitution();
         }
 
@@ -271,49 +277,47 @@ public class BatchBean extends BasicBean implements Serializable {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         List<Process> docket = new ArrayList<>();
         if (this.selectedBatches.isEmpty()) {
-            Helper.setFehlerMeldung("noBatchSelected");
+            Helper.setFehlerMeldung(NO_BATCH_SELECTED);
         } else if (this.selectedBatches.size() == 1) {
             docket = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0,
                     getBatchMaxSize(), inst);
 
         } else {
-            Helper.setFehlerMeldung("tooManyBatchesSelected");
+            Helper.setFehlerMeldung(TOO_MANY_BATCHES_SELECTED);
         }
-        if (!docket.isEmpty()) {
-            if (!facesContext.getResponseComplete()) {
-                HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-                String fileName = "batch_docket" + ".pdf";
-                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-                String contentType = servletContext.getMimeType(fileName);
-                response.setContentType(contentType);
-                response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+        if (!docket.isEmpty() && !facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            String fileName = "batch_docket" + ".pdf";
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
-                try {
-                    ServletOutputStream out = response.getOutputStream();
-                    XsltToPdf ern = new XsltToPdf();
-                    ern.startExport(docket, out, xsltfile.toString());
-                    out.flush();
-                } catch (IOException e) {
-                    log.error("IOException while exporting run note", e);
-                }
-
-                facesContext.responseComplete();
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                XsltToPdf ern = new XsltToPdf();
+                ern.startExport(docket, out, xsltfile.toString());
+                out.flush();
+            } catch (IOException e) {
+                log.error("IOException while exporting run note", e);
             }
+
+            facesContext.responseComplete();
         }
         return "";
     }
 
     public void deleteBatch() {
         if (this.selectedBatches.isEmpty()) {
-            Helper.setFehlerMeldung("noBatchSelected");
+            Helper.setFehlerMeldung(NO_BATCH_SELECTED);
         } else if (this.selectedBatches.size() == 1) {
             if (this.selectedBatches.get(0) != null) {
                 ProcessManager.deleteBatch(selectedBatches.get(0));
             } else {
-                Helper.setFehlerMeldung("noBatchSelected");
+                Helper.setFehlerMeldung(NO_BATCH_SELECTED);
             }
         } else {
-            Helper.setFehlerMeldung("tooḾanyBatchesSelected");
+            Helper.setFehlerMeldung(TOO_MANY_BATCHES_SELECTED);
         }
         FilterAlleStart();
 
@@ -321,15 +325,15 @@ public class BatchBean extends BasicBean implements Serializable {
 
     public void addProcessesToBatch() {
         if (this.selectedBatches.isEmpty()) {
-            Helper.setFehlerMeldung("noBatchSelected");
+            Helper.setFehlerMeldung(NO_BATCH_SELECTED);
         } else if (this.selectedBatches.size() > 1) {
-            Helper.setFehlerMeldung("tooḾanyBatchesSelected");
+            Helper.setFehlerMeldung(TOO_MANY_BATCHES_SELECTED);
         } else {
             try {
                 Batch batch = this.selectedBatches.get(0);
                 for (Process p : this.selectedProcesses) {
                     p.setBatch(batch);
-                    JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG,
+                    JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), DEFAULT_BATCH_NAME, LogType.DEBUG,
                             "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
                     JournalManager.saveJournalEntry(logEntry);
 
@@ -337,7 +341,7 @@ public class BatchBean extends BasicBean implements Serializable {
                 }
 
             } catch (Exception e) {
-                Helper.setFehlerMeldung("noBatchSelected");
+                Helper.setFehlerMeldung(NO_BATCH_SELECTED);
             }
         }
         FilterAlleStart();
@@ -347,7 +351,7 @@ public class BatchBean extends BasicBean implements Serializable {
         for (Process p : this.selectedProcesses) {
             if (p.getBatch() != null) {
 
-                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG,
+                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), DEFAULT_BATCH_NAME, LogType.DEBUG,
                         "removed process from batch " + p.getBatch().getBatchId(), EntryType.PROCESS);
                 JournalManager.saveJournalEntry(logEntry);
 
@@ -367,7 +371,7 @@ public class BatchBean extends BasicBean implements Serializable {
                 p.setBatch(batch);
                 ProcessManager.saveProcessInformation(p);
 
-                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG,
+                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), DEFAULT_BATCH_NAME, LogType.DEBUG,
                         "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
                 JournalManager.saveJournalEntry(logEntry);
             }
@@ -380,24 +384,22 @@ public class BatchBean extends BasicBean implements Serializable {
         Institution inst = null;
         User user = Helper.getCurrentUser();
         if (user != null && !user.isSuperAdmin()) {
-            //             limit result to institution of current user
+            // limit result to institution of current user
             inst = user.getInstitution();
         }
         if (selectedBatches.isEmpty()) {
-            Helper.setFehlerMeldung("noBatchSelected");
-            return "";
+            Helper.setFehlerMeldung(NO_BATCH_SELECTED);
         } else if (this.selectedBatches.size() > 1) {
-            Helper.setFehlerMeldung("tooḾanyBatchesSelected");
-            return "";
+            Helper.setFehlerMeldung(TOO_MANY_BATCHES_SELECTED);
         } else if (this.selectedBatches.get(0) != null) {
-            List<Process> propertyBatch = ProcessManager.getProcesses(null,
-                    " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0, getBatchMaxSize(), inst);
+            String sql = " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId();
+            List<Process> propertyBatch = ProcessManager.getProcesses(null, sql, 0, getBatchMaxSize(), inst);
             this.batchHelper = new BatchProcessHelper(propertyBatch, selectedBatches.get(0));
             return "batch_edit";
         } else {
-            Helper.setFehlerMeldung("noBatchSelected");
-            return "";
+            Helper.setFehlerMeldung(NO_BATCH_SELECTED);
         }
+        return "";
     }
 
 }

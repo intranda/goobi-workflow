@@ -42,6 +42,26 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String PROPERTY = "property";
+    private static final String VALUE = "value";
+
+    private static final String PROPERTY_METADATA = "metadata";
+    private static final String PROPERTY_READ_IMAGES = "readimages";
+    private static final String PROPERTY_WRITE_IMAGES = "writeimages";
+    private static final String PROPERTY_VALIDATE = "validate";
+    private static final String PROPERTY_EXPORT_DMS = "exportdms";
+    private static final String PROPERTY_BATCH = "batch";
+    private static final String PROPERTY_AUTOMATIC = "automatic";
+    private static final String PROPERTY_IMPORT_FILE_UPLOAD = "importfileupload";
+    private static final String PROPERTY_ACCEPT_AND_CLOSE = "acceptandclose";
+    private static final String PROPERTY_ACCEPT_MODULE_AND_CLOSE = "acceptmoduleandclose";
+    private static final String PROPERTY_SCRIPT = "script";
+    private static final String PROPERTY_DELAY = "delay";
+    private static final String PROPERTY_UPDATE_METADATA_INDEX = "updatemetadataindex";
+    private static final String PROPERTY_GENERATE_DOCKET = "generatedocket";
+
     @Override
     public String getAction() {
         return "setStepProperty";
@@ -49,68 +69,97 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
 
     @Override
     public String getSampleCall() {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("`" + PROPERTY_METADATA + "` ");
+        buffer.append("`" + PROPERTY_READ_IMAGES + "` ");
+        buffer.append("`" + PROPERTY_WRITE_IMAGES + "` ");
+        buffer.append("`" + PROPERTY_VALIDATE + "` ");
+        buffer.append("`" + PROPERTY_EXPORT_DMS + "` ");
+        buffer.append("`" + PROPERTY_BATCH + "` ");
+        buffer.append("`" + PROPERTY_AUTOMATIC + "` ");
+        buffer.append("`" + PROPERTY_IMPORT_FILE_UPLOAD + "` \\n#");// newline because YAML line gets too long otherwise, '#' is the comment char
+        buffer.append("`" + PROPERTY_ACCEPT_AND_CLOSE + "` ");
+        buffer.append("`" + PROPERTY_ACCEPT_MODULE_AND_CLOSE + "` ");
+        buffer.append("`" + PROPERTY_SCRIPT + "` ");
+        buffer.append("`" + PROPERTY_DELAY + "` ");
+        buffer.append("`" + PROPERTY_UPDATE_METADATA_INDEX + "` ");
+        buffer.append("`" + PROPERTY_GENERATE_DOCKET + "`");
+
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb,
                 "This GoobiScript allow to configure a specific workflow step (e.g. to work as metadata edition step, to automatically run a plugin).");
-        addParameterToSampleCall(sb, "steptitle", "Metadata edition", "Title of the workflow step to configure");
-        addParameterToSampleCall(sb, "property", "metadata",
-                "Name of the property to be changed. Possible values are: \\n# `metadata` `readimages` `writeimages` `validate` `exportdms` `automatic` `batch` `importfileupload` \\n# `acceptandclose` `acceptmoduleandclose` `script` `delay` `updatemetadataindex` `generatedocket`");
-        addParameterToSampleCall(sb, "value", "true", "Value that the property shall have (e.g. `true` or `false`)");
+        addParameterToSampleCall(sb, STEPTITLE, "Metadata edition", "Title of the workflow step to configure");
+        addParameterToSampleCall(sb, PROPERTY, PROPERTY_METADATA,
+                "Name of the property to be changed. Possible values are: \\n# " + buffer.toString());
+        addParameterToSampleCall(sb, VALUE, "true", "Value that the property shall have (e.g. `true` or `false`)");
         return sb.toString();
     }
 
     @Override
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
-        String property;
-        String value;
 
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
          */
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
-        if (parameters.get("property") == null || parameters.get("property").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "property");
+        String property = parameters.get(PROPERTY);
+        if (property == null || property.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, PROPERTY);
             return new ArrayList<>();
         }
 
-        if (parameters.get("value") == null || parameters.get("value").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "value");
+        String value = parameters.get(VALUE);
+        if (value == null || value.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, VALUE);
             return new ArrayList<>();
         }
-
-        property = parameters.get("property");
-        value = parameters.get("value");
 
         switch (property) {
-            case "metadata":
-            case "readimages":
-            case "writeimages":
-            case "validate":
-            case "exportdms":
-            case "batch":
-            case "automatic":
-            case "importfileupload":
-            case "acceptandclose":
-            case "acceptmoduleandclose":
-            case "script":
-            case "delay":
-            case "updatemetadataindex":
-            case "generatedocket":
+            case PROPERTY_METADATA:
+            case PROPERTY_READ_IMAGES:
+            case PROPERTY_WRITE_IMAGES:
+            case PROPERTY_VALIDATE:
+            case PROPERTY_EXPORT_DMS:
+            case PROPERTY_BATCH:
+            case PROPERTY_AUTOMATIC:
+            case PROPERTY_IMPORT_FILE_UPLOAD:
+            case PROPERTY_ACCEPT_AND_CLOSE:
+            case PROPERTY_ACCEPT_MODULE_AND_CLOSE:
+            case PROPERTY_SCRIPT:
+            case PROPERTY_DELAY:
+            case PROPERTY_UPDATE_METADATA_INDEX:
+            case PROPERTY_GENERATE_DOCKET:
                 break;
             default:
-                Helper.setFehlerMeldung("goobiScriptfield", "",
-                        "wrong parameter 'property'; possible values: metadata, readimages, writeimages, validate, exportdms, batch, importfileupload, "
-                                + "acceptandclose, acceptmoduleandclose, script, delay, updatemetadataindex, generatedocket");
+                StringBuilder buffer = new StringBuilder();
+                buffer.append(PROPERTY_METADATA + ", ");
+                buffer.append(PROPERTY_READ_IMAGES + ", ");
+                buffer.append(PROPERTY_WRITE_IMAGES + ", ");
+                buffer.append(PROPERTY_VALIDATE + ", ");
+                buffer.append(PROPERTY_EXPORT_DMS + ", ");
+                buffer.append(PROPERTY_BATCH + ", ");
+                buffer.append(PROPERTY_AUTOMATIC + ", ");
+                buffer.append(PROPERTY_IMPORT_FILE_UPLOAD + ", ");
+                buffer.append(PROPERTY_ACCEPT_AND_CLOSE + ", ");
+                buffer.append(PROPERTY_ACCEPT_MODULE_AND_CLOSE + ", ");
+                buffer.append(PROPERTY_SCRIPT + ", ");
+                buffer.append(PROPERTY_DELAY + ", ");
+                buffer.append(PROPERTY_UPDATE_METADATA_INDEX + ", ");
+                buffer.append(PROPERTY_GENERATE_DOCKET);
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "", "wrong parameter 'property'; possible values: " + buffer.toString());
                 return new ArrayList<>();
         }
 
         if (!value.equals("true") && !value.equals("false")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", "wrong parameter 'value'; possible values: true, false");
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "", "wrong parameter 'value'; possible values: true, false");
             return new ArrayList<>();
         }
 
@@ -131,73 +180,72 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
-        String property = parameters.get("property");
-        String value = parameters.get("value");
+        String steptitle = parameters.get(STEPTITLE);
+        String property = parameters.get(PROPERTY);
+        String value = parameters.get(VALUE);
 
         if (p.getSchritte() != null) {
             for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
                 Step s = iterator.next();
-                if (s.getTitel().equals(parameters.get("steptitle"))) {
-                    if (property.equals("metadata")) {
+                if (s.getTitel().equals(steptitle)) {
+                    if (property.equals(PROPERTY_METADATA)) {
                         s.setTypMetadaten(Boolean.parseBoolean(value));
                     }
-                    if (property.equals("automatic")) {
-                        s.setTypAutomatisch(Boolean.parseBoolean(value));
-                    }
-                    if (property.equals("batch")) {
-                        s.setBatchStep(Boolean.parseBoolean(value));
-                    }
-                    if (property.equals("readimages")) {
+                    if (property.equals(PROPERTY_READ_IMAGES)) {
                         s.setTypImagesLesen(Boolean.parseBoolean(value));
                     }
-                    if (property.equals("writeimages")) {
+                    if (property.equals(PROPERTY_WRITE_IMAGES)) {
                         s.setTypImagesSchreiben(Boolean.parseBoolean(value));
                     }
-                    if (property.equals("validate")) {
+                    if (property.equals(PROPERTY_VALIDATE)) {
                         s.setTypBeimAbschliessenVerifizieren(Boolean.parseBoolean(value));
                     }
-                    if (property.equals("exportdms")) {
+                    if (property.equals(PROPERTY_EXPORT_DMS)) {
                         s.setTypExportDMS(Boolean.parseBoolean(value));
                     }
+                    if (property.equals(PROPERTY_BATCH)) {
+                        s.setBatchStep(Boolean.parseBoolean(value));
+                    }
+                    if (property.equals(PROPERTY_AUTOMATIC)) {
+                        s.setTypAutomatisch(Boolean.parseBoolean(value));
+                    }
 
-                    if (property.equalsIgnoreCase("ImportFileUpload")) {
+                    if (property.equalsIgnoreCase(PROPERTY_IMPORT_FILE_UPLOAD)) {
                         s.setTypImportFileUpload(Boolean.parseBoolean(value));
                     }
-                    if (property.equalsIgnoreCase("acceptandclose")) {
+                    if (property.equalsIgnoreCase(PROPERTY_ACCEPT_AND_CLOSE)) {
                         s.setTypBeimAnnehmenAbschliessen(Boolean.parseBoolean(value));
                     }
-                    if (property.equalsIgnoreCase("acceptmoduleandclose")) {
+                    if (property.equalsIgnoreCase(PROPERTY_ACCEPT_MODULE_AND_CLOSE)) {
                         s.setTypBeimAnnehmenModulUndAbschliessen(Boolean.parseBoolean(value));
                     }
 
-                    if (property.equalsIgnoreCase("script")) {
+                    if (property.equalsIgnoreCase(PROPERTY_SCRIPT)) {
                         s.setTypScriptStep(Boolean.parseBoolean(value));
                     }
-                    if (property.equalsIgnoreCase("delay")) {
+                    if (property.equalsIgnoreCase(PROPERTY_DELAY)) {
                         s.setDelayStep(Boolean.parseBoolean(value));
                     }
 
-                    if (property.equalsIgnoreCase("updatemetadataindex")) {
+                    if (property.equalsIgnoreCase(PROPERTY_UPDATE_METADATA_INDEX)) {
                         s.setUpdateMetadataIndex(Boolean.parseBoolean(value));
                     }
 
-                    if (property.equalsIgnoreCase("generatedocket")) {
+                    if (property.equalsIgnoreCase(PROPERTY_GENERATE_DOCKET)) {
                         s.setGenerateDocket(Boolean.parseBoolean(value));
                     }
 
+                    String info = "'" + property + "' to '" + value + "' for step '" + s.getTitel() + "'";
                     try {
                         ProcessManager.saveProcess(p);
-                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Changed property '" + property + "' to '" + value
-                                + "' for step '" + s.getTitel() + "' using GoobiScript.", username);
-                        log.info("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel()
-                                + "' using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage(
-                                "Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel() + "' successfully.");
+                        String message = "Changed property " + info;
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+                        log.info(message + " using GoobiScript for process with ID " + p.getId());
+                        gsr.setResultMessage(message + " successfully.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (DAOException e) {
-                        log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-                        gsr.setResultMessage(
-                                "Error while chaning property '" + property + "' to '" + value + "' for step '" + s.getTitel() + "'.");
+                        log.error(GOOBI_SCRIPTFIELD + " Error while saving process: " + p.getTitel(), e);
+                        gsr.setResultMessage("Error while chaning property " + info + ".");
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                         gsr.setErrorText(e.getMessage());
                     }
@@ -207,7 +255,7 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
         }
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
             gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+            gsr.setResultMessage("Step not found: " + steptitle);
         }
         gsr.updateTimestamp();
     }

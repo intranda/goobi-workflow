@@ -129,7 +129,7 @@ public class UserManager implements IManager, Serializable {
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = UserMysqlHelper.getUserCount(order, filter, institution);
+            num = UserMysqlHelper.getUserCount(filter, institution);
         } catch (SQLException e) {
             log.error("error while getting User hit size", e);
             throw new DAOException(e);

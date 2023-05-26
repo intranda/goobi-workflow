@@ -50,6 +50,14 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String STEP_SCRIPT = "script";
+    private static final String STEP_EXPORT = "export";
+    private static final String STEP_DELAY = "delay plugin";
+    private static final String STEP_PLUGIN = "plugin";
+    private static final String STEP_HTTP = "HTTP";
+
     @Override
     public String getAction() {
         return "executeStepAndUpdateStatus";
@@ -60,7 +68,7 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb,
                 "This GoobiScript allows to execute a specific workflow step and to move on the workflow afterwards automatically. This is mostly usefull to trigger automatic workflows steps.");
-        addParameterToSampleCall(sb, "steptitle", "OCR", "Title of the workflow step to be triggered.");
+        addParameterToSampleCall(sb, STEPTITLE, "OCR", "Title of the workflow step to be triggered.");
         return sb.toString();
     }
 
@@ -68,8 +76,10 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
@@ -85,7 +95,7 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
-        String steptitle = parameters.get("steptitle");
+        String stepTitle = parameters.get(STEPTITLE);
         HelperSchritte hs = new HelperSchritte();
         // execute all jobs that are still in waiting state
         Process process = ProcessManager.getProcessById(gsr.getProcessId());
@@ -94,7 +104,7 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
         gsr.updateTimestamp();
         boolean foundExecutableStep = false;
         for (Step step : process.getSchritteList()) {
-            if (!step.getTitel().equalsIgnoreCase(steptitle)) {
+            if (!step.getTitel().equalsIgnoreCase(stepTitle)) {
                 continue;
             }
             foundExecutableStep = true;
@@ -105,27 +115,27 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
                 if (step.getMessageQueue() == QueueType.NONE) {
                     ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(step, step.isTypAutomatisch());
                     boolean success = returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99;
-                    GoobiScriptExecuteTask.setStatusAndMessage(gsr, "script", steptitle, success);
+                    GoobiScriptExecuteTask.setStatusAndMessage(gsr, STEP_SCRIPT, stepTitle, success);
                     if (!success) {
                         gsr.setErrorText(returncode.getErrorText() + " The return code was : " + returncode.getReturnCode());
                     }
                 } else {
                     ScriptThreadWithoutHibernate thread = new ScriptThreadWithoutHibernate(step);
                     thread.startOrPutToQueue();
-                    GoobiScriptExecuteTask.setStatusAndMessage(gsr, "script", steptitle, true);
+                    GoobiScriptExecuteTask.setStatusAndMessage(gsr, STEP_SCRIPT, stepTitle, true);
                 }
 
             } else if (step.isTypExportDMS()) {
                 // This step is an export step
                 boolean success = hs.executeDmsExport(step, step.isTypAutomatisch());
-                GoobiScriptExecuteTask.setStatusAndMessage(gsr, "export", steptitle, success);
+                GoobiScriptExecuteTask.setStatusAndMessage(gsr, STEP_EXPORT, stepTitle, success);
 
             } else if (step.isDelayStep() && step.getStepPlugin() != null && !step.getStepPlugin().isEmpty()) {
                 // This step is a delay plugin step
                 IDelayPlugin idp = (IDelayPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
                 idp.initialize(step, "");
                 boolean success = idp.execute();
-                GoobiScriptExecuteTask.setStatusAndMessage(gsr, "delay plugin", steptitle, success);
+                GoobiScriptExecuteTask.setStatusAndMessage(gsr, STEP_DELAY, stepTitle, success);
                 if (success) {
                     hs.CloseStepObjectAutomatic(step);
                 }
@@ -145,9 +155,9 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
                     success = isp.execute();
                 }
 
-                GoobiScriptExecuteTask.setStatusAndMessage(gsr, "plugin", steptitle, success);
+                GoobiScriptExecuteTask.setStatusAndMessage(gsr, STEP_PLUGIN, stepTitle, success);
                 if (success) {
-                    GoobiScriptExecuteTask.printSuccessMessages(steptitle, process.getId(), username);
+                    GoobiScriptExecuteTask.printSuccessMessages(stepTitle, process.getId(), username);
                     hs.CloseStepObjectAutomatic(step);
                 } else {
                     hs.errorStep(step);
@@ -156,15 +166,15 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
             } else if (step.isHttpStep()) {
                 // This step is an HTTP step
                 hs.runHttpStep(step);
-                GoobiScriptExecuteTask.setStatusAndMessage(gsr, "HTTP", steptitle, true);
+                GoobiScriptExecuteTask.setStatusAndMessage(gsr, STEP_HTTP, stepTitle, true);
             } else {
                 gsr.setResultType(GoobiScriptResultType.OK);
-                gsr.setResultMessage("Ignored the step \"" + steptitle + "\" because there is no execution command specified.");
+                gsr.setResultMessage("Ignored the step \"" + stepTitle + "\" because there is no execution command specified.");
             }
         }
         if (!foundExecutableStep) {//gsr.getResultType().equals(GoobiScriptResultType.RUNNING)
             gsr.setResultType(GoobiScriptResultType.ERROR);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+            gsr.setResultMessage("Step not found: " + stepTitle);
         }
 
         gsr.updateTimestamp();

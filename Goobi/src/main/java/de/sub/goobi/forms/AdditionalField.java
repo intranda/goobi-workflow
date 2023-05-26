@@ -26,6 +26,7 @@
 package de.sub.goobi.forms;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
@@ -70,9 +71,6 @@ public class AdditionalField {
     @Getter
     @Setter
     private boolean multiselect = true;
-
-    public AdditionalField() {
-    }
 
     public void setInitStart(String newValue) {
         this.initStart = newValue;
@@ -152,14 +150,12 @@ public class AdditionalField {
     }
 
     public List<String> getValues() {
-        List<String> values = new ArrayList<>();
         if (wert != null && !wert.isEmpty()) {
             String[] parts = wert.split(";");
-            for (String part : parts) {
-                values.add(part);
-            }
+            return Arrays.asList(parts);
+        } else {
+            return new ArrayList<>();
         }
-        return values;
     }
 
     public void setValues(List<String> values) {

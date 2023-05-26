@@ -43,6 +43,7 @@ import de.intranda.api.iiif.image.ImageTile;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
+import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerResource;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -64,7 +65,7 @@ public abstract class AbstractImageResource extends ImageResource {
     @ApiResponse(responseCode = "400", description = "Bad Request")
     @ApiResponse(responseCode = "404", description = "Not Found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
+    @Produces({ ContentServerResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
     @Override
     public ImageInformation getInfoAsJson() throws ContentLibException {

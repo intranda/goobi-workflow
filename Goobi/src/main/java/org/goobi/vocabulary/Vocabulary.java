@@ -49,9 +49,6 @@ import lombok.Setter;
 @XmlRootElement
 public class Vocabulary implements Serializable, DatabaseObject {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -86569570995051824L;
 
     private Integer id;
@@ -71,16 +68,27 @@ public class Vocabulary implements Serializable, DatabaseObject {
     public void lazyLoad() {
     }
 
+    /**
+     * @deprecated This field is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     @JsonIgnore
-    @Deprecated
     private String mainFieldName;
 
+    /**
+     * @deprecated This field is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     @JsonIgnore
-    @Deprecated
     private String searchField;
+
+    /**
+     * @deprecated This field is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     @JsonIgnore
-    @Deprecated
     private String order; // blank, ASC, DESC
+
     @JsonIgnore
     private int totalNumberOfRecords;
 
@@ -147,11 +155,9 @@ public class Vocabulary implements Serializable, DatabaseObject {
         if (StringUtils.isNotBlank(searchValue)) {
             for (VocabRecord rec : records) {
                 for (Field f : rec.getMainFields()) {
-                    if (StringUtils.isNotBlank(f.getValue())) {
-                        if (f.getValue().toLowerCase().contains(searchValue.toLowerCase())) {
-                            filteredRecords.add(rec);
-                            break;
-                        }
+                    if (StringUtils.isNotBlank(f.getValue()) && f.getValue().toLowerCase().contains(searchValue.toLowerCase())) {
+                        filteredRecords.add(rec);
+                        break;
                     }
                 }
             }
@@ -205,11 +211,9 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     public void setTxtMoveTo(Integer neueSeite) {
-        if (neueSeite != null) {
-            if ((this.pageNo != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
-                this.pageNo = neueSeite - 1;
-                runFilter();
-            }
+        if (neueSeite != null && (this.pageNo != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
+            this.pageNo = neueSeite - 1;
+            runFilter();
         }
     }
 
@@ -246,35 +250,31 @@ public class Vocabulary implements Serializable, DatabaseObject {
         runFilter();
     }
 
-    private transient Comparator<VocabRecord> recordComparator = new Comparator<VocabRecord>() {
-
-        @Override
-        public int compare(VocabRecord o1, VocabRecord o2) {
-            if (internalSortField == null) {
-                if (sortOrder) {
-                    return o1.getId().compareTo(o2.getId());
-                } else {
-                    return o2.getId().compareTo(o1.getId());
-                }
-            }
-            String value1 = "";
-            String value2 = "";
-
-            for (Field f : o1.getFields()) {
-                if (f.getDefinition().getId().intValue() == internalSortField.intValue()) {
-                    value1 = f.getValue().toLowerCase();
-                }
-            }
-            for (Field f : o2.getFields()) {
-                if (f.getDefinition().getId().intValue() == internalSortField.intValue()) {
-                    value2 = f.getValue().toLowerCase();
-                }
-            }
+    private transient Comparator<VocabRecord> recordComparator = (vocabRecord1, vocabRecord2) -> {
+        if (internalSortField == null) {
             if (sortOrder) {
-                return value1.compareTo(value2);
+                return vocabRecord1.getId().compareTo(vocabRecord2.getId());
             } else {
-                return value2.compareTo(value1);
+                return vocabRecord2.getId().compareTo(vocabRecord1.getId());
             }
+        }
+        String value1 = "";
+        String value2 = "";
+
+        for (Field f : vocabRecord1.getFields()) {
+            if (f.getDefinition().getId().intValue() == internalSortField.intValue()) {
+                value1 = f.getValue().toLowerCase();
+            }
+        }
+        for (Field f : vocabRecord2.getFields()) {
+            if (f.getDefinition().getId().intValue() == internalSortField.intValue()) {
+                value2 = f.getValue().toLowerCase();
+            }
+        }
+        if (sortOrder) {
+            return value1.compareTo(value2);
+        } else {
+            return value2.compareTo(value1);
         }
     };
 

@@ -56,13 +56,12 @@ import lombok.extern.log4j.Log4j2;
 @WindowScoped
 public class SearchBean implements Serializable {
 
+    private static final long serialVersionUID = -4981330560006133964L;
+
+    private static final String NOT_SELECTED = "notSelected";
+
     @Inject
     private ProcessBean processBean;
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -4981330560006133964L;
 
     @Getter
     @Setter
@@ -124,7 +123,7 @@ public class SearchBean implements Serializable {
         if (!Helper.getLoginBean().hasRole(UserRole.Workflow_Processes_Show_Deactivated_Projects.name())) {
             projectFilter = " projectIsArchived = false ";
         }
-        this.projects.add(Helper.getTranslation("notSelected"));
+        this.projects.add(Helper.getTranslation(NOT_SELECTED));
 
         try {
             List<Project> projektList = ProjectManager.getProjects("titel", projectFilter, 0, Integer.MAX_VALUE, inst);
@@ -135,24 +134,24 @@ public class SearchBean implements Serializable {
             log.error(exception);
         }
 
-        this.masterpiecePropertyTitles.add(Helper.getTranslation("notSelected"));
+        this.masterpiecePropertyTitles.add(Helper.getTranslation(NOT_SELECTED));
         this.masterpiecePropertyTitles.addAll(PropertyManager.getDistinctMasterpiecePropertyTitles());
 
-        this.templatePropertyTitles.add(Helper.getTranslation("notSelected"));
+        this.templatePropertyTitles.add(Helper.getTranslation(NOT_SELECTED));
         this.templatePropertyTitles.addAll(PropertyManager.getDistinctTemplatePropertyTitles());
 
-        this.processPropertyTitles.add(Helper.getTranslation("notSelected"));
+        this.processPropertyTitles.add(Helper.getTranslation(NOT_SELECTED));
         this.processPropertyTitles.addAll(PropertyManager.getDistinctProcessPropertyTitles());
 
-        this.stepTitles.add(Helper.getTranslation("notSelected"));
+        this.stepTitles.add(Helper.getTranslation(NOT_SELECTED));
         stepTitles.addAll(StepManager.getDistinctStepTitles());
 
-        institutionNames.add(Helper.getTranslation("notSelected"));
+        institutionNames.add(Helper.getTranslation(NOT_SELECTED));
         institutionNames.addAll(InstitutionManager.getInstitutionNames());
 
         initializeRowList();
 
-        fieldnameList.add(new SelectItem("", Helper.getTranslation("notSelected")));
+        fieldnameList.add(new SelectItem("", Helper.getTranslation(NOT_SELECTED)));
         fieldnameList.add(new SelectItem("PROCESSID", Helper.getTranslation("id")));
         fieldnameList.add(new SelectItem("PROCESSTITLE", Helper.getTranslation("title")));
 
@@ -178,7 +177,7 @@ public class SearchBean implements Serializable {
         fieldnameList.add(new SelectItem("STEPSTARTDATE", Helper.getTranslation("search_STEPSTARTDATE")));
         fieldnameList.add(new SelectItem("STEPFINISHDATE", Helper.getTranslation("search_STEPFINISHDATE")));
 
-        metadataTitles.add(Helper.getTranslation("notSelected"));
+        metadataTitles.add(Helper.getTranslation(NOT_SELECTED));
         metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());
 
     }

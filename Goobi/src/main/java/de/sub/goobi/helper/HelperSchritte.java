@@ -119,124 +119,114 @@ public class HelperSchritte {
      * Schritt abschliessen und dabei parallele Schritte berücksichtigen ================================================================
      */
 
-    public void CloseStepObjectAutomatic(Step currentStep) {
-        closeStepObject(currentStep, currentStep.getProcessId());
+    public void CloseStepObjectAutomatic(Step step) {
+        User user = Helper.getCurrentUser();
+        closeStepAndFollowingSteps(step, user);
     }
 
-    private void closeStepObject(Step currentStep, int processId) {
-        currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
-        Date myDate = new Date();
+    public void closeStepAndFollowingSteps(Step step, User user) {
 
-        currentStep.setBearbeitungszeitpunkt(myDate);
         try {
-            User user = Helper.getCurrentUser();
-            if (user != null) {
-                currentStep.setBearbeitungsbenutzer(user);
-            }
-        } catch (Exception e) {
-            log.warn(e);
+            saveStepStatus(step, user);
+        } catch (Exception exception) {
+            log.warn(exception);
         }
-        currentStep.setBearbeitungsende(myDate);
+
+        List<Step> stepsToFinish = closeStepObject(step, step.getProcessId());
+
+        for (Step stepToFinish : stepsToFinish) {
+            closeStepAndFollowingSteps(stepToFinish, user);
+        }
+    }
+
+    public static void saveStepStatus(Step step, User user) {
+        if (user != null) {
+            step.setBearbeitungsbenutzer(user);
+        }
+        step.setBearbeitungsstatusEnum(StepStatus.DONE);
+        Date now = new Date();
+        step.setBearbeitungszeitpunkt(now);
+        step.setBearbeitungsende(now);
         try {
-            StepManager.saveStep(currentStep);
-            Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
+            StepManager.saveStep(step);
+            String message = "Step closed: '" + step.getTitel() + "'.";
+            Helper.addMessageToProcessJournal(step.getProzess().getId(), LogType.DEBUG, message);
         } catch (DAOException e) {
-            log.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID " + processId, e);
+            String message = "An exception occurred while closing the step '" + step.getTitel();
+            log.error(message + "' of process with ID " + step.getProzess().getId(), e);
         }
+    }
+
+    public static List<Step> closeStepObject(Step currentStep, int processId) {
 
         if (currentStep.isUpdateMetadataIndex()) {
-            try {
-                String metdatdaPath = currentStep.getProzess().getMetadataFilePath();
-                String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
-                Path metadataFile = Paths.get(metdatdaPath);
-                Path anchorFile = Paths.get(anchorPath);
-                Map<String, List<String>> pairs = new HashMap<>();
-
-                extractMetadata(metadataFile, pairs);
-
-                if (StorageProvider.getInstance().isFileExists(anchorFile)) {
-                    extractMetadata(anchorFile, pairs);
-                }
-
-                MetadataManager.updateMetadata(currentStep.getProzess().getId(), pairs);
-
-                // now add all authority fields to the metadata pairs
-                extractAuthorityMetadata(metadataFile, pairs);
-                if (StorageProvider.getInstance().isFileExists(anchorFile)) {
-                    extractAuthorityMetadata(anchorFile, pairs);
-                }
-                MetadataManager.updateJSONMetadata(processId, pairs);
-
-                HistoryAnalyserJob.updateHistory(currentStep.getProzess());
-
-                if (!currentStep.getProzess().isMediaFolderExists()
-                        && StorageProvider.getInstance().isFileExists(Paths.get(currentStep.getProzess().getImagesDirectory()))) {
-                    currentStep.getProzess().setMediaFolderExists(true);
-                    ProcessManager.saveProcessInformation(currentStep.getProzess());
-                }
-
-            } catch (SwapException | DAOException | IOException e1) {
-                log.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
-            }
+            updateMetadataIndex(currentStep);
         }
 
-        List<Step> automatischeSchritte = new ArrayList<>();
-        List<Step> stepsToFinish = new ArrayList<>();
         SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
-        HistoryManager.addHistory(myDate, currentStep.getReihenfolge().doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone.getValue(),
-                processId);
+
+        Date stepEditTimestamp = currentStep.getBearbeitungszeitpunkt();
+        double stepOrder = currentStep.getReihenfolge().doubleValue();
+        HistoryManager.addHistory(stepEditTimestamp, stepOrder, currentStep.getTitel(), HistoryEventType.stepDone.getValue(), processId);
+
+        List<Step> automaticSteps = new ArrayList<>();
+        List<Step> stepsToFinish = new ArrayList<>();
 
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
         List<Step> steps = StepManager.getStepsForProcess(processId);
-        List<Step> allehoeherenSchritte = new ArrayList<>();
-        int offeneSchritteGleicherReihenfolge = 0;
-        for (Step so : steps) {
-            if (so.getReihenfolge().equals(currentStep.getReihenfolge())
-                    && !(StepStatus.DONE.equals(so.getBearbeitungsstatusEnum()) || StepStatus.DEACTIVATED.equals(so.getBearbeitungsstatusEnum()))
-                    && !so.getId().equals(currentStep.getId())) {
-                offeneSchritteGleicherReihenfolge++;
-            } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
-                allehoeherenSchritte.add(so);
+        List<Step> nextSteps = new ArrayList<>();
+        int openStepsWithSameOrder = 0;
+        for (Step step : steps) {
+            StepStatus status = step.getBearbeitungsstatusEnum();
+            if (step.getReihenfolge().equals(currentStep.getReihenfolge()) && !(status == StepStatus.DONE || status == StepStatus.DEACTIVATED)
+                    && !step.getId().equals(currentStep.getId())) {
+
+                openStepsWithSameOrder++;
+            } else if (step.getReihenfolge() > currentStep.getReihenfolge()) {
+                nextSteps.add(step);
             }
         }
 
         /* wenn keine offenen parallelschritte vorhanden sind, die nächsten Schritte aktivieren */
-        if (offeneSchritteGleicherReihenfolge == 0) {
-            int reihenfolge = 0;
+        if (openStepsWithSameOrder == 0) {
+            int order = 0;
             boolean matched = false;
-            for (Step myStep : allehoeherenSchritte) {
-                if (reihenfolge < myStep.getReihenfolge() && !matched) {
-                    reihenfolge = myStep.getReihenfolge();
+            for (Step step : nextSteps) {
+                StepStatus status = step.getBearbeitungsstatusEnum();
+                if (order < step.getReihenfolge() && !matched) {
+                    order = step.getReihenfolge();
                 }
 
-                if (reihenfolge == myStep.getReihenfolge() && !(StepStatus.DONE.equals(myStep.getBearbeitungsstatusEnum())
-                        || StepStatus.DEACTIVATED.equals(myStep.getBearbeitungsstatusEnum()))) {
+                if (order == step.getReihenfolge() && !(status == StepStatus.DONE || status == StepStatus.DEACTIVATED)) {
                     /*
                      * open step, if it is locked, otherwise stop
                      */
 
-                    if (StepStatus.LOCKED.equals(myStep.getBearbeitungsstatusEnum())) {
-                        myStep.setBearbeitungszeitpunkt(myDate);
-                        myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
-                        if (myStep.isTypAutomaticThumbnail() && StringUtils.isNotBlank(myStep.getAutomaticThumbnailSettingsYaml())) {
-                            myStep.submitAutomaticThumbnailTicket();
+                    if (status == StepStatus.LOCKED) {
+                        step.setEditTypeEnum(StepEditType.AUTOMATIC);
+                        step.setBearbeitungszeitpunkt(currentStep.getBearbeitungsende());
+
+                        if (step.isTypAutomaticThumbnail() && StringUtils.isNotBlank(step.getAutomaticThumbnailSettingsYaml())) {
+                            step.submitAutomaticThumbnailTicket();
                         } else {
-                            myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
-                            SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
-                            HistoryManager.addHistory(myDate, myStep.getReihenfolge().doubleValue(), myStep.getTitel(),
+                            step.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                            SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.OPEN);
+
+                            HistoryManager.addHistory(stepEditTimestamp, step.getReihenfolge().doubleValue(), step.getTitel(),
                                     HistoryEventType.stepOpen.getValue(), processId);
+
                             /* wenn es ein automatischer Schritt mit Script ist */
-                            if (myStep.isTypAutomatisch()) {
-                                automatischeSchritte.add(myStep);
-                            } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
-                                stepsToFinish.add(myStep);
+                            if (step.isTypAutomatisch()) {
+                                automaticSteps.add(step);
+                            } else if (step.isTypBeimAnnehmenAbschliessen()) {
+                                stepsToFinish.add(step);
                             }
                             try {
-                                StepManager.saveStep(myStep);
-                                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG,
-                                        "Step '" + myStep.getTitel() + "' opened.");
+                                StepManager.saveStep(step);
+                                String message = "Opened step '" + step.getTitel() + "'.";
+                                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, message);
                             } catch (DAOException e) {
-                                log.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
+                                log.error("An exception occurred while saving a step for process with ID " + step.getProcessId(), e);
                             }
                         }
                     }
@@ -247,23 +237,23 @@ public class HelperSchritte {
                 }
             }
         }
-        Process po = ProcessManager.getProcessById(processId);
+        Process process = ProcessManager.getProcessById(processId);
 
         try {
-            int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
+            int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(process.getImagesOrigDirectory(true)));
             if (numberOfFiles == 0) {
-                numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesTifDirectory(true)));
+                numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(process.getImagesTifDirectory(true)));
             }
-            if (numberOfFiles > 0 && po.getSortHelperImages() != numberOfFiles) {
+            if (numberOfFiles > 0 && process.getSortHelperImages() != numberOfFiles) {
                 ProcessManager.updateImages(numberOfFiles, processId);
             }
 
         } catch (Exception e) {
-            log.error("An exception occurred while closing a step for process with ID " + po.getId(), e);
+            log.error("An exception occurred while closing a step for process with ID " + process.getId(), e);
         }
 
-        updateProcessStatus(processId);
-        for (Step automaticStep : automatischeSchritte) {
+        new HelperSchritte().updateProcessStatus(processId);
+        for (Step automaticStep : automaticSteps) {
             automaticStep.setBearbeitungsbeginn(new Date());
             automaticStep.setBearbeitungsbenutzer(null);
             automaticStep.setBearbeitungsstatusEnum(StepStatus.INWORK);
@@ -273,8 +263,8 @@ public class HelperSchritte {
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
                 StepManager.saveStep(automaticStep);
-                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG,
-                        "Step '" + automaticStep.getTitel() + "' started to work automatically.");
+                String message = "Started automatic step: '" + automaticStep.getTitel() + "'.";
+                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, message);
             } catch (DAOException e) {
                 log.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
@@ -285,40 +275,73 @@ public class HelperSchritte {
             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
             myThread.startOrPutToQueue();
         }
-        for (Step finish : stepsToFinish) {
-            CloseStepObjectAutomatic(finish);
-        }
+        return stepsToFinish;
+    }
 
+    public static void updateMetadataIndex(Step currentStep) {
+        Process process = currentStep.getProzess();
+        try {
+            String metdatdaPath = process.getMetadataFilePath();
+            String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
+            Path metadataFile = Paths.get(metdatdaPath);
+            Path anchorFile = Paths.get(anchorPath);
+            Map<String, List<String>> pairs = new HashMap<>();
+
+            extractMetadata(metadataFile, pairs);
+
+            if (StorageProvider.getInstance().isFileExists(anchorFile)) {
+                extractMetadata(anchorFile, pairs);
+            }
+
+            MetadataManager.updateMetadata(process.getId(), pairs);
+
+            // now add all authority fields to the metadata pairs
+            extractAuthorityMetadata(metadataFile, pairs);
+            if (StorageProvider.getInstance().isFileExists(anchorFile)) {
+                extractAuthorityMetadata(anchorFile, pairs);
+            }
+            MetadataManager.updateJSONMetadata(process.getId(), pairs);
+
+            HistoryAnalyserJob.updateHistory(process);
+
+            if (!process.isMediaFolderExists() && StorageProvider.getInstance().isFileExists(Paths.get(process.getImagesDirectory()))) {
+                process.setMediaFolderExists(true);
+                ProcessManager.saveProcessInformation(process);
+            }
+
+        } catch (SwapException | DAOException | IOException e1) {
+            log.error("An exception occurred while updating the metadata file process with ID " + process.getId(), e1);
+        }
     }
 
     public void updateProcessStatus(int processId) {
 
-        int offen = 0;
-        int inBearbeitung = 0;
-        int abgeschlossen = 0;
+        int open = 0;
+        int inWork = 0;
+        int done = 0;
         List<Step> stepsForProcess = StepManager.getStepsForProcess(processId);
         for (Step step : stepsForProcess) {
-            if (StepStatus.DONE.equals(step.getBearbeitungsstatusEnum()) || StepStatus.DEACTIVATED.equals(step.getBearbeitungsstatusEnum())) {
-                abgeschlossen++;
-            } else if (StepStatus.LOCKED.equals(step.getBearbeitungsstatusEnum())) {
-                offen++;
+            StepStatus status = step.getBearbeitungsstatusEnum();
+            if (status == StepStatus.DONE || status == StepStatus.DEACTIVATED) {
+                done++;
+            } else if (status == StepStatus.LOCKED) {
+                open++;
             } else {
-                inBearbeitung++;
+                inWork++;
             }
         }
-        double offen2 = 0;
-        double inBearbeitung2 = 0;
-        double abgeschlossen2 = 0;
+        int sum = open + inWork + done;
 
-        if ((offen + inBearbeitung + abgeschlossen) == 0) {
-            offen = 1;
+        if (sum == 0) {
+            sum = 1;
+            open = 1;
         }
 
-        offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
-        inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
-        abgeschlossen2 = 100 - offen2 - inBearbeitung2;
+        double open2 = (open * 100) / (double) (sum);
+        double inWork2 = (inWork * 100) / (double) (sum);
+        double done2 = 100 - open2 - inWork2;
         java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
-        String value = df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(offen2);
+        String value = df.format(done2) + df.format(inWork2) + df.format(open2);
 
         ProcessManager.updateProcessStatus(value, processId);
     }
@@ -331,7 +354,7 @@ public class HelperSchritte {
         int count = 1;
         int size = scriptpaths.size();
         ShellScriptReturnValue returnParameter = null;
-        outerloop: for (String script : scriptpaths) {
+        for (String script : scriptpaths) {
             if (log.isDebugEnabled()) {
                 log.debug("Starting script " + script + " for process with ID " + step.getProcessId());
             }
@@ -360,7 +383,7 @@ public class HelperSchritte {
                     // everything else: error
                     default:
                         errorStep(step);
-                        break outerloop;
+                        return returnParameter;
 
                 }
             }
@@ -411,12 +434,12 @@ public class HelperSchritte {
         try {
             scsf = new SSLConnectionSocketFactory(SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(),
                     NoopHostnameVerifier.INSTANCE);
-        } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e1) {
-            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR,
-                    "error executing http request: " + e1.getMessage(), EntryType.PROCESS);
-            JournalManager.saveJournalEntry(le);
+        } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException exception) {
+            String message = "error executing http request: " + exception.getMessage();
+            JournalEntry journalEntry = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR, message, EntryType.PROCESS);
+            JournalManager.saveJournalEntry(journalEntry);
             errorStep(step);
-            log.error(e1);
+            log.error(exception);
             return;
         }
         // END dirty hack
@@ -494,8 +517,8 @@ public class HelperSchritte {
                     JsonPrimitive jPrim = objEntry.getValue().getAsJsonPrimitive();
                     if (jPrim.isString()) {
                         String newVal = replacer.replace(jPrim.getAsString());
-                        if (VariableReplacer.piiifMasterFolder.matcher(jPrim.getAsString()).matches()
-                                || VariableReplacer.piiifMediaFolder.matcher(jPrim.getAsString()).matches()) {
+                        if (VariableReplacer.getPiiifMasterFolder().matcher(jPrim.getAsString()).matches()
+                                || VariableReplacer.getPiiifMediaFolder().matcher(jPrim.getAsString()).matches()) {
                             Gson gson = new Gson();
                             JsonArray iiifArr = gson.fromJson("[" + newVal + "]", JsonArray.class);
                             obj.add(objEntry.getKey(), iiifArr);
@@ -515,8 +538,8 @@ public class HelperSchritte {
                     JsonPrimitive jPrim = innerJel.getAsJsonPrimitive();
                     if (jPrim.isString()) {
                         String newVal = replacer.replace(jPrim.getAsString());
-                        if (VariableReplacer.piiifMasterFolder.matcher(jPrim.getAsString()).matches()
-                                || VariableReplacer.piiifMediaFolder.matcher(jPrim.getAsString()).matches()) {
+                        if (VariableReplacer.getPiiifMasterFolder().matcher(jPrim.getAsString()).matches()
+                                || VariableReplacer.getPiiifMediaFolder().matcher(jPrim.getAsString()).matches()) {
                             Gson gson = new Gson();
                             JsonArray iiifArr = gson.fromJson("[" + newVal + "]", JsonArray.class);
                             jArr.set(i, iiifArr);
@@ -570,7 +593,7 @@ public class HelperSchritte {
                         if (!ivp.validate()) {
                             step.setBearbeitungsstatusEnum(StepStatus.OPEN);
                             StepManager.saveStep(step);
-                            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step '" + step.getTitel() + "' opened.");
+                            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Opened step '" + step.getTitel() + "'.");
                         } else {
                             CloseStepObjectAutomatic(step);
                         }
@@ -584,11 +607,10 @@ public class HelperSchritte {
                     step.setBearbeitungsende(new Date());
                     SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
                     StepManager.saveStep(step);
-                    Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
-                            "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
-                                    + ". The script returned: " + rueckgabe.getErrorText());
-                    log.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                            + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                    String scriptDidNotFinish = "Script for '" + step.getTitel() + "' did not finish successfully";
+                    String returned = ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText();
+                    Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, scriptDidNotFinish + returned);
+                    log.error(scriptDidNotFinish + " for process with ID " + step.getProcessId() + returned);
                 }
             }
         } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
@@ -641,20 +663,20 @@ public class HelperSchritte {
         try {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
-                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG,
-                        "The export for process with ID '" + step.getProcessId() + "' was done successfully.");
+                String message = "The export for process with ID '" + step.getProcessId() + "' was done successfully.";
+                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, message);
                 CloseStepObjectAutomatic(step);
             } else {
-                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                String message = "The export for process with ID '" + step.getProcessId() + "' was cancelled because of validation errors: ";
+                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, message + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
         } catch (DAOException | UGHException | SwapException | IOException | ExportFileException | DocStructHasNoTypeException
                 | UghHelperException e) {
             log.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
-            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
-                    "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());
+            String message = "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage();
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, message);
             errorStep(step);
             return false;
         } catch (InterruptedException e) {
@@ -703,9 +725,7 @@ public class HelperSchritte {
         }
         for (Element meta : authorityMetaXpath.evaluate(doc)) {
             String name = meta.getAttributeValue("name");
-            if (name == null) {
-                continue;
-            } else {
+            if (name != null) {
                 String key = name + "_authority";
                 List<String> values = metadataPairs.get(key);
                 if (values == null) {
@@ -725,24 +745,32 @@ public class HelperSchritte {
         } catch (JDOMException | IOException e1) {
             return;
         }
+
+        final String TAG_DMD_SEC = "dmdSec";
+        final String TAG_MD_WRAP = "mdWrap";
+        final String TAG_XML_DATA = "xmlData";
+        final String TAG_MODS = "mods";
+        final String TAG_EXTENSION = "extension";
+        final String TAG_GOOBI = "goobi";
+
         Element root = doc.getRootElement();
         try {
-            Element goobi = root.getChildren("dmdSec", mets)
+            Element goobi = root.getChildren(TAG_DMD_SEC, mets)
                     .get(0)
-                    .getChild("mdWrap", mets)
-                    .getChild("xmlData", mets)
-                    .getChild("mods", mods)
-                    .getChild("extension", mods)
-                    .getChild("goobi", goobiNamespace);
+                    .getChild(TAG_MD_WRAP, mets)
+                    .getChild(TAG_XML_DATA, mets)
+                    .getChild(TAG_MODS, mods)
+                    .getChild(TAG_EXTENSION, mods)
+                    .getChild(TAG_GOOBI, goobiNamespace);
             List<Element> metadataList = goobi.getChildren();
             addMetadata(metadataList, metadataPairs);
-            for (Element el : root.getChildren("dmdSec", mets)) {
+            for (Element el : root.getChildren(TAG_DMD_SEC, mets)) {
                 if ("DMDPHYS_0000".equals(el.getAttributeValue("ID"))) {
-                    Element phys = el.getChild("mdWrap", mets)
-                            .getChild("xmlData", mets)
-                            .getChild("mods", mods)
-                            .getChild("extension", mods)
-                            .getChild("goobi", goobiNamespace);
+                    Element phys = el.getChild(TAG_MD_WRAP, mets)
+                            .getChild(TAG_XML_DATA, mets)
+                            .getChild(TAG_MODS, mods)
+                            .getChild(TAG_EXTENSION, mods)
+                            .getChild(TAG_GOOBI, goobiNamespace);
                     List<Element> physList = phys.getChildren();
                     addMetadata(physList, metadataPairs);
                 }
@@ -759,14 +787,15 @@ public class HelperSchritte {
 
     private static void addMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
         for (Element goobimetadata : elements) {
-            String metadataType = goobimetadata.getAttributeValue("name");
+            String metadataName = goobimetadata.getAttributeValue("name");
+            String metadataType = goobimetadata.getAttributeValue("type");
             String metadataValue = "";
-            if (goobimetadata.getAttributeValue("type") != null && "person".equals(goobimetadata.getAttributeValue("type"))) {
+            if (metadataType != null && "person".equals(metadataType)) {
                 Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
                 if (displayName != null && !",".equals(displayName.getValue())) {
                     metadataValue = displayName.getValue();
                 }
-            } else if (goobimetadata.getAttributeValue("type") != null && "group".equals(goobimetadata.getAttributeValue("type"))) {
+            } else if (metadataType != null && "group".equals(metadataType)) {
                 List<Element> groupMetadataList = goobimetadata.getChildren();
                 addMetadata(groupMetadataList, metadataPairs);
             } else {
@@ -774,21 +803,20 @@ public class HelperSchritte {
             }
             if (!"".equals(metadataValue)) {
 
-                if (metadataPairs.containsKey(metadataType)) {
-                    List<String> oldValue = metadataPairs.get(metadataType);
+                if (metadataPairs.containsKey(metadataName)) {
+                    List<String> oldValue = metadataPairs.get(metadataName);
                     if (!oldValue.contains(metadataValue)) {
                         oldValue.add(metadataValue);
-                        metadataPairs.put(metadataType, oldValue);
+                        metadataPairs.put(metadataName, oldValue);
                     }
                 } else {
                     List<String> list = new ArrayList<>();
                     list.add(metadataValue);
-                    metadataPairs.put(metadataType, list);
+                    metadataPairs.put(metadataName, list);
                 }
             }
 
         }
-        return;
     }
 
 }

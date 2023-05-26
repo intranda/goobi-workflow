@@ -79,7 +79,7 @@ class UsergroupMysqlHelper implements Serializable {
                 null, null);
     }
 
-    public static int getUsergroupCount(String order, String filter, Institution institution) throws SQLException {
+    public static int getUsergroupCount(String filter, Institution institution) throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -145,7 +145,7 @@ class UsergroupMysqlHelper implements Serializable {
 
             if (ro.getId() == null) {
                 Object[] param =
-                    { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
+                        { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
                 String propNames = "titel, berechtigung, roles, institution_id";
                 String propValues = "? ,?, ?, ?";
                 sql.append("INSERT INTO benutzergruppen (");
@@ -162,7 +162,7 @@ class UsergroupMysqlHelper implements Serializable {
                 }
             } else {
                 Object[] param =
-                    { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
+                        { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
                 sql.append("UPDATE benutzergruppen SET ");
                 sql.append("titel = ?, ");
                 sql.append("berechtigung = ?, ");

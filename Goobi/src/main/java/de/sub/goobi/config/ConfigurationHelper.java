@@ -111,6 +111,20 @@ public class ConfigurationHelper implements Serializable {
         return Arrays.asList(localList);
     }
 
+    /**
+     * Returns a list of numbers for the given key name. The numbers are non-null integer objects with a length of 1 to 9 digits.
+     *
+     * @param key The key of the configured integer list
+     * @return The integer list that is specified in the configuration file
+     */
+    private List<Integer> getLocalIntegerList(String key) {
+        return getLocalList(key).stream()
+                .filter(Objects::nonNull)
+                .filter(s -> s.matches("\\d{1,9}"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+    }
+
     private String[] getLocalStringArray(String inPath, String[] inDefault) {
         try {
             String[] local = configLocal.getStringArray(inPath);
@@ -310,7 +324,12 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("doneDirectoryName", "fertig/");
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method will be removed since this configuration is not read from goobi_config.properties anymore
+     *
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public boolean isUseSwapping() {
         return getLocalBoolean("useSwapping", false);
     }
@@ -416,11 +435,12 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /**
-     * This method is deprecated. The information was moved to the user table in the database. The method is still needed during the migration.
+     * @deprecated This method is deprecated. The information was moved to the user table in the database. The method is still needed during the
+     *             migration.
      * 
      * @return The name of the dashboard plugin or null in case of no configured plugin
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getDashboardPlugin() {
         return getLocalString("dashboardPlugin", null);
     }
@@ -458,151 +478,151 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapUrl() {
         return getLocalString("ldap_url");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAdminLogin() {
         return getLocalString("ldap_adminLogin");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAdminPassword() {
         return getLocalString("ldap_adminPassword");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAttribute() {
         return getLocalString("ldap_AttributeToTest", null);
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAttributeValue() {
         return getLocalString("ldap_ValueOfAttribute");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapNextId() {
         return getLocalString("ldap_nextFreeUnixId");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapRootCert() {
         return getLocalString("ldap_cert_root");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapPdcCert() {
         return getLocalString("ldap_cert_pdc");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapEncryption() {
         return getLocalString("ldap_encryption", "SHA");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public boolean isUseLdapSSLConnection() {
         return getLocalBoolean("ldap_sslconnection", false);
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapReadOnly() {
         return getLocalBoolean("ldap_readonly", false);
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapReadDirectoryAnonymous() {
         return getLocalBoolean("ldap_readDirectoryAnonymous", false);
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapUseLocalDirectory() {
         return getLocalBoolean("useLocalDirectory", false);
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapHomeDirectory() {
         return getLocalString("ldap_homeDirectory", "homeDirectory");
     }
 
     /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapUseTLS() {
         return getLocalBoolean("ldap_useTLS", false);
     }
@@ -924,7 +944,12 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("geonames_account", null);
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public int getGoobiModuleServerPort() {
         return getLocalInt("goobiModuleServerPort");
     }
@@ -1004,6 +1029,11 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");
     }
 
+    /**
+     * The locking time is measured in milliseconds.
+     *
+     * @return The locking time in milliseconds
+     */
     public long getMetsEditorLockingTime() {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
     }
@@ -1096,27 +1126,15 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public List<Integer> getMetsEditorImageSizes() {
-        return getLocalList("MetsEditorImageSize").stream()
-                .filter(Objects::nonNull)
-                .filter(s -> s.matches("\\d{1,9}"))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        return getLocalIntegerList("MetsEditorImageSize");
     }
 
     public List<Integer> getMetsEditorImageTileSizes() {
-        return getLocalList("MetsEditorImageTileSize").stream()
-                .filter(Objects::nonNull)
-                .filter(s -> s.matches("\\d{1,9}"))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        return getLocalIntegerList("MetsEditorImageTileSize");
     }
 
     public List<Integer> getMetsEditorImageTileScales() {
-        return getLocalList("MetsEditorImageTileScale").stream()
-                .filter(Objects::nonNull)
-                .filter(s -> s.matches("\\d{1,9}"))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        return getLocalIntegerList("MetsEditorImageTileScale");
     }
 
     public String[] getHistoryImageSuffix() {

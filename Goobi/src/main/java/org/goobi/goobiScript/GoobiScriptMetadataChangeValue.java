@@ -50,6 +50,20 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
     // action:metadataChangValue field:DocLanguage prefix:start_ suffix:_end position:top condition:Deutsch
     // action:metadataChangeValue field:DocLanguage prefix:start_ suffix:_end position:child
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String FIELD = "field";
+    private static final String PREFIX = "prefix";
+    private static final String SUFFIX = "suffix";
+    private static final String POSITION = "position";
+    private static final String CONDITION = "condition";
+    private static final String GROUP = "group";
+    private static final String VALUE = "value";
+
+    private static final String POSITION_TOP = "top";
+    private static final String POSITION_CHILD = "child";
+    private static final String POSITION_ANY = "any";
+    private static final String POSITION_PHYSICAL = "physical";
+
     @Override
     public String getAction() {
         return "metadataChangeValue";
@@ -59,17 +73,17 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to change existing metadata in the METS files.");
-        addParameterToSampleCall(sb, "field", "Classification",
+        addParameterToSampleCall(sb, FIELD, "Classification",
                 "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`) here.");
-        addParameterToSampleCall(sb, "prefix", "Dark",
+        addParameterToSampleCall(sb, PREFIX, "Dark",
                 "Define a string that shall be added in front of the existing metadata value here. In case ending blanks are wanted please put the prefix into quotes like \"this \".");
-        addParameterToSampleCall(sb, "suffix", "color",
+        addParameterToSampleCall(sb, SUFFIX, "color",
                 "Define a string that shall be added behind the existing metadata value here. In case leading blanks are wanted please put the suffix into quotes like \" this\".");
-        addParameterToSampleCall(sb, "position", "work",
+        addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
-        addParameterToSampleCall(sb, "condition", "blue",
+        addParameterToSampleCall(sb, CONDITION, "blue",
                 "Define a value here that shall be present in the metadata field. The metadata is only updated if this term can be found inside of the metadata value  (check if it is contained).");
-        addParameterToSampleCall(sb, "group", "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");
+        addParameterToSampleCall(sb, GROUP, "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");
         return sb.toString();
     }
 
@@ -77,18 +91,19 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (StringUtils.isBlank(parameters.get("field"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "field");
+        String missingParameter = "Missing parameter: ";
+        if (StringUtils.isBlank(parameters.get(FIELD))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, FIELD);
             return Collections.emptyList();
         }
 
-        if (StringUtils.isBlank(parameters.get("prefix")) && StringUtils.isBlank(parameters.get("suffix"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "prefix OR suffix");
+        if (StringUtils.isBlank(parameters.get(PREFIX)) && StringUtils.isBlank(parameters.get(SUFFIX))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, PREFIX + " OR " + SUFFIX);
             return Collections.emptyList();
         }
 
-        if (StringUtils.isBlank(parameters.get("position"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
+        if (StringUtils.isBlank(parameters.get(POSITION))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, POSITION);
             return Collections.emptyList();
         }
 
@@ -115,10 +130,10 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
             DocStruct physical = ff.getDigitalDocument().getPhysicalDocStruct();
             // find the right elements to adapt
             List<DocStruct> dsList = new ArrayList<>();
-            switch (parameters.get("position")) {
+            switch (parameters.get(POSITION)) {
 
                 // just the anchor element
-                case "top":
+                case POSITION_TOP:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds);
                     } else {
@@ -128,8 +143,8 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
                     }
                     break;
 
-                    // fist the first child element
-                case "child":
+                // fist the first child element
+                case POSITION_CHILD:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
                     } else {
@@ -139,20 +154,20 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
                     }
                     break;
 
-                    // any element in the hierarchy
-                case "any":
+                // any element in the hierarchy
+                case POSITION_ANY:
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
                     if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
-                case "physical":
+                case POSITION_PHYSICAL:
                     if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
-                    // default "work", which is the first child or the main top element if it is not an anchor
+                // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -163,10 +178,10 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
             }
 
             // now change the searched metadata and save the file
-            String prefix = parameters.get("prefix");
-            String suffix = parameters.get("suffix");
-            String condition = parameters.get("condition");
-            String group = parameters.get("group");
+            String prefix = parameters.get(PREFIX);
+            String suffix = parameters.get(SUFFIX);
+            String condition = parameters.get(CONDITION);
+            String group = parameters.get(GROUP);
             if (prefix == null) {
                 prefix = "";
             }
@@ -183,11 +198,12 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
             suffix = replacer.replace(suffix);
             condition = replacer.replace(condition);
 
-            changeMetadata(dsList,group, parameters.get("field"), prefix, suffix, condition, p.getRegelsatz().getPreferences());
+            String field = parameters.get(FIELD);
+            String value = parameters.get(VALUE);
+            changeMetadata(dsList, group, field, prefix, suffix, condition, p.getRegelsatz().getPreferences());
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
-            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                    "Metadata changed using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Metadata changed using GoobiScript: " + field + " - " + value, username);
             log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Metadata changed successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);

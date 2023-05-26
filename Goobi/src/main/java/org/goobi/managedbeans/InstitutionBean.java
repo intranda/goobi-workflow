@@ -44,9 +44,6 @@ import lombok.Setter;
 @WindowScoped
 public class InstitutionBean extends BasicBean implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 8888874759901347827L;
 
     @Getter
@@ -62,7 +59,6 @@ public class InstitutionBean extends BasicBean implements Serializable {
      * 
      * @return
      */
-
     public String createNewInstitution() {
         institution = new Institution();
         return "institution_edit";
@@ -73,7 +69,6 @@ public class InstitutionBean extends BasicBean implements Serializable {
      * 
      * @return
      */
-
     public String saveInstitution() {
         InstitutionManager.saveInstitution(institution);
         paginator.load();
@@ -114,9 +109,11 @@ public class InstitutionBean extends BasicBean implements Serializable {
     /**
      * Needed from the UI, don't use it in java code, use saveInstitution instead
      * 
+     * @deprecated This method is replaced by saveInstitution()
+     * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String Speichern() {
         return saveInstitution();
     }
@@ -124,9 +121,11 @@ public class InstitutionBean extends BasicBean implements Serializable {
     /**
      * Needed from the UI, don't use it in java code, use deleteInstitution instead
      * 
+     * @deprecated This method is replaced by deleteInstitution()
+     * 
      * @return
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public String Loeschen() {
         return deleteInstitution();
     }

@@ -172,7 +172,13 @@ public class HttpUtils {
         return response;
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is replaced with getStringFromUrl(String...)
+     *
+     * @param url
+     * @param parameter
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public static String getStringFromUrl(String url, String[] parameter) {
         String response = "";
         CloseableHttpClient client = null;

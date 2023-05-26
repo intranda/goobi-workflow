@@ -30,6 +30,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
@@ -121,9 +122,7 @@ public class ProcessProperty implements IProperty, Serializable {
             cal.setTime(format.parse(value));
             cal.set(Calendar.HOUR, 12);
             return cal.getTime();
-        } catch (ParseException e) {
-            return new Date();
-        } catch (NullPointerException e) {
+        } catch (ParseException | NullPointerException e) {
             return new Date();
         }
     }
@@ -189,14 +188,11 @@ public class ProcessProperty implements IProperty, Serializable {
     }
 
     public List<String> getValueList() {
-        List<String> answer = new ArrayList<>();
         if (this.value != null && this.value.contains("; ")) {
-            String[] values = this.value.split("; ");
-            for (String val : values) {
-                answer.add(val);
-            }
+            return Arrays.asList(this.value.split("; "));
+        } else {
+            return new ArrayList<>();
         }
-        return answer;
     }
 
     public void setValueList(List<String> valueList) {

@@ -95,6 +95,8 @@ public class MetadatenHelper implements Comparator<Object> {
     public DocStruct ChangeCurrentDocstructType(DocStruct inOldDocstruct, String inNewType)
             throws DocStructHasNoTypeException, MetadataTypeNotAllowedException, TypeNotAllowedAsChildException, TypeNotAllowedForParentException {
 
+        String isNotAllowedInNewElement = " is not allowed in new element ";
+
         DocStructType dst = this.myPrefs.getDocStrctTypeByName(inNewType);
         DocStruct newDocstruct = this.mydocument.createDocStruct(dst);
         /*
@@ -103,7 +105,7 @@ public class MetadatenHelper implements Comparator<Object> {
         if (inOldDocstruct.getAllMetadata() != null && !inOldDocstruct.getAllMetadata().isEmpty()) {
             for (Metadata old : inOldDocstruct.getAllMetadata()) {
                 boolean match = false;
-                String error = "Metadata " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
+                String error = "Metadata " + old.getType().getName() + isNotAllowedInNewElement + newDocstruct.getType().getName();
                 if (old.getValue() != null && !old.getValue().isEmpty()) {
                     if (newDocstruct.getAddableMetadataTypes(true) != null && !newDocstruct.getAddableMetadataTypes(true).isEmpty()) {
                         for (MetadataType mt : newDocstruct.getAddableMetadataTypes(true)) {
@@ -136,7 +138,7 @@ public class MetadatenHelper implements Comparator<Object> {
         if (inOldDocstruct.getAllPersons() != null && !inOldDocstruct.getAllPersons().isEmpty()) {
             for (Person old : inOldDocstruct.getAllPersons()) {
                 boolean match = false;
-                String error = "Person " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
+                String error = "Person " + old.getType().getName() + isNotAllowedInNewElement + newDocstruct.getType().getName();
                 if ((old.getFirstname() != null && !old.getFirstname().isEmpty()) || (old.getLastname() != null && !old.getLastname().isEmpty())) {
 
                     if (newDocstruct.getAddableMetadataTypes(true) != null && !newDocstruct.getAddableMetadataTypes(true).isEmpty()) {
@@ -161,7 +163,7 @@ public class MetadatenHelper implements Comparator<Object> {
         if (inOldDocstruct.getAllMetadataGroups() != null && !inOldDocstruct.getAllMetadataGroups().isEmpty()) {
             for (MetadataGroup mg : inOldDocstruct.getAllMetadataGroups()) {
                 boolean match = false;
-                String error = "Person " + mg.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
+                String error = "Person " + mg.getType().getName() + isNotAllowedInNewElement + newDocstruct.getType().getName();
                 if (newDocstruct.getPossibleMetadataGroupTypes() != null && !newDocstruct.getPossibleMetadataGroupTypes().isEmpty()) {
                     for (MetadataGroupType mgt : newDocstruct.getPossibleMetadataGroupTypes()) {
                         if (mgt.getName().equals(mg.getType().getName())) {
@@ -197,7 +199,7 @@ public class MetadatenHelper implements Comparator<Object> {
          */
         if (inOldDocstruct.getAllChildren() != null && !inOldDocstruct.getAllChildren().isEmpty()) {
             for (DocStruct old : inOldDocstruct.getAllChildren()) {
-                String error = "Child element " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType().getName();
+                String error = "Child element " + old.getType().getName() + isNotAllowedInNewElement + newDocstruct.getType().getName();
                 if (newDocstruct.getType().getAllAllowedDocStructTypes() != null && !newDocstruct.getType().getAllAllowedDocStructTypes().isEmpty()) {
 
                     if (!newDocstruct.getType().getAllAllowedDocStructTypes().contains(old.getType().getName())) {
@@ -236,9 +238,7 @@ public class MetadatenHelper implements Comparator<Object> {
         }
 
         int index = parent.getAllChildren().indexOf(inStruct);
-        if (index == 0) {
-            return;
-        } else {
+        if (index != 0) {
             parent.getAllChildren().remove(inStruct);
             parent.getAllChildren().add(index - 1, inStruct);
 
@@ -256,9 +256,7 @@ public class MetadatenHelper implements Comparator<Object> {
         int max = parent.getAllChildren().size();
         int index = parent.getAllChildren().indexOf(inStruct);
 
-        if (max - 1 <= index) {
-            return;
-        } else {
+        if (max - 1 > index) {
             parent.getAllChildren().remove(inStruct);
             parent.getAllChildren().add(index + 1, inStruct);
         }
@@ -349,7 +347,7 @@ public class MetadatenHelper implements Comparator<Object> {
     /**
      * die erste Imagenummer zurückgeben ================================================================
      */
-    // FIXME: alphanumerisch
+    // TODO: alphanumerisch
 
     public MutablePair<String, String> getImageNumber(DocStruct inStrukturelement, int inPageNumber) {
         String physical = "";
@@ -363,26 +361,24 @@ public class MetadatenHelper implements Comparator<Object> {
             /*
              * -------------------------------- Referenzen sortieren --------------------------------
              */
-            Collections.sort(listReferenzen, new Comparator<Reference>() {
-                @Override
-                public int compare(final Reference o1, final Reference o2) {
-                    final Reference r1 = o1;
-                    final Reference r2 = o2;
-                    Integer page1 = 0;
-                    Integer page2 = 0;
-                    final MetadataType mdt = MetadatenHelper.this.myPrefs.getMetadataTypeByName("physPageNumber");
-                    List<? extends Metadata> listMetadaten = r1.getTarget().getAllMetadataByType(mdt);
-                    if (listMetadaten != null && !listMetadaten.isEmpty()) {
-                        final Metadata meineSeite = listMetadaten.get(0);
-                        page1 = Integer.parseInt(meineSeite.getValue());
-                    }
-                    listMetadaten = r2.getTarget().getAllMetadataByType(mdt);
-                    if (listMetadaten != null && !listMetadaten.isEmpty()) {
-                        final Metadata meineSeite = listMetadaten.get(0);
-                        page2 = Integer.parseInt(meineSeite.getValue());
-                    }
-                    return page1.compareTo(page2);
+            Collections.sort(listReferenzen, (o1, o2) -> {
+                final Reference r1 = o1;
+                final Reference r2 = o2;
+                Integer page1 = 0;
+                Integer page2 = 0;
+
+                final MetadataType mdt = MetadatenHelper.this.myPrefs.getMetadataTypeByName("physPageNumber");
+                List<? extends Metadata> listMetadaten = r1.getTarget().getAllMetadataByType(mdt);
+                if (listMetadaten != null && !listMetadaten.isEmpty()) {
+                    final Metadata meineSeite = listMetadaten.get(0);
+                    page1 = Integer.parseInt(meineSeite.getValue());
                 }
+                listMetadaten = r2.getTarget().getAllMetadataByType(mdt);
+                if (listMetadaten != null && !listMetadaten.isEmpty()) {
+                    final Metadata meineSeite = listMetadaten.get(0);
+                    page2 = Integer.parseInt(meineSeite.getValue());
+                }
+                return page1.compareTo(page2);
             });
 
             MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
@@ -466,9 +462,9 @@ public class MetadatenHelper implements Comparator<Object> {
                         }
                     }
                 } catch (DocStructHasNoTypeException e) {
-                    continue;
+                    // do nothing
                 } catch (MetadataTypeNotAllowedException e) {
-                    continue;
+                    // do nothing
                 }
             }
             inStruct.setAllMetadata(allMetadata);
@@ -525,9 +521,9 @@ public class MetadatenHelper implements Comparator<Object> {
                         // element
 
                     } catch (DocStructHasNoTypeException e) {
-                        continue;
+                        // do nothing
                     } catch (MetadataTypeNotAllowedException e) {
-                        continue;
+                        // do nothing
                     }
                 }
 
@@ -690,7 +686,7 @@ public class MetadatenHelper implements Comparator<Object> {
      * @param Rollenname der aktuellen Person, damit diese ggf. in die Liste mit übernommen wird ================================================
      *            ================
      */
-    public ArrayList<SelectItem> getAddablePersonRoles(HoldingElement myDocStruct, String inRoleName) {
+    public List<SelectItem> getAddablePersonRoles(HoldingElement myDocStruct, String inRoleName) {
         ArrayList<SelectItem> myList = new ArrayList<>();
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
@@ -1025,7 +1021,9 @@ public class MetadatenHelper implements Comparator<Object> {
     }
 
     private static void addAuthorityFromPerson(Map<String, List<String>> metadataList, Person p) {
+
         if (StringUtils.isNotBlank(p.getAuthorityID())) {
+
             String key = p.getType().getName() + "_authority";
             List<String> value = metadataList.get(key);
             if (value == null) {
@@ -1037,7 +1035,9 @@ public class MetadatenHelper implements Comparator<Object> {
     }
 
     private static void addAuthorityFromMeta(Map<String, List<String>> metadataList, Metadata md) {
+
         if (StringUtils.isNotBlank(md.getAuthorityID())) {
+
             String key = md.getType().getName() + "_authority";
             List<String> value = metadataList.get(key);
             if (value == null) {

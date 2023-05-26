@@ -47,13 +47,14 @@ import net.sf.ehcache.Element;
 @Log4j2
 public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGoobiScript {
 
-    /**
-     * The cache only works if the status is Status.STATUS_ALIVE. The status is Status.STATUS_ALIVE after it was registered in the cache manager.
-     */
-    private CacheManager cacheManager = null;
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String GROUP = "group";
+
     /**
      * The cache stores all user groups that should be added with one or multiple goobi script instances. If the same group should be added to
-     * multiple steps, the group is loaded from the database into the cache once and reused each time. This saves lots of database requests.
+     * multiple steps, the group is loaded from the database into the cache once and reused each time. This saves lots of database requests. The cache
+     * only works if the status is Status.STATUS_ALIVE. The status is Status.STATUS_ALIVE after it was registered in the cache manager.
      */
     private Cache userGroupCache = null;
 
@@ -66,8 +67,8 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to assign a user group to an existing workflow step.");
-        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to be edited");
-        addParameterToSampleCall(sb, "group", "Photographers", "Use the name of the user group to be assigned to the selected workflow step.");
+        addParameterToSampleCall(sb, STEPTITLE, "Scanning", "Title of the workflow step to be edited");
+        addParameterToSampleCall(sb, GROUP, "Photographers", "Use the name of the user group to be assigned to the selected workflow step.");
         return sb.toString();
     }
 
@@ -76,19 +77,24 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         super.prepare(processes, command, parameters);
         this.initializeCache();
 
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+        String missingParameter = "Missing parameter: ";
+        String wrongParameter = "Unknown group: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
-        if (parameters.get("group") == null || parameters.get("group").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "group");
+
+        String group = parameters.get(GROUP);
+        if (group == null || group.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, GROUP);
             return new ArrayList<>();
         }
 
         /* check if usergroup exists */
         Usergroup groupInDatabase = GoobiScriptAddUserGroup.getUsergroupFromDatabase(parameters);
         if (groupInDatabase == null) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Unknown group: ", parameters.get("group"));
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, wrongParameter, group);
         }
 
         // add all valid commands to list
@@ -117,8 +123,8 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         long timeToIdleSeconds = 3600;
 
         this.userGroupCache = new Cache(name, maxElementsInMemory, overflowToDisk, eternal, timeToLiveSeconds, timeToIdleSeconds);
-        this.cacheManager = new CacheManager();
-        this.cacheManager.addCache(this.userGroupCache);
+        CacheManager cacheManager = new CacheManager();
+        cacheManager.addCache(this.userGroupCache);
     }
 
     @Override
@@ -126,9 +132,10 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         Map<String, String> parameters = gsr.getParameters();
 
         // Add the group to the cache if it does not already exist
-        if (!this.userGroupCache.isElementInMemory(parameters.get("group"))) {
-            Usergroup group = GoobiScriptAddUserGroup.getUsergroupFromDatabase(parameters);
-            Element element = new Element(parameters.get("group"), group);
+        String group = parameters.get(GROUP);
+        if (!this.userGroupCache.isElementInMemory(group)) {
+            Usergroup userGroup = GoobiScriptAddUserGroup.getUsergroupFromDatabase(parameters);
+            Element element = new Element(group, userGroup);
             this.userGroupCache.put(element);
         }
 
@@ -138,11 +145,12 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         gsr.updateTimestamp();
 
         boolean found = false;
+        String steptitle = parameters.get(STEPTITLE);
         List<Step> allSteps = process.getSchritteList();
         for (int index = 0; index < allSteps.size(); index++) {
             Step step = allSteps.get(index);
 
-            if (!step.getTitel().equals(parameters.get("steptitle"))) {
+            if (!step.getTitel().equals(steptitle)) {
                 continue;
             }
             found = true;
@@ -153,17 +161,17 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
                 step.setBenutzergruppen(groupsOfStep);
             }
 
-            Element element = this.userGroupCache.get(parameters.get("group"));
-            Usergroup group = (Usergroup) (element.getObjectValue());
+            Element element = this.userGroupCache.get(group);
+            Usergroup userGroup = (Usergroup) (element.getObjectValue());
 
-            if (!groupsOfStep.contains(group)) {
-                groupsOfStep.add(group);
-                this.saveStep(gsr, process, step, group);
+            if (!groupsOfStep.contains(userGroup)) {
+                groupsOfStep.add(userGroup);
+                this.saveStep(gsr, process, step, userGroup);
             }
         }
 
         if (!found) {
-            gsr.setResultMessage("No step '" + parameters.get("steptitle") + "' found.");
+            gsr.setResultMessage("No step '" + steptitle + "' found.");
             gsr.setResultType(GoobiScriptResultType.ERROR);
         } else {
             gsr.setResultType(GoobiScriptResultType.OK);
@@ -172,25 +180,25 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
     }
 
     private void saveStep(GoobiScriptResult gsr, Process process, Step step, Usergroup group) {
+        String info = "'" + group.getTitel() + "' to step '" + step.getTitel() + "'";
         try {
             StepManager.saveStep(step);
-            String message = "Added usergroup '" + group.getTitel() + "' to step '" + step.getTitel() + "' using GoobiScript.";
+            String message = "Added usergroup " + info + " using GoobiScript.";
             Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message, username);
             log.info(message + " The process id is " + process.getId());
             gsr.setResultMessage(message);
 
-        } catch (DAOException edaoException) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + process.getTitel(), edaoException);
-            gsr.setResultMessage(
-                    "Problem while adding usergroup '" + group.getTitel() + "' to step '" + step.getTitel() + "': " + edaoException.getMessage());
+        } catch (DAOException daoException) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error while saving - " + process.getTitel(), daoException);
+            gsr.setResultMessage("Problem while adding usergroup " + info + ": " + daoException.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
-            gsr.setErrorText(edaoException.getMessage());
+            gsr.setErrorText(daoException.getMessage());
         }
     }
 
     private static Usergroup getUsergroupFromDatabase(Map<String, String> parameters) {
         try {
-            List<Usergroup> groups = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null, null);
+            List<Usergroup> groups = UsergroupManager.getUsergroups(null, "titel='" + parameters.get(GROUP) + "'", null, null, null);
             if (groups != null && !groups.isEmpty()) {
                 return groups.get(0);
             } else {
@@ -198,7 +206,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
             }
         } catch (DAOException e) {
             log.error(e);
-            Helper.setFehlerMeldung("goobiScriptfield", "Error in GoobiScript addusergroup", e);
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error in GoobiScript addusergroup", e);
             return null;
         }
     }

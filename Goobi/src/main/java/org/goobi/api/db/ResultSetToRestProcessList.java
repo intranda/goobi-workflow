@@ -39,9 +39,6 @@ import org.goobi.api.rest.model.RestProcess;
 
 public class ResultSetToRestProcessList implements ResultSetHandler<List<RestProcess>> {
 
-    public ResultSetToRestProcessList() {
-    }
-
     @Override
     public List<RestProcess> handle(ResultSet rs) throws SQLException {
         Map<Integer, RestProcess> resultMap = new LinkedHashMap<>();
@@ -52,12 +49,12 @@ public class ResultSetToRestProcessList implements ResultSetHandler<List<RestPro
         String processIdLabel = columnNames.contains("processid") ? "processid" : "ProzesseID";
         while (rs.next()) {
             Integer id = rs.getInt(processIdLabel);
-            if (!resultMap.containsKey(id)) {
-                String ruleset = rs.getString("Datei");
-                RestProcess p = new RestProcess(id);
-                p.setRuleset(ruleset);
-                resultMap.put(id, p);
-            }
+            String ruleset = rs.getString("Datei");
+            resultMap.computeIfAbsent(id, resultSetId -> {
+                RestProcess process = new RestProcess(resultSetId);
+                process.setRuleset(ruleset);
+                return process;
+            });
         }
         return new ArrayList<>(resultMap.values());
     }

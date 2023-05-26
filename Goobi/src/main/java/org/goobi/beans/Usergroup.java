@@ -83,18 +83,14 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
     }
 
     public Integer getBerechtigung() {
-        if (this.berechtigung == null) {
-            this.berechtigung = 4;
-        } else if (this.berechtigung == 3) {
+        if (this.berechtigung == null || this.berechtigung == 3) {
             this.berechtigung = 4;
         }
         return this.berechtigung;
     }
 
     public String getBerechtigungAsString() {
-        if (this.berechtigung == null) {
-            this.berechtigung = 4;
-        } else if (this.berechtigung == 3) {
+        if (this.berechtigung == null || this.berechtigung == 3) {
             this.berechtigung = 4;
         }
         return String.valueOf(this.berechtigung.intValue());

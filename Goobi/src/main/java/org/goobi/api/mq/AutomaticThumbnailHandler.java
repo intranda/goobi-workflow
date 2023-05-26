@@ -67,7 +67,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValue> {
 
-    public static String HANDLERNAME = "automatic_thumbnail";
+    public static final String HANDLERNAME = "automatic_thumbnail";
 
     @Override
     public String getTicketHandlerName() {
@@ -90,21 +90,21 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
         String defaultImageDirectory;
         if (master) {
             defaultImageDirectory = process.getImagesOrigDirectory(false);
-            generateThumbnailsFromDirectory(process, defaultImageDirectory, sizes, command);
+            generateThumbnailsFromDirectory(process, defaultImageDirectory, sizes);
         }
         if (media) {
             defaultImageDirectory = process.getImagesTifDirectory(false);
-            generateThumbnailsFromDirectory(process, defaultImageDirectory, sizes, command);
+            generateThumbnailsFromDirectory(process, defaultImageDirectory, sizes);
         }
         if (!imgDirectory.isEmpty()) {
-            generateThumbnailsFromDirectory(process, imgDirectory, sizes, command);
+            generateThumbnailsFromDirectory(process, imgDirectory, sizes);
         }
         if (!command.isEmpty()) {
             new HelperSchritte().executeScriptForStepObject(step, command, false);
         }
     }
 
-    private void generateThumbnailsFromDirectory(Process process, String imageDirectory, int[] sizes, String command)
+    private void generateThumbnailsFromDirectory(Process process, String imageDirectory, int[] sizes)
             throws SwapException, DAOException, ContentLibException {
         try {
             File[] fileList = new File(imageDirectory).listFiles();

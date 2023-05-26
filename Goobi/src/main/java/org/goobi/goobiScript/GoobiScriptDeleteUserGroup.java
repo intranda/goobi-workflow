@@ -45,6 +45,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String GROUP = "group";
+
     @Override
     public String getAction() {
         return "deleteUserGroup";
@@ -54,8 +58,8 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to remove a user group from a workflow step where it was assigned to.");
-        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to adapt");
-        addParameterToSampleCall(sb, "group", "Photographers", "Name of the user group that shall be removed from the workflow step");
+        addParameterToSampleCall(sb, STEPTITLE, "Scanning", "Title of the workflow step to adapt");
+        addParameterToSampleCall(sb, GROUP, "Photographers", "Name of the user group that shall be removed from the workflow step");
         return sb.toString();
 
         // return "---\\naction: deleteUserGroup\\nsteptitle: TITLE_STEP\\ngroup:
@@ -65,19 +69,22 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
     @Override
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
-        Usergroup myGroup = null;
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
-            return new ArrayList<>();
-        }
-        if (parameters.get("group") == null || parameters.get("group").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "group");
+
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
-        myGroup = getUserGroup(parameters.get("group"));
-        /* check if usergroup exists */
-        if (myGroup == null) {
+        String group = parameters.get(GROUP);
+        if (group == null || group.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, GROUP);
+            return new ArrayList<>();
+        }
+
+        /* check if user group exists */
+        if (this.getUserGroup(group) == null) {
             return new ArrayList<>();
         }
 
@@ -93,38 +100,42 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
-        Usergroup myGroup = getUserGroup(parameters.get("group"));
+
+        String stepTitle = parameters.get(STEPTITLE);
+        String group = parameters.get(GROUP);
+
+        Usergroup userGroup = getUserGroup(group);
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
         boolean found = false;
-        if (myGroup != null) {
+        if (userGroup != null) {
             for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-                Step s = iterator.next();
-                if (s.getTitel().equals(parameters.get("steptitle"))) {
-                    List<Usergroup> myBenutzergruppe = s.getBenutzergruppen();
-                    if (myBenutzergruppe == null) {
-                        myBenutzergruppe = new ArrayList<>();
-                        s.setBenutzergruppen(myBenutzergruppe);
+                Step step = iterator.next();
+                if (step.getTitel().equals(stepTitle)) {
+                    List<Usergroup> userGroups = step.getBenutzergruppen();
+                    if (userGroups == null) {
+                        userGroups = new ArrayList<>();
+                        step.setBenutzergruppen(userGroups);
                     }
                     found = true;
-                    if (myBenutzergruppe.contains(myGroup)) {
-                        myBenutzergruppe.remove(myGroup);
+                    if (userGroups.contains(userGroup)) {
+                        userGroups.remove(userGroup);
 
-                        StepManager.removeUsergroupFromStep(s, myGroup);
-                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                                "Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' using GoobiScript.", username);
-                        log.info("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel()
-                                + "' using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' successfully.");
+                        StepManager.removeUsergroupFromStep(step, userGroup);
+                        String info = "'" + userGroup.getTitel() + "' from step '" + step.getTitel() + "'";
+                        String message = "Deleted usergroup " + info + " using GoobiScript";
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + ".", username);
+                        log.info(message + " for process with ID " + p.getId());
+                        gsr.setResultMessage(message + " successfully.");
 
                     }
                 }
             }
         }
         if (!found) {
-            gsr.setResultMessage("No step '" + parameters.get("steptitle") + "' found.");
+            gsr.setResultMessage("No step '" + stepTitle + "' found.");
             gsr.setResultType(GoobiScriptResultType.ERROR);
         } else {
             gsr.setResultType(GoobiScriptResultType.OK);
@@ -132,19 +143,17 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
         gsr.updateTimestamp();
     }
 
-    private Usergroup getUserGroup(String userGroupTitle) {
-        Usergroup myGroup;
+    private Usergroup getUserGroup(String groupName) {
         try {
-            List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + userGroupTitle + "'", null, null, null);
-            if (treffer != null && !treffer.isEmpty()) {
-                myGroup = treffer.get(0);
-                return myGroup;
+            List<Usergroup> userGroups = UsergroupManager.getUsergroups(null, "titel='" + groupName + "'", null, null, null);
+            if (userGroups != null && !userGroups.isEmpty()) {
+                return userGroups.get(0);
             } else {
-                Helper.setFehlerMeldung("goobiScriptfield", "Unknown group: ", parameters.get("group"));
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Unknown group: ", groupName);
                 return null;
             }
         } catch (DAOException e) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Error in GoobiScript addusergroup", e);
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error in GoobiScript addusergroup", e);
             return null;
         }
     }

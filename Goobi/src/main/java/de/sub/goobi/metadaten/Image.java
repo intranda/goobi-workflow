@@ -172,7 +172,7 @@ public @Data class Image {
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
             this.objectUrl = create3DObjectUrl(process, imageFolderName, filename);
         } else if (Type.audio.equals(this.type) || Type.video.equals(this.type) || Type.unknown.equals(this.type)) {
-            this.objectUrl = createMediaUrl(process, imageFolderName, filename);
+            this.objectUrl = createMediaUrl(process, imageFolderName);
         } else {
             throw new IOException(FILE_TYPE_NOT_IMPLEMENTED_ERROR + this.imagePath);
         }
@@ -219,7 +219,7 @@ public @Data class Image {
      * @param tooltip The tooltip to display
      * @deprecated Use {@link #Image(Process, String, String, int)} instead
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public Image(String imageName, int order, String thumbnailUrl, String largeThumbnailUrl, String tooltip) {
         this.imageName = imageName;
         this.type = getType(imageName);
@@ -389,11 +389,10 @@ public @Data class Image {
      * 
      * @param process
      * @param imageFolderName
-     * @param filename
      * @return
      */
 
-    private String createMediaUrl(Process process, String imageFolderName, String filename) {
+    private String createMediaUrl(Process process, String imageFolderName) {
         StringBuilder url = new StringBuilder();
 
         url.append(new HelperForm().getServletPathWithHostAsUrl());
@@ -531,7 +530,7 @@ public @Data class Image {
             this.layerSizes = ConfigurationHelper.getInstance()
                     .getMetsEditorImageSizes()
                     .stream()
-                    .map(i -> i.toString())
+                    .map(Object::toString)
                     .collect(Collectors.toList());
         }
         return this.layerSizes;

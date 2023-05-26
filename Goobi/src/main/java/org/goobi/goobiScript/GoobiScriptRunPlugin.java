@@ -45,6 +45,9 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+
     @Override
     public String getAction() {
         return "runPlugin";
@@ -54,8 +57,7 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allow to run a plugin that is assigned to a workflow step.");
-        addParameterToSampleCall(sb, "steptitle", "Catalogue update",
-                "Title of the workflow step which has a plugin assigned that shall be executed");
+        addParameterToSampleCall(sb, STEPTITLE, "Catalogue update", "Title of the workflow step which has a plugin assigned that shall be executed");
         return sb.toString();
     }
 
@@ -63,8 +65,10 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
@@ -80,8 +84,9 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
-        String steptitle = parameters.get("steptitle");
+        String steptitle = parameters.get(STEPTITLE);
 
+        String errorPrefix = "Plugin for step '" + steptitle + "'";
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
@@ -100,25 +105,24 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
                             myPlugin.execute();
                             myPlugin.finish();
 
-                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                                    "Plugin for step '" + steptitle + "' executed using GoobiScript.", username);
-                            log.info("Plugin for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
-                            gsr.setResultMessage("Plugin for step '" + steptitle + "' executed successfully.");
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, errorPrefix + " executed using GoobiScript.", username);
+                            log.info(errorPrefix + " executed using GoobiScript for process with ID " + p.getId());
+                            gsr.setResultMessage(errorPrefix + " executed successfully.");
                             gsr.setResultType(GoobiScriptResultType.OK);
                         } else {
-                            gsr.setResultMessage("Plugin for step '" + steptitle + "' cannot be executed as it has a GUI.");
+                            gsr.setResultMessage(errorPrefix + " cannot be executed as it has a GUI.");
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                         }
                     }
                 } else {
-                    gsr.setResultMessage("Plugin for step '" + steptitle + "' cannot be executed as it is not Plugin workflow step.");
+                    gsr.setResultMessage(errorPrefix + " cannot be executed as it is not Plugin workflow step.");
                     gsr.setResultType(GoobiScriptResultType.ERROR);
                 }
             }
         }
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
             gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+            gsr.setResultMessage("Step not found: " + steptitle);
         }
         gsr.updateTimestamp();
     }

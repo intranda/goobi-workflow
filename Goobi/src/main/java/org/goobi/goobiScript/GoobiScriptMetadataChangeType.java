@@ -25,7 +25,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +50,19 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implements IGoobiScript {
     // action:metadataTypeChange position:work oldType:singleDigCollection newType:DDC
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String OLD_TYPE = "oldType";
+    private static final String NEW_TYPE = "newType";
+    private static final String POSITION = "position";
+    private static final String IGNORE_ERRORS = "ignoreErrors";
+    private static final String TYPE = "type";
+    private static final String GROUP = "group";
+
+    private static final String POSITION_TOP = "top";
+    private static final String POSITION_CHILD = "child";
+    private static final String POSITION_ANY = "any";
+    private static final String POSITION_PHYSICAL = "physical";
+
     @Override
     public String getAction() {
         return "metadataChangeType";
@@ -60,16 +72,16 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to change the type of an existing metadata.");
-        addParameterToSampleCall(sb, "oldType", "old",
+        addParameterToSampleCall(sb, OLD_TYPE, "old",
                 "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
-        addParameterToSampleCall(sb, "newType", "new", "Define the type that shall be used as new type. Use the internal name here as well.");
-        addParameterToSampleCall(sb, "position", "work",
+        addParameterToSampleCall(sb, NEW_TYPE, "new", "Define the type that shall be used as new type. Use the internal name here as well.");
+        addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
-        addParameterToSampleCall(sb, "ignoreErrors", "true",
+        addParameterToSampleCall(sb, IGNORE_ERRORS, "true",
                 "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
-        addParameterToSampleCall(sb, "type", "metadata",
+        addParameterToSampleCall(sb, TYPE, "metadata",
                 "Define what type of metadata you would like to change. Possible values are `metadata` and `group`. Default is metadata.");
-        addParameterToSampleCall(sb, "group", "", "Internal name of the group. Use it when the metadata to change is located within a group.");
+        addParameterToSampleCall(sb, GROUP, "", "Internal name of the group. Use it when the metadata to change is located within a group.");
         return sb.toString();
     }
 
@@ -77,23 +89,20 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (StringUtils.isBlank(parameters.get("oldType"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "oldType");
+        String missingParameter = "Missing parameter: ";
+        if (StringUtils.isBlank(parameters.get(OLD_TYPE))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, OLD_TYPE);
             return new ArrayList<>();
         }
 
-        if (StringUtils.isBlank(parameters.get("newType"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "newType");
-            return new ArrayList<>();
-        }
-        if (StringUtils.isBlank(parameters.get("oldType"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "oldType");
+        if (StringUtils.isBlank(parameters.get(NEW_TYPE))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, NEW_TYPE);
             return new ArrayList<>();
         }
 
-        if (StringUtils.isBlank(parameters.get("position"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
-            return Collections.emptyList();
+        if (StringUtils.isBlank(parameters.get(POSITION))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, POSITION);
+            return new ArrayList<>();
         }
 
         // add all valid commands to list
@@ -120,10 +129,10 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
 
             // find the right elements to adapt
             List<DocStruct> dsList = new ArrayList<>();
-            switch (parameters.get("position")) {
+            switch (parameters.get(POSITION)) {
 
                 // just the anchor element
-                case "top":
+                case POSITION_TOP:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds);
                     } else {
@@ -134,7 +143,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     break;
 
                 // fist the first child element
-                case "child":
+                case POSITION_CHILD:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
                     } else {
@@ -145,14 +154,14 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     break;
 
                 // any element in the hierarchy
-                case "any":
+                case POSITION_ANY:
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
                     if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
-                case "physical":
+                case POSITION_PHYSICAL:
                     if (physical != null) {
                         dsList.add(physical);
                     }
@@ -169,13 +178,13 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
             }
 
             // check if errors shall be ignored
-            boolean ignoreErrors = getParameterAsBoolean("ignoreErrors");
+            boolean ignoreErrors = getParameterAsBoolean(IGNORE_ERRORS);
 
-            String oldMetadataType = parameters.get("oldType");
-            String newMetadataType = parameters.get("newType");
+            String oldMetadataType = parameters.get(OLD_TYPE);
+            String newMetadataType = parameters.get(NEW_TYPE);
 
-            String group = parameters.get("group");
-            String type = parameters.get("type");
+            String group = parameters.get(GROUP);
+            String type = parameters.get(TYPE);
 
             boolean changed =
                     changeMetadataType(dsList, group, type, oldMetadataType, newMetadataType, p.getRegelsatz().getPreferences(), ignoreErrors);
@@ -216,7 +225,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
     private boolean changeMetadataType(List<DocStruct> dsList, String group, String changeType, String oldMetadataType, String newMetadataType,
             Prefs prefs, boolean ignoreErrors) throws MetadataTypeNotAllowedException {
         boolean metadataChanged = false;
-        if (StringUtils.isNotBlank(changeType) && "group".equals(changeType)) {
+        if (StringUtils.isNotBlank(changeType) && GROUP.equals(changeType)) {
 
             for (DocStruct ds : dsList) {
                 List<MetadataGroup> groups = ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(oldMetadataType));

@@ -51,7 +51,7 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
-import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
+import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
@@ -105,7 +105,7 @@ public class GoobiImageFolderResource {
             description = "Returns information about image directories in JSON or JSONLD format")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
+    @Produces({ ContentServerResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
     public List<URI> getListAsJson(@Context ContainerRequestContext requestContext, @Context HttpServletRequest request,
             @Context HttpServletResponse response) throws ContentLibException, IOException {
