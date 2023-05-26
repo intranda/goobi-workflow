@@ -48,7 +48,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Stream;
@@ -574,6 +573,51 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
+    /*
+     * Filter
+     */
+
+    public String FilterAktuelleProzesse() {
+        this.statisticsManager = null;
+        this.myAnzahlList = null;
+        ProcessManager m = new ProcessManager();
+
+        String searchValue = filter;
+        if (StringUtils.isNotBlank(additionalFilter) && StringUtils.isNotBlank(filter)) {
+            searchValue = additionalFilter.replace("{}", filter);
+        }
+
+        String sql = FilterHelper.criteriaBuilder(searchValue, false, null, null, null, true, false);
+        if ("vorlagen".equals(this.modusAnzeige)) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.istTemplate = true ";
+        } else {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.istTemplate = false ";
+        }
+        if (!this.showClosedProcesses && !"vorlagen".equals(this.modusAnzeige)) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.sortHelperStatus <> '100000000' ";
+        }
+        if (!this.showArchivedProjects) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " projekte.projectIsArchived = false ";
+        }
+
+        paginator = new DatabasePaginator(sortField, sql, m, "process_all");
+
+        this.modusAnzeige = "aktuell";
+        return "process_all";
+    }
+
     public String FilterAktuelleProzesseOfGoobiScript(String status) {
 
         List<GoobiScriptResult> resultList = Helper.getSessionBean().getGsm().getGoobiScriptResults();
@@ -590,6 +634,38 @@ public class ProcessBean extends BasicBean implements Serializable {
         return FilterAktuelleProzesse();
     }
 
+    public String FilterVorlagen() {
+        this.statisticsManager = null;
+        this.myAnzahlList = null;
+
+        ProzesskopieForm pkf = Helper.getBeanByClass(ProzesskopieForm.class);
+        pkf.clearAvailableProjects();
+
+        String searchValue = filter;
+        if (StringUtils.isNotBlank(additionalFilter)) {
+            searchValue = additionalFilter.replace("{}", filter);
+        }
+
+        String sql = FilterHelper.criteriaBuilder(searchValue, true, null, null, null, true, false);
+
+        if (!this.showClosedProcesses && !"vorlagen".equals(this.modusAnzeige)) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.sortHelperStatus <> '100000000' ";
+        }
+        if (!this.showArchivedProjects) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " projekte.projectIsArchived = false ";
+        }
+        ProcessManager m = new ProcessManager();
+        paginator = new DatabasePaginator(sortField, sql, m, "process_all");
+        this.modusAnzeige = "vorlagen";
+        return "process_all";
+    }
+
     public String NeuenVorgangAnlegen() {
         FilterVorlagen();
         if (this.paginator.getTotalResults() == 1) {
@@ -602,66 +678,46 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    /*
-     * Filter
+    /**
+     * Anzeige der Sammelbände filtern
      */
-
-    public String FilterAktuelleProzesse() {
-        this.performProcessFiltering();
-
-        this.modusAnzeige = MODUS_ANZEIGE_AKTUELL;
-        return PAGE_PROCESS_ALL;
-    }
-
-    public String FilterVorlagen() {
-        this.performProcessFiltering();
-
-        ProzesskopieForm processCopyForm = Helper.getBeanByClass(ProzesskopieForm.class);
-        processCopyForm.clearAvailableProjects();
-
-        this.modusAnzeige = MODUS_ANZEIGE_VORLAGEN;
-        return PAGE_PROCESS_ALL;
-    }
-
     public String FilterAlleStart() {
-        this.performProcessFiltering();
-
-        return PAGE_PROCESS_ALL;
-    }
-
-    private void performProcessFiltering() {
         this.statisticsManager = null;
         this.myAnzahlList = null;
-        String sql = this.createSQLQueryForProcessFilter();
-        this.paginator = new DatabasePaginator(this.sortField, sql, new ProcessManager(), PAGE_PROCESS_ALL);
-    }
-
-    /**
-     * Creates and returns the SQL string that is required to filter the processes. The SQL WHERE condition contains information about the template
-     * vs. process, the closed processes, the archived processes and the search value.
-     * 
-     * @return The SQL string that is required for the search
-     */
-    private String createSQLQueryForProcessFilter() {
-
-        String searchValue = this.filter;
-        if (StringUtils.isNotBlank(this.additionalFilter) && StringUtils.isNotBlank(this.filter)) {
-            searchValue = this.additionalFilter.replace("{}", this.filter);
+        String searchValue = filter;
+        if (StringUtils.isNotBlank(additionalFilter) && StringUtils.isNotBlank(filter)) {
+            searchValue = additionalFilter.replace("{}", filter);
         }
 
-        boolean isTemplate = MODUS_ANZEIGE_VORLAGEN.equals(this.modusAnzeige);
-        String sql = FilterHelper.criteriaBuilder(searchValue, isTemplate, null, null, null, true, false);
-        StringBuilder buffer = new StringBuilder(sql);
-
-        if (!this.showClosedProcesses && !isTemplate) {
-            buffer.append(" AND ");
-            buffer.append(" prozesse.sortHelperStatus <> '100000000' ");
+        String sql = FilterHelper.criteriaBuilder(searchValue, null, null, null, null, true, false);
+        if ("vorlagen".equals(this.modusAnzeige)) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.istTemplate = true ";
+        } else {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.istTemplate = false ";
+        }
+        if (!this.showClosedProcesses && !"vorlagen".equals(this.modusAnzeige)) {
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " prozesse.sortHelperStatus <> '100000000' ";
         }
         if (!this.showArchivedProjects) {
-            buffer.append(" AND ");
-            buffer.append(" projekte.projectIsArchived = false ");
+            if (!sql.isEmpty()) {
+                sql = sql + " AND ";
+            }
+            sql = sql + " projekte.projectIsArchived = false ";
         }
-        return buffer.toString();
+
+        ProcessManager m = new ProcessManager();
+        paginator = new DatabasePaginator(sortField, sql, m, "process_all");
+
+        return "process_all";
     }
 
     /*
@@ -1800,50 +1856,46 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
 
     public void statisticsStatusVolumes() {
-        Locale locale = ProcessBean.getViewRootLocale();
-        this.statisticsManager = new StatisticsManager(StatisticsMode.STATUS_VOLUMES, locale, filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.STATUS_VOLUMES, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void statisticsUsergroups() {
-        Locale locale = ProcessBean.getViewRootLocale();
-        this.statisticsManager = new StatisticsManager(StatisticsMode.USERGROUPS, locale, filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.USERGROUPS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void statisticsRuntimeSteps() {
-        Locale locale = ProcessBean.getViewRootLocale();
-        this.statisticsManager = new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS, locale, filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS,
+                FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void statisticsProduction() {
-        Locale locale = ProcessBean.getViewRootLocale();
-        this.statisticsManager = new StatisticsManager(StatisticsMode.PRODUCTION, locale, filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void statisticsStorage() {
-        Locale locale = ProcessBean.getViewRootLocale();
-        this.statisticsManager = new StatisticsManager(StatisticsMode.STORAGE, locale, filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void statisticsCorrection() {
-        Locale locale = ProcessBean.getViewRootLocale();
-        this.statisticsManager = new StatisticsManager(StatisticsMode.CORRECTIONS, locale, filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void statisticsTroughput() {
-        Locale locale = ProcessBean.getViewRootLocale();
-        this.statisticsManager = new StatisticsManager(StatisticsMode.THROUGHPUT, locale, filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void statisticsProject() {
-        Locale locale = ProcessBean.getViewRootLocale();
-        this.statisticsManager = new StatisticsManager(StatisticsMode.PROJECTS, locale, filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
-    }
-
-    private static Locale getViewRootLocale() {
-        return FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
     }
 
     /**

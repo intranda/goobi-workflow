@@ -99,21 +99,15 @@ public class GoobiScript {
 
             // in case of a missing action parameter skip this goobiscript
             String myaction = currentScript.get("action");
-            boolean shouldContinue = false;
-
             if (myaction == null || myaction.length() == 0) {
                 Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Missing action!", "Please select one of the allowed commands.");
-                shouldContinue = true;
+                continue;
             }
 
             // in case of missing rights skip this goobiscript
             LoginBean loginForm = Helper.getLoginBean();
             if (!loginForm.hasRole("goobiscript_" + myaction) && !loginForm.hasRole("Workflow_Processes_Allow_GoobiScript")) {
                 Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "You are not allowed to execute this GoobiScript: ", myaction);
-                shouldContinue = true;
-            }
-
-            if (shouldContinue) {
                 continue;
             }
 
