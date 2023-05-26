@@ -659,9 +659,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         .replace("ß", "%C3%9F");
                 if (ConfigurationHelper.getInstance().isUseProxy()) {
                     dataList = NormDataImporter.importNormDataList(string, 3, ConfigurationHelper.getInstance().getProxyUrl(),
-                            "" + ConfigurationHelper.getInstance().getProxyPort());
+                            ConfigurationHelper.getInstance().getProxyPort());
                 } else {
-                    dataList = NormDataImporter.importNormDataList(string, 3);
+                    dataList = NormDataImporter.importNormDataList(string, 3, null, 0);
                 }
                 if (dataList.isEmpty()) {
                     showNotHits = true;
