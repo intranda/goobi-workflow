@@ -20,6 +20,7 @@
 		<composite:attribute name="boxScope" />
 		<composite:attribute name="icon" />
 		<composite:attribute name="title" />
+        <composite:attribute name="boxClass"/>
 	</composite:interface>
 
 	<composite:implementation>
@@ -33,7 +34,8 @@
 		#{cc.attrs.boxScope}
 		#{cc.attrs.boxPadding ? 'box--padded' : 'box--no-padding'}
 		#{cc.attrs.boxSmall ? 'box--small' : ''}
-		#{cc.attrs.boxForm ? 'form-box' : ''}">
+		#{cc.attrs.boxForm ? 'form-box' : ''}
+        #{cc.attrs.boxClass}">
 
 			<!-- BOX CONTENT -->
 			<!-- Renders if boxTitle = true -->

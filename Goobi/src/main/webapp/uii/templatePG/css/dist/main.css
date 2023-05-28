@@ -667,7 +667,7 @@ html {
 }
 
 hr {
-  color: var(--clr-neutral-200);
+  color: var(--clr-neutral);
 }
 
 .pull-left,
@@ -1229,6 +1229,12 @@ a:focus, a:hover, a:active {
 .messages {
   padding-left: 0;
   list-style: none;
+}
+
+.alert {
+  border: 0;
+  margin-bottom: 3px;
+  padding: 0.8rem;
 }
 
 .navigation-breadcrumb {
@@ -2249,8 +2255,48 @@ body .ui-button.ui-button-text-icon-left .ui-button-text {
   padding: 0.5rem 1rem 0.5rem 1rem;
 }
 
+body .ui-icon-close {
+  color: #fff;
+}
+
+body .ui-button-icon-only {
+  color: #fff;
+  background-color: var(--clr-primary-400);
+}
+
+body .ui-fileupload-preview {
+  display: none;
+}
+
+body .ui-fileupload-cancel > span.ui-button-text {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  margin-top: 0px;
+}
+
 body .ui-messages .ui-messages-error .ui-messages-error-icon, body .ui-messages .ui-messages-error .ui-messages-fatal, body .ui-messages .ui-messages-fatal .ui-messages-error-icon, body .ui-messages .ui-messages-fatal .ui-messages-fatal {
   display: none;
+}
+
+body .ui-messages .ui-messages-error, body .ui-messages .ui-messages-fatal {
+  background: #f8d7da;
+  border: 0;
+  color: #842029;
+  font-weight: normal;
+}
+
+body .ui-messages .ui-messages-error .ui-messages-close, body .ui-messages .ui-messages-fatal .ui-messages-close {
+  background: #842029;
+  color: #f8d7da;
+}
+
+body .ui-messages .ui-messages-error .ui-messages-close:hover, body .ui-messages .ui-messages-fatal .ui-messages-close:hover {
+  background: rgba(132, 32, 41, 0.6);
+}
+
+body .ui-messages > div {
+  padding: 0.8rem;
+  border-radius: 0.25rem;
 }
 
 [id="uploadBox:upload_label"] {
