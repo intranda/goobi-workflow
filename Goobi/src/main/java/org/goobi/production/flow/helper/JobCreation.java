@@ -167,7 +167,7 @@ public class JobCreation {
                 List<Path> filesToUpload = new ArrayList<>();
 
                 try (Stream<Path> input = Files.find(importFolder, 3, (path, file) -> file.isRegularFile())) {
-                    input.forEach(path -> filesToUpload.add(path));
+                    input.forEach(filesToUpload::add);
                 }
 
                 for (Path file : filesToUpload) {

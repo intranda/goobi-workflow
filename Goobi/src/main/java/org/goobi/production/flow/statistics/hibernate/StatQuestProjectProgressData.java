@@ -231,7 +231,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
                 return dr;
             }
         }
-        // TODO: Retireve from Messages
+        // TODO: Retrieve from Messages
         String message = "couldn't retrieve requested DataRow by name '" + stepName + "'";
         if (flagNoContent) {
             message = message + " - empty DataTable";

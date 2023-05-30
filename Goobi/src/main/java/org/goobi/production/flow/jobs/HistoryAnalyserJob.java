@@ -331,7 +331,6 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
         HistoryEvent he = new HistoryEvent(timeStamp, stepOrder, stepName, type, inProcess);
 
         if (!getHistoryContainsEventAlready(he, inProcess)) {
-            //            HistoryManager.addHistoryEvent(he);
             return he;
         } else {
             return null;
@@ -348,12 +347,10 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     private static boolean getHistoryContainsEventAlready(HistoryEvent inEvent, Process inProcess) {
         List<HistoryEvent> list = HistoryManager.getHistoryEvents(inProcess.getId());
         for (HistoryEvent historyItem : list) {
-            if (inEvent.getId() == null || !inEvent.getId().equals(historyItem.getId())) {
+            if ((inEvent.getId() == null || !inEvent.getId().equals(historyItem.getId())) && historyItem.equals(inEvent)) {
                 // this is required, in case items from the same list are
                 // compared
-                if (historyItem.equals(inEvent)) {
-                    return true;
-                }
+                return true;
             }
         }
         return false;

@@ -57,9 +57,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class VocabularyManager implements IManager, Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 3577063138324090483L;
 
     @SuppressWarnings("deprecation")
@@ -70,7 +67,7 @@ public class VocabularyManager implements IManager, Serializable {
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
-            return VocabularyMysqlHelper.getVocabularyCount(order, filter);
+            return VocabularyMysqlHelper.getVocabularyCount(filter);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -90,7 +87,7 @@ public class VocabularyManager implements IManager, Serializable {
 
     public int getHitSize(String order, String filter) throws DAOException {
         try {
-            return VocabularyMysqlHelper.getVocabularyCount(order, filter);
+            return VocabularyMysqlHelper.getVocabularyCount(filter);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -138,7 +135,10 @@ public class VocabularyManager implements IManager, Serializable {
         return false;
     }
 
-    @Deprecated
+    /**
+     * @deprecated This handler is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = false)
     public static ResultSetHandler<List<Vocabulary>> resultSetToVocabularyListHandler = new ResultSetHandler<List<Vocabulary>>() {
 
         @Override
@@ -151,7 +151,11 @@ public class VocabularyManager implements IManager, Serializable {
             return answer;
         }
     };
-    @Deprecated
+
+    /**
+     * @deprecated This handler is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = false)
     public static ResultSetHandler<Vocabulary> resultSetToVocabularyHandler = new ResultSetHandler<Vocabulary>() {
 
         @Override
@@ -163,8 +167,14 @@ public class VocabularyManager implements IManager, Serializable {
         }
     };
 
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param rs
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = false)
     @SuppressWarnings("unchecked")
-    @Deprecated
     private static Vocabulary convert(ResultSet rs) throws SQLException {
         int vocabId = rs.getInt("vocabId");
         String strVocabTitle = rs.getString("title");
@@ -210,7 +220,7 @@ public class VocabularyManager implements IManager, Serializable {
         vocab.setTitle(strVocabTitle);
         vocab.setDescription(strDescription);
         vocab.setStruct(lstDefs);
-        vocab.setRecords(new ArrayList<VocabRecord>());
+        vocab.setRecords(new ArrayList<>());
         return vocab;
     }
 
@@ -254,7 +264,11 @@ public class VocabularyManager implements IManager, Serializable {
         }
 
     };
-    @Deprecated
+
+    /**
+     * @deprecated This handler is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = false)
     public static ResultSetHandler<List<VocabRecord>> resultSetToVocabularyRecordListHandler = new ResultSetHandler<List<VocabRecord>>() {
 
         @Override
@@ -270,7 +284,11 @@ public class VocabularyManager implements IManager, Serializable {
         }
 
     };
-    @Deprecated
+
+    /**
+     * @deprecated This handler is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = false)
     public static ResultSetHandler<VocabRecord> resultSetToVocabularyRecordHandler = new ResultSetHandler<VocabRecord>() {
 
         @Override
@@ -283,7 +301,13 @@ public class VocabularyManager implements IManager, Serializable {
 
     };
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param rs
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = false)
     private static VocabRecord convertRecord(ResultSet rs) throws SQLException {
 
         int iRecordId = rs.getInt("recordId");
@@ -332,7 +356,12 @@ public class VocabularyManager implements IManager, Serializable {
 
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is replaced by getAllRecords(Vocabulary)
+     *
+     * @param vocabulary
+     */
+    @Deprecated(since = "23.05", forRemoval = false)
     public static void loadRecordsForVocabulary(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.loadRecordsForVocabulary(vocabulary);
@@ -349,10 +378,10 @@ public class VocabularyManager implements IManager, Serializable {
         }
     }
 
-    public static void deleteRecord(VocabRecord record) {
+    public static void deleteRecord(VocabRecord vocabRecord) {
         try {
-            VocabularyMysqlHelper.deleteRecord(record);
-            setVocabularyLastAltered(record.getVocabularyId());
+            VocabularyMysqlHelper.deleteRecord(vocabRecord);
+            setVocabularyLastAltered(vocabRecord.getVocabularyId());
         } catch (SQLException e) {
             log.error(e);
         }
@@ -377,9 +406,9 @@ public class VocabularyManager implements IManager, Serializable {
         }
     }
 
-    public static void saveRecord(Integer vocabularyId, VocabRecord record) {
+    public static void saveRecord(Integer vocabularyId, VocabRecord vocabRecord) {
         try {
-            VocabularyMysqlHelper.saveRecord(vocabularyId, record);
+            VocabularyMysqlHelper.saveRecord(vocabularyId, vocabRecord);
             setVocabularyLastAltered(vocabularyId);
         } catch (SQLException e) {
             log.error(e);
@@ -471,7 +500,12 @@ public class VocabularyManager implements IManager, Serializable {
         return null;
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param vocabulary
+     */
+    @Deprecated(since = "23.05", forRemoval = false)
     public static void getPaginatedRecords(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.getRecords(vocabulary);

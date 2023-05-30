@@ -295,7 +295,7 @@ public class BeanHelper implements Serializable {
         List<Step> oldTaskList = new ArrayList<>(processToChange.getSchritte());
 
         // remove tasks from process
-        processToChange.setSchritte(new ArrayList<Step>());
+        processToChange.setSchritte(new ArrayList<>());
         // copy tasks from template to process
         SchritteKopieren(template, processToChange);
 
@@ -329,15 +329,18 @@ public class BeanHelper implements Serializable {
         // add text to process log
         User user = Helper.getCurrentUser();
         JournalEntry logEntry =
-                new JournalEntry(processToChange.getId(), new Date(), user != null ? user.getNachVorname() : "", LogType.DEBUG, "Changed process template to " + template.getTitel(), EntryType.PROCESS);
+                new JournalEntry(processToChange.getId(), new Date(), user != null ? user.getNachVorname() : "", LogType.DEBUG,
+                        "Changed process template to " + template.getTitel(), EntryType.PROCESS);
         processToChange.getJournal().add(logEntry);
 
         try {
-            // if no open task was found, open first locked  task
+            // if no open task was found, open first locked task
             for (Step newTask : processToChange.getSchritte()) {
-                if (StepStatus.OPEN.equals(newTask.getBearbeitungsstatusEnum())) {
+
+                StepStatus status = newTask.getBearbeitungsstatusEnum();
+                if (status == StepStatus.OPEN) {
                     break;
-                } else if (StepStatus.LOCKED.equals(newTask.getBearbeitungsstatusEnum())) {
+                } else if (status == StepStatus.LOCKED) {
                     newTask.setBearbeitungsstatusEnum(StepStatus.OPEN);
                     break;
                 }

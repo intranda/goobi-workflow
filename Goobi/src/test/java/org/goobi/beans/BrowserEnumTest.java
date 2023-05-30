@@ -65,4 +65,18 @@ public class BrowserEnumTest extends AbstractTest {
                 Browser.parseBrowser("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36"));
     }
 
+    @Test
+    public void testGetIconFileName() {
+        assertEquals("chrome.png", Browser.getIconFileName(Browser.CHROME));
+        assertEquals("firefox.png", Browser.getIconFileName(Browser.FIREFOX));
+        assertEquals("ie.png", Browser.getIconFileName(Browser.INTERNET_EXPLORER));
+        assertEquals("konqueror.png", Browser.getIconFileName(Browser.KONQUEROR));
+        assertEquals("mozilla.png", Browser.getIconFileName(Browser.MOZILLA));
+        assertEquals("netscape.png", Browser.getIconFileName(Browser.NETSCAPE));
+        assertEquals("opera.png", Browser.getIconFileName(Browser.OPERA));
+        assertEquals("safari.png", Browser.getIconFileName(Browser.SAFARI));
+        // In difference to testEnumIcons(), a default image icon file is returned for 'null' in the static method Browser.getIconFileName(Browser):
+        assertEquals("none.png", Browser.getIconFileName(null));
+    }
+
 }

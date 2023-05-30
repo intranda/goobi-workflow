@@ -78,4 +78,22 @@ public class ImageLevel implements Comparable<ImageLevel> {
         return Integer.compare(size.width * size.height, other.size.width * other.size.height);
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object.getClass().equals(this.getClass()))) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        ImageLevel imageLevel = (ImageLevel) (object);
+        return this.url.equals(imageLevel.url) && this.size.equals(imageLevel.size);
+    }
+
+    @Override
+    public int hashCode() {
+        int prime1 = 31;
+        int prime2 = 37;
+        return super.hashCode() + prime1 * this.url.hashCode() + prime2 * this.size.hashCode();
+    }
+
 }

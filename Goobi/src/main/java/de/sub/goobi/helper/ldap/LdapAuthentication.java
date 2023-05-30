@@ -74,10 +74,12 @@ public class LdapAuthentication {
     private static final String AUTHENTICATION_MODE_NONE = "none";
     private static final String AUTHENTICATION_MODE_SIMPLE = "simple";
     private static final String UID_NUMBER = "uidNumber";
+    private static final String PROPERTY_KEYSTORE = "javax.net.ssl.keyStore";
+    private static final String PROPERTY_TRUSTSTORE = "javax.net.ssl.trustStore";
+    private static final String PROPERTY_KEYSTORE_PASSWORD = "javax.net.ssl.keyStorePassword";
 
-    public LdapAuthentication() {
-
-    }
+    private static final String TLS_ERROR = "TLS negotiation error: ";
+    private static final String JNDI_ERROR = "JNDI error: ";
 
     private String getUserDN(User inBenutzer) {
         String userDN = inBenutzer.getLdapGruppe().getUserDN();
@@ -185,10 +187,10 @@ public class LdapAuthentication {
                 // Perform search for privileged attributes under authenticated context
 
             } catch (IOException e) {
-                log.error("TLS negotiation error:", e);
+                log.error(TLS_ERROR, e);
                 return false;
             } catch (NamingException e) {
-                log.error("JNDI error:", e);
+                log.error(JNDI_ERROR, e);
                 return false;
             } finally {
                 if (tls != null) {
@@ -313,12 +315,12 @@ public class LdapAuthentication {
                 // Perform search for privileged attributes under authenticated context
 
             } catch (IOException e) {
-                log.error("TLS negotiation error:", e);
+                log.error(TLS_ERROR, e);
 
                 return ConfigurationHelper.getInstance().getUserFolder() + inBenutzer.getLogin();
             } catch (NamingException e) {
 
-                log.error("JNDI error:", e);
+                log.error(JNDI_ERROR, e);
 
                 return ConfigurationHelper.getInstance().getUserFolder() + inBenutzer.getLogin();
             } finally {
@@ -385,11 +387,11 @@ public class LdapAuthentication {
                     log.debug(">>>" + sr.getName());
                 }
                 Attributes attrs = sr.getAttributes();
-                String givenName = " ";
-                String surName = " ";
-                String mail = " ";
-                String cn = " ";
-                String hd = " ";
+                String givenName;
+                String surName;
+                String mail;
+                String cn;
+                String hd;
                 try {
                     givenName = attrs.get("givenName").toString();
                 } catch (Exception err) {
@@ -510,11 +512,11 @@ public class LdapAuthentication {
                 ctx.reconnect(null);
                 ctx.unbind(getUserDN(inBenutzer));
             } catch (IOException e) {
-                log.error("TLS negotiation error:", e);
+                log.error(TLS_ERROR, e);
 
             } catch (NamingException e) {
 
-                log.error("JNDI error:", e);
+                log.error(JNDI_ERROR, e);
 
             } finally {
                 if (tls != null) {
@@ -637,9 +639,9 @@ public class LdapAuthentication {
                 loadCertificates(inBenutzer, keystorepath, keystorepasswd);
 
                 // set properties, so that the current keystore is used for SSL
-                System.setProperty("javax.net.ssl.keyStore", keystorepath);
-                System.setProperty("javax.net.ssl.trustStore", keystorepath);
-                System.setProperty("javax.net.ssl.keyStorePassword", keystorepasswd);
+                System.setProperty(PROPERTY_KEYSTORE, keystorepath);
+                System.setProperty(PROPERTY_TRUSTSTORE, keystorepath);
+                System.setProperty(PROPERTY_KEYSTORE_PASSWORD, keystorepasswd);
             }
             env.put(Context.SECURITY_PROTOCOL, "ssl");
         }

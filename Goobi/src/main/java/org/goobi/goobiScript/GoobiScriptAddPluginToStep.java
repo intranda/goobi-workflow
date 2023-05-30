@@ -42,6 +42,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String PLUGIN = "plugin";
+
     @Override
     public String getAction() {
         return "addPluginToStep";
@@ -51,8 +55,8 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to add a plugin to a defined workflow step");
-        addParameterToSampleCall(sb, "steptitle", "TITLE_STEP", "Title of the step to adapt");
-        addParameterToSampleCall(sb, "plugin", "PLUGIN_NAME", "Name of the plugin to be assigned to the workflow step");
+        addParameterToSampleCall(sb, STEPTITLE, "TITLE_STEP", "Title of the step to adapt");
+        addParameterToSampleCall(sb, PLUGIN, "PLUGIN_NAME", "Name of the plugin to be assigned to the workflow step");
         return sb.toString();
     }
 
@@ -60,13 +64,16 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
-        if (parameters.get("plugin") == null || parameters.get("plugin").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "plugin");
+        String plugin = parameters.get(PLUGIN);
+        if (plugin == null || plugin.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, PLUGIN);
             return new ArrayList<>();
         }
 
@@ -90,18 +97,17 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
         if (p.getSchritte() != null) {
             for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
                 Step s = iterator.next();
-                if (s.getTitel().equals(parameters.get("steptitle"))) {
-                    s.setStepPlugin(parameters.get("plugin"));
+                if (s.getTitel().equals(parameters.get(STEPTITLE))) {
+                    s.setStepPlugin(parameters.get(PLUGIN));
                     try {
                         ProcessManager.saveProcess(p);
-                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                                "Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel() + "' using GoobiScript.", username);
-                        log.info("Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel()
-                                + "' using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel() + "'.");
+                        String message = "Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel() + "'";
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+                        log.info(message + " using GoobiScript for process with ID " + p.getId());
+                        gsr.setResultMessage(message + ".");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (DAOException e) {
-                        log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
+                        log.error(GOOBI_SCRIPTFIELD + "Error while saving process: " + p.getTitel(), e);
                         gsr.setResultMessage("An error occurred while adding the plugin '" + s.getStepPlugin() + " to step '"
                                 + s.getTitel() + "': " + e.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
@@ -113,7 +119,7 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
         }
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
             gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+            gsr.setResultMessage("Step not found: " + parameters.get(STEPTITLE));
         }
         gsr.updateTimestamp();
     }

@@ -96,7 +96,7 @@ public class LdapManager implements IManager, Serializable {
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = LdapMysqlHelper.getLdapCount(order, filter, institution);
+            num = LdapMysqlHelper.getLdapCount(filter, institution);
         } catch (SQLException e) {
             log.error("error while getting ldap hit size", e);
             throw new DAOException(e);

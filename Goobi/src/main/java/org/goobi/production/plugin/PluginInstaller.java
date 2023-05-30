@@ -119,7 +119,7 @@ public class PluginInstaller implements Serializable {
                         }
 
                         String fileContent;
-                        if (conflict.getConflictsMode().equals("edit_existing_file")) {
+                        if (conflict.getConflictsMode().equals(PluginInstallConflict.EDIT_EXISTING_FILE)) {
                             fileContent = conflict.getEditedExistingVersion();
                         } else {
                             fileContent = conflict.getEditedUploadedVersion();
@@ -270,10 +270,8 @@ public class PluginInstaller implements Serializable {
     }
 
     public static String getContentFromFileInArchive(Path archivePath, String fileName) {
-        TarArchiveInputStream tarInputStream = null;
         String content = "";
-        try {
-            tarInputStream = new TarArchiveInputStream(Files.newInputStream(archivePath));
+        try (TarArchiveInputStream tarInputStream = new TarArchiveInputStream(Files.newInputStream(archivePath))) {
             TarArchiveEntry tarEntry;
             do {
                 tarEntry = (TarArchiveEntry) (tarInputStream.getNextEntry());
@@ -284,14 +282,6 @@ public class PluginInstaller implements Serializable {
             } while (tarEntry != null);
         } catch (IOException ioException) {
             log.error(ioException);
-        } finally {
-            try {
-                if (tarInputStream != null) {
-                    tarInputStream.close();
-                }
-            } catch (IOException ioException) {
-                log.error(ioException);
-            }
         }
         return content;
     }
@@ -330,8 +320,8 @@ public class PluginInstaller implements Serializable {
             // Get the conflict of the concerning file
             PluginInstallConflict conflict = (PluginInstallConflict) (objects[file]);
 
-            PluginInstaller.findDifferencesInFile(conflict, "show_old_and_new_file");
-            PluginInstaller.findDifferencesInFile(conflict, "show_default_and_custom_file");
+            PluginInstaller.findDifferencesInFile(conflict, PluginInstallConflict.SHOW_OLD_AND_NEW_FILE);
+            PluginInstaller.findDifferencesInFile(conflict, PluginInstallConflict.SHOW_DEFAULT_AND_CUSTOM_FILE);
 
         }
     }
@@ -344,12 +334,16 @@ public class PluginInstaller implements Serializable {
      */
     private static void findDifferencesInFile(PluginInstallConflict conflict, String diffMode) {
 
+        String keep = FileCommandVisitor.MODE_KEEP;
+        String insertion = FileCommandVisitor.MODE_INSERTION;
+        String deletion = FileCommandVisitor.MODE_DELETION;
+
         // Get the code lines from both files
         String[] existingLines = new String[0];
         String[] uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
-        if (diffMode.equals("show_old_and_new_file")) {
+        if (diffMode.equals(PluginInstallConflict.SHOW_OLD_AND_NEW_FILE)) {
             existingLines = conflict.getArchivedVersion().split(LINEBREAK);
-        } else if (diffMode.equals("show_default_and_custom_file")) {
+        } else if (diffMode.equals(PluginInstallConflict.SHOW_DEFAULT_AND_CUSTOM_FILE)) {
             existingLines = conflict.getExistingVersion().split(LINEBREAK);
         }
 
@@ -383,23 +377,27 @@ public class PluginInstaller implements Serializable {
 
         while (existingLineIndex < linesInExistingFile || uploadedLineIndex < linesInUploadedFile) {
 
+            boolean shouldBreak = true;
             if (existingLineIndex >= linesInExistingFile) {
                 // Output all lines in uploaded file as "deleted"
                 while (uploadedLineIndex < linesInUploadedFile) {
-                    fileContent.add(PluginInstaller.findDifferencesInLine("", uploadedLines[uploadedLineIndex], "insertion"));
-                    lineTypes.add("insertion");
+                    fileContent.add(PluginInstaller.findDifferencesInLine("", uploadedLines[uploadedLineIndex], insertion));
+                    lineTypes.add(insertion);
                     lineNumbers.add(String.valueOf(uploadedLineIndex + 1));
                     uploadedLineIndex++;
                 }
-                break;
             } else if (uploadedLineIndex >= linesInUploadedFile) {
                 // Output all lines in uploaded file as "inserted"
                 while (existingLineIndex < linesInExistingFile) {
-                    fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], "", "deletion"));
-                    lineTypes.add("deletion");
+                    fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], "", deletion));
+                    lineTypes.add(deletion);
                     lineNumbers.add(String.valueOf(existingLineIndex + 1));
                     existingLineIndex++;
                 }
+            } else {
+                shouldBreak = false;
+            }
+            if (shouldBreak) {
                 break;
             }
             // Look for the next line in the existing file that is equal to the current line in the uploaded file
@@ -431,8 +429,8 @@ public class PluginInstaller implements Serializable {
                 // Output all "deleted" lines from the existing file (beginning at the line
                 // after the last used line, ending at the line before the matching line)
                 while (existingLineIndex < localExistingLineIndex) {
-                    fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], "", "deletion"));
-                    lineTypes.add("deletion");
+                    fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], "", deletion));
+                    lineTypes.add(deletion);
                     lineNumbers.add(String.valueOf(existingLineIndex + 1));
                     existingLineIndex++;
                 }
@@ -440,8 +438,8 @@ public class PluginInstaller implements Serializable {
                 // Output all "inserted" lines from the uploaded file (beginning at the line
                 // after the last used line, ending at the line before the matching line)
                 while (uploadedLineIndex < localUploadedLineIndex) {
-                    fileContent.add(PluginInstaller.findDifferencesInLine("", uploadedLines[uploadedLineIndex], "insertion"));
-                    lineTypes.add("insertion");
+                    fileContent.add(PluginInstaller.findDifferencesInLine("", uploadedLines[uploadedLineIndex], insertion));
+                    lineTypes.add(insertion);
                     lineNumbers.add(String.valueOf(uploadedLineIndex + 1));
                     uploadedLineIndex++;
                 }
@@ -451,30 +449,30 @@ public class PluginInstaller implements Serializable {
                 // completely identical. This method is only called to parse
                 // the line number, the indentation and the following text
                 // correctly for the text area in the GUI.
-                fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "keep"));
-                lineTypes.add("keep");
+                fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], keep));
+                lineTypes.add(keep);
                 // This could also be the line number in the uploaded file
                 lineNumbers.add(String.valueOf(existingLineIndex + 1));
             } else {
                 // Otherwise a deleted line and an inserted line are generated.
                 fileContent
-                        .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "deletion"));
-                lineTypes.add("deletion");
+                        .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], deletion));
+                lineTypes.add(deletion);
                 lineNumbers.add(String.valueOf(existingLineIndex + 1));
                 fileContent
-                        .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "insertion"));
-                lineTypes.add("insertion");
+                        .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], insertion));
+                lineTypes.add(insertion);
                 lineNumbers.add(String.valueOf(uploadedLineIndex + 1));
             }
             existingLineIndex++;
             uploadedLineIndex++;
         }
 
-        if (diffMode.equals("show_old_and_new_file")) {
+        if (diffMode.equals(PluginInstallConflict.SHOW_OLD_AND_NEW_FILE)) {
             conflict.setSpanTagsOldNew(fileContent);
             conflict.setLineTypesOldNew(lineTypes);
             conflict.setLineNumbersOldNew(lineNumbers);
-        } else if (diffMode.equals("show_default_and_custom_file")) {
+        } else if (diffMode.equals(PluginInstallConflict.SHOW_DEFAULT_AND_CUSTOM_FILE)) {
             conflict.setSpanTagsOldOld(fileContent);
             conflict.setLineTypesOldOld(lineTypes);
             conflict.setLineNumbersOldOld(lineNumbers);
@@ -494,13 +492,10 @@ public class PluginInstaller implements Serializable {
         StringsComparator comparator = new StringsComparator(left, right);
         comparator.getScript().visit(visitor);
         List<SpanTag> lineContent = new ArrayList<>();
-        if (mode.equals("insertion")) {
+        if (mode.equals(FileCommandVisitor.MODE_INSERTION)) {
             lineContent.addAll(visitor.getInsertionSpanTags());
             lineContent.add(new SpanTag(visitor.getCurrentInsertionText(), visitor.getCurrentInsertionMode()));
-        } else if (mode.equals("deletion")) {
-            lineContent.addAll(visitor.getDeltionSpanTags());
-            lineContent.add(new SpanTag(visitor.getCurrentDeletionText(), visitor.getCurrentDeletionMode()));
-        } else if (mode.equals("keep")) {
+        } else if (mode.equals(FileCommandVisitor.MODE_DELETION) || mode.equals(FileCommandVisitor.MODE_KEEP)) {
             // This is possible because in case of "keep" the text is stored in deletion-text and insertion-text
             lineContent.addAll(visitor.getDeltionSpanTags());
             lineContent.add(new SpanTag(visitor.getCurrentDeletionText(), visitor.getCurrentDeletionMode()));

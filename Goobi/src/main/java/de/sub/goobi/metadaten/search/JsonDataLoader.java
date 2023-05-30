@@ -48,10 +48,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class JsonDataLoader {
 
-    public JsonDataLoader() {
-
-    }
-
     /**
      * Fetches data from the given JSON endpoint and return a list of Map representation of such structure. The method expects that the response is
      * JSON array

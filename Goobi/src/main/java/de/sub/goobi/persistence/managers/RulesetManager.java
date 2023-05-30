@@ -96,7 +96,7 @@ public class RulesetManager implements IManager, Serializable {
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = RulesetMysqlHelper.getRulesetCount(order, filter, institution);
+            num = RulesetMysqlHelper.getRulesetCount(filter, institution);
         } catch (SQLException e) {
             log.error("error while getting ruleset hit size", e);
             throw new DAOException(e);

@@ -269,7 +269,7 @@ public abstract class BackupFileManager {
                 continue;
             }
             String backupIdentifier = name.substring(prefix.length() + 1, name.length());// +1 is the dot between file name and backup identifier
-            boolean isOldBackupFile = backupIdentifier.matches("[0-9]*");// any valid integer
+            boolean isOldBackupFile = backupIdentifier.matches("\\d*");// any valid integer = [0-9]*
             boolean isNewBackupFile = backupIdentifier.matches(BackupFileManager.TIMESTAMP_REGEX); // The time stamp
             if (isOldBackupFile || isNewBackupFile) {
                 fittingFiles.add(allFiles.get(index));

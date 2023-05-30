@@ -32,7 +32,7 @@ public class TemplateManager implements Serializable {
     private static final long serialVersionUID = -7969538039899200231L;
 
     public static List<Template> getTemplatesForProcess(int processId) {
-        List<Template> templates = new ArrayList<Template>();
+        List<Template> templates = new ArrayList<>();
         try {
             templates = TemplateMysqlHelper.getTemplatesForProcess(processId);
         } catch (SQLException e) {

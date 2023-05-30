@@ -59,7 +59,7 @@ public class HistoryMysqlHelper {
             // String propNames = "numericValue, stringvalue, type, date, processId"
             Object[] param = { order, value == null ? null : value, type, datetime, processId };
             String sql = "Update history set numericValue = ?, stringvalue = ?,  type = ?, date = ?, processId =? WHERE historyid = " + id;
-            log.trace("added history event " + sql + ", " + Arrays.toString(param));
+            log.trace("added history event while updating history " + sql + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
         } finally {
             if (connection != null) {
@@ -78,7 +78,7 @@ public class HistoryMysqlHelper {
             // String propNames = "numericValue, stringvalue, type, date, processId"
             Object[] param = { order, value, type, datetime, processId };
             String sql = "INSERT INTO " + "history" + " (numericValue, stringvalue, type, date, processId) VALUES ( ?, ?, ?, ? ,?)";
-            log.trace("added history event " + sql + ", " + Arrays.toString(param));
+            log.trace("added history event while adding history " + sql + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
         } finally {
             if (connection != null) {
@@ -97,7 +97,7 @@ public class HistoryMysqlHelper {
             // String propNames = "numericValue, stringvalue, type, date, processId"
             Object[] param = { he.getNumericValue(), he.getStringValue(), he.getHistoryType().getValue(), datetime, he.getProcess().getId() };
             String sql = "UPDATE history set numericValue = ?, stringvalue = ?, type = ?, date = ?, processId = ? WHERE historyid =" + he.getId();
-            log.trace("added history event " + sql + ", " + Arrays.toString(param));
+            log.trace("added history event while updating history event " + sql + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
         } finally {
             if (connection != null) {

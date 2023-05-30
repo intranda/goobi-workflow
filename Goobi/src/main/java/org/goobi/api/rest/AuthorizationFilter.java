@@ -84,18 +84,17 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             AuthenticationToken token = UserManager.getAuthenticationToken(tokenHash);
             if (token == null) {
                 // token does not exist, abort
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("API Token is invalid.").build());
+                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("API Token is invalid.")
+                        .build());
+                return;
             }
             //if token exists, check if token has the permission to access the current request
             String methodType = requestContext.getMethod();
             String requestUri = req.getPathInfo();
             for (AuthenticationMethodDescription method : token.getMethods()) {
-                if (method.isSelected()) {
-                    if (methodType.equalsIgnoreCase(method.getMethodType())) {
-                        if (Pattern.matches(method.getUrl(), requestUri)) {
-                            return;
-                        }
-                    }
+                if (method.isSelected() && methodType.equalsIgnoreCase(method.getMethodType()) && Pattern.matches(method.getUrl(), requestUri)) {
+                    return;
                 }
             }
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
@@ -128,12 +127,17 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
 
         //Always open for image, 3d object, multimedia requests and messages requests
-        if (pathInfo.startsWith("/view/object/") || pathInfo.startsWith("/view/media/") || pathInfo.startsWith("/process/image/")
-                || pathInfo.startsWith("/process/pdf/") || pathInfo.startsWith("/process/thumbs/") || pathInfo.startsWith("/tmp/image/")
-                || pathInfo.startsWith("/messages/") || pathInfo.matches("/processes/\\d+?/images.*") || pathInfo.endsWith("/openapi.json")) {
-            if (hasJsfContext(req)) {
-                return;
-            }
+        boolean validPath = pathInfo.startsWith("/view/object");
+        validPath = validPath || pathInfo.startsWith("/view/media/");
+        validPath = validPath || pathInfo.startsWith("/process/image/");
+        validPath = validPath || pathInfo.startsWith("/process/pdf/");
+        validPath = validPath || pathInfo.startsWith("/process/thumbs/");
+        validPath = validPath || pathInfo.startsWith("/tmp/image/");
+        validPath = validPath || pathInfo.startsWith("/messages/");
+        validPath = validPath || pathInfo.matches("/processes/\\d+?/images.*");
+        validPath = validPath || pathInfo.endsWith("/openapi.json");
+        if (validPath && hasJsfContext(req)) {
+            return;
         }
 
         String ip = req.getHeader("x-forwarded-for");
@@ -236,7 +240,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             if (methodsClaim == null) {
                 return false;
             }
-            return Arrays.stream(methodsClaim.asArray(String.class)).anyMatch(claimMethod -> method.equalsIgnoreCase(claimMethod));
+            return Arrays.stream(methodsClaim.asArray(String.class)).anyMatch(method::equalsIgnoreCase);
 
         } catch (javax.naming.ConfigurationException | JWTVerificationException e) {
             log.error(e);

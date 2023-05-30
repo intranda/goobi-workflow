@@ -39,14 +39,12 @@ public class TimeValidator implements Validator<Integer> {
 
     @Override
     public void validate(FacesContext context, UIComponent component, Integer time) throws ValidatorException {
-        if (time != 0) {
-            if (time < 10 || time > 30) {
-                FacesMessage msg = new FacesMessage(Helper.getTranslation("metadataSaveTimeError"), Helper.getTranslation("metadataSaveTimeError"));
-                msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-                throw new ValidatorException(msg);
-            }
+        if (time != 0 && (time < 10 || time > 30)) {
+            String message = Helper.getTranslation("metadataSaveTimeError");
+            FacesMessage msg = new FacesMessage(message, message);
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(msg);
         }
-
     }
 
 }

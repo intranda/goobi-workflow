@@ -15,10 +15,21 @@
 
 package de.sub.goobi.helper.enums;
 
+/**
+ * Enum of token types expected by de.sub.goobi.helper.ProcessTitleGenerator
+ * 
+ * @author Zehong Hu
+ * @version 25.05.2023
+ */
 public enum ManipulationType {
+    /* replace umlauts by appropriate dissolved letters, replace space and special characters by _ */
     NORMAL,
+    /* replace umlauts, replace space and special characters, connect components of the token using camel case */
     CAMEL_CASE,
+    /* replace umlauts, replace space and special characters, applying camel case, cut long token with respect to the length limit */
     CAMEL_CASE_LENGTH_LIMITED,
+    /* used to mark the unique tail token */
     AFTER_LAST_SEPARATOR,
+    /* used to mark the unique head token */
     BEFORE_FIRST_SEPARATOR
 }

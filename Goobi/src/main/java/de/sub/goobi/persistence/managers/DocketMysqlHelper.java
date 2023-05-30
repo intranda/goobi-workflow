@@ -73,7 +73,7 @@ class DocketMysqlHelper implements Serializable {
         }
     }
 
-    public static int getDocketCount(String order, String filter, Institution institution) throws SQLException {
+    public static int getDocketCount(String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM dockets");

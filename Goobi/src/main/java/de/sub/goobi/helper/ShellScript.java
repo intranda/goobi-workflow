@@ -51,8 +51,8 @@ public class ShellScript {
     public static final int ERRORLEVEL_ERROR = 1;
 
     private final String command;
-    private LinkedList<String> outputChannel;
-    private LinkedList<String> errorChannel;
+    private List<String> outputChannel;
+    private List<String> errorChannel;
     @Getter
     private Integer errorLevel;
 
@@ -79,7 +79,7 @@ public class ShellScript {
      * 
      * @return the output channel
      */
-    public LinkedList<String> getStdOut() {
+    public List<String> getStdOut() {
         return outputChannel;
     }
 
@@ -88,7 +88,7 @@ public class ShellScript {
      * 
      * @return the error channel
      */
-    public LinkedList<String> getStdErr() {
+    public List<String> getStdErr() {
         return errorChannel;
     }
 
@@ -160,11 +160,11 @@ public class ShellScript {
             InputStream stdOut = process.getInputStream();
             InputStream stdErr = process.getErrorStream();
 
-            FutureTask<LinkedList<String>> stdOutFuture = new FutureTask<>(() -> inputStreamToLinkedList(stdOut));
+            FutureTask<List<String>> stdOutFuture = new FutureTask<>(() -> inputStreamToLinkedList(stdOut));
             Thread stdoutThread = new Thread(stdOutFuture);
             stdoutThread.setDaemon(true);
             stdoutThread.start();
-            FutureTask<LinkedList<String>> stdErrFuture = new FutureTask<>(() -> inputStreamToLinkedList(stdErr));
+            FutureTask<List<String>> stdErrFuture = new FutureTask<>(() -> inputStreamToLinkedList(stdErr));
             Thread stderrThread = new Thread(stdErrFuture);
             stderrThread.setDaemon(true);
             stderrThread.start();
@@ -190,8 +190,8 @@ public class ShellScript {
      * @param myInputStream Stream to convert
      * @return A linked list holding the single lines.
      */
-    public static LinkedList<String> inputStreamToLinkedList(InputStream myInputStream) {
-        LinkedList<String> result = new LinkedList<>();
+    public static List<String> inputStreamToLinkedList(InputStream myInputStream) {
+        List<String> result = new LinkedList<>();
         try (Scanner inputLines = new Scanner(myInputStream)) {
             while (inputLines.hasNextLine()) {
                 String myLine = inputLines.nextLine();

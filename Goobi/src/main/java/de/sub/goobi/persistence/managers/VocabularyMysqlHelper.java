@@ -56,9 +56,6 @@ import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
  */
 class VocabularyMysqlHelper implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 5141386688477409583L;
 
     private static final Integer MAXIMAL_QUERY_RESULTS = 10_000;
@@ -143,7 +140,7 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    static int getVocabularyCount(String order, String filter) throws SQLException {
+    static int getVocabularyCount(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM vocabulary");
@@ -262,7 +259,13 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param vocabulary
+     * @param gson
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     static void saveVocabulary(Vocabulary vocabulary, Gson gson) throws SQLException {
         StringBuilder sql = new StringBuilder();
 
@@ -336,7 +339,12 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param vocabulary
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     static void loadRecordsForVocabulary(Vocabulary vocabulary) throws SQLException {
         if (vocabulary != null && vocabulary.getId() != null) {
             String sql = "SELECT * FROM vocabularyRecords WHERE vocabId = ?";
@@ -358,7 +366,13 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param vocabulary
+     * @param rec
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     private static void mergeRecordAndVocabulary(Vocabulary vocabulary, VocabRecord rec) {
         for (Definition definition : vocabulary.getStruct()) {
             boolean fieldFound = false;
@@ -402,16 +416,16 @@ class VocabularyMysqlHelper implements Serializable {
         rec.setFields(orderedList);
     }
 
-    static void deleteRecord(VocabRecord record) throws SQLException {
-        if (record.getId() != null) {
+    static void deleteRecord(VocabRecord vocabRecord) throws SQLException {
+        if (vocabRecord.getId() != null) {
             String deleteFields = "DELETE from vocabulary_record_data WHERE record_id = ?";
             String deleteRecord = "DELETE from vocabulary_record WHERE id = ?";
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                run.update(connection, deleteFields, record.getId());
-                run.update(connection, deleteRecord, record.getId());
+                run.update(connection, deleteFields, vocabRecord.getId());
+                run.update(connection, deleteRecord, vocabRecord.getId());
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
@@ -448,18 +462,19 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            for (VocabRecord record : vocabulary.getRecords()) {
-                if (record.getId() == null) {
+            for (VocabRecord vocabRecord : vocabulary.getRecords()) {
+                if (vocabRecord.getId() == null) {
                     Integer id = run.insert(connection, insertRecord, MySQLHelper.resultSetToIntegerHandler, vocabulary.getId());
-                    record.setId(id);
+                    vocabRecord.setId(id);
                 }
-                for (Field field : record.getFields()) {
+                for (Field field : vocabRecord.getFields()) {
                     if (field.getId() == null) {
-                        Integer id = run.insert(connection, insertField, MySQLHelper.resultSetToIntegerHandler, record.getId(), vocabulary.getId(),
-                                field.getDefinition().getId(), field.getLabel(), field.getLanguage(), field.getValue());
+                        Integer id =
+                                run.insert(connection, insertField, MySQLHelper.resultSetToIntegerHandler, vocabRecord.getId(), vocabulary.getId(),
+                                        field.getDefinition().getId(), field.getLabel(), field.getLanguage(), field.getValue());
                         field.setId(id);
                     } else {
-                        run.update(connection, updateField, record.getId(), vocabulary.getId(), field.getDefinition().getId(), field.getLabel(),
+                        run.update(connection, updateField, vocabRecord.getId(), vocabulary.getId(), field.getDefinition().getId(), field.getLabel(),
                                 field.getLanguage(), field.getValue(), field.getId());
                     }
                 }
@@ -471,7 +486,7 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    static void saveRecord(Integer vocabularyId, VocabRecord record) throws SQLException {
+    static void saveRecord(Integer vocabularyId, VocabRecord vocabRecord) throws SQLException {
         String insertRecord = "INSERT INTO vocabulary_record (vocabulary_id) VALUES (?)";
         String insertField =
                 "INSERT INTO vocabulary_record_data (record_id,vocabulary_id, definition_id, label, language, value) VALUES (?,?,?,?,?,?)";
@@ -481,17 +496,17 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            if (record.getId() == null) {
+            if (vocabRecord.getId() == null) {
                 Integer id = run.insert(connection, insertRecord, MySQLHelper.resultSetToIntegerHandler, vocabularyId);
-                record.setId(id);
+                vocabRecord.setId(id);
             }
-            for (Field field : record.getFields()) {
+            for (Field field : vocabRecord.getFields()) {
                 if (field.getId() == null) {
-                    Integer id = run.insert(connection, insertField, MySQLHelper.resultSetToIntegerHandler, record.getId(), vocabularyId,
+                    Integer id = run.insert(connection, insertField, MySQLHelper.resultSetToIntegerHandler, vocabRecord.getId(), vocabularyId,
                             field.getDefinition().getId(), field.getLabel(), field.getLanguage(), field.getValue());
                     field.setId(id);
                 } else {
-                    run.update(connection, updateField, record.getId(), vocabularyId, field.getDefinition().getId(), field.getLabel(),
+                    run.update(connection, updateField, vocabRecord.getId(), vocabularyId, field.getDefinition().getId(), field.getLabel(),
                             field.getLanguage(), field.getValue(), field.getId());
                 }
             }
@@ -621,7 +636,12 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param vocabulary
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     static void getRecords(Vocabulary vocabulary) throws SQLException {
         String likeStr = "like";
         if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {
@@ -667,7 +687,7 @@ class VocabularyMysqlHelper implements Serializable {
             // order
             if (MySQLHelper.isJsonCapable()) {
                 String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
-                + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
+                        + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
                 String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
                 sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
                 if (StringUtils.isNotBlank(vocabulary.getOrder())) {

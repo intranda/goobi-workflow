@@ -27,10 +27,9 @@ package org.goobi.beans;
 import lombok.Getter;
 
 /**
- * This enum represents a browser of a user.
+ * This enum represents different web browsers and provides a method to parse the browser by its description. For each browser, an icon image file is
+ * provided. It can be used to display different icons in the GUI.
  * 
- * It contains a list of possible browsers and supports a parsing routine to detect which browser the user has.
- *
  * @author Maurice Mueller
  *
  */
@@ -77,13 +76,13 @@ public enum Browser {
     SAFARI("Safari", "safari.png");
 
     /**
-     * The name of the browser
+     * The name of this browser
      */
     @Getter
     private final String name;
 
     /**
-     * The icon file name for this browser
+     * The icon file name of this browser
      */
     @Getter
     private final String iconFileName;
@@ -127,10 +126,10 @@ public enum Browser {
     }
 
     /**
-     * Returns the browser icon file name of the given browser. When the browser is null, "none.png" is returned
+     * Returns the browser icon file name of the given browser. If the browser is null, "none.png" is returned
      *
      * @param browser The browser to get the icon file name for
-     * @return The icon filename, otherwise null
+     * @return The icon filename, otherwise "none.png"
      */
     public static String getIconFileName(Browser browser) {
         if (browser != null) {

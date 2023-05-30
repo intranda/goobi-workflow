@@ -41,6 +41,10 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoobiScript {
+
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String FIELD_PROJECT = "project";
+
     private Project project;
 
     @Override
@@ -52,7 +56,7 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to assign Goobi processes to another project.");
-        addParameterToSampleCall(sb, "project", "Newspaper_2021",
+        addParameterToSampleCall(sb, FIELD_PROJECT, "Newspaper_2021",
                 "Define the project where the processes shall belong to. Use the name of the project here.");
         return sb.toString();
     }
@@ -61,20 +65,23 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("project") == null || parameters.get("project").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "project");
+        String missingParameter = "Missing parameter: ";
+        String projectName = parameters.get(FIELD_PROJECT);
+        if (projectName == null || projectName.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, FIELD_PROJECT);
             return new ArrayList<>();
         }
 
+        String couldNotFindProject = "Could not find project: ";
         try {
-            List<Project> projects = ProjectManager.getProjects(null, "titel='" + parameters.get("project") + "'", null, null, null);
+            List<Project> projects = ProjectManager.getProjects(null, "titel='" + projectName + "'", null, null, null);
             if (projects == null || projects.isEmpty()) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Could not find project: ", parameters.get("project"));
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, couldNotFindProject, projectName);
                 return new ArrayList<>();
             }
             project = projects.get(0);
         } catch (DAOException e) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Could not find project: ", parameters.get("project") + " - " + e.getMessage());
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, couldNotFindProject, projectName + " - " + e.getMessage());
             log.error("Exception during assignement of project using GoobiScript", e);
             return new ArrayList<>();
         }
@@ -98,9 +105,10 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
         p.setProjectId(project.getId());
         try {
             ProcessManager.saveProcess(p);
-            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Project '" + project.getTitel() + "' assigned using GoobiScript.", username);
-            log.info("Project '" + project.getTitel() + "' assigned using GoobiScript for process with ID " + p.getId());
-            gsr.setResultMessage("Project  '" + project.getTitel() + "' assigned successfully.");
+            String message = "Project '" + project.getTitel() + "' assigned";
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+            log.info(message + " using GoobiScript for process with ID " + p.getId());
+            gsr.setResultMessage(message + " successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (DAOException e) {
             gsr.setResultMessage("Problem assigning new project: " + e.getMessage());

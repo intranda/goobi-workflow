@@ -30,12 +30,12 @@ import java.nio.file.Path;
 import spark.Service;
 
 /**
- * deprecated. Use IRestPlugin instead, which does not imply the plugin type
+ * @deprecated Use IRestPlugin instead, which does not imply the plugin type
  * 
  * @author Oliver Paetzel
  *
  */
-@Deprecated
+@Deprecated(since = "23.05", forRemoval = true)
 public interface IRestGuiPlugin extends IStepPlugin {
     public void initRoutes(Service http);
 

@@ -34,6 +34,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -88,6 +89,9 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ProjectBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 6735912903249358786L;
+
+    private static final String RETURN_PAGE_ALL = "project_all";
+    private static final String RETURN_PAGE_EDIT = "project_edit";
 
     @Getter
     private Project myProjekt = new Project();
@@ -167,13 +171,13 @@ public class ProjectBean extends BasicBean implements Serializable {
         this.projectStatImages = null;
         this.projectStatVolumes = null;
         displayMode = "";
-        return "project_all";
+        return RETURN_PAGE_ALL;
     }
 
     public String Neu() {
         newProjectTitle = "";
         this.myProjekt = new Project();
-        return "project_edit";
+        return RETURN_PAGE_EDIT;
     }
 
     public String Speichern() {
@@ -256,8 +260,8 @@ public class ProjectBean extends BasicBean implements Serializable {
         displayMode = "";
         sortField = "Titel";
         ProjectManager m = new ProjectManager();
-        paginator = new DatabasePaginator(sortField, filter, m, "project_all");
-        return "project_all";
+        paginator = new DatabasePaginator(sortField, filter, m, RETURN_PAGE_ALL);
+        return RETURN_PAGE_ALL;
     }
 
     public String FilterKeinMitZurueck() {
@@ -348,9 +352,9 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     public StatisticsManager getStatisticsManager1() {
         if (this.statisticsManager1 == null) {
-            this.statisticsManager1 =
-                    new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                            "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\""); //NOSONAR
+            Locale locale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
+            String sql = this.createProjectSQLString();
+            this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, locale, sql);
         }
         return this.statisticsManager1;
     }
@@ -361,9 +365,10 @@ public class ProjectBean extends BasicBean implements Serializable {
      */
     public StatisticsManager getStatisticsManager2() {
         if (this.statisticsManager2 == null) {
-            this.statisticsManager2 =
-                    new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                            "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            Locale locale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
+            String sql = this.createProjectSQLString();
+            this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, locale, sql);
+
         }
         return this.statisticsManager2;
     }
@@ -374,9 +379,9 @@ public class ProjectBean extends BasicBean implements Serializable {
      */
     public StatisticsManager getStatisticsManager3() {
         if (this.statisticsManager3 == null) {
-            this.statisticsManager3 =
-                    new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                            "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            Locale locale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
+            String sql = this.createProjectSQLString();
+            this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, locale, sql);
         }
         return this.statisticsManager3;
     }
@@ -387,9 +392,9 @@ public class ProjectBean extends BasicBean implements Serializable {
      */
     public StatisticsManager getStatisticsManager4() {
         if (this.statisticsManager4 == null) {
-            this.statisticsManager4 =
-                    new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                            "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            Locale locale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
+            String sql = this.createProjectSQLString();
+            this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, locale, sql);
         }
         return this.statisticsManager4;
     }
@@ -399,13 +404,22 @@ public class ProjectBean extends BasicBean implements Serializable {
      */
 
     public void GenerateValuesForStatistics() {
-        String projectFilter = FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false, null,
-                null, null, true, false) + " AND prozesse.istTemplate = false ";
+        String sql = this.createProjectSQLString();
+        String projectFilter = FilterHelper.criteriaBuilder(sql, false, null, null, null, true, false) + " AND prozesse.istTemplate = false ";
         Long images = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
         Long volumes = ProcessManager.getCountOfFieldValue("sortHelperImages", projectFilter);
 
         this.myProjekt.setNumberOfPages(images.intValue());
         this.myProjekt.setNumberOfVolumes(volumes.intValue());
+    }
+
+    /**
+     * Creates and returns the SQL string for the search for a project.
+     *
+     * @return The SQL string
+     */
+    private String createProjectSQLString() {
+        return "\"project:" + StringEscapeUtils.escapeSql(this.myProjekt.getTitel()) + "\"";
     }
 
     /**
@@ -582,9 +596,9 @@ public class ProjectBean extends BasicBean implements Serializable {
                 this.projectProgressData.setCalculationUnit(CalculationUnit.volumes);
                 this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
                 this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
-                this.projectProgressData
-                        .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
-                                null, null, null, true, false) + " AND prozesse.istTemplate = false ");
+                String sql = this.createProjectSQLString();
+                sql = FilterHelper.criteriaBuilder(sql, false, null, null, null, true, false);
+                this.projectProgressData.setDataSource(sql + " AND prozesse.istTemplate = false ");
 
                 if (this.projectProgressImage == null) {
                     this.projectProgressImage = "";

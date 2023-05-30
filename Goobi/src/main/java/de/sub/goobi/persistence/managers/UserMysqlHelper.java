@@ -100,7 +100,7 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
-    public static int getUserCount(String order, String filter, Institution institution) throws SQLException {
+    public static int getUserCount(String filter, Institution institution) throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();

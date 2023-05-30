@@ -42,6 +42,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String SCRIPT = "script";
+    private static final String LABEL = "label";
+
     @Override
     public String getAction() {
         return "addShellScriptToStep";
@@ -51,10 +56,10 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to add a shell script to an existing workflow step.");
-        addParameterToSampleCall(sb, "steptitle", "Generate MD5 Hashes", "This is the title of the workflow step to be used.");
-        addParameterToSampleCall(sb, "label", "Hash generation",
+        addParameterToSampleCall(sb, STEPTITLE, "Generate MD5 Hashes", "This is the title of the workflow step to be used.");
+        addParameterToSampleCall(sb, LABEL, "Hash generation",
                 "Define a label for the script that shall be visible for that script inside of an accepted task.");
-        addParameterToSampleCall(sb, "script", "/bin/bash /path/to/script.sh \"parameter with blanks\"",
+        addParameterToSampleCall(sb, SCRIPT, "/bin/bash /path/to/script.sh \"parameter with blanks\"",
                 "Define the script that shall be added here.");
         return sb.toString();
     }
@@ -63,18 +68,22 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Fehlender Parameter: ", "steptitle");
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
-        if (parameters.get("label") == null || parameters.get("label").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Fehlender Parameter: ", "label");
+        String label = parameters.get(LABEL);
+        if (label == null || label.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, LABEL);
             return new ArrayList<>();
         }
 
-        if (parameters.get("script") == null || parameters.get("script").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Fehlender Parameter: ", "script");
+        String script = parameters.get(SCRIPT);
+        if (script == null || script.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, SCRIPT);
             return new ArrayList<>();
         }
 
@@ -98,25 +107,23 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
         if (p.getSchritte() != null) {
             for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
                 Step s = iterator.next();
-                if (s.getTitel().equals(parameters.get("steptitle"))) {
-                    s.setTypAutomatischScriptpfad(parameters.get("script"));
-                    s.setScriptname1(parameters.get("label"));
+                if (s.getTitel().equals(parameters.get(STEPTITLE))) {
+                    s.setTypAutomatischScriptpfad(parameters.get(SCRIPT));
+                    s.setScriptname1(parameters.get(LABEL));
                     s.setTypScriptStep(true);
+                    String info = s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '" + s.getTypAutomatischScriptpfad() + "'";
                     try {
                         ProcessManager.saveProcess(p);
-                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Added script to step '" + s.getTitel() + "' with label '"
-                                + s.getScriptname1() + "' and value '" + s.getTypAutomatischScriptpfad() + "' using GoobiScript.",
-                                username);
-                        log.info("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '"
-                                + s.getTypAutomatischScriptpfad() + "' using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1()
-                                + "' and value '" + s.getTypAutomatischScriptpfad() + "'.");
+                        String message = "Added script to step '" + info;
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+                        log.info(message + " using GoobiScript for process with ID " + p.getId());
+                        gsr.setResultMessage(message + ".");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (DAOException e) {
-                        Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + p.getTitel(), e);
-                        log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-                        gsr.setResultMessage("Error while adding script to step '" + s.getTitel() + "' with label '" + s.getScriptname1()
-                                + "' and value '" + s.getTypAutomatischScriptpfad() + "': " + e.getMessage());
+                        String message = "Error while saving process: " + p.getTitel();
+                        Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, message, e);
+                        log.error(GOOBI_SCRIPTFIELD + message, e);
+                        gsr.setResultMessage("Error while adding script to step '" + info + ": " + e.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                         gsr.setErrorText(e.getMessage());
                     }
@@ -126,7 +133,7 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
         }
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
             gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+            gsr.setResultMessage("Step not found: " + parameters.get(STEPTITLE));
         }
         gsr.updateTimestamp();
     }

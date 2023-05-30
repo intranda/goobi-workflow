@@ -51,17 +51,15 @@ import com.amazonaws.services.sqs.model.CreateQueueRequest;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class ExternalConnectionFactory {
+
     public static Connection createConnection(String username, String password) throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
-        Connection connection;
-        switch (config.getExternalQueueType()) {
-            case "SQS":
-                connection = createSQSConnection(username, password);
-                break;
-            default:
-                connection = createActiveMQConnection(username, password);
+
+        if ("SQS".equals(config.getExternalQueueType())) {
+            return createSQSConnection();
+        } else {
+            return createActiveMQConnection(username, password);
         }
-        return connection;
     }
 
     private static Connection createActiveMQConnection(String username, String password) throws JMSException {
@@ -77,7 +75,7 @@ public class ExternalConnectionFactory {
         return activeMQconn;
     }
 
-    private static Connection createSQSConnection(String username, String password) throws JMSException {
+    private static Connection createSQSConnection() throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         AmazonSQS client;
         if (config.isUseLocalSQS()) {

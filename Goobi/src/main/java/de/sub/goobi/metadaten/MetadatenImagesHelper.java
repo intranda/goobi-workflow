@@ -86,10 +86,10 @@ public class MetadatenImagesHelper {
     private static final String METADATA_PHYSICAL_PAGE_NUMBER = "physPageNumber";
     private static final String METADATA_LOGICAL_PAGE_NUMBER = "logicalPageNumber";
 
-    private static DocStructType TYPE_PAGE;
-    private static DocStructType TYPE_AUDIO;
-    private static DocStructType TYPE_VIDEO;
-    private static DocStructType TYPE_3D_OBJECT;
+    private static DocStructType docStructPage;
+    private static DocStructType docStructAudio;
+    private static DocStructType docStructVideo;
+    private static DocStructType docStructObject;
 
     private Prefs myPrefs;
     private DigitalDocument mydocument;
@@ -104,12 +104,6 @@ public class MetadatenImagesHelper {
             throws TypeNotAllowedForParentException, SwapException, DAOException, IOException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
-        DocStruct logical = this.mydocument.getLogicalDocStruct();
-        if (logical.getType().isAnchor()) {
-            if (logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
-                logical = logical.getAllChildren().get(0);
-            }
-        }
         if (physical == null) {
             createPagination(myProzess, directoryName);
             return Collections.emptyList();
@@ -158,8 +152,8 @@ public class MetadatenImagesHelper {
         List<DocStruct> pagesWithoutFiles = new LinkedList<>();
 
         // search for page objects with invalid image names
-        for (String imageNameInMets : imageNamesInMetsFile.keySet()) {
-            String currentImagePrefix = imageNameInMets.replace(Metadaten.getFileExtension(imageNameInMets), "");
+        for (Map.Entry<String, DocStruct> entry : imageNamesInMetsFile.entrySet()) {
+            String currentImagePrefix = entry.getKey().replace(Metadaten.getFileExtension(entry.getKey()), "");
             boolean match = false;
             for (String imageNameInDirectory : imagenames) {
                 if (currentImagePrefix.equals(imageNameInDirectory.replace(Metadaten.getFileExtension(imageNameInDirectory), ""))) {
@@ -169,26 +163,23 @@ public class MetadatenImagesHelper {
             }
             if (!match) {
                 if (log.isDebugEnabled()) {
-                    log.debug("adding docstruct with missing file " + imageNameInMets + " to abandoned list.");
+                    log.debug("adding docstruct with missing file " + entry.getKey() + " to abandoned list.");
                 }
-                pagesWithoutFiles.add(imageNamesInMetsFile.get(imageNameInMets));
+                pagesWithoutFiles.add(entry.getValue());
             }
         }
 
         // find abandoned image names in directory
         if (!pagesWithoutFiles.isEmpty()) {
 
-            Collections.sort(pagesWithoutFiles, new Comparator<DocStruct>() {
+            Collections.sort(pagesWithoutFiles, (docstruct1, docstruct2) -> {
 
-                @Override
-                public int compare(DocStruct o1, DocStruct o2) {
-                    MetadataType mdt = myPrefs.getMetadataTypeByName(METADATA_PHYSICAL_PAGE_NUMBER);
-                    String value1 = o1.getAllMetadataByType(mdt).get(0).getValue();
-                    String value2 = o2.getAllMetadataByType(mdt).get(0).getValue();
-                    Integer order1 = Integer.parseInt(value1);
-                    Integer order2 = Integer.parseInt(value2);
-                    return order1.compareTo(order2);
-                }
+                MetadataType mdt = myPrefs.getMetadataTypeByName(METADATA_PHYSICAL_PAGE_NUMBER);
+                String value1 = docstruct1.getAllMetadataByType(mdt).get(0).getValue();
+                String value2 = docstruct2.getAllMetadataByType(mdt).get(0).getValue();
+                Integer order1 = Integer.parseInt(value1);
+                Integer order2 = Integer.parseInt(value2);
+                return order1.compareTo(order2);
             });
 
             for (String imagename : imagenames) {
@@ -246,10 +237,8 @@ public class MetadatenImagesHelper {
         DocStruct physicaldocstruct = this.mydocument.getPhysicalDocStruct();
 
         DocStruct logical = this.mydocument.getLogicalDocStruct();
-        if (logical.getType().isAnchor()) {
-            if (logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
-                logical = logical.getAllChildren().get(0);
-            }
+        if (logical.getType().isAnchor() && logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
+            logical = logical.getAllChildren().get(0);
         }
         MetadataType metadataTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
 
@@ -292,20 +281,20 @@ public class MetadatenImagesHelper {
             checkIfImagesValid(inProzess.getTitel(), folderToCheck.toString());
         }
 
-        TYPE_PAGE = this.myPrefs.getDocStrctTypeByName("page");
-        TYPE_AUDIO = this.myPrefs.getDocStrctTypeByName("audio");
-        TYPE_VIDEO = this.myPrefs.getDocStrctTypeByName("video");
-        TYPE_3D_OBJECT = this.myPrefs.getDocStrctTypeByName("object");
+        docStructPage = this.myPrefs.getDocStrctTypeByName("page");
+        docStructAudio = this.myPrefs.getDocStrctTypeByName("audio");
+        docStructVideo = this.myPrefs.getDocStrctTypeByName("video");
+        docStructObject = this.myPrefs.getDocStrctTypeByName("object");
 
         // use fallback to 'page', if additional types are not configured in ruleset
-        if (TYPE_AUDIO == null) {
-            TYPE_AUDIO = TYPE_PAGE;
+        if (docStructAudio == null) {
+            docStructAudio = docStructPage;
         }
-        if (TYPE_VIDEO == null) {
-            TYPE_VIDEO = TYPE_PAGE;
+        if (docStructVideo == null) {
+            docStructVideo = docStructPage;
         }
-        if (TYPE_3D_OBJECT == null) {
-            TYPE_3D_OBJECT = TYPE_PAGE;
+        if (docStructObject == null) {
+            docStructObject = docStructPage;
         }
 
         /*-------------------------------
@@ -518,7 +507,6 @@ public class MetadatenImagesHelper {
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
                 List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
                 if (pageNoMetadata == null || pageNoMetadata.isEmpty()) {
-                    currentPhysicalOrder++;
                     break;
                 }
                 for (Metadata pageNo : pageNoMetadata) {
@@ -532,18 +520,18 @@ public class MetadatenImagesHelper {
     private DocStruct createDocStruct(String mimetype) throws TypeNotAllowedForParentException {
         // TODO check mimetypes of all 3d object files
         if (mimetype.startsWith("image")) {
-            return this.mydocument.createDocStruct(TYPE_PAGE);
+            return this.mydocument.createDocStruct(docStructPage);
         } else if (mimetype.startsWith("video") || mimetype.equals("application/mxf")) {
-            return this.mydocument.createDocStruct(TYPE_VIDEO);
+            return this.mydocument.createDocStruct(docStructVideo);
         } else if (mimetype.startsWith("audio")) {
-            return this.mydocument.createDocStruct(TYPE_AUDIO);
+            return this.mydocument.createDocStruct(docStructAudio);
         } else if (mimetype.startsWith("object")) {
-            return this.mydocument.createDocStruct(TYPE_3D_OBJECT);
+            return this.mydocument.createDocStruct(docStructObject);
         } else if (mimetype.startsWith("model")) {
-            return this.mydocument.createDocStruct(TYPE_3D_OBJECT);
+            return this.mydocument.createDocStruct(docStructObject);
         } else {
             // use old implementation as default
-            return this.mydocument.createDocStruct(TYPE_PAGE);
+            return this.mydocument.createDocStruct(docStructPage);
         }
     }
 
@@ -635,15 +623,12 @@ public class MetadatenImagesHelper {
             if (dateien.isEmpty()) {
                 String[] parameters = { String.valueOf(dateien2.size()), dir.toString() };
 
-                String value = Helper.getTranslation("noObjectsFound", title);
-
                 //true if list is truly empty
                 if (dateien.size() == dateien2.size()) {
-                    value = Helper.getTranslation("imagesFolderEmpty", parameters);
+                    Helper.setFehlerMeldung(Helper.getTranslation("imagesFolderEmpty", parameters));
                 } else {
-                    value = Helper.getTranslation("fileNameValidationError", parameters);
+                    Helper.setFehlerMeldung(Helper.getTranslation("fileNameValidationError", parameters));
                 }
-                Helper.setFehlerMeldung(value);
                 return false;
             }
 

@@ -847,14 +847,26 @@ public class S3FileUtils implements StorageProviderInterface {
         return size;
     }
 
+    /**
+     * @deprecated Use methods with different parameters instead
+     *
+     * @path The path of the file to create
+     */
     @Override
+    @Deprecated(since = "23.05", forRemoval = true)
     public void createFile(Path path) throws IOException {
         // TODO not used anymore. Delete org.goobi.production.importer.GoobiHotFolder
 
     }
 
+    /**
+     * @deprecated Use a method with different parameters instead
+     *
+     * @param in The input stream from which the upload should be read
+     * @param dest The destination where the file should be uploaded
+     */
     @Override
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public void uploadFile(InputStream in, Path dest) throws IOException {
         if (getPathStorageType(dest) == StorageType.LOCAL) {
             nio.uploadFile(in, dest);
@@ -931,14 +943,11 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         final PipedInputStream in = new PipedInputStream(); //NOSONAR, it gets closed when PipedOutputStream gets closed
         PipedOutputStream out = new PipedOutputStream(in);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    StorageProvider.getInstance().uploadFile(in, dest);
-                } catch (IOException e) {
-                    log.error(e);
-                }
+        new Thread(() -> {
+            try {
+                StorageProvider.getInstance().uploadFile(in, dest);
+            } catch (IOException e) {
+                log.error(e);
             }
         }).start();
         return out;

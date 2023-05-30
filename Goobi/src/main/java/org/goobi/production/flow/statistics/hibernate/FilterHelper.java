@@ -57,6 +57,10 @@ public class FilterHelper {
         rightTruncationCharacter = ConfigurationHelper.getInstance().getDatabaseRightTruncationCharacter();
     }
 
+    private FilterHelper() {
+        // private constructor to hide public default constructor
+    }
+
     /**
      * limit query to project (formerly part of ProzessverwaltungForm)
      * 
@@ -66,22 +70,10 @@ public class FilterHelper {
         StringBuilder sb = new StringBuilder();
         User aktuellerNutzer = Helper.getCurrentUser();
 
-        if (aktuellerNutzer != null) {
-            if (!Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
-                sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
-                sb.append(aktuellerNutzer.getId());
-                sb.append(")");
-
-            }
-            //            if (!aktuellerNutzer.isSuperAdmin()) {
-            //                //             limit result to institution of current user
-            //                if (sb.length() > 0) {
-            //                    sb.append(" AND ");
-            //                }
-            //                sb.append(" prozesse.ProjekteID in (select ProjekteID from projekte WHERE institution_id = ");
-            //                sb.append(aktuellerNutzer.getInstitution().getId());
-            //                sb.append(") ");
-            //            }
+        if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+            sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
+            sb.append(aktuellerNutzer.getId());
+            sb.append(")");
         }
         return sb.toString();
     }
@@ -205,7 +197,7 @@ public class FilterHelper {
     /**
      * This enum represents the result of parsing the step<modifier>: filter Restrictions
      ****************************************************************************/
-    protected static enum StepFilter {
+    protected enum StepFilter {
         exact,
         range,
         min,
@@ -296,7 +288,7 @@ public class FilterHelper {
         return sb.toString();
     }
 
-    protected static String filterAutomaticSteps(String tok, boolean flagSteps, List<String> dateFilter) {
+    protected static String filterAutomaticSteps(String tok, List<String> dateFilter) {
         StringBuilder sb = new StringBuilder();
 
         if ("true".equalsIgnoreCase(tok.substring(tok.indexOf(":") + 1))) {
@@ -974,7 +966,7 @@ public class FilterHelper {
             else if (tok.toLowerCase().startsWith(FilterString.STEP) || tok.toLowerCase().startsWith(FilterString.SCHRITT)) {
                 if (flagSteps) {
                     filter = checkStringBuilder(filter, true);
-                    filter.append(createHistoricFilter(tok, flagSteps));
+                    filter.append(createHistoricFilter(tok));
                 }
             } else if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
@@ -1016,7 +1008,7 @@ public class FilterHelper {
                 filter.append(FilterHelper.filterStepDoneUser(tok));
             } else if (tok.toLowerCase().startsWith(FilterString.STEPAUTOMATIC) || tok.toLowerCase().startsWith(FilterString.SCHRITTAUTOMATISCH)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(FilterHelper.filterAutomaticSteps(tok, flagSteps, currentDateFilter.getDateFilter()));
+                filter.append(FilterHelper.filterAutomaticSteps(tok, currentDateFilter.getDateFilter()));
             } else if (tok.toLowerCase().startsWith(FilterString.PROJECT) || tok.toLowerCase().startsWith(FilterString.PROJEKT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterProject(tok, false));
@@ -1030,7 +1022,6 @@ public class FilterHelper {
                 filter.append(FilterHelper.filterIds(tok, false));
 
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
-
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
                         + rightTruncationCharacter + "'");
@@ -1296,7 +1287,7 @@ public class FilterHelper {
      * @param filterPart
      * @return
      */
-    private static String createHistoricFilter(String filterPart, Boolean stepCriteria) {
+    private static String createHistoricFilter(String filterPart) {
         /* filtering by a certain minimal status */
         Integer stepReihenfolge;
 

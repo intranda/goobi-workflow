@@ -59,30 +59,30 @@ public class H2Storage extends H2Generator implements IStorage {
     public String getSQL() {
 
         String subQuery = "";
-        String outerWhereClauseTimeFrame = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo, "timeLimiter");
         String outerWhereClause = "";
+        String outerWhereClauseTimeFrame = getWhereClauseForTimeFrame(this.myTimeFrom, this.myTimeTo, "timeLimiter");
 
         if (outerWhereClauseTimeFrame.length() > 0) {
-            outerWhereClause = "WHERE " + outerWhereClauseTimeFrame;
+            outerWhereClause = "WHERE".concat(outerWhereClauseTimeFrame);
         }
 
         //inner table -> alias "table_1"
         String innerWhereClause;
 
-        if (myIdsCondition != null) {
+        if (this.myIdsCondition != null) {
             // adding ids to the where clause
-            innerWhereClause = "(history.type=" + HistoryEventType.storageDifference.getValue().toString() + ")  AND (" + myIdsCondition + ")";
+            innerWhereClause = "(history.type=" + HistoryEventType.storageDifference.getValue().toString() + ")  AND (" + this.myIdsCondition + ")";
         } else {
             innerWhereClause = "(history.type=" + HistoryEventType.storageDifference.getValue().toString() + ") ";
         }
 
-        subQuery = "(SELECT numericvalue AS storage, " + getIntervallExpression(myTimeUnit, "history.date") + " "
+        subQuery = "(SELECT numericvalue AS storage, " + getIntervallExpression(this.myTimeUnit, "history.date") + " "
                 + "AS intervall, history.date AS timeLimiter FROM history WHERE " + innerWhereClause + ") AS table_1";
 
-        mySql = "SELECT sum(table_1.storage) AS storage, table_1.intervall AS intervall FROM " + subQuery + " " + outerWhereClause
+        this.mySql = "SELECT sum(table_1.storage) AS storage, table_1.intervall AS intervall FROM " + subQuery + " " + outerWhereClause
                 + " GROUP BY table_1.intervall " + "ORDER BY table_1.intervall";
 
-        return mySql;
+        return this.mySql;
     }
 
 }

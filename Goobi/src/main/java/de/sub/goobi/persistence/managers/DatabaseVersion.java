@@ -976,7 +976,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -985,15 +985,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
+                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 
@@ -1633,7 +1633,7 @@ public class DatabaseVersion {
                             else {
                                 type = LogType.INFO;
                             }
-                            entry = entry.replaceAll("<font color.*?>", "").replace("</font>", "");
+                            entry = entry.replaceAll("<font color[^>]+>", "").replace("</font>", "");
                             String dateString = "";
                             String username = "automatic";
                             Date date = null;
@@ -1716,7 +1716,8 @@ public class DatabaseVersion {
         Date date = null;
         try {
             date = new Date(dateString);
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            log.trace(exception);
         }
         if (date == null) {
             try {
@@ -2220,8 +2221,6 @@ public class DatabaseVersion {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             new QueryRunner().update(connection, sql);
-        } catch (SQLException e) {
-            throw e;
         } finally {
             if (connection != null) {
                 try {

@@ -25,6 +25,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,13 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IGoobiScript {
     // action:renameProcess search:415121809 replace:1659235871 type:contains|full
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String SEARCH = "search";
+    private static final String REPLACE = "replace";
+    private static final String TYPE = "type";
+    private static final String TYPE_CONTAINS = "contains";
+    private static final String TYPE_FULL = "full";
+
     @Override
     public String getAction() {
         return "renameProcess";
@@ -50,10 +58,11 @@ public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IG
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to rename a process by using search and replace.");
-        addParameterToSampleCall(sb, "search", "Monograph", "Define a term that shall be searched to get replaced.");
-        addParameterToSampleCall(sb, "replace", "Book", "Define the term that replaces the searched term.");
-        addParameterToSampleCall(sb, "type", "contains",
-                "Define here if the search term shall be contained in the current name (`contains`) or if the full name shall be the same (`full`)");
+        addParameterToSampleCall(sb, SEARCH, "Monograph", "Define a term that shall be searched to get replaced.");
+        addParameterToSampleCall(sb, REPLACE, "Book", "Define the term that replaces the searched term.");
+        addParameterToSampleCall(sb, TYPE, TYPE_CONTAINS,
+                "Define here if the search term shall be contained in the current name (`" + TYPE_CONTAINS
+                        + "`) or if the full name shall be the same (`" + TYPE_FULL + "`)");
         return sb.toString();
     }
 
@@ -61,13 +70,15 @@ public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IG
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (StringUtils.isBlank(parameters.get("search"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "search");
-            return new ArrayList<>();
+        String missingParameter = "Missing parameter: ";
+        if (StringUtils.isBlank(parameters.get(SEARCH))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, SEARCH);
+            return Collections.emptyList();
         }
-        if (StringUtils.isBlank(parameters.get("replace"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "replace");
-            return new ArrayList<>();
+
+        if (StringUtils.isBlank(parameters.get(REPLACE))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, REPLACE);
+            return Collections.emptyList();
         }
 
         // add all valid commands to list
@@ -87,14 +98,14 @@ public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IG
         gsr.setProcessTitle(processTitle);
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
-        String type = parameters.get("type");
+        String type = parameters.get(TYPE);
         if (StringUtils.isBlank(type)) {
-            type = "contains";
+            type = TYPE_CONTAINS;
         }
-        String search = parameters.get("search");
-        String replace = parameters.get("replace");
+        String search = parameters.get(SEARCH);
+        String replace = parameters.get(REPLACE);
         boolean replacedTitle = false;
-        if ("contains".equals(type)) {
+        if (TYPE_CONTAINS.equals(type)) {
             if (processTitle.contains(search)) {
                 processTitle = processTitle.replace(search, replace);
                 replacedTitle = true;

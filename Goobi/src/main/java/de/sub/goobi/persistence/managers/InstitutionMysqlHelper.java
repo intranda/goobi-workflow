@@ -66,7 +66,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    static int getInstitutionCount( String filter) throws SQLException {
+    static int getInstitutionCount(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM institution");

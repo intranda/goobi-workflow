@@ -206,10 +206,7 @@ public final class ConfigDisplayRules {
         if (!allValues.isEmpty()) {
             synchronized (this.allValues) {
                 // search for configured value in current project configuration
-                if (!allValues.containsKey(myproject)) {
-                    // add new empty entry
-                    allValues.put(myproject, new HashMap<>());
-                }
+                allValues.computeIfAbsent(myproject, key -> new HashMap<>());
 
                 Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(myproject);
                 Set<String> itemTypes = itemsByType.keySet();
@@ -228,13 +225,10 @@ public final class ConfigDisplayRules {
                         return;
                     }
                 }
+
                 // finally add it as input text field
-                Map<String, List<Item>> typeList = itemsByType.get("input");
-                if (typeList == null) {
-                    typeList = new HashMap<>();
-                    itemsByType.put("input", typeList);
-                }
-                typeList.put(myelementName, Collections.emptyList());
+                itemsByType.computeIfAbsent("input", key -> new HashMap<>());
+                itemsByType.get("input").put(myelementName, Collections.emptyList());
 
             }
         }
@@ -295,7 +289,7 @@ public final class ConfigDisplayRules {
         Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(projectTitle);
         if (itemsByType.isEmpty()) {
             if ("*".equals(projectTitle)) {
-                values.add(new Item(projectTitle, "", false, "", ""));
+                values.add(new Item(projectTitle));
 
             } else {
                 return getItemsByNameAndType("*", projectTitle, displayType);
@@ -307,13 +301,13 @@ public final class ConfigDisplayRules {
                 values = typeList.get(elementName);
 
             } else if ("*".equals(projectTitle)) {
-                values.add(new Item(projectTitle, "", false, "", ""));
+                values.add(new Item(projectTitle));
             } else {
                 return getElementsForMetadata("*", displayType, elementName);
             }
 
         } else if ("*".equals(projectTitle)) {
-            values.add(new Item(projectTitle, "", false, "", ""));
+            values.add(new Item(projectTitle));
         } else {
             return getElementsForMetadata("*", displayType, elementName);
         }
@@ -326,7 +320,7 @@ public final class ConfigDisplayRules {
             if (this.allValues.isEmpty() && config != null) {
                 getDisplayItems();
             } else if (config == null) {
-                values.add(new Item(myelementName, "", false, "", ""));
+                values.add(new Item(myelementName));
                 return values;
             }
             if (allValues.containsKey(myproject)) {
@@ -334,7 +328,7 @@ public final class ConfigDisplayRules {
             } else if (allValues.containsKey("*")) {
                 values.addAll(getElementsForMetadata("*", mydisplayType, myelementName));
             } else {
-                values.add(new Item(myelementName, "", false, "", ""));
+                values.add(new Item(myelementName));
             }
         }
         return values;

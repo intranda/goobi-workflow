@@ -46,6 +46,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String CONTENT_ONLY = "contentOnly";
+    private static final String REMOVE_UNKNOWN_FILES = "removeUnknownFiles";
+
     @Override
     public String getAction() {
         return "deleteProcess";
@@ -60,7 +64,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows you to delete existing processes.");
-        addParameterToSampleCall(sb, "contentOnly", "false",
+        addParameterToSampleCall(sb, CONTENT_ONLY, "false",
                 "Define here if just the content shall be deleted (true) or the the entire process from the database as well (false).");
         return sb.toString();
     }
@@ -69,13 +73,15 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("contentOnly") == null || parameters.get("contentOnly").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "contentOnly");
+        String missingParameter = "Missing parameter: ";
+        String contentOnly = parameters.get(CONTENT_ONLY);
+        if (contentOnly == null || contentOnly.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, CONTENT_ONLY);
             return new ArrayList<>();
         }
 
-        if (!parameters.get("contentOnly").equals("true") && !parameters.get("contentOnly").equals("false")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", "wrong parameter 'contentOnly'; possible values: true, false");
+        if (!contentOnly.equals("true") && !contentOnly.equals("false")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "", "wrong parameter '" + CONTENT_ONLY + "'; possible values: true, false");
             return new ArrayList<>();
         }
 
@@ -92,14 +98,25 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
 
-        boolean contentOnly = Boolean.parseBoolean(parameters.get("contentOnly"));
+        boolean contentOnly = Boolean.parseBoolean(parameters.get(CONTENT_ONLY));
         boolean removeUnknownFiles =
-                StringUtils.isNotBlank(parameters.get("removeUnknownFiles")) && Boolean.parseBoolean(parameters.get("removeUnknownFiles"));
+                StringUtils.isNotBlank(parameters.get(REMOVE_UNKNOWN_FILES)) && Boolean.parseBoolean(parameters.get(REMOVE_UNKNOWN_FILES));
+
+        String withId = " (id=" + gsr.getProcessId() + ")";
+        String processCouldBeDeleted = "Process could be deleted successfully using GoobiScript.";
+        String processCouldBeDeletedWithId = processCouldBeDeleted + withId;
+        String processCouldNotBeDeleted = "Process could not be deleted using GoobiScript.";
+        String processCouldNotBeDeletedWithId = processCouldNotBeDeleted + withId;
+        String contentCouldBeDeleted = "Content for process could be deleted successfully using GoobiScript.";
+        String contentCouldBeDeletedWithId = contentCouldBeDeleted + withId;
+        String contentCouldNotBeDeleted = "Content for process could not be deleted using GoobiScript.";
+        String contentCouldNotBeDeletedWithId = contentCouldNotBeDeleted + withId;
 
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         if (p == null) {
-            log.warn("Cannot delete process with id {}: Process not found in database", gsr.getProcessId());
-            gsr.setResultMessage("Cannot delete process " + gsr.getProcessId() + ": Process does not exist.");
+            String processDoesNotExist = processCouldNotBeDeletedWithId + " Process does not exist.";
+            log.warn(processDoesNotExist);
+            gsr.setResultMessage(processDoesNotExist);
             gsr.setResultType(GoobiScriptResultType.ERROR);
         } else {
             gsr.setProcessTitle(p.getTitel());
@@ -117,16 +134,14 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                             if (StorageProvider.getInstance().isFileExists(images)) {
                                 StorageProvider.getInstance().deleteDir(images);
                             }
-                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.", username);
-                            log.info("Content deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                            gsr.setResultMessage("Content for process deleted successfully.");
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, contentCouldBeDeleted, username);
+                            log.info(contentCouldBeDeletedWithId);
+                            gsr.setResultMessage(contentCouldBeDeleted);
                             gsr.setResultType(GoobiScriptResultType.OK);
                         } catch (Exception e) {
-                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                                    "Problem occured while trying to delete content using GoobiScript.",
-                                    username);
-                            log.error("Content for process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                            gsr.setResultMessage("Content for process cannot be deleted: " + e.getMessage());
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, contentCouldNotBeDeleted, username);
+                            log.error(contentCouldNotBeDeletedWithId);
+                            gsr.setResultMessage(contentCouldNotBeDeleted + " process OCR directory deletion error: " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             gsr.setErrorText(e.getMessage());
                         }
@@ -139,16 +154,14 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                                     StorageProvider.getInstance().deleteDir(path);
                                 }
                             }
-                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.", username);
-                            log.info("Content deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                            gsr.setResultMessage("Content for process deleted successfully.");
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, contentCouldBeDeleted, username);
+                            log.info(contentCouldBeDeletedWithId);
+                            gsr.setResultMessage(contentCouldBeDeleted);
                             gsr.setResultType(GoobiScriptResultType.OK);
                         } catch (Exception e) {
-                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                                    "Problem occured while trying to delete content using GoobiScript.",
-                                    username);
-                            log.error("Content for process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                            gsr.setResultMessage("Content for process cannot be deleted: " + e.getMessage());
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, contentCouldNotBeDeleted, username);
+                            log.error(contentCouldNotBeDeletedWithId);
+                            gsr.setResultMessage(contentCouldNotBeDeleted + " process content deletion error: " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             gsr.setErrorText(e.getMessage());
                         }
@@ -156,35 +169,32 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                         try {
                             StorageProvider.getInstance().deleteDir(Paths.get(p.getProcessDataDirectory()));
                             ProcessManager.deleteProcess(p);
-                            log.info("Process deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                            gsr.setResultMessage("Process deleted successfully.");
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, processCouldBeDeleted, username);
+                            log.info(processCouldBeDeletedWithId);
+                            gsr.setResultMessage(processCouldBeDeleted);
                             gsr.setResultType(GoobiScriptResultType.OK);
                         } catch (Exception e) {
-                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                                    "Problem occured while trying to delete process using GoobiScript.",
-                                    username);
-                            log.error("Process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                            gsr.setResultMessage("Process cannot be deleted: " + e.getMessage());
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, processCouldNotBeDeleted, username);
+                            log.error(processCouldNotBeDeletedWithId);
+                            gsr.setResultMessage(processCouldNotBeDeleted + " process deletion error: " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             gsr.setErrorText(e.getMessage());
                         }
                     }
                 } else {
-                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Problem occured while trying to delete process using GoobiScript.",
-                            username);
-                    log.error("Process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                    String message = "Process cannot be deleted: missing permissions";
-                    gsr.setResultMessage(message);
+                    String missingPermissions = processCouldNotBeDeletedWithId + " Missing permissions.";
+                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, missingPermissions, username);
+                    log.error(missingPermissions);
+                    gsr.setResultMessage(missingPermissions);
                     gsr.setResultType(GoobiScriptResultType.ERROR);
-                    gsr.setErrorText(message);
+                    gsr.setErrorText(missingPermissions);
                 }
             } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
             } catch (DAOException | SwapException | IOException exception) {
-                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Problem occured while trying to delete process using GoobiScript.",
-                        username);
-                log.error("Process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                gsr.setResultMessage("Process cannot be deleted: " + exception.getMessage());
+                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, processCouldNotBeDeleted, username);
+                log.error(processCouldNotBeDeletedWithId);
+                gsr.setResultMessage(processCouldNotBeDeleted + "error: " + exception.getMessage());
                 gsr.setResultType(GoobiScriptResultType.ERROR);
                 gsr.setErrorText(exception.getMessage());
             }

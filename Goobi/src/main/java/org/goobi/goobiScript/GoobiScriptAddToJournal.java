@@ -43,6 +43,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String MESSAGE = "message";
+    private static final String TYPE = "type";
+
     @Override
     public String getAction() {
         return "addToJournal";
@@ -52,9 +56,9 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to add messages to the Goobi process journal.");
-        addParameterToSampleCall(sb, "type", "info",
-                "Define the type for the message here. Possible values are: `debug` `info` `warn` `error` `user`");
-        addParameterToSampleCall(sb, "message", "\"This is my message\"",
+        addParameterToSampleCall(sb, TYPE, "info",
+                "Define the type for the message here. Possible values are: `error` `warn` `info` `debug` and `user`");
+        addParameterToSampleCall(sb, MESSAGE, "\"This is my message\"",
                 "This parameter allows to define the message itself that shall be added to the process log. To write special characters like # put it into quotes.");
         return sb.toString();
     }
@@ -63,18 +67,19 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("message") == null || parameters.get("message").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "message");
+        String missingParameter = "Missing parameter: ";
+        if (parameters.get(MESSAGE) == null || parameters.get(MESSAGE).equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, MESSAGE);
             return new ArrayList<>();
         }
 
-        if (parameters.get("type") == null || parameters.get("type").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "type");
+        String type = parameters.get(TYPE);
+        if (type == null || type.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, TYPE);
             return new ArrayList<>();
         }
-        if (!parameters.get("type").equals("debug") && !parameters.get("type").equals("info") && !parameters.get("type").equals("error")
-                && !parameters.get("type").equals("warn") && !parameters.get("type").equals("user")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Wrong parameter for type. Allowed values are: ", "error, warn, info, debug, user");
+        if (!type.equals("error") && !type.equals("warn") && !type.equals("info") && !type.equals("debug") && !type.equals("user")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Wrong parameter for type. Allowed values are: error, warn, info, debug and user");
             return new ArrayList<>();
         }
 
@@ -95,7 +100,8 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), username, LogType.getByTitle(parameters.get("type")), parameters.get("message"), EntryType.PROCESS);
+        JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), username, LogType.getByTitle(parameters.get(TYPE)), parameters.get(MESSAGE),
+                EntryType.PROCESS);
         JournalManager.saveJournalEntry(logEntry);
         log.info("Process log updated for process with ID " + p.getId());
 

@@ -91,7 +91,7 @@ class RulesetMysqlHelper implements Serializable {
         }
     }
 
-    public static int getRulesetCount(String order, String filter, Institution institution) throws SQLException {
+    public static int getRulesetCount(String filter, Institution institution) throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -106,8 +106,8 @@ class RulesetMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append( "MetadatenKonfigurationID in (SELECT object_id FROM institution_configuration where object_type = 'ruleset' ");
-            sql.append( "and selected = true and institution_id = ");
+            sql.append("MetadatenKonfigurationID in (SELECT object_id FROM institution_configuration where object_type = 'ruleset' ");
+            sql.append("and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }

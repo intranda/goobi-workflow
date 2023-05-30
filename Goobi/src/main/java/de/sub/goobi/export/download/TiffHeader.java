@@ -47,10 +47,10 @@ import de.sub.goobi.helper.FacesContextHelper;
  * @version 1.00 - 12.04.2005
  */
 public class TiffHeader {
-    private String Artist = "";
+    private String artist = "";
 
-    private String tifHeader_imagedescription = "";
-    private String tifHeader_documentname = "";
+    private String tifHeaderImagedescription = "";
+    private String tifHeaderDocumentname = "";
 
     /**
      * Erzeugen des Tiff-Headers anhand des übergebenen Prozesses Einlesen der Eigenschaften des Werkstücks bzw. der Scanvorlage
@@ -62,14 +62,14 @@ public class TiffHeader {
                 for (Masterpieceproperty eig : myWerkstueck.getEigenschaftenList()) {
 
                     if (eig.getTitel().equals("TifHeaderDocumentname")) {
-                        this.tifHeader_documentname = eig.getWert();
+                        this.tifHeaderDocumentname = eig.getWert();
                     }
                     if (eig.getTitel().equals("TifHeaderImagedescription")) {
-                        this.tifHeader_imagedescription = eig.getWert();
+                        this.tifHeaderImagedescription = eig.getWert();
                     }
 
                     if (eig.getTitel().equals("Artist")) {
-                        this.Artist = eig.getWert();
+                        this.artist = eig.getWert();
                     }
                 }
             }
@@ -80,14 +80,14 @@ public class TiffHeader {
      * Rückgabe des kompletten Tiff-Headers
      */
     public String getImageDescription() {
-        return this.tifHeader_imagedescription;
+        return this.tifHeaderImagedescription;
     }
 
     /**
      * Rückgabe des kompletten Tiff-Headers
      */
     private String getDocumentName() {
-        return this.tifHeader_documentname;
+        return this.tifHeaderDocumentname;
     }
 
     /**
@@ -100,17 +100,17 @@ public class TiffHeader {
      */
     public String getTiffAlles() {
         String lineBreak = "\r\n";
-        StringBuffer strBuf = new StringBuffer();
-        strBuf.append("#" + lineBreak);
-        strBuf.append("# Configuration file for TIFFWRITER.pl" + lineBreak);
-        strBuf.append("#" + lineBreak);
-        strBuf.append("# - overwrites tiff-tags." + lineBreak);
-        strBuf.append("#" + lineBreak);
-        strBuf.append("#" + lineBreak);
-        strBuf.append("Artist=" + this.Artist + lineBreak);
-        strBuf.append("Documentname=" + getDocumentName() + lineBreak);
-        strBuf.append("ImageDescription=" + getImageDescription() + lineBreak);
-        return strBuf.toString();
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("#" + lineBreak);
+        buffer.append("# Configuration file for TIFFWRITER.pl" + lineBreak);
+        buffer.append("#" + lineBreak);
+        buffer.append("# - overwrites tiff-tags." + lineBreak);
+        buffer.append("#" + lineBreak);
+        buffer.append("#" + lineBreak);
+        buffer.append("Artist=" + this.artist + lineBreak);
+        buffer.append("Documentname=" + getDocumentName() + lineBreak);
+        buffer.append("ImageDescription=" + getImageDescription() + lineBreak);
+        return buffer.toString();
     }
 
     public void ExportStart() throws IOException {

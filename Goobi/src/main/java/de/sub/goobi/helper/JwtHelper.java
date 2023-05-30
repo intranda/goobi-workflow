@@ -117,8 +117,8 @@ public class JwtHelper {
         Algorithm algorithm = createSigningAlgorithm(secret);
 
         Builder tokenBuilder = JWT.create().withIssuer(DEAULT_ISSUER);
-        for (String key : map.keySet()) {
-            tokenBuilder = tokenBuilder.withClaim(key, map.get(key));
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            tokenBuilder = tokenBuilder.withClaim(entry.getKey(), entry.getValue());
         }
         return tokenBuilder.withExpiresAt(expiryDate).sign(algorithm);
     }
@@ -140,10 +140,10 @@ public class JwtHelper {
         try {
             DecodedJWT jwt = verifyToken(token, secret, System::currentTimeMillis);
             if (jwt != null) {
-                for (String key : map.keySet()) {
-                    String tokenValue = jwt.getClaim(key).asString();
-                    if (StringUtils.isBlank(tokenValue) || !tokenValue.equals(map.get(key))) {
-                        log.debug("token rejected: parameter " + key + " with value " + tokenValue + " does not match " + map.get(key));
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    String value = jwt.getClaim(entry.getKey()).asString();
+                    if (StringUtils.isBlank(value) || !value.equals(entry.getValue())) {
+                        log.debug("token rejected: parameter " + entry.getKey() + " with value " + value + " does not match " + entry.getValue());
                         return false;
                     }
                 }
@@ -282,23 +282,18 @@ public class JwtHelper {
             // TODO Auto-generated catch block
             log.error(e1);
         }
-        Algorithm algorithm = null;
-        DecodedJWT decodedJwt = JWT.decode(token);
 
+        DecodedJWT decodedJwt = JWT.decode(token);
         String strAlgorithm = decodedJwt.getAlgorithm();
 
-        switch (strAlgorithm) {
-            case "RS256":
-                algorithm = Algorithm.RSA256(keyProvider);
-                break;
-            default:
-                algorithm = null;
-        }
-
-        if (algorithm == null) {
+        Algorithm algorithm = null;
+        if ("RS256".equals(strAlgorithm)) {
+            algorithm = Algorithm.RSA256(keyProvider);
+        } else {
             log.error("JWT algorithm not supported: \"" + strAlgorithm + "\"");
             return null;
         }
+
         try {
             JWTVerifier verifier = JWT.require(algorithm).withIssuer(config.getOIDCIssuer()).build();
             return verifier.verify(decodedJwt);

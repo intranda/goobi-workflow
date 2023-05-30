@@ -46,13 +46,7 @@ public class StepManager implements IManager, Serializable {
 
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
-        try {
-            return StepMysqlHelper.getStepCount(order, filter, institution);
-        } catch (SQLException e) {
-            log.error(e);
-        }
-        return 0;
-
+        return StepManager.countSteps(order, filter, institution);
     }
 
     @Override
@@ -139,7 +133,7 @@ public class StepManager implements IManager, Serializable {
 
     public static int countSteps(String order, String filter, Institution institution) throws DAOException {
         try {
-            return StepMysqlHelper.getStepCount(order, filter, institution);
+            return StepMysqlHelper.getStepCount(filter, institution);
         } catch (SQLException e) {
             log.error(e);
         }

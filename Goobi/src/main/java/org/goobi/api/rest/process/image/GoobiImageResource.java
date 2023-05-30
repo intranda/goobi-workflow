@@ -32,6 +32,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerPdfBinding;
+import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerResource;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -107,9 +109,12 @@ public class GoobiImageResource {
     private static long availableThumbnailFoldersLastUpdate = 0;
     private static final long AVAILABLE_THUMBNAIL_FOLDERS_TTL = 30000; // 30s
 
+    // Returns "UTF-8", is valid for URLEncoder and URLDecoder:
+    private static final String UTF_8 = StandardCharsets.UTF_8.toString();
+
     private static final Map<String, Dimension> IMAGE_SIZES = new ConcurrentHashMap<>();
     private static Map<String, List<String>> availableThumbnailFolders = new ConcurrentHashMap<>();
-    private static Map<String, Long[]> FILE_LAST_EDITED_TIMES = new ConcurrentHashMap<>();
+    private static final Map<String, Long[]> FILE_LAST_EDITED_TIMES = new ConcurrentHashMap<>();
 
     private static final Path metadataFolderPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
 
@@ -128,13 +133,13 @@ public class GoobiImageResource {
     @Operation(summary = "Returns information about an image", description = "Returns information about an image in JSON or JSONLD format")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
+    @Produces({ ContentServerResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
     public ImageInformation getInfoAsJson(@PathParam("process") String processIdString, @PathParam("folder") String folder,
             @PathParam("filename") String filename) throws ContentLibException {
 
         try {
-            filename = URLDecoder.decode(filename, "UTF-8");
+            filename = URLDecoder.decode(filename, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -143,7 +148,7 @@ public class GoobiImageResource {
         ImageInformation info = imageResource.getInfoAsJson();
 
         double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
-        List<Dimension> sizes = new ArrayList<>();
+        List<Dimension> sizes;
 
         setImageSize(imageResource.getImageURI().toString(), new Dimension(info.getWidth(), info.getHeight()));
         if (thumbnailFolder != null && StorageProvider.getInstance().isDirectory(thumbnailFolder)) {
@@ -153,9 +158,7 @@ public class GoobiImageResource {
             }
             sizes = getImageSizes(suggestedSizes, heightToWidthRatio);
         } else {
-            sizes = getImageSizes(
-                    ConfigurationHelper.getInstance().getMetsEditorImageSizes(),
-                    heightToWidthRatio);
+            sizes = getImageSizes(ConfigurationHelper.getInstance().getMetsEditorImageSizes(), heightToWidthRatio);
         }
         if (!sizes.isEmpty()) {
             info.setSizesFromDimensions(sizes);
@@ -174,7 +177,7 @@ public class GoobiImageResource {
 
     @GET
     @javax.ws.rs.Path("/{process}/{folder}/{filename}")
-    @Produces({ MediaType.APPLICATION_JSON, ImageResource.MEDIA_TYPE_APPLICATION_JSONLD })
+    @Produces({ MediaType.APPLICATION_JSON, ContentServerResource.MEDIA_TYPE_APPLICATION_JSONLD })
     public Response redirectToCanonicalImageInfo() throws ContentLibException {
         try {
             return Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))
@@ -194,7 +197,7 @@ public class GoobiImageResource {
             @PathParam("quality") String quality, @PathParam("format") String format, @PathParam("cacheCommand") String command)
                     throws ContentLibException {
         try {
-            filename = URLDecoder.decode(filename, "UTF-8");
+            filename = URLDecoder.decode(filename, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -219,7 +222,7 @@ public class GoobiImageResource {
             @PathParam("filename") String filename, @PathParam("region") String region, @PathParam("size") String size,
             @PathParam("rotation") String rotation, @PathParam("pdfName") String pdfName) throws ContentLibException {
         try {
-            filename = URLDecoder.decode(filename, "UTF-8");
+            filename = URLDecoder.decode(filename, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -235,7 +238,7 @@ public class GoobiImageResource {
             @PathParam("region") String region, @PathParam("size") String size, @PathParam("rotation") String rotation,
             @PathParam("quality") String quality, @PathParam("format") String format) throws ContentLibException {
         try {
-            filename = URLDecoder.decode(filename, "UTF-8");
+            filename = URLDecoder.decode(filename, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -631,9 +634,9 @@ public class GoobiImageResource {
                 }
 
                 return new URI(uriBase.toString()
-                        .replace(URLEncoder.encode("{process}", "utf-8"), URLEncoder.encode(processId, "utf-8"))
-                        .replace(URLEncoder.encode("{folder}", "utf-8"), URLEncoder.encode(folder, "utf-8"))
-                        .replace(URLEncoder.encode("{filename}", "utf-8"), URLEncoder.encode(filename, "utf-8")));
+                        .replace(URLEncoder.encode("{process}", UTF_8), URLEncoder.encode(processId, UTF_8))
+                        .replace(URLEncoder.encode("{folder}", UTF_8), URLEncoder.encode(folder, UTF_8))
+                        .replace(URLEncoder.encode("{filename}", UTF_8), URLEncoder.encode(filename, UTF_8)));
             } catch (URISyntaxException | UnsupportedEncodingException e) {
                 log.error("Failed to create image request uri");
                 throw new IllegalRequestException("Unable to evaluate request to '" + processId + "', '" + folder + "', '" + filename + "'");
@@ -680,7 +683,7 @@ public class GoobiImageResource {
      * @param name1
      * @return the size as int, or 0 if no size could be determined
      */
-    private Integer getSize(String foldername) {
+    private static Integer getSize(String foldername) {
         if (foldername.matches(".*_\\d+")) {
             return Integer.parseInt(foldername.substring(foldername.lastIndexOf("_") + 1));
         } else {
@@ -688,13 +691,13 @@ public class GoobiImageResource {
         }
     }
 
-    private List<Path> getMatchingThumbnailFolders(Path imageFolder, Path thumbsFolder) {
+    private static List<Path> getMatchingThumbnailFolders(Path imageFolder, Path thumbsFolder) {
         return StorageProvider.getInstance()
                 .listFiles(thumbsFolder.toString(),
                         dirname -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
     }
 
-    private List<String> getThumbnailFolders(Path imageFolder, Path thumbnailFolder) {
+    private static List<String> getThumbnailFolders(Path imageFolder, Path thumbnailFolder) {
         List<String> sizes = availableThumbnailFolders.get(imageFolder.toString());
         if (sizes == null) {
             setThumbnailFolders(imageFolder, thumbnailFolder);
@@ -708,7 +711,7 @@ public class GoobiImageResource {
         return sizes;
     }
 
-    private void setThumbnailFolders(Path imageFolder, Path thumbsFolder) {
+    private static void setThumbnailFolders(Path imageFolder, Path thumbsFolder) {
         if (availableThumbnailFolders.size() >= IMAGE_SIZES_MAX_SIZE) {
             List<String> keysToDelete =
                     availableThumbnailFolders.keySet().stream().limit(IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW).collect(Collectors.toList());

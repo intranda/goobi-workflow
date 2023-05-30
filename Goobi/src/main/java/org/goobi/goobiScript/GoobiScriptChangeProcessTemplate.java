@@ -38,6 +38,9 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String TEMPLATE_NAME = "templateName";
+
     private Process processTemplate;
 
     private BeanHelper helper;
@@ -51,7 +54,7 @@ public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript imple
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allow to adapt the workflow for a process by switching to another process template.");
-        addParameterToSampleCall(sb, "templateName", "Manuscript_workflow", "Use the name of the process template to use for the Goobi processes.");
+        addParameterToSampleCall(sb, TEMPLATE_NAME, "Manuscript_workflow", "Use the name of the process template to use for the Goobi processes.");
         return sb.toString();
     }
 
@@ -59,15 +62,16 @@ public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript imple
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
         helper = new BeanHelper();
-        if (StringUtils.isBlank(parameters.get("templateName"))) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "templateName");
+        String templateName = parameters.get(TEMPLATE_NAME);
+        if (StringUtils.isBlank(templateName)) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Missing parameter: ", TEMPLATE_NAME);
             return new ArrayList<>();
         }
 
         // check if template exists
-        Process template = ProcessManager.getProcessByExactTitle(parameters.get("templateName"));
+        Process template = ProcessManager.getProcessByExactTitle(templateName);
         if (template == null) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Unknown process template: ", parameters.get("templateName"));
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Unknown process template: ", templateName);
             return new ArrayList<>();
         }
         processTemplate = template;

@@ -58,14 +58,14 @@ public final class Util {
      * 
      * @param dateString
      * @return Date
-     * @throws RuntimeException is dateString is invalid
+     * @throws IllegalArgumentException is dateString is invalid
      */
     public static Date parseDate(String dateString) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd");
             return sdf.parse(dateString);
         } catch (ParseException pe) {
-            throw new RuntimeException("Not a valid date: " + dateString + ". Must be of YYYY-MMM-DD format.");
+            throw new IllegalArgumentException("Not a valid date: " + dateString + ". Must be of YYYY-MMM-DD format.");
         }
     }
 

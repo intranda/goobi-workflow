@@ -34,7 +34,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 
 public class GenericAutomaticStepHandler implements TicketHandler<PluginReturnValue> {
 
-    public static String HANDLERNAME = "generic_automatic_step";
+    public static final String HANDLERNAME = "generic_automatic_step";
 
     @Override
     public String getTicketHandlerName() {

@@ -41,9 +41,7 @@ public class EDTFValidator implements Validator<String> {
 
     @Override
     public void validate(FacesContext context, UIComponent component, String date) throws ValidatorException {
-        if (isValid(date)) {
-            return;
-        } else {
+        if (!isValid(date)) {
             FacesMessage msg = new FacesMessage("Invalid date format.");
             msg.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(msg);

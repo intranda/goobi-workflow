@@ -280,7 +280,7 @@ public class GetOpac {
      * @throws SAXException
      **********************************************************************/
     public String retrievePica(Query query, int start, int end) throws IOException, SAXException, ParserConfigurationException {
-        StringBuffer xmlResult = new StringBuffer();
+        StringBuilder xmlResult = new StringBuilder();
 
         // querySummary is used to check if cached result and sessionid
         // can be used again
@@ -372,13 +372,9 @@ public class GetOpac {
         // formating
         result.appendChild(picaPlusRaw.createTextNode("\n"));
 
-        // check if we got an result
-        if (((Element) result).hasAttribute("error")) {
-            // if it was not an error because of no hits getNumberOfHits
-            // throws an exception
-            if (getNumberOfHits(query) == 0) {
-                throw new IllegalQueryException("No Hits");
-            }
+        // Checks that there is a result and the result has no hits:
+        if (((Element) result).hasAttribute("error") && getNumberOfHits(query) == 0) {
+            throw new IllegalQueryException("No Hits");
 
         }
 
@@ -490,7 +486,7 @@ public class GetOpac {
     }
 
     private String xmlFormatPica(String picaXmlRecord) {
-        StringBuffer result = new StringBuffer("  <" + PICA_RECORD + ">\n");
+        StringBuilder result = new StringBuilder("  <" + PICA_RECORD + ">\n");
         try {
             int startField = picaXmlRecord.indexOf("LONGTITLE");
             int nextField = 0;
@@ -523,8 +519,8 @@ public class GetOpac {
         return result.toString();
     }
 
-    private StringBuffer parseRecordField(String field) {
-        StringBuffer result = new StringBuffer();
+    private StringBuilder parseRecordField(String field) {
+        StringBuilder result = new StringBuilder();
 
         String[] fieldComponents = null;
         String fieldName = null;

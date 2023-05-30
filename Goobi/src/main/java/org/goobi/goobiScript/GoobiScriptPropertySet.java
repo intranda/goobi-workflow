@@ -25,6 +25,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,10 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 
 public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String NAME = "name";
+    private static final String VALUE = "value";
+
     @Override
     public String getAction() {
         return "propertySet";
@@ -48,9 +53,9 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to set a process property to a specific value.");
-        addParameterToSampleCall(sb, "name", "Opening angle",
+        addParameterToSampleCall(sb, NAME, "Opening angle",
                 "Name of the property to be changed. If the property does not exist already it is created here.");
-        addParameterToSampleCall(sb, "value", "90°", "Value that the property shall be set to");
+        addParameterToSampleCall(sb, VALUE, "90°", "Value that the property shall be set to");
         return sb.toString();
     }
 
@@ -58,15 +63,17 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (StringUtils.isBlank(parameters.get("name"))) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "name");
-            return new ArrayList<>();
+        String missingParameter = "Missing parameter: ";
+        if (StringUtils.isBlank(parameters.get(NAME))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, NAME);
+            return Collections.emptyList();
         }
 
-        if (StringUtils.isBlank(parameters.get("value"))) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "value");
-            return new ArrayList<>();
+        if (StringUtils.isBlank(parameters.get(VALUE))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, VALUE);
+            return Collections.emptyList();
         }
+
         // add all valid commands to list
         List<GoobiScriptResult> newList = new ArrayList<>();
         for (Integer i : processes) {
@@ -79,8 +86,8 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
-        String propertyName = parameters.get("name");
-        String value = parameters.get("value");
+        String propertyName = parameters.get(NAME);
+        String value = parameters.get(VALUE);
 
         // execute all jobs that are still in waiting state
         Process p = ProcessManager.getProcessById(gsr.getProcessId());

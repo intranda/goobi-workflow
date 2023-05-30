@@ -42,6 +42,13 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobiScript {
+
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String SWAP_1_NUMBER = "swap1nr";
+    private static final String SWAP_1_TITLE = "swap1title";
+    private static final String SWAP_2_NUMBER = "swap2nr";
+    private static final String SWAP_2_TITLE = "swap2title";
+
     @Override
     public String getAction() {
         return "swapSteps";
@@ -51,10 +58,10 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to swap the order of two steps within a workflow.");
-        addParameterToSampleCall(sb, "swap1nr", "4", "Order number of the first workflow step");
-        addParameterToSampleCall(sb, "swap1title", "Quality assurance", "Title of the first workflow step");
-        addParameterToSampleCall(sb, "swap2nr", "5", "Order number of the second workflow step");
-        addParameterToSampleCall(sb, "swap2title", "Metadata enrichment", "Title of the second workflow step");
+        addParameterToSampleCall(sb, SWAP_1_NUMBER, "4", "Order number of the first workflow step");
+        addParameterToSampleCall(sb, SWAP_1_TITLE, "Quality assurance", "Title of the first workflow step");
+        addParameterToSampleCall(sb, SWAP_2_NUMBER, "5", "Order number of the second workflow step");
+        addParameterToSampleCall(sb, SWAP_2_TITLE, "Metadata enrichment", "Title of the second workflow step");
         return sb.toString();
     }
 
@@ -63,28 +70,36 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
 
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("swap1nr") == null || "".equals(parameters.get("swap1nr"))) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "swap1nr");
+        String missingParameter = "Missing parameter: ";
+        String swap1Number = parameters.get(SWAP_1_NUMBER);
+        if (swap1Number == null || swap1Number.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, SWAP_1_NUMBER);
             return new ArrayList<>();
         }
-        if (parameters.get("swap2nr") == null || "".equals(parameters.get("swap2nr"))) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "swap2nr");
+
+        String swap1Title = parameters.get(SWAP_1_TITLE);
+        if (swap1Title == null || swap1Title.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, SWAP_1_TITLE);
             return new ArrayList<>();
         }
-        if (parameters.get("swap1title") == null || "".equals(parameters.get("swap1title"))) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "swap1title");
+
+        String swap2Number = parameters.get(SWAP_2_NUMBER);
+        if (swap2Number == null || swap2Number.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, SWAP_2_NUMBER);
             return new ArrayList<>();
         }
-        if (parameters.get("swap2title") == null || "".equals(parameters.get("swap2title"))) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "swap2title");
+
+        String swap2Title = parameters.get(SWAP_2_TITLE);
+        if (swap2Title == null || swap2Title.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, SWAP_2_TITLE);
             return new ArrayList<>();
         }
 
         try {
-            Integer.parseInt(parameters.get("swap1nr"));
-            Integer.parseInt(parameters.get("swap2nr"));
+            Integer.parseInt(swap1Number);
+            Integer.parseInt(swap2Number);
         } catch (NumberFormatException e1) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Invalid order number used: ", parameters.get("swap1nr") + " - " + parameters.get("swap2nr"));
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Invalid order number used: ", swap1Number + " - " + swap2Number);
             return new ArrayList<>();
         }
         // add all valid commands to list
@@ -99,21 +114,23 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
-        int swap1nr = Integer.parseInt(parameters.get("swap1nr"));
-        int swap2nr = Integer.parseInt(parameters.get("swap2nr"));
-        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-        gsr.setProcessTitle(p.getTitel());
+        int swap1nr = Integer.parseInt(parameters.get(SWAP_1_NUMBER));
+        int swap2nr = Integer.parseInt(parameters.get(SWAP_2_NUMBER));
+        Process process = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(process.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
+        String swap1Title = parameters.get(SWAP_1_TITLE);
+        String swap2Title = parameters.get(SWAP_2_TITLE);
 
         Step s1 = null;
         Step s2 = null;
-        for (Step s : p.getSchritteList()) {
-            if (s.getTitel().equals(parameters.get("swap1title")) && s.getReihenfolge().intValue() == swap1nr) {
-                s1 = s;
+        for (Step step : process.getSchritteList()) {
+            if (step.getTitel().equals(swap1Title) && step.getReihenfolge().intValue() == swap1nr) {
+                s1 = step;
             }
-            if (s.getTitel().equals(parameters.get("swap2title")) && s.getReihenfolge().intValue() == swap2nr) {
-                s2 = s;
+            if (step.getTitel().equals(swap2Title) && step.getReihenfolge().intValue() == swap2nr) {
+                s2 = step;
             }
         }
         if (s1 != null && s2 != null) {
@@ -125,16 +142,15 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
             try {
                 StepManager.saveStep(s1);
                 StepManager.saveStep(s2);
-                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                        "Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript.", username);
-                log.info("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel()
-                        + "' using GoobiScript for process with ID " + p.getId());
-                gsr.setResultMessage("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "'.");
+                String message = "Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "'";
+                Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+                log.info(message + " using GoobiScript for process with ID " + process.getId());
+                gsr.setResultMessage(message + ".");
                 gsr.setResultType(GoobiScriptResultType.OK);
             } catch (DAOException e) {
-                log.error("Error on save while swapping steps: " + p.getTitel() + " - " + s1.getTitel() + " : " + s2.getTitel(), e);
-                gsr.setResultMessage("Error on save while swapping steps: " + p.getTitel() + " - " + s1.getTitel() + " vs. "
-                        + s2.getTitel() + ": " + e.getMessage());
+                String message = "Error on save while swapping steps: " + process.getTitel() + " - " + s1.getTitel() + " : " + s2.getTitel();
+                log.error(message, e);
+                gsr.setResultMessage(message + " error: " + e.getMessage());
                 gsr.setResultType(GoobiScriptResultType.ERROR);
                 gsr.setErrorText(e.getMessage());
             }

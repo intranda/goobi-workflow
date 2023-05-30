@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 
@@ -103,192 +104,203 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * Note: underscores ('_') are always used if words are separated with
      * camelCaseNotation. If words do not have
      * camelcasenotation, they are written without underscore.
+     *
+     * All fields are 'protected' because most of them are also used in XsltPreparatorMetadata.java
      */
-    private static final String ELEMENT_ADMINISTRATION_PLUGIN = "administrationPlugin";
-    private static final String ELEMENT_ASSIGNED_USER_GROUPS = "assignedUserGroups";
-    private static final String ELEMENT_ASSIGNED_USERS = "assignedUsers";
-    private static final String ELEMENT_AUTHENTICATION = "authentication";
-    private static final String ELEMENT_BATCH = "batch";
-    private static final String ELEMENT_COMMENT = "comment";
-    private static final String ELEMENT_COMMENTS = "comments";
-    private static final String ELEMENT_CONFIGURATION = "configuration";
-    private static final String ELEMENT_CONTENT = "content";
-    private static final String ELEMENT_CREATION_DATE = "creationDate";
-    private static final String ELEMENT_DASHBOARD_PLUGIN = "dashboardPlugin";
-    private static final String ELEMENT_DIGITAL_DOCUMENT = "digitalDocument";
-    private static final String ELEMENT_DIGITAL_DOCUMENTS = "digitalDocuments";
-    private static final String ELEMENT_DMS_IMPORT_ERROR_PATH = "dmsImportErrorPath";
-    private static final String ELEMENT_DMS_IMPORT_IMAGES_PATH = "dmsImportImagesPath";
-    private static final String ELEMENT_DMS_IMPORT_ROOT_PATH = "dmsImportRootPath";
-    private static final String ELEMENT_DMS_IMPORT_SUCCESS_PATH = "dmsImportSuccessPath";
-    private static final String ELEMENT_DMS_IMPORT_TIME_OUT = "dmsImportTimeOut";
-    private static final String ELEMENT_DOCKET = "docket";
-    private static final String ELEMENT_EDITION_TYPE = "editionType";
-    private static final String ELEMENT_EDITTYPE = "edittype";
-    private static final String ELEMENT_END_DATE = "endDate";
-    private static final String ELEMENT_ENTRY = "entry";
-    private static final String ELEMENT_EXPORT_CONFIGURATION = "exportConfiguration";
-    private static final String ELEMENT_FILE = "file";
-    private static final String ELEMENT_FILE_FORMAT_DMS_EXPORT = "fileFormatDmsExport";
-    private static final String ELEMENT_FILE_FORMAT_INTERNAL = "fileFormatInternal";
-    private static final String ELEMENT_FILE_GROUPS = "fileGroups";
-    private static final String ELEMENT_FILENAME = "filename";
-    private static final String ELEMENT_HISTORY = "history";
-    private static final String ELEMENT_HISTORY_EVENT = "historyEvent";
-    private static final String ELEMENT_HTTP_STEP = "httpStep";
-    private static final String ELEMENT_ID = "id";
-    private static final String ELEMENT_INSTITUTION = "institution";
-    private static final String ELEMENT_LABEL = "label";
-    private static final String ELEMENT_LOG = "log";
-    private static final String ELEMENT_METADATA = "metadata";
-    private static final String ELEMENT_METADATALIST = "metadatalist";
-    private static final String ELEMENT_METS_CONFIGURATION = "metsConfiguration";
-    private static final String ELEMENT_METS_CONTENT_IDS = "metsContentIDs";
-    private static final String ELEMENT_METS_DIGIPROV_PRESENTATION = "metsDigiprovPresentation";
-    private static final String ELEMENT_METS_DIGIPROV_PRESENTATION_ANCHOR = "metsDigiprovPresentationAnchor";
-    private static final String ELEMENT_METS_DIGIPROV_REFERENCE = "metsDigiprovReference";
-    private static final String ELEMENT_METS_DIGIPROV_REFERENCE_ANCHOR = "metsDigiprovReferenceAnchor";
-    private static final String ELEMENT_METS_INFORMATION = "metsInformation";
-    private static final String ELEMENT_METS_POINTER_PATH = "metsPointerPath";
-    private static final String ELEMENT_METS_POINTER_PATH_ANCHOR = "metsPointerPathAnchor";
-    private static final String ELEMENT_METS_PURL = "metsPurl";
-    private static final String ELEMENT_METS_RIGHTS_LICENSE = "metsRightsLicense";
-    private static final String ELEMENT_METS_RIGHTS_OWNER = "metsRightsOwner";
-    private static final String ELEMENT_METS_RIGHTS_OWNER_LOGO = "metsRightsOwnerLogo";
-    private static final String ELEMENT_METS_RIGHTS_OWNER_MAIL = "metsRightsOwnerMail";
-    private static final String ELEMENT_METS_RIGHTS_OWNER_SITE = "metsRightsOwnerSite";
-    private static final String ELEMENT_METS_RIGHTS_SPONSOR = "metsRightsSponsor";
-    private static final String ELEMENT_METS_RIGHTS_SPONSOR_LOGO = "metsRightsSponsorLogo";
-    private static final String ELEMENT_METS_RIGHTS_SPONSOR_SITE_URL = "metsRightsSponsorSiteURL";
-    private static final String ELEMENT_NAME = "name";
-    private static final String ELEMENT_ORDER = "order";
-    private static final String ELEMENT_ORIGINAL = "original";
-    private static final String ELEMENT_ORIGINALS = "originals";
-    private static final String ELEMENT_PAGES = "pages";
-    private static final String ELEMENT_PDF_GENERATION_DATE = "pdfGenerationDate";
-    private static final String ELEMENT_PRIORITY = "priority";
-    private static final String ELEMENT_PROCESS = "process";
-    private static final String ELEMENT_PROCESSES = "processes";
-    private static final String ELEMENT_PROCESSING_END_TIME = "processingEndTime";
-    private static final String ELEMENT_PROCESSING_START_TIME = "processingStartTime";
-    private static final String ELEMENT_PROCESSING_TIME = "processingTime";
-    private static final String ELEMENT_PROCESSINGSTATUS = "processingstatus";
-    private static final String ELEMENT_PROJECT = "project";
-    private static final String ELEMENT_PROJECT_FILE_GROUP = "projectFileGroup";
-    private static final String ELEMENT_PROPERTIES = "properties";
-    private static final String ELEMENT_PROPERTY = "property";
-    private static final String ELEMENT_REPRESENTATIVE = "representative";
-    private static final String ELEMENT_ROLE = "role";
-    private static final String ELEMENT_RULESET = "ruleset";
-    private static final String ELEMENT_SCRIPT_STEP = "scriptStep";
-    private static final String ELEMENT_SORTING = "sorting";
-    private static final String ELEMENT_START_DATE = "startDate";
-    private static final String ELEMENT_STATISTICS_PLUGIN = "statisticsPlugin";
-    private static final String ELEMENT_STATUS = "status";
-    private static final String ELEMENT_STEP = "step";
-    private static final String ELEMENT_STEPS = "steps";
-    private static final String ELEMENT_TASK = "task";
-    private static final String ELEMENT_TASKS = "tasks";
-    private static final String ELEMENT_TEMPLATES = "templates";
-    private static final String ELEMENT_TIME = "time";
-    private static final String ELEMENT_TITLE = "title";
-    private static final String ELEMENT_TYPE = "type";
-    private static final String ELEMENT_USER = "user";
-    private static final String ELEMENT_USERGROUP = "usergroup";
-    private static final String ELEMENT_VALUE = "value";
-    private static final String ELEMENT_VOLUMES = "volumes";
-    private static final String ELEMENT_WORKFLOW_PLUGIN = "workflowPlugin";
-    private static final String ELEMENT_WORKPIECE = "workpiece";
-    private static final String ATTRIBUTE_ACCESS_LEVEL = "accessLevel";
-    private static final String ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS = "allowAllAuthentications";
-    private static final String ATTRIBUTE_ALLOW_ALL_DOCKETS = "allowAllDockets";
-    private static final String ATTRIBUTE_ALLOW_ALL_PLUGINS = "allowAllPlugins";
-    private static final String ATTRIBUTE_ALLOW_ALL_RULESETS = "allowAllRulesets";
-    private static final String ATTRIBUTE_ARCHIVED = "archived";
-    private static final String ATTRIBUTE_ARTICLES = "articles";
-    private static final String ATTRIBUTE_BATCH_NAME = "batchName";
-    private static final String ATTRIBUTE_BATCH_STEP = "batchStep";
-    private static final String ATTRIBUTE_COMMENT = "comment";
-    private static final String ATTRIBUTE_CONTAINER = "container";
-    private static final String ATTRIBUTE_DATE = "date";
-    private static final String ATTRIBUTE_DELAY_STEP = "delayStep";
-    private static final String ATTRIBUTE_DIGITAL_DOCUMENT_ID = "digitalDocumentID";
-    private static final String ATTRIBUTE_DISPLAY_IN_PROCESS_CREATION = "displayInProcessCreation";
-    private static final String ATTRIBUTE_DMS_IMPORT_CREATE_PROCESS_FOLDER = "dmsImportCreateProcessFolder";
-    private static final String ATTRIBUTE_DOCSTRUCTS = "docstructs";
-    private static final String ATTRIBUTE_END_DATE = "endDate";
-    private static final String ATTRIBUTE_EXPORT = "export";
-    private static final String ATTRIBUTE_FILE = "file";
-    private static final String ATTRIBUTE_FILENAME = "filename";
-    private static final String ATTRIBUTE_FINALIZE_ON_ACCEPT = "finalizeOnAccept";
-    private static final String ATTRIBUTE_FOLDER = "folder";
-    private static final String ATTRIBUTE_GENERATE_DOCKET = "generateDocket";
-    private static final String ATTRIBUTE_HTTP_CLOSE_STEP = "httpCloseStep";
-    private static final String ATTRIBUTE_HTTP_ESCAPE_BODY_JSON = "httpEscapeBodyJson";
-    private static final String ATTRIBUTE_HTTP_JSON_BODY = "httpJsonBody";
-    private static final String ATTRIBUTE_HTTP_METHOD = "httpMethod";
-    private static final String ATTRIBUTE_HTTP_STEP = "httpStep";
-    private static final String ATTRIBUTE_HTTP_URL = "httpUrl";
-    private static final String ATTRIBUTE_ID = "id";
-    private static final String ATTRIBUTE_IMAGES = "images";
-    private static final String ATTRIBUTE_IS_AUTOMATIC = "isAutomatic";
-    private static final String ATTRIBUTE_LABEL = "label";
-    private static final String ATTRIBUTE_LOGIN = "login";
-    private static final String ATTRIBUTE_LONG_NAME = "longName";
-    private static final String ATTRIBUTE_MEDIA_FOLDER_EXISTS = "mediaFolderExists";
-    private static final String ATTRIBUTE_METADATA = "metadata";
-    private static final String ATTRIBUTE_MIMETYPE = "mimetype";
-    private static final String ATTRIBUTE_NAME = "name";
-    private static final String ATTRIBUTE_NUMERIC_VALUE = "numeric_value";// Attention: under_score instead of camelCase
-    private static final String ATTRIBUTE_ORIGINAL_ID = "originalID";
-    private static final String ATTRIBUTE_PATH = "path";
-    private static final String ATTRIBUTE_PROCESS_ID = "processID";
-    private static final String ATTRIBUTE_PROPERTY_IDENTIFIER = "propertyIdentifier";
-    private static final String ATTRIBUTE_READ_IMAGES = "readImages";
-    private static final String ATTRIBUTE_SCHEMA_LOCATION = "schemaLocation";
-    private static final String ATTRIBUTE_SCRIPT_NAME_1 = "scriptName1";
-    private static final String ATTRIBUTE_SCRIPT_NAME_2 = "scriptName2";
-    private static final String ATTRIBUTE_SCRIPT_NAME_3 = "scriptName3";
-    private static final String ATTRIBUTE_SCRIPT_NAME_4 = "scriptName4";
-    private static final String ATTRIBUTE_SCRIPT_NAME_5 = "scriptName5";
-    private static final String ATTRIBUTE_SCRIPT_PATH_1 = "scriptPath1";
-    private static final String ATTRIBUTE_SCRIPT_PATH_2 = "scriptPath2";
-    private static final String ATTRIBUTE_SCRIPT_PATH_3 = "scriptPath3";
-    private static final String ATTRIBUTE_SCRIPT_PATH_4 = "scriptPath4";
-    private static final String ATTRIBUTE_SCRIPT_PATH_5 = "scriptPath5";
-    private static final String ATTRIBUTE_SCRIPT_STEP = "scriptStep";
-    private static final String ATTRIBUTE_SHORT_NAME = "shortName";
-    private static final String ATTRIBUTE_START_DATE = "startDate";
-    private static final String ATTRIBUTE_STATUS = "status";
-    private static final String ATTRIBUTE_STEP_ID = "stepID";
-    private static final String ATTRIBUTE_STEP_PLUGIN = "stepPlugin";
-    private static final String ATTRIBUTE_SUFFIX = "suffix";
-    private static final String ATTRIBUTE_TEMPLATE = "template";
-    private static final String ATTRIBUTE_TYPE = "type";
-    private static final String ATTRIBUTE_UPDATE_METADATA_INDEX = "updateMetadataIndex";
-    private static final String ATTRIBUTE_URL = "url";
-    private static final String ATTRIBUTE_USE_DMS_IMPORT = "useDmsImport";
-    private static final String ATTRIBUTE_USE_HOME_DIRECTORY = "useHomeDirectory";
-    private static final String ATTRIBUTE_USE_METS_EDITOR = "useMetsEditor";
-    private static final String ATTRIBUTE_USER = "user";
-    private static final String ATTRIBUTE_VALIDATION_PLUGIN = "validationPlugin";
-    private static final String ATTRIBUTE_VALUE = "value";
-    private static final String ATTRIBUTE_VERIFY_ON_FINALIZE = "verifyOnFinalize";
-    private static final String ATTRIBUTE_WRITE_IMAGES = "writeImages";
+    protected static final String ELEMENT_ADMINISTRATION_PLUGIN = "administrationPlugin";
+    protected static final String ELEMENT_ASSIGNED_USER_GROUPS = "assignedUserGroups";
+    protected static final String ELEMENT_ASSIGNED_USERS = "assignedUsers";
+    protected static final String ELEMENT_AUTHENTICATION = "authentication";
+    protected static final String ELEMENT_BATCH = "batch";
+    protected static final String ELEMENT_COMMENT = "comment";
+    protected static final String ELEMENT_COMMENTS = "comments";
+    protected static final String ELEMENT_CONFIGURATION = "configuration";
+    protected static final String ELEMENT_CONTENT = "content";
+    protected static final String ELEMENT_CREATION_DATE = "creationDate";
+    protected static final String ELEMENT_DASHBOARD_PLUGIN = "dashboardPlugin";
+    protected static final String ELEMENT_DIGITAL_DOCUMENT = "digitalDocument";
+    protected static final String ELEMENT_DIGITAL_DOCUMENTS = "digitalDocuments";
+    protected static final String ELEMENT_DMS_IMPORT_ERROR_PATH = "dmsImportErrorPath";
+    protected static final String ELEMENT_DMS_IMPORT_IMAGES_PATH = "dmsImportImagesPath";
+    protected static final String ELEMENT_DMS_IMPORT_ROOT_PATH = "dmsImportRootPath";
+    protected static final String ELEMENT_DMS_IMPORT_SUCCESS_PATH = "dmsImportSuccessPath";
+    protected static final String ELEMENT_DMS_IMPORT_TIME_OUT = "dmsImportTimeOut";
+    protected static final String ELEMENT_DOCKET = "docket";
+    protected static final String ELEMENT_EDITION_TYPE = "editionType";
+    protected static final String ELEMENT_EDITTYPE = "edittype";
+    protected static final String ELEMENT_END_DATE = "endDate";
+    protected static final String ELEMENT_ENTRY = "entry";
+    protected static final String ELEMENT_EXPORT_CONFIGURATION = "exportConfiguration";
+    protected static final String ELEMENT_FILE = "file";
+    protected static final String ELEMENT_FILE_FORMAT_DMS_EXPORT = "fileFormatDmsExport";
+    protected static final String ELEMENT_FILE_FORMAT_INTERNAL = "fileFormatInternal";
+    protected static final String ELEMENT_FILE_GROUPS = "fileGroups";
+    protected static final String ELEMENT_FILENAME = "filename";
+    protected static final String ELEMENT_HISTORY = "history";
+    protected static final String ELEMENT_HISTORY_EVENT = "historyEvent";
+    protected static final String ELEMENT_HTTP_STEP = "httpStep";
+    protected static final String ELEMENT_ID = "id";
+    protected static final String ELEMENT_INSTITUTION = "institution";
+    protected static final String ELEMENT_LABEL = "label";
+    protected static final String ELEMENT_LOG = "log";
+    protected static final String ELEMENT_METADATA = "metadata";
+    protected static final String ELEMENT_METADATALIST = "metadatalist";
+    protected static final String ELEMENT_METS_CONFIGURATION = "metsConfiguration";
+    protected static final String ELEMENT_METS_CONTENT_IDS = "metsContentIDs";
+    protected static final String ELEMENT_METS_DIGIPROV_PRESENTATION = "metsDigiprovPresentation";
+    protected static final String ELEMENT_METS_DIGIPROV_PRESENTATION_ANCHOR = "metsDigiprovPresentationAnchor";
+    protected static final String ELEMENT_METS_DIGIPROV_REFERENCE = "metsDigiprovReference";
+    protected static final String ELEMENT_METS_DIGIPROV_REFERENCE_ANCHOR = "metsDigiprovReferenceAnchor";
+    protected static final String ELEMENT_METS_INFORMATION = "metsInformation";
+    protected static final String ELEMENT_METS_POINTER_PATH = "metsPointerPath";
+    protected static final String ELEMENT_METS_POINTER_PATH_ANCHOR = "metsPointerPathAnchor";
+    protected static final String ELEMENT_METS_PURL = "metsPurl";
+    protected static final String ELEMENT_METS_RIGHTS_LICENSE = "metsRightsLicense";
+    protected static final String ELEMENT_METS_RIGHTS_OWNER = "metsRightsOwner";
+    protected static final String ELEMENT_METS_RIGHTS_OWNER_LOGO = "metsRightsOwnerLogo";
+    protected static final String ELEMENT_METS_RIGHTS_OWNER_MAIL = "metsRightsOwnerMail";
+    protected static final String ELEMENT_METS_RIGHTS_OWNER_SITE = "metsRightsOwnerSite";
+    protected static final String ELEMENT_METS_RIGHTS_SPONSOR = "metsRightsSponsor";
+    protected static final String ELEMENT_METS_RIGHTS_SPONSOR_LOGO = "metsRightsSponsorLogo";
+    protected static final String ELEMENT_METS_RIGHTS_SPONSOR_SITE_URL = "metsRightsSponsorSiteURL";
+    protected static final String ELEMENT_NAME = "name";
+    protected static final String ELEMENT_NODE = "node";
+    protected static final String ELEMENT_ORDER = "order";
+    protected static final String ELEMENT_ORIGINAL = "original";
+    protected static final String ELEMENT_ORIGINALS = "originals";
+    protected static final String ELEMENT_PAGES = "pages";
+    protected static final String ELEMENT_PERSON = "person";
+    protected static final String ELEMENT_PDF_GENERATION_DATE = "pdfGenerationDate";
+    protected static final String ELEMENT_PRIORITY = "priority";
+    protected static final String ELEMENT_PROCESS = "process";
+    protected static final String ELEMENT_PROCESSES = "processes";
+    protected static final String ELEMENT_PROCESSING_END_TIME = "processingEndTime";
+    protected static final String ELEMENT_PROCESSING_START_TIME = "processingStartTime";
+    protected static final String ELEMENT_PROCESSING_TIME = "processingTime";
+    protected static final String ELEMENT_PROCESSINGSTATUS = "processingstatus";
+    protected static final String ELEMENT_PROJECT = "project";
+    protected static final String ELEMENT_PROJECT_FILE_GROUP = "projectFileGroup";
+    protected static final String ELEMENT_PROPERTIES = "properties";
+    protected static final String ELEMENT_PROPERTY = "property";
+    protected static final String ELEMENT_REPRESENTATIVE = "representative";
+    protected static final String ELEMENT_ROLE = "role";
+    protected static final String ELEMENT_RULESET = "ruleset";
+    protected static final String ELEMENT_SCRIPT_STEP = "scriptStep";
+    protected static final String ELEMENT_SORTING = "sorting";
+    protected static final String ELEMENT_START_DATE = "startDate";
+    protected static final String ELEMENT_STATISTICS_PLUGIN = "statisticsPlugin";
+    protected static final String ELEMENT_STATUS = "status";
+    protected static final String ELEMENT_STEP = "step";
+    protected static final String ELEMENT_STEPS = "steps";
+    protected static final String ELEMENT_TASK = "task";
+    protected static final String ELEMENT_TASKS = "tasks";
+    protected static final String ELEMENT_TEMPLATES = "templates";
+    protected static final String ELEMENT_TIME = "time";
+    protected static final String ELEMENT_TITLE = "title";
+    protected static final String ELEMENT_TYPE = "type";
+    protected static final String ELEMENT_USER = "user";
+    protected static final String ELEMENT_USERGROUP = "usergroup";
+    protected static final String ELEMENT_VALUE = "value";
+    protected static final String ELEMENT_VOLUMES = "volumes";
+    protected static final String ELEMENT_WORKFLOW_PLUGIN = "workflowPlugin";
+    protected static final String ELEMENT_WORKPIECE = "workpiece";
+    protected static final String ATTRIBUTE_ACCESS_LEVEL = "accessLevel";
+    protected static final String ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS = "allowAllAuthentications";
+    protected static final String ATTRIBUTE_ALLOW_ALL_DOCKETS = "allowAllDockets";
+    protected static final String ATTRIBUTE_ALLOW_ALL_PLUGINS = "allowAllPlugins";
+    protected static final String ATTRIBUTE_ALLOW_ALL_RULESETS = "allowAllRulesets";
+    protected static final String ATTRIBUTE_ARCHIVED = "archived";
+    protected static final String ATTRIBUTE_ARTICLES = "articles";
+    protected static final String ATTRIBUTE_BATCH_NAME = "batchName";
+    protected static final String ATTRIBUTE_BATCH_STEP = "batchStep";
+    protected static final String ATTRIBUTE_COMMENT = "comment";
+    protected static final String ATTRIBUTE_CONTAINER = "container";
+    protected static final String ATTRIBUTE_DATE = "date";
+    protected static final String ATTRIBUTE_DELAY_STEP = "delayStep";
+    protected static final String ATTRIBUTE_DIGITAL_DOCUMENT_ID = "digitalDocumentID";
+    protected static final String ATTRIBUTE_DISPLAY_IN_PROCESS_CREATION = "displayInProcessCreation";
+    protected static final String ATTRIBUTE_DMS_IMPORT_CREATE_PROCESS_FOLDER = "dmsImportCreateProcessFolder";
+    protected static final String ATTRIBUTE_DOCSTRUCTS = "docstructs";
+    protected static final String ATTRIBUTE_END_DATE = "endDate";
+    protected static final String ATTRIBUTE_EXPORT = "export";
+    protected static final String ATTRIBUTE_FILE = "file";
+    protected static final String ATTRIBUTE_FILENAME = "filename";
+    protected static final String ATTRIBUTE_FINALIZE_ON_ACCEPT = "finalizeOnAccept";
+    protected static final String ATTRIBUTE_FIRSTNAME = "firstname";
+    protected static final String ATTRIBUTE_FOLDER = "folder";
+    protected static final String ATTRIBUTE_GENERATE_DOCKET = "generateDocket";
+    protected static final String ATTRIBUTE_HTTP_CLOSE_STEP = "httpCloseStep";
+    protected static final String ATTRIBUTE_HTTP_ESCAPE_BODY_JSON = "httpEscapeBodyJson";
+    protected static final String ATTRIBUTE_HTTP_JSON_BODY = "httpJsonBody";
+    protected static final String ATTRIBUTE_HTTP_METHOD = "httpMethod";
+    protected static final String ATTRIBUTE_HTTP_STEP = "httpStep";
+    protected static final String ATTRIBUTE_HTTP_URL = "httpUrl";
+    protected static final String ATTRIBUTE_ID = "id";
+    protected static final String ATTRIBUTE_IMAGES = "images";
+    protected static final String ATTRIBUTE_IS_AUTOMATIC = "isAutomatic";
+    protected static final String ATTRIBUTE_LABEL = "label";
+    protected static final String ATTRIBUTE_LASTNAME = "lastname";
+    protected static final String ATTRIBUTE_LOGIN = "login";
+    protected static final String ATTRIBUTE_LONG_NAME = "longName";
+    protected static final String ATTRIBUTE_MEDIA_FOLDER_EXISTS = "mediaFolderExists";
+    protected static final String ATTRIBUTE_METADATA = "metadata";
+    protected static final String ATTRIBUTE_MIMETYPE = "mimetype";
+    protected static final String ATTRIBUTE_NAME = "name";
+    protected static final String ATTRIBUTE_NUMERIC_VALUE = "numeric_value";// Attention: under_score instead of camelCase
+    protected static final String ATTRIBUTE_ORIGINAL_ID = "originalID";
+    protected static final String ATTRIBUTE_PATH = "path";
+    protected static final String ATTRIBUTE_PROCESS_ID = "processID";
+    protected static final String ATTRIBUTE_PROPERTY_IDENTIFIER = "propertyIdentifier";
+    protected static final String ATTRIBUTE_READ_IMAGES = "readImages";
+    protected static final String ATTRIBUTE_ROLE = "role";
+    protected static final String ATTRIBUTE_SCHEMA_LOCATION = "schemaLocation";
+    protected static final String ATTRIBUTE_SCRIPT_NAME_1 = "scriptName1";
+    protected static final String ATTRIBUTE_SCRIPT_NAME_2 = "scriptName2";
+    protected static final String ATTRIBUTE_SCRIPT_NAME_3 = "scriptName3";
+    protected static final String ATTRIBUTE_SCRIPT_NAME_4 = "scriptName4";
+    protected static final String ATTRIBUTE_SCRIPT_NAME_5 = "scriptName5";
+    protected static final String ATTRIBUTE_SCRIPT_PATH_1 = "scriptPath1";
+    protected static final String ATTRIBUTE_SCRIPT_PATH_2 = "scriptPath2";
+    protected static final String ATTRIBUTE_SCRIPT_PATH_3 = "scriptPath3";
+    protected static final String ATTRIBUTE_SCRIPT_PATH_4 = "scriptPath4";
+    protected static final String ATTRIBUTE_SCRIPT_PATH_5 = "scriptPath5";
+    protected static final String ATTRIBUTE_SCRIPT_STEP = "scriptStep";
+    protected static final String ATTRIBUTE_SHORT_NAME = "shortName";
+    protected static final String ATTRIBUTE_START_DATE = "startDate";
+    protected static final String ATTRIBUTE_STATUS = "status";
+    protected static final String ATTRIBUTE_STEP_ID = "stepID";
+    protected static final String ATTRIBUTE_STEP_PLUGIN = "stepPlugin";
+    protected static final String ATTRIBUTE_SUFFIX = "suffix";
+    protected static final String ATTRIBUTE_TEMPLATE = "template";
+    protected static final String ATTRIBUTE_TYPE = "type";
+    protected static final String ATTRIBUTE_UPDATE_METADATA_INDEX = "updateMetadataIndex";
+    protected static final String ATTRIBUTE_URI = "uri";
+    protected static final String ATTRIBUTE_URL = "url";
+    protected static final String ATTRIBUTE_USE_DMS_IMPORT = "useDmsImport";
+    protected static final String ATTRIBUTE_USE_HOME_DIRECTORY = "useHomeDirectory";
+    protected static final String ATTRIBUTE_USE_METS_EDITOR = "useMetsEditor";
+    protected static final String ATTRIBUTE_USER = "user";
+    protected static final String ATTRIBUTE_VALIDATION_PLUGIN = "validationPlugin";
+    protected static final String ATTRIBUTE_VALUE = "value";
+    protected static final String ATTRIBUTE_VERIFY_ON_FINALIZE = "verifyOnFinalize";
+    protected static final String ATTRIBUTE_WRITE_IMAGES = "writeImages";
 
-    private static final String FOLDER_MASTER = "master";
-    private static final String FOLDER_MEDIA = "media";
-    private static final String FOLDER_EXPORT = "export";
-    private static final String FOLDER_INTERN = "intern";
+    protected static final String FOLDER_MASTER = "master";
+    protected static final String FOLDER_MEDIA = "media";
+    protected static final String FOLDER_EXPORT = "export";
+    protected static final String FOLDER_INTERN = "intern";
 
-    private static final String FILE_EXPORT_XML_XML = "goobi_exportXml.xml";
-    private static final String FILE_META_XML = "meta.xml";
-    private static final String FILE_META_ANCHOR_XML = "meta_anchor.xml";
-    private static final String FILE_LOG = "http://www.goobi.io/logfile";
-    private static final String FILE_SCHEMA = "http://www.w3.org/2001/XMLSchema-instance";
+    protected static final String FILE_EXPORT_XML_XML = "goobi_exportXml.xml";
+    protected static final String FILE_META_XML = "meta.xml";
+    protected static final String FILE_META_ANCHOR_XML = "meta_anchor.xml";
+    protected static final String FILE_LOG = "http://www.goobi.io/logfile";
+    protected static final String FILE_SCHEMA = "http://www.w3.org/2001/XMLSchema-instance";
 
-    private static final String NAMESPACE_XSI = "xsi";
-    private static final String XSD_ENDING = "XML-logfile.xsd";
+    protected static final String NAMESPACE_XSI = "xsi";
+    protected static final String XSD_ENDING = "XML-logfile.xsd";
+
+    protected static final String CONSTANT_TRUE = "true";
+    protected static final String CONSTANT_FALSE = "false";
 
     private static Namespace xmlns = Namespace.getNamespace(FILE_LOG);
 
@@ -369,8 +381,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         mainElement.setAttribute(ATTRIBUTE_PROCESS_ID, String.valueOf(process.getId()));
 
-        Namespace xmlns = Namespace.getNamespace(FILE_LOG);
-        mainElement.setNamespace(xmlns);
+        Namespace namespace = Namespace.getNamespace(FILE_LOG);
+        mainElement.setNamespace(namespace);
         // namespace declaration
         if (addNamespace) {
             Namespace xsi = Namespace.getNamespace(NAMESPACE_XSI, FILE_SCHEMA);
@@ -381,31 +393,31 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         // add some general process information
         ArrayList<Element> elements = new ArrayList<>();
-        Element processTitle = new Element(ELEMENT_TITLE, xmlns);
+        Element processTitle = new Element(ELEMENT_TITLE, namespace);
         processTitle.setText(process.getTitel());
         elements.add(processTitle);
 
-        Element project = new Element(ELEMENT_PROJECT, xmlns);
+        Element project = new Element(ELEMENT_PROJECT, namespace);
         project.setText(process.getProjekt().getTitel());
         elements.add(project);
 
-        Element date = new Element(ELEMENT_CREATION_DATE, xmlns);
+        Element date = new Element(ELEMENT_CREATION_DATE, namespace);
         date.setText(String.valueOf(process.getErstellungsdatum()));
         elements.add(date);
 
-        Element pdfdate = new Element(ELEMENT_PDF_GENERATION_DATE, xmlns);
+        Element pdfdate = new Element(ELEMENT_PDF_GENERATION_DATE, namespace);
         pdfdate.setText(String.valueOf(new Date()));
         elements.add(pdfdate);
 
-        Element ruleset = new Element(ELEMENT_RULESET, xmlns);
+        Element ruleset = new Element(ELEMENT_RULESET, namespace);
         ruleset.setText(process.getRegelsatz().getDatei());
         elements.add(ruleset);
 
         // add user comments from the process log
-        Element comment = new Element(ELEMENT_COMMENTS, xmlns);
+        Element comment = new Element(ELEMENT_COMMENTS, namespace);
         List<JournalEntry> logEntry = process.getJournal();
         for (JournalEntry entry : logEntry) {
-            Element commentLine = new Element(ELEMENT_COMMENT, xmlns);
+            Element commentLine = new Element(ELEMENT_COMMENT, namespace);
             commentLine.setAttribute(ATTRIBUTE_TYPE, entry.getType().getTitle());
             if (StringUtils.isNotBlank(entry.getUserName())) {
                 commentLine.setAttribute(ATTRIBUTE_USER, entry.getUserName());
@@ -421,7 +433,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         elements.add(comment);
 
         if (process.getBatch() != null) {
-            Element batch = new Element(ELEMENT_BATCH, xmlns);
+            Element batch = new Element(ELEMENT_BATCH, namespace);
             batch.setText(String.valueOf(process.getBatch().getBatchId()));
             if (StringUtils.isNotBlank(process.getBatch().getBatchName())) {
                 batch.setAttribute(ATTRIBUTE_BATCH_NAME, process.getBatch().getBatchName());
@@ -440,7 +452,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         List<Element> processProperties = new ArrayList<>();
         List<ProcessProperty> propertyList = PropertyParser.getInstance().getPropertiesForProcess(process);
         for (ProcessProperty prop : propertyList) {
-            Element property = new Element(ELEMENT_PROPERTY, xmlns);
+            Element property = new Element(ELEMENT_PROPERTY, namespace);
             property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getName());
             if (prop.getValue() != null) {
                 property.setAttribute(ATTRIBUTE_VALUE, prop.getValue());
@@ -448,49 +460,49 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 property.setAttribute(ATTRIBUTE_VALUE, "");
             }
 
-            Element label = new Element(ELEMENT_LABEL, xmlns);
+            Element label = new Element(ELEMENT_LABEL, namespace);
 
             label.setText(prop.getName());
             property.addContent(label);
             processProperties.add(property);
         }
         if (!processProperties.isEmpty()) {
-            Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
+            Element properties = new Element(ELEMENT_PROPERTIES, namespace);
             properties.addContent(processProperties);
             elements.add(properties);
         }
 
         // step information
-        Element steps = new Element(ELEMENT_STEPS, xmlns);
+        Element steps = new Element(ELEMENT_STEPS, namespace);
         List<Element> stepElements = new ArrayList<>();
         for (Step s : process.getSchritteList()) {
-            Element stepElement = new Element(ELEMENT_STEP, xmlns);
+            Element stepElement = new Element(ELEMENT_STEP, namespace);
             stepElement.setAttribute(ATTRIBUTE_STEP_ID, String.valueOf(s.getId()));
 
-            Element steptitle = new Element(ELEMENT_TITLE, xmlns);
+            Element steptitle = new Element(ELEMENT_TITLE, namespace);
             steptitle.setText(s.getTitel());
             stepElement.addContent(steptitle);
 
-            Element state = new Element(ELEMENT_PROCESSINGSTATUS, xmlns);
+            Element state = new Element(ELEMENT_PROCESSINGSTATUS, namespace);
             state.setText(s.getBearbeitungsstatusAsString());
             stepElement.addContent(state);
 
-            Element begin = new Element(ELEMENT_TIME, xmlns);
+            Element begin = new Element(ELEMENT_TIME, namespace);
             begin.setAttribute(ATTRIBUTE_TYPE, "start time");
             begin.setText(s.getBearbeitungsbeginnAsFormattedString());
             stepElement.addContent(begin);
 
-            Element end = new Element(ELEMENT_TIME, xmlns);
+            Element end = new Element(ELEMENT_TIME, namespace);
             end.setAttribute(ATTRIBUTE_TYPE, "end time");
             end.setText(s.getBearbeitungsendeAsFormattedString());
             stepElement.addContent(end);
 
             if (s.getBearbeitungsbenutzer() != null && s.getBearbeitungsbenutzer().getNachVorname() != null) {
-                Element user = new Element(ELEMENT_USER, xmlns);
+                Element user = new Element(ELEMENT_USER, namespace);
                 user.setText(s.getBearbeitungsbenutzer().getNachVorname());
                 stepElement.addContent(user);
             }
-            Element editType = new Element(ELEMENT_EDITTYPE, xmlns);
+            Element editType = new Element(ELEMENT_EDITTYPE, namespace);
             editType.setText(s.getEditTypeEnum().getTitle());
             stepElement.addContent(editType);
 
@@ -502,15 +514,15 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         // template information
-        Element templates = new Element(ELEMENT_ORIGINALS, xmlns);
+        Element templates = new Element(ELEMENT_ORIGINALS, namespace);
         List<Element> templateElements = new ArrayList<>();
         for (Template v : process.getVorlagenList()) {
-            Element template = new Element(ELEMENT_ORIGINAL, xmlns);
+            Element template = new Element(ELEMENT_ORIGINAL, namespace);
             template.setAttribute(ATTRIBUTE_ORIGINAL_ID, String.valueOf(v.getId()));
 
             List<Element> templateProperties = new ArrayList<>();
             for (Templateproperty prop : v.getEigenschaftenList()) {
-                Element property = new Element(ELEMENT_PROPERTY, xmlns);
+                Element property = new Element(ELEMENT_PROPERTY, namespace);
                 property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel());
                 if (prop.getWert() != null) {
                     property.setAttribute(ATTRIBUTE_VALUE, prop.getWert());
@@ -518,18 +530,18 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     property.setAttribute(ATTRIBUTE_VALUE, "");
                 }
 
-                Element label = new Element(ELEMENT_LABEL, xmlns);
+                Element label = new Element(ELEMENT_LABEL, namespace);
 
                 label.setText(prop.getTitel());
                 property.addContent(label);
 
                 templateProperties.add(property);
                 if ("Signatur".equals(prop.getTitel())) {
-                    Element secondProperty = new Element(ELEMENT_PROPERTY, xmlns);
+                    Element secondProperty = new Element(ELEMENT_PROPERTY, namespace);
                     secondProperty.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel() + "Encoded");
                     if (prop.getWert() != null) {
                         secondProperty.setAttribute(ATTRIBUTE_VALUE, "vorl:" + prop.getWert());
-                        Element secondLabel = new Element(ELEMENT_LABEL, xmlns);
+                        Element secondLabel = new Element(ELEMENT_LABEL, namespace);
                         secondLabel.setText(prop.getTitel());
                         secondProperty.addContent(secondLabel);
                         templateProperties.add(secondProperty);
@@ -537,7 +549,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 }
             }
             if (!templateProperties.isEmpty()) {
-                Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
+                Element properties = new Element(ELEMENT_PROPERTIES, namespace);
                 properties.addContent(templateProperties);
                 template.addContent(properties);
             }
@@ -549,15 +561,15 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         // digital document information
-        Element digdoc = new Element(ELEMENT_DIGITAL_DOCUMENTS, xmlns);
+        Element digdoc = new Element(ELEMENT_DIGITAL_DOCUMENTS, namespace);
         List<Element> docElements = new ArrayList<>();
         for (Masterpiece w : process.getWerkstueckeList()) {
-            Element dd = new Element(ELEMENT_DIGITAL_DOCUMENT, xmlns);
+            Element dd = new Element(ELEMENT_DIGITAL_DOCUMENT, namespace);
             dd.setAttribute(ATTRIBUTE_DIGITAL_DOCUMENT_ID, String.valueOf(w.getId()));
 
             List<Element> docProperties = new ArrayList<>();
             for (Masterpieceproperty prop : w.getEigenschaftenList()) {
-                Element property = new Element(ELEMENT_PROPERTY, xmlns);
+                Element property = new Element(ELEMENT_PROPERTY, namespace);
                 property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel());
                 if (prop.getWert() != null) {
                     property.setAttribute(ATTRIBUTE_VALUE, prop.getWert());
@@ -565,14 +577,14 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     property.setAttribute(ATTRIBUTE_VALUE, "");
                 }
 
-                Element label = new Element(ELEMENT_LABEL, xmlns);
+                Element label = new Element(ELEMENT_LABEL, namespace);
 
                 label.setText(prop.getTitel());
                 property.addContent(label);
                 docProperties.add(property);
             }
             if (!docProperties.isEmpty()) {
-                Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
+                Element properties = new Element(ELEMENT_PROPERTIES, namespace);
                 properties.addContent(docProperties);
                 dd.addContent(properties);
             }
@@ -588,7 +600,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             List<Element> eventElementList = new ArrayList<>(eventList.size());
 
             for (HistoryEvent event : eventList) {
-                Element element = new Element(ELEMENT_HISTORY_EVENT, xmlns);
+                Element element = new Element(ELEMENT_HISTORY_EVENT, namespace);
                 element.setAttribute(ATTRIBUTE_ID, "" + event.getId());
                 element.setAttribute(ATTRIBUTE_DATE, Helper.getDateAsFormattedString(event.getDate()));
                 element.setAttribute(ATTRIBUTE_TYPE, event.getHistoryType().getTitle());
@@ -603,7 +615,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             }
 
             if (!eventElementList.isEmpty()) {
-                Element metadataElement = new Element(ELEMENT_HISTORY, xmlns);
+                Element metadataElement = new Element(ELEMENT_HISTORY, namespace);
                 metadataElement.addContent(eventElementList);
                 elements.add(metadataElement);
             }
@@ -617,20 +629,20 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 String name = md.getOne();
                 String value = md.getTwo();
                 if (StringUtils.isNotBlank(value) && StringUtils.isNotBlank(name)) {
-                    Element element = new Element(ELEMENT_METADATA, xmlns);
+                    Element element = new Element(ELEMENT_METADATA, namespace);
                     element.setAttribute(ATTRIBUTE_NAME, name);
                     element.addContent(value);
                     mdlist.add(element);
                 }
             }
             if (!mdlist.isEmpty()) {
-                Element metadataElement = new Element(ELEMENT_METADATALIST, xmlns);
+                Element metadataElement = new Element(ELEMENT_METADATALIST, namespace);
                 metadataElement.addContent(mdlist);
                 elements.add(metadataElement);
             }
         }
         // METS information
-        Element metsElement = new Element(ELEMENT_METS_INFORMATION, xmlns);
+        Element metsElement = new Element(ELEMENT_METS_INFORMATION, namespace);
         List<Element> metadataElements = new ArrayList<>();
 
         try {
@@ -647,11 +659,11 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             List<Namespace> namespaces = getNamespacesFromConfig();
 
             HashMap<String, String> fields = getMetsFieldsFromConfig(false);
-            for (String key : fields.keySet()) {
-                List<Element> metsValues = getMetsValues(fields.get(key), metsDoc, namespaces);
+            for (Map.Entry<String, String> entry : fields.entrySet()) {
+                List<Element> metsValues = getMetsValues(entry.getValue(), metsDoc, namespaces);
                 for (Element element : metsValues) {
-                    Element ele = new Element(ELEMENT_PROPERTY, xmlns);
-                    ele.setAttribute(ATTRIBUTE_NAME, key);
+                    Element ele = new Element(ELEMENT_PROPERTY, namespace);
+                    ele.setAttribute(ATTRIBUTE_NAME, entry.getKey());
                     ele.addContent(element.getTextTrim());
                     metadataElements.add(ele);
                 }
@@ -659,11 +671,11 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
             if (anchorDoc != null) {
                 fields = getMetsFieldsFromConfig(true);
-                for (String key : fields.keySet()) {
-                    List<Element> metsValues = getMetsValues(fields.get(key), anchorDoc, namespaces);
+                for (Map.Entry<String, String> entry : fields.entrySet()) {
+                    List<Element> metsValues = getMetsValues(entry.getValue(), anchorDoc, namespaces);
                     for (Element element : metsValues) {
-                        Element ele = new Element(ELEMENT_PROPERTY, xmlns);
-                        ele.setAttribute(ATTRIBUTE_NAME, key);
+                        Element ele = new Element(ELEMENT_PROPERTY, namespace);
+                        ele.setAttribute(ATTRIBUTE_NAME, entry.getKey());
                         ele.addContent(element.getTextTrim());
                         metadataElements.add(ele);
                     }
@@ -682,7 +694,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         try {
             // add the representative image
             if (includeImages) {
-                Element representative = new Element(ELEMENT_REPRESENTATIVE, xmlns);
+                Element representative = new Element(ELEMENT_REPRESENTATIVE, namespace);
                 Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
                 String folderName;
                 if ((repImagePath.getParent().toString() + "/").equals(process.getImagesTifDirectory(true))) {
@@ -710,10 +722,10 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 elements.add(getContentFiles(process, FOLDER_MEDIA, process.getImagesTifDirectory(false)));
             }
             // all log files together with their comments
-            Element logfiles = new Element(ELEMENT_LOG, xmlns);
+            Element logfiles = new Element(ELEMENT_LOG, namespace);
             for (JournalEntry entry : process.getJournal()) {
                 if (entry.getType() == LogType.FILE) {
-                    Element cf = new Element(ELEMENT_FILE, xmlns);
+                    Element cf = new Element(ELEMENT_FILE, namespace);
                     if (entry.getContent() != null) {
                         cf.setAttribute(ATTRIBUTE_COMMENT, entry.getContent());
                     }
@@ -779,7 +791,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @throws IOException
      */
     public void XmlTransformation(OutputStream out, Document doc, String filename) throws XSLTransformException, IOException {
-        Document docTrans = new Document();
+        Document docTrans;
         if (filename != null && "".equals(filename)) {
             XSLTransformer transformer;
             transformer = new XSLTransformer(filename);
@@ -811,7 +823,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return
      * @deprecated This also breaks normal metadata including these characters. Replace characters in xslt instead.
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     @SuppressWarnings("unused")
     private String replacer(String in) {
         in = in.replace("°", "?");
@@ -833,11 +845,11 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Document answer = new Document();
         Element root = new Element(ELEMENT_PROCESSES);
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace(FILE_LOG);
+        Namespace namespace = Namespace.getNamespace(FILE_LOG);
 
         Namespace xsi = Namespace.getNamespace(NAMESPACE_XSI, FILE_SCHEMA);
         root.addNamespaceDeclaration(xsi);
-        root.setNamespace(xmlns);
+        root.setNamespace(namespace);
         Attribute attSchema = new Attribute(ATTRIBUTE_SCHEMA_LOCATION, FILE_LOG + " " + XSD_ENDING, xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {
@@ -870,11 +882,11 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Document answer = new Document();
         Element root = new Element(ELEMENT_PROCESSES);
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace(FILE_LOG);
+        Namespace namespace = Namespace.getNamespace(FILE_LOG);
 
         Namespace xsi = Namespace.getNamespace(NAMESPACE_XSI, FILE_SCHEMA);
         root.addNamespaceDeclaration(xsi);
-        root.setNamespace(xmlns);
+        root.setNamespace(namespace);
         Attribute attSchema = new Attribute(ATTRIBUTE_SCHEMA_LOCATION, FILE_LOG + " " + XSD_ENDING, xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {
@@ -1336,9 +1348,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             content.setText(entry.getContent());
             // processlog.creationDate
             Element entryCreationDate = new Element(ELEMENT_CREATION_DATE, xmlns);
-            if (entry.getCreationDate() != null) {
-                entryCreationDate.setText(dateConverter.format(entry.getCreationDate()));
-            }
+            // entry.creationDate is marked with @NonNull
+            entryCreationDate.setText(dateConverter.format(entry.getCreationDate()));
             entryElement.addContent(entryCreationDate);
             // processlog.type
             Element entryType = new Element(ELEMENT_TYPE, xmlns);
@@ -1581,9 +1592,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         institutionElement.setAttribute(ATTRIBUTE_SHORT_NAME, inst.getShortName());
         institutionElement.setAttribute(ATTRIBUTE_LONG_NAME, inst.getLongName());
         if (inst.isAllowAllAuthentications()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, CONSTANT_TRUE);
         } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, CONSTANT_FALSE);
             for (InstitutionConfigurationObject ico : inst.getAllowedAuthentications()) {
                 Element type = new Element(ELEMENT_AUTHENTICATION, xmlns);
                 type.setText(ico.getObject_name());
@@ -1592,9 +1603,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         if (inst.isAllowAllDockets()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, CONSTANT_TRUE);
         } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, CONSTANT_FALSE);
             for (InstitutionConfigurationObject ico : inst.getAllowedDockets()) {
                 Element type = new Element(ELEMENT_DOCKET, xmlns);
                 type.setText(ico.getObject_name());
@@ -1603,9 +1614,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
         //inst.isAllowAllPlugins()
         if (inst.isAllowAllPlugins()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, CONSTANT_TRUE);
         } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, CONSTANT_FALSE);
             for (InstitutionConfigurationObject ico : inst.getAllowedAdministrationPlugins()) {
                 Element type = new Element(ELEMENT_ADMINISTRATION_PLUGIN, xmlns);
                 type.setText(ico.getObject_name());
@@ -1629,9 +1640,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         }
         if (inst.isAllowAllRulesets()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, "true");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, CONSTANT_TRUE);
         } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, "false");
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, CONSTANT_FALSE);
             for (InstitutionConfigurationObject ico : inst.getAllowedRulesets()) {
                 Element type = new Element(ELEMENT_RULESET, xmlns);
                 type.setText(ico.getObject_name());

@@ -59,14 +59,12 @@ public class ProjectHelper {
      */
 
     public static synchronized List<StepInformation> getProjectWorkFlowOverview(Project project) {
-        Long totalNumberOfProc = 0l;
-        Long totalNumberOfImages = 0l;
 
         String projectFilter = FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(project.getTitel()) + "\"", false, null, null,
                 null, true, false) + " AND prozesse.istTemplate = false ";
 
-        totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
-        totalNumberOfImages = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
+        Long totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
+        Long totalNumberOfImages = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
 
         List<String> stepTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter);
 
@@ -130,14 +128,12 @@ public class ProjectHelper {
         if (notOnlyCommonFlow == null) {
             notOnlyCommonFlow = false;
         }
-        Long totalNumberOfProc = 0l;
-        Long totalNumberOfImages = 0l;
 
         String projectFilter = FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(inProj.getTitel()) + "\"", false, null, null,
                 null, true, false) + " AND prozesse.istTemplate = false ";
 
-        totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
-        totalNumberOfImages = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
+        Long totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
+        Long totalNumberOfImages = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
 
         List<String> stepTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter);
 
