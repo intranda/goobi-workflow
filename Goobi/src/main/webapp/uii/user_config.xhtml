@@ -819,31 +819,16 @@
 
                                     <ui:repeat
                                         var="method"
-                                        value="#{LoginForm.myBenutzer.token.methods}">
-                                        <div class="row">
-                                            <div
-                                                class="col-12 col-md-3"
-                                                tabindex="-1">
-                                                <intranda:formLabel
-                                                    label="#{method.description}"
-                                                    labelFor="selectMethod" />
-                                            </div>
-                                            <div class="col-12 col-md-9">
-                                                <h:selectBooleanCheckbox
-                                                    id="selectMethod"
-                                                    styleClass="form-check-input"
-                                                    value="#{method.selected}"
-                                                    disabled="#{LoginForm.myBenutzer.token.tokenId != null}"
-                                                    tabindex="0"
-                                                    pt:aria-label="#{msgs.user_config_methodSelection}" />
-                                                <h:outputText
-                                                    style="width: 80%; margin-left: 10px;"
-                                                    value="#{method.description} (#{method.methodType} request to #{method.url})" />
-                                                <intranda:formHelp
-                                                    content="#{msgs.help_user_config_methodSelection}"
-                                                    msgFor="selectMethod" />
-                                            </div>
-                                        </div>
+                                        value="#{LoginForm.myBenutzer.token.methods}"
+                                        varStatus="myVarStatus">
+
+                                        <intranda:formInputCheckBox
+                                            label="#{method.description}"
+                                            id="ID_#{myVarStatus.index}"
+                                            field="#{method.selected}"
+                                            help="#{method.methodType} request to #{method.url}"
+                                            name="Name_#{myVarStatus.index}" />
+                                    
                                     </ui:repeat>
 
                                 </ui:fragment>
