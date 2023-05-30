@@ -292,7 +292,7 @@ public class UserManager implements IManager, Serializable {
     public static AuthenticationToken convertToken(ResultSet rs) throws SQLException {
         if (rs != null) {
             AuthenticationToken token = new AuthenticationToken();
-            token.setTokenName(rs.getString("token_name"));
+            token.setTokenHash(rs.getString("token_name"));
             token.setUserId(rs.getInt("user_id"));
             token.setTokenId(rs.getInt("id"));
             token.setDescription(rs.getString("token_description"));
@@ -319,40 +319,40 @@ public class UserManager implements IManager, Serializable {
 
     public static final ResultSetHandler<List<AuthenticationToken>> resultSetToAuthenticationTokenListHandler =
             new ResultSetHandler<List<AuthenticationToken>>() {
-                @Override
-                public List<AuthenticationToken> handle(ResultSet rs) throws SQLException {
-                    List<AuthenticationToken> answer = new ArrayList<>();
-                    try {
-                        while (rs.next()) {
-                            answer.add(convertToken(rs));
-                        }
-                    } finally {
-                        rs.close();
-                    }
-                    return answer;
+        @Override
+        public List<AuthenticationToken> handle(ResultSet rs) throws SQLException {
+            List<AuthenticationToken> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    answer.add(convertToken(rs));
                 }
-            };
+            } finally {
+                rs.close();
+            }
+            return answer;
+        }
+    };
 
     public static final ResultSetHandler<List<AuthenticationMethodDescription>> resultSetToAuthenticationTokenMethodListHandler =
             new ResultSetHandler<List<AuthenticationMethodDescription>>() {
-                @Override
-                public List<AuthenticationMethodDescription> handle(ResultSet rs) throws SQLException {
-                    List<AuthenticationMethodDescription> answer = new ArrayList<>();
-                    try {
-                        while (rs.next()) {
-                            AuthenticationMethodDescription o = new AuthenticationMethodDescription(rs.getString("method_type"),
-                                    rs.getString("method_description"), rs.getString("method_url"));
-                            o.setMethodID(rs.getInt("id"));
-                            o.setApiTokenId(rs.getInt("token_id"));
-                            o.setSelected(rs.getBoolean("selected"));
-                            answer.add(o);
-                        }
-                    } finally {
-                        rs.close();
-                    }
-                    return answer;
+        @Override
+        public List<AuthenticationMethodDescription> handle(ResultSet rs) throws SQLException {
+            List<AuthenticationMethodDescription> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    AuthenticationMethodDescription o = new AuthenticationMethodDescription(rs.getString("method_type"),
+                            rs.getString("method_description"), rs.getString("method_url"));
+                    o.setMethodID(rs.getInt("id"));
+                    o.setApiTokenId(rs.getInt("token_id"));
+                    o.setSelected(rs.getBoolean("selected"));
+                    answer.add(o);
                 }
-            };
+            } finally {
+                rs.close();
+            }
+            return answer;
+        }
+    };
 
     public static void addUsergroupAssignment(User user, Integer gruppenID) {
         try {

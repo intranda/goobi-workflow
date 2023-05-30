@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.reflections.Reflections;
 
 import com.rometools.rome.io.impl.Base64;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -42,9 +44,11 @@ public class AuthenticationToken {
     @Setter
     private Integer tokenId;
 
+    private String tokenName;
+
     @Getter
     @Setter
-    private String tokenName;
+    private String tokenHash;
 
     @Getter
     @Setter
@@ -72,6 +76,7 @@ public class AuthenticationToken {
                 log.error(e);
             }
         }
+        tokenHash = new Sha256Hash(tokenName, ConfigurationHelper.getInstance().getApiTokenSalt(), 10000).toBase64();
     }
 
     public String getEncodedTokenName() {

@@ -42,6 +42,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.managedbeans.LoginBean;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -77,12 +78,13 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
             authentication = authentication.replace("Basic ", "");
             String keyName = Base64.decode(authentication);
-            AuthenticationToken token = UserManager.getAuthenticationToken(keyName);
+
+            String tokenHash = new Sha256Hash(keyName, ConfigurationHelper.getInstance().getApiTokenSalt(), 10000).toBase64();
+
+            AuthenticationToken token = UserManager.getAuthenticationToken(tokenHash);
             if (token == null) {
                 // token does not exist, abort
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("API Token is invalid.")
-                        .build());
+                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("API Token is invalid.").build());
             }
             //if token exists, check if token has the permission to access the current request
             String methodType = requestContext.getMethod();
@@ -126,15 +128,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
 
         //Always open for image, 3d object, multimedia requests and messages requests
-        if (pathInfo.startsWith("/view/object/")
-                || pathInfo.startsWith("/view/media/")
-                || pathInfo.startsWith("/process/image/")
-                || pathInfo.startsWith("/process/pdf/")
-                || pathInfo.startsWith("/process/thumbs/")
-                || pathInfo.startsWith("/tmp/image/")
-                || pathInfo.startsWith("/messages/")
-                || pathInfo.matches("/processes/\\d+?/images.*")
-                || pathInfo.endsWith("/openapi.json")) {
+        if (pathInfo.startsWith("/view/object/") || pathInfo.startsWith("/view/media/") || pathInfo.startsWith("/process/image/")
+                || pathInfo.startsWith("/process/pdf/") || pathInfo.startsWith("/process/thumbs/") || pathInfo.startsWith("/tmp/image/")
+                || pathInfo.startsWith("/messages/") || pathInfo.matches("/processes/\\d+?/images.*") || pathInfo.endsWith("/openapi.json")) {
             if (hasJsfContext(req)) {
                 return;
             }
@@ -240,8 +236,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             if (methodsClaim == null) {
                 return false;
             }
-            return Arrays.stream(methodsClaim.asArray(String.class))
-                    .anyMatch(claimMethod -> method.equalsIgnoreCase(claimMethod));
+            return Arrays.stream(methodsClaim.asArray(String.class)).anyMatch(claimMethod -> method.equalsIgnoreCase(claimMethod));
 
         } catch (javax.naming.ConfigurationException | JWTVerificationException e) {
             log.error(e);

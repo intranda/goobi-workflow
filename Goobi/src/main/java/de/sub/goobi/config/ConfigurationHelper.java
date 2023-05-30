@@ -45,6 +45,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.shiro.crypto.RandomNumberGenerator;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mq.QueueType;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
@@ -1260,6 +1262,18 @@ public class ConfigurationHelper implements Serializable {
 
     public static void resetConfigurationFile() {
         instance = null;
+    }
+
+    public String getApiTokenSalt() {
+        String value = getLocalString("apiTokenSalt");
+        if (StringUtils.isBlank(value)) {
+            RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+            Object salt = rng.nextBytes();
+            value = salt.toString();
+            setParameter("apiTokenSalt", value);
+            saveLocalConfig();
+        }
+        return value;
     }
 
     public void generateAndSaveJwtSecret() {
