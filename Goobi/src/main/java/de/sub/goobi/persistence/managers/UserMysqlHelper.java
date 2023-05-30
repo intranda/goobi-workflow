@@ -865,7 +865,7 @@ class UserMysqlHelper implements Serializable {
             if (token.getTokenId() == null) {
                 // insert
                 String insert = "INSERT INTO api_token (user_id, token_name, token_description) VALUES (?, ?, ?)";
-                Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, token.getUserId(), token.getTokenName(),
+                Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, token.getUserId(), token.getTokenHash(),
                         token.getDescription());
                 if (id != null) {
                     token.setTokenId(id);
@@ -873,7 +873,7 @@ class UserMysqlHelper implements Serializable {
             } else {
                 // update
                 String update = "UPDATE api_token set token_name = ?, token_description = ? WHERE id = ?";
-                run.update(connection, update, token.getTokenName(), token.getDescription(), token.getTokenId());
+                run.update(connection, update, token.getTokenHash(), token.getDescription(), token.getTokenId());
             }
 
             for (AuthenticationMethodDescription description : token.getMethods()) {
@@ -888,7 +888,7 @@ class UserMysqlHelper implements Serializable {
                     }
                 } else {
                     // update
-                    String update = "UPDATE api_token_method SET selected = ?  WHERE id = ?";
+                    String update = "UPDATE api_token_method SET selected = ? WHERE id = ?";
                     run.update(connection, update, description.isSelected(), description.getMethodID());
                 }
             }
@@ -899,16 +899,25 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
-    public static void deleteAuthenticationToken(AuthenticationToken token) {
+    public static void deleteAuthenticationToken(AuthenticationToken token) throws SQLException {
         if (token.getTokenId() != null) {
-            // TODO
-            // delete from api_token_method where token_id = ?;
-            // delete from api_token where token_id = ?;
+            String tokenMethodSql = "delete from api_token_method where token_id = ?";
+            String tokenSql = "delete from api_token where id = ?";
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                new QueryRunner().update(connection, tokenMethodSql, token.getTokenId());
+                new QueryRunner().update(connection, tokenSql, token.getTokenId());
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
         }
     }
 
     public static List<AuthenticationMethodDescription> getConfiguredMethods(Integer tokenID) throws SQLException {
-        String sql = "SELECT * FROM api_token_method WHERE token_id = ?";
+        String sql = "SELECT * FROM api_token_method WHERE selected = true AND token_id = ?";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

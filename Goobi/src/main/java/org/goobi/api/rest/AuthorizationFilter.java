@@ -42,6 +42,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.managedbeans.LoginBean;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -77,7 +78,10 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
             authentication = authentication.replace("Basic ", "");
             String keyName = Base64.decode(authentication);
-            AuthenticationToken token = UserManager.getAuthenticationToken(keyName);
+
+            String tokenHash = new Sha256Hash(keyName, ConfigurationHelper.getInstance().getApiTokenSalt(), 10000).toBase64();
+
+            AuthenticationToken token = UserManager.getAuthenticationToken(tokenHash);
             if (token == null) {
                 // token does not exist, abort
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)

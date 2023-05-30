@@ -297,6 +297,11 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
 
     @Getter
     @Setter
+    private AuthenticationToken token;
+
+
+    @Getter
+    @Setter
     // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
     // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from benutzer'
     private Map<String, String> additionalData = new HashMap<>();
@@ -766,10 +771,14 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     }
 
     public void createNewToken() {
-        AuthenticationToken token = new AuthenticationToken(UUID.randomUUID().toString(), id);
+        token = new AuthenticationToken(UUID.randomUUID().toString(), id);
         apiToken.add(token);
     }
 
-    // TODO delete token
+    public void deleteToken() {
+        apiToken.remove(token);
+        UserManager.deleteApiToken(token);
+        token = null;
+    }
 
 }
