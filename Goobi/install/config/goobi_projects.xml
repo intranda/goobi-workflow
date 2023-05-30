@@ -113,7 +113,7 @@ Sequence for determining the right <project> element:
                 <processtitle isdoctype="monograph">ATS+TSL+'_'+Identifier digital (a)</processtitle>
                 <processtitle isdoctype="periodical">TSL+'_'+Identifier digital (b)+'_'+Label number</processtitle>
 
-                <hide />
+                <hide>images</hide>
             </itemlist>
             <opac use="true">
                 <catalogue>Library of Congress</catalogue>
