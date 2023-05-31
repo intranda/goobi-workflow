@@ -58,10 +58,12 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class GoobiExternalJobQueueDLQListener {
-    Gson gson = new Gson();
+    private Gson gson = new Gson();
+    private Connection conn;
+    private Thread thread;
 
     public void register(String username, String password) throws JMSException {
-        Connection conn = ExternalConnectionFactory.createConnection(username, password);
+        conn = ExternalConnectionFactory.createConnection(username, password);
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
@@ -97,16 +99,24 @@ public class GoobiExternalJobQueueDLQListener {
 
                     message.acknowledge();
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     log.error(e);
                 }
             }
         };
-        Thread t = new Thread(run);
-        t.setDaemon(true);
+        thread = new Thread(run);
+        thread.setDaemon(true);
 
         conn.start();
-        t.start();
+        thread.start();
     }
 
+    public void close() throws JMSException {
+        this.conn.close();
+        try {
+            thread.join(1000);
+        } catch (InterruptedException e) {
+            log.error(e);
+            Thread.currentThread().interrupt();
+        }
+    }
 }
