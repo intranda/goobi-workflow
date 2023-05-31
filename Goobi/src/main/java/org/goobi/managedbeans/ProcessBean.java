@@ -1394,24 +1394,30 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         List<Step> steps = this.myProzess.getSchritte();
         int targetOrder = -1;
-        int currentOrder = 0;
+        int currentOrder;
 
         for (Step step : steps) {
             currentOrder = step.getReihenfolge().intValue();
-        }
-        // Is baseOrder < currentOrder < targetOrder or targetOrder undefined (-1)?
-        if (direction == -1) {//downwards
-            if (currentOrder < baseOrder && (targetOrder == -1 || (targetOrder != -1 && currentOrder > targetOrder))) {
-                targetOrder = currentOrder;
-            }
-            // Is targetOrder < currentOrder < baseOrder or targetOrder undefined (-1)?
-        } else if (direction == 1 && currentOrder > baseOrder && (targetOrder == -1 || (targetOrder != 1 && currentOrder < targetOrder))) {
-            targetOrder = currentOrder;
-        }
+            // Is baseOrder < currentOrder < targetOrder or targetOrder undefined (-1)?
+            if (direction == -1) {//downwards
 
+                if (currentOrder < baseOrder) {
+                    if (targetOrder == -1 || (targetOrder != -1 && currentOrder > targetOrder)) {
+                        targetOrder = currentOrder;
+                    }
+                }
+                // Is targetOrder < currentOrder < baseOrder or targetOrder undefined (-1)?
+            } else if (direction == 1) {//upwards
+
+                if (currentOrder > baseOrder) {
+                    if (targetOrder == -1 || (targetOrder != 1 && currentOrder < targetOrder)) {
+                        targetOrder = currentOrder;
+                    }
+                }
+            }
+        }
         // When there is no next order, the given order will be returned
         return (targetOrder > 0 ? targetOrder : baseOrder);
-
     }
 
     private void saveStepInStepManager(Step step) {
