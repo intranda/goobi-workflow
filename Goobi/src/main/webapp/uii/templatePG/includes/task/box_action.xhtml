@@ -597,18 +597,18 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" jsf:rendered="#{AktuelleSchritteForm.displayErrorPropertyTypes}">
                             <label class="control-label">#{msgs.step_errormessage_type}</label>
                             <div class="controls">
                                 <h:selectOneMenu
                                     id="selectErrorType"
-                                    rendered="#{!isBatchStep and AktuelleSchritteForm.displayErrorPropertyTypes}"
+                                    rendered="#{!isBatchStep}"
                                     pt:aria-label="#{msgs.selectErrorType}"
                                     styleClass="form-select"
                                     value="#{AktuelleSchritteForm.selectedErrorPropertyType}">
                                     <f:selectItem
                                         itemValue=""
-                                        itemLabel="#{msgs.bitteAuswaehlen}" />
+                                        itemLabel="#{msgs.noSelection}" />
                                     <f:selectItems
                                         value="#{AktuelleSchritteForm.allErrorPropertyTypes}"
                                         var="type"
@@ -617,13 +617,13 @@
                                 </h:selectOneMenu>
                                 <h:selectOneMenu
                                     id="selectErrorTypeBatch"
-                                    rendered="#{isBatchStep and AktuelleSchritteForm.displayErrorPropertyTypes}"
+                                    rendered="#{isBatchStep}"
                                     pt:aria-label="#{msgs.selectErrorType}"
                                     styleClass="form-select"
                                     value="#{AktuelleSchritteForm.batchHelper.selectedErrorPropertyType}">
                                     <f:selectItem
                                         itemValue=""
-                                        itemLabel="#{msgs.bitteAuswaehlen}" />
+                                        itemLabel="#{msgs.noSelection}" />
                                     <f:selectItems
                                         value="#{AktuelleSchritteForm.allErrorPropertyTypes}"
                                         var="type"
