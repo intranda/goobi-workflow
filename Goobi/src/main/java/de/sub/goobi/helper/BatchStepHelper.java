@@ -116,6 +116,10 @@ public class BatchStepHelper implements Serializable {
     private String selectedErrorPropertyType;
 
     @Getter
+    @Setter
+    private String selectedSolutionPropertyType;
+
+    @Getter
     private String processName = "";
     @Getter
     @Setter
@@ -640,6 +644,13 @@ public class BatchStepHelper implements Serializable {
                     temp = s;
                 }
             }
+            String messageText;
+            if (StringUtils.isNotBlank(selectedSolutionPropertyType)) {
+                messageText = sb.getSolutionPropertyTypes().get(selectedSolutionPropertyType).replace("{}", solutionMessage);
+            } else {
+                messageText = solutionMessage;
+            }
+
             if (temp != null) {
                 /*
                  * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
@@ -663,7 +674,7 @@ public class BatchStepHelper implements Serializable {
                     ErrorProperty seg = new ErrorProperty();
                     seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
                     seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
-                            + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
+                            + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + messageText);
                     seg.setSchritt(step);
                     seg.setType(PropertyType.MESSAGE_IMPORTANT);
                     seg.setCreationDate(new Date());
@@ -671,7 +682,7 @@ public class BatchStepHelper implements Serializable {
                     StepManager.saveStep(step);
                 }
             }
-            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
+            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + messageText;
 
             String username;
             if (ben != null) {

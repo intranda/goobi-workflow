@@ -728,6 +728,47 @@
 							</div>
 						</div>
 
+
+<div class="form-group" jsf:rendered="#{AktuelleSchritteForm.displaySolutionPropertyTypes}">
+                            <label class="control-label">#{msgs.step_errormessage_type}</label>
+                            <div class="controls">
+                                <h:selectOneMenu
+                                    id="selectSolutionType"
+                                    rendered="#{!isBatchStep}"
+                                    pt:aria-label="#{msgs.selectErrorType}"
+                                    styleClass="form-select"
+                                    value="#{AktuelleSchritteForm.selectedSolutionPropertyType}">
+                                    <f:selectItem
+                                        itemValue=""
+                                        itemLabel="#{msgs.noSelection}" />
+                                    <f:selectItems
+                                        value="#{AktuelleSchritteForm.allSolutionPropertyTypes}"
+                                        var="type"
+                                        itemLabel="#{type}"
+                                        itemValue="#{type}" />
+                                </h:selectOneMenu>
+                                <h:selectOneMenu
+                                    id="selectSolutionTypeBatch"
+                                    rendered="#{isBatchStep}"
+                                    pt:aria-label="#{msgs.selectErrorType}"
+                                    styleClass="form-select"
+                                    value="#{AktuelleSchritteForm.batchHelper.selectedSolutionPropertyType}">
+                                    <f:selectItem
+                                        itemValue=""
+                                        itemLabel="#{msgs.noSelection}" />
+                                    <f:selectItems
+                                        value="#{AktuelleSchritteForm.allSolutionPropertyTypes}"
+                                        var="type"
+                                        itemLabel="#{type}"
+                                        itemValue="#{type}" />
+                                </h:selectOneMenu>
+
+                            </div>
+                        </div>
+
+
+
+
 						<div class="form-group">
 							<label class="control-label">#{msgs.bemerkung}</label>
 							<div class="controls">

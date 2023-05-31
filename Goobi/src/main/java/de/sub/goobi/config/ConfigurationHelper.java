@@ -1294,6 +1294,17 @@ public class ConfigurationHelper implements Serializable {
         return errorProperties;
     }
 
+    public Map<String, String> getSolutionPropertyTypes() {
+        Map<String, String> errorProperties = new LinkedHashMap<>();
+        Iterator<String> it = getLocalKeys("task.solution");
+        while (it.hasNext()) {
+            String keyName = it.next();
+            String value = getLocalString(keyName);
+            errorProperties.put(keyName.replace("task.solution.", ""), value);
+        }
+        return errorProperties;
+    }
+
     public String getApiTokenSalt() {
         String value = getLocalString("apiTokenSalt");
         if (StringUtils.isBlank(value)) {

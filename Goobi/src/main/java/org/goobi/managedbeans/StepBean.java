@@ -190,6 +190,13 @@ public class StepBean extends BasicBean implements Serializable {
     @Getter
     private Map<String, String> errorPropertyTypes = null;
 
+    @Getter
+    @Setter
+    private String selectedSolutionPropertyType;
+
+    @Getter
+    private Map<String, String> solutionPropertyTypes = null;
+
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
         anzeigeAnpassen.put("numberOfImages", false);
@@ -565,6 +572,17 @@ public class StepBean extends BasicBean implements Serializable {
         return !getAllErrorPropertyTypes().isEmpty();
     }
 
+    public Set<String> getAllSolutionPropertyTypes() {
+        if (solutionPropertyTypes == null) {
+            solutionPropertyTypes = ConfigurationHelper.getInstance().getSolutionPropertyTypes();
+        }
+        return solutionPropertyTypes.keySet();
+    }
+
+    public boolean isDisplaySolutionPropertyTypes() {
+        return !getAllSolutionPropertyTypes().isEmpty();
+    }
+
     public String ReportProblem() {
 
         if (myProblemID == null) {
@@ -703,7 +721,14 @@ public class StepBean extends BasicBean implements Serializable {
 
             Step temp = StepManager.getStepById(this.mySolutionID);
 
-            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
+            String messageText;
+            if (StringUtils.isNotBlank(selectedSolutionPropertyType)) {
+                messageText = solutionPropertyTypes.get(selectedSolutionPropertyType).replace("{}", solutionMessage);
+            } else {
+                messageText = solutionMessage;
+            }
+
+            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + messageText;
 
             /*
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
