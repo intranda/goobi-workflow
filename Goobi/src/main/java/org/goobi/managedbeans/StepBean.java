@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.inject.Inject;
@@ -181,6 +182,13 @@ public class StepBean extends BasicBean implements Serializable {
     @Inject
     @Push
     PushContext stepPluginPush;
+
+    @Getter
+    @Setter
+    private String selectedErrorPropertyType;
+
+    @Getter
+    private Map<String, String> errorPropertyTypes = null;
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -460,7 +468,7 @@ public class StepBean extends BasicBean implements Serializable {
              */
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
-            // TODO: what should be done?
+            // do nothing
         }
         return FilterAlleStart();
     }
@@ -546,6 +554,17 @@ public class StepBean extends BasicBean implements Serializable {
         return getPreviousStepsForProblemReporting().size();
     }
 
+    public Set<String> getAllErrorPropertyTypes() {
+        if (errorPropertyTypes == null) {
+            errorPropertyTypes = ConfigurationHelper.getInstance().getErrorPropertyTypes();
+        }
+        return errorPropertyTypes.keySet();
+    }
+
+    public boolean isDisplayErrorPropertyTypes() {
+        return !getAllErrorPropertyTypes().isEmpty();
+    }
+
     public String ReportProblem() {
 
         if (myProblemID == null) {
@@ -576,15 +595,22 @@ public class StepBean extends BasicBean implements Serializable {
             ErrorProperty se = new ErrorProperty();
 
             se.setTitel(Helper.getTranslation("Korrektur notwendig"));
-            if (ben != null) {
-                se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
+            String messageText;
+            if (StringUtils.isNotBlank(selectedErrorPropertyType)) {
+                messageText = errorPropertyTypes.get(selectedErrorPropertyType).replace("{}", problemMessage);
             } else {
-                se.setWert("[" + this.formatter.format(new Date()) + "] " + this.problemMessage);
+                messageText = problemMessage;
+            }
+
+            if (ben != null) {
+                se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + messageText);
+            } else {
+                se.setWert("[" + this.formatter.format(new Date()) + "] " + messageText);
             }
             se.setType(PropertyType.MESSAGE_ERROR);
             se.setCreationDate(myDate);
             se.setSchritt(temp);
-            String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
+            String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText;
 
             JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null ? ben.getNachVorname() : "",
                     LogType.ERROR, message, EntryType.PROCESS);
@@ -614,7 +640,7 @@ public class StepBean extends BasicBean implements Serializable {
                 step.setBearbeitungsende(null);
                 ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage);
+                seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
                 seg.setCreationDate(new Date());

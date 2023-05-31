@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1280,6 +1281,17 @@ public class ConfigurationHelper implements Serializable {
 
     public static void resetConfigurationFile() {
         instance = null;
+    }
+
+    public Map<String, String> getErrorPropertyTypes() {
+        Map<String, String> errorProperties = new LinkedHashMap<>();
+        Iterator<String> it = getLocalKeys("task.error");
+        while (it.hasNext()) {
+            String keyName = it.next();
+            String value = getLocalString(keyName);
+            errorProperties.put(keyName.replace("task.error.", ""), value);
+        }
+        return errorProperties;
     }
 
     public String getApiTokenSalt() {

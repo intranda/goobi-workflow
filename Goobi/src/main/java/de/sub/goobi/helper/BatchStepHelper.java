@@ -110,6 +110,11 @@ public class BatchStepHelper implements Serializable {
     @Getter
     @Setter
     private String solutionMessage;
+
+    @Getter
+    @Setter
+    private String selectedErrorPropertyType;
+
     @Getter
     private String processName = "";
     @Getter
@@ -499,16 +504,23 @@ public class BatchStepHelper implements Serializable {
                 temp.setBearbeitungsende(new Date());
                 ErrorProperty se = new ErrorProperty();
 
+                String messageText;
+                if (StringUtils.isNotBlank(selectedErrorPropertyType)) {
+                    messageText = sb.getErrorPropertyTypes().get(selectedErrorPropertyType).replace("{}", problemMessage);
+                } else {
+                    messageText = problemMessage;
+                }
+
                 se.setTitel(Helper.getTranslation("Korrektur notwendig"));
                 if (ben == null) {
-                    se.setWert("[" + this.formatter.format(new Date()) + "] " + this.problemMessage);
+                    se.setWert("[" + this.formatter.format(new Date()) + "] " + messageText);
                 } else {
-                    se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
+                    se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + messageText);
                 }
                 se.setType(PropertyType.MESSAGE_ERROR);
                 se.setCreationDate(myDate);
                 se.setSchritt(temp);
-                String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
+                String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText;
                 String username;
                 if (ben != null) {
                     username = ben.getNachVorname();
@@ -540,7 +552,7 @@ public class BatchStepHelper implements Serializable {
                     step.setBearbeitungsende(null);
                     ErrorProperty seg = new ErrorProperty();
                     seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                    seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage);
+                    seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText);
                     seg.setSchritt(step);
                     seg.setType(PropertyType.MESSAGE_IMPORTANT);
                     seg.setCreationDate(new Date());
