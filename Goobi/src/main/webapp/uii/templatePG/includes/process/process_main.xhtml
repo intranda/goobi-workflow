@@ -648,7 +648,7 @@
 												<button
 													class="btn btn-hot"
 													jsf:action="#{ProzessverwaltungForm.ContentLoeschen}">
-													<i class="fa fa-trash-o margin-right-5"></i>
+													<i class="fa fa-trash-o"></i>
 													<span>
 														<h:outputText value="#{msgs.loeschen}" />
 													</span>
@@ -694,8 +694,10 @@
 													class="btn btn-hot"
 													jsf:id="confirmDelete"
 													jsf:action="#{ProzessverwaltungForm.Loeschen}">
-													<i class="fa fa-trash-o margin-right-5"></i>
-													<h:outputText value="#{msgs.loeschen}" />
+													<i class="fa fa-trash-o"></i>
+													<span>
+                                                        <h:outputText value="#{msgs.loeschen}" />
+                                                    </span>
 												</button>
 											</div>
 										</div>
