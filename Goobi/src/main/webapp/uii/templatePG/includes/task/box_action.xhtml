@@ -606,6 +606,9 @@
                                     pt:aria-label="#{msgs.selectErrorType}"
                                     styleClass="form-select"
                                     value="#{AktuelleSchritteForm.selectedErrorPropertyType}">
+                                    <f:selectItem
+                                        itemValue=""
+                                        itemLabel="#{msgs.bitteAuswaehlen}" />
                                     <f:selectItems
                                         value="#{AktuelleSchritteForm.allErrorPropertyTypes}"
                                         var="type"
@@ -618,6 +621,9 @@
                                     pt:aria-label="#{msgs.selectErrorType}"
                                     styleClass="form-select"
                                     value="#{AktuelleSchritteForm.batchHelper.selectedErrorPropertyType}">
+                                    <f:selectItem
+                                        itemValue=""
+                                        itemLabel="#{msgs.bitteAuswaehlen}" />
                                     <f:selectItems
                                         value="#{AktuelleSchritteForm.allErrorPropertyTypes}"
                                         var="type"
