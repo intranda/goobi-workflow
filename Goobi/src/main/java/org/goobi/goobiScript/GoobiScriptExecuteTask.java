@@ -67,7 +67,7 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb,
-                "This GoobiScript allows to execute a specific workflow step and to move on the workflow afterwards automatically. This is mostly usefull to trigger automatic workflows steps.");
+                "This GoobiScript allows to execute a specific workflow step and to move on the workflow afterwards automatically. This is mostly useful to trigger automatic workflows steps.");
         addParameterToSampleCall(sb, STEPTITLE, "OCR", "Title of the workflow step to be triggered.");
         return sb.toString();
     }
