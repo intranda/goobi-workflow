@@ -151,11 +151,8 @@ public class NIOFileUtils implements StorageProviderInterface {
             /* --------------------------------
              * die Images zählen
              * --------------------------------*/
-            anzahl = list(dir.toString(), new DirectoryStream.Filter<Path>() {
-                @Override
-                public boolean accept(Path path) {
-                    return Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix));
-                }
+            anzahl = list(dir.toString(), path -> {
+                return Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix));
             }
 
             ).size();
@@ -241,43 +238,25 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     public static boolean checkImageType(String name) {
-        boolean fileOk = false;
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        if (name.matches(prefix + REGEX_TIFF)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_JPEG)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_JP2)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_PNG)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_GIF)) {
-            fileOk = true;
-        }
-        return fileOk;
+        boolean isAllowed = name.matches(prefix + REGEX_TIFF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_JPEG);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_JP2);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PNG);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GIF);
+        return isAllowed;
     }
 
     public static boolean check3DType(String name) {
-        boolean fileOk = false;
-        String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        if (name.matches(prefix + REGEX_OBJ)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_PLY)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_STL)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_FBX)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_3DS)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_X3D)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_GLTF)) {
-            fileOk = true;
-        } else if (name.matches(prefix + REGEX_GLB)) {
-            fileOk = true;
+        if (name.endsWith(".xml")) {
+            return false;
         }
-        return fileOk;
+        try {
+            return NIOFileUtils.objectNameFilter.accept(Paths.get(name));
+        } catch (IOException ioException) {
+            // The file can not be matched by the objectNameFilter due to an invalid file name
+            return false;
+        }
     }
 
     @Override
@@ -285,40 +264,23 @@ public class NIOFileUtils implements StorageProviderInterface {
         return this.list(folder, folderFilter);
     }
 
-    public static final DirectoryStream.Filter<Path> imageNameFilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            return checkImageType(path.getFileName().toString());
-        }
+    public static final DirectoryStream.Filter<Path> imageNameFilter = path -> {
+        return checkImageType(path.getFileName().toString());
     };
 
-    public static final DirectoryStream.Filter<Path> objectNameFilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-            String name = path.getFileName().toString();
-            boolean fileOk = false;
-            if (name.matches(prefix + REGEX_OBJ)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_PLY)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_STL)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_FBX)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_3DS)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_X3D)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_GLTF)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_GLB)) {
-                fileOk = true;
-            } else if (name.matches(prefix + REGEX_XML)) {
-                fileOk = true;
-            }
-            return fileOk;
-        }
+    public static final DirectoryStream.Filter<Path> objectNameFilter = path -> {
+        String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+        String name = path.getFileName().toString();
+        boolean isAllowed = name.matches(prefix + REGEX_OBJ);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_PLY);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_STL);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_FBX);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_3DS);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_X3D);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GLTF);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_GLB);
+        isAllowed = isAllowed || name.matches(prefix + REGEX_XML);
+        return isAllowed;
     };
 
     public static final DirectoryStream.Filter<Path> multimediaNameFilter = new DirectoryStream.Filter<Path>() {
@@ -349,25 +311,18 @@ public class NIOFileUtils implements StorageProviderInterface {
         @Override
         public boolean accept(Path path) {
             String baseName = FilenameUtils.getBaseName(path.getFileName().toString());
-            boolean fileOk = false;
+            boolean isAllowed = false;
             if (baseName.equals(mainFileBaseName)) {
                 String prefix = ConfigurationHelper.getInstance().getImagePrefix();
                 String name = path.getFileName().toString();
-                if (name.matches(prefix + REGEX_MTL)) {
-                    fileOk = true;
-                } else if (name.matches(prefix + REGEX_JPEG)) {
-                    fileOk = true;
-                } else if (name.matches(prefix + REGEX_PNG)) {
-                    fileOk = true;
-                } else if (name.matches(prefix + REGEX_X3D)) {
-                    fileOk = true;
-                } else if (name.matches(prefix + REGEX_BIN)) {
-                    fileOk = true;
-                } else if (name.matches(prefix + REGEX_XML)) {
-                    fileOk = true;
-                }
+                isAllowed = name.matches(prefix + REGEX_MTL);
+                isAllowed = isAllowed || name.matches(prefix + REGEX_JPEG);
+                isAllowed = isAllowed || name.matches(prefix + REGEX_PNG);
+                isAllowed = isAllowed || name.matches(prefix + REGEX_X3D);
+                isAllowed = isAllowed || name.matches(prefix + REGEX_BIN);
+                isAllowed = isAllowed || name.matches(prefix + REGEX_XML);
             }
-            return fileOk;
+            return isAllowed;
         }
     }
 
@@ -378,28 +333,17 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
     };
 
-    public static final DirectoryStream.Filter<Path> folderFilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            return path.toFile().isDirectory();
-        }
+    public static final DirectoryStream.Filter<Path> folderFilter = path -> {
+        return path.toFile().isDirectory();
     };
 
-    public static final DirectoryStream.Filter<Path> fileFilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            return path.toFile().isFile();
-        }
+    public static final DirectoryStream.Filter<Path> fileFilter = path -> {
+        return path.toFile().isFile();
     };
 
-    public static final DirectoryStream.Filter<Path> DATA_FILTER = new DirectoryStream.Filter<Path>() {
-
-        @Override
-        public boolean accept(Path path) {
-            String name = path.getFileName().toString();
-            return StorageProvider.dataFilterString(name);
-        }
-
+    public static final DirectoryStream.Filter<Path> DATA_FILTER = path -> {
+        String name = path.getFileName().toString();
+        return StorageProvider.dataFilterString(name);
     };
 
     @Override
@@ -417,58 +361,48 @@ public class NIOFileUtils implements StorageProviderInterface {
                 FileStore fileStore = Files.getFileStore(targetDir);
                 if (copyPermissions) {
                     AclFileAttributeView acl = Files.getFileAttributeView(dir, AclFileAttributeView.class);
-                    if (acl != null) {
-                        if (fileStore.supportsFileAttributeView(AclFileAttributeView.class)) {
-                            AclFileAttributeView aclFileAttributeView = Files.getFileAttributeView(targetDir, AclFileAttributeView.class);
-                            aclFileAttributeView.setAcl(acl.getAcl());
-                        }
+                    if (acl != null && fileStore.supportsFileAttributeView(AclFileAttributeView.class)) {
+                        AclFileAttributeView aclFileAttributeView = Files.getFileAttributeView(targetDir, AclFileAttributeView.class);
+                        aclFileAttributeView.setAcl(acl.getAcl());
                     }
 
                     DosFileAttributeView dosAttrs = Files.getFileAttributeView(dir, DosFileAttributeView.class);
-                    if (dosAttrs != null) {
-                        if (fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {
-                            DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
-                            DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
-                            targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
-                            targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
-                            targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
-                            targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
-                        }
+                    if (dosAttrs != null && fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {
+                        DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
+                        DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
+                        targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
+                        targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
+                        targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
+                        targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
                     }
                     try {
                         FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
-                        if (ownerAttrs != null) {
-                            if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
-                                FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
-                                targetOwner.setOwner(ownerAttrs.getOwner());
-                            }
+                        if (ownerAttrs != null && fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
+                            FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
+                            targetOwner.setOwner(ownerAttrs.getOwner());
                         }
                     } catch (AccessDeniedException | FileNotFoundException exception) {
                         // do nothing
                     }
                     try {
                         PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
-                        if (posixAttrs != null) {
-                            if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
-                                PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
-                                PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
-                                targetPosix.setPermissions(sourcePosix.permissions());
-                                targetPosix.setGroup(sourcePosix.group());
-                            }
+                        if (posixAttrs != null && fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
+                            PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
+                            PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
+                            targetPosix.setPermissions(sourcePosix.permissions());
+                            targetPosix.setGroup(sourcePosix.group());
                         }
                     } catch (AccessDeniedException | FileNotFoundException exception) {
                         // do nothing
                     }
                     UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
-                    if (userAttrs != null) {
-                        if (fileStore.supportsFileAttributeView(UserDefinedFileAttributeView.class)) {
-                            UserDefinedFileAttributeView targetUser = Files.getFileAttributeView(targetDir, UserDefinedFileAttributeView.class);
-                            for (String key : userAttrs.list()) {
-                                ByteBuffer buffer = ByteBuffer.allocate(userAttrs.size(key));
-                                userAttrs.read(key, buffer);
-                                buffer.flip();
-                                targetUser.write(key, buffer);
-                            }
+                    if (userAttrs != null && fileStore.supportsFileAttributeView(UserDefinedFileAttributeView.class)) {
+                        UserDefinedFileAttributeView targetUser = Files.getFileAttributeView(targetDir, UserDefinedFileAttributeView.class);
+                        for (String key : userAttrs.list()) {
+                            ByteBuffer buffer = ByteBuffer.allocate(userAttrs.size(key));
+                            userAttrs.read(key, buffer);
+                            buffer.flip();
+                            targetUser.write(key, buffer);
                         }
                     }
                     // Must be done last, otherwise last-modified time may be

@@ -38,21 +38,22 @@ public class HelperComparator implements Comparator<Object>, Serializable {
 
     private static final long serialVersionUID = -1124724462982810327L;
     @Setter
-    private String Sortierart;
+    private String sortierart;
 
     @Override
     public int compare(Object o1, Object o2) {
+
         int rueckgabe = 0;
-        if (this.Sortierart.equals("MetadatenTypen")) {
+        if (this.sortierart.equals("MetadatenTypen")) {
             rueckgabe = compareMetadatenTypen(o1, o2);
         }
-        if (this.Sortierart.equals("Metadata")) {
+        if (this.sortierart.equals("Metadata")) {
             rueckgabe = compareMetadata(o1, o2);
         }
-        if (this.Sortierart.equals("DocStructTypen")) {
+        if (this.sortierart.equals("DocStructTypen")) {
             rueckgabe = compareDocStructTypen(o1, o2);
         }
-        if (this.Sortierart.equals("MetadatenGroupTypes")) {
+        if (this.sortierart.equals("MetadatenGroupTypes")) {
             rueckgabe = compareMetadataGroupTypes(o1, o2);
         }
 
@@ -124,7 +125,7 @@ public class HelperComparator implements Comparator<Object>, Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((Sortierart == null) ? 0 : Sortierart.hashCode());
+        result = prime * result + ((sortierart == null) ? 0 : sortierart.hashCode());
         return result;
     }
 }

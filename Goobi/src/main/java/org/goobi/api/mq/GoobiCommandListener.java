@@ -56,12 +56,14 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiCommandListener {
-    Gson gson = new Gson();
 
-    private Connection conn;
+    private Gson gson = new Gson();
+
+    private Connection conn; // NOSONAR
+    private Thread thread;
 
     public void register(String username, String password) throws JMSException {
-        this.conn = ExternalConnectionFactory.createConnection(username, password);
+        conn = ExternalConnectionFactory.createConnection(username, password);
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
@@ -69,40 +71,36 @@ public class GoobiCommandListener {
 
         final MessageConsumer cons = sess.createConsumer(dest);
 
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                while (true) { //NOSONAR, no abort condition is needed
-                    try {
-                        Message message = cons.receive();
-                        // check command and if the token allows this.
-                        String strMessage = null;
-                        if (message instanceof TextMessage) {
-                            TextMessage tm = (TextMessage) message;
-                            strMessage = tm.getText();
-                        }
-                        if (message instanceof BytesMessage) {
-                            BytesMessage bm = (BytesMessage) message;
-                            byte[] bytes = new byte[(int) bm.getBodyLength()];
-                            bm.readBytes(bytes);
-                            strMessage = new String(bytes);
-                        }
-                        CommandTicket t = gson.fromJson(strMessage, CommandTicket.class);
-
-                        handleCommandTicket(t);
-                        message.acknowledge();
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        log.error(e);
+        Runnable run = () -> {
+            while (true) { //NOSONAR, no abort condition is needed
+                try {
+                    Message message = cons.receive();
+                    // check command and if the token allows this.
+                    String strMessage = null;
+                    if (message instanceof TextMessage) {
+                        TextMessage tm = (TextMessage) message;
+                        strMessage = tm.getText();
                     }
+                    if (message instanceof BytesMessage) {
+                        BytesMessage bm = (BytesMessage) message;
+                        byte[] bytes = new byte[(int) bm.getBodyLength()];
+                        bm.readBytes(bytes);
+                        strMessage = new String(bytes);
+                    }
+                    CommandTicket t = gson.fromJson(strMessage, CommandTicket.class);
+
+                    handleCommandTicket(t);
+                    message.acknowledge();
+                } catch (Exception e) {
+                    log.error(e);
                 }
             }
         };
-        Thread t = new Thread(run);
-        t.setDaemon(true);
+        thread = new Thread(run);
+        thread.setDaemon(true);
 
         conn.start();
-        t.start();
+        thread.start();
     }
 
     private void handleCommandTicket(CommandTicket t) {
@@ -121,24 +119,20 @@ public class GoobiCommandListener {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // change step
                         String newStatus = t.getNewStatus();
-                        switch (newStatus) {
-                            case "error":
-                                step.setBearbeitungsstatusEnum(StepStatus.ERROR);
-                                step.setBearbeitungszeitpunkt(new Date());
-                                step.setBearbeitungsende(step.getBearbeitungszeitpunkt());
-                                StepManager.saveStep(step);
-                                break;
-                            case "done":
-                                // Write to DB with date.
-                                for (String scriptName : t.getScriptNames()) {
-                                    ExternalMQManager.insertResult(new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName));
-                                }
-                                new HelperSchritte().CloseStepObjectAutomatic(step);
-                                break;
-                            case "paused":
-                                // Step was paused when the workernode tried to run it. Persist this to schritte table
-                                StepManager.setStepPaused(stepId, true);
-                                break;
+                        if ("error".equals(newStatus)) {
+                            step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                            step.setBearbeitungszeitpunkt(new Date());
+                            step.setBearbeitungsende(step.getBearbeitungszeitpunkt());
+                            StepManager.saveStep(step);
+                        } else if ("done".equals(newStatus)) {
+                            // Write to DB with date.
+                            for (String scriptName : t.getScriptNames()) {
+                                ExternalMQManager.insertResult(new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName));
+                            }
+                            new HelperSchritte().CloseStepObjectAutomatic(step);
+                        } else if ("paused".equals(newStatus)) {
+                            // Step was paused when the workernode tried to run it. Persist this to schritte table
+                            StepManager.setStepPaused(stepId, true);
                         }
                     }
                 } catch (ConfigurationException | DAOException e) {
@@ -152,7 +146,8 @@ public class GoobiCommandListener {
                         // add to process log
 
                         JournalEntry entry =
-                                new JournalEntry(processId, new Date(), t.getIssuer(), LogType.getByTitle(t.getLogType()), t.getContent(), EntryType.PROCESS);
+                                new JournalEntry(processId, new Date(), t.getIssuer(), LogType.getByTitle(t.getLogType()), t.getContent(),
+                                        EntryType.PROCESS);
 
                         JournalManager.saveJournalEntry(entry);
                     }
@@ -162,6 +157,16 @@ public class GoobiCommandListener {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void close() throws JMSException {
+        this.conn.close();
+        try {
+            thread.join(1000);
+        } catch (InterruptedException e) {
+            log.error(e);
+            Thread.currentThread().interrupt();
         }
     }
 }

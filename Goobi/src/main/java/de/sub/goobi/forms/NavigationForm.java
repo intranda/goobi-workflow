@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -136,7 +137,7 @@ public class NavigationForm implements Serializable {
         return "BenutzerBearbeiten";
     }
 
-    public HashMap<String, String> getUiStatus() {
+    public Map<String, String> getUiStatus() {
         return uiStatus;
     }
 
@@ -184,7 +185,7 @@ public class NavigationForm implements Serializable {
     }
 
     public boolean isEmailActive() {
-        return SendMail.getInstance().getConfig().isEnableMail();
+        return SendMail.getInstance().getConfig().isEnableStatusChangeMail();
     }
 
 }

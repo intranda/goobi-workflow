@@ -566,10 +566,10 @@
 						layout="block"
 						rendered="#{NavigationForm.uiStatus.taskActionBox_view eq 'tab2' and ((!isBatchStep and AktuelleSchritteForm.previousStepsForProblemReporting.size() > 0) or (isBatchStep and AktuelleSchritteForm.batchHelper.sizeOfPreviousStepsForProblemReporting != 0))}">
 
-						<div class="form-group">
-							<label class="control-label">#{msgs.korrekturmeldungAnVorherigeStationSenden}</label>
-							<div class="controls">
-								<h:selectOneMenu
+                        <div class="form-group">
+                            <label class="control-label">#{msgs.korrekturmeldungAnVorherigeStationSenden}</label>
+                            <div class="controls">
+                                <h:selectOneMenu
                                     id="selectErrorStep"
                                     rendered="#{!isBatchStep}"
                                     pt:aria-label="#{msgs.korrekturmeldungAnVorherigeStationSenden}"
@@ -581,42 +581,80 @@
                                         itemLabel="#{step1.titelMitBenutzername}"
                                         itemValue="#{step1.id}" />
                                 </h:selectOneMenu>
-                                
+
                                 <h:selectOneMenu
-									id="selectErrorStepBatch"
+                                    id="selectErrorStepBatch"
                                     rendered="#{isBatchStep}"
-									pt:aria-label="#{msgs.korrekturmeldungAnVorherigeStationSenden}"
-									styleClass="form-select"
-									value="#{AktuelleSchritteForm.batchHelper.myProblemStep}">
-									<f:selectItems 
+                                    pt:aria-label="#{msgs.korrekturmeldungAnVorherigeStationSenden}"
+                                    styleClass="form-select"
+                                    value="#{AktuelleSchritteForm.batchHelper.myProblemStep}">
+                                    <f:selectItems
                                         value="#{AktuelleSchritteForm.batchHelper.previousStepsForProblemReporting}"
                                         var="step"
-                                        itemLabel="#{step.titelMitBenutzername}" 
+                                        itemLabel="#{step.titelMitBenutzername}"
                                         itemValue="#{step.id}" />
-								</h:selectOneMenu>
-							</div>
-						</div>
+                                </h:selectOneMenu>
+                            </div>
+                        </div>
 
-						<div class="form-group">
-							<label class="control-label">#{msgs.bemerkung}</label>
-							<div class="controls">
-								<h:inputTextarea
+                        <div class="form-group" jsf:rendered="#{AktuelleSchritteForm.displayErrorPropertyTypes}">
+                            <label class="control-label">#{msgs.step_errormessage_type}</label>
+                            <div class="controls">
+                                <h:selectOneMenu
+                                    id="selectErrorType"
+                                    rendered="#{!isBatchStep}"
+                                    pt:aria-label="#{msgs.selectErrorType}"
+                                    styleClass="form-select"
+                                    value="#{AktuelleSchritteForm.selectedErrorPropertyType}">
+                                    <f:selectItem
+                                        itemValue=""
+                                        itemLabel="#{msgs.noSelection}" />
+                                    <f:selectItems
+                                        value="#{AktuelleSchritteForm.allErrorPropertyTypes}"
+                                        var="type"
+                                        itemLabel="#{type}"
+                                        itemValue="#{type}" />
+                                </h:selectOneMenu>
+                                <h:selectOneMenu
+                                    id="selectErrorTypeBatch"
+                                    rendered="#{isBatchStep}"
+                                    pt:aria-label="#{msgs.selectErrorType}"
+                                    styleClass="form-select"
+                                    value="#{AktuelleSchritteForm.batchHelper.selectedErrorPropertyType}">
+                                    <f:selectItem
+                                        itemValue=""
+                                        itemLabel="#{msgs.noSelection}" />
+                                    <f:selectItems
+                                        value="#{AktuelleSchritteForm.allErrorPropertyTypes}"
+                                        var="type"
+                                        itemLabel="#{type}"
+                                        itemValue="#{type}" />
+                                </h:selectOneMenu>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="control-label">#{msgs.bemerkung}</label>
+                            <div class="controls">
+                                <h:inputTextarea
                                     id="addToTextArea"
                                     rendered="#{!isBatchStep}"
                                     pt:aria-label="#{msgs.bemerkung}"
                                     styleClass="form-control"
                                     value="#{AktuelleSchritteForm.problemMessage}" />
-                                    
-                                <h:inputTextarea
-									id="addToTextAreaBatch"
-									rendered="#{isBatchStep}"
-                                    pt:aria-label="#{msgs.bemerkung}"
-									styleClass="form-control"
-									value="#{AktuelleSchritteForm.batchHelper.problemMessage}" />
-							</div>
-						</div>
 
-						<div class="form-actions">
+                                <h:inputTextarea
+                                    id="addToTextAreaBatch"
+                                    rendered="#{isBatchStep}"
+                                    pt:aria-label="#{msgs.bemerkung}"
+                                    styleClass="form-control"
+                                    value="#{AktuelleSchritteForm.batchHelper.problemMessage}" />
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
 							<!-- REPORT BUTTON REGULAR -->
                             <h:commandButton
                                 id="submiterror"
@@ -689,6 +727,47 @@
 								</h:selectOneMenu>
 							</div>
 						</div>
+
+
+<div class="form-group" jsf:rendered="#{AktuelleSchritteForm.displaySolutionPropertyTypes}">
+                            <label class="control-label">#{msgs.step_errormessage_type}</label>
+                            <div class="controls">
+                                <h:selectOneMenu
+                                    id="selectSolutionType"
+                                    rendered="#{!isBatchStep}"
+                                    pt:aria-label="#{msgs.selectErrorType}"
+                                    styleClass="form-select"
+                                    value="#{AktuelleSchritteForm.selectedSolutionPropertyType}">
+                                    <f:selectItem
+                                        itemValue=""
+                                        itemLabel="#{msgs.noSelection}" />
+                                    <f:selectItems
+                                        value="#{AktuelleSchritteForm.allSolutionPropertyTypes}"
+                                        var="type"
+                                        itemLabel="#{type}"
+                                        itemValue="#{type}" />
+                                </h:selectOneMenu>
+                                <h:selectOneMenu
+                                    id="selectSolutionTypeBatch"
+                                    rendered="#{isBatchStep}"
+                                    pt:aria-label="#{msgs.selectErrorType}"
+                                    styleClass="form-select"
+                                    value="#{AktuelleSchritteForm.batchHelper.selectedSolutionPropertyType}">
+                                    <f:selectItem
+                                        itemValue=""
+                                        itemLabel="#{msgs.noSelection}" />
+                                    <f:selectItems
+                                        value="#{AktuelleSchritteForm.allSolutionPropertyTypes}"
+                                        var="type"
+                                        itemLabel="#{type}"
+                                        itemValue="#{type}" />
+                                </h:selectOneMenu>
+
+                            </div>
+                        </div>
+
+
+
 
 						<div class="form-group">
 							<label class="control-label">#{msgs.bemerkung}</label>

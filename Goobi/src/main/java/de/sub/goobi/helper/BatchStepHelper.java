@@ -110,6 +110,15 @@ public class BatchStepHelper implements Serializable {
     @Getter
     @Setter
     private String solutionMessage;
+
+    @Getter
+    @Setter
+    private String selectedErrorPropertyType;
+
+    @Getter
+    @Setter
+    private String selectedSolutionPropertyType;
+
     @Getter
     private String processName = "";
     @Getter
@@ -236,14 +245,12 @@ public class BatchStepHelper implements Serializable {
             for (Step s : this.steps) {
                 Process process = s.getProzess();
                 boolean match = false;
-                for (Processproperty processPe : process.getEigenschaftenList()) {
-                    if (processPe.getTitel() != null) {
-                        if (prop.getTitel().equals(processPe.getTitel()) && prop.getContainer().intValue() == processPe.getContainer().intValue()) {
-                            processPe.setWert(prop.getWert());
-                            PropertyManager.saveProcessProperty(processPe);
-                            match = true;
-                            break;
-                        }
+                for (Processproperty prpr : process.getEigenschaftenList()) {
+                    if (prpr.getTitel() != null && prop.getTitel().equals(prpr.getTitel()) && prop.getContainer().equals(prpr.getContainer())) {
+                        prpr.setWert(prop.getWert());
+                        PropertyManager.saveProcessProperty(prpr);
+                        match = true;
+                        break;
                     }
                 }
                 if (!match) {
@@ -501,16 +508,23 @@ public class BatchStepHelper implements Serializable {
                 temp.setBearbeitungsende(new Date());
                 ErrorProperty se = new ErrorProperty();
 
+                String messageText;
+                if (StringUtils.isNotBlank(selectedErrorPropertyType)) {
+                    messageText = sb.getErrorPropertyTypes().get(selectedErrorPropertyType).replace("{}", problemMessage);
+                } else {
+                    messageText = problemMessage;
+                }
+
                 se.setTitel(Helper.getTranslation("Korrektur notwendig"));
                 if (ben == null) {
-                    se.setWert("[" + this.formatter.format(new Date()) + "] " + this.problemMessage);
+                    se.setWert("[" + this.formatter.format(new Date()) + "] " + messageText);
                 } else {
-                    se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
+                    se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + messageText);
                 }
                 se.setType(PropertyType.MESSAGE_ERROR);
                 se.setCreationDate(myDate);
                 se.setSchritt(temp);
-                String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
+                String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText;
                 String username;
                 if (ben != null) {
                     username = ben.getNachVorname();
@@ -542,7 +556,7 @@ public class BatchStepHelper implements Serializable {
                     step.setBearbeitungsende(null);
                     ErrorProperty seg = new ErrorProperty();
                     seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                    seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage);
+                    seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText);
                     seg.setSchritt(step);
                     seg.setType(PropertyType.MESSAGE_IMPORTANT);
                     seg.setCreationDate(new Date());
@@ -630,6 +644,13 @@ public class BatchStepHelper implements Serializable {
                     temp = s;
                 }
             }
+            String messageText;
+            if (StringUtils.isNotBlank(selectedSolutionPropertyType)) {
+                messageText = sb.getSolutionPropertyTypes().get(selectedSolutionPropertyType).replace("{}", solutionMessage);
+            } else {
+                messageText = solutionMessage;
+            }
+
             if (temp != null) {
                 /*
                  * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
@@ -653,7 +674,7 @@ public class BatchStepHelper implements Serializable {
                     ErrorProperty seg = new ErrorProperty();
                     seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
                     seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
-                            + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
+                            + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + messageText);
                     seg.setSchritt(step);
                     seg.setType(PropertyType.MESSAGE_IMPORTANT);
                     seg.setCreationDate(new Date());
@@ -661,7 +682,7 @@ public class BatchStepHelper implements Serializable {
                     StepManager.saveStep(step);
                 }
             }
-            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
+            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + messageText;
 
             String username;
             if (ben != null) {

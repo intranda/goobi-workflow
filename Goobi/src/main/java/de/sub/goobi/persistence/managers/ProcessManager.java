@@ -46,7 +46,7 @@ public class ProcessManager implements IManager, Serializable {
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
-            return ProcessMysqlHelper.getProcessCount(order, filter, institution);
+            return ProcessMysqlHelper.getProcessCount(filter, institution);
         } catch (SQLException e) {
             log.error(e);
             return 0;
@@ -165,7 +165,7 @@ public class ProcessManager implements IManager, Serializable {
 
     public static int countProcessTitle(String title, Institution institution) {
         try {
-            return ProcessMysqlHelper.getProcessCount(null, "prozesse.titel = '" + StringEscapeUtils.escapeSql(title) + "'", institution);
+            return ProcessMysqlHelper.getProcessCount("prozesse.titel = '" + StringEscapeUtils.escapeSql(title) + "'", institution);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -192,7 +192,7 @@ public class ProcessManager implements IManager, Serializable {
     public static List<Integer> getIdsForFilter(String filter) {
 
         try {
-            return ProcessMysqlHelper.getIDList(null, filter);
+            return ProcessMysqlHelper.getIDList(filter);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -309,7 +309,7 @@ public class ProcessManager implements IManager, Serializable {
     public List<Integer> getIdList(String order, String filter, Institution institution) {
         List<Integer> idList = new LinkedList<>();
         try {
-            idList = ProcessMysqlHelper.getIDList(order, filter);
+            idList = ProcessMysqlHelper.getIDList(filter);
         } catch (SQLException e) {
             log.error("error while getting id list", e);
         }

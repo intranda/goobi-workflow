@@ -55,7 +55,7 @@ class MasterpieceMysqlHelper implements Serializable {
 
     }
 
-    public static ResultSetHandler<List<Masterpiece>> resultSetToMasterpieceListHandler = new ResultSetHandler<List<Masterpiece>>() {
+    public static final ResultSetHandler<List<Masterpiece>> resultSetToMasterpieceListHandler = new ResultSetHandler<List<Masterpiece>>() {
         @Override
         public List<Masterpiece> handle(ResultSet rs) throws SQLException {
             List<Masterpiece> answer = new ArrayList<>();
@@ -77,7 +77,7 @@ class MasterpieceMysqlHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Masterpiece> resultSetToMasterpieceHandler = new ResultSetHandler<Masterpiece>() {
+    public static final ResultSetHandler<Masterpiece> resultSetToMasterpieceHandler = new ResultSetHandler<Masterpiece>() {
         @Override
         public Masterpiece handle(ResultSet rs) throws SQLException {
             try {

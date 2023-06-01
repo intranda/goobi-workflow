@@ -53,12 +53,14 @@ public class TicketGenerator {
     /**
      * Submits a ticket to the fast or slow queue
      * 
+     * @deprecated This method is replaced by other methods with different parameters
+     * 
      * @param ticket the ticket to put in the queue
      * @param slowQueue if true, the ticket goes to the StartQueueBrokerListener.SLOW_QUEUE
      * @return id of the generated message
      * @throws JMSException
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public static String submitTicket(TaskTicket ticket, boolean slowQueue, String ticketType, Integer processid) throws JMSException {
         QueueType queueName = slowQueue ? QueueType.SLOW_QUEUE : QueueType.FAST_QUEUE;
         return submitInternalTicket(ticket, queueName, ticketType, processid);

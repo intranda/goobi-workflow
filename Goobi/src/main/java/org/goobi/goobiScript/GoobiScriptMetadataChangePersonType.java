@@ -47,6 +47,17 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript implements IGoobiScript {
     // action:metadataTypeChange position:work oldType:singleDigCollection newType:DDC
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String OLD_TYPE = "oldType";
+    private static final String NEW_TYPE = "newType";
+    private static final String POSITION = "position";
+    private static final String IGNORE_ERRORS = "ignoreErrors";
+
+    private static final String POSITION_TOP = "top";
+    private static final String POSITION_CHILD = "child";
+    private static final String POSITION_ANY = "any";
+    private static final String POSITION_PHYSICAL = "physical";
+
     @Override
     public String getAction() {
         return "metadataChangePersonType";
@@ -56,12 +67,12 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to change the type of an existing person.");
-        addParameterToSampleCall(sb, "oldType", "old",
+        addParameterToSampleCall(sb, OLD_TYPE, "old",
                 "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
-        addParameterToSampleCall(sb, "newType", "new", "Define the type that shall be used as new type. Use the internal name here as well.");
-        addParameterToSampleCall(sb, "position", "work",
+        addParameterToSampleCall(sb, NEW_TYPE, "new", "Define the type that shall be used as new type. Use the internal name here as well.");
+        addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
-        addParameterToSampleCall(sb, "ignoreErrors", "true",
+        addParameterToSampleCall(sb, IGNORE_ERRORS, "true",
                 "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
         return sb.toString();
     }
@@ -70,18 +81,19 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (StringUtils.isBlank(parameters.get("oldType"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "oldType");
+        String missingParameter = "Missing parameter: ";
+        if (StringUtils.isBlank(parameters.get(OLD_TYPE))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, OLD_TYPE);
             return new ArrayList<>();
         }
 
-        if (StringUtils.isBlank(parameters.get("newType"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "newType");
+        if (StringUtils.isBlank(parameters.get(NEW_TYPE))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, NEW_TYPE);
             return new ArrayList<>();
         }
 
-        if (parameters.get("position") == null || parameters.get("position").equals("")) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
+        if (StringUtils.isBlank(parameters.get(POSITION))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, POSITION);
             return new ArrayList<>();
         }
 
@@ -109,10 +121,10 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
 
             // find the right elements to adapt
             List<DocStruct> dsList = new ArrayList<>();
-            switch (parameters.get("position")) {
+            switch (parameters.get(POSITION)) {
 
                 // just the anchor element
-                case "top":
+                case POSITION_TOP:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds);
                     } else {
@@ -123,7 +135,7 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
                     break;
 
                 // fist the first child element
-                case "child":
+                case POSITION_CHILD:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
                     } else {
@@ -134,11 +146,11 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
                     break;
 
                 // any element in the hierarchy
-                case "any":
+                case POSITION_ANY:
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
                     break;
-                case "physical":
+                case POSITION_PHYSICAL:
                     if (physical != null) {
                         dsList.add(physical);
                     }
@@ -155,10 +167,10 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
             }
 
             // check if errors shall be ignored
-            boolean ignoreErrors = getParameterAsBoolean("ignoreErrors");
+            boolean ignoreErrors = getParameterAsBoolean(IGNORE_ERRORS);
 
-            String oldMetadataType = parameters.get("oldType");
-            String newMetadataType = parameters.get("newType");
+            String oldMetadataType = parameters.get(OLD_TYPE);
+            String newMetadataType = parameters.get(NEW_TYPE);
 
             boolean changed = changeMetadataType(dsList, oldMetadataType, newMetadataType, p.getRegelsatz().getPreferences(), ignoreErrors);
             if (changed) {

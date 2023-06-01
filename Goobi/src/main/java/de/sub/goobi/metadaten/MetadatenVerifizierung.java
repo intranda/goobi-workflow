@@ -406,25 +406,6 @@ public class MetadatenVerifizierung {
 
     }
 
-    private boolean isValidPathImageFiles(DocStruct phys, Prefs myPrefs) {
-        try {
-            MetadataType mdt = this.ughhelp.getMetadataType(myPrefs, "pathimagefiles");
-            List<? extends Metadata> alleMetadaten = phys.getAllMetadataByType(mdt);
-            if (alleMetadaten != null && !alleMetadaten.isEmpty()) {
-                @SuppressWarnings("unused")
-                Metadata mmm = alleMetadaten.get(0);
-
-                return true;
-            } else {
-                Helper.setFehlerMeldung(this.myProzess.getTitel() + ": " + "Can not verify, image path is not set", "");
-                return false;
-            }
-        } catch (UghHelperException e) {
-            Helper.setFehlerMeldung(this.myProzess.getTitel() + ": " + "Verify aborted, error: ", e.getMessage());
-            return false;
-        }
-    }
-
     private void checkDocStructsOhneSeiten(DocStruct inStruct) {
         if (inStruct.getAllToReferences().isEmpty() && !inStruct.getType().isAnchor()) {
             this.docStructsOhneSeiten.add(inStruct);
@@ -515,8 +496,8 @@ public class MetadatenVerifizierung {
                 VocabularyManager.getAllRecords(vocabulary);
                 List<VocabRecord> records = vocabulary.getRecords();
                 List<String> allowedValues = new ArrayList<>();
-                for (VocabRecord record : records) {
-                    for (Field field : record.getFields()) {
+                for (VocabRecord vocabularyRecord : records) {
+                    for (Field field : vocabularyRecord.getFields()) {
                         allowedValues.add(field.getValue());
                     }
                 }

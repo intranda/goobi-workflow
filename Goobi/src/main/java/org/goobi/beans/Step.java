@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -559,8 +558,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         this.bearbeitungsstatus = Integer.parseInt(inbearbeitungsstatus);
     }
 
-    public ArrayList<String> getAllScriptPaths() {
-        ArrayList<String> answer = new ArrayList<>();
+    public List<String> getAllScriptPaths() {
+        List<String> answer = new ArrayList<>();
         if (this.typAutomatischScriptpfad != null && !"".equals(this.typAutomatischScriptpfad)) {
             answer.add(this.typAutomatischScriptpfad);
         }
@@ -579,8 +578,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return answer;
     }
 
-    public HashMap<String, String> getAllScripts() {
-        LinkedHashMap<String, String> answer = new LinkedHashMap<>();
+    public Map<String, String> getAllScripts() {
+        Map<String, String> answer = new LinkedHashMap<>();
         if (this.typAutomatischScriptpfad != null && !"".equals(this.typAutomatischScriptpfad)) {
             answer.put(this.scriptname1, this.typAutomatischScriptpfad);
         }
@@ -599,7 +598,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return answer;
     }
 
-    public void setAllScripts(HashMap<String, String> paths) {
+    public void setAllScripts(Map<String, String> paths) {
         Set<String> keys = paths.keySet();
         ArrayList<String> keyList = new ArrayList<>();
         for (String key : keys) {
@@ -654,10 +653,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
      */
 
     public Boolean getBatchStep() {
-        if (this.batchStep == null) {
-            this.batchStep = Boolean.valueOf(false);
-        }
-        return this.batchStep;
+        return this.isBatchStep();
     }
 
     public Boolean isBatchStep() {
@@ -678,6 +674,23 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     public int compareTo(Step arg0) {
 
         return id.compareTo(arg0.getId());
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object.getClass().equals(this.getClass()))) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        Step step = (Step) (object);
+        return step.id.equals(this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+        // TODO: Implement this method fitting to all member variables
     }
 
     @Override

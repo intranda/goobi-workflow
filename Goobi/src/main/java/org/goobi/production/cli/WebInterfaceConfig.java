@@ -44,14 +44,15 @@ public class WebInterfaceConfig {
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
             int count = config.getMaxIndex("credentials");
-            for (int i = 0; i <= count; i++) {
-                String ip = config.getString("credentials(" + i + ")[@ip]");
-                String password = config.getString("credentials(" + i + ")[@password]");
+            for (int index = 0; index <= count; index++) {
+                String credentialsPrefix = "credentials(" + index + ")";
+                String ip = config.getString(credentialsPrefix + "[@ip]");
+                String password = config.getString(credentialsPrefix + "[@password]");
                 if (requestIp.startsWith(ip) && requestPassword.equals(password)) {
-                    int countCommands = config.getMaxIndex("credentials(" + i + ").command");
+                    int countCommands = config.getMaxIndex(credentialsPrefix + ".command");
 
                     for (int j = 0; j <= countCommands; j++) {
-                        allowed.add(config.getString("credentials(" + i + ").command(" + j + ")[@name]"));
+                        allowed.add(config.getString(credentialsPrefix + ".command(" + j + ")[@name]"));
                     }
                 }
             }

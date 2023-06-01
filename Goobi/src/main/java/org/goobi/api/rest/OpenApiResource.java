@@ -108,7 +108,7 @@ public class OpenApiResource {
 
             return openApi;
         } catch (OpenApiConfigurationException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new IllegalStateException(e.getMessage(), e);
         }
     }
 

@@ -27,13 +27,17 @@ package de.sub.goobi.helper.ldap;
  */
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.naming.Binding;
 import javax.naming.Context;
@@ -179,7 +183,8 @@ public class LdapUser implements DirContext {
      * 
      * @return The LM Hash of the given password, used in the calculation of the LM Response.
      */
-    public static byte[] lmHash(String password) throws Exception {
+    public static byte[] lmHash(String password)
+            throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
         byte[] oemPassword = password.toUpperCase().getBytes(StandardCharsets.US_ASCII);
         int length = Math.min(oemPassword.length, 14);
         byte[] keyBytes = new byte[14];
@@ -240,11 +245,11 @@ public class LdapUser implements DirContext {
     }
 
     public static String toHexString(byte[] bytes) {
-        StringBuffer retString = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < bytes.length; ++i) {
-            retString.append(Integer.toHexString(0x0100 + (bytes[i] & 0x00FF)).substring(1));
+            buffer.append(Integer.toHexString(0x0100 + (bytes[i] & 0x00FF)).substring(1));
         }
-        return retString.toString().toUpperCase();
+        return buffer.toString().toUpperCase();
     }
 
     @Override

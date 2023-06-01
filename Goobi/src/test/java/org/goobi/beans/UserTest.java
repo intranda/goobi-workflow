@@ -1,7 +1,26 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ */
 package org.goobi.beans;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -12,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.api.rest.AuthenticationToken;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.User.UserStatus;
 import org.junit.Test;
@@ -590,11 +610,29 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
+    public void testAdditionalSearchFields() throws Exception {
+        User user = new User();
+        assertNull(user.getAdditionalSearchFields());
+        user.setAdditionalSearchFields("fixture");
+        assertEquals("fixture", user.getAdditionalSearchFields());
+    }
+
+    @Test
     public void testStatus() throws Exception {
         User user = new User();
         assertEquals(UserStatus.ACTIVE, user.getStatus());
         user.setStatus(UserStatus.DELETED);
         assertEquals(UserStatus.DELETED, user.getStatus());
+    }
+
+    @Test
+    public void testApiToken() throws Exception {
+        User user = new User();
+        assertTrue(user.getApiToken().isEmpty());
+        List<AuthenticationToken> apiToken = new ArrayList<>();
+        apiToken.add(new AuthenticationToken("", -1));
+        user.setApiToken(apiToken);
+        assertFalse(user.getApiToken().isEmpty());
     }
 
     @Test
@@ -605,7 +643,6 @@ public class UserTest extends AbstractTest {
         additionalData.put("fixture", "fixture");
         user.setAdditionalData(additionalData);
         assertFalse(user.getAdditionalData().isEmpty());
-
     }
 
     @Test
@@ -637,6 +674,15 @@ public class UserTest extends AbstractTest {
         User user = new User();
         user.setPasswordSalt("salt");
         assertEquals("MymTz74KfogfA3Uymyp+l+MRZvF4nJgeM/4qPZWMwsc=", user.getPasswordHash("fixture"));
+    }
+
+    @Test
+    public void testGetNachVorname() {
+        User user = new User();
+        assertEquals(user.getNachVorname(), "null, null");
+        user.setVorname("John");
+        user.setNachname("Doe");
+        assertEquals(user.getNachVorname(), "Doe, John");
     }
 
     @Test
@@ -695,6 +741,52 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
+    public void testHashCode() {
+        User user1 = new User();
+        user1.setId(0);
+        user1.setLogin("goobi");
+        user1.setNachname("Lastname");
+        user1.setVorname("Firstname");
+        User user2 = new User();
+        user2.setId(1);
+        User user3 = new User();
+        user3.setLogin("login");
+        User user4 = new User();
+        user4.setNachname("lastname");
+        User user5 = new User();
+        user5.setVorname("firstname");
+        // test whether user1 is equal to itself, but all others are different
+        assertEquals(user1.hashCode(), user1.hashCode());
+        assertNotEquals(user1.hashCode(), user2.hashCode());// different id
+        assertNotEquals(user1.hashCode(), user3.hashCode());// different login
+        assertNotEquals(user1.hashCode(), user4.hashCode());// different last name
+        assertNotEquals(user1.hashCode(), user5.hashCode());// different first name
+    }
+
+    @Test
+    public void testEquals() {
+        User user1 = new User();
+        user1.setId(0);
+        user1.setLogin("goobi");
+        user1.setNachname("Lastname");
+        user1.setVorname("Firstname");
+        User user2 = new User();
+        user2.setId(1);
+        User user3 = new User();
+        user3.setLogin("login");
+        User user4 = new User();
+        user4.setNachname("lastname");
+        User user5 = new User();
+        user5.setVorname("firstname");
+        // test whether user1 is equal to itself, but all others are different
+        assertEquals(user1, user1);
+        assertNotEquals(user1, user2);// different id
+        assertNotEquals(user1, user3);// different login
+        assertNotEquals(user1, user4);// different last name
+        assertNotEquals(user1, user5);// different first name
+    }
+
+    @Test
     public void testImageUrl() throws Exception {
         User user = new User();
         assertNull(user.getImageUrl());
@@ -717,8 +809,6 @@ public class UserTest extends AbstractTest {
         assertEquals(1, user.getAllUserRoles().size());
         assertEquals("role", user.getAllUserRoles().get(0));
     }
-
-
 
     @Test
     public void testActive() throws Exception {

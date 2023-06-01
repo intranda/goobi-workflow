@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -99,14 +100,12 @@ public class UsergroupManager implements IManager, Serializable {
 
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
-        int num = 0;
         try {
-            num = UsergroupMysqlHelper.getUsergroupCount(order, filter, institution);
+            return UsergroupMysqlHelper.getUsergroupCount(filter, institution);
         } catch (SQLException e) {
             log.error("error while getting Usergroup hit size", e);
             throw new DAOException(e);
         }
-        return num;
     }
 
     /* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -119,12 +118,8 @@ public class UsergroupManager implements IManager, Serializable {
         r.setInstitutionId(rs.getInt("institution_id"));
         String roles = rs.getString("roles");
         if (StringUtils.isNotBlank(roles)) {
-            String[] userRole = roles.split(";");
-            List<String> roleList = new ArrayList<>();
-            for (String x : userRole) {
-                roleList.add(x);
-            }
-            r.setUserRoles(roleList);
+            String[] userRoles = roles.split(";");
+            r.setUserRoles(Arrays.asList(userRoles));
         }
         return r;
     }

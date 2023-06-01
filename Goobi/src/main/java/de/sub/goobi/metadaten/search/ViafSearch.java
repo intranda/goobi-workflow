@@ -41,6 +41,7 @@ import de.intranda.digiverso.normdataimporter.model.MarcRecord.DatabaseUrl;
 import de.intranda.digiverso.normdataimporter.model.TagDescription;
 import de.intranda.digiverso.normdataimporter.model.ViafSearchParameter;
 import de.intranda.digiverso.normdataimporter.model.ViafSearchRequest;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import ugh.dl.Corporate;
@@ -110,18 +111,15 @@ public class ViafSearch {
         }
     }
 
-    private static Comparator<SelectItem> selectItemComparator = new Comparator<SelectItem>() {
-        @Override
-        public int compare(SelectItem s1, SelectItem s2) {
-            return s1.getLabel().compareTo(s2.getLabel());
-        }
+    private static Comparator<SelectItem> selectItemComparator = (item1, item2) -> {
+        return item1.getLabel().compareTo(item2.getLabel());
     };
 
     public void performSearchRequest() {
 
         viafSearchRequest.setDisplayableTags(visibleTagList);
-
-        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_SEARCH_URL, viafSearchRequest,
+        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_SEARCH_URL,
+                ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort(), viafSearchRequest,
                 sorting ? "" : "&sortKeys=holdingscount", "&httpAccept=application/xml", "&recordSchema=info:srw/schema/1/marcxml-v1.1");
         if (clusterRecords == null || clusterRecords.isEmpty()) {
             records = null;

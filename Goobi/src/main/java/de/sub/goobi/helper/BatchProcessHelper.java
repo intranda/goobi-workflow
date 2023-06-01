@@ -157,14 +157,12 @@ public class BatchProcessHelper implements Serializable {
             Processproperty prop = processProperty.getProzesseigenschaft();
             for (Process process : this.processes) {
                 boolean match = false;
-                for (Processproperty processPe : process.getEigenschaftenList()) {
-                    if (processPe.getTitel() != null) {
-                        if (prop.getTitel().equals(processPe.getTitel()) && prop.getContainer().equals(processPe.getContainer())) {
-                            processPe.setWert(prop.getWert());
-                            PropertyManager.saveProcessProperty(processPe);
-                            match = true;
-                            break;
-                        }
+                for (Processproperty prpr : process.getEigenschaftenList()) {
+                    if (prpr.getTitel() != null && prop.getTitel().equals(prpr.getTitel()) && prop.getContainer().equals(prpr.getContainer())) {
+                        prpr.setWert(prop.getWert());
+                        PropertyManager.saveProcessProperty(prpr);
+                        match = true;
+                        break;
                     }
                 }
                 if (!match) {

@@ -40,8 +40,10 @@ import lombok.extern.log4j.Log4j2;
 /**
  * Usergroups owning different access rights, represented by integer values
  * 
- * 1: Administration - can do anything 2: Projectmanagement - may do a lot (but not user management, no user switch, no administrative form) 3: User
- * and process (basically like 4 but can be used for setting aditional boundaries later, if so desired) 4: User only: can see current steps
+ * 1: Administration - can do anything <br />
+ * 2: Projectmanagement - may do a lot (but not user management, no user switch, no administrative form) <br />
+ * 3: User and process (basically like 4 but can be used for setting aditional boundaries later, if so desired) <br />
+ * 4: User only: can see current steps
  * 
  * ================================================================
  */
@@ -83,18 +85,14 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
     }
 
     public Integer getBerechtigung() {
-        if (this.berechtigung == null) {
-            this.berechtigung = 4;
-        } else if (this.berechtigung == 3) {
+        if (this.berechtigung == null || this.berechtigung == 3) {
             this.berechtigung = 4;
         }
         return this.berechtigung;
     }
 
     public String getBerechtigungAsString() {
-        if (this.berechtigung == null) {
-            this.berechtigung = 4;
-        } else if (this.berechtigung == 3) {
+        if (this.berechtigung == null || this.berechtigung == 3) {
             this.berechtigung = 4;
         }
         return String.valueOf(this.berechtigung.intValue());

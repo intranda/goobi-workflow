@@ -29,10 +29,12 @@ import org.goobi.beans.Process;
 
 /**
  * This interface can be used to implement a search index engine for goobi.
- * 
+ *
+ * @deprecated This interface is not used anymore
+ *
  * @author Robert Sehr
  */
-@Deprecated
+@Deprecated(since = "23.05", forRemoval = true)
 public interface IIndexer {
 
     /**

@@ -29,6 +29,7 @@ package org.goobi.production.properties;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -114,12 +115,7 @@ public class ImportProperty implements IProperty {
     }
 
     public List<String> getValueList() {
-        String[] values = this.value.split("; ");
-        List<String> answer = new ArrayList<>();
-        for (String val : values) {
-            answer.add(val);
-        }
-        return answer;
+        return Arrays.asList(this.value.split("; "));
     }
 
     public void setValueList(List<String> valueList) {
@@ -156,9 +152,7 @@ public class ImportProperty implements IProperty {
             cal.setTime(format.parse(value));
             cal.set(Calendar.HOUR, 12);
             return cal.getTime();
-        } catch (ParseException e) {
-            return new Date();
-        } catch (NullPointerException e) {
+        } catch (ParseException | NullPointerException e) {
             return new Date();
         }
     }

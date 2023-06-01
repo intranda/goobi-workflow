@@ -55,7 +55,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return true if successful, false in error case
      */
-
     public boolean execute();
 
     /**
@@ -63,7 +62,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return the path to return e.g. task_edit.xhtml or process_edit.xhtml
      */
-
     public String cancel();
 
     /**
@@ -71,16 +69,16 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return the path to return e.g. task_edit.xhtml or process_edit.xhtml
      */
-
     public String finish();
 
     /**
      * This method is not used by Goobi. It may be used by the plugin during initialize
-     * 
+     *
+     * @deprecated The validation method is not used anymore. If a step should be used for validation, the IValidatorPlugin should be used instead.
+     *
      * @return
      */
-
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = false)
     public HashMap<String, StepReturnValue> validate();
 
     /**
@@ -88,7 +86,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return step the {@link Step} for which the plugin is started
      */
-
     public Step getStep();
 
     /**
@@ -96,7 +93,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return the {@link PluginGuiType} of the plugin
      */
-
     public PluginGuiType getPluginGuiType();
 
     /**
@@ -104,7 +100,6 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return path to the xhtml page
      */
-
     public String getPagePath();
 
 }

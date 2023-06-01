@@ -91,7 +91,7 @@ public class MySQLHelper implements Serializable {
                 }
 
             } catch (SQLException e) {
-                log.error("Error getting database provider information", e);
+                log.error("Error while getting database provider information for SQL type request", e);
             }
         }
         return type;
@@ -108,7 +108,7 @@ public class MySQLHelper implements Serializable {
             String dbType = meta.getDatabaseProductName();
             return ("H2".equals(dbType));
         } catch (SQLException e) {
-            log.error("Error getting database provider information", e);
+            log.error("Error while getting database provider information for H2 usage request", e);
         }
         return false;
     }
@@ -124,7 +124,7 @@ public class MySQLHelper implements Serializable {
             String dbVersion = meta.getDatabaseProductVersion();
             return (checkMariadbVersion(dbVersion));
         } catch (SQLException e) {
-            log.error("Error getting database provider information", e);
+            log.error("Error while getting database provider information for JSON capability request", e);
         }
         return false;
     }

@@ -34,7 +34,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import de.intranda.digiverso.normdataimporter.model.NormData;
-import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.intranda.digiverso.normdataimporter.model.NormDataValue;
 
 /**
@@ -61,8 +60,7 @@ public class NormDataUtils {
      * @return a list of norm data
      */
     @SuppressWarnings("unchecked")
-    private static NormData getNormData(String label, Object object,
-            boolean useAsId, boolean useAsUrl) {
+    private static NormData getNormData(String label, Object object, boolean useAsId, boolean useAsUrl) {
         NormData normData = new NormData();
         if (Objects.nonNull(object)) {
             List<NormDataValue> normDataValues = new ArrayList<>();
@@ -111,8 +109,7 @@ public class NormDataUtils {
      * @return a list of norm data
      */
     @SuppressWarnings("unchecked")
-    public static List<NormData> createNormData(String label, Object javaObject,
-            boolean useAsId, boolean useAsUrl) {
+    public static List<NormData> createNormData(String label, Object javaObject, boolean useAsId, boolean useAsUrl) {
         List<NormData> normDataList = new ArrayList<>();
         if (Objects.nonNull(javaObject)) {
             if (javaObject instanceof Map) {
@@ -163,21 +160,4 @@ public class NormDataUtils {
         return allValues;
     }
 
-    /**
-     * Prints the content of record of type NormDataRecord
-     *
-     * @param record a norm data record to print
-     */
-    public static void printRecord(NormDataRecord record) {
-        if (Objects.nonNull(record)) {
-            for (NormData normData : record.getNormdataList()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(normData.getKey()).append(" : ");
-                for (NormDataValue value : normData.getValues()) {
-                    sb.append(value.getText()).append(", ");
-                }
-                System.out.println(sb.toString());
-            }
-        }
-    }
 }

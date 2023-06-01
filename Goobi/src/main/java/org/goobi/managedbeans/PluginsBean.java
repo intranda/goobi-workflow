@@ -106,14 +106,14 @@ public class PluginsBean implements Serializable {
     }
 
     public Map<String, List<PluginInfo>> getPluginsFromFS() {
-        Map<String, List<PluginInfo>> plugins = new LinkedHashMap<>();
+        Map<String, List<PluginInfo>> pluginList = new LinkedHashMap<>();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         Path pluginsFolder = Paths.get(config.getPluginFolder());
         Path libFolder = Paths.get(config.getLibFolder());
-        plugins.putAll(this.getPluginsFromPath(pluginsFolder, true));
-        plugins.putAll(this.getPluginsFromPath(libFolder, false));
-        PluginsBean.moveGUIPluginsToBottom(plugins);
-        return plugins;
+        pluginList.putAll(this.getPluginsFromPath(pluginsFolder, true));
+        pluginList.putAll(this.getPluginsFromPath(libFolder, false));
+        PluginsBean.moveGUIPluginsToBottom(pluginList);
+        return pluginList;
     }
 
     /**
@@ -133,7 +133,7 @@ public class PluginsBean implements Serializable {
     //get plugins from any folder (including subfolders or not)
     public Map<String, List<PluginInfo>> getPluginsFromPath(Path pluginsFolder, boolean instantiate) {
         Set<String> stepPluginsInUse = StepManager.getDistinctStepPluginTitles();
-        Map<String, List<PluginInfo>> plugins = new TreeMap<>();
+        Map<String, List<PluginInfo>> pluginList = new TreeMap<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(pluginsFolder)) {
             // dirList collects plugins that are directly located in the plugins/ folder
             List<PluginInfo> dirList = new ArrayList<>();
@@ -148,7 +148,7 @@ public class PluginsBean implements Serializable {
                         }
                     }
                     String folder = pluginDir.getFileName().toString();
-                    plugins.put(folder, subDirList);
+                    pluginList.put(folder, subDirList);
                 } else if (pluginDir.getFileName().toString().endsWith("jar")) {
                     dirList.add(getPluginInfo(pluginDir.toAbsolutePath(), stepPluginsInUse, instantiate));
                 }
@@ -156,12 +156,12 @@ public class PluginsBean implements Serializable {
             // if there were plugins inside the directory dirList will not be empty
             if (!dirList.isEmpty()) {
                 String folder = pluginsFolder.getFileName().toString();
-                plugins.put(folder, dirList); // add the plugins to the list
+                pluginList.put(folder, dirList); // add the plugins to the list
             }
         } catch (IOException e) {
             log.error(e);
         }
-        return plugins;
+        return pluginList;
     }
 
     public String getTranslatedFolderName(String folder) {

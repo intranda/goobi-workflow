@@ -1438,29 +1438,22 @@ public class ProzesskopieForm implements Serializable {
                 isnotdoctype = "";
             }
 
+            boolean containsDoctype = StringUtils.containsIgnoreCase(isdoctype, this.docType);
+            boolean containsNotDoctype = StringUtils.containsIgnoreCase(isnotdoctype, this.docType);
+
             /* wenn nix angegeben wurde, dann anzeigen */
-            if ("".equals(isdoctype) && "".equals(isnotdoctype)) {
-                titeldefinition = titel;
-                replacement = replacementText;
-                break;
-            }
+            boolean useTitle = "".equals(isdoctype) && "".equals(isnotdoctype);
 
             /* wenn beides angegeben wurde */
-            if (!"".equals(isdoctype) && !"".equals(isnotdoctype) && StringUtils.containsIgnoreCase(isdoctype, this.docType)
-                    && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
-                titeldefinition = titel;
-                replacement = replacementText;
-                break;
-            }
+            useTitle = useTitle || (!"".equals(isdoctype) && !"".equals(isnotdoctype) && containsDoctype && !containsNotDoctype);
 
             /* wenn nur pflicht angegeben wurde */
-            if ("".equals(isnotdoctype) && StringUtils.containsIgnoreCase(isdoctype, this.docType)) {
-                titeldefinition = titel;
-                replacement = replacementText;
-                break;
-            }
+            useTitle = useTitle || ("".equals(isnotdoctype) && containsDoctype);
+
             /* wenn nur "darf nicht" angegeben wurde */
-            if ("".equals(isdoctype) && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
+            useTitle = useTitle || ("".equals(isdoctype) && !containsNotDoctype);
+
+            if (useTitle) {
                 titeldefinition = titel;
                 replacement = replacementText;
                 break;
@@ -1535,12 +1528,10 @@ public class ProzesskopieForm implements Serializable {
         }
 
         // TODO: temporary solution for shelfmark, replace it with configurable solution
-        if ("Signatur".equalsIgnoreCase(inFeldName) || "Shelfmark".equalsIgnoreCase(inFeldName)) {
-            if (StringUtils.isNotBlank(rueckgabe)) {
-                // replace white spaces with dash, remove other special characters
-                rueckgabe = rueckgabe.replace(" ", "-").replace("/", "-").replaceAll("[^\\w-]", "");
+        if (("Signatur".equalsIgnoreCase(inFeldName) || "Shelfmark".equalsIgnoreCase(inFeldName)) && StringUtils.isNotBlank(rueckgabe)) {
+            // replace white spaces with dash, remove other special characters
+            rueckgabe = rueckgabe.replace(" ", "-").replace("/", "-").replaceAll("[^\\w-]", "");
 
-            }
         }
 
         return rueckgabe;

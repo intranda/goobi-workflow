@@ -77,62 +77,83 @@ public class VariableReplacer {
         TOPSTRUCT;
     }
 
-    private static Pattern pTifUrl = Pattern.compile("\\$?(?:\\(|\\{)tifurl(?:\\}|\\))");
-    private static Pattern pOrigurl = Pattern.compile("\\$?(?:\\(|\\{)origurl(?:\\}|\\))");
-    private static Pattern pImageUrl = Pattern.compile("\\$?(?:\\(|\\{)imageurl(?:\\}|\\))");
-    private static Pattern pS3TifPath = Pattern.compile("\\$?(?:\\(|\\{)s3_tifpath(?:\\}|\\))");
-    private static Pattern pS3OrigPath = Pattern.compile("\\$?(?:\\(|\\{)s3_origpath(?:\\}|\\))");
-    private static Pattern pS3ImagePath = Pattern.compile("\\$?(?:\\(|\\{)s3_imagepath(?:\\}|\\))");
-    private static Pattern pS3Processpath = Pattern.compile("\\$?(?:\\(|\\{)s3_processpath(?:\\}|\\))");
-    private static Pattern pS3ImportPath = Pattern.compile("\\$?(?:\\(|\\{)s3_importpath(?:\\}|\\))");
-    private static Pattern pS3SourcePath = Pattern.compile("\\$?(?:\\(|\\{)s3_sourcepath(?:\\}|\\))");
-    private static Pattern pS3OcrBasisPath = Pattern.compile("\\$?(?:\\(|\\{)s3_ocrbasispath(?:\\}|\\))");
-    private static Pattern pS3OcrPlainTextPath = Pattern.compile("\\$?(?:\\(|\\{)s3_ocrplaintextpath(?:\\}|\\))");
-    private static Pattern pTifPath = Pattern.compile("\\$?(?:\\(|\\{)tifpath(?:\\}|\\))");
-    private static Pattern pOrigPath = Pattern.compile("\\$?(?:\\(|\\{)origpath(?:\\}|\\))");
-    private static Pattern pImagePath = Pattern.compile("\\$?(?:\\(|\\{)imagepath(?:\\}|\\))");
-    private static Pattern pProcessPath = Pattern.compile("\\$?(?:\\(|\\{)processpath(?:\\}|\\))");
-    private static Pattern pImportPath = Pattern.compile("\\$?(?:\\(|\\{)importpath(?:\\}|\\))");
-    private static Pattern pSourcePath = Pattern.compile("\\$?(?:\\(|\\{)sourcepath(?:\\}|\\))");
-    private static Pattern pOcrBasisPath = Pattern.compile("\\$?(?:\\(|\\{)ocrbasispath(?:\\}|\\))");
-    private static Pattern pOcrPlaintextPath = Pattern.compile("\\$?(?:\\(|\\{)ocrplaintextpath(?:\\}|\\))");
-    private static Pattern pProcessTitle = Pattern.compile("\\$?(?:\\(|\\{)processtitle(?:\\}|\\))");
-    private static Pattern pProcessId = Pattern.compile("\\$?(?:\\(|\\{)processid(?:\\}|\\))");
-    private static Pattern pGoobiFolder = Pattern.compile("\\$?(?:\\(|\\{)goobiFolder(?:\\}|\\))");
-    private static Pattern pScriptsFolder = Pattern.compile("\\$?(?:\\(|\\{)scriptsFolder(?:\\}|\\))");
-    private static Pattern pPrefs = Pattern.compile("\\$?(?:\\(|\\{)prefs(?:\\}|\\))");
-    private static Pattern pMetaFile = Pattern.compile("\\$?(?:\\(|\\{)metaFile(?:\\}|\\))");
-    private static Pattern pStepId = Pattern.compile("\\$?(?:\\(|\\{)stepid(?:\\}|\\))");
-    private static Pattern pStepName = Pattern.compile("\\$?(?:\\(|\\{)stepname(?:\\}|\\))");
-    private static Pattern pChangeStepToken = Pattern.compile("\\$?(?:\\(|\\{)changesteptoken(?:\\}|\\))");
-    private static Pattern pProjectId = Pattern.compile("\\$?(?:\\(|\\{)projectid(?:\\}|\\))");
-    private static Pattern pProjectName = Pattern.compile("\\$?(?:\\(|\\{)projectname(?:\\}|\\))");
-    private static Pattern pProjectIdentifier = Pattern.compile("\\$?(?:\\(|\\{)projectidentifier(?:\\}|\\))");
+    /**
+     * The PREFIX (regex) matches the prefix "$(", "${", "(" or "{" of a variable
+     */
+    private static final String PREFIX = "\\$?[\\(\\{]";
+    /**
+     * The SUFFIX (regex) matches the suffix ")" or "}" of a variable
+     */
+    private static final String SUFFIX = "[\\}\\)]";
 
-    public static Pattern piiifMediaFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMediaFolder(?:\\}|\\))");
-    public static Pattern piiifMasterFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMasterFolder(?:\\}|\\))");
+    private static Pattern pTifUrl = Pattern.compile(PREFIX + "tifurl" + SUFFIX);
+    private static Pattern pOrigurl = Pattern.compile(PREFIX + "origurl" + SUFFIX);
+    private static Pattern pImageUrl = Pattern.compile(PREFIX + "imageurl" + SUFFIX);
+    private static Pattern pS3TifPath = Pattern.compile(PREFIX + "s3_tifpath" + SUFFIX);
+    private static Pattern pS3OrigPath = Pattern.compile(PREFIX + "s3_origpath" + SUFFIX);
+    private static Pattern pS3ImagePath = Pattern.compile(PREFIX + "s3_imagepath" + SUFFIX);
+    private static Pattern pS3Processpath = Pattern.compile(PREFIX + "s3_processpath" + SUFFIX);
+    private static Pattern pS3ImportPath = Pattern.compile(PREFIX + "s3_importpath" + SUFFIX);
+    private static Pattern pS3SourcePath = Pattern.compile(PREFIX + "s3_sourcepath" + SUFFIX);
+    private static Pattern pS3OcrBasisPath = Pattern.compile(PREFIX + "s3_ocrbasispath" + SUFFIX);
+    private static Pattern pS3OcrPlainTextPath = Pattern.compile(PREFIX + "s3_ocrplaintextpath" + SUFFIX);
+    private static Pattern pTifPath = Pattern.compile(PREFIX + "tifpath" + SUFFIX);
+    private static Pattern pOrigPath = Pattern.compile(PREFIX + "origpath" + SUFFIX);
+    private static Pattern pImagePath = Pattern.compile(PREFIX + "imagepath" + SUFFIX);
+    private static Pattern pProcessPath = Pattern.compile(PREFIX + "processpath" + SUFFIX);
+    private static Pattern pImportPath = Pattern.compile(PREFIX + "importpath" + SUFFIX);
+    private static Pattern pSourcePath = Pattern.compile(PREFIX + "sourcepath" + SUFFIX);
+    private static Pattern pOcrBasisPath = Pattern.compile(PREFIX + "ocrbasispath" + SUFFIX);
+    private static Pattern pOcrPlaintextPath = Pattern.compile(PREFIX + "ocrplaintextpath" + SUFFIX);
+    private static Pattern pProcessTitle = Pattern.compile(PREFIX + "processtitle" + SUFFIX);
+    private static Pattern pProcessId = Pattern.compile(PREFIX + "processid" + SUFFIX);
+    private static Pattern pGoobiFolder = Pattern.compile(PREFIX + "goobiFolder" + SUFFIX);
+    private static Pattern pScriptsFolder = Pattern.compile(PREFIX + "scriptsFolder" + SUFFIX);
+    private static Pattern pPrefs = Pattern.compile(PREFIX + "prefs" + SUFFIX);
+    private static Pattern pMetaFile = Pattern.compile(PREFIX + "metaFile" + SUFFIX);
+    private static Pattern pStepId = Pattern.compile(PREFIX + "stepid" + SUFFIX);
+    private static Pattern pStepName = Pattern.compile(PREFIX + "stepname" + SUFFIX);
+    private static Pattern pChangeStepToken = Pattern.compile(PREFIX + "changesteptoken" + SUFFIX);
+    private static Pattern pProjectId = Pattern.compile(PREFIX + "projectid" + SUFFIX);
+    private static Pattern pProjectName = Pattern.compile(PREFIX + "projectname" + SUFFIX);
+    private static Pattern pProjectIdentifier = Pattern.compile(PREFIX + "projectidentifier" + SUFFIX);
 
-    @Getter @Setter
+    /*
+     * These both patters are used in de.sub.goobi.helper.HelperSchritte
+     */
+    @Getter
+    private static Pattern piiifMediaFolder = Pattern.compile(PREFIX + "iiifMediaFolder" + SUFFIX);
+    @Getter
+    private static Pattern piiifMasterFolder = Pattern.compile(PREFIX + "iiifMasterFolder" + SUFFIX);
+    /*
+     * This value is used in org.goobi.goobiScript.GoobiScriptMetadataAdd
+     */
+    @Getter
+    private static Pattern metadataPattern = Pattern.compile(PREFIX + "metadata\\.([\\w.-]*)" + SUFFIX);
+
+    // $(meta.abc)
+    private static final String REGEX_META = PREFIX + "meta\\.([\\w.-]*)" + SUFFIX;
+
+    // $(metas.abc)
+    private static final String REGEX_METAS = PREFIX + "metas\\.([\\w.-]*)" + SUFFIX;
+
+    // $(folder.xyz) or {folder.xyz} are both ok
+    private static final String REGEX_FOLDER = PREFIX + "folder\\.([^)]+)" + SUFFIX;
+
+    private static final String REGEX_PRODUCT = PREFIX + "product\\.([^)}]+)" + SUFFIX;
+    private static final String REGEX_TEMPLATE = PREFIX + "template\\.([^)}]+)" + SUFFIX;
+    private static final String REGEX_PROCESS = PREFIX + "process\\.([^)}]+)" + SUFFIX;
+    private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+)" + SUFFIX;
+
+    @Getter
+    @Setter
     private String SEPARATOR = ",";
 
     private DigitalDocument dd;
     private Prefs prefs;
     private UghHelper uhelp;
-    // $(meta.abc)
-    private final String namespaceMeta = "\\$?(?:\\(|\\{)meta\\.([\\w.-]*)(?:\\}|\\))";
-
-    // $(metas.abc)
-    private final String namespaceMetaMultiValue = "\\$?(?:\\(|\\{)metas\\.([\\w.-]*)(?:\\}|\\))";
-
-    // $(folder.xyz) or {folder.xyz} are both ok
-    private static final String folderExpression = "\\$?(?:\\(|\\{)folder\\.([^)]+)(?:\\}|\\))";
-
     private Process process;
     private Step step;
-
-    @SuppressWarnings("unused")
-    private VariableReplacer() {
-    }
 
     public VariableReplacer(DigitalDocument inDigitalDocument, Prefs inPrefs, Process p, Step s) {
         this.dd = inDigitalDocument;
@@ -196,7 +217,7 @@ public class VariableReplacer {
         /*
          * replace metadata, usage: $(meta.firstchild.METADATANAME)
          */
-        for (MatchResult r : findRegexMatches(this.namespaceMeta, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_META, inString)) {
             if (r.group(1).toLowerCase().startsWith("firstchild.")) {
                 inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), false));
             } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
@@ -206,7 +227,7 @@ public class VariableReplacer {
             }
         }
 
-        for (MatchResult r : findRegexMatches(this.namespaceMetaMultiValue, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_METAS, inString)) {
             if (r.group(1).toLowerCase().startsWith("firstchild.")) {
                 inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), true));
             } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
@@ -323,7 +344,7 @@ public class VariableReplacer {
 
         // replace WerkstueckEigenschaft, usage: (product.PROPERTYTITLE)
 
-        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)product\\.([^)}]+)(?:\\}|\\))", inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_PRODUCT, inString)) {
             String propertyTitle = r.group(1);
             for (Masterpiece ws : this.process.getWerkstueckeList()) {
                 for (Masterpieceproperty we : ws.getEigenschaftenList()) {
@@ -337,7 +358,7 @@ public class VariableReplacer {
 
         // replace Vorlageeigenschaft, usage: (template.PROPERTYTITLE)
 
-        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)template\\.([^)}]+)(?:\\}|\\))", inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_TEMPLATE, inString)) {
             String propertyTitle = r.group(1);
             for (Template v : this.process.getVorlagenList()) {
                 for (Templateproperty ve : v.getEigenschaftenList()) {
@@ -351,7 +372,7 @@ public class VariableReplacer {
 
         // replace Prozesseigenschaft, usage: (process.PROPERTYTITLE)
 
-        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)process\\.([^)}]+)(?:\\}|\\))", inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_PROCESS, inString)) {
             String propertyTitle = r.group(1);
             List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
             for (ProcessProperty pe : ppList) {
@@ -362,13 +383,13 @@ public class VariableReplacer {
             }
         }
 
-        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)db_meta\\.([^)}]+)(?:\\}|\\))", inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_DB_META, inString)) {
             String metadataName = r.group(1);
             String value = MetadataManager.getAllValuesForMetadata(process.getId(), metadataName);
             inString = inString.replace(r.group(), value);
         }
 
-        for (MatchResult r : findRegexMatches(folderExpression, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_FOLDER, inString)) {
             String folderName = r.group(1);
             try {
                 String value = process.getConfiguredImageFolder(folderName);
@@ -460,6 +481,7 @@ public class VariableReplacer {
 
     /**
      * get one single metadata from given docstruct
+     * 
      * @param inDocstruct
      * @param mdt
      * @return
@@ -482,6 +504,7 @@ public class VariableReplacer {
 
     /**
      * get multiple metadata from given docstruct, separated with semicolon
+     * 
      * @param inDocstruct
      * @param mdt
      * @return

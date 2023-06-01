@@ -213,17 +213,15 @@ class ProcessMysqlHelper implements Serializable {
 
     public static void deleteProcess(Process o) throws SQLException {
         if (o.getId() != null) {
-
             // delete metadata
             MetadataManager.deleteMetadata(o.getId());
 
             // delete properties
-
             for (Processproperty object : o.getEigenschaften()) {
                 PropertyManager.deleteProcessProperty(object);
             }
-            // delete templates
 
+            // delete templates
             for (Template object : o.getVorlagen()) {
                 TemplateManager.deleteTemplate(object);
             }
@@ -233,9 +231,7 @@ class ProcessMysqlHelper implements Serializable {
                 MasterpieceManager.deleteMasterpiece(object);
             }
 
-            for (Step object : o.getSchritte()) {
-                StepManager.deleteStep(object);
-            }
+            StepManager.deleteAllSteps(o.getSchritte());
 
             JournalManager.deleteAllJournalEntries(o.getId(), EntryType.PROCESS);
 
@@ -255,7 +251,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static int getProcessCount(String order, String filter, Institution institution) throws SQLException {
+    public static int getProcessCount(String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM prozesse left join batches on prozesse.batchID = batches.id ");
@@ -424,16 +420,16 @@ class ProcessMysqlHelper implements Serializable {
             return new Object[] { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
-                            o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                    o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
 
         } else {
             return new Object[] { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(),
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
-                            o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                            o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                    o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
         }
     }
 
@@ -488,7 +484,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Integer> getIDList(String order, String filter) throws SQLException {
+    public static List<Integer> getIDList(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id ");

@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.inject.Inject;
@@ -104,7 +105,13 @@ import lombok.extern.log4j.Log4j2;
 @WindowScoped
 @Log4j2
 public class StepBean extends BasicBean implements Serializable {
+
     private static final long serialVersionUID = 5841566727939692509L;
+
+    private static final String RETURN_PAGE_ALL = "task_all";
+    private static final String RETURN_PAGE_EDIT = "task_edit";
+    private static final String RETURN_PAGE_EDIT_BATCH = "task_edit_batch";
+
     @Getter
     @Setter
     private Process myProzess = new Process();
@@ -150,7 +157,7 @@ public class StepBean extends BasicBean implements Serializable {
     @Setter
     private String scriptPath;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static String DONEDIRECTORYNAME = "fertig/";
+    private String doneDirectoryName = "fertig/";
     @Getter
     @Setter
     private BatchStepHelper batchHelper;
@@ -169,14 +176,26 @@ public class StepBean extends BasicBean implements Serializable {
     @Setter
     private String content = "";
 
-    private IExportPlugin exportPlugin = null;
-
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
     @Inject
     @Push
     PushContext stepPluginPush;
+
+    @Getter
+    @Setter
+    private String selectedErrorPropertyType;
+
+    @Getter
+    private Map<String, String> errorPropertyTypes = null;
+
+    @Getter
+    @Setter
+    private String selectedSolutionPropertyType;
+
+    @Getter
+    private Map<String, String> solutionPropertyTypes = null;
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -211,7 +230,7 @@ public class StepBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
         }
-        DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
+        this.doneDirectoryName = ConfigurationHelper.getInstance().getDoneDirectoryName();
     }
 
     /*
@@ -240,9 +259,9 @@ public class StepBean extends BasicBean implements Serializable {
             sql = sql + " AND ";
         }
         sql = sql + " projekte.projectIsArchived = false ";
-        paginator = new DatabasePaginator(sortField, sql, m, "task_all");
+        paginator = new DatabasePaginator(sortField, sql, m, RETURN_PAGE_ALL);
 
-        return "task_all";
+        return RETURN_PAGE_ALL;
     }
 
     @Override
@@ -301,7 +320,7 @@ public class StepBean extends BasicBean implements Serializable {
                 downloadToHome();
             }
         }
-        return "task_edit";
+        return RETURN_PAGE_EDIT;
     }
 
     public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
@@ -312,12 +331,11 @@ public class StepBean extends BasicBean implements Serializable {
             log.error(exception);
         }
 
-        return "task_edit";
+        return RETURN_PAGE_EDIT;
     }
 
     public String TakeOverBatch() {
         // find all steps with same batch id and step status
-        List<Step> currentStepsOfBatch = new ArrayList<>();
         Institution institution = null;
         User user = Helper.getCurrentUser();
         if (user != null && !user.isSuperAdmin()) {
@@ -328,16 +346,16 @@ public class StepBean extends BasicBean implements Serializable {
         if (mySchritt.getProzess().getBatch() != null) {
             batchNumber = this.mySchritt.getProzess().getBatch().getBatchId();
         }
+        List<Step> currentStepsOfBatch;
         if (batchNumber != null) {
             // only steps with same title
-            currentStepsOfBatch =
-                    StepManager.getSteps(null, "schritte.titel = '" + steptitle + "' and prozesse.batchID = " + batchNumber, 0, Integer.MAX_VALUE,
-                            institution);
+            String sql = "schritte.titel = '" + steptitle + "' and prozesse.batchID = " + batchNumber;
+            currentStepsOfBatch = StepManager.getSteps(null, sql, 0, Integer.MAX_VALUE, institution);
 
         } else {
             return SchrittDurchBenutzerUebernehmen();
         }
-        // if only one step is asigned for this batch, use the single
+        // if only one step is assigned for this batch, use the single
 
         if (currentStepsOfBatch.isEmpty()) {
             return "";
@@ -365,7 +383,7 @@ public class StepBean extends BasicBean implements Serializable {
                     try {
                         Paths.get(s.getProzess().getImagesOrigDirectory(false));
                     } catch (Exception e1) {
-                        // TODO: what should be done?
+                        log.warn("Cannot find imagesOrigDirectory for process '" + s.getProzess().getTitel() + "': ", e1);
                     }
 
                     this.myDav.DownloadToHome(s.getProzess(), s.getId().intValue(), !s.isTypImagesSchreiben());
@@ -394,12 +412,11 @@ public class StepBean extends BasicBean implements Serializable {
             }
         }
         this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch, mySchritt));
-        return "task_edit_batch";
+        return RETURN_PAGE_EDIT_BATCH;
     }
 
     public String BatchesEdit() {
         // find all steps with same batch id and step status
-        List<Step> currentStepsOfBatch = new ArrayList<>();
         Institution institution = null;
         User user = Helper.getCurrentUser();
         if (user != null && !user.isSuperAdmin()) {
@@ -410,27 +427,31 @@ public class StepBean extends BasicBean implements Serializable {
         if (mySchritt.getProzess().getBatch() != null) {
             batchNumber = this.mySchritt.getProzess().getBatch().getBatchId();
         }
+        List<Step> currentStepsOfBatch;
         if (batchNumber != null) {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                    + batchNumber + ")",
+                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                            + batchNumber + ")",
                     0, Integer.MAX_VALUE, institution);
 
         } else {
-            return "task_edit";
+            return RETURN_PAGE_EDIT;
         }
         // if only one step is asigned for this batch, use the single
 
         if (currentStepsOfBatch.size() == 1) {
-            return "task_edit";
+            return RETURN_PAGE_EDIT;
         }
         this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch, mySchritt));
-        return "task_edit_batch";
+        return RETURN_PAGE_EDIT_BATCH;
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public void saveProperties() {
     }
 
@@ -454,7 +475,7 @@ public class StepBean extends BasicBean implements Serializable {
              */
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
-            // TODO: what should be done?
+            // do nothing
         }
         return FilterAlleStart();
     }
@@ -540,6 +561,28 @@ public class StepBean extends BasicBean implements Serializable {
         return getPreviousStepsForProblemReporting().size();
     }
 
+    public Set<String> getAllErrorPropertyTypes() {
+        if (errorPropertyTypes == null) {
+            errorPropertyTypes = ConfigurationHelper.getInstance().getErrorPropertyTypes();
+        }
+        return errorPropertyTypes.keySet();
+    }
+
+    public boolean isDisplayErrorPropertyTypes() {
+        return !getAllErrorPropertyTypes().isEmpty();
+    }
+
+    public Set<String> getAllSolutionPropertyTypes() {
+        if (solutionPropertyTypes == null) {
+            solutionPropertyTypes = ConfigurationHelper.getInstance().getSolutionPropertyTypes();
+        }
+        return solutionPropertyTypes.keySet();
+    }
+
+    public boolean isDisplaySolutionPropertyTypes() {
+        return !getAllSolutionPropertyTypes().isEmpty();
+    }
+
     public String ReportProblem() {
 
         if (myProblemID == null) {
@@ -570,15 +613,22 @@ public class StepBean extends BasicBean implements Serializable {
             ErrorProperty se = new ErrorProperty();
 
             se.setTitel(Helper.getTranslation("Korrektur notwendig"));
-            if (ben != null) {
-                se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
+            String messageText;
+            if (StringUtils.isNotBlank(selectedErrorPropertyType)) {
+                messageText = errorPropertyTypes.get(selectedErrorPropertyType).replace("{}", problemMessage);
             } else {
-                se.setWert("[" + this.formatter.format(new Date()) + "] " + this.problemMessage);
+                messageText = problemMessage;
+            }
+
+            if (ben != null) {
+                se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + messageText);
+            } else {
+                se.setWert("[" + this.formatter.format(new Date()) + "] " + messageText);
             }
             se.setType(PropertyType.MESSAGE_ERROR);
             se.setCreationDate(myDate);
             se.setSchritt(temp);
-            String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
+            String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText;
 
             JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null ? ben.getNachVorname() : "",
                     LogType.ERROR, message, EntryType.PROCESS);
@@ -608,7 +658,7 @@ public class StepBean extends BasicBean implements Serializable {
                 step.setBearbeitungsende(null);
                 ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage);
+                seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
                 seg.setCreationDate(new Date());
@@ -662,14 +712,24 @@ public class StepBean extends BasicBean implements Serializable {
         this.mySchritt.setBearbeitungsende(now);
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        User ben = Helper.getCurrentUser();
-        if (ben != null) {
-            mySchritt.setBearbeitungsbenutzer(ben);
+        User user = Helper.getCurrentUser();
+        if (user != null) {
+            mySchritt.setBearbeitungsbenutzer(user);
         }
 
         try {
 
             Step temp = StepManager.getStepById(this.mySolutionID);
+
+            String messageText;
+            if (StringUtils.isNotBlank(selectedSolutionPropertyType)) {
+                messageText = solutionPropertyTypes.get(selectedSolutionPropertyType).replace("{}", solutionMessage);
+            } else {
+                messageText = solutionMessage;
+            }
+
+            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + messageText;
+
             /*
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
              */
@@ -695,13 +755,11 @@ public class StepBean extends BasicBean implements Serializable {
                 }
                 ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
-                if (ben != null) {
-                    step.setBearbeitungsbenutzer(ben);
-                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
-                            + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
+                if (user != null) {
+                    step.setBearbeitungsbenutzer(user);
+                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + user.getNachVorname() + "] " + message);
                 } else {
-                    seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
-                    + ": " + this.solutionMessage);
+                    seg.setWert("[" + this.formatter.format(new Date()) + "] " + message);
                 }
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
@@ -713,9 +771,7 @@ public class StepBean extends BasicBean implements Serializable {
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */
-            String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
-
-            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null ? ben.getNachVorname() : "",
+            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), user != null ? user.getNachVorname() : "",
                     LogType.INFO, message, EntryType.PROCESS);
             JournalManager.saveJournalEntry(logEntry);
 
@@ -767,7 +823,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public String uploadFromHomeAlle() throws NumberFormatException, DAOException {
 
-        List<String> fertigListe = this.myDav.UploadFromHomeAlle(DONEDIRECTORYNAME);
+        List<String> fertigListe = this.myDav.UploadFromHomeAlle(this.doneDirectoryName);
         List<String> geprueft = new ArrayList<>();
         /*
          * -------------------------------- die hochgeladenen Prozess-IDs durchlaufen und auf abgeschlossen setzen --------------------------------
@@ -793,8 +849,8 @@ public class StepBean extends BasicBean implements Serializable {
             }
         }
 
-        this.myDav.removeFromHomeAlle(geprueft, DONEDIRECTORYNAME);
-        Helper.setMeldung(null, "removed " + geprueft.size() + " directories from user home:", DONEDIRECTORYNAME);
+        this.myDav.removeFromHomeAlle(geprueft, this.doneDirectoryName);
+        Helper.setMeldung(null, "removed " + geprueft.size() + " directories from user home:", this.doneDirectoryName);
         return FilterAlleStart();
     }
 
@@ -864,15 +920,16 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     /**
-     * call module for this step ================================================================
-     * 
-     * @throws IOException
+     * @deprecated This method is not used anymore
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public void executeModule() {
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public int getHomeBaende() {
         return 0;
     }
@@ -920,7 +977,6 @@ public class StepBean extends BasicBean implements Serializable {
 
     public void setMySchritt(Step mySchritt) {
         myPlugin = null;
-        exportPlugin = null;
         this.modusBearbeiten = "";
         this.mySchritt = mySchritt;
         loadProcessProperties();
@@ -928,6 +984,7 @@ public class StepBean extends BasicBean implements Serializable {
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
 
+            IExportPlugin exportPlugin = null;
             if (myPlugin == null) {
                 exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
             }
@@ -1039,8 +1096,9 @@ public class StepBean extends BasicBean implements Serializable {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
             } catch (Exception e) {
-                log.error("Can't load export plugin, use default export", e);
-                Helper.setFehlerMeldung("Can't load export plugin, use default export");
+                String message = "Can't load export plugin, use default export";
+                log.error(message, e);
+                Helper.setFehlerMeldung(message);
                 dms = new ExportDms();
             }
         }

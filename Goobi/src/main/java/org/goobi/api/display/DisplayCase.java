@@ -41,72 +41,75 @@ public class DisplayCase {
     private DisplayType displayType = null;
     @Getter
     @Setter
-    private List<Item> itemList = new ArrayList<>();
+    private List<Item> itemList;
     private ConfigDisplayRules configDisplay;
     private Process myProcess;
     private String metaName;
 
     /**
-     * gets items with current bind state
-     * 
-     * @param inProcess
-     * @param metaType
+     * Initializes a display case object and sets all member fields.
+     *
+     * @param process The process that should be assigned to this display case
+     * @param metaType The meta type that should be assigned to this display case
      */
-
-    public DisplayCase(Process inProcess, MetadataType metaType) {
+    public DisplayCase(Process process, MetadataType metaType) {
         if (metaType.getIsPerson()) {
-            displayType = DisplayType.person;
+            this.displayType = DisplayType.person;
         } else {
-            metaName = metaType.getName();
-            myProcess = inProcess;
-            try {
-                configDisplay = ConfigDisplayRules.getInstance();
-                if (configDisplay != null) {
-                    displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), metaName);
-                    itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), metaName, displayType);
-                } else {
-                    // no ruleset file
-                    displayType = DisplayType.getByTitle("input");
-                    itemList.add(new Item(metaName, "", false, "", ""));
-                }
-            } catch (Exception e) {
-                // incorrect ruleset file
-                displayType = DisplayType.getByTitle("input");
-                itemList.add(new Item(metaName, "", false, "", ""));
-            }
+            this.initializeDisplayCase(process, metaType.getName());
         }
-    }
-
-    public void overwriteConfiguredElement(Process inProcess, MetadataType metaType) {
-        configDisplay.overwriteConfiguredElement(myProcess.getProjekt().getTitel(), metaType.getName());
     }
 
     /**
-     * gets items with given bind state
-     * 
-     * @param inProcess
-     * @param bind
-     * @param metaType
+     * Initializes a display case object and sets all member fields.
+     *
+     * @deprecated This constructor should not be used anymore because the bind value is not used.
+     *
+     * @param process The process that should be assigned to this display case
+     * @param bind The bind value - is not used anymore
+     * @param metaType The meta type that should be assigned to this display case
      */
-    @Deprecated
-    public DisplayCase(Process inProcess, String bind, String metaType) {
-        metaName = metaType;
-        myProcess = inProcess;
+    @Deprecated(since = "23.05", forRemoval = true)
+    public DisplayCase(Process process, String bind, String metaType) {
+        this.initializeDisplayCase(process, metaType);
+    }
+
+    /**
+     * Initializes all member fields of this display case object. This method is used by the DisplayCase constructors.
+     *
+     * @param process The process that should be assigned to this display case
+     * @param metaType The meta type that should be assigned to this display case
+     */
+    private void initializeDisplayCase(Process process, String metaType) {
+        this.myProcess = process;
+        this.metaName = metaType;
+        this.itemList = new ArrayList<>();
         try {
-            configDisplay = ConfigDisplayRules.getInstance();
-            if (configDisplay != null) {
-                displayType = configDisplay.getElementTypeByName(myProcess.getProjekt().getTitel(), metaName);
-                itemList = configDisplay.getItemsByNameAndType(myProcess.getProjekt().getTitel(), metaName, displayType);
+            this.configDisplay = ConfigDisplayRules.getInstance();
+            if (this.configDisplay != null) {
+                String projectTitle = this.myProcess.getProjekt().getTitel();
+                this.displayType = this.configDisplay.getElementTypeByName(projectTitle, this.metaName);
+                this.itemList = this.configDisplay.getItemsByNameAndType(projectTitle, this.metaName, this.displayType);
             } else {
                 // no ruleset file
-                displayType = DisplayType.getByTitle("input");
-                itemList.add(new Item(metaName, "", false, "", ""));
+                this.setDefaultValues();
             }
         } catch (Exception e) {
             // incorrect ruleset file
-            displayType = DisplayType.getByTitle("input");
-            itemList.add(new Item(metaName, "", false, "", ""));
+            this.setDefaultValues();
         }
-
     }
+
+    /**
+     * Initializes the display type and the item list with default values.
+     */
+    private void setDefaultValues() {
+        this.displayType = DisplayType.getByTitle("input");
+        this.itemList.add(new Item(this.metaName, "", false, "", ""));
+    }
+
+    public void overwriteConfiguredElement(Process process, MetadataType metaType) {
+        this.configDisplay.overwriteConfiguredElement(this.myProcess.getProjekt().getTitel(), metaType.getName());
+    }
+
 }

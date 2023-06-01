@@ -51,13 +51,17 @@ import lombok.Setter;
 public class RulesetBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -8994941188718721705L;
+
+    private static final String RETURN_PAGE_ALL = "ruleset_all";
+    private static final String RETURN_PAGE_EDIT = "ruleset_edit";
+
     @Getter
     @Setter
     private Ruleset myRegelsatz = new Ruleset();
 
     public String Neu() {
         this.myRegelsatz = new Ruleset();
-        return "ruleset_edit";
+        return RETURN_PAGE_EDIT;
     }
 
     public String Speichern() {
@@ -107,7 +111,7 @@ public class RulesetBean extends BasicBean implements Serializable {
     }
 
     public String Cancel() {
-        return "ruleset_all";
+        return RETURN_PAGE_ALL;
     }
 
     private boolean hasAssignedProcesses(Ruleset r) {
@@ -117,8 +121,8 @@ public class RulesetBean extends BasicBean implements Serializable {
 
     public String FilterKein() {
         RulesetManager rm = new RulesetManager();
-        paginator = new DatabasePaginator("titel", filter, rm, "ruleset_all");
-        return "ruleset_all";
+        paginator = new DatabasePaginator("titel", filter, rm, RETURN_PAGE_ALL);
+        return RETURN_PAGE_ALL;
     }
 
     public String FilterKeinMitZurueck() {

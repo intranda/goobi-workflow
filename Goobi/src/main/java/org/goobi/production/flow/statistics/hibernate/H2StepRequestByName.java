@@ -80,7 +80,7 @@ public class H2StepRequestByName extends H2Generator implements IStepRequestByNa
         }
 
         String subQuery = "";
-        String outerWhereClauseTimeFrame = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo, "timeLimiter");
+        String outerWhereClauseTimeFrame = getWhereClauseForTimeFrame(this.myTimeFrom, this.myTimeTo, "timeLimiter");
         String outerWhereClause = "";
 
         if (outerWhereClauseTimeFrame.length() > 0) {
@@ -90,9 +90,9 @@ public class H2StepRequestByName extends H2Generator implements IStepRequestByNa
         //inner table -> alias "table_1"
         String innerWhereClause;
 
-        if (myIdsCondition != null) {
+        if (this.myIdsCondition != null) {
             // adding ids to the where clause
-            innerWhereClause = "(h.type=" + typeSelection.getValue().toString() + ")  AND (" + myIdsCondition + ") ";
+            innerWhereClause = "(h.type=" + typeSelection.getValue().toString() + ")  AND (" + this.myIdsCondition + ") ";
         } else {
             innerWhereClause = "(h.type=" + typeSelection.getValue().toString() + ") ";
         }
@@ -102,17 +102,18 @@ public class H2StepRequestByName extends H2Generator implements IStepRequestByNa
             innerWhereClause = innerWhereClause + " AND h.stringvalue='" + stepName + "' ";
         }
 
-        subQuery = "(SELECT numericvalue AS stepOrder, " + getIntervallExpression(myTimeUnit, "history.date") + " "
+        subQuery = "(SELECT numericvalue AS stepOrder, " + getIntervallExpression(this.myTimeUnit, "history.date") + " "
                 + "AS intervall, history.date AS timeLimiter, history.stringvalue AS stepName " + "FROM "
 
                 + "(SELECT DISTINCT h.numericvalue, h.stringvalue, " + timeLimiter + " as date, h.processid, h.type " + "FROM history h " + "WHERE "
                 + innerWhereClause + groupInnerSelect + ") AS history " + ") AS table_1";
 
-        mySql = "SELECT count(table_1.stepName) AS stepCount, table_1.intervall AS intervall " + addedListing(stepOrderGrouping) + "FROM " + subQuery
-                + " " + outerWhereClause + " GROUP BY table_1.intervall" + addedGrouping(stepOrderGrouping) + " ORDER BY  table_1.intervall"
-                + addedSorting(stepOrderGrouping);
+        this.mySql =
+                "SELECT count(table_1.stepName) AS stepCount, table_1.intervall AS intervall " + addedListing(stepOrderGrouping) + "FROM " + subQuery
+                        + " " + outerWhereClause + " GROUP BY table_1.intervall" + addedGrouping(stepOrderGrouping) + " ORDER BY  table_1.intervall"
+                        + addedSorting(stepOrderGrouping);
 
-        return mySql;
+        return this.mySql;
     }
 
     /**
@@ -167,53 +168,23 @@ public class H2StepRequestByName extends H2Generator implements IStepRequestByNa
     }
 
     /**
-     * 
-     * @param eventSelection
-     * @return SQL String to retrieve the highest numericvalue (stepOrder) for the event defined in eventSelection
+     * Returns the SQL String to get the highest numeric value (stepOrder) for the event defined in eventSelection
+     *
+     * @param eventSelection The event selection object
+     * @return The SQL String to get the highest numeric value (stepOrder) for the event defined in eventSelection
      */
     public String SQLMaxStepOrder(HistoryEventType eventSelection) {
-
-        String timeRestriction;
-        String innerWhereClause = null;
-        if (myIdsCondition != null) {
-            // adding ids to the where clause
-            innerWhereClause = "(history.type=" + eventSelection.getValue().toString() + ")  AND (" + myIdsCondition + ") ";
-        } else {
-            innerWhereClause = "(history.type=" + eventSelection.getValue().toString() + ") ";
-        }
-
-        timeRestriction = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo, "history.date");
-
-        if (timeRestriction.length() > 0) {
-            innerWhereClause = innerWhereClause.concat(" AND " + timeRestriction);
-        }
-
-        return "SELECT max(history.numericvalue) AS maxStep FROM history WHERE " + innerWhereClause;
+        return this.createMinOrMaxStepOrder(eventSelection, true);
     }
 
     /**
-     * 
-     * @param eventSelection
-     * @return SQL String to retrieve the lowest numericvalue (stepOrder) for the event defined in eventSelection
+     * Returns the SQL String to get the lowest numeric value (stepOrder) for the event defined in eventSelection
+     *
+     * @param eventSelection The event selection object
+     * @return The SQL String to get the lowest numeric value (stepOrder) for the event defined in eventSelection
      */
     public String SQLMinStepOrder(HistoryEventType eventSelection) {
-
-        String timeRestriction;
-        String innerWhereClause = null;
-        if (myIdsCondition != null) {
-            // adding ids to the where clause
-            innerWhereClause = "(history.type=" + eventSelection.getValue().toString() + ")  AND (" + myIdsCondition + ") ";
-        } else {
-            innerWhereClause = "(history.type=" + eventSelection.getValue().toString() + ") ";
-        }
-
-        timeRestriction = getWhereClauseForTimeFrame(myTimeFrom, myTimeTo, "history.date");
-
-        if (timeRestriction.length() > 0) {
-            innerWhereClause = innerWhereClause.concat(" AND " + timeRestriction);
-        }
-
-        return "SELECT min(history.numericvalue) AS minStep FROM history WHERE " + innerWhereClause;
+        return this.createMinOrMaxStepOrder(eventSelection, false);
     }
 
 }

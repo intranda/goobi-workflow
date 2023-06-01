@@ -49,6 +49,9 @@ import lombok.Setter;
 public class AuthenticationBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -5644561256582235244L;
+
+    private static final String RETURN_PAGE = "ldap_all";
+
     private Ldap myLdapGruppe = new Ldap();
     private String displayMode = "";
 
@@ -80,13 +83,13 @@ public class AuthenticationBean extends BasicBean implements Serializable {
     }
 
     public String Cancel() {
-        return "ldap_all";
+        return RETURN_PAGE;
     }
 
     public String FilterKein() {
         LdapManager rm = new LdapManager();
-        paginator = new DatabasePaginator(sortField, filter, rm, "ldap_all");
-        return "ldap_all";
+        paginator = new DatabasePaginator(sortField, filter, rm, RETURN_PAGE);
+        return RETURN_PAGE;
     }
 
     public String FilterKeinMitZurueck() {

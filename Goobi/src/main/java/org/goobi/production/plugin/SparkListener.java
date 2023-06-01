@@ -103,9 +103,7 @@ public class SparkListener implements SparkApplication {
                 }
             }
 
-            http.get("/healthcheck", (q, r) -> {
-                return "it works!\n";
-            });
+            http.get("/healthcheck", (q, r) -> "it works!\n");
             http.put("/reload", (req, resp) -> {
                 this.declareRoutes(http);
                 return "reloaded\n";

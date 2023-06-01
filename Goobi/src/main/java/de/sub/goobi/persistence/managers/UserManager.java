@@ -129,7 +129,7 @@ public class UserManager implements IManager, Serializable {
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = UserMysqlHelper.getUserCount(order, filter, institution);
+            num = UserMysqlHelper.getUserCount(filter, institution);
         } catch (SQLException e) {
             log.error("error while getting User hit size", e);
             throw new DAOException(e);
@@ -254,7 +254,6 @@ public class UserManager implements IManager, Serializable {
         r.setAdditionalData(MySQLHelper.convertStringToMap(rs.getString("additional_data")));
         r.setJournal(JournalManager.getLogEntriesForUser(r.getId()));
         r.setAdditionalSearchFields(rs.getString("additional_search_fields"));
-
         List<AuthenticationToken> apiToken = getAuthenticationTokenForUser(r);
         r.setApiToken(apiToken);
         return r;
@@ -292,24 +291,13 @@ public class UserManager implements IManager, Serializable {
 
     public static AuthenticationToken convertToken(ResultSet rs) throws SQLException {
         if (rs != null) {
-            String tokenName = rs.getString("token_name");
-            int userId = rs.getInt("user_id");
-            AuthenticationToken token = new AuthenticationToken(tokenName, userId);
+            AuthenticationToken token = new AuthenticationToken();
+            token.setTokenHash(rs.getString("token_name"));
+            token.setUserId(rs.getInt("user_id"));
             token.setTokenId(rs.getInt("id"));
             token.setDescription(rs.getString("token_description"));
-
             List<AuthenticationMethodDescription> configuredMethods = getConfiguredMethods(token.getTokenId());
-            for (AuthenticationMethodDescription desc : token.getMethods()) {
-                for (AuthenticationMethodDescription configured : configuredMethods) {
-                    if (desc.getDescription().equals(configured.getDescription()) &&
-                            desc.getMethodType().equals(configured.getMethodType()) &&
-                            desc.getUrl().equals(configured.getUrl())) {
-                        desc.setApiTokenId(configured.getApiTokenId());
-                        desc.setMethodID(configured.getMethodID());
-                        desc.setSelected(configured.isSelected());
-                    }
-                }
-            }
+            token.setMethods(configuredMethods);
             return token;
         }
         return null;
@@ -331,40 +319,40 @@ public class UserManager implements IManager, Serializable {
 
     public static final ResultSetHandler<List<AuthenticationToken>> resultSetToAuthenticationTokenListHandler =
             new ResultSetHandler<List<AuthenticationToken>>() {
-                @Override
-                public List<AuthenticationToken> handle(ResultSet rs) throws SQLException {
-                    List<AuthenticationToken> answer = new ArrayList<>();
-                    try {
-                        while (rs.next()) {
-                            answer.add(convertToken(rs));
-                        }
-                    } finally {
-                        rs.close();
-                    }
-                    return answer;
+        @Override
+        public List<AuthenticationToken> handle(ResultSet rs) throws SQLException {
+            List<AuthenticationToken> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    answer.add(convertToken(rs));
                 }
-            };
+            } finally {
+                rs.close();
+            }
+            return answer;
+        }
+    };
 
     public static final ResultSetHandler<List<AuthenticationMethodDescription>> resultSetToAuthenticationTokenMethodListHandler =
             new ResultSetHandler<List<AuthenticationMethodDescription>>() {
-                @Override
-                public List<AuthenticationMethodDescription> handle(ResultSet rs) throws SQLException {
-                    List<AuthenticationMethodDescription> answer = new ArrayList<>();
-                    try {
-                        while (rs.next()) {
-                            AuthenticationMethodDescription o = new AuthenticationMethodDescription(rs.getString("method_type"),
-                                    rs.getString("method_description"), rs.getString("method_url"));
-                            o.setMethodID(rs.getInt("id"));
-                            o.setApiTokenId(rs.getInt("token_id"));
-                            o.setSelected(rs.getBoolean("selected"));
-                            answer.add(o);
-                        }
-                    } finally {
-                        rs.close();
-                    }
-                    return answer;
+        @Override
+        public List<AuthenticationMethodDescription> handle(ResultSet rs) throws SQLException {
+            List<AuthenticationMethodDescription> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    AuthenticationMethodDescription o = new AuthenticationMethodDescription(rs.getString("method_type"),
+                            rs.getString("method_description"), rs.getString("method_url"));
+                    o.setMethodID(rs.getInt("id"));
+                    o.setApiTokenId(rs.getInt("token_id"));
+                    o.setSelected(rs.getBoolean("selected"));
+                    answer.add(o);
                 }
-            };
+            } finally {
+                rs.close();
+            }
+            return answer;
+        }
+    };
 
     public static void addUsergroupAssignment(User user, Integer gruppenID) {
         try {
@@ -511,7 +499,14 @@ public class UserManager implements IManager, Serializable {
             log.error(e);
         }
         return answer;
+    }
 
+    public static void deleteApiToken(AuthenticationToken token) {
+        try {
+            UserMysqlHelper.deleteAuthenticationToken(token);
+        } catch (SQLException e) {
+            log.error(e);
+        }
     }
 
 }

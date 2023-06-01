@@ -233,7 +233,7 @@ class MetadataMysqlHelper implements Serializable {
         }
     }
 
-    public static ResultSetHandler<List<StringPair>> resultSetToMetadataHandler = new ResultSetHandler<List<StringPair>>() {
+    public static final ResultSetHandler<List<StringPair>> resultSetToMetadataHandler = new ResultSetHandler<List<StringPair>>() {
         @Override
         public List<StringPair> handle(ResultSet rs) throws SQLException {
             List<StringPair> answer = new ArrayList<>();

@@ -43,6 +43,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String SCRIPT = "script";
+
     @Override
     public String getAction() {
         return "runScript";
@@ -52,8 +56,8 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to execute on specific or all scripts that are assiged to an existing workflow step.");
-        addParameterToSampleCall(sb, "steptitle", "Update XMP Headers", "Title of the workflow step which has scripts that shall be executed");
-        addParameterToSampleCall(sb, "script", "Write headers",
+        addParameterToSampleCall(sb, STEPTITLE, "Update XMP Headers", "Title of the workflow step which has scripts that shall be executed");
+        addParameterToSampleCall(sb, SCRIPT, "Write headers",
                 "Name of a specific scripts to be executed. If this parameter is missing then all scripts of the defined task are executed.");
         return sb.toString();
     }
@@ -62,8 +66,10 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
@@ -80,13 +86,14 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
         HelperSchritte hs = new HelperSchritte();
-        String steptitle = parameters.get("steptitle");
-        String scriptname = parameters.get("script");
+        String steptitle = parameters.get(STEPTITLE);
+        String scriptname = parameters.get(SCRIPT);
 
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
+        String info = "'" + scriptname + "' for step '" + steptitle + "'";
         // TODO change this
         for (Step step : p.getSchritteList()) {
             if (step.getTitel().equalsIgnoreCase(steptitle)) {
@@ -95,34 +102,32 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
                     if (step.getAllScripts().containsKey(scriptname)) {
                         String path = step.getAllScripts().get(scriptname);
                         ShellScriptReturnValue returncode = hs.executeScriptForStepObject(so, path, false);
-                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                                "Script '" + scriptname + "' for step '" + steptitle + "' executed using GoobiScript.", username);
-                        log.info("Script '" + scriptname + "' for step '" + steptitle
-                                + "' executed using GoobiScript for process with ID " + p.getId());
+                        String message = "Script " + info + " executed successfully";
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+                        log.info(message + " using GoobiScript for process with ID " + p.getId());
                         if (returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99) {
-                            gsr.setResultMessage("Script '" + scriptname + "' for step '" + steptitle + "' executed successfully.");
+                            gsr.setResultMessage(message + ".");
                             gsr.setResultType(GoobiScriptResultType.OK);
                         } else {
-                            gsr.setResultMessage("A problem occured while executing script '" + scriptname + "' for step '" + steptitle
-                                    + "': " + returncode.getReturnCode());
+                            gsr.setResultMessage("A problem occured while executing script " + info + ": " + returncode.getReturnCode());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             gsr.setErrorText(returncode.getErrorText());
                         }
                     } else {
-                        gsr.setResultMessage("Cant find script '" + scriptname + "' for step '" + steptitle + "'.");
+                        gsr.setResultMessage("Cant find script " + info + ".");
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                     }
                 } else {
                     ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(so, false);
-                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                            "All scripts for step '" + steptitle + "' executed using GoobiScript.", username);
-                    log.info("All scripts for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
+                    String message = "All scripts for step '" + steptitle + "' executed";
+                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+                    log.info(message + " using GoobiScript for process with ID " + p.getId());
                     if (returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99) {
-                        gsr.setResultMessage("All scripts for step '" + steptitle + "' executed successfully.");
+                        gsr.setResultMessage(message + " successfully.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } else {
-                        gsr.setResultMessage("A problem occured while executing all scripts for step '" + steptitle + "': "
-                                + returncode.getReturnCode());
+                        gsr.setResultMessage(
+                                "A problem occured while executing all scripts for step '" + steptitle + "': " + returncode.getReturnCode());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                         gsr.setErrorText(returncode.getErrorText());
                     }
@@ -131,7 +136,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
         }
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
             gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+            gsr.setResultMessage("Step not found: " + steptitle);
         }
         gsr.updateTimestamp();
     }

@@ -114,6 +114,22 @@ import ugh.exceptions.WriteException;
 @Log4j2
 public class Process extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Process>, IJournal {
     private static final long serialVersionUID = -6503348094655786275L;
+
+    private static final String META_FILE = "meta.xml";
+    private static final String META_ANCHOR_FILE = "meta_anchor.xml";
+    private static final String TEMP_FILE = "temp.xml";
+    private static final String TEMP_ANCHOR_FILE = "temp_anchor.xml";
+    private static final String TEMPLATE_FILE = "template.xml";
+    private static final String FULLTEXT_FILE = "fulltext.xml";
+    private static final String LOG_FILE_SUFFIX = "_log.xml";
+    private static final String DOCKET_FILE = "docket.xsl";
+    private static final String DOCKET_METADATA_FILE = "docket_metadata.xsl";
+
+    private static final String MAIN_FOLDER = "main";
+    private static final String MEDIA_FOLDER = "media";
+    private static final String MASTER_FOLDER = "master";
+    private static final String INTERN_FOLDER = "intern";
+
     @Getter
     @Setter
     private Integer id;
@@ -181,7 +197,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     private Integer projectId;
     @Getter
     @Setter
-    private Integer MetadatenKonfigurationID;
+    private Integer metadatenKonfigurationID;
     @Getter
     @Setter
     private Integer docketId;
@@ -205,7 +221,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     @Getter
     @Setter
-    private String uploadFolder = "intern";
+    private String uploadFolder = INTERN_FOLDER;
 
     @Getter
     private boolean showFileDeletionButton;
@@ -339,7 +355,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                     .stream()
                     .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
                     .map(Entry::getValue)
-                    .map(string -> Paths.get(string))
+                    .map(Paths::get)
                     .filter(StorageProvider.getInstance()::isDirectory)
                     .findFirst()
                     .orElse(null);
@@ -371,10 +387,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public Boolean getDisplayMETSButton() {
-        if (sortHelperImages == null || sortHelperImages == 0) {
-            if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
-                return getTifDirectoryExists();
-            }
+        if ((sortHelperImages == null || sortHelperImages == 0) && ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
+            return getTifDirectoryExists();
         }
         return true;
     }
@@ -387,12 +401,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public Boolean getDisplayDMSButton() {
-        if (sortHelperDocstructs == null || sortHelperDocstructs == 0) {
-            if (ConfigurationHelper.getInstance().isExportValidateImages()) {
-                if (sortHelperImages == null || sortHelperImages == 0) {
-                    return getTifDirectoryExists();
-                }
-            }
+        boolean zeroDocStructs = sortHelperDocstructs == null || sortHelperDocstructs == 0;
+        if (zeroDocStructs && ConfigurationHelper.getInstance().isExportValidateImages() && (sortHelperImages == null || sortHelperImages == 0)) {
+            return getTifDirectoryExists();
         }
         return true;
     }
@@ -425,7 +436,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                         .stream()
                         .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
                         .map(Entry::getValue)
-                        .map(string -> Paths.get(string))
+                        .map(Paths::get)
                         .filter(StorageProvider.getInstance()::isDirectory)
                         .findFirst()
                         .orElse(null);
@@ -502,7 +513,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             pst.execute();
             if (pst.getStatusProgress() == -1) {
                 if (!StorageProvider.getInstance().isFileExists(Paths.get(pfad, "images"))
-                        && !StorageProvider.getInstance().isFileExists(Paths.get(pfad, "meta.xml"))) {
+                        && !StorageProvider.getInstance().isFileExists(Paths.get(pfad, META_FILE))) {
                     throw new SwapException(pst.getStatusMessage());
                 } else {
                     setSwappedOutGui(false);
@@ -518,59 +529,64 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     public String getOcrTxtDirectory() throws SwapException, IOException {
         if (ocrTxtDirectory == null) {
-            ocrTxtDirectory =
-                    getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-                            + FileSystems.getDefault().getSeparator();
+            ConfigurationHelper config = ConfigurationHelper.getInstance();
+            String separator = FileSystems.getDefault().getSeparator();
+            ocrTxtDirectory = getOcrDirectory() + VariableReplacer.simpleReplace(config.getProcessOcrTxtDirectoryName(), this) + separator;
         }
         return ocrTxtDirectory;
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @return
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getOcrWcDirectory() throws SwapException, IOException {
         return getOcrDirectory() + this.titel + "_wc" + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrPdfDirectory() throws SwapException, IOException {
         if (ocrPdfDirectory == null) {
-            ocrPdfDirectory =
-                    getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-                            + FileSystems.getDefault().getSeparator();
+            ConfigurationHelper config = ConfigurationHelper.getInstance();
+            String separator = FileSystems.getDefault().getSeparator();
+            ocrPdfDirectory = getOcrDirectory() + VariableReplacer.simpleReplace(config.getProcessOcrPdfDirectoryName(), this) + separator;
         }
         return ocrPdfDirectory;
     }
 
     public String getOcrAltoDirectory() throws SwapException, IOException {
         if (ocrAltoDirectory == null) {
-            ocrAltoDirectory =
-                    getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-                            + FileSystems.getDefault().getSeparator();
+            ConfigurationHelper config = ConfigurationHelper.getInstance();
+            String separator = FileSystems.getDefault().getSeparator();
+            ocrAltoDirectory = getOcrDirectory() + VariableReplacer.simpleReplace(config.getProcessOcrAltoDirectoryName(), this) + separator;
         }
         return ocrAltoDirectory;
     }
 
     public String getOcrXmlDirectory() throws SwapException, IOException {
         if (ocrXmlDirectory == null) {
-            ocrXmlDirectory =
-                    getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-                            + FileSystems.getDefault().getSeparator();
+            ConfigurationHelper config = ConfigurationHelper.getInstance();
+            String separator = FileSystems.getDefault().getSeparator();
+            ocrXmlDirectory = getOcrDirectory() + VariableReplacer.simpleReplace(config.getProcessOcrXmlDirectoryName(), this) + separator;
         }
         return ocrXmlDirectory;
     }
 
     public String getImportDirectory() throws SwapException, IOException {
         if (importDirectory == null) {
-            importDirectory = getProcessDataDirectory()
-                    + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-                    + FileSystems.getDefault().getSeparator();
+            ConfigurationHelper config = ConfigurationHelper.getInstance();
+            String separator = FileSystems.getDefault().getSeparator();
+            importDirectory = getProcessDataDirectory() + VariableReplacer.simpleReplace(config.getProcessImportDirectoryName(), this) + separator;
         }
         return importDirectory;
     }
 
     public String getExportDirectory() throws SwapException, IOException {
         if (exportDirectory == null) {
-            exportDirectory = getProcessDataDirectory()
-                    + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-                    + FileSystems.getDefault().getSeparator();
+            ConfigurationHelper config = ConfigurationHelper.getInstance();
+            String separator = FileSystems.getDefault().getSeparator();
+            exportDirectory = getProcessDataDirectory() + VariableReplacer.simpleReplace(config.getProcessExportDirectoryName(), this) + separator;
         }
         return exportDirectory;
     }
@@ -683,7 +699,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                     .stream()
                     .sorted((e1, e2) -> Integer.compare(e2.getKey(), e1.getKey()))
                     .findFirst()
-                    .map(entry -> entry.getValue())
+                    .map(Entry::getValue)
                     .orElse(null);
         }
     }
@@ -878,121 +894,75 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public double getFortschritt1() {
-        double offen = 0;
-        double inBearbeitung = 0;
-        double error = 0;
-        double abgeschlossen = 0;
-        for (Step step : getSchritte()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-                abgeschlossen++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
-                offen++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-                error++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
-                // nothing
-            } else {
-                inBearbeitung++;
-            }
-        }
-        if ((offen + inBearbeitung + error + abgeschlossen) == 0) {
-            offen = 1;
-        }
-        return (offen * 100) / (offen + inBearbeitung + error + abgeschlossen);
+        return this.calculateProgressInPercent(StepStatus.LOCKED);
     }
 
     public double getFortschritt2() {
-        double offen = 0;
-        double inBearbeitung = 0;
-        double error = 0;
-        double abgeschlossen = 0;
-        for (Step step : getSchritte()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-                abgeschlossen++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
-                offen++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-                error++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
-                // nothing
-            } else {
-                inBearbeitung++;
-            }
-        }
-        if ((offen + inBearbeitung + error + abgeschlossen) == 0) {
-            offen = 1;
-        }
-        return (inBearbeitung * 100) / (offen + inBearbeitung + error + abgeschlossen);
+        return this.calculateProgressInPercent(StepStatus.INWORK);
     }
 
     public double getFortschrittError() {
-        double offen = 0;
-        double inBearbeitung = 0;
-        double error = 0;
-        double abgeschlossen = 0;
-        for (Step step : getSchritte()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-                abgeschlossen++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
-                offen++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-                error++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
-                // nothing
-            } else {
-                inBearbeitung++;
-            }
-        }
-        if ((offen + inBearbeitung + error + abgeschlossen) == 0) {
-            offen = 1;
-        }
-        return (error * 100) / (offen + inBearbeitung + error + abgeschlossen);
+        return this.calculateProgressInPercent(StepStatus.ERROR);
     }
 
     public double getFortschritt3() {
-        double offen = 0;
-        double inBearbeitung = 0;
-        double error = 0;
-        double abgeschlossen = 0;
+        return this.calculateProgressInPercent(StepStatus.DONE);
+    }
 
+    private double calculateProgressInPercent(StepStatus returnStatus) {
+        double open = 0;
+        double inWork = 0;
+        double error = 0;
+        double done = 0;
         for (Step step : getSchritte()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-                abgeschlossen++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
-                offen++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-                error++;
-            } else if (step.getBearbeitungsstatusEnum() == StepStatus.DEACTIVATED) {
-                // nothing
-            } else {
-                inBearbeitung++;
+            switch (step.getBearbeitungsstatusEnum()) {
+                case DONE:
+                    done++;
+                    break;
+                case LOCKED:
+                    open++;
+                    break;
+                case ERROR:
+                    error++;
+                    break;
+                case DEACTIVATED:
+                    // nothing
+                    break;
+                default:
+                    inWork++;
             }
         }
-        if ((offen + inBearbeitung + error + abgeschlossen) == 0) {
-            offen = 1;
+        double sum = open + inWork + error + done;
+        // This is to protect division by zero and to return OPEN - 100% in case of 0 processes
+        if (sum == 0) {
+            open = 1;
+            sum = 1;
         }
-        double offen2 = 0;
-        double inBearbeitung2 = 0;
-        double error2 = 0;
-        double abgeschlossen2 = 0;
-
-        offen2 = (offen * 100) / (offen + inBearbeitung + error + abgeschlossen);
-        error2 = (error * 100) / (offen + inBearbeitung + error + abgeschlossen);
-        inBearbeitung2 = (inBearbeitung * 100) / (offen + inBearbeitung + error + abgeschlossen);
-        abgeschlossen2 = 100 - offen2 - inBearbeitung2 - error2;
-        return abgeschlossen2;
+        switch (returnStatus) {
+            case DONE:
+                return done * 100 / sum;
+            case LOCKED:
+                return open * 100 / sum;
+            case ERROR:
+                return error * 100 / sum;
+            case DEACTIVATED:
+                // nothing
+                return 0;
+            default:
+                return inWork * 100 / sum;
+        }
     }
 
     public String getMetadataFilePath() throws IOException, SwapException {
-        return getProcessDataDirectory() + "meta.xml";
+        return getProcessDataDirectory() + META_FILE;
     }
 
     public String getTemplateFilePath() throws IOException, SwapException {
-        return getProcessDataDirectory() + "template.xml";
+        return getProcessDataDirectory() + TEMPLATE_FILE;
     }
 
     public String getFulltextFilePath() throws IOException, InterruptedException, SwapException, DAOException {
-        return getProcessDataDirectory() + "fulltext.xml";
+        return getProcessDataDirectory() + FULLTEXT_FILE;
     }
 
     public Fileformat readMetadataFile() throws ReadException, IOException, SwapException {
@@ -1037,8 +1007,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
 
         // Backup meta.xml
-        String metaFileName = "meta.xml";
-        Path metaFile = Paths.get(path, metaFileName);
+        Path metaFile = Paths.get(path, META_FILE);
 
         // cancel if less than 10 mb free storage is available
         if (Files.getFileStore(Paths.get(path)).getUsableSpace() < 10485760l) {
@@ -1047,13 +1016,12 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             return false;
         }
 
-        String backupMetaFileName = Process.createBackup(path, metaFileName, maximumNumberOfBackups);
+        String backupMetaFileName = Process.createBackup(path, META_FILE, maximumNumberOfBackups);
         Path backupMetaFile = Paths.get(path + backupMetaFileName);
 
         // Backup meta_anchor.xml
-        String metaAnchorFileName = "meta_anchor.xml";
-        Path metaAnchorFile = Paths.get(path + metaAnchorFileName);
-        String backupMetaAnchorFileName = Process.createBackup(path, metaAnchorFileName, maximumNumberOfBackups);
+        Path metaAnchorFile = Paths.get(path + META_ANCHOR_FILE);
+        String backupMetaAnchorFileName = Process.createBackup(path, META_ANCHOR_FILE, maximumNumberOfBackups);
         Path backupMetaAnchorFile = Paths.get(path + backupMetaAnchorFileName);
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
@@ -1061,7 +1029,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         synchronized (xmlWriteLock) {
             ff.setDigitalDocument(gdzfile.getDigitalDocument());
             try {
-                ff.write(path + metaFileName);
+                ff.write(path + META_FILE);
             } catch (UGHException ughException) {
                 // Error while writing meta.xml or meta_anchor.xml. Restore backups and rethrow error
 
@@ -1103,11 +1071,11 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, IOException, PreferencesException, WriteException {
 
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
-        Process.createBackup(this.getProcessDataDirectory(), "temp.xml", maximumNumberOfBackups);
+        Process.createBackup(this.getProcessDataDirectory(), TEMP_FILE, maximumNumberOfBackups);
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
-        ff.write(getProcessDataDirectory() + "temp.xml");
+        ff.write(getProcessDataDirectory() + TEMP_FILE);
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile) throws IOException, SwapException, WriteException, PreferencesException {
@@ -1154,25 +1122,25 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public void overwriteMetadata() {
         try {
             String path = this.getProcessDataDirectory();
-            Path temporaryFile = Paths.get(path, "temp.xml");
-            Path temporaryAnchorFile = Paths.get(path, "temp_anchor.xml");
+            Path temporaryFile = Paths.get(path, TEMP_FILE);
+            Path temporaryAnchorFile = Paths.get(path, TEMP_ANCHOR_FILE);
 
             int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
 
             if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
                 // backup meta.xml
-                Process.createBackup(path, "meta.xml", maximumNumberOfBackups);
+                Process.createBackup(path, META_FILE, maximumNumberOfBackups);
 
                 // copy temp.xml to meta.xml
-                Path meta = Paths.get(path, "meta.xml");
+                Path meta = Paths.get(path, META_FILE);
                 StorageProvider.getInstance().copyFile(temporaryFile, meta);
             }
             if (StorageProvider.getInstance().isFileExists(temporaryAnchorFile)) {
                 // backup meta_anchor.xml
-                Process.createBackup(path, "meta_anchor.xml", maximumNumberOfBackups);
+                Process.createBackup(path, META_ANCHOR_FILE, maximumNumberOfBackups);
 
                 // copy temp_anchor.xml to meta_anchor.xml
-                Path metaAnchor = Paths.get(path, "meta_anchor.xml");
+                Path metaAnchor = Paths.get(path, META_ANCHOR_FILE);
                 StorageProvider.getInstance().copyFile(temporaryAnchorFile, metaAnchor);
             }
 
@@ -1183,7 +1151,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     public boolean checkForNewerTemporaryMetadataFiles() {
         try {
-            Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
+            Path temporaryFile = Paths.get(getProcessDataDirectory(), TEMP_FILE);
             if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
                 Path metadataFile = Paths.get(getMetadataFilePath());
                 long tempTime = StorageProvider.getInstance().getLastModifiedDate(temporaryFile);
@@ -1240,7 +1208,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * here differet Getters and Setters for the same value, because Hibernate does not like bit-Fields with null Values (thats why Boolean) and
+     * here different Getters and Setters for the same value, because Hibernate does not like bit-Fields with null Values (thats why Boolean) and
      * MyFaces seams not to like Boolean (thats why boolean for the GUI) ================================================================
      */
     public Boolean isSwappedOutHibernate() {
@@ -1265,7 +1233,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public void downloadXML() {
         XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         try {
-            String ziel = Helper.getCurrentUser().getHomeDir() + getTitel() + "_log.xml";
+            String ziel = Helper.getCurrentUser().getHomeDir() + getTitel() + LOG_FILE_SUFFIX;
             xmlExport.startExport(this, ziel);
         } catch (IOException e) {
             Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
@@ -1282,16 +1250,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            String fileName = getTitel() + "_log.xml";
-            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(fileName);
-            response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
             // write to servlet output stream
             try {
-                ServletOutputStream out = response.getOutputStream();
+                ServletOutputStream out = Process.createOutputStream(getTitel() + LOG_FILE_SUFFIX);
                 xmlExport.startExport(this, out);
                 out.flush();
             } catch (IOException e) {
@@ -1300,7 +1262,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
             facesContext.responseComplete();
         }
-        return;
     }
 
     public String downloadDocket() {
@@ -1309,7 +1270,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             log.debug("generate docket for process " + this.id);
         }
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
-        Path xsltfile = Paths.get(rootpath, "docket.xsl");
+        Path xsltfile = Paths.get(rootpath, DOCKET_FILE);
+
         if (docket != null) {
             xsltfile = Paths.get(rootpath, docket.getFile());
             if (!StorageProvider.getInstance().isFileExists(xsltfile)) {
@@ -1319,16 +1281,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         }
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            String fileName = this.titel + ".pdf";
-            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(fileName);
-            response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
             // write run note to servlet output stream
             try {
-                ServletOutputStream out = response.getOutputStream();
+                ServletOutputStream out = Process.createOutputStream(this.titel + ".pdf");
                 XsltToPdf ern = new XsltToPdf();
                 ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorDocket());
                 out.flush();
@@ -1347,29 +1303,41 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public void downloadSimplifiedMetadataAsPDF() {
         log.debug("generate simplified metadata xml for process " + this.id);
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
-        Path xsltfile = Paths.get(rootpath, "docket_metadata.xsl");
+        Path xsltfile = Paths.get(rootpath, DOCKET_METADATA_FILE);
 
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            String fileName = this.titel + ".pdf";
-            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(fileName);
-            response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
             // write simplified metadata to servlet output stream
             try {
-                ServletOutputStream out = response.getOutputStream();
+                ServletOutputStream out = Process.createOutputStream(this.titel + ".pdf");
                 XsltToPdf ern = new XsltToPdf();
                 ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorMetadata());
                 out.flush();
             } catch (IOException e) {
-                log.error("IOException while exporting simplefied metadata", e);
+                log.error("IOException while exporting simplified metadata", e);
             }
 
             facesContext.responseComplete();
         }
+    }
+
+    /**
+     * Creates and returns an output stream for the current faces context. The file name parameter in the HTTP header is set to the given file name.
+     * The file name parameter is then recommended in the save-dialog on the client's side.
+     * 
+     * @param fileName The file name that should be used as default file name on the client side
+     * @return The output stream of the current faces context
+     * @throws IOException If the output stream could not be created
+     */
+    private static ServletOutputStream createOutputStream(String fileName) throws IOException {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+        ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+        String contentType = servletContext.getMimeType(fileName);
+        response.setContentType(contentType);
+        response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+        return response.getOutputStream();
     }
 
     public Step getFirstOpenStep() {
@@ -1430,6 +1398,23 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public int compareTo(Process arg0) {
 
         return id.compareTo(arg0.getId());
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object.getClass().equals(this.getClass()))) {
+            return false;
+        } else if (object == this) {
+            return true;
+        }
+        Process process = (Process) (object);
+        return process.id.equals(this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+        // TODO: Implement this method fitting to all member variables
     }
 
     @Override
@@ -1708,7 +1693,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                 while (configuredImageFolder.hasNext()) {
                     String keyName = configuredImageFolder.next();
                     String folderName = keyName.replace("process.folder.images.", "");
-                    if (!"master".equals(folderName) && !"main".equals(folderName)) {
+                    if (!MASTER_FOLDER.equals(folderName) && !MAIN_FOLDER.equals(folderName)) {
                         String folder = getConfiguredImageFolder(folderName);
                         if (StringUtils.isNotBlank(folder) && StorageProvider.getInstance().isFileExists(Paths.get(folder))) {
                             folderList.add(new SelectItem(folder, Helper.getTranslation(folderName)));
@@ -1782,7 +1767,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
         Path folder = null;
         try {
-            if ("intern".equals(uploadFolder)) {
+            if (INTERN_FOLDER.equals(uploadFolder)) {
                 folder = Paths.get(getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
             } else {
                 folder = Paths.get(getExportDirectory());
@@ -1814,10 +1799,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         /* Prozesseigenschaften */
         if (getEigenschaftenList() != null && !getEigenschaftenList().isEmpty()) {
             for (Processproperty pe : this.getEigenschaftenList()) {
-                if (pe != null && pe.getWert() != null) {
-                    if (pe.getWert().contains(this.getTitel())) {
-                        pe.setWert(pe.getWert().replaceAll(this.getTitel(), newTitle));
-                    }
+                if (pe != null && pe.getWert() != null && pe.getWert().contains(this.getTitel())) {
+                    pe.setWert(pe.getWert().replaceAll(this.getTitel(), newTitle));
                 }
             }
         }
@@ -1842,29 +1825,25 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             }
         }
         try {
-            {
-                // renaming image directories
-                String imageDirectory = getImagesDirectory();
-                Path dir = Paths.get(imageDirectory);
-                if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
-                    List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
-                    for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
-                            StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
-                        }
+            // renaming image directories
+            String imageDirectoryName = getImagesDirectory();
+            Path imageDirectory = Paths.get(imageDirectoryName);
+            if (StorageProvider.getInstance().isFileExists(imageDirectory) && StorageProvider.getInstance().isDirectory(imageDirectory)) {
+                List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectoryName);
+                for (Path imagedir : subdirs) {
+                    if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
+                        StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                     }
                 }
             }
-            {
-                // renaming ocr directories
-                String ocrDirectory = getOcrDirectory();
-                Path dir = Paths.get(ocrDirectory);
-                if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
-                    List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
-                    for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
-                            StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
-                        }
+            // renaming ocr directories
+            String ocrDirectoryName = getOcrDirectory();
+            Path ocrDirectory = Paths.get(ocrDirectoryName);
+            if (StorageProvider.getInstance().isFileExists(ocrDirectory) && StorageProvider.getInstance().isDirectory(ocrDirectory)) {
+                List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectoryName);
+                for (Path imagedir : subdirs) {
+                    if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
+                        StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                     }
                 }
             }
@@ -1936,9 +1915,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      */
 
     public String getConfiguredImageFolder(String folderName) throws IOException, SwapException, DAOException {
-        if ("master".equals(folderName)) {
+        if (MASTER_FOLDER.equals(folderName)) {
             return getImagesOrigDirectory(false);
-        } else if ("main".equals(folderName) || "media".equals(folderName)) {
+        } else if (MAIN_FOLDER.equals(folderName) || MEDIA_FOLDER.equals(folderName)) {
             return getImagesTifDirectory(false);
         }
 
@@ -1956,16 +1935,11 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     public String getLastStatusChangeDate() {
         Date date = null;
-        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
-            if (schritte != null) {
-                for (Step step : schritte) {
-                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
-                        if (date == null) {
-                            date = step.getBearbeitungsende();
-                        } else if (date.before(step.getBearbeitungsende())) {
-                            date = step.getBearbeitungsende();
-                        }
-                    }
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData() && schritte != null) {
+            for (Step step : schritte) {
+                Date end = step.getBearbeitungsende();
+                if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && end != null && (date == null || date.before(end))) {
+                    date = end;
                 }
             }
         }
@@ -1982,12 +1956,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             Step task = null;
             if (schritte != null) {
                 for (Step step : schritte) {
-                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
-                        if (task == null) {
-                            task = step;
-                        } else if (task.getBearbeitungsende().before(step.getBearbeitungsende())) {
-                            task = step;
-                        }
+                    boolean isDone = step.getBearbeitungsstatusEnum() == StepStatus.DONE;
+                    Date stepEnd = step.getBearbeitungsende();
+                    if (isDone && stepEnd != null && (task == null || task.getBearbeitungsende().before(stepEnd))) {
+                        task = step;
                     }
                 }
             }
@@ -2013,12 +1985,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             Step task = null;
             if (schritte != null) {
                 for (Step step : schritte) {
-                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
-                        if (task == null) {
-                            task = step;
-                        } else if (task.getBearbeitungsende().before(step.getBearbeitungsende())) {
-                            task = step;
-                        }
+                    boolean isDone = step.getBearbeitungsstatusEnum() == StepStatus.DONE;
+                    Date stepEnd = step.getBearbeitungsende();
+                    if (isDone && stepEnd != null && (task == null || task.getBearbeitungsende().before(stepEnd))) {
+                        task = step;
                     }
                 }
             }
@@ -2104,19 +2074,14 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * @return true if the process is set up to perform a pre-export validation, false if not
      */
     public boolean isConfiguredWithExportValidator() {
-        if (getExportValidator() != null && getExportValidator().getLabel() != null && getExportValidator().getCommand() != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return getExportValidator() != null && getExportValidator().getLabel() != null && getExportValidator().getCommand() != null;
     }
 
     /**
      * 
      * @deprecated use getJournal() instead
      */
-
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public List<JournalEntry> getProcessLog() {
         return journal;
     }
@@ -2125,8 +2090,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * 
      * @deprecated use setJournal() instead
      */
-
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public void setProcessLog(List<JournalEntry> journal) {
         this.journal = journal;
     }

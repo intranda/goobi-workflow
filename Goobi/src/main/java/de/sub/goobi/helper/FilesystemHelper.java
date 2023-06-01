@@ -238,11 +238,4 @@ public class FilesystemHelper {
         return "- no ocr content -";
     }
 
-    public static void main(String[] args) throws IOException, XMLStreamException {
-        ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
-        AltoDocument alto = converter.convertToASM(new File("/opt/digiverso/goobi/metadata/365/ocr/mybook_xml/00000121.xml"), new Date());
-        String result = alto.getContent().replace(LINEBREAK, XML_LINEBREAK);
-        System.out.println(result);
-    }
-
 }

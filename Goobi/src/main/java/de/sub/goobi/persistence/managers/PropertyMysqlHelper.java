@@ -40,6 +40,24 @@ import lombok.extern.log4j.Log4j2;
 class PropertyMysqlHelper implements Serializable {
     private static final long serialVersionUID = 5175567943231852013L;
 
+    /*
+     * The NOSONAR tags are used here because the string constants have exactly the same name as the database column names. Sonarcloud recommends to
+     * use only uppercase and underscores, but that would make the use cases of the constants less readable.
+     */
+    private static final String prozesseeigenschaftenID = "prozesseeigenschaftenID";// NOSONAR
+    private static final String vorlageneigenschaftenID = "vorlageneigenschaftenID";// NOSONAR
+    private static final String werkstueckeeigenschaftenID = "werkstueckeeigenschaftenID";// NOSONAR
+    private static final String Titel = "Titel";// NOSONAR
+    private static final String Wert = "Wert";// NOSONAR
+    private static final String IstObligatorisch = "IstObligatorisch";// NOSONAR
+    private static final String DatentypenID = "DatentypenID";// NOSONAR
+    private static final String Auswahl = "Auswahl";// NOSONAR
+    private static final String prozesseID = "prozesseID";// NOSONAR
+    private static final String vorlagenID = "vorlagenID";// NOSONAR
+    private static final String werkstueckeID = "werkstueckeID";// NOSONAR
+    private static final String creationDate = "creationDate";// NOSONAR
+    private static final String container = "container";// NOSONAR
+
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {
         String sql = "SELECT * FROM prozesseeigenschaften WHERE prozesseID = ? ORDER BY container, Titel, creationDate desc";
         Connection connection = null;
@@ -68,213 +86,123 @@ class PropertyMysqlHelper implements Serializable {
 
     }
 
-    public static final ResultSetHandler<Processproperty> resultSetToPropertyHandler = new ResultSetHandler<Processproperty>() {
+    private static final ResultSetHandler<Processproperty> resultSetToPropertyHandler = new ResultSetHandler<Processproperty>() {
         @Override
-        public Processproperty handle(ResultSet rs) throws SQLException {
+        public Processproperty handle(ResultSet resultSet) throws SQLException {
             try {
-                if (rs.next()) {
-                    return parseProperty(rs);
+                if (resultSet.next()) {
+                    return PropertyMysqlHelper.parseProcessProperty(resultSet);
                 }
             } finally {
-                rs.close();
+                resultSet.close();
             }
             return null;
         }
     };
 
-    public static final ResultSetHandler<List<Processproperty>> resultSetToPropertyListHandler = new ResultSetHandler<List<Processproperty>>() {
+    private static final ResultSetHandler<List<Processproperty>> resultSetToPropertyListHandler = new ResultSetHandler<List<Processproperty>>() {
         @Override
-        public List<Processproperty> handle(ResultSet rs) throws SQLException {
+        public List<Processproperty> handle(ResultSet resultSet) throws SQLException {
             List<Processproperty> properties = new ArrayList<>();
             try {
-                while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
-                    properties.add(parseProperty(rs));
+                while (resultSet.next()) {
+                    properties.add(PropertyMysqlHelper.parseProcessProperty(resultSet));
                 }
             } finally {
-                rs.close();
+                resultSet.close();
             }
             return properties;
         }
     };
 
-    private static Processproperty parseProperty(ResultSet rs) throws SQLException {
-        int id = rs.getInt("prozesseeigenschaftenID");
-        String title = rs.getString("Titel");
-        String value = rs.getString("Wert");
-        Boolean mandatory = rs.getBoolean("IstObligatorisch");
-        int type = rs.getInt("DatentypenID");
-        String choice = rs.getString("Auswahl");
-        int processId = rs.getInt("prozesseID");
-        Timestamp time = rs.getTimestamp("creationDate");
+    private static final ResultSetHandler<List<Templateproperty>> resultSetToTemplatePropertyListHandler =
+            new ResultSetHandler<List<Templateproperty>>() {
+                @Override
+                public List<Templateproperty> handle(ResultSet resultSet) throws SQLException {
+                    List<Templateproperty> properties = new ArrayList<>();
+                    try {
+                        while (resultSet.next()) {
+                            properties.add(PropertyMysqlHelper.parseTemplateProperty(resultSet));
+                        }
+                    } finally {
+                        resultSet.close();
+                    }
+                    return properties;
+                }
+            };
+
+    private static final ResultSetHandler<List<Masterpieceproperty>> resultSetToMasterpiecePropertyListHandler =
+            new ResultSetHandler<List<Masterpieceproperty>>() {
+                @Override
+                public List<Masterpieceproperty> handle(ResultSet resultSet) throws SQLException {
+                    List<Masterpieceproperty> properties = new ArrayList<>();
+                    try {
+                        while (resultSet.next()) {
+                            properties.add(PropertyMysqlHelper.parseMasterpieceProperty(resultSet));
+                        }
+                    } finally {
+                        resultSet.close();
+                    }
+                    return properties;
+                }
+            };
+
+    private static Processproperty parseProcessProperty(ResultSet result) throws SQLException {
+        Processproperty property = new Processproperty();
+        property.setId(result.getInt(prozesseeigenschaftenID));
+        property.setTitel(result.getString(Titel));
+        property.setWert(result.getString(Wert));
+        property.setIstObligatorisch(result.getBoolean(IstObligatorisch));
+        property.setType(PropertyType.getById(result.getInt(DatentypenID)));
+        property.setAuswahl(result.getString(Auswahl));
+        property.setProcessId(result.getInt(prozesseID));
+        Timestamp time = result.getTimestamp(creationDate);
         Date creationDate = null;
         if (time != null) {
             creationDate = new Date(time.getTime());
         }
-        int container = rs.getInt("container");
-        Processproperty pe = new Processproperty();
-        pe.setId(id);
-        pe.setTitel(title);
-        pe.setWert(value);
-        pe.setIstObligatorisch(mandatory);
-        pe.setType(PropertyType.getById(type));
-        pe.setAuswahl(choice);
-        pe.setProcessId(processId);
-        pe.setCreationDate(creationDate);
-        pe.setContainer(container);
-        return pe;
+        property.setCreationDate(creationDate);
+        property.setContainer(result.getInt(container));
+        return property;
     }
 
-    public static final ResultSetHandler<List<Templateproperty>> resultSetToTemplatePropertyListHandler =
-            new ResultSetHandler<List<Templateproperty>>() {
-        @Override
-        public List<Templateproperty> handle(ResultSet rs) throws SQLException {
-            List<Templateproperty> properties = new ArrayList<>();
-            try {
-                while (rs.next()) {
-                    int id = rs.getInt("vorlageneigenschaftenID");
-                    String title = rs.getString("Titel");
-                    String value = rs.getString("Wert");
-                    Boolean mandatory = rs.getBoolean("IstObligatorisch");
-                    int type = rs.getInt("DatentypenID");
-                    String choice = rs.getString("Auswahl");
-                    int templateId = rs.getInt("vorlagenID");
-                    Timestamp time = rs.getTimestamp("creationDate");
-                    Date creationDate = null;
-                    if (time != null) {
-                        creationDate = new Date(time.getTime());
-                    }
-                    int container = rs.getInt("container");
-                    Templateproperty ve = new Templateproperty();
-                    ve.setId(id);
-                    ve.setTitel(title);
-                    ve.setWert(value);
-                    ve.setIstObligatorisch(mandatory);
-                    ve.setType(PropertyType.getById(type));
-                    ve.setAuswahl(choice);
-                    ve.setTemplateId(templateId);
-                    ve.setCreationDate(creationDate);
-                    ve.setContainer(container);
-                    properties.add(ve);
-                }
-            } finally {
-                rs.close();
-            }
-            return properties;
+    private static Templateproperty parseTemplateProperty(ResultSet result) throws SQLException {
+        Templateproperty property = new Templateproperty();
+        property.setId(result.getInt(vorlageneigenschaftenID));
+        property.setTitel(result.getString(Titel));
+        property.setWert(result.getString(Wert));
+        property.setIstObligatorisch(result.getBoolean(IstObligatorisch));
+        property.setType(PropertyType.getById(result.getInt(DatentypenID)));
+        property.setAuswahl(result.getString(Auswahl));
+        property.setTemplateId(result.getInt(vorlagenID));
+        Timestamp time = result.getTimestamp(creationDate);
+        Date creationDate = null;
+        if (time != null) {
+            creationDate = new Date(time.getTime());
         }
-    };
+        property.setCreationDate(creationDate);
+        property.setContainer(result.getInt(container));
+        return property;
+    }
 
-    public static final ResultSetHandler<Templateproperty> resultSetToTemplatePropertyHandler = new ResultSetHandler<Templateproperty>() {
-        @Override
-        public Templateproperty handle(ResultSet rs) throws SQLException {
-            try {
-                if (rs.next()) {
-                    int id = rs.getInt("vorlageneigenschaftenID");
-                    String title = rs.getString("Titel");
-                    String value = rs.getString("Wert");
-                    Boolean mandatory = rs.getBoolean("IstObligatorisch");
-                    int type = rs.getInt("DatentypenID");
-                    String choice = rs.getString("Auswahl");
-                    int templateId = rs.getInt("vorlagenID");
-                    Timestamp time = rs.getTimestamp("creationDate");
-                    Date creationDate = null;
-                    if (time != null) {
-                        creationDate = new Date(time.getTime());
-                    }
-                    int container = rs.getInt("container");
-                    Templateproperty ve = new Templateproperty();
-                    ve.setId(id);
-                    ve.setTitel(title);
-                    ve.setWert(value);
-                    ve.setIstObligatorisch(mandatory);
-                    ve.setType(PropertyType.getById(type));
-                    ve.setAuswahl(choice);
-                    ve.setTemplateId(templateId);
-                    ve.setCreationDate(creationDate);
-                    ve.setContainer(container);
-                    return ve;
-                }
-            } finally {
-                rs.close();
-            }
-            return null;
+    private static Masterpieceproperty parseMasterpieceProperty(ResultSet result) throws SQLException {
+        Masterpieceproperty property = new Masterpieceproperty();
+        property.setId(result.getInt(werkstueckeeigenschaftenID));
+        property.setTitel(result.getString(Titel));
+        property.setWert(result.getString(Wert));
+        property.setIstObligatorisch(result.getBoolean(IstObligatorisch));
+        property.setType(PropertyType.getById(result.getInt(DatentypenID)));
+        property.setAuswahl(result.getString(Auswahl));
+        property.setMasterpieceId(result.getInt(werkstueckeID));
+        Timestamp time = result.getTimestamp(creationDate);
+        Date creationDate = null;
+        if (time != null) {
+            creationDate = new Date(time.getTime());
         }
-    };
-
-    public static final ResultSetHandler<List<Masterpieceproperty>> resultSetToMasterpiecePropertyListHandler =
-            new ResultSetHandler<List<Masterpieceproperty>>() {
-        @Override
-        public List<Masterpieceproperty> handle(ResultSet rs) throws SQLException {
-            List<Masterpieceproperty> properties = new ArrayList<>();
-            try {
-                while (rs.next()) {
-                    int id = rs.getInt("werkstueckeeigenschaftenID");
-                    String title = rs.getString("Titel");
-                    String value = rs.getString("Wert");
-                    Boolean mandatory = rs.getBoolean("IstObligatorisch");
-                    int type = rs.getInt("DatentypenID");
-                    String choice = rs.getString("Auswahl");
-                    int templateId = rs.getInt("werkstueckeID");
-                    Timestamp time = rs.getTimestamp("creationDate");
-                    Date creationDate = null;
-                    if (time != null) {
-                        creationDate = new Date(time.getTime());
-                    }
-                    int container = rs.getInt("container");
-                    Masterpieceproperty ve = new Masterpieceproperty();
-                    ve.setId(id);
-                    ve.setTitel(title);
-                    ve.setWert(value);
-                    ve.setIstObligatorisch(mandatory);
-                    ve.setType(PropertyType.getById(type));
-                    ve.setAuswahl(choice);
-                    ve.setMasterpieceId(templateId);
-                    ve.setCreationDate(creationDate);
-                    ve.setContainer(container);
-                    properties.add(ve);
-                }
-            } finally {
-                rs.close();
-            }
-            return properties;
-        }
-    };
-
-    public static final ResultSetHandler<Masterpieceproperty> resultSetToMasterpiecePropertyHandler = new ResultSetHandler<Masterpieceproperty>() {
-        @Override
-        public Masterpieceproperty handle(ResultSet rs) throws SQLException {
-            try {
-                if (rs.next()) {
-                    int id = rs.getInt("werkstueckeeigenschaftenID");
-                    String title = rs.getString("Titel");
-                    String value = rs.getString("Wert");
-                    Boolean mandatory = rs.getBoolean("IstObligatorisch");
-                    int type = rs.getInt("DatentypenID");
-                    String choice = rs.getString("Auswahl");
-                    int templateId = rs.getInt("werkstueckeID");
-                    Timestamp time = rs.getTimestamp("creationDate");
-                    Date creationDate = null;
-                    if (time != null) {
-                        creationDate = new Date(time.getTime());
-                    }
-                    int container = rs.getInt("container");
-                    Masterpieceproperty ve = new Masterpieceproperty();
-                    ve.setId(id);
-                    ve.setTitel(title);
-                    ve.setWert(value);
-                    ve.setIstObligatorisch(mandatory);
-                    ve.setType(PropertyType.getById(type));
-                    ve.setAuswahl(choice);
-                    ve.setMasterpieceId(templateId);
-                    ve.setCreationDate(creationDate);
-                    ve.setContainer(container);
-                    return ve;
-                }
-            } finally {
-                rs.close();
-            }
-            return null;
-        }
-    };
+        property.setCreationDate(creationDate);
+        property.setContainer(result.getInt(container));
+        return property;
+    }
 
     public static void saveProcessproperty(Processproperty pe) throws SQLException {
         if (pe.getProcessId() == 0 && pe.getProzess() != null) {

@@ -41,6 +41,10 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoobiScript {
+
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String FIELD_RULESET = "ruleset";
+
     private Ruleset ruleset;
 
     @Override
@@ -52,7 +56,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to assign a specific ruleset to the processes.");
-        addParameterToSampleCall(sb, "ruleset", "Newspapers",
+        addParameterToSampleCall(sb, FIELD_RULESET, "Newspapers",
                 "Use the internal name of the ruleset here, not the name of the xml file where the ruleset is located.");
         return sb.toString();
     }
@@ -61,20 +65,23 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("ruleset") == null || parameters.get("ruleset").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "ruleset");
+        String missingParameter = "Missing parameter: ";
+        String rulesetName = parameters.get(FIELD_RULESET);
+        if (rulesetName == null || rulesetName.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, FIELD_RULESET);
             return new ArrayList<>();
         }
 
+        String couldNotFindRuleset = "Could not find ruleset: ";
         try {
-            List<Ruleset> rulesets = RulesetManager.getRulesets(null, "titel='" + parameters.get("ruleset") + "'", null, null, null);
+            List<Ruleset> rulesets = RulesetManager.getRulesets(null, "titel='" + rulesetName + "'", null, null, null);
             if (rulesets == null || rulesets.isEmpty()) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Could not find ruleset: ", parameters.get("ruleset"));
+                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, couldNotFindRuleset, rulesetName);
                 return new ArrayList<>();
             }
             ruleset = rulesets.get(0);
         } catch (DAOException e) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Could not find ruleset: ", parameters.get("ruleset") + " - " + e.getMessage());
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, couldNotFindRuleset, rulesetName + " - " + e.getMessage());
             log.error("Exception during assignement of ruleset using GoobiScript", e);
             return new ArrayList<>();
         }
@@ -97,9 +104,10 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
         p.setRegelsatz(ruleset);
         try {
             ProcessManager.saveProcess(p);
-            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Ruleset '" + ruleset.getTitel() + "' assigned using GoobiScript.", username);
-            log.info("Ruleset '" + ruleset.getTitel() + "' assigned using GoobiScript for process with ID " + p.getId());
-            gsr.setResultMessage("Ruleset  '" + ruleset.getTitel() + "' assigned successfully.");
+            String message = "Ruleset '" + ruleset.getTitel() + "' assigned";
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+            log.info(message + " using GoobiScript for process with ID " + p.getId());
+            gsr.setResultMessage(message + " successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (DAOException e) {
             gsr.setResultMessage("Problem assigning new ruleset: " + e.getMessage());

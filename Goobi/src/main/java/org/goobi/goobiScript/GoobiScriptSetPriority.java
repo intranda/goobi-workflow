@@ -43,6 +43,16 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String STEPTITLE = "steptitle";
+    private static final String PRIORITY = "priority";
+
+    private static final String PRIORITY_STANDARD = "standard";
+    private static final String PRIORITY_HIGH = "high";
+    private static final String PRIORITY_HIGHER = "higher";
+    private static final String PRIORITY_HIGHEST = "highest";
+    private static final String PRIORITY_CORRECTION = "correction";
+
     @Override
     public String getAction() {
         return "setPriority";
@@ -52,9 +62,10 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to define a priority to a specific workflow step.");
-        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to be changed");
-        addParameterToSampleCall(sb, "priority", "higher",
-                "Priority to assign to the workflow step. Possible values are: `standard` `high` `higher` `highest` `correction`");
+        addParameterToSampleCall(sb, STEPTITLE, "Scanning", "Title of the workflow step to be changed");
+        addParameterToSampleCall(sb, PRIORITY, PRIORITY_HIGHER,
+                "Priority to assign to the workflow step. Possible values are: `" + PRIORITY_STANDARD + "` `" + PRIORITY_HIGH + "` `"
+                        + PRIORITY_HIGHER + "` `" + PRIORITY_HIGHEST + "` `" + PRIORITY_CORRECTION + "`");
         return sb.toString();
     }
 
@@ -62,15 +73,25 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("priority") == null || parameters.get("priority").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "priority");
+        String missingParameter = "Missing parameter: ";
+        String steptitle = parameters.get(STEPTITLE);
+        if (steptitle == null || steptitle.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
-        String prio = parameters.get("priority").toLowerCase();
-        if (!prio.equals("standard") && !prio.equals("high") && !prio.equals("higher") && !prio.equals("highest") && !prio.equals("correction")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Wrong priority parameter",
-                    "(only the following values are allowed: standard, high, higher, highest, correction)");
+        String priority = parameters.get(PRIORITY);
+        if (priority == null || priority.equals("")) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, PRIORITY);
+            return new ArrayList<>();
+        }
+
+        String prio = priority.toLowerCase();
+        if (!prio.equals(PRIORITY_STANDARD) && !prio.equals(PRIORITY_HIGH) && !prio.equals(PRIORITY_HIGHER) && !prio.equals(PRIORITY_HIGHEST)
+                && !prio.equals(PRIORITY_CORRECTION)) {
+            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Wrong priority parameter",
+                    "(only the following values are allowed: " + PRIORITY_STANDARD + ", " + PRIORITY_HIGH + ", " + PRIORITY_HIGHER + ", "
+                            + PRIORITY_HIGHEST + ", " + PRIORITY_CORRECTION);
             return new ArrayList<>();
         }
 
@@ -87,23 +108,23 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
 
-        String st = parameters.get("steptitle");
-        if (st == null) {
-            st = "";
+        String stepTitle = parameters.get(STEPTITLE);
+        if (stepTitle == null) {
+            stepTitle = "";
         }
 
         int prio = 0;
-        switch (parameters.get("priority").toLowerCase()) {
-            case "high":
+        switch (parameters.get(PRIORITY).toLowerCase()) {
+            case PRIORITY_HIGH:
                 prio = 1;
                 break;
-            case "higher":
+            case PRIORITY_HIGHER:
                 prio = 2;
                 break;
-            case "highest":
+            case PRIORITY_HIGHEST:
                 prio = 3;
                 break;
-            case "correction":
+            case PRIORITY_CORRECTION:
                 prio = 10;
                 break;
             default:
@@ -117,21 +138,18 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
 
         for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
             Step s = iterator.next();
-            if (st.length() == 0 || s.getTitel().equals(st)) {
+            if (stepTitle.length() == 0 || s.getTitel().equals(stepTitle)) {
                 s.setPrioritaet(prio);
                 try {
                     StepManager.saveStep(s);
-                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                            "Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet() + "' using GoobiScript.",
-                            username);
-                    log.info("Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet()
-                            + "' using GoobiScript for process with ID " + p.getId());
-                    gsr.setResultMessage("Changed priority of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' successfully.");
+                    String message = "Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet() + "'";
+                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
+                    log.info(message + " using GoobiScript for process with ID " + p.getId());
+                    gsr.setResultMessage(message + " successfully.");
                     gsr.setResultType(GoobiScriptResultType.OK);
                 } catch (DAOException e) {
-                    log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-                    gsr.setResultMessage(
-                            "Error while changing the priority of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "'.");
+                    log.error(GOOBI_SCRIPTFIELD + "Error while saving process: " + p.getTitel(), e);
+                    gsr.setResultMessage("Error while changing the priority of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "'.");
                     gsr.setResultType(GoobiScriptResultType.ERROR);
                     gsr.setErrorText(e.getMessage());
                 }
@@ -139,7 +157,7 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
         }
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
             gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+            gsr.setResultMessage("Step not found: " + stepTitle);
         }
         gsr.updateTimestamp();
     }

@@ -55,10 +55,10 @@ public class WebDav implements Serializable {
      * Kopieren bzw. symbolische Links für einen Prozess in das Benutzerhome
      */
 
-    private static String DONEDIRECTORYNAME = "fertig/";
+    private static String doneDirectoryName = "fertig/";
 
     public WebDav() {
-        DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
+        doneDirectoryName = ConfigurationHelper.getInstance().getDoneDirectoryName();
     }
 
     /**
@@ -115,10 +115,10 @@ public class WebDav implements Serializable {
     }
 
     public void UploadFromHome(User inBenutzer, Process myProzess) {
-        String nach = "";
+        String targetDirectory = "";
 
         try {
-            nach = inBenutzer.getHomeDir(); // implies that inBenutzer != null
+            targetDirectory = inBenutzer.getHomeDir(); // implies that inBenutzer != null
         } catch (IOException ioe) {
             log.error("Exception UploadFromHome(...)", ioe);
             Helper.setFehlerMeldung("Aborted upload from home, error", ioe.getMessage());
@@ -129,12 +129,13 @@ public class WebDav implements Serializable {
 
         /* prüfen, ob Benutzer Massenupload macht */
         if (inBenutzer.isMitMassendownload()) {
-            nach += myProzess.getProjekt().getTitel() + "/";
+            targetDirectory += myProzess.getProjekt().getTitel() + "/";
             Path projectDirectory;
             if (ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
-                projectDirectory = Paths.get(nach);
+                projectDirectory = Paths.get(targetDirectory);
             } else {
-                projectDirectory = Paths.get(nach = nach.replace(" ", "__"));
+                targetDirectory = targetDirectory.replace(" ", "__");
+                projectDirectory = Paths.get(targetDirectory);
             }
 
             if (!StorageProvider.getInstance().isFileExists(projectDirectory)) {
@@ -142,19 +143,19 @@ public class WebDav implements Serializable {
                     StorageProvider.getInstance().createDirectories(projectDirectory);
                 } catch (IOException e) {
                     log.error(e);
-                    Helper.setFehlerMeldung(Helper.getTranslation("MassDownloadProjectCreationError", nach));
-                    log.error("Can not create project directory " + nach);
+                    Helper.setFehlerMeldung(Helper.getTranslation("MassDownloadProjectCreationError", targetDirectory));
+                    log.error("Can not create project directory " + targetDirectory);
                     return;
                 }
             }
         }
-        nach += myProzess.getTitel() + " [" + myProzess.getId() + "]";
+        targetDirectory += myProzess.getTitel() + " [" + myProzess.getId() + "]";
 
         /* Leerzeichen maskieren */
         if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
-            nach = nach.replace(" ", "__");
+            targetDirectory = targetDirectory.replace(" ", "__");
         }
-        Path benutzerHome = Paths.get(nach);
+        Path benutzerHome = Paths.get(targetDirectory);
 
         FilesystemHelper.deleteSymLink(benutzerHome.toString());
     }
@@ -181,7 +182,7 @@ public class WebDav implements Serializable {
                 }
                 FilesystemHelper.createDirectoryForUser(projekt, aktuellerBenutzer.getLogin());
 
-                String doneDir = Paths.get(userHome + DONEDIRECTORYNAME).toString();
+                String doneDir = Paths.get(userHome + doneDirectoryName).toString();
                 FilesystemHelper.createDirectoryForUser(doneDir, aktuellerBenutzer.getLogin());
             }
 

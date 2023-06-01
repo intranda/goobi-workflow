@@ -168,10 +168,6 @@ public class MassImportForm implements Serializable {
     @Inject
     private NavigationForm bean;
 
-    public MassImportForm() {
-
-    }
-
     @PostConstruct
     public void init() {
         this.usablePluginsForRecords = this.ipl.getPluginsForType(ImportType.Record);
@@ -366,7 +362,7 @@ public class MassImportForm implements Serializable {
                     myParameters.put("plugin", plugin2.getTitle());
                     myParameters.put("projectId", String.valueOf(this.template.getProjectId()));
 
-                    List<GoobiScriptResult> newScripts = igs.prepare(new ArrayList<Integer>(),
+                    List<GoobiScriptResult> newScripts = igs.prepare(new ArrayList<>(),
                             "action:import plugin:" + plugin2.getTitle() + " template:" + this.template.getId() + " identifiers:" + myIdentifiers,
                             myParameters);
                     for (GoobiScriptResult gsr : newScripts) {
@@ -378,8 +374,8 @@ public class MassImportForm implements Serializable {
                         goobiScriptManager.startWork();
                     }
                     return "";
-                } // END if (plugin2.isRunnableAsGoobiScript()) AT LINE 327
-            } // END if (this.plugin instanceof IImportPluginVersion2) AT LINE 325
+                }
+            }
 
             // if not runnable as GoobiScript run it in the regular MassImport GUI
             List<ImportObject> answer = new ArrayList<>();
@@ -442,11 +438,10 @@ public class MassImportForm implements Serializable {
                 if (ImportReturnValue.ExportFinished.equals(io.getImportReturnValue())) {
                     Process p = JobCreation.generateProcess(io, this.template);
                     if (p == null) {
-                        if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
-                                && !selectedFilenames.isEmpty()) {
-                            if (selectedFilenames.contains(io.getImportFileName())) {
-                                selectedFilenames.remove(io.getImportFileName());
-                            }
+                        boolean validImportFileName = StringUtils.isNotBlank(io.getImportFileName());
+                        boolean validSelectedFileNames = selectedFilenames != null && !selectedFilenames.isEmpty();
+                        if (validImportFileName && validSelectedFileNames && selectedFilenames.contains(io.getImportFileName())) {
+                            selectedFilenames.remove(io.getImportFileName());
                         }
                         Helper.setFehlerMeldung("Import failed for " + io.getProcessTitle() + ", process generation failed");
 
@@ -457,22 +452,19 @@ public class MassImportForm implements Serializable {
                 } else {
                     String[] parameter = { io.getProcessTitle(), io.getErrorMessage() };
                     Helper.setFehlerMeldung(Helper.getTranslation("importFailedError", parameter));
-                    if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
-                            && !selectedFilenames.isEmpty()) {
-                        if (selectedFilenames.contains(io.getImportFileName())) {
-                            selectedFilenames.remove(io.getImportFileName());
-                        }
+                    boolean validImportFileName = StringUtils.isNotBlank(io.getImportFileName());
+                    boolean validSelectedFileNames = selectedFilenames != null && !selectedFilenames.isEmpty();
+                    if (validImportFileName && validSelectedFileNames && selectedFilenames.contains(io.getImportFileName())) {
+                        selectedFilenames.remove(io.getImportFileName());
                     }
                 }
                 currentProcessNo = currentProcessNo + 1;
-            } // END for (ImportObject io : answer) AT LINE 445
+            }
             if (answer.size() != this.processList.size()) {
                 // some error on process generation, don't go to next page
                 return "";
             }
-        } // END if (testForData()) AT LINE 319
-          // missing data
-        else {
+        } else {
             Helper.setFehlerMeldung("missingData");
             return "";
         }
@@ -494,29 +486,16 @@ public class MassImportForm implements Serializable {
      * File upload with binary copying.
      */
     public void uploadFile() {
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-        try {
-            if (this.uploadedFile == null) {
-                Helper.setFehlerMeldung("noFileSelected");
-                return;
-            }
 
-            String basename = getFileName(this.uploadedFile);
-            if (basename.startsWith(".")) {
-                basename = basename.substring(1);
-            }
-            if (basename.contains("/")) {
-                basename = basename.substring(basename.lastIndexOf("/") + 1);
-            }
-            if (basename.contains("\\")) {
-                basename = basename.substring(basename.lastIndexOf("\\") + 1);
-            }
+        if (this.uploadedFile == null) {
+            Helper.setFehlerMeldung("noFileSelected");
+            return;
+        }
 
-            String filename = ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
+        String filename = this.createUploadFileName();
 
-            inputStream = this.uploadedFile.getInputStream();
-            outputStream = new FileOutputStream(filename); // NOSONAR filename is safe here, any prefix folder name from user input is removed from it (see basename above)
+        try (InputStream inputStream = this.uploadedFile.getInputStream();
+                OutputStream outputStream = new FileOutputStream(filename)) { // NOSONAR filename is safe here, any prefix folder name from user input is removed from it (see basename above)
 
             byte[] buf = new byte[1024];
             int len;
@@ -528,24 +507,21 @@ public class MassImportForm implements Serializable {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed");
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-
         }
+    }
 
+    private String createUploadFileName() {
+        String basename = getFileName(this.uploadedFile);
+        if (basename.startsWith(".")) {
+            basename = basename.substring(1);
+        }
+        if (basename.contains("/")) {
+            basename = basename.substring(basename.lastIndexOf("/") + 1);
+        }
+        if (basename.contains("\\")) {
+            basename = basename.substring(basename.lastIndexOf("\\") + 1);
+        }
+        return ConfigurationHelper.getInstance().getTemporaryFolder() + basename;
     }
 
     private String getFileName(final Part part) {
@@ -581,10 +557,11 @@ public class MassImportForm implements Serializable {
     }
 
     /**
-     * 
-     * @return current format
+     * @deprecated This method is replaced by getFormat()
+     *
+     * @return The current format
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getCurrentFormat() {
         if (this.format != null) {
             return this.format.getTitle();
@@ -594,15 +571,21 @@ public class MassImportForm implements Serializable {
     }
 
     /**
-     * 
+     * @deprecated This method is replaced by setFormat(String)
+     *
      * @param formatTitle current format
      */
-    @Deprecated
+    @Deprecated(since = "23.05", forRemoval = true)
     public void setCurrentFormat(String formatTitle) {
         this.format = ImportFormat.getTypeFromTitle(formatTitle);
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @param processes The list of processes
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public void setProcesses(List<Process> processes) {
         this.process = processes;
     }
@@ -763,7 +746,12 @@ public class MassImportForm implements Serializable {
         return getDocstructs().size();
     }
 
-    @Deprecated
+    /**
+     * @deprecated This method is not used anymore
+     *
+     * @return The include path for a plugin page
+     */
+    @Deprecated(since = "23.05", forRemoval = true)
     public String getInclude() {
         return "plugins/" + plugin.getTitle() + ".jsp";
     }

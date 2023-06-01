@@ -26,6 +26,7 @@ package de.sub.goobi.helper.tasks;
  * exception statement from your version.
  */
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -93,7 +94,7 @@ public class LongRunningTaskManager {
     /**
      * alle Tasks der Warteschlange zurückgeben ================================================================
      */
-    public LinkedList<LongRunningTask> getTasks() {
+    public List<LongRunningTask> getTasks() {
         return tasks;
     }
 
