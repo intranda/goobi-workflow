@@ -26,29 +26,28 @@
 	<composite:implementation>
 
 		<!-- ROW -->
-		<div class="row">
-		
-			<!-- LABEL -->
-			<div class="#{cc.attrs.classLeft}">
-				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
-					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
-			</div> 
-			<!-- // LABEL -->
+        <div class="row">
 
-			<!-- CONTENT -->
-			<div class="#{cc.attrs.classRight}">
-				<x:inputText
-					id="#{cc.attrs.name}"
-					forceId="#{cc.attrs.forceId}"
-					styleClass="#{cc.attrs.fieldStyle}"
-					value="#{cc.attrs.field}"
-					required="#{cc.attrs.required}"
-					readonly="#{cc.attrs.readonly}"
-					onfocus="#{cc.attrs.onfocus}"
-					tabindex="#{cc.attrs.tabindex}">
+            <!-- LABEL -->
+            <div class="#{cc.attrs.classLeft}">
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
+            </div> 
+            <!-- // LABEL -->
+
+            <!-- CONTENT -->
+            <div class="#{cc.attrs.classRight}">
+                <h:inputText
+                    id="#{cc.attrs.name}"
+                    styleClass="form-control form__input #{cc.attrs.fieldStyle}"
+                    value="#{cc.attrs.field}"
+                    required="#{cc.attrs.required}"
+                    readonly="#{cc.attrs.readonly}"
+                    onfocus="#{cc.attrs.onfocus}"
+                    tabindex="#{cc.attrs.tabindex}">
 
 					<f:ajax execute="#{cc.attrs.execute}" render="#{cc.attrs.render}" event="blur"/>
-				</x:inputText>
+				</h:inputText>
                 <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />
 				<!-- Help messages, inline + warning -->
 				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
