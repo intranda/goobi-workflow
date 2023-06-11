@@ -244,8 +244,9 @@ public class ProcessTitleGenerator {
         // use uuid
         // save uuid just in case that the simplified one can not guarantee the uniqueness of the generated title
         uuid = value;
-        // simplified uuid = substring of uuid following the last -
-        return value.substring(value.lastIndexOf("-") + 1);
+
+        // uuid has 12 digits after the last -, and if it is not uuid, we use its heading letters
+        return value.contains("-") ? value.substring(value.lastIndexOf("-") + 1) : cutString(value, 12);
     }
 
     /**
@@ -306,10 +307,21 @@ public class ProcessTitleGenerator {
      * cut string short if it is too long
      * 
      * @param value string whose length should be limited
-     * @return the string that is not longer than lengthLimit
+     * @return the string head that is not longer than lengthLimit
      */
     private String cutString(String value) {
-        return value.substring(0, Math.min(value.length(), lengthLimit));
+        return cutString(value, lengthLimit);
+    }
+
+    /**
+     * cut string short if it is too long
+     * 
+     * @param value string whose length should be limited
+     * @param limit limit of the string length
+     * @return the string head that is not longer than limit
+     */
+    private String cutString(String value, int limit) {
+        return value.substring(0, Math.min(value.length(), limit));
     }
 
     /**
