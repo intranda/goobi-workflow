@@ -416,7 +416,8 @@ public class Helper implements Serializable, ServletContextListener {
         if (Locale.GERMAN == Helper.getSessionLocale()) {
             return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(inDate);
         }
-        return new SimpleDateFormat("MM/dd/yyyy h:mm:ss").format(inDate);
+        // the following line needs modifications, otherwise just remove the check of Locale.GERMAN since that would be nonsense
+        return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(inDate);
     }
 
     public static String getLocalDateTimeAsFormattedString(LocalDateTime inDate) {
