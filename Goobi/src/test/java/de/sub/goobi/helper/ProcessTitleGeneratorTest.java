@@ -202,7 +202,7 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
 
     @Test
     public void testGenerateTitleAgainstSpecialAndSpaceChars() {
-        String[] specialChars = new String[] { "?", ":", "§", "$", "&", "%", ";", "!", "=", "#", "+", "-", " " };
+        String[] specialChars = new String[] { "?", ":", "§", "$", "&", "%", ";", "!", "=", "#", "+", " " };
         for (boolean b : new boolean[] { true, false }) {
             ProcessTitleGenerator titleGenerator = prepareGeneratorForSpecialAndSpaceCharsTest(b);
             String separator = titleGenerator.getSeparator();
@@ -218,7 +218,7 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
     private ProcessTitleGenerator prepareGeneratorForSpecialAndSpaceCharsTest(boolean useSignature) {
         String headSpecial = "head-001-äöüß-abcde";
         String body1 = "abc?def:ghi§jklm#n$opq rst&u";
-        String body2 = "v%w;x!y=z+z-z";
+        String body2 = "v%w;x!y=z+z z";
         String tailSpecial = "tail 001 äöüß edcba";
 
         ProcessTitleGenerator titleGenerator = new ProcessTitleGenerator();

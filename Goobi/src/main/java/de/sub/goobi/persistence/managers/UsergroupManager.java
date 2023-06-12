@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -118,8 +117,12 @@ public class UsergroupManager implements IManager, Serializable {
         r.setInstitutionId(rs.getInt("institution_id"));
         String roles = rs.getString("roles");
         if (StringUtils.isNotBlank(roles)) {
-            String[] userRoles = roles.split(";");
-            r.setUserRoles(Arrays.asList(userRoles));
+            String[] userRole = roles.split(";");
+            List<String> roleList = new ArrayList<>();
+            for (String x : userRole) {
+                roleList.add(x); // NOSONAR Arrays.asList is not possible as we need to change the list later
+            }
+            r.setUserRoles(roleList);
         }
         return r;
     }

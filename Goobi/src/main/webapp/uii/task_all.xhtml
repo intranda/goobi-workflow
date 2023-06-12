@@ -636,7 +636,7 @@
 				</div>
 				
 				<!-- ACTION BOX -->
-				<div class="row mt-4">
+				<div class="row mt-4" jsf:rendered="#{LoginForm.myBenutzer.mitMassendownload  and AktuelleSchritteForm.paginator.totalResults > 0 }">
 					<div class="col-12">
 						<intranda:box id="boxTaskAllActions" boxType="action"
 							icon="fa-wrench" title="#{msgs.moeglicheAktionen}">
