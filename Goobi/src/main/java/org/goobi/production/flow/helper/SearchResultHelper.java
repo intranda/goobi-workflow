@@ -322,7 +322,7 @@ public class SearchResultHelper {
         // add column labels to query
         for (SearchColumn sc : columnList) {
             if (sc.getTableName().startsWith("log")) {
-                sb.append("ifnull(log.content, ''), ");
+                sb.append("if (LENGTH(log.content) > 2000, SUBSTRING(log.content, 1, 2000), log.content), ");
                 includeLog = true;
             }
 
@@ -400,7 +400,7 @@ public class SearchResultHelper {
                     for (Object[] metadataRow : metadataList) {
                         String metadataName = (String) metadataRow[0];
                         String metadataValue = (String) metadataRow[1];
-                        if (sc.getValue().equalsIgnoreCase(METADATA + "." + metadataName)) {
+                        if ((METADATA + "." + metadataName).equalsIgnoreCase(sc.getValue())) {
 
                             value = metadataValue;
                             break;
