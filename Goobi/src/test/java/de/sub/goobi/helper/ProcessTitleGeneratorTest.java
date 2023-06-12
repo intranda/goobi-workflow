@@ -36,8 +36,9 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
         assertNull(generator.getAlternativeTitle());
         assertTrue(generator.isAfterLastAddable());
         assertTrue(generator.isBeforeFirstAddable());
-        assertFalse(generator.isUseSignature());
-        assertEquals(10, generator.getLengthLimit());
+        assertFalse(generator.isUseFullIdNoSpecialChars());
+        assertEquals(10, generator.getBodyTokenLengthLimit());
+        assertEquals(0, generator.getHeadTokenLengthLimit());
         assertEquals("_", generator.getSeparator());
     }
 
@@ -48,18 +49,18 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
         String separator = "_";
         // constructor expecting boolean and int
         generator = new ProcessTitleGenerator(useSignature, limit);
-        assertNotEquals(limit, generator.getLengthLimit());
-        assertEquals(10, generator.getLengthLimit());
+        assertNotEquals(limit, generator.getBodyTokenLengthLimit());
+        assertEquals(10, generator.getBodyTokenLengthLimit());
 
         // constructor expecting int and string
         generator = new ProcessTitleGenerator(limit, separator);
-        assertNotEquals(limit, generator.getLengthLimit());
-        assertEquals(10, generator.getLengthLimit());
+        assertNotEquals(limit, generator.getBodyTokenLengthLimit());
+        assertEquals(10, generator.getBodyTokenLengthLimit());
 
         // constructor expecting boolean, int and string
         generator = new ProcessTitleGenerator(useSignature, limit, separator);
-        assertNotEquals(limit, generator.getLengthLimit());
-        assertEquals(10, generator.getLengthLimit());
+        assertNotEquals(limit, generator.getBodyTokenLengthLimit());
+        assertEquals(10, generator.getBodyTokenLengthLimit());
     }
 
     @Test
@@ -85,17 +86,28 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
 
     /* tests for setters */
     @Test
-    public void testSetLengthLimitGivenZero() {
-        assertEquals(10, generator.getLengthLimit());
-        generator.setLengthLimit(0);
-        assertEquals(10, generator.getLengthLimit());
+    public void testSetBodyTokenLengthLimitGivenZero() {
+        assertEquals(10, generator.getBodyTokenLengthLimit());
+        generator.setBodyTokenLengthLimit(0);
+        assertEquals(10, generator.getBodyTokenLengthLimit());
     }
 
     @Test
-    public void testSetLengthLimitGivenNegativeNumber() {
-        assertEquals(10, generator.getLengthLimit());
-        generator.setLengthLimit(-1);
-        assertEquals(10, generator.getLengthLimit());
+    public void testSetBodyTokenLengthLimitGivenNegativeNumber() {
+        assertEquals(10, generator.getBodyTokenLengthLimit());
+        generator.setBodyTokenLengthLimit(-1);
+        assertEquals(10, generator.getBodyTokenLengthLimit());
+    }
+
+    @Test
+    public void testSetHeadTokenLengthLimit() {
+        assertEquals(0, generator.getHeadTokenLengthLimit());
+        generator.setHeadTokenLengthLimit(1);
+        assertEquals(1, generator.getHeadTokenLengthLimit());
+        generator.setHeadTokenLengthLimit(-1);
+        assertEquals(1, generator.getHeadTokenLengthLimit());
+        generator.setHeadTokenLengthLimit(0);
+        assertEquals(0, generator.getHeadTokenLengthLimit());
     }
 
     @Test
@@ -114,11 +126,11 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
 
     @Test
     public void testSetUseSignature() {
-        assertFalse(generator.isUseSignature());
-        generator.setUseSignature(true);
-        assertTrue(generator.isUseSignature());
-        generator.setUseSignature(false);
-        assertFalse(generator.isUseSignature());
+        assertFalse(generator.isUseFullIdNoSpecialChars());
+        generator.setUseFullIdNoSpecialChars(true);
+        assertTrue(generator.isUseFullIdNoSpecialChars());
+        generator.setUseFullIdNoSpecialChars(false);
+        assertFalse(generator.isUseFullIdNoSpecialChars());
     }
 
     /* tests for the method addToken */
@@ -187,7 +199,7 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
         String body1 = "Öößß";
         String body2 = "Üüää";
         String tailUmlaut = "ßßäöü";
-        generator.setUseSignature(true);
+        generator.setUseFullIdNoSpecialChars(true);
         generator.addToken(headUmlaut, ManipulationType.BEFORE_FIRST_SEPARATOR);
         generator.addToken(body1, ManipulationType.NORMAL);
         generator.addToken(body2, ManipulationType.CAMEL_CASE);
@@ -222,7 +234,7 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
         String tailSpecial = "tail 001 äöüß edcba";
 
         ProcessTitleGenerator titleGenerator = new ProcessTitleGenerator();
-        titleGenerator.setUseSignature(useSignature);
+        titleGenerator.setUseFullIdNoSpecialChars(useSignature);
 
         titleGenerator.addToken(headSpecial, ManipulationType.BEFORE_FIRST_SEPARATOR);
         titleGenerator.addToken(body1, ManipulationType.CAMEL_CASE);
@@ -322,7 +334,7 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
         String expectedTitle = "cead86af1386_HeuteIstEinSchoenerTagAnDe";
         String expectedLongTitle = "11b72235-2875-4061-ab19-cead86af1386_HeuteIstEinSchoenerTagAnDe";
 
-        generator.setLengthLimit(limit);
+        generator.setBodyTokenLengthLimit(limit);
         generator.addToken(uuid, ManipulationType.BEFORE_FIRST_SEPARATOR);
         generator.addToken(mark, ManipulationType.CAMEL_CASE_LENGTH_LIMITED);
         assertEquals(expectedTitle, generator.generateTitle());
@@ -339,9 +351,26 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
         String expectedTitle = "HM_270_Marmstorf9";
         String expectedLongTitle = "HM_270_Marmstorf9";
 
-        generator.setUseSignature(useSignature);
+        generator.setUseFullIdNoSpecialChars(useSignature);
         generator.addToken(signature, ManipulationType.BEFORE_FIRST_SEPARATOR);
         generator.addToken(mark, ManipulationType.CAMEL_CASE);
+        assertEquals(expectedTitle, generator.generateTitle());
+        assertEquals(expectedLongTitle, generator.getAlternativeTitle());
+    }
+
+    @Test
+    public void testGenerateTitleAndGetAlternativeTitleInRealCases4() {
+        // case for mega long ids
+        String id = "A91x16199082136154120181205135958491";
+        String mark = "Heute ist Montag";
+        int headLimit = 12;
+        // use default body length limit 10
+        String expectedTitle = "A91x16199082_HeuteIstMo";
+        String expectedLongTitle = "A91x16199082136154120181205135958491_HeuteIstMo";
+
+        generator.setHeadTokenLengthLimit(headLimit);
+        generator.addToken(id, ManipulationType.BEFORE_FIRST_SEPARATOR);
+        generator.addToken(mark, ManipulationType.CAMEL_CASE_LENGTH_LIMITED);
         assertEquals(expectedTitle, generator.generateTitle());
         assertEquals(expectedLongTitle, generator.getAlternativeTitle());
     }
