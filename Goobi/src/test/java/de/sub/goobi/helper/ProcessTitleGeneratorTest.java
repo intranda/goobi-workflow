@@ -32,7 +32,7 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
         assertNotNull(generator.getBodyTokens());
         assertNull(generator.getHeadToken());
         assertNull(generator.getTailToken());
-        assertNull(generator.getUuid());
+        assertNull(generator.getOriginal());
         assertNull(generator.getAlternativeTitle());
         assertTrue(generator.isAfterLastAddable());
         assertTrue(generator.isBeforeFirstAddable());
@@ -253,7 +253,7 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
     }
 
     private ProcessTitleGenerator prepareGeneratorForLengthLimitTest(boolean useSignature, int limit, String separator) {
-        String headLong = "head-very-very-very-longlonglonglong";
+        String headLong = "26929514-237c-11ed-861d-0242ac120002";
         String body1 = "body-also-very-very-very-long";
         String body2 = "body-2-is-also-very-very-very-long";
         String tailLong = "tail-very-very-very-long";

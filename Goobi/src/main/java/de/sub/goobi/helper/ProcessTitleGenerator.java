@@ -20,6 +20,7 @@ package de.sub.goobi.helper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import de.sub.goobi.helper.enums.ManipulationType;
 import lombok.Data;
@@ -43,11 +44,14 @@ public class ProcessTitleGenerator {
     @Getter
     private Token tailToken = null;
     @Getter
-    private String uuid = null;
+    private String original = null;
     @Getter
     private String separator = "_";
 
     private String alternativeTitle = null;
+
+    private static final Pattern UUID_REGEX = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+
 
     /**
      * use default settings or use setters to initialize individually
@@ -238,15 +242,15 @@ public class ProcessTitleGenerator {
         // use signature
         if (useSignature) {
             String valueWithoutSpecialChars = replaceSpecialAndSpaceChars(value);
-            uuid = valueWithoutSpecialChars;
+            original = valueWithoutSpecialChars;
             return valueWithoutSpecialChars;
         }
         // use uuid
-        // save uuid just in case that the simplified one can not guarantee the uniqueness of the generated title
-        uuid = value;
+        // save the original one just in case that the simplified one can not guarantee the uniqueness of the generated title
+        original = value;
 
-        // uuid has 12 digits after the last -, and if it is not uuid, we use its heading letters
-        return value.contains("-") ? value.substring(value.lastIndexOf("-") + 1) : cutString(value, 12);
+        // if value is uuid then return the tail after the last -, otherwise return itself
+        return UUID_REGEX.matcher(value).matches() ? value.substring(value.lastIndexOf("-") + 1) : value;
     }
 
     /**
@@ -351,7 +355,7 @@ public class ProcessTitleGenerator {
 
         if (headToken != null) {
             simplifiedHead = headToken.getValue() + separator;
-            originalHead = uuid + separator;
+            originalHead = original + separator;
         }
 
         alternativeTitle = originalHead + titleBody;
