@@ -314,7 +314,7 @@ public class SearchResultHelper {
         sb.append("SELECT distinct prozesse.ProzesseID, ");
 
         if (StringUtils.isNotBlank(order)) {
-            sb.append(order.replace(" desc", "") + ", ");
+            sb.append(order.replace(" desc", "").replace(" asc", "") + ", ");
         }
 
         boolean includeLog = false;
