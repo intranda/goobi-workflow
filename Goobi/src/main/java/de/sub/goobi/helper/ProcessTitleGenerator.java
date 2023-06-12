@@ -30,26 +30,35 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ProcessTitleGenerator {
     @Getter
-    private int lengthLimit = 10;
+    private int bodyTokenLengthLimit = 10;
+    @Getter
+    private int headTokenLengthLimit = 0; // 0 if head token should not be shortened
     @Getter
     private boolean isAfterLastAddable = true;
     @Getter
     private boolean isBeforeFirstAddable = true;
     @Getter
     private List<Token> bodyTokens = new ArrayList<>();
+
+    // true if the full id with its spaces and special chars replaced by _ should be used
     @Getter
-    private boolean useSignature = false;
+    private boolean useFullIdNoSpecialChars = false;
+
     @Getter
     private Token headToken = null;
     @Getter
     private Token tailToken = null;
+
+    // used to maintain the original full id in case the shorter one is not suitable
     @Getter
     private String original = null;
+
+    // string that is used to combine all tokens into a title
     @Getter
     private String separator = "_";
-
+    // alternative title generated using original full id in case the shorter one is not suitable
     private String alternativeTitle = null;
-
+    // Pattern to check if the input id is uuid
     private static final Pattern UUID_REGEX = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
 
@@ -62,23 +71,23 @@ public class ProcessTitleGenerator {
 
     /**
      * 
-     * @param useSignature whether or not to use signature as part of the process title
+     * @param useFullIdNoSpecialChars
      * @param limit maximum length of the title name excluding its head
      */
-    public ProcessTitleGenerator(boolean useSignature, int limit) {
-        this.useSignature = useSignature;
+    public ProcessTitleGenerator(boolean useFullIdNoSpecialChars, int limit) {
+        this.useFullIdNoSpecialChars = useFullIdNoSpecialChars;
         if (limit > 0) {
-            lengthLimit = limit;
+            bodyTokenLengthLimit = limit;
         }
     }
 
     /**
      * 
-     * @param useSignature whether or not to use signature as part of the process title
+     * @param useFullIdNoSpecialChars
      * @param separator string that should be used to connect tokens
      */
-    public ProcessTitleGenerator(boolean useSignature, String separator) {
-        this.useSignature = useSignature;
+    public ProcessTitleGenerator(boolean useFullIdNoSpecialChars, String separator) {
+        this.useFullIdNoSpecialChars = useFullIdNoSpecialChars;
         if (separator != null) {
             this.separator = separator;
         }
@@ -91,7 +100,7 @@ public class ProcessTitleGenerator {
      */
     public ProcessTitleGenerator(int limit, String separator) {
         if (limit > 0) {
-            lengthLimit = limit;
+            bodyTokenLengthLimit = limit;
         }
         if (separator != null) {
             this.separator = separator;
@@ -100,14 +109,14 @@ public class ProcessTitleGenerator {
 
     /**
      * 
-     * @param useSignature whether or not to use signature as part of the process title
+     * @param useFullIdNoSpecialChars
      * @param limit maximum length of the title name excluding its head
      * @param separator string that should be used to connect tokens
      */
-    public ProcessTitleGenerator(boolean useSignature, int limit, String separator) {
-        this.useSignature = useSignature;
+    public ProcessTitleGenerator(boolean useFullIdNoSpecialChars, int limit, String separator) {
+        this.useFullIdNoSpecialChars = useFullIdNoSpecialChars;
         if (limit > 0) {
-            lengthLimit = limit;
+            bodyTokenLengthLimit = limit;
         }
         if (separator != null) {
             this.separator = separator;
@@ -118,18 +127,28 @@ public class ProcessTitleGenerator {
      * 
      * @param limit maximum length of the title name excluding its head
      */
-    public void setLengthLimit(int limit) {
+    public void setBodyTokenLengthLimit(int limit) {
         if (limit > 0) {
-            lengthLimit = limit;
+            bodyTokenLengthLimit = limit;
         }
     }
 
     /**
      * 
-     * @param useSignature whether or not to use signature as part of the process title
+     * @param limit maximum length of the head token, 0 if the head token should not be shortened
      */
-    public void setUseSignature(boolean useSignature) {
-        this.useSignature = useSignature;
+    public void setHeadTokenLengthLimit(int limit) {
+        if (limit >= 0) {
+            headTokenLengthLimit = limit;
+        }
+    }
+
+    /**
+     * 
+     * @param useFullIdNoSpecialChars
+     */
+    public void setUseFullIdNoSpecialChars(boolean useFullIdNoSpecialChars) {
+        this.useFullIdNoSpecialChars = useFullIdNoSpecialChars;
     }
 
     /**
@@ -239,18 +258,18 @@ public class ProcessTitleGenerator {
      * @return simplified value of the head token
      */
     private String getSimplifiedHead(String value) {
-        // use signature
-        if (useSignature) {
+        // use full id with special chars and spaces replaced
+        if (useFullIdNoSpecialChars) {
             String valueWithoutSpecialChars = replaceSpecialAndSpaceChars(value);
             original = valueWithoutSpecialChars;
             return valueWithoutSpecialChars;
         }
-        // use uuid
-        // save the original one just in case that the simplified one can not guarantee the uniqueness of the generated title
+        // use shorter id
+        // save the original id just in case that the simplified one can not guarantee the uniqueness of the generated title
         original = value;
 
-        // if value is uuid then return the tail after the last -, otherwise return itself
-        return UUID_REGEX.matcher(value).matches() ? value.substring(value.lastIndexOf("-") + 1) : value;
+        // if value is uuid then return the tail after the last -, otherwise return a shorter version of itself if headTokenLengthLimit is positive
+        return UUID_REGEX.matcher(value).matches() ? value.substring(value.lastIndexOf("-") + 1) : cutString(value, headTokenLengthLimit);
     }
 
     /**
@@ -308,23 +327,27 @@ public class ProcessTitleGenerator {
     }
 
     /**
-     * cut string short if it is too long
+     * cut string short if it is too long, should only be used for body tokens
      * 
      * @param value string whose length should be limited
      * @return the string head that is not longer than lengthLimit
      */
     private String cutString(String value) {
-        return cutString(value, lengthLimit);
+        return cutString(value, bodyTokenLengthLimit);
     }
 
     /**
      * cut string short if it is too long
      * 
      * @param value string whose length should be limited
-     * @param limit limit of the string length
+     * @param limit limit of the string length, 0 if the value should not be shortened at all
      * @return the string head that is not longer than limit
      */
     private String cutString(String value, int limit) {
+        if (limit == 0) {
+            return value;
+        }
+
         return value.substring(0, Math.min(value.length(), limit));
     }
 
