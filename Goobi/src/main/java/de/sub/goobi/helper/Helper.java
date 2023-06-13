@@ -44,7 +44,7 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -413,17 +413,14 @@ public class Helper implements Serializable, ServletContextListener {
         if (inDate == null) {
             return "-";
         }
-        if (Locale.GERMAN == Helper.getSessionLocale()) {
-            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(inDate);
-        }
-        return new SimpleDateFormat("MM/dd/yyyy h:mm:ss").format(inDate);
+        return DateFormat.getDateInstance().format(inDate) + " " + DateFormat.getTimeInstance(DateFormat.MEDIUM).format(inDate);
     }
 
     public static String getLocalDateTimeAsFormattedString(LocalDateTime inDate) {
         if (inDate == null) {
             return "-";
         }
-        if (Locale.GERMAN == Helper.getSessionLocale()) {
+        if (Locale.GERMAN.equals(Helper.getSessionLocale())) {
             return formatterDEDateTime.format(inDate);
         }
         return formatterENDateTime.format(inDate);
