@@ -14,46 +14,18 @@
         <composite:attribute name="label" />
         <composite:attribute name="field" />
         <composite:attribute name="help" />
-        <composite:attribute
-            name="fieldStyle"
-            default="form-control" />
+        <composite:attribute name="fieldStyle" default="form-control" />
         <composite:attribute name="style" />
-        <composite:attribute
-            name="displayLabel"
-            default="true" />
-        <composite:attribute
-            name="readonly"
-            default="false" />
-        <composite:attribute
-            name="required"
-            default="false" />
-        <composite:attribute
-            name="displayAsRequired"
-            default="false" />
-        <composite:attribute
-            name="classLeft"
-            default="col-12 col-md-3" />
-        <composite:attribute
-            name="classRight"
-            default="col-12 col-md-8" />
-        <composite:attribute
-            name="tabindex"
-            default="0" />
-        <composite:attribute
-            name="focusOnLoad"
-            default="false" />
-        <composite:attribute
-            name="execute"
-            default="@this" />
-        <composite:attribute
-            name="render"
-            default="" />
-
-        <composite:attribute
-            name="hidePleaseSelectMessage"
-            default="false" />
-
-
+        <composite:attribute name="displayLabel" default="true" />
+        <composite:attribute name="readonly" default="false" />
+        <composite:attribute name="required" default="false" />
+        <composite:attribute name="displayAsRequired" default="false" />
+        <composite:attribute name="classLeft" default="col-12 col-md-3" />
+        <composite:attribute name="classRight" default="col-12 col-md-8" />
+        <composite:attribute name="tabindex" default="0" />
+        <composite:attribute name="focusOnLoad"  default="false" />
+        <composite:attribute name="execute" efault="@this" />
+        <composite:attribute name="render" default="" />
     </composite:interface>
 
     <composite:implementation>
@@ -129,10 +101,10 @@
             <!-- // CONTENT -->
         </div>
 
-<!-- MODAL -->
+        <!-- MODAL -->
 
 
-<h:panelGroup
+        <h:panelGroup
             styleClass="modal p-4 py-md-5"
             layout="block"
             id="gndSearchBox"
@@ -162,13 +134,15 @@
                         </div>
                         <div class="modal-body">
                             <p>
-                            <h:outputText
-                                value="#{msgs.NORM_helpGndSearch}"
-                                escape="false" />
+                                <h:outputText
+                                    value="#{msgs.NORM_helpGndSearch}"
+                                    escape="false" />
                             </p>
                             <div class="row">
                                 <div class="col-12 col-md-3">
-                                   <h:selectOneMenu value="#{cc.attrs.field.searchOption}" pt:aria-label="#{msgs.filter}">
+                                    <h:selectOneMenu
+                                        value="#{cc.attrs.field.searchOption}"
+                                        pt:aria-label="#{msgs.filter}">
                                         <f:selectItem
                                             itemLabel="#{msgs.NORM_identifier}"
                                             itemValue="" />
@@ -187,20 +161,22 @@
                                     </h:selectOneMenu>
                                 </div>
                                 <div class="col-12 col-md-7">
-                                <x:inputText
-                                    id="gndSearchInput"
-                                    pt:aria-label="#{msgs.suchbegriff}"
-                                    styleClass="form-control"
-                                    value="#{cc.attrs.field.searchValue}" />
+                                    <x:inputText
+                                        id="gndSearchInput"
+                                        pt:aria-label="#{msgs.suchbegriff}"
+                                        styleClass="form-control"
+                                        value="#{cc.attrs.field.searchValue}" />
                                 </div>
                                 <div>
                                     <button
                                         jsf:id="gndSearchButton"
                                         class="btn btn-blank"
-                                        jsf:action="#{cc.attrs.field.search}">
+                                        jsf:action="#{cc.attrs.field.searchGnd}">
                                         <i
                                             class="fa fa-search"
-                                            aria-hidden="true"></i> <span> <h:outputText value="#{msgs.search}" />
+                                            aria-hidden="true"></i>
+                                        <span>
+                                            <h:outputText value="#{msgs.search}" />
                                         </span>
                                         <f:ajax
                                             execute="@form"
@@ -257,7 +233,7 @@
                                                 jsf:id="check"
                                                 aria-label="#{msgs.selectFile}"
                                                 class="btn btn-success"
-                                                jsf:action="#{cc.attrs.field.getData}">
+                                                jsf:action="#{cc.attrs.field.importGndData}">
                                                 <f:setPropertyActionListener
                                                     value="#{normdataList}"
                                                     target="#{cc.attrs.field.currentData}" />
@@ -274,8 +250,8 @@
 
                                     <hr />
                                 </x:dataList>
-                                
-                                
+
+
                             </h:panelGroup>
                         </div>
                     </h:form>

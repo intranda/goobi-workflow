@@ -62,7 +62,7 @@ public interface GndSearchProperty {
     /**
      * Execute gnd search
      */
-    public void search();
+    public void searchGnd();
 
     /**
      * returns a list of all found records
@@ -83,7 +83,7 @@ public interface GndSearchProperty {
     /**
      * Import selected record
      */
-    public void getData();
+    public void importGndData();
 
     public boolean isShowNoHits();
 
