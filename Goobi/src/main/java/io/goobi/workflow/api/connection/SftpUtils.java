@@ -18,6 +18,7 @@
 
 package io.goobi.workflow.api.connection;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
-public class SftpUtils implements AutoCloseable {
+public class SftpUtils implements AutoCloseable, ConnectionProvider {
 
     private JSch jsch;
     private ChannelSftp sftpChannel;
@@ -42,15 +43,19 @@ public class SftpUtils implements AutoCloseable {
      * 
      */
 
-    public SftpUtils(String username, String password, String hostname, int port, String knownHostsFile) throws JSchException {
+    public SftpUtils(String username, String password, String hostname, int port, String knownHostsFile) throws IOException {
         jsch = new JSch();
-        jsch.setKnownHosts(knownHostsFile);
-        jschSession = jsch.getSession(username, hostname);
-        jschSession.setPort(port);
-        jschSession.setPassword(password);
-        jschSession.connect();
-        sftpChannel = (ChannelSftp) jschSession.openChannel("sftp");
-        sftpChannel.connect();
+        try {
+            jsch.setKnownHosts(knownHostsFile);
+            jschSession = jsch.getSession(username, hostname);
+            jschSession.setPort(port);
+            jschSession.setPassword(password);
+            jschSession.connect();
+            sftpChannel = (ChannelSftp) jschSession.openChannel("sftp");
+            sftpChannel.connect();
+        } catch (JSchException e) {
+            throw new IOException(e);
+        }
     }
 
     /**
@@ -59,15 +64,19 @@ public class SftpUtils implements AutoCloseable {
      * 
      */
 
-    public SftpUtils(String username, String key, String password, String hostname, int port, String knownHostsFile) throws JSchException {
+    public SftpUtils(String username, String key, String password, String hostname, int port, String knownHostsFile) throws IOException {
         jsch = new JSch();
-        jsch.addIdentity(key, password);
-        jsch.setKnownHosts(knownHostsFile);
-        jschSession = jsch.getSession(username, hostname);
-        jschSession.setPort(port);
-        jschSession.connect();
-        sftpChannel = (ChannelSftp) jschSession.openChannel("sftp");
-        sftpChannel.connect();
+        try {
+            jsch.addIdentity(key, password);
+            jsch.setKnownHosts(knownHostsFile);
+            jschSession = jsch.getSession(username, hostname);
+            jschSession.setPort(port);
+            jschSession.connect();
+            sftpChannel = (ChannelSftp) jschSession.openChannel("sftp");
+            sftpChannel.connect();
+        } catch (JSchException e) {
+            throw new IOException(e);
+        }
     }
 
     /**
@@ -77,8 +86,13 @@ public class SftpUtils implements AutoCloseable {
      * @throws SftpException
      */
 
-    public void changeRemoteFolder(String folder) throws SftpException {
-        sftpChannel.cd(folder);
+    @Override
+    public void changeRemoteFolder(String folder) throws IOException {
+        try {
+            sftpChannel.cd(folder);
+        } catch (SftpException e) {
+            throw new IOException(e);
+        }
     }
 
     /**
@@ -88,8 +102,13 @@ public class SftpUtils implements AutoCloseable {
      * @throws SftpException
      */
 
-    public String getRemoteFolder() throws SftpException {
-        return sftpChannel.pwd();
+    @Override
+    public String getRemoteFolder() throws IOException {
+        try {
+            return sftpChannel.pwd();
+        } catch (SftpException e) {
+            throw new IOException(e);
+        }
     }
 
     /**
@@ -99,9 +118,15 @@ public class SftpUtils implements AutoCloseable {
      * @throws SftpException
      */
 
-    public List<String> listContent() throws SftpException {
+    @Override
+    public List<String> listContent() throws IOException {
         List<String> content = new ArrayList<>();
-        List<LsEntry> lsList = sftpChannel.ls(".");
+        List<LsEntry> lsList;
+        try {
+            lsList = sftpChannel.ls(".");
+        } catch (SftpException e) {
+            throw new IOException(e);
+        }
         for (LsEntry entry : lsList) {
             content.add(entry.getFilename());
         }
@@ -118,9 +143,14 @@ public class SftpUtils implements AutoCloseable {
      * @throws SftpException
      */
 
-    public Path downloadFile(String filename, Path downloadFolder) throws SftpException {
+    @Override
+    public Path downloadFile(String filename, Path downloadFolder) throws IOException {
         Path destination = Paths.get(downloadFolder.toString(), filename);
-        sftpChannel.get(filename, destination.toString());
+        try {
+            sftpChannel.get(filename, destination.toString());
+        } catch (SftpException e) {
+            throw new IOException(e);
+        }
         return destination;
     }
 
@@ -131,8 +161,13 @@ public class SftpUtils implements AutoCloseable {
      * @throws SftpException
      */
 
-    public void uploadFile(Path file) throws SftpException {
-        sftpChannel.put(file.toString(), file.getFileName().toString());
+    @Override
+    public void uploadFile(Path file) throws IOException {
+        try {
+            sftpChannel.put(file.toString(), file.getFileName().toString());
+        } catch (SftpException e) {
+            throw new IOException(e);
+        }
     }
 
     @Override

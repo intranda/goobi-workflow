@@ -34,7 +34,7 @@ import com.jcraft.jsch.SftpException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class FtpUtils implements AutoCloseable {
+public class FtpUtils implements AutoCloseable, ConnectionProvider {
 
     private FTPClient ftpClient;
 
@@ -45,7 +45,7 @@ public class FtpUtils implements AutoCloseable {
      * @throws SocketException
      * 
      */
-    public FtpUtils(String username, String password, String hostname, int port, String knownHostsFile) throws SocketException, IOException {
+    public FtpUtils(String username, String password, String hostname, int port) throws IOException {
         ftpClient = new FTPClient();
         ftpClient.connect(hostname, port);
         ftpClient.login(username, password);
@@ -59,10 +59,12 @@ public class FtpUtils implements AutoCloseable {
      * @throws SftpException
      */
 
+    @Override
     public void changeRemoteFolder(String folder) throws IOException {
         ftpClient.changeWorkingDirectory(folder);
     }
 
+    @Override
     public List<String> listContent() throws IOException {
         List<String> filenames = new ArrayList<>();
         FTPFile[] files = ftpClient.listFiles();
@@ -83,6 +85,7 @@ public class FtpUtils implements AutoCloseable {
      * @throws SftpException
      */
 
+    @Override
     public Path downloadFile(String filename, Path downloadFolder) throws IOException {
         Path destination = Paths.get(downloadFolder.toString(), filename);
         ftpClient.retrieveFile(filename, Files.newOutputStream(destination));
@@ -95,18 +98,10 @@ public class FtpUtils implements AutoCloseable {
      * @param file
      * @throws SftpException
      */
+    @Override
     public void uploadFile(Path file) throws IOException {
         ftpClient.storeFile(file.getFileName().toString(), Files.newInputStream(file));
     }
-
-    //        ftpClient.deleteFile("");
-    //        ftpClient.listFiles();
-    //        ftpClient.listDirectories();
-    //        ftpClient.enterLocalActiveMode();
-    //        ftpClient.enterLocalPassiveMode();
-    //        ftpClient.cwd("");
-    //        ftpClient.storeFile("", null);
-    //        ftpClient.retrieveFile("", null);
 
     @Override
     public void close() {
@@ -116,6 +111,11 @@ public class FtpUtils implements AutoCloseable {
         } catch (IOException e) {
             log.error(e);
         }
+    }
+
+    @Override
+    public String getRemoteFolder() throws IOException {
+        return null;
     }
 
 }
