@@ -33,16 +33,6 @@
     </ui:define>
 
     <ui:define name="content">
-        <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
-
-        <!--
-        <script type="text/javascript">
-            window.onload = function() {
-                document.getElementById( 'timeoutForSession' ).focus();
-            }
-        </script>
-        -->
-
         <h:form
             id="myform"
             onkeypress="submitOnEnter(event);">
@@ -168,10 +158,6 @@
                                     help="#{msgs.helpVorname}"
                                     name="vorname"
                                     readonly="false" />
-
-                                <script>
-                                                                                                                                    gwFocusOnLoad.init( '[id*="firstname"]' )
-                                                                                                                                </script>
 
                                 <intranda:formInputText
                                     label="#{msgs.nachname}"
@@ -366,9 +352,6 @@
                                     name="uiMode"
                                     selectItems="#{LoginForm.myBenutzer.availableUiModes}" />
 
-                                <script>
-                                                                                                                                    gwFocusOnLoad.init( '[id*="sessionTimeout"]' );
-                                                                                                                                </script>
                             </h:panelGroup>
 
 
@@ -524,12 +507,6 @@
 
                                     </div>
                                 </div>
-
-                                <script>
-                                                                                                                                    gwFocusOnLoad
-                                                                                                                                            .init( '[id*="displayDeactivatedProjects"]' )
-                                                                                                                                </script>
-
                             </h:panelGroup>
 
 
@@ -541,11 +518,6 @@
                                     field="#{LoginForm.myBenutzer.hideCorrectionTasks}"
                                     help="#{msgs.helpHideCorrectionTasks}"
                                     name="hideCorrectionTasksName" />
-
-                                <script>
-                                                                                                                                    gwFocusOnLoad
-                                                                                                                                            .init( '[id*="hideCorrectionTasks"]' )
-                                                                                                                                </script>
 
                                 <intranda:formInputCheckBox
                                     id="displayOnlySelectedTasks"
@@ -624,13 +596,6 @@
                                     help="#{msgs.helpSpracheFuerMetadaten}"
                                     name="spracheFuerMetadatenName"
                                     required="false" />
-
-                                <!-- <intranda:formInputText label="#{msgs.metadataSaveTime}" field="#{LoginForm.myBenutzer.metsEditorTime}" help="#{msgs.helpMetadataSaveTime}" name="metadataSaveTime" /> -->
-
-                                <script>
-                                                                                                                                    gwFocusOnLoad
-                                                                                                                                            .init( '[id*="spracheFuerMetadaten"]' )
-                                                                                                                                </script>
 
                                 <div class="row">
                                     <div class="col-12 col-md-3">
