@@ -1530,8 +1530,7 @@ public class ProzesskopieForm implements Serializable {
         // TODO: temporary solution for shelfmark, replace it with configurable solution
         if (("Signatur".equalsIgnoreCase(inFeldName) || "Shelfmark".equalsIgnoreCase(inFeldName)) && StringUtils.isNotBlank(rueckgabe)) {
             // replace white spaces with dash, remove other special characters
-            rueckgabe = rueckgabe.replace(" ", "-").replace("/", "-").replaceAll("[^\\w-]", "");
-
+            rueckgabe = rueckgabe.replace(" ", "-").replace("/", "-").replace(",", "-").replaceAll("[^\\w-]", "");
         }
 
         return rueckgabe;
