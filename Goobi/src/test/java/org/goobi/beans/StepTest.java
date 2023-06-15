@@ -560,8 +560,8 @@ public class StepTest extends AbstractTest {
         step.setBearbeitungsbeginn(testDate);
         step.setBearbeitungsende(testDate);
 
-        assertEquals("06/12/2023 10:00:00", step.getBearbeitungsbeginnAsFormattedString());
-        assertEquals("06/12/2023 10:00:00", step.getBearbeitungsendeAsFormattedString());
+        assertEquals("12.06.2023 10:00:00", step.getBearbeitungsbeginnAsFormattedString());
+        assertEquals("12.06.2023 10:00:00", step.getBearbeitungsendeAsFormattedString());
     }
 
     @Test
