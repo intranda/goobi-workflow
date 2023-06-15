@@ -34,7 +34,7 @@ import com.jcraft.jsch.SftpException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class FtpUtils implements AutoCloseable, ConnectionProvider {
+public class FtpUtils implements ConnectionProvider {
 
     private FTPClient ftpClient;
 

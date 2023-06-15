@@ -32,7 +32,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
-public class SftpUtils implements AutoCloseable, ConnectionProvider {
+public class SftpUtils implements ConnectionProvider {
 
     private JSch jsch;
     private ChannelSftp sftpChannel;
