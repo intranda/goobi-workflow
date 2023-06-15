@@ -24,7 +24,7 @@ import java.util.List;
 
 import com.jcraft.jsch.SftpException;
 
-public interface ConnectionProvider {
+public interface ConnectionProvider extends AutoCloseable {
 
     /**
      * Change remote folder
@@ -33,7 +33,7 @@ public interface ConnectionProvider {
      * @throws SftpException
      */
 
-    void changeRemoteFolder(String folder) throws IOException;
+    public void changeRemoteFolder(String folder) throws IOException;
 
     /**
      * get remote folder name
@@ -42,7 +42,7 @@ public interface ConnectionProvider {
      * @throws SftpException
      */
 
-    String getRemoteFolder() throws IOException;
+    public String getRemoteFolder() throws IOException;
 
     /**
      * get content of remote folder
@@ -51,7 +51,7 @@ public interface ConnectionProvider {
      * @throws SftpException
      */
 
-    List<String> listContent() throws IOException;
+    public List<String> listContent() throws IOException;
 
     /**
      * Download a remote file into a given folder
@@ -62,7 +62,7 @@ public interface ConnectionProvider {
      * @throws SftpException
      */
 
-    Path downloadFile(String filename, Path downloadFolder) throws IOException;
+    public Path downloadFile(String filename, Path downloadFolder) throws IOException;
 
     /**
      * Upload a file into the current remote folder
@@ -72,5 +72,12 @@ public interface ConnectionProvider {
      */
 
     void uploadFile(Path file) throws IOException;
+
+    /**
+     * Close connection
+     */
+
+    @Override
+    public void close();
 
 }
