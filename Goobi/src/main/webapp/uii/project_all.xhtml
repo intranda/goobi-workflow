@@ -111,7 +111,8 @@
 												<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
 												<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
 												<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
-											</button>
+                                                <f:setPropertyActionListener target="#{NavigationForm.uiStatus['toggleJournal']}" value=""/>
+        									</button>
 
 											<!-- Duplicate project -->
 											<button
