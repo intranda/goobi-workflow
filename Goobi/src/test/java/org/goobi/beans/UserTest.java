@@ -23,6 +23,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -69,18 +70,6 @@ public class UserTest extends AbstractTest {
         assertNull(user.getNachname());
         user.setNachname("fixture");
         assertEquals("fixture", user.getNachname());
-    }
-
-    @Test
-    public void testNachVorname() throws Exception {
-        User user = new User();
-        user.setVorname("");
-        user.setNachname("");
-        assertEquals(", ", user.getNachVorname());
-
-        user.setVorname("first");
-        user.setNachname("last");
-        assertEquals("last, first", user.getNachVorname());
     }
 
     @Test
@@ -636,6 +625,16 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
+    public void testToken() {
+        User user = new User();
+        assertNull(user.getToken());
+        AuthenticationToken token = new AuthenticationToken();
+        user.setToken(token);
+        assertNotNull(user.getToken());
+        assertSame(user.getToken(), token);
+    }
+
+    @Test
     public void testAdditionalData() throws Exception {
         User user = new User();
         assertTrue(user.getAdditionalData().isEmpty());
@@ -679,10 +678,13 @@ public class UserTest extends AbstractTest {
     @Test
     public void testGetNachVorname() {
         User user = new User();
-        assertEquals(user.getNachVorname(), "null, null");
+        assertEquals("null, null", user.getNachVorname());
         user.setVorname("John");
         user.setNachname("Doe");
-        assertEquals(user.getNachVorname(), "Doe, John");
+        assertEquals("Doe, John", user.getNachVorname());
+        user.setVorname("");
+        user.setNachname("");
+        assertEquals(", ", user.getNachVorname());
     }
 
     @Test
@@ -733,11 +735,30 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDestruct() throws Exception {
+    public void testGetEigenschaftenSize() {
+        User user = new User();
+        assertEquals(0, user.getEigenschaftenSize());
+        List<UserProperty> list = new ArrayList<>();
+        UserProperty p1 = new UserProperty();
+        UserProperty p2 = new UserProperty();
+        list.add(p1);
+        list.add(p2);
+        user.setEigenschaften(list);
+        assertEquals(2, user.getEigenschaften().size());
+        assertEquals(2, user.getEigenschaftenSize());
+    }
+
+    @Test
+    public void testSelfDestruct() throws Exception {
         User user = new User();
         assertEquals(UserStatus.ACTIVE, user.getStatus());
         user.selfDestruct();
         assertEquals(UserStatus.DELETED, user.getStatus());
+        // These values are the most important values that should be "removed":
+        assertNull(user.getLogin());
+        assertNull(user.getVorname());
+        assertNull(user.getNachname());
+        assertNull(user.getStandort());
     }
 
     @Test
@@ -845,5 +866,4 @@ public class UserTest extends AbstractTest {
         assertEquals(EntryType.USER, user.getEntryType());
     }
 
-    // TODO Journal related tests
 }
