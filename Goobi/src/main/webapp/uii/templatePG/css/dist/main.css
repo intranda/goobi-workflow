@@ -817,13 +817,25 @@ a:focus, a:hover, a:active {
   border: 1px solid var(--clr-neutral-300) !important;
 }
 
-.border-right,
-.gw-border-right {
-  border-right: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
+.border-start {
+  border-left: 1px solid var(--clr-neutral-300) !important;
+}
+
+.border-end {
+  border-right: 1px solid var(--clr-neutral-300) !important;
+}
+
+.border-top {
+  border-top: 1px solid var(--clr-neutral-300) !important;
 }
 
 .border-bottom {
-  border-bottom: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
+  border-bottom: 1px solid var(--clr-neutral-300) !important;
+}
+
+.border-right,
+.gw-border-right {
+  border-right: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
 }
 
 .alert-info {
@@ -1455,7 +1467,7 @@ a:focus, a:hover, a:active {
 .box.form-box .col-md-3,
 .box.form-box .col-md-9 {
   display: flex;
-  align-items: center;
+  /* align-items: center;*/
   flex-wrap: wrap;
 }
 .box.form-box .col-md-3 .box,
