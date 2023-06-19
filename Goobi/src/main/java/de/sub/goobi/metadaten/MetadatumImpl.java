@@ -135,17 +135,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     /**
      * The table of available normdata objects
      *
-     * @deprecated This table is not used anymore
      */
-    @Deprecated(since = "23.05", forRemoval = true)
     private List<List<NormData>> dataList;
 
     /**
      * The list of current normdata objects
      *
-     * @deprecated This list is not used anymore
      */
-    @Deprecated(since = "23.05", forRemoval = true)
     private List<NormData> currentData;
 
     private List<NormDataRecord> normdataList;

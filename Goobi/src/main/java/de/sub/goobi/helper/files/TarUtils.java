@@ -76,6 +76,9 @@ public class TarUtils {
     }
 
     private static void createTarOrTarGz(final Path sourceDir, TarArchiveOutputStream tar) throws IOException {
+        // allow long file names with more than 100 characters
+        tar.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+
         Files.walkFileTree(sourceDir, new SimpleFileVisitor<Path>() {
 
             @Override
