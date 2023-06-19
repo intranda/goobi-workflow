@@ -26,7 +26,6 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -218,7 +217,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     @Setter
     private boolean selected = false;
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
 
     @Getter
     @Setter
@@ -286,20 +284,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public String getBearbeitungsbeginnAsFormattedString() {
         return Helper.getDateAsFormattedString(this.bearbeitungsbeginn);
-    }
-
-    public String getStartDate() {
-        if (this.bearbeitungsbeginn != null) {
-            return this.formatter.format(this.bearbeitungsbeginn);
-        }
-        return "";
-    }
-
-    public String getEndDate() {
-        if (this.bearbeitungsende != null) {
-            return this.formatter.format(this.bearbeitungsende);
-        }
-        return "";
     }
 
     public String getBearbeitungsendeAsFormattedString() {
@@ -492,11 +476,11 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.DONE);
                 break;
             case OPEN:
-                bearbeitungsstatus = 2;
+                bearbeitungsstatus = StepStatus.INWORK.getValue();
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
             case LOCKED:
-                bearbeitungsstatus = 1;
+                bearbeitungsstatus = StepStatus.OPEN.getValue();
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
             case DONE:
@@ -508,18 +492,18 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     public void setBearbeitungsstatusDown() {
         switch (getBearbeitungsstatusEnum()) {
             case DONE:
-                bearbeitungsstatus = 2;
+                bearbeitungsstatus = StepStatus.INWORK.getValue();
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
             case ERROR:
             case INFLIGHT:
             case INWORK:
-                bearbeitungsstatus = 1;
+                bearbeitungsstatus = StepStatus.OPEN.getValue();
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
 
             case OPEN:
-                bearbeitungsstatus = 0;
+                bearbeitungsstatus = StepStatus.LOCKED.getValue();
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
             case LOCKED:
