@@ -419,7 +419,7 @@ public class CopyProcess {
 
             }
         }
-        CalcTiffheader();
+        calcTiffheader();
 
     }
 
@@ -1124,7 +1124,7 @@ public class CopyProcess {
      * Prozesstitel und andere Details generieren ================================================================
      */
 
-    public void CalcProzesstitel() {
+    public void calculateProcessTitle() {
         StringBuilder newTitleBuilder = new StringBuilder();
         String titeldefinition = "";
         ConfigProjects cp = ProzesskopieForm.initializeConfigProjects(this.prozessVorlage.getProjekt().getTitel());
@@ -1203,7 +1203,7 @@ public class CopyProcess {
             newTitle = newTitle.substring(0, newTitle.length() - 1);
         }
         this.prozessKopie.setTitel(newTitle);
-        CalcTiffheader();
+        calcTiffheader();
     }
 
     /* =============================================================== */
@@ -1232,7 +1232,7 @@ public class CopyProcess {
 
     /* =============================================================== */
 
-    public void CalcTiffheader() {
+    public void calcTiffheader() {
         String tifDefinition = "";
         ConfigProjects cp = ProzesskopieForm.initializeConfigProjects(this.prozessVorlage.getProjekt().getTitel());
         if (cp == null) {

@@ -175,9 +175,9 @@ public class AdditionalFieldTest extends AbstractTest {
     public void testMultiselect() {
         AdditionalField af = new AdditionalField();
 
-        assertTrue(af.isMultiselect());
-        af.setMultiselect(false);
         assertFalse(af.isMultiselect());
+        af.setMultiselect(true);
+        assertTrue(af.isMultiselect());
     }
 
 }

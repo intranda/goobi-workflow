@@ -291,7 +291,7 @@ public class ProzesskopieFormTest extends AbstractTest {
     }
 
     @Test
-    public void testCalcProzesstitel() {
+    public void testCalculateProcessTitle() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         form.setProzessVorlage(template);
@@ -314,7 +314,7 @@ public class ProzesskopieFormTest extends AbstractTest {
         fixture.add(field2);
         fixture.add(field3);
         form.setAdditionalFields(fixture);
-        form.CalcProzesstitel();
+        form.calculateProcessTitle();
 
     }
 
