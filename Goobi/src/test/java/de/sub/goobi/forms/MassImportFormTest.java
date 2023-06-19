@@ -189,9 +189,9 @@ public class MassImportFormTest extends AbstractTest {
         MassImportForm massImportForm = new MassImportForm();
         assertNotNull(massImportForm);
         massImportForm.setTemplate(template);
-        assertEquals("", massImportForm.Prepare());
+        assertEquals("", massImportForm.prepare());
         secondStep.setBenutzer(userList);
-        assertEquals("process_import_1", massImportForm.Prepare());
+        assertEquals("process_import_1", massImportForm.prepare());
     }
 
     @Test

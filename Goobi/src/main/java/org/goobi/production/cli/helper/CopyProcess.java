@@ -154,7 +154,7 @@ public class CopyProcess {
 
     /* =============================================================== */
 
-    public String Prepare(ImportObject io) {
+    public String prepare(ImportObject io) {
         if (this.prozessVorlage.getContainsUnreachableSteps()) {
             return "";
         }
@@ -192,7 +192,7 @@ public class CopyProcess {
         return this.naviFirstPage;
     }
 
-    public String Prepare() {
+    public String prepare() {
         if (this.prozessVorlage.getContainsUnreachableSteps()) {
             for (Step s : this.prozessVorlage.getSchritteList()) {
                 if (s.getBenutzergruppenSize() == 0 && s.getBenutzerSize() == 0) {
@@ -303,7 +303,7 @@ public class CopyProcess {
         }
     }
 
-    public String OpacAuswerten(ImportObject io) {
+    public String opacAuswerten(ImportObject io) {
         clearValues();
         readProjectConfigs();
         try {
@@ -329,7 +329,7 @@ public class CopyProcess {
      * OpacAnfrage
      */
 
-    public String OpacAuswerten() {
+    public String opacAuswerten() {
         clearValues();
         readProjectConfigs();
         try {
@@ -447,7 +447,7 @@ public class CopyProcess {
      * @throws SQLException ============================================================ == ==
      */
 
-    public String TemplateAuswahlAuswerten() throws DAOException {
+    public String readMetadataFromTemplate() throws DAOException {
         /* den ausgewählten Prozess laden */
         Process tempProzess = ProcessManager.getProcessById(this.auswahl);
         if (tempProzess.getWerkstueckeSize() > 0) {
@@ -561,13 +561,13 @@ public class CopyProcess {
 
     /* =============================================================== */
 
-    public String GoToSeite1() {
+    public String openFirstPage() {
         return this.naviFirstPage;
     }
 
     /* =============================================================== */
 
-    public String GoToSeite2() {
+    public String openPage2() {
         if (!isContentValid()) {
             return this.naviFirstPage;
         } else {
@@ -618,7 +618,7 @@ public class CopyProcess {
      * @throws WriteException
      */
 
-    public Process NeuenProzessAnlegen2()
+    public Process createNewProcess2()
             throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
 
         this.prozessKopie.setId(null);
