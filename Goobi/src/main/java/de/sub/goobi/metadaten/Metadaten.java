@@ -1811,7 +1811,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -5146,8 +5146,13 @@ public class Metadaten implements Serializable {
         List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.MetadataEditor);
         for (IPlugin p : plugins) {
             IMetadataEditorExtension ext = (IMetadataEditorExtension) p;
-            ext.initializePlugin(this);
-            extensions.add(ext);
+            try {
+                ext.initializePlugin(this);
+                extensions.add(ext);
+            } catch (Exception e) {
+                // The error  is handled by the plugin, don't log it again.
+                // Do not add this plugin to the list of available plugins
+            }
         }
         if (!extensions.isEmpty()) {
             extensions.sort((IMetadataEditorExtension o1, IMetadataEditorExtension o2) -> o1.getTitle().compareTo(o2.getTitle()));
