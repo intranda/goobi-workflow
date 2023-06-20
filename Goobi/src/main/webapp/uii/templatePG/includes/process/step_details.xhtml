@@ -243,7 +243,7 @@
 						rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and not empty ProzessverwaltungForm.mySchritt.allScriptPaths}" />
 					<h:panelGroup
 						rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and not empty ProzessverwaltungForm.mySchritt.allScriptPaths}">
-						<h:panelGroup styleClass="block">
+						<h:panelGroup styleClass="d-block">
 							<h:outputText
 								id="nameautomatisch"
 								value="#{ProzessverwaltungForm.mySchritt.scriptname1}" />
@@ -253,7 +253,7 @@
 								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad}" />
 						</h:panelGroup>
 
-						<h:panelGroup styleClass="block">
+						<h:panelGroup styleClass="d-block">
 							<h:outputText
 								id="nameautomatisch2"
 								value="#{ProzessverwaltungForm.mySchritt.scriptname2}" />
@@ -263,7 +263,7 @@
 								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad2}" />
 						</h:panelGroup>
 
-						<h:panelGroup styleClass="block">
+						<h:panelGroup styleClass="d-block">
 							<h:outputText
 								id="nameautomatisch3"
 								value="#{ProzessverwaltungForm.mySchritt.scriptname3}" />
@@ -273,7 +273,7 @@
 								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad3}" />
 						</h:panelGroup>
 
-						<h:panelGroup styleClass="block">
+						<h:panelGroup styleClass="d-block">
 							<h:outputText
 								id="nameautomatisch4"
 								value="#{ProzessverwaltungForm.mySchritt.scriptname4}" />
@@ -283,7 +283,7 @@
 								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad4}" />
 						</h:panelGroup>
 
-						<h:panelGroup styleClass="block">
+						<h:panelGroup styleClass="d-block">
 							<h:outputText
 								id="nameautomatisch5"
 								value="#{ProzessverwaltungForm.mySchritt.scriptname5}" />
@@ -447,32 +447,28 @@
 							id="automatic"
 							onclick="txtAutomatischAnzeigen()"
 							value="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" />
+
+
+						<div id="messageQueueDropDown" class="ms-3">
+							<h:selectOneMenu
+								id="messageQueue"
+								pt:aria-label="#{msgs.messageQueue}"
+								styleClass="form-select col-12"
+								value="#{ProzessverwaltungForm.mySchritt.messageQueue}"
+								tabindex="0">
+								<f:selectItems
+									value="#{ProzessverwaltungForm.possibleMessageQueues}"
+									var="item"
+									itemLabel="#{msgs['queue_'.concat(item.toString())]}" />
+							</h:selectOneMenu>
+							<h:message
+								for="messageQueue"
+								showDetail="true"
+								styleClass="help-inline font-danger" />
+						</div>
 						<!-- Help messages, inline + warning -->
 						<intranda:formHelp content="#{msgs.helpProcessStepAutomatic}" msgFor="automatic" />
-
-
-						<div id="messageQueueDropDown" class="ps-5">
-							<div class="row border border-0">
-								<h:selectOneMenu
-									id="messageQueue"
-									pt:aria-label="#{msgs.messageQueue}"
-									styleClass="form-select col-12"
-									value="#{ProzessverwaltungForm.mySchritt.messageQueue}"
-									tabindex="0">
-									<f:selectItems
-										value="#{ProzessverwaltungForm.possibleMessageQueues}"
-										var="item"
-										itemLabel="#{msgs['queue_'.concat(item.toString())]}" />
-								</h:selectOneMenu>
-								<h:message
-									for="messageQueue"
-									showDetail="true"
-									styleClass="help-inline font-danger" />
-								<intranda:formHelp content="#{msgs.helpMessageQueueSelection}" />
-							</div>
-						</div>
-						
-						
+						<intranda:formHelp content="#{msgs.helpMessageQueueSelection}" />
 					</div>
 				</div>
 				<!-- // AUTOMATIC -->
