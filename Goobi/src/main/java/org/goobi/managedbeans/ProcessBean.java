@@ -672,7 +672,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             Process einziger = (Process) this.paginator.getList().get(0);
             ProzesskopieForm processCopyForm = Helper.getBeanByClass(ProzesskopieForm.class);
             processCopyForm.setProzessVorlage(einziger);
-            return processCopyForm.Prepare();
+            return processCopyForm.prepare();
         } else {
             return PAGE_PROCESS_ALL;
         }

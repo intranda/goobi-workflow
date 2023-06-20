@@ -121,7 +121,7 @@
 
 											<div class="col-2 pe-0 py-0 min-vh-0">
 												<button
-													jsf:action="#{ProzesskopieForm.OpacAuswerten}"
+													jsf:action="#{ProzesskopieForm.opacAuswerten}"
 													jsf:id="performOpacQuery"
 													title="#{msgs.opacAbfragen}"
 													class="btn btn-primary-400"
@@ -181,7 +181,7 @@
 
 											<div class="col-2 pe-0 py-0 min-vh-0">
 												<button
-													jsf:action="#{ProzesskopieForm.TemplateAuswahlAuswerten}"
+													jsf:action="#{ProzesskopieForm.readMetadataFromTemplate}"
 													jsf:id="templateButton"
 													title="#{msgs.AuswaehlenAusVorhandenenProzessen}"
 													class="btn btn-primary-400"
@@ -458,7 +458,7 @@
 								<h:commandLink
 									styleClass="btn btn-primary-400"
 									id="nextPage"
-									action="#{ProzesskopieForm.GoToSeite2}"
+									action="#{ProzesskopieForm.openPage2}"
 									rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize gt 0 or ProzesskopieForm.enableFileUpload}">
 									<span>
 										<h:outputText value="#{msgs.weiter}" />
@@ -469,7 +469,7 @@
 								<button
 									class="btn btn-success"
 									jsf:id="absenden"
-									jsf:action="#{ProzesskopieForm.NeuenProzessAnlegen}"
+									jsf:action="#{ProzesskopieForm.createNewProcess}"
 									jsf:rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize eq 0 and !ProzesskopieForm.enableFileUpload}">
 									<i class="fa fa-save margin-right-5"></i>
 									<span>
@@ -482,7 +482,7 @@
 								<button
 									jsf:id="generateTitle"
 									class="btn btn-blank trigger-delete"
-									jsf:action="#{ProzesskopieForm.CalcProzesstitel}">
+									jsf:action="#{ProzesskopieForm.calculateProcessTitle}">
 									<h:outputText value="#{msgs.generieren}" />
 									<f:ajax
 										execute="@form"

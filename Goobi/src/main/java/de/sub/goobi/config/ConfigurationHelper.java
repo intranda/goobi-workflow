@@ -791,6 +791,28 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("downloadAvailableColumn");
     }
 
+    public Map<String, String> getErrorPropertyTypes() {
+        Map<String, String> errorProperties = new LinkedHashMap<>();
+        Iterator<String> it = getLocalKeys("task.error");
+        while (it.hasNext()) {
+            String keyName = it.next();
+            String value = getLocalString(keyName);
+            errorProperties.put(keyName.replace("task.error.", ""), value);
+        }
+        return errorProperties;
+    }
+
+    public Map<String, String> getSolutionPropertyTypes() {
+        Map<String, String> errorProperties = new LinkedHashMap<>();
+        Iterator<String> it = getLocalKeys("task.solution");
+        while (it.hasNext()) {
+            String keyName = it.next();
+            String value = getLocalString(keyName);
+            errorProperties.put(keyName.replace("task.solution.", ""), value);
+        }
+        return errorProperties;
+    }
+
     /*
      * category in goobi_config.properties: SCRIPTS
      */
@@ -905,6 +927,18 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isEnableWebApi() {
         return getLocalBoolean("useWebApi", false);
+    }
+
+    public String getApiTokenSalt() {
+        String value = getLocalString("apiTokenSalt");
+        if (StringUtils.isBlank(value)) {
+            RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+            Object salt = rng.nextBytes();
+            value = salt.toString();
+            setParameter("apiTokenSalt", value);
+            saveLocalConfig();
+        }
+        return value;
     }
 
     public String getJwtSecret() {
@@ -1281,40 +1315,6 @@ public class ConfigurationHelper implements Serializable {
 
     public static void resetConfigurationFile() {
         instance = null;
-    }
-
-    public Map<String, String> getErrorPropertyTypes() {
-        Map<String, String> errorProperties = new LinkedHashMap<>();
-        Iterator<String> it = getLocalKeys("task.error");
-        while (it.hasNext()) {
-            String keyName = it.next();
-            String value = getLocalString(keyName);
-            errorProperties.put(keyName.replace("task.error.", ""), value);
-        }
-        return errorProperties;
-    }
-
-    public Map<String, String> getSolutionPropertyTypes() {
-        Map<String, String> errorProperties = new LinkedHashMap<>();
-        Iterator<String> it = getLocalKeys("task.solution");
-        while (it.hasNext()) {
-            String keyName = it.next();
-            String value = getLocalString(keyName);
-            errorProperties.put(keyName.replace("task.solution.", ""), value);
-        }
-        return errorProperties;
-    }
-
-    public String getApiTokenSalt() {
-        String value = getLocalString("apiTokenSalt");
-        if (StringUtils.isBlank(value)) {
-            RandomNumberGenerator rng = new SecureRandomNumberGenerator();
-            Object salt = rng.nextBytes();
-            value = salt.toString();
-            setParameter("apiTokenSalt", value);
-            saveLocalConfig();
-        }
-        return value;
     }
 
     public void generateAndSaveJwtSecret() {

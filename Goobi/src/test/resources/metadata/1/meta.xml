@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mets:mets OBJID="" xsi:schemaLocation="http://www.loc.gov/standards/premis/ http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/standards/mix/ http://www.loc.gov/standards/mix/mix.xsd" xmlns:mets="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:goobi="http://meta.goobi.org/v1.5.1/" xmlns:xlink="http://www.w3.org/1999/xlink">
-   <mets:metsHdr CREATEDATE="2022-09-01T15:06:02Z">
+   <mets:metsHdr CREATEDATE="2023-06-19T06:55:24Z">
       <mets:agent OTHERTYPE="SOFTWARE" ROLE="CREATOR" TYPE="OTHER">
-         <mets:name>Goobi - 9e644 - 2022-07-08T08:20:22Z</mets:name>
+         <mets:name>Goobi - 447dc - 2022-10-17T06:34:30Z</mets:name>
          <mets:note>Goobi</mets:note>
       </mets:agent>
    </mets:metsHdr>
@@ -41,10 +41,10 @@
             <mets:FLocat LOCTYPE="URL" xlink:href="00000001.tif"/>
          </mets:file>
          <mets:file ID="FILE_0002" MIMETYPE="image/tiff">
-            <mets:FLocat LOCTYPE="URL" xlink:href="00000003.tif"/>
+            <mets:FLocat LOCTYPE="URL" xlink:href="00000002.tif"/>
          </mets:file>
          <mets:file ID="FILE_0003" MIMETYPE="image/tiff">
-            <mets:FLocat LOCTYPE="URL" xlink:href="00000002.tif"/>
+            <mets:FLocat LOCTYPE="URL" xlink:href="00000003.tif"/>
          </mets:file>
          <mets:file ID="FILE_0004" MIMETYPE="image/tiff">
             <mets:FLocat LOCTYPE="URL" xlink:href="00000004.tif"/>
@@ -70,10 +70,10 @@
             <mets:fptr FILEID="FILE_0001"/>
          </mets:div>
          <mets:div ID="PHYS_0002" ORDER="2" ORDERLABEL="uncounted" TYPE="page">
-            <mets:fptr FILEID="FILE_0003"/>
+            <mets:fptr FILEID="FILE_0002"/>
          </mets:div>
          <mets:div ID="PHYS_0003" ORDER="3" ORDERLABEL="uncounted" TYPE="page">
-            <mets:fptr FILEID="FILE_0002"/>
+            <mets:fptr FILEID="FILE_0003"/>
          </mets:div>
          <mets:div ID="PHYS_0004" ORDER="4" ORDERLABEL="uncounted" TYPE="page">
             <mets:fptr FILEID="FILE_0004"/>
@@ -88,8 +88,8 @@
    </mets:structMap>
    <mets:structLink>
       <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0000"/>
-      <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0000"/>
       <mets:smLink xlink:to="PHYS_0002" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0000"/>
       <mets:smLink xlink:to="PHYS_0004" xlink:from="LOG_0000"/>
       <mets:smLink xlink:to="PHYS_0005" xlink:from="LOG_0000"/>
       <mets:smLink xlink:to="PHYS_0006" xlink:from="LOG_0000"/>

@@ -261,7 +261,7 @@
 								class="btn btn-success"
 								jsf:id="absenden"
 								type="submit"
-								jsf:action="#{ProzesskopieForm.NeuenProzessAnlegen}">
+								jsf:action="#{ProzesskopieForm.createNewProcess}">
 								<i class="fa fa-save"></i>
 								<span>
 									<h:outputText value="Speichern" />
@@ -272,7 +272,7 @@
 							<button
 								jsf:id="deleteUser"
 								class="btn btn-blank trigger-delete"
-								jsf:action="#{ProzesskopieForm.GoToSeite1}">
+								jsf:action="#{ProzesskopieForm.openFirstPage}">
 								<i class="fa fa-arrow-circle-o-left"></i>
 								<span>
 									<h:outputText value="#{msgs.zurueck}" />

@@ -177,7 +177,7 @@ public class MassImportForm implements Serializable {
 
     }
 
-    public String Prepare() {
+    public String prepare() {
         if (this.template.getContainsUnreachableSteps()) {
             if (this.template.getSchritteList().isEmpty()) {
                 Helper.setFehlerMeldung("noStepsInWorkflow");
