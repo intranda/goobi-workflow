@@ -236,7 +236,7 @@
 										</button>
 		
 										<h:panelGroup
-											styleClass="block"
+											styleClass="d-block mt-3"
 											rendered="#{item.panelAusgeklappt}">
 		
 											<intranda:box
@@ -248,7 +248,8 @@
 												
 												<h:panelGrid
 													columns="2"
-													class="table table-hover table-bordered #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}">
+													class="table table-hover table-bordered #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"
+                                                    columnClasses="gw-width7, gw-width9">
 	
 													<h:outputText value="#{msgs.titel}:" />
 													<h:outputText value="#{item.titelLokalisiert}" />
@@ -388,7 +389,7 @@
 															value="#{msgs.batchStep}"
 															rendered="#{item.batchStep}" />
 														<h:outputText
-															styleClass="block"
+															styleClass="d-block"
 															value="#{msgs.updateMetadataIndex}"
 															rendered="#{item.updateMetadataIndex}" />
 														<h:outputText
@@ -413,7 +414,7 @@
 														rendered="#{item.typScriptStep and not empty item.allScriptPaths}">
 	
 														<h:panelGroup
-															styleClass="block"
+															styleClass="d-block"
 															rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}">
 															<h:outputText value="#{item.scriptname1}" />
 															<h:outputText
@@ -422,7 +423,7 @@
 														</h:panelGroup>
 	
 														<h:panelGroup
-															styleClass="block"
+															styleClass="d-block"
 															rendered="#{item.typAutomatischScriptpfad2 != null and item.typAutomatischScriptpfad2 != ''}">
 															<h:outputText value="#{item.scriptname2}" />
 															<h:outputText
@@ -431,7 +432,7 @@
 														</h:panelGroup>
 	
 														<h:panelGroup
-															styleClass="block"
+															styleClass="d-block"
 															rendered="#{item.typAutomatischScriptpfad3 != null and item.typAutomatischScriptpfad3 != ''}">
 															<h:outputText value="#{item.scriptname3}" />
 															<h:outputText
@@ -440,7 +441,7 @@
 														</h:panelGroup>
 	
 														<h:panelGroup
-															styleClass="block"
+															styleClass="d-block"
 															rendered="#{item.typAutomatischScriptpfad4 != null and item.typAutomatischScriptpfad4 != ''}">
 															<h:outputText value="#{item.scriptname4}" />
 															<h:outputText
@@ -449,7 +450,7 @@
 														</h:panelGroup>
 	
 														<h:panelGroup
-															styleClass="block"
+															styleClass="d-block"
 															rendered="#{item.typAutomatischScriptpfad5 != null and item.typAutomatischScriptpfad5 != ''}">
 															<h:outputText value="#{item.scriptname5}" />
 															<h:outputText
@@ -467,7 +468,7 @@
 														rendered="#{item.typModulName != null and item.typModulName != ''}" />
 	
 													<h:outputText
-														value="#{msgs.usergroup_assignedRoles}"
+														value="#{msgs.usergroup_assignedRoles}:"
 														rendered="#{not empty item.benutzergruppen}" />
 													<h:panelGroup rendered="#{not empty item.benutzergruppen}">
 														<x:dataList
