@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <goobiProjects>
 
-<!-- 
+<!--
 Sequence for determining the right <project> element:
 
 1.) check if the exact project name was used in the name attribute or a name element
@@ -121,7 +121,7 @@ Sequence for determining the right <project> element:
             <templates use="true" />
             <defaultdoctype>monograph</defaultdoctype>
             <metadatageneration use="true" />
-            
+
             <fileupload use="false">
                 <!-- The regex strings must be enclosed in slashes. -->
                 <!-- Primefaces does not accept regex without slashes -->
@@ -133,7 +133,6 @@ Sequence for determining the right <project> element:
                 <folder regex="/^.*\\.(jpg\|jpeg\|png\|tif\|jp2)$/" messageKey="uploadFileErrorMaster">master</folder>
                 <folder regex="/^.*\\.jpg$/" messageKey="uploadFileErrorMedia">media</folder>
                 <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorExport">export</folder>
-                
             </fileupload>
         </createNewProcess>
 
