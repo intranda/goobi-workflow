@@ -2,10 +2,10 @@
 <config>
 
   <!-- Configure a list of validation commands. A command can be preset
-       in the process template. If set, it is executed before a regular 
+       in the process template. If set, it is executed before a regular
        export happens. The validation checks the exported metadata file.
 
-       Each <validation /> setting has a label and a command attribute. 
+       Each <validation /> setting has a label and a command attribute.
        The content of the label is displayed in the Goobi workflow UI
        The command is executed and the placeholder {EXPORTFILE} is replaced
        with the absolute path to the exported metadata file.
