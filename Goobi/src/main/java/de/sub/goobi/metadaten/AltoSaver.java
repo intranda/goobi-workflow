@@ -27,7 +27,6 @@ package de.sub.goobi.metadaten;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.goobi.beans.AltoChange;
@@ -42,6 +41,7 @@ import org.jdom2.output.XMLOutputter;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlTools;
 
 public class AltoSaver {
@@ -63,7 +63,7 @@ public class AltoSaver {
                 stringEl.setAttribute("CONTENT", change.getValue());
             }
         }
-        try (OutputStream out = Files.newOutputStream(altoFile)) {
+        try (OutputStream out = StorageProvider.getInstance().newOutputStream(altoFile)) {
             XMLOutputter xmlOut = new XMLOutputter(Format.getPrettyFormat());
             xmlOut.output(doc, out);
         }
