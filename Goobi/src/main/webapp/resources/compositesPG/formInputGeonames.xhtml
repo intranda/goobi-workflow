@@ -69,7 +69,7 @@
                     styleClass="form-control"
                     disabled="true"
                     readonly="true"
-                    value="#{cc.attrs.field.gndNumber}" />
+                    value="#{cc.attrs.field.geonamesNumber}" />
 
 
                 <h:message
@@ -90,16 +90,13 @@
                     class="btn btn-blank me-2"
                     title="#{msgs.NORM_geonamesSearch}"
                     aria-label="#{msgs.NORM_gndSearch}"
-                    jsf:onclick="$('[id$=geonamesSearchBox]').modal('show');"
+                    jsf:onclick="$(this).parent().parent().next().modal('show');"
                     type="button">
                     <img
                         class="toggle"
                         style="width: 16px;"
                         alt="GND"
                         src="template/img/Icons_GeoNames_color.png" />
-                    <f:ajax
-                        execute="@this"
-                        render="geonamesSearchBox" />
                 </button>
             </h:panelGroup>
             <!-- // CONTENT -->
@@ -109,6 +106,7 @@
 
 
         <h:panelGroup
+            data-target="geonames-modal"
             styleClass="modal p-4 py-md-5"
             layout="block"
             id="geonamesSearchBox"
