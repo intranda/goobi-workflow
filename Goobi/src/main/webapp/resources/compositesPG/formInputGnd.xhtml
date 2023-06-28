@@ -88,7 +88,7 @@
                     class="btn btn-blank me-2"
                     title="#{msgs.NORM_gndSearch}"
                     aria-label="#{msgs.NORM_gndSearch}"
-                    jsf:onclick="$('[id$=gndSearchBox]').modal('show');"
+                    jsf:onclick="$(this).parent().parent().next().modal('show');"
                     type="button">
                     <img
                         class="toggle"
@@ -239,7 +239,7 @@
                                                 target="#{cc.attrs.field.searchOption}" />
                                             <f:setPropertyActionListener
                                                 value=""
-                                                target="#{cc.attrs.field.gndSearchValue}" />
+                                                target="#{cc.attrs.field.searchValue}" />
                                             <i class="fa fa-check" />
                                         </button>
                                     </div>
