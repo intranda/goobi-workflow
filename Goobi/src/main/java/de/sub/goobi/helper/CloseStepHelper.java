@@ -67,7 +67,7 @@ public class CloseStepHelper {
      * @return Currently always true, this value is meant to be used for success or failure information in future versions
      */
     public static synchronized boolean closeStep(Step step, User user) {
-        CloseStepHelper.instance.helperSchritteInstance.closeStepAndFollowingSteps(step, user);
+        CloseStepHelper.getInstance().helperSchritteInstance.closeStepAndFollowingSteps(step, user);
         return true;
     }
 
