@@ -110,6 +110,7 @@
             aria-labelledby="gndSearchBox"
             aria-hidden="true">
             <div
+                style="width: 50%; max-width: 50%;"
                 class="modal-dialog modal-dialog-scrollable"
                 role="document">
                 <h:panelGroup
@@ -135,6 +136,7 @@
                         <div class="row">
                             <div class="col-12 col-md-3">
                                 <h:selectOneMenu
+                                    styleClass="form-control"
                                     value="#{cc.attrs.field.searchOption}"
                                     pt:aria-label="#{msgs.filter}">
                                     <f:selectItem
@@ -161,7 +163,7 @@
                                     styleClass="form-control"
                                     value="#{cc.attrs.field.searchValue}" />
                             </div>
-                            <div>
+                            <div class="col-12 col-md-2">
                                 <button
                                     jsf:id="gndSearchButton"
                                     class="btn btn-blank"
