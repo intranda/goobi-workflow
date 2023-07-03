@@ -41,12 +41,12 @@
 		<div class="row" style="#{cc.attrs.style}">
 
 			<!-- LABEL -->
-            <ui:fragment rendered="#{cc.attrs.displayLabel}">
-    			<div class="#{cc.attrs.classLeft} control-label" tabindex="-1">
-    				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
-    					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
-    			</div>
-            </ui:fragment>
+          
+            <div class="#{cc.attrs.classLeft}" tabindex="-1">
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
+                <composite:insertChildren />                        
+            </div>
 			<!-- // LABEL -->
 
 			<!-- CONTENT -->

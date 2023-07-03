@@ -4,6 +4,9 @@
 
     <composite:interface>
         <composite:attribute name="content" />
+        <composite:attribute name="labelRequired" default="false" />
+        <composite:attribute name="label" />
+        <composite:attribute name="labelFor" />
     </composite:interface>
 
     <composite:implementation>
@@ -22,7 +25,7 @@
                 <i class="ms-2 text-primary fa fa-asterisk" aria-hidden="true" title="#{msgs.requiredField}" data-bs-toggle="tooltip" data-bs-placement="right"></i>
 			</label>
 		</ui:fragment>
-		
+		<composite:insertChildren />
     </composite:implementation>
 
 </ui:composition>
