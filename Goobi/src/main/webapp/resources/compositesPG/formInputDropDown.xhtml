@@ -21,6 +21,7 @@
 		<composite:attribute name="classLeft" default="col-12 col-md-3" />
 		<composite:attribute name="classRight" default="col-12 col-md-9" />
 		<composite:attribute name="tabindex" default="0" />
+        <composite:attribute name="displayLabel" default="true" />        
 		<composite:attribute
 			name="validationMethod"
 			default="null"
@@ -37,14 +38,16 @@
             style="#{cc.attrs.style}">
 
             <!-- LABEL -->
-            <div
-                class="#{cc.attrs.classLeft}"
-                tabindex="-1">
-                <intranda:formLabel
-                    label="#{cc.attrs.label}"
-                    labelFor="#{cc.attrs.name}"
-                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
-            </div>
+            <ui:fragment rendered="#{cc.attrs.displayLabel}">
+                <div
+                    class="#{cc.attrs.classLeft}"
+                    tabindex="-1">
+                    <intranda:formLabel
+                        label="#{cc.attrs.label}"
+                        labelFor="#{cc.attrs.name}"
+                        labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
+                </div>
+            </ui:fragment>
             <!-- // LABEL -->
 
             <!-- CONTENT -->

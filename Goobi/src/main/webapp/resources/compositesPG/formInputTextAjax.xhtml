@@ -21,6 +21,7 @@
         <composite:attribute name="execute" default="" />
         <composite:attribute name="render" default="" />
         <composite:attribute name="ajaxevent" default="blur" />
+        <composite:attribute name="displayLabel" default="true" />        
 	</composite:interface>
 
 	<composite:implementation>
@@ -29,10 +30,12 @@
         <div class="row">
 
             <!-- LABEL -->
-            <div class="#{cc.attrs.classLeft}">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
-                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
-            </div> 
+            <ui:fragment rendered="#{cc.attrs.displayLabel}">
+                <div class="#{cc.attrs.classLeft}">
+                    <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                        labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
+                </div> 
+            </ui:fragment>
             <!-- // LABEL -->
 
             <!-- CONTENT -->

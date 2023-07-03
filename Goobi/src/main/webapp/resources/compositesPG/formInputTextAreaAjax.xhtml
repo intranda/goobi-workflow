@@ -25,6 +25,7 @@
         <composite:attribute name="execute" default="" />
         <composite:attribute name="render" default="" />
         <composite:attribute name="ajaxevent" default="blur" />
+        <composite:attribute name="displayLabel" default="true" />
         
 		<composite:attribute
 			name="validationMethod"
@@ -40,10 +41,12 @@
 		<div class="row" style="#{cc.attrs.style}">
 
 			<!-- LABEL -->
-			<div class="#{cc.attrs.classLeft} control-label" tabindex="-1">
-				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
-					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
-			</div>
+            <ui:fragment rendered="#{cc.attrs.displayLabel}">
+    			<div class="#{cc.attrs.classLeft} control-label" tabindex="-1">
+    				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+    					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
+    			</div>
+            </ui:fragment>
 			<!-- // LABEL -->
 
 			<!-- CONTENT -->
