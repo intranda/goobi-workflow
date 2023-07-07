@@ -107,7 +107,7 @@ public class BagCreation {
         } catch (NoSuchAlgorithmException | IOException e) {
             log.error(e);
         }
-        log.info("Files  and Metadata aranged in Bag structure");
+        log.info("Files and Metadata aranged in Bag structure");
 
         // update folder
         ieFolder = updatedIeFolder;
