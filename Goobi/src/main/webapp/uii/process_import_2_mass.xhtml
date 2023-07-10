@@ -107,6 +107,13 @@
 						icon="fa-cloud-download"
 						title="#{msgs.MassImport}">
 
+                        <ui:include src="includes/process/processcreation_properties.xhtml" >
+                         <ui:param
+                                    name="properties"
+                                    value="#{MassImportForm.configuredProperties}" />
+                        
+                        </ui:include>
+
 						<x:dataList
 							forceId="true"
 							var="property"
@@ -165,23 +172,20 @@
 
 						</x:dataList>
 
-						<h:panelGroup
-							rendered="#{MassImportForm.plugin.title == 'Multiple Manifestation Millennium Import'}">
-							<ui:include
-								src="plugins/import_multiManifestationMillenium.xhtml" />
-						</h:panelGroup>
-						<h:panelGroup
-								rendered="#{MassImportForm.plugin.title == 'Soton Multivolume Import'}">
-								<ui:include src="plugins/import_soton.xhtml" />
-							</h:panelGroup>
+                        <h:panelGroup rendered="#{MassImportForm.plugin.title == 'Multiple Manifestation Millennium Import'}">
+                            <ui:include src="plugins/import_multiManifestationMillenium.xhtml" />
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{MassImportForm.plugin.title == 'Soton Multivolume Import'}">
+                            <ui:include src="plugins/import_soton.xhtml" />
+                        </h:panelGroup>
 
-							<h:panelGroup rendered="#{MassImportForm.pagePath != NULL}">
-								<ui:include src="#{MassImportForm.pagePath}" />
-							</h:panelGroup>
+                        <h:panelGroup rendered="#{MassImportForm.pagePath != NULL}">
+                            <ui:include src="#{MassImportForm.pagePath}" />
+                        </h:panelGroup>
 
-						
 
-						<div class="form-actions">
+
+                        <div class="form-actions">
 							<!-- Cancel -->
 							<a
 								jsf:id="link_blank"

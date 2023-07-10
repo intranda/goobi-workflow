@@ -43,6 +43,7 @@ import org.goobi.beans.Institution;
 import org.goobi.beans.Ruleset;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -110,13 +111,13 @@ public class HelperFormTest extends AbstractTest {
         FacesContextHelper.reset();
     }
 
-    // @Test
+    @Test
     public void testConstructor() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
     }
 
-    // @Test
+    @Test
     public void testGetBuildversion() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
@@ -124,15 +125,15 @@ public class HelperFormTest extends AbstractTest {
         assertNotNull(fixture);
     }
 
-    // @Test
+    @Test
     public void testGetVersion() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
         String fixture = helperForm.getVersion();
-        assertTrue(fixture.startsWith("21."));
+        assertTrue(fixture.startsWith("23."));
     }
 
-    // @Test
+    @Test
     public void testGetApplicationHeaderTitle() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
@@ -140,7 +141,7 @@ public class HelperFormTest extends AbstractTest {
         assertNotNull(fixture);
     }
 
-    // @Test
+    @Test
     public void testGetApplicationTitle() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
@@ -148,7 +149,7 @@ public class HelperFormTest extends AbstractTest {
         assertNotNull(fixture);
     }
 
-    // @Test
+    @Test
     public void testGetApplicationWebsiteUrl() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
@@ -172,7 +173,7 @@ public class HelperFormTest extends AbstractTest {
         assertNotNull(fixture);
     }
 
-    // @Test
+    @Test
     public void testGetAnonymized() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
@@ -245,7 +246,7 @@ public class HelperFormTest extends AbstractTest {
         assertEquals(5, fixture.size());
     }
 
-    //  @Test
+    @Test
     public void testGetTimeZone() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
@@ -253,7 +254,7 @@ public class HelperFormTest extends AbstractTest {
         assertNotNull(tz);
     }
 
-    //  @Test
+    @Test
     public void testGetMassImportAllowed() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
@@ -267,7 +268,7 @@ public class HelperFormTest extends AbstractTest {
         assertFalse(helperForm.isPasswordIsChangable());
     }
 
-    //  @Test
+    @Test
     public void testIsShowError() {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
