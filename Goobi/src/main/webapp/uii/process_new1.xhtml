@@ -459,7 +459,7 @@
 									styleClass="btn btn-primary-400"
 									id="nextPage"
 									action="#{ProzesskopieForm.openPage2}"
-									rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize gt 0 or ProzesskopieForm.enableFileUpload}">
+									rendered="#{ProzesskopieForm.configuredProperties.size() gt 0 or ProzesskopieForm.enableFileUpload}">
 									<span>
 										<h:outputText value="#{msgs.weiter}" />
 									</span>
@@ -470,7 +470,7 @@
 									class="btn btn-success"
 									jsf:id="absenden"
 									jsf:action="#{ProzesskopieForm.createNewProcess}"
-									jsf:rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize eq 0 and !ProzesskopieForm.enableFileUpload}">
+									jsf:rendered="#{ProzesskopieForm.configuredProperties.size() eq 0 and !ProzesskopieForm.enableFileUpload}">
 									<i class="fa fa-save margin-right-5"></i>
 									<span>
 										<h:outputText value="#{msgs.speichern}" />
