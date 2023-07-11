@@ -31,7 +31,7 @@
         <composite:attribute name="render" default="" />      
                 
         <composite:attribute name="hidePleaseSelectMessage" default="false" />
-                 
+        <composite:attribute name="onfocus" default="" />         
          
     </composite:interface>
 
@@ -57,6 +57,7 @@
               >
                 
             <h:selectOneMenu
+                onfocus="#{cc.attrs.onfocus}"
                 id="#{cc.attrs.name}"
                 forceId="true"
                 styleClass="#{cc.attrs.fieldStyle}"
