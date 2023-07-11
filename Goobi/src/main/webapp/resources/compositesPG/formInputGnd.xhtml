@@ -23,6 +23,7 @@
         <composite:attribute name="classLeft" default="col-12 col-md-3" />
         <composite:attribute name="classRight" default="col-12 col-md-8" />
         <composite:attribute name="tabindex" default="0" />
+        <composite:attribute name="onfocus" default="" />
     </composite:interface>
 
     <composite:implementation>
@@ -51,7 +52,8 @@
                     styleClass="form-control"
                     disabled="true"
                     readonly="true"
-                    value="#{cc.attrs.field.value}" />
+                    value="#{cc.attrs.field.value}"
+                    onfocus="#{cc.attrs.onfocus}" />
 
                 <x:inputText
                     id="gndid"

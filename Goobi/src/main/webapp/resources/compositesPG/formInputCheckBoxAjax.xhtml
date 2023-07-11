@@ -22,7 +22,8 @@
         <composite:attribute name="classLeft" default="col-12 col-md-3" />
         <composite:attribute name="classRight" default="col-12 col-md-9" />
         <composite:attribute name="tabindex" default="0" />
-        <composite:attribute name="displayLabel" default="true" />        
+        <composite:attribute name="displayLabel" default="true" />       
+        <composite:attribute name="onfocus" default="" /> 
     </composite:interface>
 
     <composite:implementation>
@@ -43,7 +44,8 @@
                 <h:selectBooleanCheckbox
                     id="#{cc.attrs.name}"
                     styleClass="form-check-input #{cc.attrs.fieldStyle}"
-                    value="#{cc.attrs.field}">
+                    value="#{cc.attrs.field}"
+                    onfocus="#{cc.attrs.onfocus}">
                     <f:ajax
                         event="#{cc.attrs.ajaxEvent}"
                         render="#{cc.attrs.ajaxRender}"

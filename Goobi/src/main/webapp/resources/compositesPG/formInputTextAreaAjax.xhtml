@@ -26,7 +26,7 @@
         <composite:attribute name="render" default="" />
         <composite:attribute name="ajaxevent" default="blur" />
         <composite:attribute name="displayLabel" default="true" />
-        
+        <composite:attribute name="onfocus" default="" />
 		<composite:attribute
 			name="validationMethod"
 			default="null"
@@ -61,7 +61,8 @@
 					tabindex="#{cc.attrs.tabindex}"
 					pt:aria-label="#{cc.attrs.label}"
 					validator="#{cc.attrs.validationMethod}"
-					idForValidator="#{cc.attrs.idForValidator}">
+					idForValidator="#{cc.attrs.idForValidator}"
+                    onfocus="#{cc.attrs.onfocus}">
                         <f:ajax execute="#{cc.attrs.execute}" render="#{cc.attrs.render}" event="blur"/>
                     </h:inputTextarea>
                 <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" /> 

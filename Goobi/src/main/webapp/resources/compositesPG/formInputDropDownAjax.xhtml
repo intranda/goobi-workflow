@@ -28,7 +28,8 @@
       <composite:attribute name="onevent"/>
       <composite:attribute name="tabindex" default="0" />
       <composite:attribute name="hidePleaseSelectMessage" default="true" />
-        <composite:attribute name="displayLabel" default="true" />      
+      <composite:attribute name="displayLabel" default="true" />
+      <composite:attribute name="onfocus" default="" />  
     </composite:interface>
 
     <composite:implementation>
@@ -46,14 +47,14 @@
 			<!-- CONTENT -->
             <div class="#{cc.attrs.classRight}">
 	            <h:panelGroup rendered="#{cc.attrs.onevent != null}">
-	            	<h:selectOneMenu id="#{cc.attrs.name}_withEvent" styleClass="#{cc.attrs.fieldStyle}" readonly="#{cc.attrs.readonly}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
+	            	<h:selectOneMenu id="#{cc.attrs.name}_withEvent" styleClass="#{cc.attrs.fieldStyle}" readonly="#{cc.attrs.readonly}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}" onfocus="#{cc.attrs.onfocus}">
 	                    <f:ajax event="#{cc.attrs.ajaxEvent}" render="#{cc.attrs.ajaxRender}" onevent="#{cc.attrs.onevent}"/>
 	                    <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="#{cc.attrs.hidePleaseSelectMessage}" />
 	                    <f:selectItems value="#{cc.attrs.selectItems}" var="#{cc.attrs.var}" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{cc.attrs.itemValue}" />
 	                </h:selectOneMenu>
 	            </h:panelGroup>
 	            <h:panelGroup rendered="#{cc.attrs.onevent == null}">
-	                <h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{cc.attrs.readonly}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
+	                <h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{cc.attrs.readonly}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}" onfocus="#{cc.attrs.onfocus}">
 	                    <f:ajax event="#{cc.attrs.ajaxEvent}" render="#{cc.attrs.ajaxRender}" />
 	                    <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="#{cc.attrs.hidePleaseSelectMessage}" />
 	                    <f:selectItems value="#{cc.attrs.selectItems}" var="#{cc.attrs.var}" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{cc.attrs.itemValue}" />
