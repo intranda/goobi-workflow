@@ -49,6 +49,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.goobiScript.GoobiScriptImport;
 import org.goobi.goobiScript.GoobiScriptManager;
@@ -67,6 +68,8 @@ import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IImportPluginVersion2;
 import org.goobi.production.plugin.interfaces.IImportPluginVersion3;
 import org.goobi.production.properties.ImportProperty;
+import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.PropertyParser;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -168,6 +171,9 @@ public class MassImportForm implements Serializable {
     @Inject
     private NavigationForm bean;
 
+    @Getter
+    private List<ProcessProperty> configuredProperties = new ArrayList<>();
+
     @PostConstruct
     public void init() {
         this.usablePluginsForRecords = this.ipl.getPluginsForType(ImportType.Record);
@@ -193,7 +199,7 @@ public class MassImportForm implements Serializable {
             Helper.setFehlerMeldung("projectIsArchived");
             return "";
         }
-
+        configuredProperties = PropertyParser.getInstance().getProcessCreationProperties(template, template.getTitel());
         uploadedFile = null;
 
         initializePossibleDigitalCollections();
@@ -315,6 +321,7 @@ public class MassImportForm implements Serializable {
                 if (plugin2.isRunnableAsGoobiScript()) {
                     GoobiScriptImport igs = new GoobiScriptImport();
                     igs.setMi(this);
+                    igs.setAdditionalProperties(configuredProperties);
                     StringBuilder bld = new StringBuilder();
                     if (StringUtils.isNotEmpty(this.idList)) {
                         List<String> idsList = this.plugin.splitIds(this.idList);
@@ -436,6 +443,16 @@ public class MassImportForm implements Serializable {
                     io.setBatch(localBatch);
                 }
                 if (ImportReturnValue.ExportFinished.equals(io.getImportReturnValue())) {
+                    // if exist, add process properties
+                    for (ProcessProperty prop : configuredProperties) {
+
+                        Processproperty pe = new Processproperty();
+                        pe.setWert(prop.getValue());
+                        pe.setTitel(prop.getName());
+                        pe.setContainer(prop.getContainer());
+                        io.getProcessProperties().add(pe);
+                    }
+
                     Process p = JobCreation.generateProcess(io, this.template);
                     if (p == null) {
                         boolean validImportFileName = StringUtils.isNotBlank(io.getImportFileName());
@@ -648,7 +665,9 @@ public class MassImportForm implements Serializable {
             // the case this.plugin == null will end up here
             // no need to do anything
         }
-        return false;
+
+        // finally, check if process properties are configured
+        return !configuredProperties.isEmpty();
     }
 
     public String nextPage() {

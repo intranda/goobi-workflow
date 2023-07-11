@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
@@ -55,14 +56,14 @@ public class PropertyParser {
 
     private PropertyParser() {
         try {
-            config = new XMLConfiguration();
+            config = new XMLConfiguration(); // NOSONAR this constructor is only called once, initializing a static field is safe
             config.setDelimiterParsingDisabled(true);
             config.load(ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml");
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             config.setExpressionEngine(new XPathExpressionEngine());
         } catch (ConfigurationException e) {
             log.error(e);
-            config = new XMLConfiguration();
+            config = new XMLConfiguration(); // NOSONAR this constructor is only called once, initializing a static field is safe
         }
     }
 
@@ -121,7 +122,7 @@ public class PropertyParser {
 
         String workflowTitle = "";
         for (Processproperty p : process.getEigenschaften()) {
-            if (p.getTitel().equals("Template")) {
+            if ("Template".equals(p.getTitel())) {
                 workflowTitle = p.getWert();
             }
         }
@@ -176,7 +177,7 @@ public class PropertyParser {
 
         // find out original workflow template
         for (Processproperty p : mySchritt.getProzess().getEigenschaften()) {
-            if (p.getTitel().equals("Template")) {
+            if ("Template".equals(p.getTitel())) {
                 workflowTitle = p.getWert();
             }
         }
@@ -224,7 +225,7 @@ public class PropertyParser {
                     String access = config.getString(showStep + "/@access");
                     boolean duplicate = config.getBoolean(showStep + "/@duplicate", false);
                     ssc.setAccessCondition(AccessCondition.getAccessConditionByName(access));
-                    if (ssc.getName().equals(stepTitle) || ssc.getName().equals("*")) {
+                    if (ssc.getName().equals(stepTitle) || "*".equals(ssc.getName())) {
                         containsCurrentStepTitle = true;
                         pp.setDuplicationAllowed(duplicate);
                         pp.setCurrentStepAccessCondition(AccessCondition.getAccessConditionByName(access));
@@ -249,7 +250,7 @@ public class PropertyParser {
                     pp.setType(Type.getTypeByName(config.getString(property + "/type")));
                     // (default) value
                     String defaultValue = config.getString(property + "/defaultvalue");
-                    if (pp.getType().equals(Type.METADATA)) {
+                    if (Type.METADATA.equals(pp.getType())) {
                         String metadata = MetadataManager.getMetadataValue(mySchritt.getProzess().getId(), defaultValue);
                         pp.setValue(metadata);
                     } else {
@@ -343,7 +344,7 @@ public class PropertyParser {
                 pp.setType(Type.getTypeByName(config.getString(property + "/type")));
                 // (default) value
                 String defaultValue = config.getString(property + "/defaultvalue");
-                if (pp.getType().equals(Type.METADATA)) {
+                if (Type.METADATA.equals(pp.getType())) {
                     String metadata = MetadataManager.getMetadataValue(process.getId(), defaultValue);
                     pp.setValue(metadata);
                 } else {
@@ -421,6 +422,63 @@ public class PropertyParser {
         }
 
         return properties;
+    }
+
+    public List<ProcessProperty> getProcessCreationProperties(Process process, String templateName) {
+        List<ProcessProperty> properties = new ArrayList<>();
+
+        List<HierarchicalConfiguration> propertyList = config.configurationsAt("/property");
+        for (HierarchicalConfiguration prop : propertyList) {
+            ProcessProperty pp = new ProcessProperty();
+            // general values for property
+            pp.setName(prop.getString("@name"));
+            pp.setContainer(prop.getInt("@container"));
+            // projects
+            pp.getProjects().addAll(Arrays.asList(prop.getStringArray("/project")));
+            // project is configured
+            if (!pp.getProjects().contains("*") && !pp.getProjects().contains(process.getProjekt().getTitel())) {
+                //  current project is not configured for this property, skip it
+                continue;
+            }
+            HierarchicalConfiguration templateDefinition = null;
+            try {
+                //  check if <showProcessCreation access="write" template="xxx" /> exists
+                templateDefinition = prop.configurationAt("/showProcessCreation[@template='" + templateName + "']");
+            } catch (Exception e) {
+                // no specific configuration for this template, check if <showProcessCreation access="write" template="*" /> exists
+                try {
+                    templateDefinition = prop.configurationAt("/showProcessCreation[@template='*']");
+                } catch (Exception e1) {
+                    // no generic configuration for all templates
+                    templateDefinition = null;
+                }
+            }
+            if (templateDefinition != null) {
+                // configuration for current template exists
+                String groupAccess = templateDefinition.getString("@access", "write");
+                pp.setShowProcessGroupAccessCondition(AccessCondition.getAccessConditionByName(groupAccess));
+
+                // validation expression
+                pp.setValidation(prop.getString("/validation"));
+                // type
+                pp.setType(Type.getTypeByName(prop.getString("/type")));
+                // (default) value
+                String defaultValue = prop.getString("/defaultvalue");
+                if (Type.METADATA.equals(pp.getType())) {
+                    String metadata = MetadataManager.getMetadataValue(process.getId(), defaultValue);
+                    pp.setValue(metadata);
+                } else {
+                    pp.setValue(defaultValue);
+                    pp.setReadValue("");
+                }
+
+                // possible values
+                pp.getPossibleValues().addAll(Arrays.asList(prop.getStringArray("/value")));
+                properties.add(pp);
+            }
+        }
+        return properties;
+
     }
 
 }

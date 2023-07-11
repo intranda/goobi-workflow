@@ -69,9 +69,13 @@
 		<h:form
 			id="uploadForm"
 			enctype="multipart/form-data"
-			prependId="false">
+			prependId="false"
+            styleClass="form-horizontal form-bordered"
+            >
+            
 			<main class="row">
 				<div class="col-12">
+                
 					<intranda:box
 						id="uploadBox"
 						boxType="action"
@@ -81,18 +85,14 @@
 						title="#{msgs.zusaetzlicheDetails}">
 
 						<!-- ADDITIONAL PROPERTIES -->
-						<x:dataList
-							var="item"
-							id="properties"
-							value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}">
-							<intranda:formInputText
-								id="property"
-								label="#{item.titel}"
-								field="#{item.wert}"
-								help="#{msgs[('help_import_').concat(item.titel)]}"
-								name="id"
-								required="true" />
-						</x:dataList>
+						
+                        <ui:include src="includes/process/processcreation_properties.xhtml" >
+                         <ui:param
+                                    name="properties"
+                                    value="#{ProzesskopieForm.configuredProperties}" />
+                        
+                        </ui:include>
+                        
 						<!-- // ADDITIONAL PROPERTIES -->
 
 						<!-- FILE UPLOAD AREA -->

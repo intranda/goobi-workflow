@@ -73,6 +73,8 @@ import org.goobi.production.enums.UserRole;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPluginVersion2;
+import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.PropertyParser;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -232,6 +234,9 @@ public class ProzesskopieForm implements Serializable {
 
     private List<Project> availableProjects = new ArrayList<>();
 
+    @Getter
+    private List<ProcessProperty> configuredProperties;
+
     public String prepare() {
 
         currentCatalogue = null;
@@ -286,7 +291,9 @@ public class ProzesskopieForm implements Serializable {
         this.bHelper.SchritteKopieren(this.prozessVorlage, this.prozessKopie);
         this.bHelper.ScanvorlagenKopieren(this.prozessVorlage, this.prozessKopie);
         this.bHelper.WerkstueckeKopieren(this.prozessVorlage, this.prozessKopie);
-        this.bHelper.EigenschaftenKopieren(this.prozessVorlage, this.prozessKopie);
+        //        this.bHelper.EigenschaftenKopieren(this.prozessVorlage, this.prozessKopie);
+
+        configuredProperties = PropertyParser.getInstance().getProcessCreationProperties(prozessKopie, prozessVorlage.getTitel());
 
         initializePossibleDigitalCollections();
 
@@ -828,6 +835,15 @@ public class ProzesskopieForm implements Serializable {
         }
 
         this.prozessKopie.setSortHelperImages(this.guessedImages);
+
+        for (ProcessProperty pt : configuredProperties) {
+            Processproperty pe = new Processproperty();
+            pe.setProzess(prozessKopie);
+            pt.setProzesseigenschaft(pe);
+            prozessKopie.getEigenschaften().add(pe);
+            pt.transfer();
+        }
+
         ProcessManager.saveProcess(this.prozessKopie);
 
         if (currentCatalogue != null && currentCatalogue.getOpacPlugin() != null && currentCatalogue.getOpacPlugin() instanceof IOpacPluginVersion2) {

@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.PluginType;
@@ -38,6 +39,7 @@ import org.goobi.production.importer.ImportObject;
 import org.goobi.production.importer.Record;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
+import org.goobi.production.properties.ProcessProperty;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.MassImportForm;
@@ -52,6 +54,9 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     private static final String IDENTIFIERS = "identifiers";
     private static final String TEMPLATE = "template";
     private static final String PROJECT_ID = "projectId";
+
+    @Setter
+    public List<ProcessProperty> additionalProperties;
 
     @Setter
     private MassImportForm mi;
@@ -81,19 +86,19 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
         String missingParameter = "Missing parameter: ";
         String plugin = parameters.get(PLUGIN);
-        if (plugin == null || plugin.equals("")) {
+        if (plugin == null || "".equals(plugin)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, PLUGIN);
             return new ArrayList<>();
         }
 
         String identifiers = parameters.get(IDENTIFIERS);
-        if (identifiers == null || identifiers.equals("")) {
+        if (identifiers == null || "".equals(identifiers)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, IDENTIFIERS);
             return new ArrayList<>();
         }
 
         String template = parameters.get(TEMPLATE);
-        if (template == null || template.equals("")) {
+        if (template == null || "".equals(template)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, TEMPLATE);
             return new ArrayList<>();
         }
@@ -122,7 +127,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
         // set the overridden project if present
         String projectId = parameters.get(PROJECT_ID);
-        if (projectId != null && !projectId.equals("")) {
+        if (projectId != null && !"".equals(projectId)) {
             template.setProjectId(Integer.parseInt(projectId));
         }
 
@@ -162,12 +167,21 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
         recordList.add(r);
 
         List<ImportObject> answer = plugin.generateFiles(recordList);
-
         for (ImportObject io : answer) {
             if (batch != null) {
                 io.setBatch(batch);
             }
-            if (io.getImportReturnValue().equals(ImportReturnValue.ExportFinished)) {
+            if (ImportReturnValue.ExportFinished.equals(io.getImportReturnValue())) {
+                // add configured properties to all processes
+                if (additionalProperties != null) {
+                    for (ProcessProperty prop : additionalProperties) {
+                        Processproperty pe = new Processproperty();
+                        pe.setWert(prop.getValue());
+                        pe.setTitel(prop.getName());
+                        pe.setContainer(prop.getContainer());
+                        io.getProcessProperties().add(pe);
+                    }
+                }
                 Process p = JobCreation.generateProcess(io, template);
                 if (p == null) {
                     gsr.setResultMessage("Import failed for id '" + gsr.getProcessTitle() + "'. Process cannot be created.");

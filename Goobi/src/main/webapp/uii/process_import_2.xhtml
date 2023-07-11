@@ -107,6 +107,14 @@
 						icon="fa-cloud-download"
 						title="#{msgs.MassImport}">
 
+
+                        <ui:include src="includes/process/processcreation_properties.xhtml" >
+                         <ui:param
+                                    name="properties"
+                                    value="#{MassImportForm.configuredProperties}" />
+                        
+                        </ui:include>
+
 						<x:dataList
 							forceId="true"
 							var="property"
