@@ -683,7 +683,7 @@
 																	value="true" />
 																<f:passThroughAttribute
 																	name="data-bs-content"
-																	value="&lt;b class='font-status-open'&gt;#{msgs.statusOffen} / #{msgs.statusInBearbeitung}:&lt;/b&gt;&lt;br/&gt; #{item.getStepsAsString(1, ', ')}#{item.getStepsAsString(1, ', ') ne '' and item.getStepsAsString(2, ', ') ne ''?', ':''} #{item.getStepsAsString(2, ', ')}" />
+																	value="&lt;b class='font-status-open'&gt;#{msgs.statusOffen} / #{msgs.statusInBearbeitung}:&lt;/b&gt;&lt;br/&gt; #{item.getStepsAsString(1, ', ')}#{item.getStepsAsString(1, ', ') ne '' and item.getStepsAsString(2, ', ') ne ''?', ':''} #{item.getStepsAsString(2, ', ')} #{item.getStepsAsString(1, ', ') ne '' or item.getStepsAsString(1, ', ') ne ''  ?', ':''} #{item.getStepsAsString(6, ', ')}" />
 															</h:panelGroup>
 
 															<h:panelGroup
