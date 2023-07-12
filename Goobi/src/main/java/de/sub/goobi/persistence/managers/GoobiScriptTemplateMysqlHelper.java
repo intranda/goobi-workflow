@@ -44,12 +44,12 @@ public class GoobiScriptTemplateMysqlHelper {
 
     }
 
-    public static List<GoobiScriptTemplate> getGoobiScriptTemplates(String order, String filter, Integer start, Integer count) throws SQLException{
+    public static List<GoobiScriptTemplate> getGoobiScriptTemplates(String order, String filter, Integer start, Integer count) throws SQLException {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public static List<GoobiScriptTemplate> getAllGoobiScriptTemplates() throws SQLException{
+    public static List<GoobiScriptTemplate> getAllGoobiScriptTemplates() throws SQLException {
         // TODO Auto-generated method stub
         return null;
     }

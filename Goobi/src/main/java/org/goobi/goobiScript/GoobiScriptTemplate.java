@@ -37,7 +37,7 @@ public class GoobiScriptTemplate implements Serializable, DatabaseObject {
     @Getter
     @Setter
     // template name, required
-    private String name;
+    private String title;
 
     @Getter
     @Setter

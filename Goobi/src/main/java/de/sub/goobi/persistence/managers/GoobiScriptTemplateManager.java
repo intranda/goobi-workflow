@@ -113,11 +113,10 @@ public class GoobiScriptTemplateManager implements IManager, Serializable {
 
     public static GoobiScriptTemplate convert(ResultSet rs) throws SQLException {
         GoobiScriptTemplate r = new GoobiScriptTemplate();
-        r.setId(rs.getInt("TODO"));
-        r.setName(rs.getString("TODO"));
-        r.setDescription("TODO");
-        r.setGoobiScripts("TODO");
-        //TODO
+        r.setId(rs.getInt("id"));
+        r.setTitle(rs.getString("title"));
+        r.setDescription("description");
+        r.setGoobiScripts("goobiScripts");
         return r;
     }
 
