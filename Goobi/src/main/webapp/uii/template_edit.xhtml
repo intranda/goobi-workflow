@@ -1,0 +1,103 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{goobiScriptTemplateBean.template.id == null?msgs.createNewtemplate:msgs.editTemplate}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="templates"
+            label="#{msgs.goobiScriptTemplates}"
+            action="#{goobiScriptTemplateBean.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb
+            id="template"
+            label="#{myPageTitle}"
+            action="template_edit"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form
+            id="myform"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Templates')}">
+
+            <div
+                class="row"
+                role="main">
+                <div class="col-12">
+
+                    <intranda:box
+                        boxType="action"
+                        boxForm="true"
+                        boxPadding="false"
+                        title="#{myPageTitle}"
+                        icon="fa-print">
+
+                        <intranda:formInputText
+                            id="title"
+                            name="title"
+                            label="#{msgs.name}"
+                            focusOnLoad="true"
+                            field="#{goobiScriptTemplateBean.template.title}"
+                            help="#{msgs.helptemplateTitle}"
+                            fieldStyle="form-control" />
+
+                        <intranda:formInputText
+                            id="description"
+                            name="description"
+                            label="#{msgs.description}"
+                            field="#{goobiScriptTemplateBean.template.description}"
+                            help="#{msgs.helptemplateFile}"
+                            fieldStyle="form-control"
+                            required="false" />
+
+                        <intranda:formInputTextArea
+                            id="gs"
+                            name="GoobiScripts"
+                            label="#{msgs.goobiScript}"
+                            field="#{goobiScriptTemplateBean.template.goobiScripts}"
+                            help="#{msgs.helptemplateFile}"
+                            fieldStyle="form-control"
+                            rows="30" />
+
+
+                        <intranda:formButtonArea
+                            id="buttons"
+                            form="#{goobiScriptTemplateBean}"
+                            object="#{goobiScriptTemplateBean.template.id}"
+                            actionCancel="#{goobiScriptTemplateBean.Cancel}" />
+
+                    </intranda:box>
+
+                </div>
+                <!-- /col -->
+            </div>
+            <!-- /row -->
+        </h:form>
+
+        <!-- Focus first input field on load -->
+        <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
+       
+
+    </ui:define>
+
+</ui:composition>

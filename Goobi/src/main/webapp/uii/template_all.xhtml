@@ -1,0 +1,109 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<ui:param name="myPageTitle" value="#{msgs.goobiScriptTemplates}" />
+
+<ui:define name="breadcrumb">
+<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+<intranda:breadcrumb id="template_all" label="#{myPageTitle}" action="template_all" noSeparator="#{true}" />
+</ui:define>
+
+<ui:define name="info">
+</ui:define>
+
+<ui:define name="content">
+<h:form id="myform" rendered="#{LoginForm.hasRole('Admin_Templates')}">
+
+<main class="row">
+	<div class="col-12">
+
+		<intranda:box
+			boxType="primary"
+			title="#{myPageTitle}"
+			icon="fa-print"
+		>
+
+		<div class="gw-table gw-table-fixed">
+			<div class="gw-table__search">
+				<div class="gw-table__search__length">
+					<h:outputText value="#{msgs.treffer}: #{goobiScriptTemplateBean.paginator.totalResults}" />
+				</div>
+			</div>
+
+			<div class="gw-table__wrapper">
+
+			<!-- Datentabelle -->
+			<x:dataTable id="dockets" styleClass="table table-hover table-bordered" var="item" value="#{goobiScriptTemplateBean.paginator.list}">
+
+				<h:column>
+					<f:facet name="header">
+					<h:outputText value="#{msgs.name}" />
+						</f:facet>
+					<h:outputText value="#{item.title}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.description}" />
+					</f:facet>
+					<h:outputText value="#{item.description}" />
+				</h:column>
+
+				<x:column headerClass="gw-table-fixed__actions">
+
+					<f:facet name="header">
+						<h:outputText value="#{msgs.auswahl}" />
+					</f:facet>
+
+					<!-- Bearbeiten-Schaltknopf -->
+					<div class="gw-table-fixed__actions__btns">
+						<button
+							jsf:id="edit"
+							class="btn btn-blank"
+							jsf:rel="tooltip"
+							jsf:action="template_edit"
+							title="#{msgs.bearbeiten}">
+							<i class="fa fa-pencil"></i>
+							<f:passThroughAttribute name="data-toggle" value="tooltip" />
+							<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
+							<f:setPropertyActionListener target="#{goobiScriptTemplateBean.template}" value="#{item}" />
+						</button>
+					</div>
+				</x:column>
+
+			</x:dataTable>
+
+			</div> <!-- /gw-table__wrapper -->
+			</div> <!-- /gw-table -->
+
+			<div class="box__actions">
+				<!-- Neu-Schaltknopf -->
+				<button jsf:id="new" class="btn btn-primary-400 me-auto" jsf:action="#{goobiScriptTemplateBean.Neu}" jsf:immediate="true">
+					<i class="fa fa-plus"></i>
+					<span>
+					<h:outputText value="#{msgs.createNewTemplate}" />
+					</span>
+				</button>
+
+				<!-- Paginator -->
+				<intranda:tablePaginator id="docket" paginator="#{goobiScriptTemplateBean.paginator}" />
+			</div>
+
+
+		</intranda:box>
+
+	</div> <!-- /col-12 -->
+</main>
+</h:form>
+</ui:define>
+
+</ui:composition>
