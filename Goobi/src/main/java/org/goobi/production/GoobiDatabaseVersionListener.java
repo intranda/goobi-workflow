@@ -62,7 +62,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
             sql.append("title VARCHAR(255), ");
             sql.append("description VARCHAR(255), ");
-            sql.append("goobiScripts text, ");
+            sql.append("goobiscript text, ");
             sql.append("PRIMARY KEY (id) ");
             sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
             try {

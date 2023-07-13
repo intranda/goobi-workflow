@@ -116,7 +116,7 @@ public class GoobiScriptTemplateManager implements IManager, Serializable {
         r.setId(rs.getInt("id"));
         r.setTitle(rs.getString("title"));
         r.setDescription("description");
-        r.setGoobiScripts("goobiScripts");
+        r.setGoobiScripts("goobiscript");
         return r;
     }
 
