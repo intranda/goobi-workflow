@@ -183,7 +183,36 @@
 										target="#{NavigationForm.uiStatus.goobiScript}" />
 								</button>
 								<div id="possibleActions5" class="collapse ms-5 mt-3">
-									<div class="list-of-goobi-scripts mb-2">
+                                    <h:panelGrid
+                                        columns="2"
+                                        rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('Admin_Templates')}"
+                                        styleClass="no-borders">
+                                        <h:outputLabel
+                                            for="template"
+                                            value="#{msgs.goobiScriptTemplate}"
+                                            styleClass="me-2" />
+                                        <h:selectOneMenu
+                                            pt:aria-label="#{msgs.auswahl2}"
+                                            id="template"
+                                            value="#{ProzessverwaltungForm.goobiScript}"
+                                            styleClass="form-select"
+                                            onchange="goobiScriptCodeMirror.doc.setValue(this.options[this.selectedIndex].value)">
+                                            <f:selectItem
+                                                itemValue="null"
+                                                itemLabel="#{msgs.bitteAuswaehlen}" />
+                                            <f:selectItems
+                                                value="#{ProzessverwaltungForm.goobiScriptTemplates}"
+                                                var="item"
+                                                itemDisabled="#{item.disabled}"
+                                                itemLabel="#{item.label}"
+                                                itemValue="#{item.value}"
+                                                styleClass="me-2" />
+                                            <f:ajax
+                                                execute="@this"
+                                                render="goobiScriptfield" />
+                                        </h:selectOneMenu>
+                                    </h:panelGrid>
+                                    <div class="list-of-goobi-scripts mb-2">
 										<!-- iterate through all existing GoobiScripts -->
 										<ui:repeat var="gs"
 											value="#{ProzessverwaltungForm.allGoobiScripts}">

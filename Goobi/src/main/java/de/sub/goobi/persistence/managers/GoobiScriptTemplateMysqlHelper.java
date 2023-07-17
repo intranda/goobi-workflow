@@ -144,7 +144,7 @@ public class GoobiScriptTemplateMysqlHelper {
     public static List<GoobiScriptTemplate> getAllGoobiScriptTemplates() throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM goobiscript_template");
+        sql.append("SELECT * FROM goobiscript_template order by title");
         try {
             connection = MySQLHelper.getInstance().getConnection();
 

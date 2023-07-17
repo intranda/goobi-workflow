@@ -115,8 +115,8 @@ public class GoobiScriptTemplateManager implements IManager, Serializable {
         GoobiScriptTemplate r = new GoobiScriptTemplate();
         r.setId(rs.getInt("id"));
         r.setTitle(rs.getString("title"));
-        r.setDescription("description");
-        r.setGoobiScripts("goobiscript");
+        r.setDescription(rs.getString("description"));
+        r.setGoobiScripts(rs.getString("goobiscript"));
         return r;
     }
 
@@ -137,19 +137,19 @@ public class GoobiScriptTemplateManager implements IManager, Serializable {
 
     public static final ResultSetHandler<List<GoobiScriptTemplate>> resultSetToGoobiScriptTemplateListHandler =
             new ResultSetHandler<List<GoobiScriptTemplate>>() {
-        @Override
-        public List<GoobiScriptTemplate> handle(ResultSet rs) throws SQLException {
-            List<GoobiScriptTemplate> answer = new ArrayList<>();
-            try {
-                while (rs.next()) {
-                    GoobiScriptTemplate o = convert(rs); // implies that o != null
-                    answer.add(o);
+                @Override
+                public List<GoobiScriptTemplate> handle(ResultSet rs) throws SQLException {
+                    List<GoobiScriptTemplate> answer = new ArrayList<>();
+                    try {
+                        while (rs.next()) {
+                            GoobiScriptTemplate o = convert(rs); // implies that o != null
+                            answer.add(o);
+                        }
+                    } finally {
+                        rs.close();
+                    }
+                    return answer;
                 }
-            } finally {
-                rs.close();
-            }
-            return answer;
-        }
-    };
+            };
 
 }
