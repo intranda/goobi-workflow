@@ -344,8 +344,6 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Inject
     private GoobiScriptManager goobiScriptManager;
 
-    private List<SelectItem> goobiScriptTemplates = null;
-
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
 
@@ -2514,17 +2512,12 @@ public class ProcessBean extends BasicBean implements Serializable {
         return possibleItems;
     }
 
-    public List<SelectItem> getGoobiScriptTemplates() {
-        goobiScriptTemplates = new ArrayList<>();
+    public List< GoobiScriptTemplate> getGoobiScriptTemplates() {
+
 
         List<GoobiScriptTemplate> templates = GoobiScriptTemplateManager.getAllGoobiScriptTemplates();
-        for (GoobiScriptTemplate gst : templates) {
-            SelectItem si = new SelectItem();
-            si.setLabel(StringUtils.isBlank(gst.getDescription()) ? gst.getTitle() : gst.getTitle() + " - " + gst.getDescription());
-            si.setValue(gst.getGoobiScripts());
-            goobiScriptTemplates.add(si);
-        }
-        return goobiScriptTemplates;
+
+        return templates;
     }
 
     public void setConfirmLink(boolean confirm) {

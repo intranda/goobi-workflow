@@ -53,4 +53,8 @@ public class GoobiScriptTemplate implements Serializable, DatabaseObject {
     public void lazyLoad() {
         // do nothing
     }
+
+    public String getEscapedScripts() {
+        return goobiScripts == null ? "" : goobiScripts.replace("\n", "\\n").replace("\r", "");
+    }
 }
