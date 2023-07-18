@@ -38,7 +38,8 @@
         <h:form
             id="myform"
             onkeypress="submitOnEnter(event);"
-            rendered="#{LoginForm.hasRole('Admin_Templates')}">
+            rendered="#{LoginForm.hasRole('Admin_Templates')}"
+            prependId="false">
 
             <div
                 class="row"
@@ -46,6 +47,7 @@
                 <div class="col-12">
 
                     <intranda:box
+                        id="boxid"
                         boxType="action"
                         boxForm="true"
                         boxPadding="false"
@@ -94,9 +96,58 @@
             <!-- /row -->
         </h:form>
 
+        <link
+            rel="stylesheet"
+            href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}" />
+        <script
+            type="text/javascript"
+            src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
+        <script src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}"/>
+        <style>
+.CodeMirror {
+    border: 1px solid #ddd;
+    height: 500px;
+    width: 100%;
+}
+}
+</style>
+        <script>
+var goobiScriptCodeMirror;
+function handleGoobiScriptCodeEditor() {
+    removeGoobiScriptCodeMirror();
+    initGoobiScriptCodeMirror();
+}
+
+function removeGoobiScriptCodeMirror() {
+    var codeEditors = document.querySelectorAll('.CodeMirror');
+    codeEditors.forEach(function(editor) { editor.remove() })
+}
+
+function initGoobiScriptCodeMirror() {
+	var goobiScriptTextArea = document.getElementById("boxid:gs:GoobiScripts");
+	console.log(goobiScriptTextArea);
+	if(goobiScriptTextArea) {
+    	goobiScriptCodeMirror = CodeMirror.fromTextArea(goobiScriptTextArea, {
+			lineNumbers: true,
+			mode: 'yaml'
+		});
+    	goobiScriptCodeMirror.on('change', editor => {
+			document.getElementById("boxid:gs:GoobiScripts").innerHTML = editor.getValue();
+	    });
+	}
+}
+
+window.onload = function() {
+	// load codemirror for some syntax highlighting
+	initGoobiScriptCodeMirror();
+}
+
+
+</script>
+
         <!-- Focus first input field on load -->
         <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
-       
+
 
     </ui:define>
 
