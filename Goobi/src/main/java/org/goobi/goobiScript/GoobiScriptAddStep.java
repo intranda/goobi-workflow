@@ -67,18 +67,18 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
         String missingParameter = "Missing parameter: ";
         String wrongParameter = "Wrong number parameter";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (StringUtils.isBlank(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String number = parameters.get(NUMBER);
-        if (number == null || number.equals("")) {
+        if (StringUtils.isBlank(number)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, NUMBER);
             return new ArrayList<>();
         }
 
-        if (!StringUtils.isNumeric(number)) {
+        if (!StringUtils.isNumeric(number) && !"end".equals(number)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, wrongParameter, "(only numbers allowed)");
             return new ArrayList<>();
         }
@@ -101,7 +101,14 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
         gsr.updateTimestamp();
         Step s = new Step();
         s.setTitel(parameters.get(STEPTITLE));
-        s.setReihenfolge(Integer.parseInt(parameters.get(NUMBER)));
+        String number = parameters.get(NUMBER);
+        int position = 0;
+        if ("end".equals(number)) {
+            position = p.getSchritte().get(p.getSchritteSize() - 1).getReihenfolge() + 1;
+        } else {
+            position = Integer.parseInt(number);
+        }
+        s.setReihenfolge(position);
         s.setProzess(p);
         if (p.getSchritte() == null) {
             p.setSchritte(new ArrayList<>());
