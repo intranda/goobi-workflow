@@ -50,6 +50,8 @@ public class BagCreation {
     @Getter
     private Path documentationFolder;
     @Getter
+    private Path otherFolder;
+    @Getter
     private Metadata metadata = new Metadata();
 
     private Path updatedIeFolder;
@@ -86,7 +88,7 @@ public class BagCreation {
         metadataFolder = Paths.get(ieFolder.toString(), "metadata");
         objectsFolder = Paths.get(ieFolder.toString(), objectFolderName);
         documentationFolder = Paths.get(ieFolder.toString(), "documentation");
-
+        otherFolder = Paths.get(ieFolder.toString(), "other");
         try {
             StorageProvider.getInstance().createDirectories(metadataFolder);
             StorageProvider.getInstance().createDirectories(objectsFolder);
