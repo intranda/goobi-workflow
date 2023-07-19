@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -89,10 +90,11 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
+import de.sub.goobi.persistence.managers.UserManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyManager.class, StepManager.class, TemplateManager.class, MasterpieceManager.class, HistoryManager.class,
-        MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class, InstitutionManager.class })
+    MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class, InstitutionManager.class, UserManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class GeneratePdfFromXsltTest extends AbstractTest {
 
@@ -168,6 +170,8 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         PowerMock.mockStatic(HistoryManager.class);
         PowerMock.mockStatic(MetadataManager.class);
 
+        PowerMock.mockStatic(UserManager.class);
+
         List<Processproperty> props = new ArrayList<>();
         Processproperty p = new Processproperty();
         p.setTitel("title");
@@ -233,6 +237,8 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         StringPair sp = new StringPair("title", "value");
         metadataList.add(sp);
         EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(metadataList).anyTimes();
+
+        EasyMock.expect(UserManager.getAllUsers()).andReturn(Collections.emptyList()).anyTimes();
 
         //        PowerMock.createMockAndExpectNew(Image.class, EasyMock.anyObject(Paths.class), EasyMock.anyInt(), EasyMock.anyInt());
         //        EasyMock.expect(new HelperForm()).andReturn(helperFormMock).anyTimes();
