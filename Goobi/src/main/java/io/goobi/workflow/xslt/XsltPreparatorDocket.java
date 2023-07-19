@@ -88,6 +88,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import de.sub.goobi.persistence.managers.UserManager;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -214,6 +215,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     protected static final String ATTRIBUTE_BATCH_NAME = "batchName";
     protected static final String ATTRIBUTE_BATCH_STEP = "batchStep";
     protected static final String ATTRIBUTE_COMMENT = "comment";
+    protected static final String ATTRIBUTE_LOCATION = "location";
     protected static final String ATTRIBUTE_CONTAINER = "container";
     protected static final String ATTRIBUTE_DATE = "date";
     protected static final String ATTRIBUTE_DELAY_STEP = "delayStep";
@@ -422,6 +424,14 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             if (StringUtils.isNotBlank(entry.getUserName())) {
                 commentLine.setAttribute(ATTRIBUTE_USER, entry.getUserName());
             }
+
+            for (User u : UserManager.getAllUsers()) {
+                if (u.getNachVorname().equals(entry.getUserName())) {
+                    commentLine.setAttribute(ATTRIBUTE_LOCATION, u.getStandort());
+                    break;
+                }
+            }
+
             commentLine.setText(entry.getContent());
 
             if (StringUtils.isNotBlank(entry.getFilename())) {
