@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.PatternSyntaxException;
 
@@ -236,6 +237,13 @@ public class ProzesskopieForm implements Serializable {
 
     @Getter
     private List<ProcessProperty> configuredProperties;
+
+    @Getter
+    private Map<String, String> existingProcessInfoMap;
+
+    @Getter
+    private List<Step> existingProcessStepsList;
+
 
     public String prepare() {
 
@@ -767,6 +775,7 @@ public class ProzesskopieForm implements Serializable {
             valide = false;
             // print infos of the existing process
             printExistingProcessInfos(prozessKopie.getTitel());
+            prepareExistingProcessInfos(prozessKopie.getTitel());
             Helper.setFehlerMeldung(
                     Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
         }
@@ -795,6 +804,30 @@ public class ProzesskopieForm implements Serializable {
         return valide;
     }
     
+    private void prepareExistingProcessInfos(String processName) {
+        Process process = ProcessManager.getProcessByExactTitle(processName);
+
+        existingProcessInfoMap = new TreeMap<>();
+
+        String processTitle = process.getTitel();
+        String projectName = process.getProjekt().getTitel();
+        String creationDate = process.getErstellungsdatumAsString();
+        String ruleset = process.getRegelsatz().getTitel();
+        String docket = process.getDocket().getName();
+        int processId = process.getId();
+
+        existingProcessInfoMap.put("processTitle", processTitle);
+        existingProcessInfoMap.put("projectName", projectName);
+        existingProcessInfoMap.put("creationDate", creationDate);
+        existingProcessInfoMap.put("ruleset", ruleset);
+        existingProcessInfoMap.put("docket", docket);
+        existingProcessInfoMap.put("processId", String.valueOf(processId));
+
+        existingProcessStepsList = process.getSchritte();
+
+
+    }
+
     /**
      * print the infos of the existing process
      * 

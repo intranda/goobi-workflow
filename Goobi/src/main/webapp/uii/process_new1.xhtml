@@ -41,6 +41,195 @@
 	</ui:define>
 
 	<ui:define name="content">
+	
+		<header>
+			<h:form
+				id="header-form"
+				styleClass="form-horizontal form-bordered"
+				prependId="false">
+				
+				<div class="row">
+					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-10':'col-sm-5'}">
+						<intranda:box
+							boxType="primary"
+							boxTitle="false"
+							boxForm="false"
+							boxPadding="false"
+							rendered="#{ProzesskopieForm.existingProcessInfoMap != null}">
+				
+							<intranda:boxTitle
+								title="#{msgs.basicInformationOfExistingProcess}"
+								icon="fa-table">
+							</intranda:boxTitle>
+				 
+							<h:panelGrid
+								columns="2"
+								styleClass="table table-hover table-bordered"
+								columnClasses="visible, tableColumnMaxWidthLong">
+								
+								<h:outputText value="#{msgs.prozessTitel}"/>
+								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['processTitle']}" />
+								
+								<h:outputText value="#{msgs.projekt}:" />
+								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['projectName']}" />
+
+								<h:outputText value="#{msgs.erstellungsdatum}:" />
+								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['creationDate']}" />
+
+								<h:outputText value="#{msgs.regelsatz}:" />
+								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['ruleset']}" />
+
+								<h:outputText value="#{msgs.docket}:" />
+								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['docket']}" />
+									
+								<h:outputText value="#{msgs.id}:"/>
+								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['processId']}"/>
+							
+							</h:panelGrid>
+						</intranda:box>
+					</div>
+					
+					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-10':'col-sm-5'}">
+						<intranda:box
+							boxType="primary"
+							boxTitle="false"
+							boxForm="false"
+							boxPadding="false"
+							rendered="#{ProzesskopieForm.existingProcessStepsInfoList != null}">
+							
+							<intranda:boxTitle
+								title="#{msgs.stepsOfExistingProcess}"
+								icon="fa-list">
+							</intranda:boxTitle>
+							
+							<h:dataTable
+								var="item"
+								value="#{ProzesskopieForm.existingProcessStepsList}"
+								styleClass="table table-hover table-bordered"
+								columnClasses="visible, tableColumnMaxWidthLong">
+								
+								<h:column>
+									<f:facet name="header">#{msgs.nr}</f:facet>
+									<h:outputText value="#{item.reihenfolge}"/>
+								</h:column>
+								<h:column>
+									<f:facet name="header">#{msgs.titel}</f:facet>
+									<h:outputText value="#{item.titel}"/>
+								</h:column>
+								<h:column>
+									<f:facet name="header">#{msgs.status}</f:facet>
+									
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'LOCKED'}"
+										title="#{msgs.statusGesperrt}"
+										rel="tooltip" 
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+									
+									<!-- OPEN -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'OPEN'}"
+										title="#{msgs.statusOffen}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+									
+									<!-- DONE AND ANONYMIZED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}"
+										title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+										
+									<!-- INWORK AND ANONYMIZED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}"
+										title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+
+									<!-- DONE AND NOT ANONYMIZED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}"
+										title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+										
+									<!-- INWORK AND NOT ANONYMIZED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}"
+										title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+										
+									<!-- ERROR -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'ERROR'}"
+										title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+									
+									<!-- DEACTIVATED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}"
+										title="#{msgs.statusDeactivated}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+									
+									<!-- INFLIGHT -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INFLIGHT'}"
+										title="#{msgs.statusInFlight}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+									
+									<div class="ms-3 d-inline-block align-middle" jsf:rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}">
+										<h:outputText value="#{item.bearbeitungsstatusEnum.title}" />
+									</div>
+									
+								</h:column>
+							
+							</h:dataTable>
+							
+							
+							
+							<!-- 
+							<h:panelGrid
+								columns="3"
+								styleClass="table table-hover table-bordered"
+								columnClasses="visible, tableColumnMaxWidthLong">
+							
+								
+								<ui:repeat
+									var="step"
+									value="#{ProzesskopieForm.existingProcessStepsInfoList}">
+									<div>
+										<td>
+											<h:outputText value="#{step['stepId']}" />
+										</td>
+										<td>	
+											<h:outputText value="#{step['stepTitle']}" />
+										</td>
+										<td>
+											<h:outputText value="#{step['stepStatus']}" />
+										</td>
+									</div>
+										
+										
+									
+
+								
+								</ui:repeat>
+							
+							</h:panelGrid>
+							-->
+						</intranda:box>
+					</div>
+				</div>
+				
+			</h:form>
+			
+
+		</header>
+
 
 		<main>
 			<h:form
