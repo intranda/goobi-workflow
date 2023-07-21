@@ -57,10 +57,12 @@
 				</h:commandButton>
 
 				<h:panelGroup layout="block" 
-										 id="existing-process-tables" 
-										 class="row"
-										 rendered="#{ProzesskopieForm.showExistingProcessTables and ProzesskopieForm.existingProcess != null}">
-					<!-- DETAILS OF THE EXISTING PROCESS -->
+					 id="existing-process-tables" 
+					 class="row"
+					 rendered="#{ProzesskopieForm.showExistingProcessTables and ProzesskopieForm.existingProcess != null}">
+					
+                    
+                    <!-- DETAILS OF THE EXISTING PROCESS -->
 					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-8':'col-sm-4'}">
 						<intranda:box
 							boxScope="processLog"
