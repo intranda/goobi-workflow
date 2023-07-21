@@ -781,8 +781,8 @@ public class ProzesskopieForm implements Serializable {
             //            printExistingProcessInfos(prozessKopie.getTitel());
             existingProcess = ProcessManager.getProcessByExactTitle(prozessKopie.getTitel());
             showExistingProcessButton = true;
-            Helper.setFehlerMeldung(
-                    Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
+            //            Helper.setFehlerMeldung(
+            //                    Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
         }
 
         /*
