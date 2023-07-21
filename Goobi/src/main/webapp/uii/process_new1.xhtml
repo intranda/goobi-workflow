@@ -49,13 +49,13 @@
 				prependId="false">
 				
 				<div class="row">
-					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-10':'col-sm-5'}">
+					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-8':'col-sm-4'}">
 						<intranda:box
 							boxType="primary"
 							boxTitle="false"
 							boxForm="false"
 							boxPadding="false"
-							rendered="#{ProzesskopieForm.existingProcessInfoMap != null}">
+							rendered="#{ProzesskopieForm.existingProcess != null}">
 				
 							<intranda:boxTitle
 								title="#{msgs.basicInformationOfExistingProcess}"
@@ -68,34 +68,34 @@
 								columnClasses="visible, tableColumnMaxWidthLong">
 								
 								<h:outputText value="#{msgs.prozessTitel}"/>
-								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['processTitle']}" />
+								<h:outputText value="#{ProzesskopieForm.existingProcess.titel}" />
 								
 								<h:outputText value="#{msgs.projekt}:" />
-								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['projectName']}" />
+								<h:outputText value="#{ProzesskopieForm.existingProcess.projekt.titel}" />
 
 								<h:outputText value="#{msgs.erstellungsdatum}:" />
-								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['creationDate']}" />
+								<h:outputText value="#{ProzesskopieForm.existingProcess.erstellungsdatumAsString}" />
 
 								<h:outputText value="#{msgs.regelsatz}:" />
-								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['ruleset']}" />
+								<h:outputText value="#{ProzesskopieForm.existingProcess.regelsatz.titel}" />
 
 								<h:outputText value="#{msgs.docket}:" />
-								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['docket']}" />
+								<h:outputText value="#{ProzesskopieForm.existingProcess.docket.name}" />
 									
 								<h:outputText value="#{msgs.id}:"/>
-								<h:outputText value="#{ProzesskopieForm.existingProcessInfoMap['processId']}"/>
+								<h:outputText value="#{ProzesskopieForm.existingProcess.id}"/>
 							
 							</h:panelGrid>
 						</intranda:box>
 					</div>
 					
-					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-10':'col-sm-5'}">
+					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-8':'col-sm-4'}">
 						<intranda:box
 							boxType="primary"
 							boxTitle="false"
 							boxForm="false"
 							boxPadding="false"
-							rendered="#{ProzesskopieForm.existingProcessStepsList != null}">
+							rendered="#{ProzesskopieForm.existingProcess != null}">
 							
 							<intranda:boxTitle
 								title="#{msgs.stepsOfExistingProcess}"
@@ -104,7 +104,7 @@
 							
 							<h:dataTable
 								var="item"
-								value="#{ProzesskopieForm.existingProcessStepsList}"
+								value="#{ProzesskopieForm.existingProcess.schritte}"
 								styleClass="table table-hover table-bordered"
 								columnClasses="visible, tableColumnMaxWidthLong">
 								
