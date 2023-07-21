@@ -82,12 +82,22 @@
                             rows="30" />
 
 
+
+
+
+                        <ui:repeat
+                            var="gs"
+                            value="#{ProzessverwaltungForm.allGoobiScripts}">
+                            <span
+                                class="badge badge-intranda-light"
+                                onclick="goobiScriptCodeMirror.doc.setValue(goobiScriptCodeMirror.doc.getValue() + '\n#{gs.two}')"> #{gs.one} </span>
+                        </ui:repeat>
+
                         <intranda:formButtonArea
                             id="buttons"
                             form="#{goobiScriptTemplateBean}"
                             object="#{goobiScriptTemplateBean.template.id}"
                             actionCancel="#{goobiScriptTemplateBean.Cancel}" />
-
                     </intranda:box>
 
                 </div>
@@ -102,13 +112,17 @@
         <script
             type="text/javascript"
             src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
-        <script src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}"/>
+        <script src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
         <style>
 .CodeMirror {
     border: 1px solid #ddd;
     height: 500px;
     width: 100%;
 }
+
+.badge {
+    border: 0;
+    cursor: pointer;
 }
 </style>
         <script>
