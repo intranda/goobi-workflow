@@ -48,8 +48,18 @@
 				id="header-form"
 				styleClass="form-horizontal form-bordered"
 				prependId="false">
+				
+				<h:commandButton 
+					value="#{msgs.showDetailsOfTheExistingProcess}" 
+					action="#{ProzesskopieForm.showTablesOfExistingProcess}"
+					rendered="#{ProzesskopieForm.showExistingProcessButton}" >
+					<f:ajax render="@form" />
+				</h:commandButton>
 
-				<div class="row">
+				<h:panelGroup layout="block" 
+										 id="existing-process-tables" 
+										 class="row"
+										 rendered="#{ProzesskopieForm.showExistingProcessTables and ProzesskopieForm.existingProcess != null}">
 					<!-- DETAILS OF THE EXISTING PROCESS -->
 					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-8':'col-sm-4'}">
 						<intranda:box
@@ -57,8 +67,7 @@
 							boxType="primary"
 							boxTitle="false"
 							boxForm="false"
-							boxPadding="false"
-							rendered="#{ProzesskopieForm.existingProcess != null}">
+							boxPadding="false">
 				
 							<intranda:boxTitle
 								title="#{msgs.basicInformationOfExistingProcess}"
@@ -132,8 +141,7 @@
 							boxType="primary"
 							boxTitle="false"
 							boxForm="false"
-							boxPadding="false"
-							rendered="#{ProzesskopieForm.existingProcess != null}">
+							boxPadding="false">
 							
 							<intranda:boxTitle
 								title="#{msgs.stepsOfExistingProcess}"
@@ -243,8 +251,7 @@
 							boxType="primary"
 							boxTitle="false"
 							boxForm="false"
-							boxPadding="false"
-							rendered="#{ProzesskopieForm.existingProcess != null}">
+							boxPadding="false">
 				
 							<intranda:boxTitle
 								title="#{msgs.journalEntriesOfExistingProcess}"
@@ -442,7 +449,7 @@
 					</div>
 					-->
 					<!-- // STEPS OF THE EXISTING PROCESS WITHOUT USING DATATABLE -->
-				</div>
+				</h:panelGroup>
 					 
 			</h:form>
 		</header>
