@@ -49,6 +49,7 @@
 				prependId="false">
 				
 				<div class="row">
+					<!-- DETAILS OF THE EXISTING PROCESS -->
 					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-8':'col-sm-4'}">
 						<intranda:box
 							boxType="primary"
@@ -66,29 +67,71 @@
 								columns="2"
 								styleClass="table table-hover table-bordered"
 								columnClasses="visible, tableColumnMaxWidthLong">
-								
-								<h:outputText value="#{msgs.prozessTitel}"/>
+
+								<h:outputText value="#{msgs.prozessTitel}:" />
 								<h:outputText value="#{ProzesskopieForm.existingProcess.titel}" />
-								
+
 								<h:outputText value="#{msgs.projekt}:" />
-								<h:outputText value="#{ProzesskopieForm.existingProcess.projekt.titel}" />
+								<h:outputText
+									value="#{ProzesskopieForm.existingProcess.projekt.titel}" />
 
 								<h:outputText value="#{msgs.erstellungsdatum}:" />
-								<h:outputText value="#{ProzesskopieForm.existingProcess.erstellungsdatumAsString}" />
+								<h:outputText
+									value="#{ProzesskopieForm.existingProcess.erstellungsdatum}" />
 
 								<h:outputText value="#{msgs.regelsatz}:" />
-								<h:outputText value="#{ProzesskopieForm.existingProcess.regelsatz.titel}" />
+								<h:outputText
+									value="#{ProzesskopieForm.existingProcess.regelsatz.titel}"
+									title="#{ProzesskopieForm.existingProcess.regelsatz.datei}" />
 
 								<h:outputText value="#{msgs.docket}:" />
-								<h:outputText value="#{ProzesskopieForm.existingProcess.docket.name}" />
-									
-								<h:outputText value="#{msgs.id}:"/>
-								<h:outputText value="#{ProzesskopieForm.existingProcess.id}"/>
+								<h:outputText
+									value="#{ProzesskopieForm.existingProcess.docket.name}" />
+
+								<h:outputText value="#{msgs.exportValidation}:" />
+								<h:outputText
+									value="#{ProzesskopieForm.existingProcess.exportValidator.label != null ? ProzesskopieForm.existingProcess.exportValidator.label : msgs.noValidation}" />
+
+								<h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
+								<i
+									class="fa #{ProzesskopieForm.existingProcess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}"></i>
+
+								<h:outputText value="#{msgs.istTemplate}:" />
+								<i
+									class="fa #{ProzesskopieForm.existingProcess.istTemplate?'fa-check-square-o':'fa-square-o'}"></i>
+								<h:outputText value="#{msgs.pauseAutomaticExecution}:" />
+								<i
+									class="fa #{ProzesskopieForm.existingProcess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}"></i>
+
+								<h:outputText
+									value="#{msgs.id}:"
+									styleClass="font-light" />
+								<h:outputText
+									value="#{ProzesskopieForm.existingProcess.id}"
+									styleClass="font-light" />
+
+								<h:outputText
+									value="#{msgs.batch}:"
+									styleClass="font-light" />
+								<h:outputText
+									value=""
+									rendered="#{ProzesskopieForm.existingProcess.batch==null}"
+									styleClass="font-light" />
+								<h:outputText
+									value="#{ProzesskopieForm.existingProcess.batch.batchId}"
+									rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName ==null}"
+									styleClass="font-light" />
+								<h:outputText
+									value="#{ProzesskopieForm.existingProcess.batch.batchId} (#{ProzesskopieForm.existingProcess.batch.batchName})"
+									rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName !=null}"
+									styleClass="font-light" />
 							
 							</h:panelGrid>
 						</intranda:box>
 					</div>
+					<!-- // DETAILS OF THE EXISTING PROCESS -->
 					
+					<!-- STEPS OF THE EXISTING PROCESS -->
 					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-8':'col-sm-4'}">
 						<intranda:box
 							boxType="primary"
@@ -189,40 +232,90 @@
 							
 							</h:dataTable>
 							
-							
-							
-							<!-- 
-							<h:panelGrid
-								columns="3"
-								styleClass="table table-hover table-bordered"
-								columnClasses="visible, tableColumnMaxWidthLong">
-							
-								
-								<ui:repeat
-									var="step"
-									value="#{ProzesskopieForm.existingProcessStepsInfoList}">
-									<div>
-										<td>
-											<h:outputText value="#{step['stepId']}" />
-										</td>
-										<td>	
-											<h:outputText value="#{step['stepTitle']}" />
-										</td>
-										<td>
-											<h:outputText value="#{step['stepStatus']}" />
-										</td>
-									</div>
-										
-										
-									
-
-								
-								</ui:repeat>
-							
-							</h:panelGrid>
-							-->
 						</intranda:box>
 					</div>
+					<!-- // STEPS OF THE EXISTING PROCESS -->
+					
+					<!-- JOURNAL ENTRIES OF THE EXISTING PROCESS -->
+					<div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-8':'col-sm-4'}">
+						<intranda:box
+							boxType="primary"
+							boxTitle="false"
+							boxForm="false"
+							boxPadding="false"
+							rendered="#{ProzesskopieForm.existingProcess != null}">
+				
+							<intranda:boxTitle
+								title="#{msgs.journalEntriesOfExistingProcess}"
+								icon="fa-table">
+							</intranda:boxTitle>
+				 
+		                    <div
+		                        class="gw-table-fixed #{NavigationForm.uiStatus['journalBig']?'journal-big':''}"
+		                        tabindex="0"
+		                        data-scrolldown="true">
+		                        <h:panelGroup rendered="#{ProzesskopieForm.existingProcess.journal.size()>0}">
+		                            <table
+		                                class="table table-hover table-bordered pt-2 pb-2">
+		                                <ui:repeat
+		                                    var="entry"
+		                                    value="#{ProzesskopieForm.existingProcess.journal}"
+		                                    varStatus="row">
+		                                     <!-- 
+		                                    <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
+		                                    -->
+		                                    <h:panelGroup>
+		                                        <tr class="first-row">
+		                                            <td>
+		                                                <h:outputText
+		                                                    value="#{entry.formattedCreationDate}"
+		                                                    styleClass="log_color_#{entry.type.title}">
+		                                                </h:outputText>
+		                                                <br />
+		                                                <h:outputText
+		                                                    value="#{msgs[entry.userName]}"
+		                                                    styleClass="log_color_#{entry.type.title}" />
+		                                            </td>
+		                                            <td>
+		                                                <div class="d-flex">
+		                                                <h:outputText
+		                                                    value="#{entry.formattedContent}"
+		                                                    styleClass="log_color_#{entry.type.title}"
+		                                                    escape="false" />
+		                                                <h:panelGroup rendered="#{entry.type.title == 'file'}">
+		
+		                                                    <button
+		                                                        jsf:id="downloadFile"
+		                                                        class="log_file ms-2"
+		                                                        jsf:action="#{ProzesskopieForm.existingProcess.downloadFile(entry)}"
+		                                                        title="#{msgs.downloadFile}">
+		                                                        <i class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
+		                                                        <span>
+		                                                            <h:outputText value="#{entry.basename}" />
+		                                                        </span>
+		                                                    </button>
+		
+		                                                    <button
+		                                                        jsf:id="deleteFile"
+		                                                        onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+		                                                        jsf:rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
+		                                                        class="log_file_delete btn-mini pull-right ms-auto"
+		                                                        jsf:action="#{ProzesskopieForm.existingProcess.deleteFile(entry)}"
+		                                                        title="#{msgs.deleteFile}">
+		                                                        <i class="fa fa-trash-o" />
+		                                                    </button>
+		                                                </h:panelGroup>
+		                                                </div>
+		                                            </td>
+		                                        </tr>
+		                                    </h:panelGroup>
+		                                </ui:repeat>
+		                            </table>
+		                        </h:panelGroup>
+		                    </div>
+						</intranda:box>
+					</div>
+					<!-- // JOURNAL ENTRIES OF THE EXISTING PROCESS -->
 				</div>
 				
 			</h:form>
