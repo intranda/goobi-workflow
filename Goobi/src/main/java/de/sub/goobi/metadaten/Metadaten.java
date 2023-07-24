@@ -1811,7 +1811,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -2497,9 +2497,9 @@ public class Metadaten implements Serializable {
                     }
                 }
             }
-        }
-        while (physical.getAllChildren() != null && !physical.getAllChildren().isEmpty()) {
-            physical.removeChild(physical.getAllChildren().get(0));
+            while (physical.getAllChildren() != null && !physical.getAllChildren().isEmpty()) {
+                physical.removeChild(physical.getAllChildren().get(0));
+            }
         }
 
         createPagination();
