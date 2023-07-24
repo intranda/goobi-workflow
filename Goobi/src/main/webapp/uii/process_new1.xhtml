@@ -837,21 +837,22 @@
 		<script type="text/javascript">
 				
 				$(document).ready(function(){
-				    function resizeModal(){
-				        var modalDialog = $(this).find(".modal-dialog");
-				        
-				        //modalDialog.css("max-width", "fit-content");
-				    }
-				    // resize modal when it is displayed
-				    $(".modal").on("shown.bs.modal", alignModal);
-				    
-				    // resize modal when user resize the window
-				    $(window).on("resize", function(){
-				        $(".modal:visible").each(resizeModal);
-				    });   
+					// hide the functional button
+					$("#existingProcessTablesModalButton").css("display", "none");
+					// rename the link in the error message
+				    renameDetailsLink();
 				});
 				
-				
+				function renameDetailsLink(){
+					// rename the link in the error message
+					$("#show-details-link").text("#{msgs.showDetailsOfTheExistingProcess}");
+					// trigger the hidden functional button
+					$("#show-details-link").click(function(){
+						var showTablesButton = $("#existingProcessTablesModalButton");
+						showTablesButton.click();
+					});
+				}
+							
 		        function getKeyCode(e) {
 		                 var keycode;
 		                keycode = e.keyCode ? e.keyCode : e.charCode;
