@@ -59,7 +59,7 @@
 					jsf:action="#{ProzesskopieForm.showTablesOfExistingProcess}">
 					<i class="fa fa-eye" />
 					<span>
-						<h:outputText value="#{msgs.showDetailsOfTheExistingProcess}" />
+						<h:outputText value="#{msgs.existingProcessShowDetails}" />
 					</span>
 				</button>
 				<!-- // BUTTON TO SHOW THE INFO TABLES -->
@@ -80,7 +80,7 @@
 							<!-- MODAL HEADER -->
 							<div class="modal-header bg-primary text-white">
 								<h4 class="modal-title" id="existingProcessTablesModalLabel">
-									<h:outputText value="#{msgs.showDetailsOfTheExistingProcess}" />
+									<h:outputText value="#{msgs.existingProcessShowDetails}" />
 								</h4>
 								<button type="button" class="btn text-white" title="#{msgs.abbrechen}" data-bs-dismiss="modal">
 									<i class="fa fa-times"></i>
@@ -102,7 +102,7 @@
                                         boxClass="mb-3">
 							
 										<intranda:boxTitle
-											title="#{msgs.basicInformationOfExistingProcess}"
+											title="#{msgs.existingProcessBasicInfo}"
 											icon="fa-table">
 										</intranda:boxTitle>
 							 
@@ -176,7 +176,7 @@
                                         boxClass="mb-3">
 										
 										<intranda:boxTitle
-											title="#{msgs.stepsOfExistingProcess}"
+											title="#{msgs.existingProcessSteps}"
 											icon="fa-list">
 										</intranda:boxTitle>
 										
@@ -285,7 +285,7 @@
 										boxPadding="false">
 							
 										<intranda:boxTitle
-											title="#{msgs.journalEntriesOfExistingProcess}"
+											title="#{msgs.existingProcessJournal}"
 											icon="fa-list-ol">
 										</intranda:boxTitle>
 							 
@@ -845,7 +845,7 @@
 				
 				function renameDetailsLink(){
 					// rename the link in the error message
-					$("#show-details-link").text("#{msgs.showDetailsOfTheExistingProcess}");
+					$("#show-details-link").text("#{msgs.existingProcessShowDetails}");
 					// trigger the hidden functional button
 					$("#show-details-link").click(function(){
 						var showTablesButton = $("#existingProcessTablesModalButton");
