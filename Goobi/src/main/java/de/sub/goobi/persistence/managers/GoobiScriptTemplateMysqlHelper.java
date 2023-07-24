@@ -30,7 +30,7 @@ public class GoobiScriptTemplateMysqlHelper {
         // do nothing
     }
 
-    static int getGoobiScriptTemplateCount(String filter) throws SQLException {
+    public static int getGoobiScriptTemplateCount(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM goobiscript_template");
@@ -48,7 +48,7 @@ public class GoobiScriptTemplateMysqlHelper {
         }
     }
 
-    static GoobiScriptTemplate getGoobiScriptTemplateById(int id) throws SQLException {
+    public static GoobiScriptTemplate getGoobiScriptTemplateById(int id) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM goobiscript_template WHERE id = ?");
@@ -63,7 +63,7 @@ public class GoobiScriptTemplateMysqlHelper {
         }
     }
 
-    static void saveGoobiScriptTemplate(GoobiScriptTemplate template) throws SQLException {
+    public static void saveGoobiScriptTemplate(GoobiScriptTemplate template) throws SQLException {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -98,7 +98,7 @@ public class GoobiScriptTemplateMysqlHelper {
         }
     }
 
-    static void deleteGoobiScriptTemplate(GoobiScriptTemplate template) throws SQLException {
+    public static void deleteGoobiScriptTemplate(GoobiScriptTemplate template) throws SQLException {
         if (template.getId() != null) {
             Connection connection = null;
             try {
@@ -116,7 +116,7 @@ public class GoobiScriptTemplateMysqlHelper {
 
     }
 
-    static List<GoobiScriptTemplate> getGoobiScriptTemplates(String order, String filter, Integer start, Integer count) throws SQLException {
+    public static List<GoobiScriptTemplate> getGoobiScriptTemplates(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM goobiscript_template");

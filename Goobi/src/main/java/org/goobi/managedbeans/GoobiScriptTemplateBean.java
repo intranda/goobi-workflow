@@ -51,7 +51,6 @@ public class GoobiScriptTemplateBean extends BasicBean implements Serializable {
     public String Speichern() {
         try {
             GoobiScriptTemplateManager.saveGoobiScriptTemplate(template);
-            paginator.load();
             return FilterKein();
 
         } catch (DAOException e) {
@@ -62,10 +61,7 @@ public class GoobiScriptTemplateBean extends BasicBean implements Serializable {
 
     public String Loeschen() {
         try {
-
             GoobiScriptTemplateManager.deleteGoobiScriptTemplate(template);
-            paginator.load();
-
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
             return "";
