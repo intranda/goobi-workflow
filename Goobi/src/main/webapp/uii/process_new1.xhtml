@@ -44,10 +44,6 @@
 	
 		<header>
 		
-			<h:form
-				id="header-form"
-				styleClass="form-horizontal form-bordered"
-				prependId="false">
 				<!-- BUTTON TO SHOW THE INFO TABLES -->
 				<button
 					id="existingProcessTablesModalButton"
@@ -63,7 +59,7 @@
 					</span>
 				</button>
 				<!-- // BUTTON TO SHOW THE INFO TABLES -->
-				
+		    
                 <!-- MODAL BOX FOR EXISTING PROCESS TABLES -->
 				<h:panelGroup layout="block" 
 					class="modal fade"
@@ -96,17 +92,13 @@
 									<intranda:box
 										boxScope="general"
 										boxType="primary"
-										boxTitle="false"
-										boxForm="false"
+										title="#{msgs.existingProcessBasicInfo}"
+                                        icon="fa-table"
 										boxPadding="false"
+                                        boxSmall="true"
                                         boxClass="mb-3">
 							
-										<intranda:boxTitle
-											title="#{msgs.existingProcessBasicInfo}"
-											icon="fa-table">
-										</intranda:boxTitle>
-							 
-							 			<div
+										<div
 					                        class="gw-table-fixed #{NavigationForm.uiStatus['journalBig']?'journal-big':''}"
 					                        tabindex="0"
 					                        data-scrolldown="true">
@@ -170,17 +162,13 @@
 									<intranda:box
 										boxScope="general"
 										boxType="primary"
-										boxTitle="false"
-										boxForm="false"
 										boxPadding="false"
+                                        boxSmall="true"
+                                        title="#{msgs.existingProcessSteps}"
+                                        icon="fa-list"
                                         boxClass="mb-3">
 										
-										<intranda:boxTitle
-											title="#{msgs.existingProcessSteps}"
-											icon="fa-list">
-										</intranda:boxTitle>
-										
-					                    <div
+                                        <div
 					                        class="gw-table gw-table-fixed"
 					                        tabindex="0"
 					                        data-scrolldown="true">
@@ -280,15 +268,11 @@
 									<intranda:box
 										boxScope="general"
 										boxType="primary"
-										boxTitle="false"
-										boxForm="false"
-										boxPadding="false">
+										title="#{msgs.existingProcessJournal}"
+                                        icon="fa-list-ol"
+										boxPadding="false"
+                                        boxSmall="true">
 							
-										<intranda:boxTitle
-											title="#{msgs.existingProcessJournal}"
-											icon="fa-list-ol">
-										</intranda:boxTitle>
-							 
 					                    <div
 					                        class="gw-table-fixed"
 					                        tabindex="0"
@@ -351,7 +335,12 @@
                             
 							<!-- MODAL FOOTER -->
 							<div class="modal-footer">
-								<button class="btn btn-blank" data-bs-dismiss="modal" aria-hidden="true">#{msgs.close}</button>
+                            
+                            <button
+                                type="button" 
+                                class="btn btn-blank"
+                                data-bs-dismiss="modal"
+                                aria-hidden="true">#{msgs.close}</button>
 							</div>
 							<!-- // MODAL FOOTER -->
 							
@@ -362,7 +351,6 @@
 
 				</h:panelGroup>
 				 <!-- // MODAL BOX FOR EXISTING PROCESS TABLES -->
-			</h:form>
 		</header>
 
 
