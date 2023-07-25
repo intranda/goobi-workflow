@@ -82,7 +82,7 @@
 								<h4 class="modal-title" id="existingProcessTablesModalLabel">
 									<h:outputText value="#{msgs.existingProcessDetails}" />
 								</h4>
-								<button type="button" class="btn text-white" title="#{msgs.abbrechen}" data-bs-dismiss="modal">
+								<button type="button" class="btn text-white" title="#{msgs.close}" data-bs-dismiss="modal">
 									<i class="fa fa-times"></i>
 								</button>
 							</div>
@@ -290,7 +290,7 @@
 										</intranda:boxTitle>
 							 
 					                    <div
-					                        class="gw-table-fixed #{NavigationForm.uiStatus['journalBig']?'journal-big':''}"
+					                        class="gw-table-fixed"
 					                        tabindex="0"
 					                        data-scrolldown="true">
 					                        <h:panelGroup rendered="#{ProzesskopieForm.existingProcess.journal.size()>0}">
@@ -322,7 +322,6 @@
 					                                                    styleClass="log_color_#{entry.type.title}"
 					                                                    escape="false" />
 					                                                <h:panelGroup rendered="#{entry.type.title == 'file'}">
-					
 					                                                    <button
 					                                                        jsf:id="downloadFile"
 					                                                        class="log_file ms-2"
@@ -332,16 +331,6 @@
 					                                                        <span>
 					                                                            <h:outputText value="#{entry.basename}" />
 					                                                        </span>
-					                                                    </button>
-					
-					                                                    <button
-					                                                        jsf:id="deleteFile"
-					                                                        onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
-					                                                        jsf:rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
-					                                                        class="log_file_delete btn-mini pull-right ms-auto"
-					                                                        jsf:action="#{ProzesskopieForm.existingProcess.deleteFile(entry)}"
-					                                                        title="#{msgs.deleteFile}">
-					                                                        <i class="fa fa-trash-o" />
 					                                                    </button>
 					                                                </h:panelGroup>
 					                                                </div>
@@ -362,7 +351,7 @@
                             
 							<!-- MODAL FOOTER -->
 							<div class="modal-footer">
-								<button class="btn btn-blank" data-bs-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
+								<button class="btn btn-blank" data-bs-dismiss="modal" aria-hidden="true">#{msgs.close}</button>
 							</div>
 							<!-- // MODAL FOOTER -->
 							
