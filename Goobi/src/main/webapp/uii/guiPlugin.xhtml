@@ -54,7 +54,7 @@
     </ui:define>
 
     <ui:define name="content">
-    <main>
+    
 		<h:form prependId="false">
 			<h:commandLink id="restPluginFinishLink" action="#{AktuelleSchritteForm.myPlugin.finish}" style="display:none;"></h:commandLink>
             <h:commandLink id="restPluginCloseStepLink" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" style="display:none;"></h:commandLink>
@@ -72,14 +72,14 @@
 			window["plugin_name"] = pluginTitle;
 			window[pluginTitle] = options;
 		</script>
-            <c:forEach
-                items="#{AktuelleSchritteForm.myPlugin.jsPaths}"
-                var="jsPath">
-                <script
-                    src="/goobi/plugins/#{AktuelleSchritteForm.myPlugin.title}/#{jsPath}"
-                    type="text/javascript"></script>
-            </c:forEach>
-        </main>
+        <c:forEach
+            items="#{AktuelleSchritteForm.myPlugin.jsPaths}"
+            var="jsPath">
+            <script
+                src="/goobi/plugins/#{AktuelleSchritteForm.myPlugin.title}/#{jsPath}"
+                type="text/javascript"></script>
+        </c:forEach>
+    
     </ui:define>
 
 </ui:composition>

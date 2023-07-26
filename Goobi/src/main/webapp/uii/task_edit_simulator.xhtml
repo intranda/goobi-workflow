@@ -44,87 +44,86 @@
     </ui:define>
 
     <ui:define name="content">
-        <main>
-            <c:if test="#{LoginForm.hasRole('Task_List')}">
+        
+        <c:if test="#{LoginForm.hasRole('Task_List')}">
 
-                <div class="row">
-                    <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-6">
 
-                        <!-- SIMULATED BOX FOR PROCESS DETAILS -->
-                        <intranda:box
-                            boxType="outline"
-                            boxPadding="false"
-                            icon="fa-list"
-                            title="#{ProzessverwaltungForm.myProzess.titel}">                            
-                            <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
-                                <div class="row text-center d-flex align-items-center font-light">
-                                    <h2>PLACEHOLDER</h2>
-                                </div>
+                    <!-- SIMULATED BOX FOR PROCESS DETAILS -->
+                    <intranda:box
+                        boxType="outline"
+                        boxPadding="false"
+                        icon="fa-list"
+                        title="#{ProzessverwaltungForm.myProzess.titel}">                            
+                        <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
+                            <div class="row text-center d-flex align-items-center font-light">
+                                <h2>PLACEHOLDER</h2>
                             </div>
-                        </intranda:box>
-                        <!-- // SIMULATED BOX FOR PROCESS DETAILS -->
-                     
-                        <div class="m-4"/>
-                        
-                        <!-- SIMULATED BOX FOR JOURNAL -->
-                        <intranda:box
-                            boxType="outline"
-                            boxPadding="false"
-                            icon="fa-comment"
-                            title="#{msgs.processLog}">   
-                            <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
-                                <div class="row text-center d-flex align-items-center font-light">
-                                    <h2>PLACEHOLDER</h2>
-                                </div>
+                        </div>
+                    </intranda:box>
+                    <!-- // SIMULATED BOX FOR PROCESS DETAILS -->
+                 
+                    <div class="m-4"/>
+                    
+                    <!-- SIMULATED BOX FOR JOURNAL -->
+                    <intranda:box
+                        boxType="outline"
+                        boxPadding="false"
+                        icon="fa-comment"
+                        title="#{msgs.processLog}">   
+                        <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
+                            <div class="row text-center d-flex align-items-center font-light">
+                                <h2>PLACEHOLDER</h2>
                             </div>
-                        </intranda:box>
-                        <!-- // SIMULATED BOX FOR JOURNAL -->
-                   
-                    </div>
-
-                    <div class="col-sm-6">
-
-                        <!-- AREA FOR PART GUI PLUGIN -->
-                        <c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
-                            <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
-                        </c:if>
-                        <!-- // AREA FOR PART GUI PLUGIN -->
-
-                        <div class="m-3"/>
-                        
-                        <!-- SIMULATED BOX FOR ACTION -->
-                        <intranda:box
-                            boxType="outline"
-                            boxPadding="false"
-                            icon="fa-cog"
-                            title="#{msgs.moeglicheAktionen}">   
-                            <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
-                                <div class="row text-center d-flex align-items-center font-light">
-                                    <h2>PLACEHOLDER</h2>
-                                </div>
-                            </div>
-                        </intranda:box>
-                        <!-- // SIMULATED BOX FOR ACTION -->
-                        
-                        <!-- BUTTON TO LEAVE -->                        
-                        <h:form styleClass="mt-4">
-                            <button
-                                class="btn btn-primary-400 float-end"
-                                jsf:id="absenden"
-                                jsf:action="#{AktuelleSchritteForm.myPlugin.cancel}">
-                                <i class="fa fa-check"></i>
-                                <span>
-                                    <h:outputText value="#{msgs.pluginLeave}" />
-                                </span>
-                            </button>
-                        </h:form>
-                        <!-- // BUTTON TO LEAVE -->   
-                        
-                    </div>
+                        </div>
+                    </intranda:box>
+                    <!-- // SIMULATED BOX FOR JOURNAL -->
+               
                 </div>
 
-            </c:if>
-        </main>
+                <div class="col-sm-6">
+
+                    <!-- AREA FOR PART GUI PLUGIN -->
+                    <c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
+                        <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
+                    </c:if>
+                    <!-- // AREA FOR PART GUI PLUGIN -->
+
+                    <div class="m-3"/>
+                    
+                    <!-- SIMULATED BOX FOR ACTION -->
+                    <intranda:box
+                        boxType="outline"
+                        boxPadding="false"
+                        icon="fa-cog"
+                        title="#{msgs.moeglicheAktionen}">   
+                        <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
+                            <div class="row text-center d-flex align-items-center font-light">
+                                <h2>PLACEHOLDER</h2>
+                            </div>
+                        </div>
+                    </intranda:box>
+                    <!-- // SIMULATED BOX FOR ACTION -->
+                    
+                    <!-- BUTTON TO LEAVE -->                        
+                    <h:form styleClass="mt-4">
+                        <button
+                            class="btn btn-primary-400 float-end"
+                            jsf:id="absenden"
+                            jsf:action="#{AktuelleSchritteForm.myPlugin.cancel}">
+                            <i class="fa fa-check"></i>
+                            <span>
+                                <h:outputText value="#{msgs.pluginLeave}" />
+                            </span>
+                        </button>
+                    </h:form>
+                    <!-- // BUTTON TO LEAVE -->   
+                    
+                </div>
+            </div>
+
+        </c:if>
     </ui:define>
 
 </ui:composition>

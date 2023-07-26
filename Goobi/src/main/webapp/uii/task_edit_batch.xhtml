@@ -37,142 +37,139 @@
     </ui:define>
 
     <ui:define name="content">
-        <main>
-            <div
-                class="row"
-                jsf:rendered="#{LoginForm.hasRole('Task_List')}">
+        <div
+            class="row"
+            jsf:rendered="#{LoginForm.hasRole('Task_List')}">
 
-                <!-- DETAILS OF STEP AND PROCESS -->
-                <div class="col-sm-6">
-                    <ui:include src="templatePG/includes/task/box_details.xhtml">
+            <!-- DETAILS OF STEP AND PROCESS -->
+            <div class="col-sm-6">
+                <ui:include src="templatePG/includes/task/box_details.xhtml">
+                    <ui:param
+                        name="currentStep"
+                        value="#{AktuelleSchritteForm.batchHelper.currentStep}" />
+                </ui:include>
+            </div>
+            <!-- // DETAILS OF STEP AND PROCESS -->
+
+            <div class="col-sm-6">
+
+                <!-- SWITCH BETWEEN BATCH STEPS -->
+                <h:form styleClass="mb-3">
+                    <intranda:box
+                        boxType="neutral"
+                        boxForm="true"
+                        boxPadding="false"
+                        icon="fa-wrench"
+                        title="#{msgs.processesInThisBatch}">
+
+                        <intranda:formInputDropDown2
+                            id="dashboard"
+                            label="#{msgs.showDataForProcess}:"
+                            field="#{AktuelleSchritteForm.batchHelper.processName}"
+                            help="#{msgs.helpUserDashboard}"
+                            name="dashboardName"
+                            selectItems="#{AktuelleSchritteForm.batchHelper.processNameList}" />
+                                  
+                        <div class="box__actions">
+                            <button
+                                class="btn btn-primary-400"
+                                jsf:id="absenden"
+                                type="submit"
+                                jsf:action="#{NavigationForm.Reload}">
+                                <i class="fa fa-refresh"></i>
+                                <span>
+                                    <h:outputText value="#{msgs.uebernehmen}" />
+                                </span>                                    
+                                <f:setPropertyActionListener
+                                    target="#{NavigationForm.uiStatus.taskActionBox_view}"
+                                    value="" />
+                            </button>
+                        </div>	
+                    </intranda:box>
+                </h:form>
+                <!-- // SWITCH BETWEEN BATCH STEPS -->
+
+
+                <!-- AREA FOR GUI PLUGINS -->
+                <c:if
+                    test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
+                    <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
+                </c:if>
+                <!-- // AREA FOR GUI PLUGINS -->
+
+
+                <!-- PROPERTIES -->
+                <h:panelGroup
+                    layout="block"
+                    styleClass="mb-3"
+                    id="propform2"
+                    rendered="#{AktuelleSchritteForm.batchHelper.propertyListSize>0 or AktuelleSchritteForm.batchHelper.sizeOfDisplayableMetadata>0}">
+                    <ui:include src="templatePG/includes/task/box_properties.xhtml">
                         <ui:param
                             name="currentStep"
-                            value="#{AktuelleSchritteForm.batchHelper.currentStep}" />
+                            value="#{AktuelleSchritteForm.mySchritt}" />
+                        <!-- the owner of the properties as regular tasks are different from tasks in batches -->
+                        <ui:param
+                            name="propertyOwner"
+                            value="#{AktuelleSchritteForm.batchHelper}" />
+                        <!-- the navigation information is independent of the property owner -->
+                        <ui:param
+                            name="bean"
+                            value="#{AktuelleSchritteForm}" />
+                         <ui:param
+                            name="isBatchStep"
+                            value="true" />
                     </ui:include>
-                </div>
-                <!-- // DETAILS OF STEP AND PROCESS -->
-
-                <div class="col-sm-6">
-
-                    <!-- SWITCH BETWEEN BATCH STEPS -->
-                    <h:form styleClass="mb-3">
-                        <intranda:box
-                            boxType="neutral"
-                            boxForm="true"
-                            boxPadding="false"
-                            icon="fa-wrench"
-                            title="#{msgs.processesInThisBatch}">
-    
-                            <intranda:formInputDropDown2
-                                id="dashboard"
-                                label="#{msgs.showDataForProcess}:"
-                                field="#{AktuelleSchritteForm.batchHelper.processName}"
-                                help="#{msgs.helpUserDashboard}"
-                                name="dashboardName"
-                                selectItems="#{AktuelleSchritteForm.batchHelper.processNameList}" />
-                                      
-                            <div class="box__actions">
-                                <button
-                                    class="btn btn-primary-400"
-                                    jsf:id="absenden"
-                                    type="submit"
-                                    jsf:action="#{NavigationForm.Reload}">
-                                    <i class="fa fa-refresh"></i>
-                                    <span>
-                                        <h:outputText value="#{msgs.uebernehmen}" />
-                                    </span>                                    
-                                    <f:setPropertyActionListener
-                                        target="#{NavigationForm.uiStatus.taskActionBox_view}"
-                                        value="" />
-                                </button>
-                            </div>	
-                        </intranda:box>
-                    </h:form>
-                    <!-- // SWITCH BETWEEN BATCH STEPS -->
+                
+                </h:panelGroup>
+                <!-- // PROPERTIES -->
 
 
-                    <!-- AREA FOR GUI PLUGINS -->
-                    <c:if
-                        test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
-                        <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
-                    </c:if>
-                    <!-- // AREA FOR GUI PLUGINS -->
-
-
-                    <!-- PROPERTIES -->
-                    <h:panelGroup
-                        layout="block"
-                        styleClass="mb-3"
-                        id="propform2"
-                        rendered="#{AktuelleSchritteForm.batchHelper.propertyListSize>0 or AktuelleSchritteForm.batchHelper.sizeOfDisplayableMetadata>0}">
-                        <ui:include src="templatePG/includes/task/box_properties.xhtml">
-                            <ui:param
-                                name="currentStep"
-                                value="#{AktuelleSchritteForm.mySchritt}" />
-                            <!-- the owner of the properties as regular tasks are different from tasks in batches -->
-                            <ui:param
-                                name="propertyOwner"
-                                value="#{AktuelleSchritteForm.batchHelper}" />
-                            <!-- the navigation information is independent of the property owner -->
-                            <ui:param
-                                name="bean"
-                                value="#{AktuelleSchritteForm}" />
-                             <ui:param
-                                name="isBatchStep"
-                                value="true" />
-                        </ui:include>
+                <!-- ACTION BOX -->
+                <ui:include src="templatePG/includes/task/box_action.xhtml">
+                    <ui:param
+                        name="currentStep"
+                        value="#{AktuelleSchritteForm.batchHelper.currentStep}" />
+                    <ui:param
+                            name="isBatchStep"
+                            value="true" />
+                </ui:include>
+                <!-- // ACTION BOX -->
                     
-                    </h:panelGroup>
-                    <!-- // PROPERTIES -->
-
-
-                    <!-- ACTION BOX -->
-                    <ui:include src="templatePG/includes/task/box_action.xhtml">
-                        <ui:param
-                            name="currentStep"
-                            value="#{AktuelleSchritteForm.batchHelper.currentStep}" />
-                        <ui:param
-                                name="isBatchStep"
-                                value="true" />
-                    </ui:include>
-                    <!-- // ACTION BOX -->
-                        
-                </div>
-
             </div>
 
-            <!-- FULL WIDTH JOURNAL -->
-            <ui:fragment rendered="#{NavigationForm.uiStatus['journalBig']}">
-                <div class="row mt-3">
-                    <div class="col-sm-12">
-                        <h:form
-                            styleClass="form-vertical form-bordered"
-                            id="journal2"
-                            enctype="multipart/form-data"
-                            prependId="false">
+        </div>
 
-                            <ui:include src="templatePG/includes/journal.xhtml">
-                                <ui:param
-                                    name="showBigButton"
-                                    value="true" />
-                                <ui:param
-                                    name="showFolderSelection"
-                                    value="false" />
-                                <ui:param
-                                    name="showImageComments"
-                                    value="true" />
-                                <ui:param
-                                    name="bean"
-                                    value="#{AktuelleSchritteForm.batchHelper.currentStep.prozess}" />
-                            </ui:include>
+        <!-- FULL WIDTH JOURNAL -->
+        <ui:fragment rendered="#{NavigationForm.uiStatus['journalBig']}">
+            <div class="row mt-3">
+                <div class="col-sm-12">
+                    <h:form
+                        styleClass="form-vertical form-bordered"
+                        id="journal2"
+                        enctype="multipart/form-data"
+                        prependId="false">
 
-                        </h:form>
-                    </div>
+                        <ui:include src="templatePG/includes/journal.xhtml">
+                            <ui:param
+                                name="showBigButton"
+                                value="true" />
+                            <ui:param
+                                name="showFolderSelection"
+                                value="false" />
+                            <ui:param
+                                name="showImageComments"
+                                value="true" />
+                            <ui:param
+                                name="bean"
+                                value="#{AktuelleSchritteForm.batchHelper.currentStep.prozess}" />
+                        </ui:include>
+
+                    </h:form>
                 </div>
-            </ui:fragment>
-            <!-- // FULL WIDTH JOURNAL -->
-
-        </main>
+            </div>
+        </ui:fragment>
+        <!-- // FULL WIDTH JOURNAL -->
     </ui:define>
 
 </ui:composition>

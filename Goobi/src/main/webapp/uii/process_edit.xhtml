@@ -39,51 +39,49 @@
     </ui:define>
 
     <ui:define name="content">
-        <main>
+    
+        <c:if test="#{LoginForm.hasRole('Workflow_General_Details')}">
+            <div class="alert alert-warning mt-4" jsf:rendered="#{ProzessverwaltungForm.myProzess.archivedImageFolders.size() gt 0}">
+                <h:outputText value="#{msgs.warningImageFoldersArchived}" escape="false" />
+                <ui:repeat var="folder" value="#{ProzessverwaltungForm.myProzess.archivedImageFolders}">#{folder}</ui:repeat>
+            </div>
 
-            <c:if test="#{LoginForm.hasRole('Workflow_General_Details')}">
-                <div class="alert alert-warning mt-4" jsf:rendered="#{ProzessverwaltungForm.myProzess.archivedImageFolders.size() gt 0}">
-                    <h:outputText value="#{msgs.warningImageFoldersArchived}" escape="false" />
-                    <ui:repeat var="folder" value="#{ProzessverwaltungForm.myProzess.archivedImageFolders}">#{folder}</ui:repeat>
-                </div>
+            <ui:include src="templatePG/includes/process/process_main.xhtml" />
 
-                <ui:include src="templatePG/includes/process/process_main.xhtml" />
+            <h:form
+                id="proceditform"
+                onkeypress="submitOnEnter(event);">
 
-                <h:form
-                    id="proceditform"
-                    onkeypress="submitOnEnter(event);">
+                <f:subview
+                    id="sub001"
+                    rendered="#{ProzessverwaltungForm.myProzess.id != null}">
 
+                    <!-- Schritte -->
+                    <ui:include src="templatePG/includes/process/process_steps.xhtml" />
+
+                    <!-- Vorlagen -->
                     <f:subview
-                        id="sub001"
-                        rendered="#{ProzessverwaltungForm.myProzess.id != null}">
-
-                        <!-- Schritte -->
-                        <ui:include src="templatePG/includes/process/process_steps.xhtml" />
-
-                        <!-- Vorlagen -->
-                        <f:subview
-                            id="subVorlage"
-                            rendered="#{ProzessverwaltungForm.myProzess.vorlagenSize != 0}">
-                            <ui:include src="templatePG/includes/process/process_templates.xhtml" />
-                        </f:subview>
-
-                        <!-- Werkstuecke -->
-                        <f:subview
-                            id="subWerk"
-                            rendered="#{ProzessverwaltungForm.myProzess.werkstueckeSize != 0}">
-                            <ui:include src="templatePG/includes/process/process_workpieces.xhtml" />
-                        </f:subview>
+                        id="subVorlage"
+                        rendered="#{ProzessverwaltungForm.myProzess.vorlagenSize != 0}">
+                        <ui:include src="templatePG/includes/process/process_templates.xhtml" />
                     </f:subview>
 
-                </h:form>
+                    <!-- Werkstuecke -->
+                    <f:subview
+                        id="subWerk"
+                        rendered="#{ProzessverwaltungForm.myProzess.werkstueckeSize != 0}">
+                        <ui:include src="templatePG/includes/process/process_workpieces.xhtml" />
+                    </f:subview>
+                </f:subview>
 
-                <!-- Prozesseigenschaften -->
-                <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.id != null}">
-                    <ui:include src="templatePG/includes/process/process_properties.xhtml" />
-                </h:panelGroup>
+            </h:form>
 
-            </c:if>
-        </main>
+            <!-- Prozesseigenschaften -->
+            <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+                <ui:include src="templatePG/includes/process/process_properties.xhtml" />
+            </h:panelGroup>
+
+        </c:if>
     </ui:define>
 
 </ui:composition>
