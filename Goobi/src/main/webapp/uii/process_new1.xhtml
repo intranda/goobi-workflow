@@ -45,19 +45,27 @@
 		<header>
 		
 				<!-- BUTTON TO SHOW THE INFO TABLES -->
-				<button
-					id="existingProcessTablesModalButton"
-					type="button"
-					class="btn btn-primary"
-					data-bs-toggle="modal"
-					data-bs-target="#existingProcessTablesModal"
-					jsf:rendered="#{ProzesskopieForm.showExistingProcessButton}"
-					jsf:action="#{ProzesskopieForm.showTablesOfExistingProcess}">
-					<i class="fa fa-eye" />
-					<span>
-						<h:outputText value="#{msgs.existingProcessShowDetails}" />
-					</span>
-				</button>
+		
+                <h:panelGroup
+                    layout="block"
+                    rendered="#{ProzesskopieForm.showExistingProcessButton}"
+                    styleClass="alert alert-danger mb-3 pt-2 pb-2">
+                    <h:outputText
+                        value="#{msgs.existingProcessTitleInUse}" />
+
+            		<button
+    					id="existingProcessTablesModalButton"
+    					type="button"
+    					class="btn btn-neutral-600 ms-3"
+    					data-bs-toggle="modal"
+    					data-bs-target="#existingProcessTablesModal"
+    					jsf:rendered="#{ProzesskopieForm.showExistingProcessButton}"
+    					jsf:action="#{ProzesskopieForm.showTablesOfExistingProcess}">
+    					<h:outputText value="#{msgs.existingProcessShowDetails}" />
+    				</button>
+                    
+                </h:panelGroup>
+                
 				<!-- // BUTTON TO SHOW THE INFO TABLES -->
 		    
                 <!-- MODAL BOX FOR EXISTING PROCESS TABLES -->
@@ -813,23 +821,6 @@
 
 		<script type="text/javascript">
 				
-				$(document).ready(function(){
-					// hide the functional button
-					$("#existingProcessTablesModalButton").css("display", "none");
-					// rename the link in the error message
-				    renameDetailsLink();
-				});
-				
-				function renameDetailsLink(){
-					// rename the link in the error message
-					$("#show-details-link").text("#{msgs.existingProcessShowDetails}");
-					// trigger the hidden functional button
-					$("#show-details-link").click(function(){
-						var showTablesButton = $("#existingProcessTablesModalButton");
-						showTablesButton.click();
-					});
-				}
-							
 		        function getKeyCode(e) {
 		                 var keycode;
 		                keycode = e.keyCode ? e.keyCode : e.charCode;

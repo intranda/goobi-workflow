@@ -45,8 +45,6 @@ import java.util.TreeSet;
 import java.util.regex.PatternSyntaxException;
 
 import javax.enterprise.inject.Default;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.naming.NamingException;
@@ -88,7 +86,6 @@ import de.schlichtherle.io.FileOutputStream;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
-import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
@@ -780,15 +777,8 @@ public class ProzesskopieForm implements Serializable {
         if (this.prozessKopie.getTitel() != null
                 && ProcessManager.countProcessTitle(prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution()) > 0) {
             valide = false;
-            // print infos of the existing process
-            //            printExistingProcessInfos(prozessKopie.getTitel());
             existingProcess = ProcessManager.getProcessByExactTitle(prozessKopie.getTitel());
             showExistingProcessButton = true;
-            // add new red error message containing a link
-            FacesContext context = FacesContextHelper.getCurrentFacesContext();
-            String msg = Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse");
-            String detailsLink = "<a href='#' id='show-details-link' />";
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, detailsLink));
         }
 
         /*
