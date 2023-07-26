@@ -765,6 +765,8 @@ public class ProzesskopieForm implements Serializable {
         if (this.prozessKopie.getTitel() != null
                 && ProcessManager.countProcessTitle(prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution()) > 0) {
             valide = false;
+            // print infos of the existing process
+            printExistingProcessInfos(prozessKopie.getTitel());
             Helper.setFehlerMeldung(
                     Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
         }
@@ -791,6 +793,57 @@ public class ProzesskopieForm implements Serializable {
             }
         }
         return valide;
+    }
+    
+    /**
+     * print the infos of the existing process
+     * 
+     * @param processName title that has already been used by some process
+     */
+    private void printExistingProcessInfos(String processName) {
+        if (StringUtils.isBlank(processName)) {
+            return;
+        }
+
+        Process existingProcess = ProcessManager.getProcessByExactTitle(processName);
+
+        // basic infos
+        String processTitle = existingProcess.getTitel();
+        String creationDate = existingProcess.getErstellungsdatumAsString();
+        String projectName = existingProcess.getProjekt().getTitel();
+        StringBuilder basicBuilder = new StringBuilder("BASIC INFOS OF THE EXISTING PROCESS:\n");
+        basicBuilder.append("process title: ").append(processTitle).append("\n");
+        basicBuilder.append("creation date: ").append(creationDate).append("\n");
+        basicBuilder.append("project name: ").append(projectName).append("\n");
+        Helper.setFehlerMeldung(basicBuilder.toString());
+
+        // infos of steps
+        List<Step> processSteps = existingProcess.getSchritte();
+        StringBuilder stepBuilder = new StringBuilder("LIST OF STEPS AND THEIR STATUS:\n");
+        for (Step step : processSteps) {
+            int stepId = step.getReihenfolge();
+            String stepName = step.getTitel();
+            String stepStatus = step.getBearbeitungsstatusEnum().toString();
+            stepBuilder.append(stepId).append(". ");
+            stepBuilder.append(stepName).append(": ");
+            stepBuilder.append(stepStatus);
+            stepBuilder.append("\n");
+        }
+        Helper.setFehlerMeldung(stepBuilder.toString());
+
+        // journal entries
+        List<JournalEntry> journalEntries = existingProcess.getJournal();
+        StringBuilder journalBuilder = new StringBuilder("LIST OF JOURNAL ENTRIES:\n");
+        for (JournalEntry entry : journalEntries) {
+            String entryDate = entry.getFormattedCreationDate();
+            String entryUser = entry.getUserName();
+            String entryContent = entry.getContent();
+            journalBuilder.append(entryDate).append(" --- ");
+            journalBuilder.append(entryUser).append(" --- ");
+            journalBuilder.append(entryContent);
+            journalBuilder.append("\n");
+        }
+        Helper.setFehlerMeldung(journalBuilder.toString());
     }
 
     /* =============================================================== */
