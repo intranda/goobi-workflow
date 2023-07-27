@@ -114,7 +114,7 @@
         <java-jwt.version>3.19.1</java-jwt.version>
         <jaxb-impl.version>2.3.8</jaxb-impl.version>
         <jackson.version>2.15.1</jackson.version>
-        <jersey.version>2.39.1</jersey.version>
+        <jersey.version>2.40</jersey.version>
         <jhove.version>1.20.1</jhove.version>
         <jna.version>5.11.0</jna.version>
         <joda.version>2.12.5</joda.version>
