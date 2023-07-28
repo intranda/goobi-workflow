@@ -200,7 +200,14 @@
 									action="#{DocketForm.FilterKein}"
 									rendered="#{LoginForm.hasRole('Admin_Dockets')}"
 									icon="fa fa-print" />
-
+                                <!-- GoobiScript templates -->
+                                <intranda:menuItem
+                                    id="a34a"
+                                    parentMenu="menu_administration"
+                                    label="#{msgs.goobiScriptTemplates}"
+                                    action="#{goobiScriptTemplateBean.FilterKein}"
+                                    rendered="#{LoginForm.hasRole('Admin_Templates')}"
+                                    icon="fa fa-print" />
 								<!-- Ldapgruppen -->
 								<intranda:menuItem
 									id="a35"

@@ -97,6 +97,7 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.goobiScript.GoobiScriptManager;
 import org.goobi.goobiScript.GoobiScriptResult;
+import org.goobi.goobiScript.GoobiScriptTemplate;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
@@ -151,6 +152,7 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.GoobiScriptTemplateManager;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
@@ -2508,6 +2510,14 @@ public class ProcessBean extends BasicBean implements Serializable {
             possibleItems = new SearchResultHelper().getPossibleColumns();
         }
         return possibleItems;
+    }
+
+    public List< GoobiScriptTemplate> getGoobiScriptTemplates() {
+
+
+        List<GoobiScriptTemplate> templates = GoobiScriptTemplateManager.getAllGoobiScriptTemplates();
+
+        return templates;
     }
 
     public void setConfirmLink(boolean confirm) {

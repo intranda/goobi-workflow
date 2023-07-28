@@ -46,7 +46,7 @@ public class FtpUtils implements ConnectionProvider {
      * 
      */
     public FtpUtils(String username, String password, String hostname, int port) throws IOException {
-        ftpClient = new FTPClient();
+        ftpClient = new FTPClient(); //NOSONAR: FTP protocol is used on purpose
         ftpClient.connect(hostname, port);
         ftpClient.login(username, password);
     }

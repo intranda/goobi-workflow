@@ -78,7 +78,8 @@ public enum UserRole {
     Admin_Vocabulary_Management,
     Admin_Jobtypes,
     Admin_Quartz,
-    Admin_ApiKey;
+    Admin_ApiKey,
+    Admin_Templates;
 
     public static List<String> getAllRoles() {
         List<String> roles = new ArrayList<>();
