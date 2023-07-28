@@ -11,7 +11,7 @@
 
     <ui:param
         name="myPageTitle"
-        value="#{goobiScriptTemplateBean.template.id == null?msgs.createNewtemplate:msgs.editTemplate}" />
+        value="#{goobiScriptTemplateBean.template.id == null?msgs.createNewTemplate:msgs.editTemplate}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
@@ -84,7 +84,8 @@
 
 
 
-
+<div style="padding: 10px">
+<div style="padding-bottom: 10px;padding-left: 2px;padding-top: 20px;">#{msgs.goobiScriptAddToTemplate}</div>
                         <ui:repeat
                             var="gs"
                             value="#{ProzessverwaltungForm.allGoobiScripts}">
@@ -92,7 +93,7 @@
                                 class="badge badge-intranda-light"
                                 onclick="goobiScriptCodeMirror.doc.setValue(goobiScriptCodeMirror.doc.getValue() + '\n#{gs.two}')"> #{gs.one} </span>
                         </ui:repeat>
-
+</div>
                         <intranda:formButtonArea
                             id="buttons"
                             form="#{goobiScriptTemplateBean}"

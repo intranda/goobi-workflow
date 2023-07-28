@@ -35,7 +35,6 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Date;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -220,7 +219,7 @@ public class FilesystemHelper {
                 ocrfile = xmlFolder.resolve(ocrFile + XML);
                 ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
                 try (InputStream input = sp.newInputStream(ocrfile)) {
-                    AltoDocument alto = converter.convertToASM(input, new Date(), ocrfile.getFileName().toString());
+                    AltoDocument alto = converter.convertToASM(input, ocrfile.getFileName().toString());
                     return alto.getContent().replace(LINEBREAK, XML_LINEBREAK);
                 }
             }

@@ -1516,7 +1516,8 @@ public class ProzesskopieForm implements Serializable {
      */
 
     public void setOpacKatalog(String opacKatalog) {
-        if (!this.opacKatalog.equals(opacKatalog)) {
+        //currentCatalogue is set to null in prepare(), but is required in opacAuswerten(). So reset it here if it is null or if the catalog name (this.opacKatalog) has changed
+        if (this.currentCatalogue == null || !this.opacKatalog.equals(opacKatalog)) {
             this.opacKatalog = opacKatalog;
             currentCatalogue = null;
             for (ConfigOpacCatalogue catalogue : catalogues) {

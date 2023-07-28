@@ -248,7 +248,8 @@
                                             <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('goobiscript_'.concat(template.title))}">
                                                 <span
                                                     class="badge badge-intranda-blue"
-                                                    title="#{template.description}"
+                                                    data-toggle="tooltip"
+                                                    data-bs-original-title="#{template.description}"
                                                     onclick="goobiScriptCodeMirror.doc.setValue('#{template.escapedScripts}')"> #{template.title} </span>
                                             </ui:fragment>
                                         </ui:repeat>
