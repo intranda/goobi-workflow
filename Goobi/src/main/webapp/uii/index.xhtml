@@ -25,87 +25,86 @@
     </ui:define>
 
     <ui:define name="content">
-        <main>
         
-            <!-- DASHBOARD PLUGIN -->
-            <h:panelGroup rendered="#{DashboardForm.plugin != null}">
-                <ui:include src="#{DashboardForm.pluginUi}" />
-            </h:panelGroup>
-            <!-- // DASHBOARD PLUGIN -->
+        <!-- DASHBOARD PLUGIN -->
+        <h:panelGroup rendered="#{DashboardForm.plugin != null}">
+            <ui:include src="#{DashboardForm.pluginUi}" />
+        </h:panelGroup>
+        <!-- // DASHBOARD PLUGIN -->
 
 
-            <!-- HOME PAGE WITHOUT DASHBOARD -->
-            <h:panelGroup
-                layout="block"
-                class="row"
-                rendered="#{DashboardForm.plugin == null}">
-                
-                <!-- BIG BOX WITH LOGO -->
-                <div class="col-sm-8">
-                    <intranda:box
-                        boxType="primary"
-                        boxPadding="true"
-                        icon="fa-home"
-                        title="#{myPageTitle}">
-                        
-                        <img
-                            src="template/img/goobi/goobi_2.0_logo.png"
-                            aria-label="Goobi-logo"
-                            style="display: block; margin-top: 60px; margin-bottom: 60px; margin-left: auto; margin-right: auto" />
-
-                        <h:outputText
-                            style="text-align: justify;"
-                            value="#{HelperForm.applicationHomepageMsg}"
-                            escape="false" />
-                    </intranda:box>
-                </div>
-                <!-- // BIG BOX WITH LOGO -->
-                
-                <!-- SOME STATISTICS -->
-                <div class="col-sm-4">
-                    <intranda:box
-                        boxType="action"
-                        boxPadding="false"
-                        icon="fa-bar-chart-o"
-                        title="#{msgs.statistikDatenbank}">
-                        
-                        <table class="table table-hover responsive">
-                            <tbody>
-                                <tr>
-                                    <td>#{msgs.benutzer}:</td>
-                                    <td>#{StatistikForm.anzahlBenutzer}</td>
-                                </tr>
-                                <tr>
-                                    <td>#{msgs.benutzergruppen}:</td>
-                                    <td>#{StatistikForm.anzahlBenutzergruppen}</td>
-
-                                </tr>
-                                <tr>
-                                    <td>#{msgs.prozesse}:</td>
-                                    <td>#{StatistikForm.anzahlProzesse}</td>
-                                </tr>
-                                <tr>
-                                    <td>#{msgs.schritte}:</td>
-                                    <td>#{StatistikForm.anzahlSchritte}</td>
-                                </tr>
-                                <tr>
-                                    <td>#{msgs.vorlagen}:</td>
-                                    <td>#{StatistikForm.anzahlVorlagen}</td>
-                                </tr>
-                                <tr>
-                                    <td>#{msgs.werkstuecke}:</td>
-                                    <td>#{StatistikForm.anzahlWerkstuecke}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </intranda:box>
-                </div>
-                <!-- // SOME STATISTICS -->
-                
-                
-            </h:panelGroup>
-            <!-- // HOME PAGE WITHOUT DASHBOARD -->
+        <!-- HOME PAGE WITHOUT DASHBOARD -->
+        <h:panelGroup
+            layout="block"
+            class="row"
+            rendered="#{DashboardForm.plugin == null}">
             
-        </main>
+            <!-- BIG BOX WITH LOGO -->
+            <div class="col-sm-8">
+                <intranda:box
+                    boxType="primary"
+                    boxPadding="true"
+                    icon="fa-home"
+                    title="#{myPageTitle}">
+                    
+                    <img
+                        src="template/img/goobi/goobi_2.0_logo.png"
+                        aria-label="Goobi-logo"
+                        style="display: block; margin-top: 60px; margin-bottom: 60px; margin-left: auto; margin-right: auto" />
+
+                    <h:outputText
+                        style="text-align: justify;"
+                        value="#{HelperForm.applicationHomepageMsg}"
+                        escape="false" />
+                </intranda:box>
+            </div>
+            <!-- // BIG BOX WITH LOGO -->
+            
+            <!-- SOME STATISTICS -->
+            <div class="col-sm-4">
+                <intranda:box
+                    boxType="action"
+                    boxPadding="false"
+                    icon="fa-bar-chart-o"
+                    title="#{msgs.statistikDatenbank}">
+                    
+                    <table class="table table-hover responsive">
+                        <tbody>
+                            <tr>
+                                <td>#{msgs.benutzer}:</td>
+                                <td>#{StatistikForm.anzahlBenutzer}</td>
+                            </tr>
+                            <tr>
+                                <td>#{msgs.benutzergruppen}:</td>
+                                <td>#{StatistikForm.anzahlBenutzergruppen}</td>
+
+                            </tr>
+                            <tr>
+                                <td>#{msgs.prozesse}:</td>
+                                <td>#{StatistikForm.anzahlProzesse}</td>
+                            </tr>
+                            <tr>
+                                <td>#{msgs.schritte}:</td>
+                                <td>#{StatistikForm.anzahlSchritte}</td>
+                            </tr>
+                            <tr>
+                                <td>#{msgs.vorlagen}:</td>
+                                <td>#{StatistikForm.anzahlVorlagen}</td>
+                            </tr>
+                            <tr>
+                                <td>#{msgs.werkstuecke}:</td>
+                                <td>#{StatistikForm.anzahlWerkstuecke}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </intranda:box>
+            </div>
+            <!-- // SOME STATISTICS -->
+            
+            
+        </h:panelGroup>
+        <!-- // HOME PAGE WITHOUT DASHBOARD -->
+            
+        
     </ui:define>
 </ui:composition>
