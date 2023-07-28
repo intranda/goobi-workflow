@@ -237,6 +237,15 @@ public class ProzesskopieForm implements Serializable {
     @Getter
     private List<ProcessProperty> configuredProperties;
 
+    @Getter
+    private Process existingProcess;
+
+    @Getter
+    private boolean showExistingProcessTables;
+
+    @Getter
+    private boolean showExistingProcessButton;
+
     public String prepare() {
 
         currentCatalogue = null;
@@ -296,6 +305,9 @@ public class ProzesskopieForm implements Serializable {
         configuredProperties = PropertyParser.getInstance().getProcessCreationProperties(prozessKopie, prozessVorlage.getTitel());
 
         initializePossibleDigitalCollections();
+
+        this.showExistingProcessButton = false;
+        this.showExistingProcessTables = false;
 
         return this.naviFirstPage;
     }
@@ -765,10 +777,8 @@ public class ProzesskopieForm implements Serializable {
         if (this.prozessKopie.getTitel() != null
                 && ProcessManager.countProcessTitle(prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution()) > 0) {
             valide = false;
-            // print infos of the existing process
-            printExistingProcessInfos(prozessKopie.getTitel());
-            Helper.setFehlerMeldung(
-                    Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
+            existingProcess = ProcessManager.getProcessByExactTitle(prozessKopie.getTitel());
+            showExistingProcessButton = true;
         }
 
         /*
@@ -794,7 +804,13 @@ public class ProzesskopieForm implements Serializable {
         }
         return valide;
     }
-    
+
+    public void showTablesOfExistingProcess() {
+        log.debug("showing tables of existing process");
+        showExistingProcessTables = true;
+        showExistingProcessButton = false;
+    }
+
     /**
      * print the infos of the existing process
      * 

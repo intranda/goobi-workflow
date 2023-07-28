@@ -51,14 +51,11 @@
                         boxType="action"
                         boxTitle="false"
                         boxForm="true"
-                        boxPadding="false"
-                        >
-
+                        boxPadding="false">
 
                         <intranda:boxTitle
                             title="#{myPageTitle}"
-                            icon="fa-building"
-                            >
+                            icon="fa-building">
 
                             <ul class="tabs">
                                 <li class="tab #{institutionBean.displayMode eq ''?'active':''}">
@@ -373,8 +370,8 @@
                                         id="delete"
                                         type="button"
                                         class="btn btn-hot trigger-delete"
-                                        data-toggle="modal"
-                                        data-target="#deleteModal">
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal">
                                         <i class="fa fa-trash-o" />
                                         <span>
                                             <h:outputText value="#{msgs.loeschen}" />
@@ -391,20 +388,23 @@
                                             class="modal-dialog"
                                             role="document">
                                             <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h4
-                                                        class="modal-title"
-                                                        id="myModalLabel">
+                                                
+                                                <div class="modal-header bg-primary text-white">
+                                                    <h4 class="modal-title" id="myModalLabel">
                                                         <h:outputText value="#{msgs.loeschen}" />
                                                     </h4>
+                                                    <button type="button" class="btn text-white"
+                                                        title="#{msgs.cancel}" data-bs-dismiss="modal">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button
-                                                        class="btn"
-                                                        data-dismiss="modal"
+                                                        class="btn btn-blank"
+                                                        data-bs-dismiss="modal"
                                                         aria-hidden="true">#{msgs.abbrechen}</button>
                                                     <button
                                                         jsf:id="confirmDelete"

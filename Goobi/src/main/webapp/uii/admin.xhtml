@@ -23,38 +23,37 @@
     <ui:define name="content">
         <h:form rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}">
 
-            <main>
-                <div class="col-12">
+            <div class="col-12">
 
-                    <intranda:box
-                        boxType="action"
-                        boxForm="true"
-                        boxPadding="false"
-                        title="#{msgs.benutzerZumAusloggenAuffordern}"
-                        icon="fa-bullhorn"
-                    >
+                <intranda:box
+                    boxType="action"
+                    boxForm="true"
+                    boxPadding="false"
+                    title="#{msgs.benutzerZumAusloggenAuffordern}"
+                    icon="fa-bullhorn"
+                >
 
 
-                      <div class="row">
-                          <div class="col-12 col-md-3">
-                              <label class="control-label">#{msgs.message}:</label>
-                          </div>
-                          <div class="col-12 col-md-9">
-                            <h:inputTextarea styleClass="form-control focusable" value="#{SessionForm.logoutMessage}">
-                              <f:passThroughAttribute
-                               name="aria-label"
-                               value="#{msgs.message}" />
-                            </h:inputTextarea>
-                          </div>
+                  <div class="row">
+                      <div class="col-12 col-md-3">
+                          <label class="control-label">#{msgs.message}:</label>
                       </div>
-
-                      <div class="box__actions">
-                        <button class="btn btn-action" jsf:action="admin.xhtml">
-                          #{msgs.uebernehmen}
-                        </button>
+                      <div class="col-12 col-md-9">
+                        <h:inputTextarea styleClass="form-control focusable" value="#{SessionForm.logoutMessage}">
+                          <f:passThroughAttribute
+                           name="aria-label"
+                           value="#{msgs.message}" />
+                        </h:inputTextarea>
                       </div>
+                  </div>
 
-                    </intranda:box>
+                  <div class="box__actions">
+                    <button class="btn btn-action" jsf:action="admin.xhtml">
+                      #{msgs.uebernehmen}
+                    </button>
+                  </div>
+
+                </intranda:box>
 
 <!--                     <div class="box box-bordered box-small lightgrey"> -->
 <!--                         <div class="box-title"> -->
@@ -76,8 +75,7 @@
 <!--                         </div> -->
 <!--                     </div> -->
 
-                </div>
-            </main>
+            </div>
         </h:form>
     </ui:define>
 
