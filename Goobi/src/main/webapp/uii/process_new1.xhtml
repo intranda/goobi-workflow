@@ -11,6 +11,7 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
+
 	<ui:param
 		name="myPageTitle"
 		value="#{msgs.einenNeuenProzessAnlegen}" />
@@ -43,12 +44,11 @@
 	<ui:define name="content">
 
     	<!-- BUTTON TO SHOW THE INFO TABLES -->
-        <h:panelGroup
-            layout="block"
-            rendered="#{ProzesskopieForm.showExistingProcessButton}"
-            styleClass="alert alert-danger mb-3 pt-2 pb-2">
-            <h:outputText
-                value="#{msgs.existingProcessTitleInUse}" />
+        <div
+            jsf:rendered="#{ProzesskopieForm.showExistingProcessButton}"
+            class="alert alert-danger mb-3 pt-2 pb-2">
+            
+            <h:outputText value="#{msgs.existingProcessTitleInUse}" />
 
     		<button
 				id="existingProcessTablesModalButton"
@@ -58,12 +58,10 @@
 				data-bs-target="#existingProcessTablesModal"
 				jsf:rendered="#{ProzesskopieForm.showExistingProcessButton}"
 				jsf:action="#{ProzesskopieForm.showTablesOfExistingProcess}">
-				<span>
-					<h:outputText value="#{msgs.existingProcessShowDetails}" />
-				</span>
+				<h:outputText value="#{msgs.existingProcessShowDetails}" />
 			</button>
             
-        </h:panelGroup>
+        </div>
         
 		<!-- // BUTTON TO SHOW THE INFO TABLES -->
     
@@ -106,7 +104,7 @@
                                 boxClass="mb-3">
 					
 								<div
-			                        class="gw-table-fixed #{NavigationForm.uiStatus['journalBig']?'journal-big':''}"
+			                        class="gw-table-fixed"
 			                        tabindex="0"
 			                        data-scrolldown="true">
 									<h:panelGrid
