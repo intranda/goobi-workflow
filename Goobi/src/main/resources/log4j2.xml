@@ -98,7 +98,7 @@
     <Logger name="org.apache.myfaces" level="WARN" additivity="true">
         <AppenderRef ref="goobi" />
     </Logger>
-    <Logger name="org.apache.http" level="debug" additivity="true">
+    <Logger name="org.apache.http.wire" level="WARN" additivity="true">
         <AppenderRef ref="goobi" />
     </Logger>
     <Logger name="org.apache.activemq" level="WARN" additivity="true">
