@@ -23,6 +23,7 @@
 		<composite:attribute name="tabindex" default="0" />
 		<composite:attribute name="itemValue" default="#{var.itemValue}"/>
         <composite:attribute name="itemLabel" default="#{var.itemLabel}" />
+        <composite:attribute name="displayLabel" default="true" />        
     </composite:interface>
 
 	<composite:implementation>
@@ -33,13 +34,10 @@
             style="#{cc.attrs.style}">
 
             <!-- LABEL -->
-            <div
-                class="#{cc.attrs.classLeft}"
-                tabindex="-1">
-                <intranda:formLabel
-                    label="#{cc.attrs.label}"
-                    labelFor="#{cc.attrs.name}"
-                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
+            <div class="#{cc.attrs.classLeft}" tabindex="-1">
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
+                <composite:insertChildren />                        
             </div>
             <!-- // LABEL -->
 

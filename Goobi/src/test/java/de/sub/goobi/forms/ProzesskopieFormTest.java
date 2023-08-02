@@ -72,7 +72,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 @RunWith(PowerMockRunner.class)
 
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
-    HistoryAnalyserJob.class, StepManager.class, Helper.class })
+        HistoryAnalyserJob.class, StepManager.class, Helper.class })
 public class ProzesskopieFormTest extends AbstractTest {
 
     private Process template;
@@ -132,58 +132,58 @@ public class ProzesskopieFormTest extends AbstractTest {
     }
 
     @Test
-    public void testPrepare() throws Exception {
+    public void testprepare() throws Exception {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         form.setProzessVorlage(template);
-        assertEquals("", form.Prepare());
+        assertEquals("", form.prepare());
 
         secondStep.setBenutzer(userList);
-        assertEquals("process_new1", form.Prepare());
+        assertEquals("process_new1", form.prepare());
     }
 
     @Test
-    public void testOpacAuswerten() {
+    public void testopacAuswerten() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
-        assertEquals("process_new1", form.Prepare());
+        assertEquals("process_new1", form.prepare());
         form.setOpacKatalog("KXP");
         assertEquals("KXP", form.getOpacKatalog());
         form.setOpacSuchbegriff("517154005");
-        assertEquals("", form.OpacAuswerten());
+        assertEquals("", form.opacAuswerten());
     }
 
     @Test
-    public void testGoToSeite1() {
+    public void testOpenFirstPage() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
-        assertEquals("process_new1", form.Prepare());
-        assertEquals("process_new1", form.GoToSeite1());
+        assertEquals("process_new1", form.prepare());
+        assertEquals("process_new1", form.openFirstPage());
     }
 
     @Test
-    public void testGoToSeite2() {
+    public void testOpenPage2() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
-        assertEquals("process_new1", form.Prepare());
-        assertEquals("process_new1", form.GoToSeite2());
+        assertEquals("process_new1", form.prepare());
+        assertEquals("process_new1", form.openPage2());
 
         form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         form.getProzessKopie().setTitel("test");
-        assertEquals("", form.OpacAuswerten());
-        assertEquals("process_new2", form.GoToSeite2());
+        assertEquals("", form.opacAuswerten());
+        assertEquals("process_new2", form.openPage2());
 
     }
 
     @Test
-    public void testNeuenProzessAnlegen() throws Exception {
+    public void testCreateNewProcess() throws Exception {
         Path meta = folder.newFolder("metadata").toPath();
         Files.createDirectories(meta);
         ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", meta.toString() + FileSystems.getDefault().getSeparator());
@@ -195,13 +195,13 @@ public class ProzesskopieFormTest extends AbstractTest {
 
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
-        assertEquals("process_new1", form.Prepare());
+        assertEquals("process_new1", form.prepare());
         form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         form.getProzessKopie().setTitel("test");
         form.getProzessKopie().setId(0);
-        assertEquals("", form.OpacAuswerten());
-        String fixture = form.NeuenProzessAnlegen();
+        assertEquals("", form.opacAuswerten());
+        String fixture = form.createNewProcess();
         assertEquals("process_new3", fixture);
 
     }
@@ -228,7 +228,7 @@ public class ProzesskopieFormTest extends AbstractTest {
         assertNotNull(form);
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
-        form.Prepare();
+        form.prepare();
         List<String> fixture = form.getAllOpacCatalogues();
 
         assertEquals(1, fixture.size());
@@ -240,7 +240,7 @@ public class ProzesskopieFormTest extends AbstractTest {
         assertNotNull(form);
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
-        form.Prepare();
+        form.prepare();
         List<ConfigOpacDoctype> fixture = form.getAllDoctypes();
 
         assertEquals(2, fixture.size());
@@ -253,12 +253,12 @@ public class ProzesskopieFormTest extends AbstractTest {
 
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
-        assertEquals("process_new1", form.Prepare());
+        assertEquals("process_new1", form.prepare());
         form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         form.getProzessKopie().setTitel("test");
         form.getProzessKopie().setId(0);
-        assertEquals("", form.OpacAuswerten());
+        assertEquals("", form.opacAuswerten());
         form.setDocType("monograph");
         form.setDocType("periodical");
         //        form.setDocType("multivolume");
@@ -272,7 +272,7 @@ public class ProzesskopieFormTest extends AbstractTest {
 
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
-        assertEquals("process_new1", form.Prepare());
+        assertEquals("process_new1", form.prepare());
 
         List<AdditionalField> fixture = form.getAdditionalFields();
         assertNotNull(fixture);
@@ -291,7 +291,7 @@ public class ProzesskopieFormTest extends AbstractTest {
     }
 
     @Test
-    public void testCalcProzesstitel() {
+    public void testCalculateProcessTitle() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         form.setProzessVorlage(template);
@@ -314,7 +314,7 @@ public class ProzesskopieFormTest extends AbstractTest {
         fixture.add(field2);
         fixture.add(field3);
         form.setAdditionalFields(fixture);
-        form.CalcProzesstitel();
+        form.calculateProcessTitle();
 
     }
 
@@ -377,19 +377,16 @@ public class ProzesskopieFormTest extends AbstractTest {
         assertEquals(fixture, form.getOpacSuchbegriff());
     }
 
-
     @Test
     public void testStandardFields() throws Exception {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
-        assertEquals("process_new1", form.Prepare());
+        assertEquals("process_new1", form.prepare());
         assertEquals(5, form.getStandardFields().size());
         assertTrue(form.getStandardFields().get("doctype").booleanValue());
     }
-
-
 
     @Test
     public void testImagesGuessed() throws Exception {
@@ -416,7 +413,6 @@ public class ProzesskopieFormTest extends AbstractTest {
         assertEquals("longlolol", form.createAtstsl("longword longword longword longword longword", ""));
         assertEquals("longwo", form.createAtstsl("longword word", ""));
     }
-
 
     @SuppressWarnings("unchecked")
     private void prepareMocking() throws Exception {

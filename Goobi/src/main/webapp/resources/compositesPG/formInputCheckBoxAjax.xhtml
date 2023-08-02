@@ -22,6 +22,8 @@
         <composite:attribute name="classLeft" default="col-12 col-md-3" />
         <composite:attribute name="classRight" default="col-12 col-md-9" />
         <composite:attribute name="tabindex" default="0" />
+        <composite:attribute name="displayLabel" default="true" />       
+        <composite:attribute name="onfocus" default="" /> 
     </composite:interface>
 
     <composite:implementation>
@@ -30,9 +32,10 @@
         <div class="row">
             
             <!-- LABEL -->
-            <div class="#{cc.attrs.classLeft}">
-				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
-					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"/>
+            <div class="#{cc.attrs.classLeft}" tabindex="-1">
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
+                <composite:insertChildren />                        
             </div>
             <!-- // LABEL -->
 
@@ -41,7 +44,8 @@
                 <h:selectBooleanCheckbox
                     id="#{cc.attrs.name}"
                     styleClass="form-check-input #{cc.attrs.fieldStyle}"
-                    value="#{cc.attrs.field}">
+                    value="#{cc.attrs.field}"
+                    onfocus="#{cc.attrs.onfocus}">
                     <f:ajax
                         event="#{cc.attrs.ajaxEvent}"
                         render="#{cc.attrs.ajaxRender}"

@@ -418,7 +418,7 @@ public class DatabaseVersion {
                 sql.append(" token_name VARCHAR(255),");
                 sql.append(" token_description VARCHAR(255),");
                 sql.append(" PRIMARY KEY (id)");
-                sql.append(" ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;");
+                sql.append(" ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;");
                 DatabaseVersion.runSql(sql.toString());
             }
             if (!DatabaseVersion.checkIfTableExists("api_token_method")) {
@@ -432,7 +432,7 @@ public class DatabaseVersion {
                 sql.append(" selected tinyint(1),");
                 sql.append(" PRIMARY KEY (id),");
                 sql.append(" KEY `tokenid` (`token_id`)");
-                sql.append(" ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8; ");
+                sql.append(" ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
                 DatabaseVersion.runSql(sql.toString());
             }
             runSql("update benutzer set processses_sort_field='prozesse.titel', processes_sort_order=' asc', tasks_sort_field='prioritaet', tasks_sort_order=' desc';");
@@ -976,7 +976,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -985,15 +985,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 

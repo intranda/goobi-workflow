@@ -1367,7 +1367,7 @@ public class ProcessService implements IRestAuthentication {
 
                 metadataList.addAll(extractMetadata(logical, "anchor"));
 
-                DocStruct child = logical.getAllChildren().get(id);
+                DocStruct child = logical.getAllChildren().get(0);
 
                 metadataList.addAll(extractMetadata(child, "topstruct"));
             } else {

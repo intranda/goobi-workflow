@@ -683,7 +683,7 @@
 																	value="true" />
 																<f:passThroughAttribute
 																	name="data-bs-content"
-																	value="&lt;b class='font-status-open'&gt;#{msgs.statusOffen} / #{msgs.statusInBearbeitung}:&lt;/b&gt;&lt;br/&gt; #{item.getStepsAsString(1, ', ')}#{item.getStepsAsString(1, ', ') ne '' and item.getStepsAsString(2, ', ') ne ''?', ':''} #{item.getStepsAsString(2, ', ')}" />
+																	value="&lt;b class='font-status-open'&gt;#{msgs.statusOffen} / #{msgs.statusInBearbeitung}:&lt;/b&gt;&lt;br/&gt; #{item.getStepsAsString(1, ', ')}#{item.getStepsAsString(1, ', ') ne '' and item.getStepsAsString(2, ', ') ne ''?', ':''} #{item.getStepsAsString(2, ', ')} #{item.getStepsAsString(1, ', ') ne '' or item.getStepsAsString(1, ', ') ne ''  ?', ':''} #{item.getStepsAsString(6, ', ')}" />
 															</h:panelGroup>
 
 															<h:panelGroup
@@ -1129,7 +1129,7 @@
 															<!-- CREATE PROCESS - ONE PROJECT -->
 															<button
 																class="btn fa fa-file-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'} button-schaltknopf"
-																jsf:action="#{ProzesskopieForm.Prepare}"
+																jsf:action="#{ProzesskopieForm.prepare}"
 																jsf:id="action22"
 																jsf:rel="tooltip"
 																onclick="preventDoubleSubmit(this);"
@@ -1166,7 +1166,7 @@
 																			jsf:id="copyProcessTempalte"
 																			class="btn fa fa-file-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
 																			aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
-																			jsf:action="#{ProzesskopieForm.Prepare}"
+																			jsf:action="#{ProzesskopieForm.prepare}"
 																			jsf:rel="tooltip">
 																			<f:passThroughAttribute
 																				name="data-toggle"
@@ -1190,7 +1190,7 @@
 																				<li>
 																					<button
 																						jsf:id="prepare"
-																						jsf:action="#{ProzesskopieForm.Prepare}"
+																						jsf:action="#{ProzesskopieForm.prepare}"
 																						class="dropdown-item">
 																						<h:outputText value="#{proj.titel}" />
 																						<x:updateActionListener
@@ -1211,7 +1211,7 @@
 															<!-- MASS IMPORT - ONE PROJECT -->
 															<button
 																class="btn fa fa-files-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'} button-schaltknopf"
-																jsf:action="#{MassImportForm.Prepare}"
+																jsf:action="#{MassImportForm.prepare}"
 																jsf:id="action222"
 																jsf:rel="tooltip"
 																data-bs-toggle="tooltip"
@@ -1249,7 +1249,7 @@
 																			jsf:id="massImportPrepare"
 																			class="btn fa fa-files-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
 																			aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
-																			jsf:action="#{MassImportForm.Prepare}"
+																			jsf:action="#{MassImportForm.prepare}"
 																			jsf:rel="tooltip">
 																			<f:passThroughAttribute
 																				name="data-toggle"
@@ -1272,7 +1272,7 @@
 																				value="#{ProzesskopieForm.availableProjects}">
 																				<li>
 																					<button
-																						jsf:action="#{MassImportForm.Prepare}"
+																						jsf:action="#{MassImportForm.prepare}"
 																						jsf:id="prepare"
 																						class="dropdown-item">
 																						<h:outputText value="#{proj.titel}" />
@@ -1399,6 +1399,7 @@
 	                    	if(data.source.id == "boxProcessesAllActions:expandbutton5") {
 	                    		initGoobiScriptCodeMirror();
 	                    	}
+	                    	loadImages();
 	                        break;
 	                }
 	            });

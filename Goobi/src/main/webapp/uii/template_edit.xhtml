@@ -1,0 +1,169 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{goobiScriptTemplateBean.template.id == null?msgs.createNewTemplate:msgs.editTemplate}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="templates"
+            label="#{msgs.goobiScriptTemplates}"
+            action="#{goobiScriptTemplateBean.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb
+            id="template"
+            label="#{myPageTitle}"
+            action="template_edit"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form
+            id="myform"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Templates')}"
+            prependId="false">
+
+            <div
+                class="row"
+                role="main">
+                <div class="col-12">
+
+                    <intranda:box
+                        id="boxid"
+                        boxType="action"
+                        boxForm="true"
+                        boxPadding="false"
+                        title="#{myPageTitle}"
+                        icon="fa-clone">
+
+                        <intranda:formInputText
+                            id="title"
+                            name="title"
+                            label="#{msgs.name}"
+                            focusOnLoad="true"
+                            field="#{goobiScriptTemplateBean.template.title}"
+                            help="#{msgs.helptemplateTitle}"
+                            fieldStyle="form-control" />
+
+                        <intranda:formInputText
+                            id="description"
+                            name="description"
+                            label="#{msgs.description}"
+                            field="#{goobiScriptTemplateBean.template.description}"
+                            help="#{msgs.helptemplateFile}"
+                            required="false" />
+
+                        <intranda:formInputTextArea
+                            id="gs"
+                            name="GoobiScripts"
+                            label="#{msgs.goobiScript}"
+                            field="#{goobiScriptTemplateBean.template.goobiScripts}"
+                            help="#{msgs.helptemplateFile}"
+                            rows="30" />
+
+
+                        <div class="row pt-1">
+                            <div class="col-12 min-vh-0">
+                                #{msgs.goobiScriptAddToTemplate}
+                            </div>
+                            <div class="col-12 mb-3">
+                                <ui:repeat
+                                    var="gs"
+                                    value="#{ProzessverwaltungForm.allGoobiScripts}">
+                                    <span
+                                        class="badge badge-intranda-light"
+                                        onclick="goobiScriptCodeMirror.doc.setValue(goobiScriptCodeMirror.doc.getValue() + '\n#{gs.two}')"> #{gs.one} </span>
+                                </ui:repeat>
+                        </div>
+                        </div>
+                        <intranda:formButtonArea
+                            id="buttons"
+                            form="#{goobiScriptTemplateBean}"
+                            object="#{goobiScriptTemplateBean.template.id}"
+                            actionCancel="#{goobiScriptTemplateBean.Cancel}" />
+                    </intranda:box>
+
+                </div>
+                <!-- /col -->
+            </div>
+            <!-- /row -->
+        </h:form>
+
+        <link
+            rel="stylesheet"
+            href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}" />
+        <script
+            type="text/javascript"
+            src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
+        <script src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
+        <style>
+.CodeMirror {
+    border: 1px solid #ddd;
+    height: 500px;
+    width: 100%;
+}
+
+.badge {
+    border: 0;
+    cursor: pointer;
+}
+</style>
+        <script>
+var goobiScriptCodeMirror;
+function handleGoobiScriptCodeEditor() {
+    removeGoobiScriptCodeMirror();
+    initGoobiScriptCodeMirror();
+}
+
+function removeGoobiScriptCodeMirror() {
+    var codeEditors = document.querySelectorAll('.CodeMirror');
+    codeEditors.forEach(function(editor) { editor.remove() })
+}
+
+function initGoobiScriptCodeMirror() {
+	var goobiScriptTextArea = document.getElementById("boxid:gs:GoobiScripts");
+	console.log(goobiScriptTextArea);
+	if(goobiScriptTextArea) {
+    	goobiScriptCodeMirror = CodeMirror.fromTextArea(goobiScriptTextArea, {
+			lineNumbers: true,
+			mode: 'yaml'
+		});
+    	goobiScriptCodeMirror.on('change', editor => {
+			document.getElementById("boxid:gs:GoobiScripts").innerHTML = editor.getValue();
+	    });
+	}
+}
+
+window.onload = function() {
+	// load codemirror for some syntax highlighting
+	initGoobiScriptCodeMirror();
+}
+
+
+</script>
+
+        <!-- Focus first input field on load -->
+        <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
+
+
+    </ui:define>
+
+</ui:composition>

@@ -1030,6 +1030,110 @@
     <language name="de">Verantwortichkeitsangabe</language>
     <language name="en">Statement of responsibility</language>
   </MetadataType>
+
+<!-- archive management fields -->
+  <MetadataType>
+    <Name>NodeId</Name>
+    <language name="de">ID des Knotens</language>
+    <language name="en">Node ID</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>EADID</Name>
+    <language name="de">EAD ID</language>
+    <language name="en">EAD ID</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>RecordID</Name>
+    <language name="de">Record ID</language>
+    <language name="en">Record ID</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>UnitID</Name>
+    <language name="de">Unit ID</language>
+    <language name="en">Unit ID</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>BiographicalInformation</Name>
+    <language name="de">Biographische Angaben</language>
+    <language name="en">Biographical information</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>InventoryHistory</Name>
+    <language name="de">Bestandsgeschichte</language>
+    <language name="en">Inventory history</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>AquisitionInformation</Name>
+    <language name="de">Informationen zum Erwerb</language>
+    <language name="en">Aquisition information</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>AppraisalInformation</Name>
+    <language name="de">Bewertung und Kassation</language>
+    <language name="en">Appraisal information</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>Additions</Name>
+    <language name="de">Neuzugänge</language>
+    <language name="en">New additions</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>Arrangement</Name>
+    <language name="de">Ordnung und Klassifikation</language>
+    <language name="en">Organization or filing sequence</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>UseRestriction</Name>
+    <language name="de">Reproduktionsbestimmung</language>
+    <language name="en">Use restriction</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>FontType</Name>
+    <language name="de">Schrifttyp</language>
+    <language name="en">Font type</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>PhysTech</Name>
+    <language name="de">Physische Beschaffenheit und technische Anforderungen</language>
+    <language name="en">Physical Characteristics and Technical Requirements</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>OtherFindAid</Name>
+    <language name="de">Findhilfsmittel</language>
+    <language name="en">Other Finding Aid</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>OriginalsLocation</Name>
+    <language name="de">Aufbewahrungsort der Originale</language>
+    <language name="en">Location of Originals</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>AlternativeFormAvailable</Name>
+    <language name="de">Kopien bzw. Reproduktionen</language>
+    <language name="en">Alternative Form Available</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>SeparatedMaterial</Name>
+    <language name="de">Verwandte Verzeichnungseinheiten</language>
+    <language name="en">Separated Material</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>DidNote</Name>
+    <language name="de">Beschreibende Anmerkung zur Identifizierung</language>
+    <language name="en">Descriptive Identification Note</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>Odd</Name>
+    <language name="de">Andere beschreibende Daten</language>
+    <language name="en">Other Descriptive Data</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>ConventionDeclaration</Name>
+    <language name="de">Verzeichnungsgrundsätze</language>
+    <language name="en">Convention Declaration</language>
+  </MetadataType>
+
+
   <!-- Subjects start -->
   <MetadataType normdata="true" type="corporate">
     <Name>SubjectCorporate</Name>
@@ -1071,7 +1175,298 @@
     <language name="de">Abschlussverleihende Institution</language>
     <language name="en">Degree granting institution</language>
   </MetadataType>
-  <!-- Subjects start -->
+  <!-- Subjects end -->
+
+<!-- archive management fields -->
+  <DocStrctType topStruct="true">
+    <Name>Folder</Name>
+    <language name="de">Ordner</language>
+    <language name="en">Folder</language>
+    <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
+    <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
+    <metadata num="1o">EADID</metadata>
+    <metadata num="1o">RecordID</metadata>
+    <metadata num="1o">NodeId</metadata>
+    <metadata num="1o">UnitID</metadata>
+    <metadata DefaultDisplay="true" num="*">shelfmarksource</metadata>
+    <metadata num="1o">PublicationYear</metadata>
+    <metadata num="1o">DateOfOrigin</metadata>
+    <metadata num="1o">physicalDescriptionExtent</metadata>
+    <metadata num="1o">Format</metadata>
+    <metadata num="*">Provenience</metadata>
+    <metadata num="1o">BiographicalInformation</metadata>
+    <metadata num="1o">InventoryHistory</metadata>
+    <metadata num="1o">AquisitionInformation</metadata>
+    <metadata num="1o">ContentDescription</metadata>
+    <metadata num="*">Additions</metadata>
+    <metadata num="1o">Arrangement</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">UseRestriction</metadata>
+    <metadata num="1o">DocLanguage</metadata>
+    <metadata num="1o">FontType</metadata>
+    <metadata num="1o">PhysTech</metadata>
+    <metadata num="1o">OtherFindAid</metadata>
+    <metadata num="*">OriginalsLocation</metadata>
+    <metadata num="*">AlternativeFormAvailable</metadata>
+    <metadata num="1o">SeparatedMaterial</metadata>
+    <metadata num="*">BibliographicCitation</metadata>
+    <metadata num="*">DidNote</metadata>
+    <metadata num="*">Odd</metadata>
+    <metadata num="1o">ConventionDeclaration</metadata>
+    <metadata num="*">AppraisalInformation</metadata>
+    <metadata num="*">singleDigCollection</metadata>
+    <metadata num="1o">URN</metadata>
+    <metadata num="1o">_placeOfElectronicOrigin</metadata>
+    <metadata num="1o">_digitalOrigin</metadata>
+    <metadata num="1o">_electronicPublisher</metadata>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1o">_dateDigitization</metadata>
+    <metadata num="1o">_electronicEdition</metadata>
+    <metadata num="*">_ucc_id</metadata>
+    <metadata num="1o">_directionRTL</metadata>
+  </DocStrctType>
+  <DocStrctType topStruct="true">
+    <Name>File</Name>
+    <language name="de">Akte</language>
+    <language name="en">File</language>
+    <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
+    <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
+    <metadata num="1o">EADID</metadata>
+    <metadata num="1o">RecordID</metadata>
+    <metadata num="1o">NodeId</metadata>
+    <metadata num="1o">UnitID</metadata>
+    <metadata DefaultDisplay="true" num="*">shelfmarksource</metadata>
+    <metadata num="1o">PublicationYear</metadata>
+    <metadata num="1o">DateOfOrigin</metadata>
+    <metadata num="1o">physicalDescriptionExtent</metadata>
+    <metadata num="1o">Format</metadata>
+    <metadata num="*">Provenience</metadata>
+    <metadata num="1o">BiographicalInformation</metadata>
+    <metadata num="1o">InventoryHistory</metadata>
+    <metadata num="1o">AquisitionInformation</metadata>
+    <metadata num="1o">ContentDescription</metadata>
+    <metadata num="*">Additions</metadata>
+    <metadata num="1o">Arrangement</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">UseRestriction</metadata>
+    <metadata num="1o">DocLanguage</metadata>
+    <metadata num="1o">FontType</metadata>
+    <metadata num="1o">PhysTech</metadata>
+    <metadata num="1o">OtherFindAid</metadata>
+    <metadata num="*">OriginalsLocation</metadata>
+    <metadata num="*">AlternativeFormAvailable</metadata>
+    <metadata num="1o">SeparatedMaterial</metadata>
+    <metadata num="*">BibliographicCitation</metadata>
+    <metadata num="*">DidNote</metadata>
+    <metadata num="*">Odd</metadata>
+    <metadata num="1o">ConventionDeclaration</metadata>
+    <metadata num="*">AppraisalInformation</metadata>
+    <metadata num="*">singleDigCollection</metadata>
+    <metadata num="1o">URN</metadata>
+    <metadata num="1o">_placeOfElectronicOrigin</metadata>
+    <metadata num="1o">_digitalOrigin</metadata>
+    <metadata num="1o">_electronicPublisher</metadata>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1o">_dateDigitization</metadata>
+    <metadata num="1o">_electronicEdition</metadata>
+    <metadata num="*">_ucc_id</metadata>
+    <metadata num="1o">_directionRTL</metadata>
+  </DocStrctType>
+    <DocStrctType topStruct="true">
+    <Name>Picture</Name>
+    <language name="de">Bild</language>
+    <language name="en">Picture</language>
+    <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
+    <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
+    <metadata num="1o">EADID</metadata>
+    <metadata num="1o">RecordID</metadata>
+    <metadata num="1o">NodeId</metadata>
+    <metadata num="1o">UnitID</metadata>
+    <metadata DefaultDisplay="true" num="*">shelfmarksource</metadata>
+    <metadata num="1o">PublicationYear</metadata>
+    <metadata num="1o">DateOfOrigin</metadata>
+    <metadata num="1o">physicalDescriptionExtent</metadata>
+    <metadata num="1o">Format</metadata>
+    <metadata num="*">Provenience</metadata>
+    <metadata num="1o">BiographicalInformation</metadata>
+    <metadata num="1o">InventoryHistory</metadata>
+    <metadata num="1o">AquisitionInformation</metadata>
+    <metadata num="1o">ContentDescription</metadata>
+    <metadata num="*">Additions</metadata>
+    <metadata num="1o">Arrangement</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">UseRestriction</metadata>
+    <metadata num="1o">DocLanguage</metadata>
+    <metadata num="1o">FontType</metadata>
+    <metadata num="1o">PhysTech</metadata>
+    <metadata num="1o">OtherFindAid</metadata>
+    <metadata num="*">OriginalsLocation</metadata>
+    <metadata num="*">AlternativeFormAvailable</metadata>
+    <metadata num="1o">SeparatedMaterial</metadata>
+    <metadata num="*">BibliographicCitation</metadata>
+    <metadata num="*">DidNote</metadata>
+    <metadata num="*">Odd</metadata>
+    <metadata num="1o">ConventionDeclaration</metadata>
+    <metadata num="*">AppraisalInformation</metadata>
+    <metadata num="*">singleDigCollection</metadata>
+    <metadata num="1o">URN</metadata>
+    <metadata num="1o">_placeOfElectronicOrigin</metadata>
+    <metadata num="1o">_digitalOrigin</metadata>
+    <metadata num="1o">_electronicPublisher</metadata>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1o">_dateDigitization</metadata>
+    <metadata num="1o">_electronicEdition</metadata>
+    <metadata num="*">_ucc_id</metadata>
+    <metadata num="1o">_directionRTL</metadata>
+  </DocStrctType>
+    <DocStrctType topStruct="true">
+    <Name>Audio</Name>
+    <language name="de">Audio</language>
+    <language name="en">Audio</language>
+    <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
+    <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
+    <metadata num="1o">EADID</metadata>
+    <metadata num="1o">RecordID</metadata>
+    <metadata num="1o">NodeId</metadata>
+    <metadata num="1o">UnitID</metadata>
+    <metadata DefaultDisplay="true" num="*">shelfmarksource</metadata>
+    <metadata num="1o">PublicationYear</metadata>
+    <metadata num="1o">DateOfOrigin</metadata>
+    <metadata num="1o">physicalDescriptionExtent</metadata>
+    <metadata num="1o">Format</metadata>
+    <metadata num="*">Provenience</metadata>
+    <metadata num="1o">BiographicalInformation</metadata>
+    <metadata num="1o">InventoryHistory</metadata>
+    <metadata num="1o">AquisitionInformation</metadata>
+    <metadata num="1o">ContentDescription</metadata>
+    <metadata num="*">Additions</metadata>
+    <metadata num="1o">Arrangement</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">UseRestriction</metadata>
+    <metadata num="1o">DocLanguage</metadata>
+    <metadata num="1o">FontType</metadata>
+    <metadata num="1o">PhysTech</metadata>
+    <metadata num="1o">OtherFindAid</metadata>
+    <metadata num="*">OriginalsLocation</metadata>
+    <metadata num="*">AlternativeFormAvailable</metadata>
+    <metadata num="1o">SeparatedMaterial</metadata>
+    <metadata num="*">BibliographicCitation</metadata>
+    <metadata num="*">DidNote</metadata>
+    <metadata num="*">Odd</metadata>
+    <metadata num="1o">ConventionDeclaration</metadata>
+    <metadata num="*">AppraisalInformation</metadata>
+    <metadata num="*">singleDigCollection</metadata>
+    <metadata num="1o">URN</metadata>
+    <metadata num="1o">_placeOfElectronicOrigin</metadata>
+    <metadata num="1o">_digitalOrigin</metadata>
+    <metadata num="1o">_electronicPublisher</metadata>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1o">_dateDigitization</metadata>
+    <metadata num="1o">_electronicEdition</metadata>
+    <metadata num="*">_ucc_id</metadata>
+    <metadata num="1o">_directionRTL</metadata>
+  </DocStrctType>
+    <DocStrctType topStruct="true">
+    <Name>Video</Name>
+    <language name="de">Video</language>
+    <language name="en">Video</language>
+    <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
+    <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
+    <metadata num="1o">EADID</metadata>
+    <metadata num="1o">RecordID</metadata>
+    <metadata num="1o">NodeId</metadata>
+    <metadata num="1o">UnitID</metadata>
+    <metadata DefaultDisplay="true" num="*">shelfmarksource</metadata>
+    <metadata num="1o">PublicationYear</metadata>
+    <metadata num="1o">DateOfOrigin</metadata>
+    <metadata num="1o">physicalDescriptionExtent</metadata>
+    <metadata num="1o">Format</metadata>
+    <metadata num="*">Provenience</metadata>
+    <metadata num="1o">BiographicalInformation</metadata>
+    <metadata num="1o">InventoryHistory</metadata>
+    <metadata num="1o">AquisitionInformation</metadata>
+    <metadata num="1o">ContentDescription</metadata>
+    <metadata num="*">Additions</metadata>
+    <metadata num="1o">Arrangement</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">UseRestriction</metadata>
+    <metadata num="1o">DocLanguage</metadata>
+    <metadata num="1o">FontType</metadata>
+    <metadata num="1o">PhysTech</metadata>
+    <metadata num="1o">OtherFindAid</metadata>
+    <metadata num="*">OriginalsLocation</metadata>
+    <metadata num="*">AlternativeFormAvailable</metadata>
+    <metadata num="1o">SeparatedMaterial</metadata>
+    <metadata num="*">BibliographicCitation</metadata>
+    <metadata num="*">DidNote</metadata>
+    <metadata num="*">Odd</metadata>
+    <metadata num="1o">ConventionDeclaration</metadata>
+    <metadata num="*">AppraisalInformation</metadata>
+    <metadata num="*">singleDigCollection</metadata>
+    <metadata num="1o">URN</metadata>
+    <metadata num="1o">_placeOfElectronicOrigin</metadata>
+    <metadata num="1o">_digitalOrigin</metadata>
+    <metadata num="1o">_electronicPublisher</metadata>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1o">_dateDigitization</metadata>
+    <metadata num="1o">_electronicEdition</metadata>
+    <metadata num="*">_ucc_id</metadata>
+    <metadata num="1o">_directionRTL</metadata>
+  </DocStrctType>
+    <DocStrctType topStruct="true">
+    <Name>Other</Name>
+    <language name="de">Sonstiges</language>
+    <language name="en">Other</language>
+    <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
+    <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
+    <metadata num="1o">EADID</metadata>
+    <metadata num="1o">RecordID</metadata>
+    <metadata num="1o">NodeId</metadata>
+    <metadata num="1o">UnitID</metadata>
+    <metadata DefaultDisplay="true" num="*">shelfmarksource</metadata>
+    <metadata num="1o">PublicationYear</metadata>
+    <metadata num="1o">DateOfOrigin</metadata>
+    <metadata num="1o">physicalDescriptionExtent</metadata>
+    <metadata num="1o">Format</metadata>
+    <metadata num="*">Provenience</metadata>
+    <metadata num="1o">BiographicalInformation</metadata>
+    <metadata num="1o">InventoryHistory</metadata>
+    <metadata num="1o">AquisitionInformation</metadata>
+    <metadata num="1o">ContentDescription</metadata>
+    <metadata num="*">Additions</metadata>
+    <metadata num="1o">Arrangement</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">UseRestriction</metadata>
+    <metadata num="1o">DocLanguage</metadata>
+    <metadata num="1o">FontType</metadata>
+    <metadata num="1o">PhysTech</metadata>
+    <metadata num="1o">OtherFindAid</metadata>
+    <metadata num="*">OriginalsLocation</metadata>
+    <metadata num="*">AlternativeFormAvailable</metadata>
+    <metadata num="1o">SeparatedMaterial</metadata>
+    <metadata num="*">BibliographicCitation</metadata>
+    <metadata num="*">DidNote</metadata>
+    <metadata num="*">Odd</metadata>
+    <metadata num="1o">ConventionDeclaration</metadata>
+    <metadata num="*">AppraisalInformation</metadata>
+    <metadata num="*">singleDigCollection</metadata>
+    <metadata num="1o">URN</metadata>
+    <metadata num="1o">_placeOfElectronicOrigin</metadata>
+    <metadata num="1o">_digitalOrigin</metadata>
+    <metadata num="1o">_electronicPublisher</metadata>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1o">_dateDigitization</metadata>
+    <metadata num="1o">_electronicEdition</metadata>
+    <metadata num="*">_ucc_id</metadata>
+    <metadata num="1o">_directionRTL</metadata>
+  </DocStrctType>
+
   <DocStrctType>
     <Name>BuchspiegelVorne</Name>
     <language name="de">Vorderer Buchspiegel</language>
@@ -6204,7 +6599,7 @@
       </Metadata>
       <Metadata>
         <InternalName>BibliographicCitation</InternalName>
-        <WriteXPath>./mods:mods/mods:identifier[@type='VD-ID']</WriteXPath>
+        <WriteXPath>./mods:mods/#mods:note[@type='citation/reference']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>Counter</InternalName>
@@ -6794,6 +7189,98 @@
         <InternalName>_directionRTL</InternalName>
         <WriteXPath>./mods:mods/mods:extension/intranda:intranda/#intranda:directionRTL</WriteXPath>
       </Metadata>
+
+<!-- archive management fields -->
+
+      <Metadata>
+        <InternalName>NodeId</InternalName>
+        <WriteXPath>./mods:mods/#mods:identifier[@type="archive-entry-id"]</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>EADID</InternalName>
+        <WriteXPath>./mods:mods/#mods:identifier[@type="archive-id"]</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>RecordID</InternalName>
+        <WriteXPath>./mods:mods/#mods:identifier[@type="record-id"]</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>UnitID</InternalName>
+        <WriteXPath>./mods:mods/#mods:identifier[@type="unit-id"]</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>BiographicalInformation</InternalName>
+        <WriteXPath>./mods:mods/#mods:note[@type='bibliography']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>InventoryHistory</InternalName>
+        <WriteXPath>./mods:mods/#mods:note[@type='bibliographic history']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>AquisitionInformation</InternalName>
+        <WriteXPath>./mods:mods/#mods:note[@type='acquisition']</WriteXPath>
+      </Metadata>
+        <Metadata>
+        <InternalName>AppraisalInformation</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/#intranda:appraisal</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>ContentDescription</InternalName>
+        <WriteXPath>./mods:mods/#mods:note[@type='content']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>Provenience</InternalName>
+        <WriteXPath>./mods:mods/#mods:note[@type='ownership']</WriteXPath>
+      </Metadata>      
+      <Metadata>
+        <InternalName>Arrangement</InternalName>
+        <WriteXPath>./mods:mods/#mods:classification[@displayLabel='arrangement']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>UseRestriction</InternalName>
+        <WriteXPath>./mods:mods/mods:physicalDescription/#mods:note[@type='condition']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>FontType</InternalName>
+        <WriteXPath>./mods:mods/mods:language/#mods:scriptTerm</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>PhysTech</InternalName>
+        <WriteXPath>./mods:mods/mods:physicalDescription/#mods:note[@type='physical description']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>Additions</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/#intranda:additions</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>OtherFindAid</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/#intranda:otherFindAid</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>OriginalsLocation</InternalName>
+        <WriteXPath>./mods:mods/mods:location/#mods:physicalLocation</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>AlternativeFormAvailable</InternalName>
+        <WriteXPath>./mods:mods/mods:physicalDescription/#mods:note[@type='additional physical form']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>SeparatedMaterial</InternalName>
+        <WriteXPath>./mods:mods/#mods:note[@type='original version']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>DidNote</InternalName>
+        <WriteXPath>./mods:mods/#mods:note[@type='source identifier']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>Odd</InternalName>
+        <WriteXPath>./mods:mods/#mods:note[@type='source note']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>ConventionDeclaration</InternalName>
+        <WriteXPath>./mods:mods/mods:physicalDescription/#mods:note[@type='organization']</WriteXPath>
+      </Metadata>
+
       <!-- Docstructs -->
       <DocStruct>
         <InternalName>BuchspiegelVorne</InternalName>

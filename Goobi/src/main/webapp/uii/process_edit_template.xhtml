@@ -43,316 +43,315 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<main>
-			<h:form
-				id="myform"
-				onkeypress="submitOnEnter(event);"
-				rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
+		
+		<h:form
+			id="myform"
+			onkeypress="submitOnEnter(event);"
+			rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
 
-				<!-- BOX WITH TABLE FOR PLACE AND ID -->
-				<h:panelGroup
-					styleClass="d-block"
-					rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlage'}">
+			<!-- BOX WITH TABLE FOR PLACE AND ID -->
+			<h:panelGroup
+				styleClass="d-block"
+				rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlage'}">
 
-					<intranda:box
-						id="details"
-						boxType="primary"
-						boxPadding="false"
-						boxTitle="false">
+				<intranda:box
+					id="details"
+					boxType="primary"
+					boxPadding="false"
+					boxTitle="false">
 
-						<intranda:boxTitle
-							title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.vorlageDetails.concat(' -').concat(ProzessverwaltungForm.myProzess.titel) : msgs.vorlageDetails}"
-							icon="fa-list">
-
-							<div class="actions d-flex">
-								<button
-									jsf:id="reload"
-									class="btn d-flex align-items-center btn--title-action"
-									jsf:rel="tooltip"
-									jsf:action="#{ProzessverwaltungForm.reload}"
-									title="#{msgs.reload}">
-									<i class="fa fa-refresh"></i>
-									<f:passThroughAttribute
-										name="data-toggle"
-										value="tooltip" />
-								</button>
-								<button
-									jsf:id="edit"
-									class="btn d-flex align-items-center btn--title-action"
-									jsf:rel="tooltip"
-									jsf:action="#{NavigationForm.Reload}"
-									title="#{msgs.bearbeiten}">
-									<i class="fa fa-pencil"></i>
-									<f:passThroughAttribute
-										name="data-toggle"
-										value="tooltip" />
-									<x:updateActionListener
-										property="#{ProzessverwaltungForm.modusBearbeiten}"
-										value="vorlage" />
-								</button>
-								<button
-									jsf:id="delete"
-									class="btn d-flex align-items-center btn--title-action"
-									jsf:rel="tooltip"
-									jsf:action="#{ProzessverwaltungForm.VorlageLoeschen}"
-									title="#{msgs.loeschen}">
-									<i class="fa fa-trash-o"></i>
-									<f:passThroughAttribute
-										name="data-toggle"
-										value="tooltip" />
-								</button>
-							</div>
-						</intranda:boxTitle>
-
-						<h:panelGrid
-							columns="2"
-                            styleClass="table table-hover table-bordered">
-							<h:outputText value="#{msgs.herkunft}:" />
-							<h:outputText value="#{ProzessverwaltungForm.myVorlage.herkunft}" />
-
-							<h:outputText value="#{msgs.id}:" />
-							<h:outputText value="#{ProzessverwaltungForm.myWerkstueck.id}" />
-						</h:panelGrid>
-
-					</intranda:box>
-				</h:panelGroup>
-				<!-- // BOX WITH TABLE FOR PLACE AND ID -->
-
-
-				<!-- BOX WITH FORM TO EDIT PLACE -->
-				<h:panelGroup
-					styleClass="d-block"
-					rendered="#{ProzessverwaltungForm.modusBearbeiten=='vorlage'}">
-					<intranda:box
-						boxType="action"
-						boxForm="true"
-						boxPadding="false"
+					<intranda:boxTitle
 						title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.vorlageDetails.concat(' -').concat(ProzessverwaltungForm.myProzess.titel) : msgs.vorlageDetails}"
-						icon="fa-pencil">
+						icon="fa-list">
 
-						<intranda:formInputText
-							id="origin"
-							name="origin"
-							label="#{msgs.herkunft}"
-							field="#{ProzessverwaltungForm.myVorlage.herkunft}"
-							help="#{msgs.helpTemplateOrigin}"
-							fieldStyle="form-control"
-							required="true" />
-
-						<div class="box__actions">
-
-							<!-- Cancel -->
+						<div class="actions d-flex">
 							<button
-								jsf:id="cancelOrigin"
-								class="btn btn-blank"
-								jsf:immediate="true"
+								jsf:id="reload"
+								class="btn d-flex align-items-center btn--title-action"
+								jsf:rel="tooltip"
+								jsf:action="#{ProzessverwaltungForm.reload}"
+								title="#{msgs.reload}">
+								<i class="fa fa-refresh"></i>
+								<f:passThroughAttribute
+									name="data-toggle"
+									value="tooltip" />
+							</button>
+							<button
+								jsf:id="edit"
+								class="btn d-flex align-items-center btn--title-action"
+								jsf:rel="tooltip"
 								jsf:action="#{NavigationForm.Reload}"
-								jsf:rendered="#{ProzessverwaltungForm.myProzess.id != null}">
-								<h:outputText value="#{msgs.abbrechen}" />
+								title="#{msgs.bearbeiten}">
+								<i class="fa fa-pencil"></i>
+								<f:passThroughAttribute
+									name="data-toggle"
+									value="tooltip" />
 								<x:updateActionListener
 									property="#{ProzessverwaltungForm.modusBearbeiten}"
-									value="" />
+									value="vorlage" />
 							</button>
-
-							<!-- Save => should be the first btn in the form (subit on enter) -->
 							<button
-								class="btn btn-success submitOnEnter"
-								jsf:id="saveTemplateDetails"
-								type="submit"
-								jsf:action="#{ProzessverwaltungForm.VorlageUebernehmen}">
-								<i class="fa fa-save"></i>
-								<span>
-									<h:outputText value="#{msgs.speichern}" />
-								</span>
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
-									value="" />
-							</button>
-						</div>
-
-					</intranda:box>
-				</h:panelGroup>
-				<!-- // BOX WITH FORM TO EDIT PLACE -->
-
-
-
-				<!-- BOX WITH ALL PROPERTIES AS LIST -->
-				<h:panelGroup
-					styleClass="d-block mt-3"
-					rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlageeigenschaft'}">
-
-					<intranda:box
-						id="propertyListBox"
-						boxType="neutral"
-						boxPadding="false"
-						boxTitle="false">
-
-						<intranda:boxTitle
-							title="#{msgs.eigenschaften}"
-							icon="fa-table">
-
-							<div class="actions d-flex">
-								<button
-									jsf:id="newProperty"
-									class="btn d-flex align-items-center btn--title-action"
-									jsf:rel="tooltip"
-									jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftNeu}"
-									title="#{msgs.eigenschaftHinzufuegen}">
-									<i class="fa fa-plus"></i>
-									<f:passThroughAttribute
-										name="data-toggle"
-										value="tooltip" />
-									<x:updateActionListener
-										property="#{ProzessverwaltungForm.modusBearbeiten}"
-										value="vorlageeigenschaft" />
-								</button>
-							</div>
-						</intranda:boxTitle>
-
-						<div class="gw-table gw-table-fixed">
-							<div class="gw-table__wrapper">
-								<table
-									role="grid"
-									id="tableUserAll"
-									class="table table-bordered table-fixed table-hover">
-
-									<!-- COLUMNHEADER -->
-									<thead>
-										<tr role="row">
-											<intranda:columnheader
-												name="title"
-												value="#{msgs.titel}"
-												sortable="false" />
-											<intranda:columnheader
-												name="value"
-												value="#{msgs.wert}"
-												sortable="false" />
-											<intranda:columnheader
-												value="#{msgs.auswahl}"
-												sortable="false"
-												addClass="gw-table-fixed__actions" />
-										</tr>
-									</thead>
-									<!-- // COLUMNHEADER -->
-
-									<!-- CONTENT ROWS -->
-									<ui:repeat
-										var="item"
-										value="#{ProzessverwaltungForm.myVorlage.eigenschaftenList}"
-										varStatus="status">
-										<tr role="row">
-											<td>#{item.titel}</td>
-											<td>#{item.wert}</td>
-											<td>
-												<div class="gw-table__actions__container">
-													<button
-														jsf:id="editProperty"
-														class="btn btn-blank"
-														jsf:rel="tooltip"
-														jsf:action="process_edit_template"
-														title="#{msgs.bearbeiten}">
-														<i class="fa fa-pencil"></i>
-														<x:updateActionListener
-															property="#{ProzessverwaltungForm.myVorlageEigenschaft}"
-															value="#{item}" />
-														<x:updateActionListener
-															property="#{ProzessverwaltungForm.modusBearbeiten}"
-															value="vorlageeigenschaft" />
-													</button>
-												</div>
-											</td>
-										</tr>
-									</ui:repeat>
-									<!-- // CONTENT ROWS -->
-
-								</table>
-							</div>
-						</div>
-					</intranda:box>
-				</h:panelGroup>
-				<!-- // BOX WITH ALL PROPERTIES AS LIST -->
-
-
-
-				<!-- BOX WITH PROPERTIES TO EDIT -->
-				<h:panelGroup
-					styleClass="d-block mt-3"
-					rendered="#{ProzessverwaltungForm.modusBearbeiten=='vorlageeigenschaft'}">
-
-					<intranda:box
-						boxType="action"
-						boxForm="true"
-						boxPadding="false"
-						title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.eigenschaftBearbeiten.concat(' - ').concat(ProzessverwaltungForm.myProzess.titel) : msgs.eigenschaftBearbeiten}"
-						icon="fa-edit">
-
-						<intranda:formInputText
-							id="title"
-							name="title"
-							label="#{msgs.titel}"
-							field="#{ProzessverwaltungForm.myVorlageEigenschaft.titel}"
-							help="#{msgs.helpPropertyTitle}"
-							required="true" />
-						<intranda:formInputText
-							id="value"
-							name="value"
-							label="#{msgs.wert}"
-							field="#{ProzessverwaltungForm.myVorlageEigenschaft.wert}"
-							help="#{msgs.helpPropertyValue}"
-							required="true" />
-
-
-						<div class="box__actions">
-							<!-- CANCEL -->
-							<button
-								jsf:id="cancelProperty"
-								class="btn btn-blank"
-								jsf:immediate="true"
-								jsf:action="#{NavigationForm.Reload}">
-								<h:outputText value="#{msgs.abbrechen}" />
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
-									value="" />
-							</button>
-
-							<!-- SAVE -->
-							<button
-								class="btn btn-success submitOnEnter"
-								jsf:id="saveProperty"
-								type="submit"
-								jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftUebernehmen}">
-								<i class="fa fa-save"></i>
-								<span>
-									<h:outputText value="#{msgs.speichern}" />
-								</span>
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
-									value="" />
-							</button>
-
-							<!-- DELETE -->
-							<button
-								jsf:id="deleteProperty"
-								class="btn btn-hot trigger-delete"
-								onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
-								jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}"
-								jsf:rendered="#{ProzessverwaltungForm.myVorlageEigenschaft.id != null}">
+								jsf:id="delete"
+								class="btn d-flex align-items-center btn--title-action"
+								jsf:rel="tooltip"
+								jsf:action="#{ProzessverwaltungForm.VorlageLoeschen}"
+								title="#{msgs.loeschen}">
 								<i class="fa fa-trash-o"></i>
-								<span>
-									<h:outputText value="#{msgs.loeschen}" />
-								</span>
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
-									value="" />
+								<f:passThroughAttribute
+									name="data-toggle"
+									value="tooltip" />
 							</button>
 						</div>
-					</intranda:box>
-				</h:panelGroup>
-				<!-- // BOX WITH PROPERTIES TO EDIT -->
+					</intranda:boxTitle>
+
+					<h:panelGrid
+						columns="2"
+                        styleClass="table table-hover table-bordered">
+						<h:outputText value="#{msgs.herkunft}:" />
+						<h:outputText value="#{ProzessverwaltungForm.myVorlage.herkunft}" />
+
+						<h:outputText value="#{msgs.id}:" />
+						<h:outputText value="#{ProzessverwaltungForm.myWerkstueck.id}" />
+					</h:panelGrid>
+
+				</intranda:box>
+			</h:panelGroup>
+			<!-- // BOX WITH TABLE FOR PLACE AND ID -->
 
 
-			</h:form>
-		</main>
+			<!-- BOX WITH FORM TO EDIT PLACE -->
+			<h:panelGroup
+				styleClass="d-block"
+				rendered="#{ProzessverwaltungForm.modusBearbeiten=='vorlage'}">
+				<intranda:box
+					boxType="action"
+					boxForm="true"
+					boxPadding="false"
+					title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.vorlageDetails.concat(' -').concat(ProzessverwaltungForm.myProzess.titel) : msgs.vorlageDetails}"
+					icon="fa-pencil">
+
+					<intranda:formInputText
+						id="origin"
+						name="origin"
+						label="#{msgs.herkunft}"
+						field="#{ProzessverwaltungForm.myVorlage.herkunft}"
+						help="#{msgs.helpTemplateOrigin}"
+						fieldStyle="form-control"
+						required="true" />
+
+					<div class="box__actions">
+
+						<!-- Cancel -->
+						<button
+							jsf:id="cancelOrigin"
+							class="btn btn-blank"
+							jsf:immediate="true"
+							jsf:action="#{NavigationForm.Reload}"
+							jsf:rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+							<h:outputText value="#{msgs.abbrechen}" />
+							<x:updateActionListener
+								property="#{ProzessverwaltungForm.modusBearbeiten}"
+								value="" />
+						</button>
+
+						<!-- Save => should be the first btn in the form (subit on enter) -->
+						<button
+							class="btn btn-success submitOnEnter"
+							jsf:id="saveTemplateDetails"
+							type="submit"
+							jsf:action="#{ProzessverwaltungForm.VorlageUebernehmen}">
+							<i class="fa fa-save"></i>
+							<span>
+								<h:outputText value="#{msgs.speichern}" />
+							</span>
+							<x:updateActionListener
+								property="#{ProzessverwaltungForm.modusBearbeiten}"
+								value="" />
+						</button>
+					</div>
+
+				</intranda:box>
+			</h:panelGroup>
+			<!-- // BOX WITH FORM TO EDIT PLACE -->
+
+
+
+			<!-- BOX WITH ALL PROPERTIES AS LIST -->
+			<h:panelGroup
+				styleClass="d-block mt-3"
+				rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlageeigenschaft'}">
+
+				<intranda:box
+					id="propertyListBox"
+					boxType="neutral"
+					boxPadding="false"
+					boxTitle="false">
+
+					<intranda:boxTitle
+						title="#{msgs.eigenschaften}"
+						icon="fa-table">
+
+						<div class="actions d-flex">
+							<button
+								jsf:id="newProperty"
+								class="btn d-flex align-items-center btn--title-action"
+								jsf:rel="tooltip"
+								jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftNeu}"
+								title="#{msgs.eigenschaftHinzufuegen}">
+								<i class="fa fa-plus"></i>
+								<f:passThroughAttribute
+									name="data-toggle"
+									value="tooltip" />
+								<x:updateActionListener
+									property="#{ProzessverwaltungForm.modusBearbeiten}"
+									value="vorlageeigenschaft" />
+							</button>
+						</div>
+					</intranda:boxTitle>
+
+					<div class="gw-table gw-table-fixed">
+						<div class="gw-table__wrapper">
+							<table
+								role="grid"
+								id="tableUserAll"
+								class="table table-bordered table-fixed table-hover">
+
+								<!-- COLUMNHEADER -->
+								<thead>
+									<tr role="row">
+										<intranda:columnheader
+											name="title"
+											value="#{msgs.titel}"
+											sortable="false" />
+										<intranda:columnheader
+											name="value"
+											value="#{msgs.wert}"
+											sortable="false" />
+										<intranda:columnheader
+											value="#{msgs.auswahl}"
+											sortable="false"
+											addClass="gw-table-fixed__actions" />
+									</tr>
+								</thead>
+								<!-- // COLUMNHEADER -->
+
+								<!-- CONTENT ROWS -->
+								<ui:repeat
+									var="item"
+									value="#{ProzessverwaltungForm.myVorlage.eigenschaftenList}"
+									varStatus="status">
+									<tr role="row">
+										<td>#{item.titel}</td>
+										<td>#{item.wert}</td>
+										<td>
+											<div class="gw-table__actions__container">
+												<button
+													jsf:id="editProperty"
+													class="btn btn-blank"
+													jsf:rel="tooltip"
+													jsf:action="process_edit_template"
+													title="#{msgs.bearbeiten}">
+													<i class="fa fa-pencil"></i>
+													<x:updateActionListener
+														property="#{ProzessverwaltungForm.myVorlageEigenschaft}"
+														value="#{item}" />
+													<x:updateActionListener
+														property="#{ProzessverwaltungForm.modusBearbeiten}"
+														value="vorlageeigenschaft" />
+												</button>
+											</div>
+										</td>
+									</tr>
+								</ui:repeat>
+								<!-- // CONTENT ROWS -->
+
+							</table>
+						</div>
+					</div>
+				</intranda:box>
+			</h:panelGroup>
+			<!-- // BOX WITH ALL PROPERTIES AS LIST -->
+
+
+
+			<!-- BOX WITH PROPERTIES TO EDIT -->
+			<h:panelGroup
+				styleClass="d-block mt-3"
+				rendered="#{ProzessverwaltungForm.modusBearbeiten=='vorlageeigenschaft'}">
+
+				<intranda:box
+					boxType="action"
+					boxForm="true"
+					boxPadding="false"
+					title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.eigenschaftBearbeiten.concat(' - ').concat(ProzessverwaltungForm.myProzess.titel) : msgs.eigenschaftBearbeiten}"
+					icon="fa-edit">
+
+					<intranda:formInputText
+						id="title"
+						name="title"
+						label="#{msgs.titel}"
+						field="#{ProzessverwaltungForm.myVorlageEigenschaft.titel}"
+						help="#{msgs.helpPropertyTitle}"
+						required="true" />
+					<intranda:formInputText
+						id="value"
+						name="value"
+						label="#{msgs.wert}"
+						field="#{ProzessverwaltungForm.myVorlageEigenschaft.wert}"
+						help="#{msgs.helpPropertyValue}"
+						required="true" />
+
+
+					<div class="box__actions">
+						<!-- CANCEL -->
+						<button
+							jsf:id="cancelProperty"
+							class="btn btn-blank"
+							jsf:immediate="true"
+							jsf:action="#{NavigationForm.Reload}">
+							<h:outputText value="#{msgs.abbrechen}" />
+							<x:updateActionListener
+								property="#{ProzessverwaltungForm.modusBearbeiten}"
+								value="" />
+						</button>
+
+						<!-- SAVE -->
+						<button
+							class="btn btn-success submitOnEnter"
+							jsf:id="saveProperty"
+							type="submit"
+							jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftUebernehmen}">
+							<i class="fa fa-save"></i>
+							<span>
+								<h:outputText value="#{msgs.speichern}" />
+							</span>
+							<x:updateActionListener
+								property="#{ProzessverwaltungForm.modusBearbeiten}"
+								value="" />
+						</button>
+
+						<!-- DELETE -->
+						<button
+							jsf:id="deleteProperty"
+							class="btn btn-hot trigger-delete"
+							onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
+							jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}"
+							jsf:rendered="#{ProzessverwaltungForm.myVorlageEigenschaft.id != null}">
+							<i class="fa fa-trash-o"></i>
+							<span>
+								<h:outputText value="#{msgs.loeschen}" />
+							</span>
+							<x:updateActionListener
+								property="#{ProzessverwaltungForm.modusBearbeiten}"
+								value="" />
+						</button>
+					</div>
+				</intranda:box>
+			</h:panelGroup>
+			<!-- // BOX WITH PROPERTIES TO EDIT -->
+
+		</h:form>
+		
 	</ui:define>
 
 </ui:composition>

@@ -102,19 +102,19 @@ public class JobCreation {
         CopyProcess cp = new CopyProcess();
         cp.setProzessVorlage(vorlage);
         cp.setMetadataFile(metsfilename);
-        cp.Prepare(io);
+        cp.prepare(io);
         cp.getProzessKopie().setTitel(processTitle);
         log.trace("testing title");
         if (cp.testTitle()) {
             log.trace("title is valid");
-            cp.OpacAuswerten();
+            cp.opacAuswerten();
             try {
                 p = cp.createProcess(io);
                 if (p != null && p.getId() != null) {
                     moveFiles(metsfile, basepath, p);
                     List<Step> steps = StepManager.getStepsForProcess(p.getId());
                     for (Step s : steps) {
-                        if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) && s.isTypAutomatisch()) {
+                        if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum()) && s.isTypAutomatisch()) {
                             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);
                             myThread.startOrPutToQueue();
                         }

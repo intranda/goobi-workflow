@@ -69,9 +69,13 @@
 		<h:form
 			id="uploadForm"
 			enctype="multipart/form-data"
-			prependId="false">
+			prependId="false"
+            styleClass="form-horizontal form-bordered"
+            >
+            
 			<main class="row">
 				<div class="col-12">
+                
 					<intranda:box
 						id="uploadBox"
 						boxType="action"
@@ -80,20 +84,7 @@
 						icon="fa-tasks"
 						title="#{msgs.zusaetzlicheDetails}">
 
-						<!-- ADDITIONAL PROPERTIES -->
-						<x:dataList
-							var="item"
-							id="properties"
-							value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}">
-							<intranda:formInputText
-								id="property"
-								label="#{item.titel}"
-								field="#{item.wert}"
-								help="#{msgs[('help_import_').concat(item.titel)]}"
-								name="id"
-								required="true" />
-						</x:dataList>
-						<!-- // ADDITIONAL PROPERTIES -->
+
 
 						<!-- FILE UPLOAD AREA -->
 						<h:panelGroup
@@ -261,7 +252,7 @@
 								class="btn btn-success"
 								jsf:id="absenden"
 								type="submit"
-								jsf:action="#{ProzesskopieForm.NeuenProzessAnlegen}">
+								jsf:action="#{ProzesskopieForm.createNewProcess}">
 								<i class="fa fa-save"></i>
 								<span>
 									<h:outputText value="Speichern" />
@@ -272,7 +263,7 @@
 							<button
 								jsf:id="deleteUser"
 								class="btn btn-blank trigger-delete"
-								jsf:action="#{ProzesskopieForm.GoToSeite1}">
+								jsf:action="#{ProzesskopieForm.openFirstPage}">
 								<i class="fa fa-arrow-circle-o-left"></i>
 								<span>
 									<h:outputText value="#{msgs.zurueck}" />

@@ -1,5 +1,3 @@
-package de.sub.goobi.converter;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -16,16 +14,53 @@ package de.sub.goobi.converter;
  * 
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
  */
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
-@RunWith(Suite.class)
-@SuiteClasses({ DocketConverterTest.class, ProcessConverterTest.class, StatisticsCalculationUnitConverterTest.class,
-        StatisticsResultOutputConverterTest.class, StatisticsTimeUnitConverterTest.class, RectangleConverterTest.class,
-        RectangleCoordinateConverterTest.class })
-public class TestAll {
+package org.goobi.production.properties;
+
+import java.util.List;
+
+import org.geonames.Toponym;
+
+public interface GeonamesSearchProperty {
+
+    /**
+     * get the current search value
+     * 
+     * @return
+     */
+    public String getSearchValue();
+
+    /**
+     * sets a new search value
+     * 
+     * @return
+     */
+    public void setSearchValue(String value);
+
+    public String getValue();
+
+    public void setValue(String option);
+
+    public String getGeonamesNumber();
+
+    public void setGeonamesNumber(String option);
+
+    public void searchGeonames();
+
+    public Toponym getCurrentToponym();
+
+    public void setCurrentToponym(Toponym toponym);
+
+    public List<Toponym> getResultList();
+    public void setResultList(List<Toponym> results);
+
+    public int getTotalResults();
+    public void setTotalResults(int results);
+
+    public boolean isShowNoHits();
+    public void setShowNoHits(boolean showNotHits);
+
+    public void importGeonamesData();
 
 }

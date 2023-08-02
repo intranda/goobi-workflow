@@ -38,110 +38,109 @@
     </ui:define>
 
     <ui:define name="content">
-        <main>
-            <c:if test="#{LoginForm.hasRole('Task_List')}">
-                <div class="row">
+        <c:if test="#{LoginForm.hasRole('Task_List')}">
+            <div class="row">
 
-                    <!-- DETAILS OF STEP AND PROCESS -->
-                    <div class="col-sm-6">
-                        <ui:include src="templatePG/includes/task/box_details.xhtml">
+                <!-- DETAILS OF STEP AND PROCESS -->
+                <div class="col-sm-6">
+                    <ui:include src="templatePG/includes/task/box_details.xhtml">
+                        <ui:param
+                            name="currentStep"
+                            value="#{AktuelleSchritteForm.mySchritt}" />
+                    </ui:include>
+                </div>
+                <!-- // DETAILS OF STEP AND PROCESS -->
+
+                
+                <!-- RIGHT AREA WITH ACTION BOXES AND PROPERTIES -->
+                <div class="col-sm-6">
+
+                    <!-- AREA FOR GUI PLUGINS -->
+                    <c:if
+                        test="#{AktuelleSchritteForm.myPlugin !=null and (AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART' or AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART_AND_FULL')}">
+                        <div class="mb-3">
+                            <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
+                        </div>
+                    </c:if>
+                    <!-- // AREA FOR GUI PLUGINS -->
+
+
+                    <!-- PROPERTIES -->
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="mb-3"
+                        id="propform2"
+                        rendered="#{AktuelleSchritteForm.propertyListSize>0 or AktuelleSchritteForm.sizeOfDisplayableMetadata>0}">
+                        <ui:include src="templatePG/includes/task/box_properties.xhtml">
                             <ui:param
                                 name="currentStep"
                                 value="#{AktuelleSchritteForm.mySchritt}" />
-                        </ui:include>
-                    </div>
-                    <!-- // DETAILS OF STEP AND PROCESS -->
-
-                    
-                    <!-- RIGHT AREA WITH ACTION BOXES AND PROPERTIES -->
-                    <div class="col-sm-6">
-
-                        <!-- AREA FOR GUI PLUGINS -->
-                        <c:if
-                            test="#{AktuelleSchritteForm.myPlugin !=null and (AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART' or AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART_AND_FULL')}">
-                            <div class="mb-3">
-                                <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
-                            </div>
-                        </c:if>
-                        <!-- // AREA FOR GUI PLUGINS -->
-
-
-                        <!-- PROPERTIES -->
-                        <h:panelGroup
-                            layout="block"
-                            styleClass="mb-3"
-                            id="propform2"
-                            rendered="#{AktuelleSchritteForm.propertyListSize>0 or AktuelleSchritteForm.sizeOfDisplayableMetadata>0}">
-                            <ui:include src="templatePG/includes/task/box_properties.xhtml">
-                                <ui:param
-                                    name="currentStep"
-                                    value="#{AktuelleSchritteForm.mySchritt}" />
-                                <!-- the owner of the properties as regular tasks are different from tasks in batches -->
-                                <ui:param
-                                    name="propertyOwner"
-                                    value="#{AktuelleSchritteForm}" />
-                                <!-- the navigation information is independent of the property owner -->
-                                <ui:param
-                                    name="bean"
-                                    value="#{AktuelleSchritteForm}" />
-                                 <ui:param
-                                    name="isBatchStep"
-                                    value="false" />
-                            </ui:include>
-                        
-                        </h:panelGroup>
-                        <!-- // PROPERTIES -->
-
-
-                        <!-- ACTION BOX -->
-                        <ui:include src="templatePG/includes/task/box_action.xhtml">
+                            <!-- the owner of the properties as regular tasks are different from tasks in batches -->
                             <ui:param
-                                name="currentStep"
-                                value="#{AktuelleSchritteForm.mySchritt}" />
-                             <ui:param
+                                name="propertyOwner"
+                                value="#{AktuelleSchritteForm}" />
+                            <!-- the navigation information is independent of the property owner -->
+                            <ui:param
                                 name="bean"
                                 value="#{AktuelleSchritteForm}" />
+                             <ui:param
+                                name="isBatchStep"
+                                value="false" />
                         </ui:include>
-                        <!-- // ACTION BOX -->
+                    
+                    </h:panelGroup>
+                    <!-- // PROPERTIES -->
 
-                    </div>
-                    <!-- // RIGHT AREA WITH ACTION BOXES AND PROPERTIES -->
-                    
-                    
+
+                    <!-- ACTION BOX -->
+                    <ui:include src="templatePG/includes/task/box_action.xhtml">
+                        <ui:param
+                            name="currentStep"
+                            value="#{AktuelleSchritteForm.mySchritt}" />
+                         <ui:param
+                            name="bean"
+                            value="#{AktuelleSchritteForm}" />
+                    </ui:include>
+                    <!-- // ACTION BOX -->
+
                 </div>
+                <!-- // RIGHT AREA WITH ACTION BOXES AND PROPERTIES -->
+                
+                
+            </div>
 
-                <!-- FULL WIDTH JOURNAL -->
-                <ui:fragment rendered="#{NavigationForm.uiStatus['journalBig']}">
-                    <div class="row mt-3">
-                        <div class="col-sm-12">
-                            <h:form
-                                styleClass="form-vertical form-bordered"
-                                id="journal2"
-                                enctype="multipart/form-data"
-                                prependId="false">
+            <!-- FULL WIDTH JOURNAL -->
+            <ui:fragment rendered="#{NavigationForm.uiStatus['journalBig']}">
+                <div class="row mt-3">
+                    <div class="col-sm-12">
+                        <h:form
+                            styleClass="form-vertical form-bordered"
+                            id="journal2"
+                            enctype="multipart/form-data"
+                            prependId="false">
 
-                                <ui:include src="templatePG/includes/journal.xhtml">
-                                    <ui:param
-                                        name="showBigButton"
-                                        value="true" />
-                                    <ui:param
-                                        name="showFolderSelection"
-                                        value="false" />
-                                    <ui:param
-                                        name="showImageComments"
-                                        value="true" />
-                                    <ui:param
-                                        name="bean"
-                                        value="#{AktuelleSchritteForm.mySchritt.prozess}" />
-                                </ui:include>
-                            </h:form>
-                        </div>
+                            <ui:include src="templatePG/includes/journal.xhtml">
+                                <ui:param
+                                    name="showBigButton"
+                                    value="true" />
+                                <ui:param
+                                    name="showFolderSelection"
+                                    value="false" />
+                                <ui:param
+                                    name="showImageComments"
+                                    value="true" />
+                                <ui:param
+                                    name="bean"
+                                    value="#{AktuelleSchritteForm.mySchritt.prozess}" />
+                            </ui:include>
+                        </h:form>
                     </div>
-                </ui:fragment>
-                <!-- // FULL WIDTH JOURNAL -->
+                </div>
+            </ui:fragment>
+            <!-- // FULL WIDTH JOURNAL -->
 
-            </c:if>
-        </main>
+        </c:if>
+        
     </ui:define>
 
 </ui:composition>

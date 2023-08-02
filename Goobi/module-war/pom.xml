@@ -4,14 +4,14 @@
     <parent>
         <groupId>de.intranda.goobi.workflow</groupId>
         <artifactId>goobi-core</artifactId>
-        <version>23.05.3</version>
+        <version>23.06-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
 
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core-war</artifactId>
-    <version>23.05.3</version>
+    <version>23.06-SNAPSHOT</version>
     <packaging>war</packaging>
 
 

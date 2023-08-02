@@ -1,5 +1,3 @@
-package de.sub.goobi.helper.ldap;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -16,14 +14,27 @@ package de.sub.goobi.helper.ldap;
  * 
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
  */
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
-@RunWith(Suite.class)
-@SuiteClasses({ LdapUserTest.class })
-public class TestAll {
+package org.goobi.production.properties;
 
+import de.sub.goobi.metadaten.search.ViafSearch;
+
+public interface ViafSearchProperty {
+
+    // actual value
+    public String getValue();
+
+    public void setValue(String option);
+
+    // viaf number/uri
+    public String getViafNumber();
+
+    public void setViafNumber(String option);
+
+    public ViafSearch getViafSearch();
+
+    public void searchViaf();
+
+    public void importViafData();
 }

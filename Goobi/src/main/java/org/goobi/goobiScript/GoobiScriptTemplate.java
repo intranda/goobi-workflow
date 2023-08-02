@@ -1,5 +1,3 @@
-package org.goobi.api.display;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -16,13 +14,47 @@ package org.goobi.api.display;
  * 
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
  */
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
-@RunWith(Suite.class)
-@SuiteClasses({ ItemTest.class, DisplayCaseTest.class })
-public class TestAll {
+package org.goobi.goobiScript;
+
+import java.io.Serializable;
+
+import org.goobi.beans.DatabaseObject;
+
+import lombok.Getter;
+import lombok.Setter;
+
+public class GoobiScriptTemplate implements Serializable, DatabaseObject {
+
+    private static final long serialVersionUID = 7978130620909363049L;
+
+    @Getter
+    @Setter
+    // internal id
+    private Integer id;
+
+    @Getter
+    @Setter
+    // template name, required
+    private String title;
+
+    @Getter
+    @Setter
+    // optional description
+    private String description;
+
+    @Getter
+    @Setter
+    // contains a list of goobiScripts
+    private String goobiScripts;
+
+    @Override
+    public void lazyLoad() {
+        // do nothing
+    }
+
+    public String getEscapedScripts() {
+        return goobiScripts == null ? "" : goobiScripts.replace("\n", "\\n").replace("\r", "");
+    }
 }

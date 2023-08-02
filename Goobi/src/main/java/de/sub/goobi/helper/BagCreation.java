@@ -48,6 +48,10 @@ public class BagCreation {
     @Getter
     private Path objectsFolder;
     @Getter
+    private Path documentationFolder;
+    @Getter
+    private Path otherFolder;
+    @Getter
     private Metadata metadata = new Metadata();
 
     private Path updatedIeFolder;
@@ -83,7 +87,8 @@ public class BagCreation {
         }
         metadataFolder = Paths.get(ieFolder.toString(), "metadata");
         objectsFolder = Paths.get(ieFolder.toString(), objectFolderName);
-
+        documentationFolder = Paths.get(ieFolder.toString(), "documentation");
+        otherFolder = Paths.get(ieFolder.toString(), "other");
         try {
             StorageProvider.getInstance().createDirectories(metadataFolder);
             StorageProvider.getInstance().createDirectories(objectsFolder);
@@ -104,12 +109,13 @@ public class BagCreation {
         } catch (NoSuchAlgorithmException | IOException e) {
             log.error(e);
         }
-        log.info("Files  and Metadata aranged in Bag structure");
+        log.info("Files and Metadata aranged in Bag structure");
 
         // update folder
         ieFolder = updatedIeFolder;
         metadataFolder = Paths.get(ieFolder.toString(), "metadata");
         objectsFolder = Paths.get(ieFolder.toString(), objectsFolder.getFileName().toString());
+        documentationFolder = Paths.get(ieFolder.toString(), "documentation");
 
     }
 

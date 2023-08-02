@@ -2497,9 +2497,9 @@ public class Metadaten implements Serializable {
                     }
                 }
             }
-        }
-        while (physical.getAllChildren() != null && !physical.getAllChildren().isEmpty()) {
-            physical.removeChild(physical.getAllChildren().get(0));
+            while (physical.getAllChildren() != null && !physical.getAllChildren().isEmpty()) {
+                physical.removeChild(physical.getAllChildren().get(0));
+            }
         }
 
         createPagination();

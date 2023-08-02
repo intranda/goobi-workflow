@@ -42,16 +42,15 @@
     </ui:define>
 
     <ui:define name="content">
-        <main>
-            <h:form
-                id="myform"
-                onkeypress="submitOnEnter(event);"
-                rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
+        
+        <h:form
+            id="myform"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
 
-                <ui:include src="templatePG/includes/process/step_details.xhtml" />
-                <ui:include src="templatePG/includes/process/step_usersMerged.xhtml" />
-            </h:form>
-        </main>
+            <ui:include src="templatePG/includes/process/step_details.xhtml" />
+            <ui:include src="templatePG/includes/process/step_usersMerged.xhtml" />
+        </h:form>
     </ui:define>
 
 </ui:composition>
