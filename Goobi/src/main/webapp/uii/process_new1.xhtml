@@ -365,276 +365,293 @@
 			prependId="false">
 
 			<div class="row">
-				<div class="col-sm-12">
+                <div class="col-sm-12">
 
-					<intranda:box
-						boxType="action"
-						boxTitle="false"
-						boxForm="true"
-						boxPadding="false">
+                    <intranda:box
+                        boxType="action"
+                        boxTitle="false"
+                        boxForm="true"
+                        boxPadding="false">
 
-						<!-- ACTION BUTTONS TO EXPAND AND COLLAPSE -->
-						<intranda:boxTitle
-							title="#{msgs.metadatenImportieren}"
-							icon="fa-cloud-download">
-							<div class="actions d-flex">
-								<button
-									jsf:id="expand1"
-									title="#{msgs.expandImportMetadata}"
-									class="btn d-flex align-items-center btn--title-action"
-									jsf:action="#{NavigationForm.Reload}">
-									<i
-										class="fa #{NavigationForm.uiStatus.new_process_box1 eq 'full'?'fa-compress':'fa-expand'}" />
-									<f:setPropertyActionListener
-										target="#{NavigationForm.uiStatus.new_process_box1}"
-										value="#{NavigationForm.uiStatus.new_process_box1 eq 'full'?'part':'full'}" />
-									<f:ajax
-										render="@form"
-										execute="@form" />
-								</button>
-							</div>
-						</intranda:boxTitle>
-						<!-- // ACTION BUTTONS TO EXPAND AND COLLAPSE -->
-
-
-						<!-- REQUEST OPAC -->
-						<ui:fragment rendered="#{ProzesskopieForm.useOpac}">
-
-							<!-- MULTIPLE INPUT ROW -->
-							<div class="row">
-
-								<!-- LABEL -->
-								<div class="col-12 col-md-3">
-									<intranda:formLabel label="#{msgs.sucheImOpac}" 
-										labelFor="opacCatalogue" labelRequired="false"/>
-								</div>
-								<!-- // LABEL -->
-
-								<div class="col-12 col-md-9">
-
-									<div class="row col-12 border-0">
-
-										<!-- CATALOGUE -->
-										<div class="col-2 ps-0 py-0 min-vh-0">
-											<h:selectOneMenu
-												id="opacCatalogue"
-												styleClass="form-select"
-												pt:aria-label="#{msgs.katalog}"
-												value="#{ProzesskopieForm.opacKatalog}"
-												tabindex="0"
-												readonly="false">
-												<f:selectItems
-													value="#{ProzesskopieForm.allOpacCatalogues}"
-													var="step"
-													itemLabel="#{step}"
-													itemValue="#{step}" />
-												<f:ajax render="@form"></f:ajax>
-											</h:selectOneMenu>
-										</div>
-										<!-- // CATALOGUE -->
-
-										<ui:include src="#{ProzesskopieForm.pluginGui}" />
-
-										<div class="col-2 pe-0 py-0 min-vh-0">
-											<button
-												jsf:action="#{ProzesskopieForm.opacAuswerten}"
-												jsf:id="performOpacQuery"
-												title="#{msgs.opacAbfragen}"
-												class="btn btn-primary-400"
-												type="submit">
-												<span>
-													<h:outputText value="#{msgs.uebernehmen}" />
-												</span>
-											</button>
-										</div>
-									</div>
-
-									<!-- HELP -->
-									<intranda:formHelp content="#{msgs.helpSucheImOpac}" msgFor="opacCatalogue" />
-									<!-- // HELP -->
-
-								</div>
-
-							</div>
-							<!-- MULTIPLE INPUT ROW -->
-
-						</ui:fragment>
-						<!-- REQUEST OPAC -->
+                        <!-- ACTION BUTTONS TO EXPAND AND COLLAPSE -->
+                        <intranda:boxTitle
+                            title="#{msgs.metadatenImportieren}"
+                            icon="fa-cloud-download">
+                            <div class="actions d-flex">
+                                <button
+                                    jsf:id="expand1"
+                                    title="#{msgs.expandImportMetadata}"
+                                    class="btn d-flex align-items-center btn--title-action"
+                                    jsf:action="#{NavigationForm.Reload}">
+                                    <i class="fa #{NavigationForm.uiStatus.new_process_box1 eq 'full'?'fa-compress':'fa-expand'}" />
+                                    <f:setPropertyActionListener
+                                        target="#{NavigationForm.uiStatus.new_process_box1}"
+                                        value="#{NavigationForm.uiStatus.new_process_box1 eq 'full'?'part':'full'}" />
+                                    <f:ajax
+                                        render="@form"
+                                        execute="@form" />
+                                </button>
+                            </div>
+                        </intranda:boxTitle>
+                        <!-- // ACTION BUTTONS TO EXPAND AND COLLAPSE -->
 
 
+                        <!-- REQUEST OPAC -->
+                        <ui:fragment rendered="#{ProzesskopieForm.useOpac}">
 
-						<!-- REUSE TEMPLATE -->
-						<ui:fragment
-							rendered="#{NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and ProzesskopieForm.useTemplates}">
+                            <!-- MULTIPLE INPUT ROW -->
+                            <div class="row">
 
-							<!-- MULTIPLE INPUT ROW -->
-							<div class="row">
+                                <!-- LABEL -->
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{msgs.sucheImOpac}"
+                                        labelFor="opacCatalogue"
+                                        labelRequired="false" />
+                                </div>
+                                <!-- // LABEL -->
 
-								<!-- LABEL -->
-								<div class="col-12 col-md-3">
-									<intranda:formLabel label="#{msgs.AuswaehlenAusVorhandenenProzessen}" 
-										labelFor="templates" labelRequired="false"/>
-								</div>
-								<!-- // LABEL -->
+                                <div class="col-12 col-md-9">
 
-								<div class="col-12 col-md-9">
+                                    <div class="row col-12 border-0">
 
-									<div class="row col-12 border-0">
-
-										<!-- TEMPLATE -->
-										<div class="col-10 ps-0 py-0 min-vh-0">
-											<h:selectOneMenu
-												id="templates"
-												styleClass="form-select"
-												pt:aria-label="#{msgs.katalog}"
-												value="#{ProzesskopieForm.auswahl}"
-												tabindex="0"
-												readonly="false">
-												<f:selectItems value="#{ProzesskopieForm.prozessTemplates}" />
-											</h:selectOneMenu>
-										</div>
-										<!-- // TEMPLATE -->
-
-										<div class="col-2 pe-0 py-0 min-vh-0">
-											<button
-												jsf:action="#{ProzesskopieForm.readMetadataFromTemplate}"
-												jsf:id="templateButton"
-												title="#{msgs.AuswaehlenAusVorhandenenProzessen}"
-												class="btn btn-primary-400"
-												type="submit">
-												<span>
-													<h:outputText value="#{msgs.uebernehmen}" />
-												</span>
-											</button>
-										</div>
-									</div>
-
-									<!-- HELP -->
-									<intranda:formHelp content="#{msgs.helpAuswaehlenAusVorhandenenProzessen}" msgFor="templates" />
-									<!-- // HELP -->
-
-								</div>
-
-							</div>
-							<!-- // MULTIPLE INPUT ROW -->
-
-						</ui:fragment>
-						<!-- // REUSE TEMPLATE -->
-
-						<!-- DOCTYPE -->
-						<ui:fragment
-							rendered="#{ProzesskopieForm.standardFields.doctype}">
-
-							<div class="row">
-								<!-- LABEL -->
-								<div class="col-12 col-md-3">
-									<intranda:formLabel label="#{msgs.publicationtype}" 
-										labelFor="DocType" labelRequired="false"/>
-								</div>
-								<!-- // LABEL -->
-
-								<!-- SELECT -->
-								<div class="col-12 col-md-9">
-									<h:selectOneMenu
-										id="DocType"
-										styleClass="form-select"
-										value="#{ProzesskopieForm.docType}"
-										tabindex="0"
-										readonly="false"
-										onchange="submit()">
-										<f:selectItems
-											value="#{ProzesskopieForm.allDoctypes}"
-											var="step"
-											itemLabel="#{step.localizedLabel}"
-											itemValue="#{step.title}" />
-									</h:selectOneMenu>
-
-									<!-- Help messages, inline + warning -->
-									<intranda:formHelp content="#{msgs.help_import_DocType}" msgFor="DocType" />
-								</div>
-								<!-- // SELECT -->
-							</div>
-						</ui:fragment>
-						<!-- // DOCTYPE -->
-
-
-						<ui:repeat
-							var="intern"
-							value="#{ProzesskopieForm.additionalFields}">
-
-							<ui:fragment
-								rendered="#{intern.getShowDependingOnDoctype(ProzesskopieForm.docType)}">
-
-								<ui:fragment rendered="#{intern.selectList==null}">
-									<intranda:formInputText
-										id="text"
-										label="#{HelperForm.getTranslation ('import_', intern.titel)}"
-										field="#{intern.wert}"
-										help="#{HelperForm.getTranslation ('help_import_', intern.titel)}"
-										name="id"
-										displayAsRequired="#{intern.required}"
-										required="false"
-										forceId="false" />
-								</ui:fragment>
-
-								<ui:fragment
-									rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and !intern.multiselect}">
-									<intranda:formInputDropDown2
-										id="select"
-										label="#{HelperForm.getTranslation ('import_', intern.titel)}"
-										field="#{intern.wert}"
-										help="#{HelperForm.getTranslation ('help_import_', intern.titel)}"
-										name="id"
-										selectItems="#{intern.selectList}"
-										displayAsRequired="#{intern.required}"
-										required="false" />
-								</ui:fragment>
-
-								<ui:fragment
-									rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and intern.multiselect}">
-									<div class="row">
-
-										<!-- LABEL -->
-										<div class="col-12 col-md-3">
-											<intranda:formLabel label="#{HelperForm.getTranslation ('import_', intern.titel)}" 
-												labelFor="multiselect" labelRequired="#{intern.required}"/>
-										</div>
-										<!-- // LABEL -->
-
-										<div class="col-12 col-md-9">
-											<h:selectManyListbox
+                                        <!-- CATALOGUE -->
+                                        <div class="col-2 ps-0 py-0 min-vh-0">
+                                            <h:selectOneMenu
+                                                id="opacCatalogue"
                                                 styleClass="form-select"
-												value="#{intern.values}"
-												id="multiselect">
-												<f:selectItems
-													value="#{intern.selectList}"
-													itemLabel="{item}"
-													itemValue="{item}"
-													var="item" />
-											</h:selectManyListbox>
+                                                pt:aria-label="#{msgs.katalog}"
+                                                value="#{ProzesskopieForm.opacKatalog}"
+                                                tabindex="0"
+                                                readonly="false">
+                                                <f:selectItems
+                                                    value="#{ProzesskopieForm.allOpacCatalogues}"
+                                                    var="step"
+                                                    itemLabel="#{step}"
+                                                    itemValue="#{step}" />
+                                                <f:ajax render="@form"></f:ajax>
+                                            </h:selectOneMenu>
+                                        </div>
+                                        <!-- // CATALOGUE -->
 
-											<!-- Help messages, inline + warning -->
-											<intranda:formHelp content="#{HelperForm.getTranslation ('help_import_', intern.titel)}" msgFor="multiselect" />
-										</div>
-									</div>
-								</ui:fragment>
+                                        <ui:include src="#{ProzesskopieForm.pluginGui}" />
 
-							</ui:fragment>
-						</ui:repeat>
+                                        <div class="col-2 pe-0 py-0 min-vh-0">
+                                            <button
+                                                jsf:action="#{ProzesskopieForm.opacAuswerten}"
+                                                jsf:id="performOpacQuery"
+                                                title="#{msgs.opacAbfragen}"
+                                                class="btn btn-primary-400"
+                                                type="submit">
+                                                <span>
+                                                    <h:outputText value="#{msgs.uebernehmen}" />
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- HELP -->
+                                    <intranda:formHelp
+                                        content="#{msgs.helpSucheImOpac}"
+                                        msgFor="opacCatalogue" />
+                                    <!-- // HELP -->
+
+                                </div>
+
+                            </div>
+                            <!-- MULTIPLE INPUT ROW -->
+
+                        </ui:fragment>
+                        <!-- REQUEST OPAC -->
+
+
+
+                        <!-- REUSE TEMPLATE -->
+                        <ui:fragment rendered="#{NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and ProzesskopieForm.useTemplates}">
+
+                            <!-- MULTIPLE INPUT ROW -->
+                            <div class="row">
+
+                                <!-- LABEL -->
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{msgs.AuswaehlenAusVorhandenenProzessen}"
+                                        labelFor="templates"
+                                        labelRequired="false" />
+                                </div>
+                                <!-- // LABEL -->
+
+                                <div class="col-12 col-md-9">
+
+                                    <div class="row col-12 border-0">
+
+                                        <!-- TEMPLATE -->
+                                        <div class="col-10 ps-0 py-0 min-vh-0">
+                                            <h:selectOneMenu
+                                                id="templates"
+                                                styleClass="form-select"
+                                                pt:aria-label="#{msgs.katalog}"
+                                                value="#{ProzesskopieForm.auswahl}"
+                                                tabindex="0"
+                                                readonly="false">
+                                                <f:selectItems value="#{ProzesskopieForm.prozessTemplates}" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                        <!-- // TEMPLATE -->
+
+                                        <div class="col-2 pe-0 py-0 min-vh-0">
+                                            <button
+                                                jsf:action="#{ProzesskopieForm.readMetadataFromTemplate}"
+                                                jsf:id="templateButton"
+                                                title="#{msgs.AuswaehlenAusVorhandenenProzessen}"
+                                                class="btn btn-primary-400"
+                                                type="submit">
+                                                <span>
+                                                    <h:outputText value="#{msgs.uebernehmen}" />
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- HELP -->
+                                    <intranda:formHelp
+                                        content="#{msgs.helpAuswaehlenAusVorhandenenProzessen}"
+                                        msgFor="templates" />
+                                    <!-- // HELP -->
+
+                                </div>
+
+                            </div>
+                            <!-- // MULTIPLE INPUT ROW -->
+
+                        </ui:fragment>
+                        <!-- // REUSE TEMPLATE -->
+
+                        <!-- DOCTYPE -->
+                        <ui:fragment rendered="#{ProzesskopieForm.standardFields.doctype}">
+
+                            <div class="row">
+                                <!-- LABEL -->
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{msgs.publicationtype}"
+                                        labelFor="DocType"
+                                        labelRequired="false" />
+                                </div>
+                                <!-- // LABEL -->
+
+                                <!-- SELECT -->
+                                <div class="col-12 col-md-9">
+                                    <h:selectOneMenu
+                                        id="DocType"
+                                        styleClass="form-select"
+                                        value="#{ProzesskopieForm.docType}"
+                                        tabindex="0"
+                                        readonly="false"
+                                        onchange="submit()">
+                                        <f:selectItems
+                                            value="#{ProzesskopieForm.allDoctypes}"
+                                            var="step"
+                                            itemLabel="#{step.localizedLabel}"
+                                            itemValue="#{step.title}" />
+                                    </h:selectOneMenu>
+
+                                    <!-- Help messages, inline + warning -->
+                                    <intranda:formHelp
+                                        content="#{msgs.help_import_DocType}"
+                                        msgFor="DocType" />
+                                </div>
+                                <!-- // SELECT -->
+                            </div>
+                        </ui:fragment>
+                        <!-- // DOCTYPE -->
+
+
+                        <ui:repeat
+                            var="intern"
+                            value="#{ProzesskopieForm.additionalFields}">
+
+                            <ui:fragment rendered="#{intern.getShowDependingOnDoctype(ProzesskopieForm.docType)}">
+
+                                <ui:fragment rendered="#{intern.selectList==null}">
+                                    <intranda:formInputText
+                                        id="text"
+                                        label="#{HelperForm.getTranslation ('import_', intern.titel)}"
+                                        field="#{intern.wert}"
+                                        help="#{HelperForm.getTranslation ('help_import_', intern.titel)}"
+                                        name="id"
+                                        displayAsRequired="#{intern.required}"
+                                        required="false"
+                                        forceId="false" />
+                                </ui:fragment>
+
+                                <ui:fragment rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and !intern.multiselect}">
+                                    <intranda:formInputDropDown2
+                                        id="select"
+                                        label="#{HelperForm.getTranslation ('import_', intern.titel)}"
+                                        field="#{intern.wert}"
+                                        help="#{HelperForm.getTranslation ('help_import_', intern.titel)}"
+                                        name="id"
+                                        selectItems="#{intern.selectList}"
+                                        displayAsRequired="#{intern.required}"
+                                        required="false" />
+                                </ui:fragment>
+
+                                <ui:fragment rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and intern.multiselect}">
+                                    <div class="row">
+
+                                        <!-- LABEL -->
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{HelperForm.getTranslation ('import_', intern.titel)}"
+                                                labelFor="multiselect"
+                                                labelRequired="#{intern.required}" />
+                                        </div>
+                                        <!-- // LABEL -->
+
+                                        <div class="col-12 col-md-9">
+                                            <h:selectManyListbox
+                                                styleClass="form-select"
+                                                value="#{intern.values}"
+                                                id="multiselect">
+                                                <f:selectItems
+                                                    value="#{intern.selectList}"
+                                                    itemLabel="{item}"
+                                                    itemValue="{item}"
+                                                    var="item" />
+                                            </h:selectManyListbox>
+
+                                            <!-- Help messages, inline + warning -->
+                                            <intranda:formHelp
+                                                content="#{HelperForm.getTranslation ('help_import_', intern.titel)}"
+                                                msgFor="multiselect" />
+                                        </div>
+                                    </div>
+                                </ui:fragment>
+
+                            </ui:fragment>
+                        </ui:repeat>
                         <!-- ADDITIONAL PROPERTIES -->
-                        
-                        <ui:include src="includes/process/processcreation_properties.xhtml" >
-                         <ui:param
-                                    name="properties"
-                                    value="#{ProzesskopieForm.configuredProperties}" />
-                        
-                        </ui:include>
-                        
-                        <!-- // ADDITIONAL PROPERTIES -->
-					</intranda:box>
-				</div>
 
-			</div>
+
+
+                        <!-- // ADDITIONAL PROPERTIES -->
+                    </intranda:box>
+
+                    <intranda:box
+                        boxType="action"
+                        boxPadding="true"
+                        icon="fa-search"
+                        title="#{msgs.eigenschaften}">
+                        <ui:include src="includes/process/processcreation_properties.xhtml">
+                            <ui:param
+                                name="properties"
+                                value="#{ProzesskopieForm.configuredProperties}" />
+                        </ui:include>
+                    </intranda:box>
+                </div>
+
+            </div>
 
 			<div class="row mt-3">
 				<div class="col-sm-12">
