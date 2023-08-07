@@ -53,3 +53,12 @@ npm start
 #: Build: compile sass and transform css with postcss
 npm run css:build
 ```
+
+### Hints
+
+change dash to bash
+
+```sh
+cd /usr/bin/
+ln -sf bash sh
+```

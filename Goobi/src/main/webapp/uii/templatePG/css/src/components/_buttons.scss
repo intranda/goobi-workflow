@@ -21,6 +21,7 @@
 }
 
 .btn--plusMinus {
+        user-select: text;
   &:hover {
 	i,
     span {
