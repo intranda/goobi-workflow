@@ -54,6 +54,13 @@ public interface ConnectionProvider extends AutoCloseable {
     public List<String> listContent() throws IOException;
 
     /**
+     * Create a remote sub folder within the current directory
+     * @param foldername
+     * @throws IOException
+     */
+    public void createSubFolder(String foldername) throws IOException;
+
+    /**
      * Download a remote file into a given folder
      * 
      * @param filename
@@ -61,6 +68,7 @@ public interface ConnectionProvider extends AutoCloseable {
      * @return
      * @throws SftpException
      */
+
 
     public Path downloadFile(String filename, Path downloadFolder) throws IOException;
 

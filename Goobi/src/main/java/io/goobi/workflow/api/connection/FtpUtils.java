@@ -118,4 +118,10 @@ public class FtpUtils implements ConnectionProvider {
         return null;
     }
 
+
+    @Override
+    public void createSubFolder(String foldername) throws IOException {
+        ftpClient.mkd(foldername);
+
+    }
 }
