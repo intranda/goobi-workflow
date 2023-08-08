@@ -189,4 +189,14 @@ public class SftpUtils implements ConnectionProvider {
             throw new IOException(e);
         }
     }
+
+    @Override
+    public void deleteFile(String filename) throws IOException {
+        try {
+            sftpChannel.rm(filename);
+        } catch (SftpException e) {
+            throw new IOException(e);
+        }
+
+    }
 }

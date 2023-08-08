@@ -61,6 +61,13 @@ public interface ConnectionProvider extends AutoCloseable {
     public void createSubFolder(String foldername) throws IOException;
 
     /**
+     * Delete a remote file
+     * @param foldername
+     * @throws IOException
+     */
+    public void deleteFile(String filename) throws IOException;
+
+    /**
      * Download a remote file into a given folder
      * 
      * @param filename
