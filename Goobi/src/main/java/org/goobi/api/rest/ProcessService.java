@@ -63,6 +63,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.CloseStepHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -131,6 +132,36 @@ public class ProcessService implements IRestAuthentication {
             return Response.status(404).entity("Process not found").build();
         }
         // return process resource object
+        return Response.status(200).entity(new RestProcessResource(process)).build();
+    }
+
+    @POST
+    @Path("/{processid}")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Update an existing process", description = "start open automatic steps of this process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
+    @ApiResponse(responseCode = "409", description = "New process title already exists.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response startOpenAutomaticStepsOfTheProcess(@PathParam("processid") String processid) {
+        // id is empty or value is not numeric
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).build();
+        }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+
+        startOpenAutomaticTasks(process);
+
+        Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "open automatic steps are started using REST-API.");
         return Response.status(200).entity(new RestProcessResource(process)).build();
     }
 
@@ -416,11 +447,22 @@ public class ProcessService implements IRestAuthentication {
             if (StringUtils.isNotBlank(resource.getDocumentType())) {
                 createMetadataFile(resource, process);
             }
+
         } catch (DAOException | UGHException e) {
             log.error(e);
         }
         Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Process created using REST-API.");
         return getProcessData(String.valueOf(process.getId()));
+    }
+
+    private void startOpenAutomaticTasks(Process process) {
+        // start any open automatic tasks for the process
+        for (Step s : process.getSchritteList()) {
+            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) && s.isTypAutomatisch()) {
+                ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);
+                myThread.startOrPutToQueue();
+            }
+        }
     }
 
     private void createMetadataFile(RestProcessResource resource, Process newProcess)
