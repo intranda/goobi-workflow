@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
@@ -453,6 +454,126 @@ public class ProcessService implements IRestAuthentication {
         }
         Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Process created using REST-API.");
         return getProcessData(String.valueOf(process.getId()));
+    }
+
+    @PUT
+    @Path("/withdetails")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Create a new process with details", description = "Create a new process with metadata and properties")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request - required data is missing")
+    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
+    @ApiResponse(responseCode = "404", description = "Data not found")
+    @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
+    @ApiResponse(responseCode = "409", description = "New process title already exists.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response createProcessWithMetadataAndProperties(RestProcessResource resource) {
+
+        //TODO optional metadata
+        //TODO optional properties
+        //TODO save RestProcessResource object in import/ folder
+
+        // validate required fields - template name and process title
+
+        //  check template name
+        if (StringUtils.isBlank(resource.getProcessTemplateName())) {
+            return Response.status(400).entity("Process template name cannot be empty.").build();
+        }
+        Process template = ProcessManager.getProcessByExactTitle(resource.getProcessTemplateName());
+        // process does not exist
+        if (template == null) {
+            return Response.status(404).entity("Process template not found").build();
+        }
+
+        // check process title
+        String processTitle = resource.getTitle();
+        Response resp = validateProcessTitle(processTitle, null);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+
+        Process process = prepareProcess(processTitle, template);
+
+        // optional: change project
+        if (StringUtils.isNotBlank(resource.getProjectName())) {
+            resp = changeProject(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
+            }
+        }
+        // optional: change ruleset
+        resp = changeRuleset(resource, process);
+        if (resp != null) {
+            // error found, break up
+            return resp;
+        }
+        // optional: change docket
+        if (StringUtils.isNotBlank(resource.getDocketName())) {
+            resp = changeDocket(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
+            }
+        }
+        // optional: add process to a batch
+        if (resource.getBatchNumber() != null) {
+            resp = changeBatch(resource, process);
+            if (resp != null) {
+                // error found, break up
+                return resp;
+            }
+        }
+
+        changeProcessParameter(resource, process);
+
+        try {
+            // save process to create ids and directories
+            ProcessManager.saveProcess(process);
+
+            // create dummy metadata file
+            if (StringUtils.isNotBlank(resource.getDocumentType())) {
+                createMetadataFile(resource, process);
+            }
+
+        } catch (DAOException | UGHException e) {
+            log.error(e);
+        }
+
+        // add process properties if there are any
+        Map<String, String> propertiesMap = resource.getPropertiesMap();
+        for (Map.Entry<String, String> property : propertiesMap.entrySet()) {
+            String key = property.getKey();
+            String value = property.getValue();
+            saveNewProcessproperty(process, key, value, null);
+        }
+
+        // start open automatic steps
+        startOpenAutomaticTasks(process);
+
+        Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Process created using REST-API.");
+        return getProcessData(String.valueOf(process.getId()));
+    }
+
+    private Processproperty saveNewProcessproperty(Process process, String key, String value, Date creationDate) {
+        Processproperty property = new Processproperty();
+        property.setTitel(key);
+        property.setWert(value);
+        property.setProzess(process);
+        property.setType(PropertyType.STRING);
+        if (creationDate != null) {
+            property.setCreationDate(creationDate);
+        } else {
+            property.setCreationDate(new Date());
+        }
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property added using REST-API: " + property.getTitel());
+
+        PropertyManager.saveProcessProperty(property);
+
+        return property;
     }
 
     private void startOpenAutomaticTasks(Process process) {

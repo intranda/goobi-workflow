@@ -19,10 +19,14 @@
 package org.goobi.api.rest.model;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -88,6 +92,10 @@ public class RestProcessResource {
     @Setter
     private String documentType;
 
+    @Getter
+    @Setter
+    private Map<String, String> propertiesMap = new HashMap<>();
+
 
 
     public RestProcessResource() {
@@ -107,5 +115,14 @@ public class RestProcessResource {
         batchNumber = process.getBatch() == null ? null : process.getBatch().getBatchId();
         docketName = process.getDocket() == null ? null : process.getDocket().getName();
 
+        initializePropertiesMap(process.getEigenschaften());
+    }
+
+    private void initializePropertiesMap(List<Processproperty> properties) {
+        for (Processproperty property : properties) {
+            String key = property.getTitel();
+            String value = property.getWert();
+            propertiesMap.put(key, value);
+        }
     }
 }
