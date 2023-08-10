@@ -561,28 +561,32 @@ public class ProcessService implements IRestAuthentication {
             Prefs prefs = process.getRegelsatz().getPreferences();
             
             // add metadata items one by one
-            Map<String, Map<String, String>> metadatenMap = resource.getMetadatenMap();
-            for (Map.Entry<String, Map<String, String>> metadata : metadatenMap.entrySet()) {
-                String metadataName = metadata.getKey();
+            List<Map<String, String>> metadataList = resource.getMetadataList();
+            for (Map<String, String> metadataMap : metadataList) {
+                String metadataName = metadataMap.get("name");
                 MetadataType mdType = prefs.getMetadataTypeByName(metadataName);
                 if (mdType == null) {
                     Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Metadata type '" + metadataName + "' is unknown in ruleset.");
                     continue;
                 }
-                
-                Map<String, String> metadataProperties = metadata.getValue();
-                String metadataValue = metadataProperties.get("value");
-                String authorityValue = metadataProperties.get("authorityValue");
-                String firstName = metadataProperties.get("firstName");
-                String lastName = metadataProperties.get("lastName");
 
-                addNewMetadataToDocStruct(logical, mdType, metadataValue, authorityValue, firstName, lastName);
+                String metadataValue = metadataMap.get("value");
+                String authorityValue = metadataMap.get("authorityValue");
+                String firstName = metadataMap.get("firstName");
+                String lastName = metadataMap.get("lastName");
+
+                try {
+                    addNewMetadataToDocStruct(logical, mdType, metadataValue, authorityValue, firstName, lastName);
+                } catch (MetadataTypeNotAllowedException ex) {
+                    Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Metadata type '" + metadataName + "' is not allowed.");
+                }
+
             }
             // save metadata file
             process.writeMetadataFile(fileformat);
 
         } catch (IOException | SwapException | UGHException e) {
-            Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Cannot read metadata.");
+            Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Cannot read or save metadata.");
         }
 
         // start open automatic steps

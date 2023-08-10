@@ -18,6 +18,7 @@
 
 package org.goobi.api.rest.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -98,7 +99,7 @@ public class RestProcessResource {
 
     @Getter
     @Setter
-    private Map<String, Map<String, String>> metadatenMap = new HashMap<>();
+    private List<Map<String, String>> metadataList = new ArrayList<>();
 
     @Getter
     @Setter
@@ -122,7 +123,7 @@ public class RestProcessResource {
         docketName = process.getDocket() == null ? null : process.getDocket().getName();
 
         initializePropertiesMap(process.getEigenschaften());
-        initializeMetadatenMap(process.getMetadataList());
+        initializeMetadatenList(process.getMetadataList());
     }
 
     private void initializePropertiesMap(List<Processproperty> properties) {
@@ -133,13 +134,14 @@ public class RestProcessResource {
         }
     }
 
-    private void initializeMetadatenMap(List<StringPair> metadatenList) {
-        for (StringPair metadata : metadatenList) {
+    private void initializeMetadatenList(List<StringPair> list) {
+        for (StringPair metadata : list) {
             String name = metadata.getOne();
             String value = metadata.getTwo();
             Map<String, String> metadataMap = new HashMap<>();
+            metadataMap.put("name", name);
             metadataMap.put("value", value);
-            metadatenMap.put(name, metadataMap);
+            metadataList.add(metadataMap);
         }
     }
 }
