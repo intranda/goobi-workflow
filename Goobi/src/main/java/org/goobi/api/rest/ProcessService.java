@@ -1369,19 +1369,11 @@ public class ProcessService implements IRestAuthentication {
             return Response.status(404).entity("Process not found").build();
         }
 
-        Processproperty property = new Processproperty();
-        property.setTitel(resource.getName());
-        property.setWert(resource.getValue());
-        property.setProzess(process);
-        property.setType(PropertyType.STRING);
-        if (resource.getCreationDate() != null) {
-            property.setCreationDate(resource.getCreationDate());
-        } else {
-            property.setCreationDate(new Date());
-        }
-        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property added using REST-API: " + property.getTitel());
+        String propertyName = resource.getName();
+        String propertyValue = resource.getValue();
+        Date creationDate = resource.getCreationDate(); // maybe null but it doesn't matter
+        Processproperty property = saveNewProcessproperty(process, propertyName, propertyValue, creationDate);
 
-        PropertyManager.saveProcessProperty(property);
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
 
@@ -1759,8 +1751,9 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
-        // load metadata file
+
         try {
+            // load metadata file
             Fileformat fileformat = process.readMetadataFile();
             DocStruct logical = fileformat.getDigitalDocument().getLogicalDocStruct();
             if (logical.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
@@ -1772,24 +1765,15 @@ public class ProcessService implements IRestAuthentication {
             if (type == null) {
                 return Response.status(400).entity("Metadata type is unknown in ruleset.").build();
             }
-            if (type.getIsPerson()) {
-                Person p = new Person(type);
-                p.setFirstname(resource.getFirstname());
-                p.setLastname(resource.getLastname());
-                p.setAuthorityValue(resource.getAuthorityValue());
-                logical.addPerson(p);
-            } else if (type.isCorporate()) {
-                Corporate c = new Corporate(type);
-                c.setMainName(resource.getValue());
-                c.setAuthorityValue(resource.getAuthorityValue());
-                logical.addCorporate(c);
-            } else {
-                Metadata md = new Metadata(type);
-                md.setValue(resource.getValue());
-                md.setAuthorityValue(resource.getAuthorityValue());
-                logical.addMetadata(md);
-            }
 
+            // add metadata
+            String metadataValue = resource.getValue();
+            String authorityValue = resource.getAuthorityValue();
+            String firstName = resource.getFirstname();
+            String lastName = resource.getLastname();
+            addNewMetadataToDocStruct(logical, type, metadataValue, authorityValue, firstName, lastName);
+
+            // save metadata file
             process.writeMetadataFile(fileformat);
             return Response.status(200).entity("Metadata added").build();
 

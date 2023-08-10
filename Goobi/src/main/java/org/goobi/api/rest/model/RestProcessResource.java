@@ -123,7 +123,7 @@ public class RestProcessResource {
         docketName = process.getDocket() == null ? null : process.getDocket().getName();
 
         initializePropertiesMap(process.getEigenschaften());
-        initializeMetadatenList(process.getMetadataList());
+        initializeMetadataList(process.getMetadataList());
     }
 
     private void initializePropertiesMap(List<Processproperty> properties) {
@@ -134,7 +134,7 @@ public class RestProcessResource {
         }
     }
 
-    private void initializeMetadatenList(List<StringPair> list) {
+    private void initializeMetadataList(List<StringPair> list) {
         for (StringPair metadata : list) {
             String name = metadata.getOne();
             String value = metadata.getTwo();
