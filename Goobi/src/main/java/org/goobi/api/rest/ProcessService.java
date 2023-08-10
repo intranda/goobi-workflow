@@ -136,6 +136,14 @@ public class ProcessService implements IRestAuthentication {
         return Response.status(200).entity(new RestProcessResource(process)).build();
     }
 
+    /*
+    JSON:
+    curl -H 'Accept: application/json' -X POST http://localhost:8080/goobi/api/process/15
+    
+    XML:
+    curl -H 'Accept: application/xml' -X POST http://localhost:8080/goobi/api/process/15
+    
+     */
     @POST
     @Path("/{processid}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -456,6 +464,22 @@ public class ProcessService implements IRestAuthentication {
         return getProcessData(String.valueOf(process.getId()));
     }
 
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/withdetails/ -d '{"title":"1234", "processTemplateName": "template", "projectName": "Archive_Project",
+    "rulesetName": "Standard", "docketName": "Standard", "documentType": "Monograph", "propertiesMap": {"propertyName1": "propertyValue1", "propertyName2": "propertyValue2"}, 
+    "metadataList": [ {"name": "TitleDocMainShort", "value": "short title", "authorityValue": "authorityValue1"}, {"name": "Author", "value": "Jack Sparrow"}, 
+    {"name": "Creator", "authorityValue": "authorityValue3", "firstName": "Nicolas", "lastName": "Bourbaki"} ]}'
+    
+    XML:
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/withdetails/ -d '<process><title>1234</title><processTemplateName>template</processTemplateName>
+    <projectName>Archive_Project</projectName><rulesetName>Standard</rulesetName><docketName>Standard</docketName><documentType>Monograph</documentType>
+    <propertiesMap><propertyName1>propertyValue1</propertyName1><propertyName2>propertyValue2</propertyName2></propertiesMap>
+    <metadataList><element><authorityValue>authorityValue1</authorityValue><name>TitleDocMainShort</name><value>short title</value></element>
+    <element><name>Author</name><value>Jack Sparrow</value></element>
+    <element><authorityValue>authorityValue3</authorityValue><firstName>Nicolas</firstName><lastName>Bourbaki</lastName><name>Creator</name></element>
+    </metadataList></process>'
+     */
     @PUT
     @Path("/withdetails")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
