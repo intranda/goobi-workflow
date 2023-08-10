@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
+import org.goobi.production.cli.helper.StringPair;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -83,7 +84,6 @@ public class RestProcessResource {
     @Setter
     private String docketName;
 
-
     // only needed to create new processes
     @Getter
     @Setter
@@ -96,7 +96,13 @@ public class RestProcessResource {
     @Setter
     private Map<String, String> propertiesMap = new HashMap<>();
 
+    @Getter
+    @Setter
+    private Map<String, Map<String, String>> metadatenMap = new HashMap<>();
 
+    @Getter
+    @Setter
+    private String metadataLevel = "topstruct";
 
     public RestProcessResource() {
 
@@ -116,6 +122,7 @@ public class RestProcessResource {
         docketName = process.getDocket() == null ? null : process.getDocket().getName();
 
         initializePropertiesMap(process.getEigenschaften());
+        initializeMetadatenMap(process.getMetadataList());
     }
 
     private void initializePropertiesMap(List<Processproperty> properties) {
@@ -123,6 +130,16 @@ public class RestProcessResource {
             String key = property.getTitel();
             String value = property.getWert();
             propertiesMap.put(key, value);
+        }
+    }
+
+    private void initializeMetadatenMap(List<StringPair> metadatenList) {
+        for (StringPair metadata : metadatenList) {
+            String name = metadata.getOne();
+            String value = metadata.getTwo();
+            Map<String, String> metadataMap = new HashMap<>();
+            metadataMap.put("value", value);
+            metadatenMap.put(name, metadataMap);
         }
     }
 }

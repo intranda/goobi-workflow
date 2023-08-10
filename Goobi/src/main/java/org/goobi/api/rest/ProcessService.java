@@ -471,8 +471,6 @@ public class ProcessService implements IRestAuthentication {
     @Tag(name = "process")
     public Response createProcessWithMetadataAndProperties(RestProcessResource resource) {
 
-        //TODO optional metadata
-        //TODO optional properties
         //TODO save RestProcessResource object in import/ folder
 
         // validate required fields - template name and process title
@@ -551,6 +549,42 @@ public class ProcessService implements IRestAuthentication {
             saveNewProcessproperty(process, key, value, null);
         }
 
+        // add metadata if there are any
+        try {
+            // load metadata file
+            Fileformat fileformat = process.readMetadataFile();
+            DocStruct logical = fileformat.getDigitalDocument().getLogicalDocStruct();
+            if (logical.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
+                logical = logical.getAllChildren().get(process.getId());
+            }
+
+            Prefs prefs = process.getRegelsatz().getPreferences();
+            
+            // add metadata items one by one
+            Map<String, Map<String, String>> metadatenMap = resource.getMetadatenMap();
+            for (Map.Entry<String, Map<String, String>> metadata : metadatenMap.entrySet()) {
+                String metadataName = metadata.getKey();
+                MetadataType mdType = prefs.getMetadataTypeByName(metadataName);
+                if (mdType == null) {
+                    Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Metadata type '" + metadataName + "' is unknown in ruleset.");
+                    continue;
+                }
+                
+                Map<String, String> metadataProperties = metadata.getValue();
+                String metadataValue = metadataProperties.get("value");
+                String authorityValue = metadataProperties.get("authorityValue");
+                String firstName = metadataProperties.get("firstName");
+                String lastName = metadataProperties.get("lastName");
+
+                addNewMetadataToDocStruct(logical, mdType, metadataValue, authorityValue, firstName, lastName);
+            }
+            // save metadata file
+            process.writeMetadataFile(fileformat);
+
+        } catch (IOException | SwapException | UGHException e) {
+            Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Cannot read metadata.");
+        }
+
         // start open automatic steps
         startOpenAutomaticTasks(process);
 
@@ -574,6 +608,33 @@ public class ProcessService implements IRestAuthentication {
         PropertyManager.saveProcessProperty(property);
 
         return property;
+    }
+
+    private void addNewMetadataToDocStruct(DocStruct dst, MetadataType mdType, String metadataValue, String authorityValue, String firstName,
+            String lastName) throws MetadataTypeNotAllowedException {
+        if (mdType.getIsPerson()) {
+            Person p = new Person(mdType);
+            // if firstName and lastName are both blank, create them using metadataValue
+            if (StringUtils.isBlank(firstName) && StringUtils.isBlank(lastName) && metadataValue != null) {
+                String[] nameParts = metadataValue.split(" ", 2);
+                firstName = nameParts[0];
+                lastName = nameParts.length > 1 ? nameParts[1] : "";
+            }
+            p.setFirstname(firstName);
+            p.setLastname(lastName);
+            p.setAuthorityValue(authorityValue);
+            dst.addPerson(p);
+        } else if (mdType.isCorporate()) {
+            Corporate c = new Corporate(mdType);
+            c.setMainName(metadataValue);
+            c.setAuthorityValue(authorityValue);
+            dst.addCorporate(c);
+        } else {
+            Metadata md = new Metadata(mdType);
+            md.setValue(metadataValue);
+            md.setAuthorityValue(authorityValue);
+            dst.addMetadata(md);
+        }
     }
 
     private void startOpenAutomaticTasks(Process process) {
