@@ -29,6 +29,7 @@
         <composite:attribute name="render" default="" />
         <composite:attribute name="submitDataAction" method-signature="void importGeonamesData()"/>
         <composite:attribute name="onfocus" default="" />
+        <composite:attribute name="render" default="@form" />
     </composite:interface>
 
     <composite:implementation>
@@ -100,7 +101,6 @@
         </div>
 
         <!-- MODAL -->
-
 
         <h:panelGroup
             data-target="geonames-modal"
@@ -259,13 +259,14 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-2 text-right">
+                                            <div class="col-2">
 
 
 
                                                 <button
                                                     jsf:id="importGeonamesData"
                                                     class="btn btn-success float-end"
+                                                    jsf:onclick="$(this).parent().parent().parent().parent().parent().parent().parent().parent().parent().modal('hide');"
                                                     jsf:action="#{cc.attrs.submitDataAction}">
                                                     <f:setPropertyActionListener
                                                         value="#{geonames}"
@@ -274,7 +275,7 @@
                                                         value=""
                                                         target="#{cc.attrs.field.searchValue}" />
                                                     <i class="fa fa-check" />
-
+<f:ajax execute="@this" render="#{cc.attrs.render}" />
                                                 </button>
                                             </div>
                                         </div>
