@@ -71,7 +71,7 @@ public class GoobiScriptDeleteProcessTest extends AbstractTest {
                 EasyMock.anyString());
 
         process = new Process();
-        process.setId(Integer.valueOf(1));
+        process.setId(Integer.valueOf(5));
 
         s1 = new Step();
         s1.setTitel("step 1");
@@ -83,7 +83,7 @@ public class GoobiScriptDeleteProcessTest extends AbstractTest {
         process.setSchritte(steps);
 
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
-        ProcessManager.saveProcess(EasyMock.anyObject());
+        ProcessManager.deleteProcess(EasyMock.anyObject());
         PowerMock.replayAll();
     }
 
@@ -144,7 +144,7 @@ public class GoobiScriptDeleteProcessTest extends AbstractTest {
         results = fixture.prepare(processes, command, parameters);
         fixture.execute(results.get(0));
         assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
-        assertEquals("Content for process could be deleted successfully using GoobiScript.", results.get(0).getResultMessage());
+        assertEquals("Process could be deleted successfully using GoobiScript.", results.get(0).getResultMessage());
     }
 
 }
