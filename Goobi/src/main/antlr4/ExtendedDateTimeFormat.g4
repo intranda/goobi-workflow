@@ -169,6 +169,7 @@ season_number : '2' '1'
 level_2_expression : partial_uncertain_or_approximate_or_both
                    | partial_unspecified
                    | long_year_scientific
+                   | set_representation
                    ;
 
 long_year_scientific : long_year_simple E integer
@@ -185,6 +186,20 @@ partial_unspecified : unspecified_year '-' month '-' day
                     ;
 
 partial_uncertain_or_approximate_or_both : pua_base;
+
+set_representation : one_of_a_set
+                   | all_of_a_set
+                   ;
+
+one_of_a_set : '[]'
+			| '[' list_value (COMMA list_value)* ']'
+			;
+
+all_of_a_set: '{}'
+			| '{' list_value (COMMA list_value)* '}'
+			;
+
+list_value : level_0_expression | level_1_expression;
 
 pua_base : pua_year
          | pua_year_month
@@ -267,3 +282,5 @@ int1_4 : positive_digit
 integer : positive_digit
         | integer digit
         ;
+        
+COMMA : ',';
