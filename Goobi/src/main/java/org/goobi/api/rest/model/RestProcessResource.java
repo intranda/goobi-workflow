@@ -95,7 +95,7 @@ public class RestProcessResource {
 
     @Getter
     @Setter
-    private Map<String, String> propertiesMap = new HashMap<>();
+    private List<Map<String, String>> propertiesList = new ArrayList<>();
 
     @Getter
     @Setter
@@ -122,15 +122,18 @@ public class RestProcessResource {
         batchNumber = process.getBatch() == null ? null : process.getBatch().getBatchId();
         docketName = process.getDocket() == null ? null : process.getDocket().getName();
 
-        initializePropertiesMap(process.getEigenschaften());
+        initializePropertiesList(process.getEigenschaften());
         initializeMetadataList(process.getMetadataList());
     }
 
-    private void initializePropertiesMap(List<Processproperty> properties) {
+    private void initializePropertiesList(List<Processproperty> properties) {
         for (Processproperty property : properties) {
-            String key = property.getTitel();
+            String name = property.getTitel();
             String value = property.getWert();
-            propertiesMap.put(key, value);
+            Map<String, String> propertyMap = new HashMap<>();
+            propertyMap.put("name", name);
+            propertyMap.put("value", value);
+            propertiesList.add(propertyMap);
         }
     }
 

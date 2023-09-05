@@ -566,10 +566,10 @@ public class ProcessService implements IRestAuthentication {
         }
 
         // add process properties if there are any
-        Map<String, String> propertiesMap = resource.getPropertiesMap();
-        for (Map.Entry<String, String> property : propertiesMap.entrySet()) {
-            String key = property.getKey();
-            String value = property.getValue();
+        List<Map<String, String>> propertiesList = resource.getPropertiesList();
+        for (Map<String, String> property : propertiesList) {
+            String key = property.get("name");
+            String value = property.get("value");
             saveNewProcessproperty(process, key, value, null);
         }
 
