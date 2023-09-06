@@ -70,6 +70,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -2051,7 +2052,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             HttpServletResponse response = this.createHttpServletResponse("export.xls");
             try {
                 ServletOutputStream out = response.getOutputStream();
-                XSSFWorkbook wb = (XSSFWorkbook) this.myCurrentTable.getExcelRenderer().getRendering();
+                Workbook wb = (Workbook) this.myCurrentTable.getExcelRenderer().getRendering();
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
