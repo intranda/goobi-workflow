@@ -57,16 +57,22 @@ public class StatQuestVolumeStatus implements IStatisticalQuestion {
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
      */
     @Override
-    public List<DataTable> getDataTables(String filter, String originalFilter) {
+    public List<DataTable> getDataTables(String filter, String originalFilter, boolean showClosedProcesses, boolean showArchivedProjects) {
         Institution institution = null;
         User user = Helper.getCurrentUser();
         if (user != null && !user.isSuperAdmin()) {
             institution = user.getInstitution();
         }
-        List<Step> stepList = StepManager.getSteps(null,
-                " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesse.ProzesseID in (select ProzesseID from prozesse where " + filter
-                        + ")",
-                institution);
+        String filterString = " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesse.ProzesseID in (select ProzesseID from prozesse where "
+                + filter + ")";
+        if (!showClosedProcesses) {
+            filterString = filterString + " AND  prozesse.sortHelperStatus <> '100000000' ";
+        }
+        if (!showArchivedProjects) {
+            filterString = filterString + " AND projekte.projectIsArchived = false ";
+        }
+
+        List<Step> stepList = StepManager.getSteps(null, filterString, institution);
 
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
 

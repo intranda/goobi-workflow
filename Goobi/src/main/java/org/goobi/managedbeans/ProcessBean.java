@@ -937,8 +937,8 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     private void updateUsergroupPaginator() {
         String filter = " benutzergruppen.BenutzergruppenID not in "
-                + "(select BenutzerGruppenID from schritteberechtigtegruppen where schritteberechtigtegruppen.schritteID = "
-                + mySchritt.getId() + ")";
+                + "(select BenutzerGruppenID from schritteberechtigtegruppen where schritteberechtigtegruppen.schritteID = " + mySchritt.getId()
+                + ")";
 
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
@@ -1402,7 +1402,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         for (Step step : steps) {
             currentOrder = step.getReihenfolge().intValue();
             // Is baseOrder < currentOrder < targetOrder or targetOrder undefined (-1)?
-            if (direction == -1) {//downwards
+            if (direction == -1) { //downwards
 
                 if (currentOrder < baseOrder) {
                     if (targetOrder == -1 || (targetOrder != -1 && currentOrder > targetOrder)) {
@@ -1410,7 +1410,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                     }
                 }
                 // Is targetOrder < currentOrder < baseOrder or targetOrder undefined (-1)?
-            } else if (direction == 1) {//upwards
+            } else if (direction == 1) { //upwards
 
                 if (currentOrder > baseOrder) {
                     if (targetOrder == -1 || (targetOrder != 1 && currentOrder < targetOrder)) {
@@ -1865,45 +1865,45 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
 
     public void statisticsStatusVolumes() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.STATUS_VOLUMES, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.STATUS_VOLUMES,
+                FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter, showClosedProcesses, showArchivedProjects);
         this.statisticsManager.calculate();
     }
 
     public void statisticsUsergroups() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.USERGROUPS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.USERGROUPS,
+                FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter, showClosedProcesses, showArchivedProjects);
         this.statisticsManager.calculate();
     }
 
     public void statisticsRuntimeSteps() {
         this.statisticsManager = new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS,
-                FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+                FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter, showClosedProcesses, showArchivedProjects);
     }
 
     public void statisticsProduction() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.PRODUCTION,
+                FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter, showClosedProcesses, showArchivedProjects);
     }
 
     public void statisticsStorage() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
+                filter, showClosedProcesses, showArchivedProjects);
     }
 
     public void statisticsCorrection() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.CORRECTIONS,
+                FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter, showClosedProcesses, showArchivedProjects);
     }
 
     public void statisticsTroughput() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.THROUGHPUT,
+                FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter, showClosedProcesses, showArchivedProjects);
     }
 
     public void statisticsProject() {
-        this.statisticsManager =
-                new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
+                filter, showClosedProcesses, showArchivedProjects);
         this.statisticsManager.calculate();
     }
 
@@ -2513,8 +2513,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         return possibleItems;
     }
 
-    public List< GoobiScriptTemplate> getGoobiScriptTemplates() {
-
+    public List<GoobiScriptTemplate> getGoobiScriptTemplates() {
 
         List<GoobiScriptTemplate> templates = GoobiScriptTemplateManager.getAllGoobiScriptTemplates();
 
