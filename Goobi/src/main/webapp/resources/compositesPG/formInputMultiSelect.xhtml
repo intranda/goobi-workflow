@@ -14,7 +14,7 @@
         <composite:attribute name="label" />
         <composite:attribute name="field" />
         <composite:attribute name="help" />
-        <composite:attribute name="fieldStyle" default="form-control"/>
+        <composite:attribute name="fieldStyle" default="form-select"/>
         <composite:attribute name="style" />
         <composite:attribute name="var" default="var" />
         <composite:attribute name="itemValue" default="#{var.itemValue}" />
@@ -82,21 +82,14 @@
                 </h:commandLink>
             </x:dataList>
 
+            <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />
+            <!-- Help messages, inline + warning -->
+            <intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
 
-
-                <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />
-                <!-- Help messages, inline + warning -->
-                <intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
-
-        
                 
-                
-                </h:panelGroup>
-            <!-- // CONTENT -->
-                </div>    
-    
-    
-    
+        </h:panelGroup>
+        <!-- // CONTENT -->
+    </div>    
 		
     </composite:implementation>
 
