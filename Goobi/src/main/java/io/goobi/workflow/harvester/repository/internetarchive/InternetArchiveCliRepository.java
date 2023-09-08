@@ -33,29 +33,22 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigHarvester;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
 import io.goobi.workflow.harvester.beans.Record;
 import io.goobi.workflow.harvester.export.ExportOutcome;
 import io.goobi.workflow.harvester.export.IConverter.ExportMode;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class InternetArchiveCliRepository extends InternetArchiveRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(InternetArchiveRepository.class);
-
-    public final static String TYPE = "IACLI";
-    protected static final String folderNameMonograph = "monograph";
-    protected static final String folderNameMultivolume = "multivolume";
-    private static Pattern patternMultivolumeIdentifier = Pattern.compile("_\\d+$");
+    public static final String TYPE = "IACLI";
+    protected static final String FOLDER_NAME_MONOGRAPH = "monograph";
+    protected static final String FOLDER_NAME_MULTIVOLUME = "multivolume";
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    private boolean useProxy = false;
 
     public InternetArchiveCliRepository(String id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest,
             int frequency, int delay, boolean enabled) {
@@ -74,18 +67,17 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
     }
 
     @Override
-    public ExportOutcome exportRecord(Record record, ExportMode mode) {
+    public ExportOutcome exportRecord(Record rec, ExportMode mode) {
         ExportOutcome outcome = new ExportOutcome();
 
         File downloadFolder = checkAndCreateDownloadFolder(ConfigHarvester.getInstance().getExportFolder());
         // call ia cli to download marc file
 
-        String subfolder = getOutputDirName(record.getIdentifier());
+        String subfolder = getOutputDirName(rec.getIdentifier());
 
-        String[] call = { ConfigHarvester.getInstance().getIACliPath(), "download", record.getIdentifier(), record.getIdentifier() +"_marc.xml",
+        String[] call = { ConfigHarvester.getInstance().getIACliPath(), "download", rec.getIdentifier(), rec.getIdentifier() + "_marc.xml",
                 "--no-directories", "--destdir=" + downloadFolder.toString() + "/" + subfolder };
         callProcess(call);
-        //            download("https://archive.org/download/", record.getIdentifier(), useProxy, downloadFolder);
         // copy
 
         return outcome;
@@ -98,7 +90,7 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
      * @return The number of harvested, non-duplicate records.
      */
     @Override
-    public int harvest(String jobId)  {
+    public int harvest(String jobId) {
         Date currentDate = new Date();
         String dateString = dateFormat.format(currentDate);
         int totalHarvested = 0;
@@ -112,9 +104,9 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
         if (!Files.exists(Paths.get(iaConfigFile)) && !Files.exists(Paths.get(iaConfigFile2)) && !Files.exists(Paths.get(iaConfigFile3))) {
             // create credentials file
             String[] call = { iaCli, "configure", "--username=" + System.getenv("IA_USERNAME"), "--password=" + System.getenv("IA_PASSWORD") };
-            logger.debug(callProcess(call).toString());
+            log.debug(callProcess(call).toString());
         } else {
-            logger.debug("Configuration file exists.");
+            log.debug("Configuration file exists.");
         }
 
         String[] call = { iaCli, "search", url, "--itemlist", "-p", "scope:all" };
@@ -132,39 +124,39 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
         }
 
         for (String identifier : outputChannel) {
-            Record record = new Record();
-            record.setIdentifier(identifier);
-            record.setJobId(jobId);
-            record.setRepositoryTimestamp(dateString);
-            record.setRepositoryId(id);
-            recordList.add(record);
+            Record rec = new Record();
+            rec.setIdentifier(identifier);
+            rec.setJobId(jobId);
+            rec.setRepositoryTimestamp(dateString);
+            rec.setRepositoryId(id);
+            recordList.add(rec);
         }
 
         if (!recordList.isEmpty()) {
             int numHarvested = HarvesterRepositoryManager.addRecords(recordList, allowUpdates);
             totalHarvested += numHarvested;
-            logger.debug("{} records have been harvested, {} of which were already in the DB.", recordList.size(),
+            log.debug("{} records have been harvested, {} of which were already in the DB.", recordList.size(),
                     (recordList.size() - numHarvested));
         } else {
-            logger.debug("No new records harvested.");
+            log.debug("No new records harvested.");
         }
         return totalHarvested;
     }
 
     public List<String> callProcess(String[] call) {
         Process process = null;
-        LinkedList<String> outputChannel = null;
+        List<String> outputChannel = null;
         try {
             ProcessBuilder builder = new ProcessBuilder(call);
             process = builder.start();
             InputStream stdOut = process.getInputStream();
             InputStream stdErr = process.getErrorStream();
 
-            FutureTask<LinkedList<String>> stdOutFuture = new FutureTask<>(() -> inputStreamToLinkedList(stdOut));
+            FutureTask<List<String>> stdOutFuture = new FutureTask<>(() -> inputStreamToLinkedList(stdOut));
             Thread stdoutThread = new Thread(stdOutFuture);
             stdoutThread.setDaemon(true);
             stdoutThread.start();
-            FutureTask<LinkedList<String>> stdErrFuture = new FutureTask<>(() -> inputStreamToLinkedList(stdErr));
+            FutureTask<List<String>> stdErrFuture = new FutureTask<>(() -> inputStreamToLinkedList(stdErr));
             Thread stderrThread = new Thread(stdErrFuture);
             stderrThread.setDaemon(true);
             stderrThread.start();
@@ -176,7 +168,8 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
             }
 
         } catch (IOException | ExecutionException | InterruptedException error) {
-            logger.error(error.getMessage(), error);
+            log.error(error.getMessage(), error);
+            Thread.currentThread().interrupt();
         } finally {
             if (process != null) {
                 closeStream(process.getInputStream());
@@ -193,18 +186,12 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
      * @param myInputStream Stream to convert
      * @return A linked list holding the single lines.
      */
-    public static LinkedList<String> inputStreamToLinkedList(InputStream myInputStream) {
+    public static List<String> inputStreamToLinkedList(InputStream myInputStream) {
         LinkedList<String> result = new LinkedList<>();
-        Scanner inputLines = null;
-        try {
-            inputLines = new Scanner(myInputStream);
+        try (Scanner inputLines = new Scanner(myInputStream)) {
             while (inputLines.hasNextLine()) {
                 String myLine = inputLines.nextLine();
                 result.add(myLine);
-            }
-        } finally {
-            if (inputLines != null) {
-                inputLines.close();
             }
         }
         return result;
@@ -222,7 +209,7 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
         try {
             inputStream.close();
         } catch (IOException e) {
-            logger.warn("Could not close stream.", e);
+            log.warn("Could not close stream.", e);
         }
     }
 }

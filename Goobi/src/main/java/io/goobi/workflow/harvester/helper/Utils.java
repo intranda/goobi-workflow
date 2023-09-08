@@ -43,21 +43,18 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigHarvester;
 import de.sub.goobi.helper.ShellScript;
 import io.goobi.workflow.harvester.DataManager;
 import io.goobi.workflow.harvester.export.GoobiImportThread;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class Utils {
 
     public static DateTimeFormatter formatterISO8601DateTimeMS = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
     public static DateTimeFormatter formatterISO8601DateTimeFullWithTimeZone = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-    /** Logger for this class. */
-    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
     /**
      * Runs ProcessImportModule as a command line tool in a separate thread (if not already running).
@@ -70,12 +67,12 @@ public class Utils {
             File file = new File(ConfigHarvester.getInstance().getImportModule());
             if (file.exists()) {
                 new GoobiImportThread(file).start();
-                logger.info("Goobi ProcessImportModule started.");
+                log.info("Goobi ProcessImportModule started.");
             } else {
-                logger.error("Goobi ProcessImportModule not found at '" + file.getAbsolutePath() + "'.");
+                log.error("Goobi ProcessImportModule not found at '" + file.getAbsolutePath() + "'.");
             }
         } else {
-            logger.info("Goobi ProcessImportModule is already running.");
+            log.info("Goobi ProcessImportModule is already running.");
         }
     }
 
@@ -89,8 +86,8 @@ public class Utils {
      * @throws IOException
      */
     public static File downloadFile(final String url, final File outputFolder, final String outputFilename, final boolean useProxy)
-            throws ClientProtocolException, IOException {
-        logger.trace("downloadFile: {}", url);
+            throws IOException {
+        log.trace("downloadFile: {}", url);
         String destFileName = outputFilename;
 
         HttpGet method = null;
@@ -103,7 +100,7 @@ public class Utils {
             HttpResponse response = httpclient.execute(method);
             switch (response.getStatusLine().getStatusCode()) {
                 case 404:
-                    logger.warn("404 returned for URL {}", url);
+                    log.warn("404 returned for URL {}", url);
                     throw new IOException("404 returned for URL: " + url);
                 case 500:
                     throw new IOException(response.getStatusLine().getReasonPhrase());
@@ -116,7 +113,7 @@ public class Utils {
             }
             // Otherwise use a timestamp
             if (destFileName == null) {
-                logger.warn("No file name found for download URL '{}', using timestamp...", url);
+                log.warn("No file name found for download URL '{}', using timestamp...", url);
                 destFileName = String.valueOf(System.currentTimeMillis());
             }
 
@@ -159,7 +156,7 @@ public class Utils {
         Header headerCD = response.getFirstHeader("Content-Disposition");
         if (headerCD != null) {
             for (HeaderElement headerElement : headerCD.getElements()) {
-                if (headerElement.getName().equalsIgnoreCase("attachment")) {
+                if ("attachment".equalsIgnoreCase(headerElement.getName())) {
                     NameValuePair nv = headerElement.getParameterByName("filename");
                     if (nv != null) {
                         return nv.getValue();
@@ -196,7 +193,7 @@ public class Utils {
      * @throws FileNotFoundException
      */
     public static String runScript(String scriptFilePath, String[] args) throws FileNotFoundException {
-        logger.trace("runScript: {}, {}", scriptFilePath, args);
+        log.trace("runScript: {}, {}", scriptFilePath, args);
         Path toolPath = Paths.get(scriptFilePath.trim());
         ShellScript script = new ShellScript(toolPath);
         try {
@@ -206,21 +203,20 @@ public class Utils {
                 for (String error : script.getStdErr()) {
                     sbErr.append(error).append("\n");
                 }
-                logger.error(sbErr.toString());
+                log.error(sbErr.toString());
                 return sbErr.toString();
             } else if (!script.getStdOut().isEmpty()) {
                 StringBuilder sbOut = new StringBuilder();
                 for (String out : script.getStdOut()) {
                     sbOut.append(out).append("\n");
                 }
-                logger.info(sbOut.toString());
+                log.info(sbOut.toString());
             }
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return e.getMessage();
         } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
-            return e.getMessage();
+            Thread.currentThread().interrupt();
         }
 
         return "";

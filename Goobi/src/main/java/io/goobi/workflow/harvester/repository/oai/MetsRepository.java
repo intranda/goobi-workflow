@@ -33,8 +33,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigHarvester;
 import de.sub.goobi.helper.exceptions.HarvestException;
@@ -42,6 +40,7 @@ import io.goobi.workflow.harvester.beans.Record;
 import io.goobi.workflow.harvester.export.ExportOutcome;
 import io.goobi.workflow.harvester.export.ExportOutcome.ExportOutcomeStatus;
 import io.goobi.workflow.harvester.export.IConverter.ExportMode;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This is implementation of {@link OAIDublinCoreRepository} for default OAI Repository.
@@ -49,10 +48,8 @@ import io.goobi.workflow.harvester.export.IConverter.ExportMode;
  * @author Igor Toker
  * 
  */
+@Log4j2
 public class MetsRepository extends OAIDublinCoreRepository {
-
-    /** Logger for this class. */
-    public static final Logger logger = LoggerFactory.getLogger(MetsRepository.class);
 
     public static final String TYPE = "METS";
 
@@ -67,7 +64,7 @@ public class MetsRepository extends OAIDublinCoreRepository {
     }
 
     @Override
-    public ExportOutcome exportRecord(Record record, ExportMode mode) {
+    public ExportOutcome exportRecord(Record rec, ExportMode mode) {
         ExportOutcome outcome = new ExportOutcome();
         String url = getUrl().trim();
         String query;
@@ -75,7 +72,7 @@ public class MetsRepository extends OAIDublinCoreRepository {
         if (url.contains("?")) {
             url = url.substring(0, url.indexOf("?"));
         }
-        query = url + "?verb=GetRecord&metadataPrefix=mets&identifier=" + record.getIdentifier();
+        query = url + "?verb=GetRecord&metadataPrefix=mets&identifier=" + rec.getIdentifier();
 
         File oaiFile = null;
         File metsFile = null;
@@ -96,12 +93,9 @@ public class MetsRepository extends OAIDublinCoreRepository {
             XPathFactory xFactory = XPathFactory.instance();
 
             XPathExpression<Element> xp = xFactory.compile("//mets:mets", Filters.element(), null, namespaces);
-
-            //            XPath xp = XPath.newInstance("//mets:mets");
-            //            Element eleMetsRoot = (Element) xp.selectSingleNode(docOai);
             Element eleMetsRoot = xp.evaluateFirst(docOai);
             if (eleMetsRoot == null) {
-                logger.error("No valid METS document found.");
+                log.error("No valid METS document found.");
                 outcome.status = ExportOutcomeStatus.ERROR;
                 outcome.message = "No valid METS document found";
                 return outcome;
@@ -115,47 +109,8 @@ public class MetsRepository extends OAIDublinCoreRepository {
 
             docMets.setRootElement(eleNewMetsRoot);
 
-            // eleMetsRoot.addNamespaceDeclaration(Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3"));
-
             // Generate ATSTSL
-            String title = null;
-            String author = null;
-            xp = xFactory.compile("//mods:mods/mods:titleInfo/mods:title", Filters.element(), null, namespaces);
 
-            Element eleTitle = xp.evaluateFirst(eleNewMetsRoot);
-            if (eleTitle != null) {
-                title = eleTitle.getText();
-            }
-            xp = xFactory.compile(
-                    "//mods:mods/mods:name[@type='personal'][mods:role/mods:roleTerm='aut'[@authority='marcrelator'][@type='code']]/mods:namePart[@type='family']",
-                    Filters.element(), null, namespaces);
-            Element eleAuthorLastName = xp.evaluateFirst(eleNewMetsRoot);
-            xp = xFactory.compile(
-                    "//mods:mods/mods:name[@type='personal'][mods:role/mods:roleTerm='aut'[@authority='marcrelator'][@type='code']]/mods:namePart[@type='given']",
-                    Filters.element(), null, namespaces);
-
-            Element eleAuthorFirstName = xp.evaluateFirst(eleMetsRoot);
-            if (eleAuthorLastName != null) {
-                author = eleAuthorLastName.getText();
-                if (eleAuthorFirstName != null) {
-                    author += ", " + eleAuthorFirstName.getText();
-                }
-            }
-
-            //            String identifier = null;
-            //            xp = xFactory.compile("//mods:mods/mods:identifier", Filters.element(), null, namespaces);
-            //            Element eleIdentifier = xp.evaluateFirst(eleMetsRoot);
-            //            if (eleIdentifier != null) {
-            //                identifier = eleIdentifier.getText().trim().replaceAll("[ ]", "_");
-            //            }
-
-            // Construct file name
-            //            String fileName = null;
-            //            if (identifier != null) {
-            //                fileName = identifier + ".xml";
-            //            } else {
-            //                fileName = oaiFile.getName();
-            //            }
             String fileName = oaiFile.getName();
             if (fileName.contains("/")) {
                 fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
@@ -163,7 +118,7 @@ public class MetsRepository extends OAIDublinCoreRepository {
             if (!fileName.endsWith(".xml")) {
                 fileName = fileName + ".xml";
             }
-            logger.trace("Export mode: {}", mode);
+            log.trace("Export mode: {}", mode);
             switch (mode) {
                 case VIEWER:
                     metsFile = new File(ConfigHarvester.getInstance().getViewerHotfolder() + File.separator + fileName);
@@ -174,7 +129,7 @@ public class MetsRepository extends OAIDublinCoreRepository {
                     if (goobiHotfolders != null && !goobiHotfolders.isEmpty()) {
                         metsFile = new File(ConfigHarvester.getInstance().getGoobiHotfolders() + File.separator + fileName);
                     } else {
-                        logger.error("No Goobi hotfolder configured, cannot continue");
+                        log.error("No Goobi hotfolder configured, cannot continue");
                         outcome.status = ExportOutcomeStatus.ERROR;
                         outcome.message = "No Goobi hotfolder configured, cannot continue";
                         return outcome;
@@ -185,14 +140,14 @@ public class MetsRepository extends OAIDublinCoreRepository {
                         File exportFolder = checkAndCreateDownloadFolder(ConfigHarvester.getInstance().getExportFolder());
                         metsFile = new File(exportFolder, fileName);
                     } else {
-                        logger.error("No export folder configured, cannot continue");
+                        log.error("No export folder configured, cannot continue");
                         outcome.status = ExportOutcomeStatus.ERROR;
                         outcome.message = "No export folder configured, cannot continue";
                         return outcome;
                     }
                     break;
                 default:
-                    logger.error("Unknown export mode: {}", mode);
+                    log.error("Unknown export mode: {}", mode);
                     outcome.status = ExportOutcomeStatus.ERROR;
                     outcome.message = "Unknown export mode: " + mode;
                     return outcome;
@@ -201,22 +156,14 @@ public class MetsRepository extends OAIDublinCoreRepository {
             try (FileWriter writer = new FileWriter(metsFile);) {
                 new XMLOutputter().output(docMets, writer);
             }
-        } catch (HarvestException e) {
+        } catch (HarvestException | JDOMException | IOException e) {
             outcome.status = ExportOutcomeStatus.ERROR;
             outcome.message = e.getMessage();
-            logger.error(e.getMessage(), e);
-        } catch (JDOMException e) {
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } finally {
             if (oaiFile != null) {
                 if (!oaiFile.delete()) {
-                    logger.warn("Could not delete temporary file '" + oaiFile.getAbsolutePath() + "'!");
+                    log.warn("Could not delete temporary file '" + oaiFile.getAbsolutePath() + "'!");
                 }
             }
         }

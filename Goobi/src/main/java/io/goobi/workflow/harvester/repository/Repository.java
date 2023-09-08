@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -32,6 +34,8 @@ import io.goobi.workflow.harvester.export.ExportOutcome;
 import io.goobi.workflow.harvester.export.IConverter.ExportMode;
 import io.goobi.workflow.harvester.helper.SParser;
 import io.goobi.workflow.harvester.helper.Utils;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -41,21 +45,44 @@ import lombok.extern.log4j.Log4j2;
  */
 
 @Log4j2
+@Getter
+@Setter
 public abstract class Repository {
 
+    // generated
     protected String id;
+
+    // repository name, should be unique
     protected String name;
+
+    // repository url
     protected String url;
+
+    // additional query parameter like set=xyz or metadataPrefix=oai_dc
+    protected Map<String, String> parameter = new HashMap<>();
+
+    // timestamp of the last harvest
     protected Timestamp lastHarvest;
+
+    // harvest frequency in hours
     protected int frequency;
+
+    // delay in days
     protected int delay = 0;
+
+    // active/disabled
     protected boolean enabled;
-    protected String metadataPrefix;
+
+    // store files in this folder
     protected String exportFolderPath;
+
+    // run this script after file was stored
     protected String scriptPath;
+
+    // update previous harvested files
     protected boolean allowUpdates = true;
 
-    public Repository() {
+    protected Repository() {
     }
 
     /**
@@ -69,7 +96,8 @@ public abstract class Repository {
      * @param delay
      * @param enabled
      */
-    public Repository(String id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest, int frequency, int delay,
+    protected Repository(String id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest, int frequency,
+            int delay,
             boolean enabled) {
         this.id = id;
         this.name = name;
@@ -135,7 +163,7 @@ public abstract class Repository {
      * 
      * @param mode {@link ExportMode} VIEWER or GOOBI
      */
-    public abstract ExportOutcome exportRecord(Record record, ExportMode mode);
+    public abstract ExportOutcome exportRecord(Record rec, ExportMode mode);
 
     /**
      * Parse Answer to {@link ArrayList} of {@link Record} and add this Records to DB.
@@ -154,7 +182,7 @@ public abstract class Repository {
         SParser parser = new SParser();
         parser.setRepositoryType(getType());
         List<Record> recordList = parser.parseXML(f, jobId, getId(), requiredSetSpec, null);
-        if (recordList.size() > 0) {
+        if (!recordList.isEmpty()) {
             harvested = HarvesterRepositoryManager.addRecords(recordList, allowUpdates);
             log.info("{} records have been harvested, {} of which were already in the DB.", recordList.size(), (recordList.size() - harvested));
         } else {
@@ -206,110 +234,6 @@ public abstract class Repository {
         }
 
         return downloadFolder;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * 
-     * @param id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    /**
-     * @return the exportFolderPath
-     */
-    public String getExportFolderPath() {
-        return exportFolderPath;
-    }
-
-    /**
-     * @param exportFolderPath the exportFolderPath to set
-     */
-    public void setExportFolderPath(String exportFolderPath) {
-        this.exportFolderPath = exportFolderPath;
-    }
-
-    /**
-     * @return the scriptPath
-     */
-    public String getScriptPath() {
-        return scriptPath;
-    }
-
-    /**
-     * @param scriptPath the scriptPath to set
-     */
-    public void setScriptPath(String scriptPath) {
-        this.scriptPath = scriptPath;
-    }
-
-    public void setLastHarvest(Timestamp lastHarvest) {
-        this.lastHarvest = lastHarvest;
-    }
-
-    public Timestamp getLastHarvest() {
-        return lastHarvest;
-    }
-
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
-    }
-
-    public int getFrequency() {
-        return frequency;
-    }
-
-    /**
-     * @return the delay
-     */
-    public int getDelay() {
-        return delay;
-    }
-
-    /**
-     * @param delay the delay to set
-     */
-    public void setDelay(int delay) {
-        this.delay = delay;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
     }
 
 }

@@ -31,11 +31,10 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.xpath.XPath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigHarvester;
 import io.goobi.workflow.harvester.export.ExportOutcome.ExportOutcomeStatus;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -52,11 +51,9 @@ import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 
+@Log4j2
 @SuppressWarnings("deprecation")
 public class ConverterFindbuchEAD extends AbstractConverter {
-
-    /** Loggers for this class. */
-    private static final Logger logger = LoggerFactory.getLogger(ConverterFindbuchEAD.class);
 
     private static final String COLLECTION_LEVEL_0 = "Archive";
 
@@ -84,13 +81,13 @@ public class ConverterFindbuchEAD extends AbstractConverter {
         collectionLevelList.add(MapperFindbuchEAD.getUGHTerm(collectionLevel1.toLowerCase()));
 
         if (doc == null) {
-            logger.error("XML doc is null.");
+            log.error("XML doc is null.");
             outcome.status = ExportOutcomeStatus.ERROR;
             outcome.message = "XML doc is null.";
             return outcome;
         }
         if (!doc.hasRootElement()) {
-            logger.error("XML doc has no root element.");
+            log.error("XML doc has no root element.");
             outcome.status = ExportOutcomeStatus.ERROR;
             outcome.message = "XML doc has no root element.";
             return outcome;
@@ -102,7 +99,7 @@ public class ConverterFindbuchEAD extends AbstractConverter {
 
         Element eleEadHeader = doc.getRootElement().getChild("eadheader", null);
         if (eleEadHeader == null) {
-            logger.error("EAD document has no <eadheader> element.");
+            log.error("EAD document has no <eadheader> element.");
             outcome.status = ExportOutcomeStatus.ERROR;
             outcome.message = "EAD document has no <eadheader> element.";
             return outcome;
@@ -118,7 +115,7 @@ public class ConverterFindbuchEAD extends AbstractConverter {
 
         Element eleArchDesc = doc.getRootElement().getChild("archdesc", null);
         if (eleArchDesc == null) {
-            logger.error("EAD document has no <archdesc> element.");
+            log.error("EAD document has no <archdesc> element.");
             outcome.status = ExportOutcomeStatus.ERROR;
             outcome.message = "EAD document has no <archdesc> element.";
             return outcome;
@@ -127,7 +124,7 @@ public class ConverterFindbuchEAD extends AbstractConverter {
         try {
             // MetsMods fileFormat = new MetsMods(myPrefs);
             MetsMods fileFormat;
-            if (mode.equals(ExportMode.VIEWER)) {
+            if (ExportMode.VIEWER.equals(mode)) {
                 fileFormat = new MetsModsImportExport(myPrefs);
                 ((MetsModsImportExport) fileFormat).setRightsOwner(rightsOwner);
                 ((MetsModsImportExport) fileFormat).setRightsOwnerLogo(rightsOwnerLogo);
@@ -145,7 +142,7 @@ public class ConverterFindbuchEAD extends AbstractConverter {
 
             MetadataType mdTypeCollection = myPrefs.getMetadataTypeByName("singleDigCollection");
             if (mdTypeCollection == null) {
-                logger.error("Metadata type 'singleDigCollection' not defined, cannot proceed.");
+                log.error("Metadata type 'singleDigCollection' not defined, cannot proceed.");
                 outcome.status = ExportOutcomeStatus.ERROR;
                 outcome.message = "Metadata type 'singleDigCollection' not defined, cannot proceed.";
                 return outcome;
@@ -156,7 +153,7 @@ public class ConverterFindbuchEAD extends AbstractConverter {
             // C01
             Element eleC01 = (Element) XPath.selectSingleNode(eleArchDesc, "//c01");
             if (eleC01 == null) {
-                logger.error("No c01 element found.");
+                log.error("No c01 element found.");
                 outcome.status = ExportOutcomeStatus.ERROR;
                 outcome.message = "No c01 element found.";
                 return outcome;
@@ -178,7 +175,7 @@ public class ConverterFindbuchEAD extends AbstractConverter {
 
             Element eleC02 = eleC01.getChild("c02");
             if (eleC02 == null) {
-                logger.error("No c02 element found.");
+                log.error("No c02 element found.");
                 outcome.status = ExportOutcomeStatus.ERROR;
                 outcome.message = "No c02 element found.";
                 return outcome;
@@ -201,7 +198,7 @@ public class ConverterFindbuchEAD extends AbstractConverter {
 
                 Element eleC03 = eleC02.getChild("c03");
                 if (eleC03 == null) {
-                    logger.error("No c03 element found.");
+                    log.error("No c03 element found.");
                     outcome.status = ExportOutcomeStatus.ERROR;
                     outcome.message = "No c03 element found.";
                     return outcome;
@@ -227,15 +224,15 @@ public class ConverterFindbuchEAD extends AbstractConverter {
             {
                 String volumeType = MapperFindbuchEAD.getUGHTerm(eleVolume.getAttributeValue("encodinganalog"));
                 if (volumeType == null) {
-                    logger.error("No docstrct type mapped for '" + eleVolume.getAttributeValue("encodinganalog") + "'.");
+                    log.error("No docstrct type mapped for '" + eleVolume.getAttributeValue("encodinganalog") + "'.");
                     outcome.status = ExportOutcomeStatus.ERROR;
                     outcome.message = "No docstrct type mapped for '" + eleVolume.getAttributeValue("encodinganalog") + "'.";
                     return outcome;
                 }
-                logger.debug("Volume docstrct type is '" + volumeType + "'.");
+                log.debug("Volume docstrct type is '" + volumeType + "'.");
                 dsTypeVolume = myPrefs.getDocStrctTypeByName(volumeType);
                 if (dsTypeVolume == null) {
-                    logger.error("Unknown root docstrct type, cannot proceed.");
+                    log.error("Unknown root docstrct type, cannot proceed.");
                     outcome.status = ExportOutcomeStatus.ERROR;
                     outcome.message = "Unknown root docstrct type, cannot proceed.";
                     return outcome;
@@ -321,7 +318,7 @@ public class ConverterFindbuchEAD extends AbstractConverter {
                     } else if (StringUtils.isNotEmpty(collectionName1)) {
                         collectionName = collectionName1;
                     } else {
-                        collectionName = defaultCollectionName;
+                        collectionName = DEFAULT_COLLECTION;
                     }
                     collectionName = ParsingUtils.convertUmlaut(collectionName);
                     metaCollection.setValue(collectionName);
@@ -360,28 +357,8 @@ public class ConverterFindbuchEAD extends AbstractConverter {
             }
 
             return outcome;
-        } catch (TypeNotAllowedForParentException e) {
-            logger.error(e.getMessage(), e);
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            return outcome;
-        } catch (TypeNotAllowedAsChildException e) {
-            logger.error(e.getMessage(), e);
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            return outcome;
-        } catch (PreferencesException e) {
-            logger.error(e.getMessage(), e);
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            return outcome;
-        } catch (MetadataTypeNotAllowedException e) {
-            logger.error(e.getMessage(), e);
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            return outcome;
-        } catch (JDOMException e) {
-            logger.error(e.getMessage(), e);
+        } catch (TypeNotAllowedForParentException | TypeNotAllowedAsChildException | PreferencesException | MetadataTypeNotAllowedException | JDOMException e) {
+            log.error(e.getMessage(), e);
             outcome.status = ExportOutcomeStatus.ERROR;
             outcome.message = e.getMessage();
             return outcome;
@@ -430,28 +407,26 @@ public class ConverterFindbuchEAD extends AbstractConverter {
                     counter++;
                 }
                 imageFolder.delete();
-                logger.info(counter + " image files moved to '" + newImageFolder.getAbsolutePath() + "'");
+                log.info(counter + " image files moved to '" + newImageFolder.getAbsolutePath() + "'");
             } else {
-                logger.warn("'" + imageFolder.getAbsolutePath() + "' does not exist or is not a directory - no images copied.");
+                log.warn("'" + imageFolder.getAbsolutePath() + "' does not exist or is not a directory - no images copied.");
             }
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         // Write METS file
         try {
             if (ff.write(fileName + ".xml")) {
-                logger.info("Successfully written '" + fileName + ".xml'.");
+                log.info("Successfully written '" + fileName + ".xml'.");
                 // MetsMods myRdf2 = new MetsMods(myPrefs);
                 // myRdf2.read("MetsMods.xml");
-                // loggerInfo.info("fileformat: " + myRdf2);
-                // loggerInfo.info("digDoc: " + myRdf2.getDigitalDocument());
-                // loggerInfo.info("logDocStrct: " + myRdf2.getDigitalDocument().getLogicalDocStruct());
+                // logInfo.info("fileformat: " + myRdf2);
+                // logInfo.info("digDoc: " + myRdf2.getDigitalDocument());
+                // logInfo.info("logDocStrct: " + myRdf2.getDigitalDocument().getLogicalDocStruct());
             }
-        } catch (WriteException e) {
-            logger.error(e.getMessage(), e);
-        } catch (PreferencesException e) {
-            logger.error(e.getMessage(), e);
+        } catch (WriteException | PreferencesException e) {
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -465,7 +440,7 @@ public class ConverterFindbuchEAD extends AbstractConverter {
      * @throws TypeNotAllowedForParentException
      */
     private boolean addMetadata(DigitalDocument dd, DocStruct dsLogical, Element eleDid) throws MetadataTypeNotAllowedException,
-    TypeNotAllowedAsChildException, TypeNotAllowedForParentException {
+            TypeNotAllowedAsChildException, TypeNotAllowedForParentException {
         boolean isPerson = false;
         String metaName = eleDid.getAttributeValue("encodinganalog");
         String value = null;
@@ -485,17 +460,17 @@ public class ConverterFindbuchEAD extends AbstractConverter {
         if (metaNameUGH != null && metaNameUGH.startsWith("_PERSON_")) {
             metaNameUGH = metaNameUGH.replace("_PERSON_", "");
             isPerson = true;
-            if (metaNameUGH.equals("Creator") && dsLogical.getType().getName().equals("Picture")) {
+            if ("Creator".equals(metaNameUGH) && "Picture".equals(dsLogical.getType().getName())) {
                 metaNameUGH = "Photographer";
             }
         }
 
-        if (metaNameUGH != null && metaNameUGH.equals("Dating") && dsLogical.getType().getName().equals("Record")) {
+        if (metaNameUGH != null && "Dating".equals(metaNameUGH) && "Record".equals(dsLogical.getType().getName())) {
             metaNameUGH = "Period";
         }
         MetadataType mdType = myPrefs.getMetadataTypeByName(metaNameUGH);
         if (mdType != null) {
-            if (mdType.getName().equals("SealDescription")) {
+            if ("SealDescription".equals(mdType.getName())) {
                 // For seal metadata, add a new child docstruct
                 DocStructType dsTypeSeal = myPrefs.getDocStrctTypeByName("Seal");
                 DocStruct dsSeal = null;
@@ -524,10 +499,10 @@ public class ConverterFindbuchEAD extends AbstractConverter {
                     person.setRole(mdType.getName());
                 } else {
                     Metadata metadata = new Metadata(mdType);
-                    if (metaNameUGH.equals("DocLanguage")) {
+                    if ("DocLanguage".equals(metaNameUGH)) {
                         dsLogical.addMetadata(metadata);
                         metadata.setValue(MapperFindbuchEAD.getUGHLanguageCode(value));
-                    } else if (metaNameUGH.equals("shelfmarksource")) {
+                    } else if ("shelfmarksource".equals(metaNameUGH)) {
                         // dd.getPhysicalDocStruct().addMetadata(metadata);
                         dsLogical.addMetadata(metadata);
                         metadata.setValue(value);
@@ -538,12 +513,12 @@ public class ConverterFindbuchEAD extends AbstractConverter {
                 }
                 return true;
             } else {
-                logger.warn("Metadata '" + metaNameUGH + "' is not allowed in docstrct '" + dsLogical.getType().getName() + "'.");
+                log.warn("Metadata '" + metaNameUGH + "' is not allowed in docstrct '" + dsLogical.getType().getName() + "'.");
                 return false;
             }
         }
 
-        logger.warn("Metadata type '" + metaName + "' is not mapped.");
+        log.warn("Metadata type '" + metaName + "' is not mapped.");
         return false;
     }
 }

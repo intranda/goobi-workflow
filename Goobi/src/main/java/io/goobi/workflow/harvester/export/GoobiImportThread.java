@@ -21,16 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.goobi.workflow.harvester.DataManager;
+import lombok.extern.log4j.Log4j2;
 
-
+@Log4j2
 public class GoobiImportThread extends Thread {
-
-    /** Logger for this class. */
-    private static final Logger logger = LoggerFactory.getLogger(GoobiImportThread.class);
 
     private File file;
 
@@ -41,7 +36,7 @@ public class GoobiImportThread extends Thread {
     @Override
     public void run() {
         String cmd = "java -jar \"" + file.getAbsolutePath() + "\"";
-        logger.debug(cmd);
+        log.debug(cmd);
         Scanner scanner = null;
         try {
             DataManager.getInstance().setImportRunning(true);
@@ -51,7 +46,7 @@ public class GoobiImportThread extends Thread {
                 String line = scanner.nextLine();
                 // System.out.println(line);
                 if (line.contains("Exception")) {
-                    logger.error("Goobi ProcessImportModule has thrown an exception. Make sure it is properly configured.");
+                    log.error("Goobi ProcessImportModule has thrown an exception. Make sure it is properly configured.");
                     p.destroy();
                     break;
                 }
@@ -63,9 +58,9 @@ public class GoobiImportThread extends Thread {
             // }
             // scanner.close();
             // p.destroy();
-            logger.debug("Return code: " + p.exitValue());
+            log.debug("Return code: " + p.exitValue());
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } finally {
             if (scanner != null) {
                 scanner.close();

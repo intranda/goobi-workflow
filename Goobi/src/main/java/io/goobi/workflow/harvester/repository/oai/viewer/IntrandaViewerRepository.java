@@ -34,8 +34,6 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.joda.time.MutableDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigHarvester;
 import de.sub.goobi.helper.exceptions.HarvestException;
@@ -47,11 +45,10 @@ import io.goobi.workflow.harvester.export.IConverter.ExportMode;
 import io.goobi.workflow.harvester.helper.SParser;
 import io.goobi.workflow.harvester.helper.Utils;
 import io.goobi.workflow.harvester.repository.oai.OAIRepository;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public abstract class IntrandaViewerRepository extends OAIRepository {
-
-    /** Logger for this class. */
-    private static final Logger logger = LoggerFactory.getLogger(IntrandaViewerRepository.class);
 
     public IntrandaViewerRepository() {
     }
@@ -91,9 +88,9 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
         String url = getUrl().trim();
         String query;
         if (url.contains("?")) {
-            query = url + "&verb=ListRecords&metadataPrefix=" + metadataPrefix;
+            query = url + "&verb=ListRecords&metadataPrefix=" + parameter.get("metadataPrefix");
         } else {
-            query = url + "?verb=ListRecords&metadataPrefix=" + metadataPrefix;
+            query = url + "?verb=ListRecords&metadataPrefix=" + parameter.get("metadataPrefix");
         }
 
         StringBuilder sbQuery = new StringBuilder(query);
@@ -121,7 +118,7 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
      * @throws DBException
      * @throws HarvestException
      ***************************************************************************************************************/
-    public int queryOAItoDB(String url, String jobId, String subquery) throws HarvestException  {
+    public int queryOAItoDB(String url, String jobId, String subquery) throws HarvestException {
         String tokenId = "";
         String newUrl = url;
         int harvested = 0;
@@ -135,7 +132,7 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
                     tokenId = null;
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
                 // try it one more time, maybe we have some download problems
                 try {
                     Thread.sleep(1000);
@@ -143,7 +140,7 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
                 }
 
                 if (!f.delete()) {
-                    logger.warn("Could not delete temporary file '{}'!", f.getAbsolutePath());
+                    log.warn("Could not delete temporary file '{}'!", f.getAbsolutePath());
                 }
                 f = queryOAItoFile(newUrl);
                 tokenId = getTokenOfFile(f);
@@ -154,7 +151,7 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
                 harvested += parseAndRecordXmlFile(f, jobId, null, subquery);
             } finally {
                 if (!f.delete()) {
-                    logger.warn("Could not delete temporary file '{}'!", f.getAbsolutePath());
+                    log.warn("Could not delete temporary file '{}'!", f.getAbsolutePath());
                 }
             }
 
@@ -167,7 +164,7 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
                 }
                 newUrl = newUrl + "?verb=ListRecords&resumptionToken=" + tokenId;
 
-                logger.debug("request: {}", newUrl);
+                log.debug("request: {}", newUrl);
             }
         }
 
@@ -190,14 +187,14 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
             tempFolder.mkdirs();
         }
 
-        logger.trace("metadataPrefix: {}", metadataPrefix);
+        log.trace("metadataPrefix: {}", parameter.get("metadataPrefix"));
         String dateRange = record.getSubquery() != null ? record.getSubquery() : "";
 
         String query;
         if (repositoryUrl.contains("?")) {
             repositoryUrl = repositoryUrl.substring(0, repositoryUrl.indexOf("?"));
         }
-        query = repositoryUrl + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + metadataPrefix + dateRange;
+        query = repositoryUrl + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + parameter.get("metadataPrefix") + dateRange;
 
         Path temp = null;
         Path tempDataFile = null;
@@ -217,27 +214,27 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
             }
             Element eleGetRecord = doc.getRootElement().getChild("GetRecord", null);
             if (eleGetRecord == null) {
-                logger.warn("No 'GetRecord' element found.");
+                log.warn("No 'GetRecord' element found.");
                 outcome.status = ExportOutcomeStatus.NOT_FOUND;
                 return outcome;
             }
             List<Element> eleListRecord = eleGetRecord.getChildren("record", null);
             if (eleListRecord.isEmpty()) {
-                logger.warn("No 'record' elements found.");
+                log.warn("No 'record' elements found.");
                 outcome.status = ExportOutcomeStatus.NOT_FOUND;
                 return outcome;
             }
             Element eleRecord = eleListRecord.get(0);
             Element eleMetadata = eleRecord.getChild("metadata", null);
             if (eleMetadata == null) {
-                logger.warn("No 'metadata' element found.");
+                log.warn("No 'metadata' element found.");
                 outcome.status = ExportOutcomeStatus.NOT_FOUND;
                 return outcome;
             }
 
             String url = eleMetadata.getChildText("url", null).trim();
             if (StringUtils.isEmpty(url)) {
-                logger.warn("Download URL not found.");
+                log.warn("Download URL not found.");
                 outcome.status = ExportOutcomeStatus.NOT_FOUND;
                 return outcome;
             }
@@ -245,14 +242,14 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
             //            if (UGHMode.GOOBIPROCESS.equals(mode)) {
             String goobiHome = ConfigHarvester.getInstance().getGoobiHome();
             if (goobiHome == null) {
-                logger.error("goobiHome is not configuried, cannot export.");
+                log.error("goobiHome is not configuried, cannot export.");
                 outcome.status = ExportOutcomeStatus.ERROR;
                 outcome.message = "goobiHome is not configured";
                 return outcome;
             }
             String processId = eleMetadata.getChildText("processId", null);
             if (StringUtils.isBlank(processId)) {
-                logger.warn("Target Goobi process ID not found in the dataset, writing into '_notfound'.");
+                log.warn("Target Goobi process ID not found in the dataset, writing into '_notfound'.");
                 processId = "_notfound";
             }
 
@@ -269,7 +266,7 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
             writeFilesToGoobiProcessFolder(tempDataFile, goobiHome + "/metadata/", processId);
             //            }
         } catch (HarvestException | JDOMException | IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             outcome.status = ExportOutcomeStatus.ERROR;
             outcome.message = e.getMessage();
         } finally {
@@ -277,14 +274,14 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
                 try {
                     Files.delete(temp);
                 } catch (IOException e) {
-                    logger.warn("Could not delete temp file '{}'!", temp.toAbsolutePath().toString());
+                    log.warn("Could not delete temp file '{}'!", temp.toAbsolutePath().toString());
                 }
             }
             if (tempDataFile != null && Files.isRegularFile(tempDataFile)) {
                 try {
                     Files.delete(tempDataFile);
                 } catch (IOException e) {
-                    logger.warn("Could not delete temp file '{}'!", tempDataFile.toAbsolutePath().toString());
+                    log.warn("Could not delete temp file '{}'!", tempDataFile.toAbsolutePath().toString());
                 }
             }
         }
@@ -306,7 +303,7 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
      * @throws DBException
      ***************************************************************************************************************/
     protected int parseAndRecordXmlFile(File f, String jobId, String requiredSetSpec, String subquery)
-            throws  HarvestException {
+            throws HarvestException {
         // parse files
         int harvested = 0;
         SParser parser = new SParser();
@@ -314,9 +311,9 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
         List<Record> recordList = parser.parseXML(f, jobId, getId(), requiredSetSpec, subquery);
         if (recordList.size() > 0) {
             harvested = HarvesterRepositoryManager.addRecords(recordList, allowUpdates);
-            logger.info("{} records have been harvested, {} of which were already in the DB.", recordList.size(), (recordList.size() - harvested));
+            log.info("{} records have been harvested, {} of which were already in the DB.", recordList.size(), (recordList.size() - harvested));
         } else {
-            logger.debug("No new records harvested.");
+            log.debug("No new records harvested.");
         }
 
         return harvested;

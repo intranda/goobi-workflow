@@ -34,7 +34,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -44,8 +43,6 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.joda.time.MutableDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigHarvester;
 import de.sub.goobi.helper.exceptions.HarvestException;
@@ -56,14 +53,14 @@ import io.goobi.workflow.harvester.export.ExportOutcome.ExportOutcomeStatus;
 import io.goobi.workflow.harvester.export.IConverter.ExportMode;
 import io.goobi.workflow.harvester.helper.Utils;
 import io.goobi.workflow.harvester.repository.Repository;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class InternetArchiveRepository extends Repository {
 
-    private static final Logger logger = LoggerFactory.getLogger(InternetArchiveRepository.class);
-
-    public final static String TYPE = "INTERNETARCHIVE";
-    protected static final String folderNameMonograph = "monograph";
-    protected static final String folderNameMultivolume = "multivolume";
+    public static final String TYPE = "INTERNETARCHIVE";
+    protected static final String FOLDER_NAME_MONOGRAPH = "monograph";
+    protected static final String FOLDER_NAME_MULTIVOLUME = "multivolume";
     private static Pattern patternMultivolumeIdentifier = Pattern.compile("_\\d+$");
 
     private boolean useProxy = false;
@@ -91,9 +88,8 @@ public class InternetArchiveRepository extends Repository {
      * @throws HarvestException
      */
     @Override
-    public int harvest(String jobId) throws HarvestException  {
+    public int harvest(String jobId) throws HarvestException {
         /* Get last harvestering timestamp */
-        Timestamp lastHarvest = HarvesterRepositoryManager.getLastHarvest(id);
         StringBuilder query = new StringBuilder(url);
 
         // The Internet Archive has a 14-day delay
@@ -101,17 +97,8 @@ public class InternetArchiveRepository extends Repository {
             MutableDateTime now = new MutableDateTime();
             now.addDays(-delay);
             String untilDateTime = Utils.formatterISO8601DateTimeFullWithTimeZone.print(now);
-            //            if (lastHarvest != null) {
-            //                String timeString = lastHarvest.toString();
-            //                int i = timeString.indexOf(" ");
-            //                timeString = timeString.substring(0, i);
-            //                MutableDateTime lastHarvestDate = new MutableDateTime(lastHarvest.getTime());
-            //                lastHarvestDate.addDays(-delay);
-            //                String earliestMinusFourteenDays = Utils.dateFormatyyyyMMddHHmmssHyphen.format(lastHarvestDate.toDate());
-            //                query.append("%20AND%20publicdate:[").append(earliestMinusFourteenDays).append("%20TO%20").append(untilDateTime).append("]");
-            //            } else {
+
             query.append("%20AND%20publicdate:[null%20TO%20").append(untilDateTime).append("]");
-            //            }
         }
         query.append("&fl[]=identifier,publicdate,title&output=xml");
 
@@ -119,21 +106,21 @@ public class InternetArchiveRepository extends Repository {
     }
 
     @Override
-    public ExportOutcome exportRecord(Record record, ExportMode mode) {
+    public ExportOutcome exportRecord(Record rec, ExportMode mode) {
         ExportOutcome outcome = new ExportOutcome();
         try {
             File downloadFolder = checkAndCreateDownloadFolder(ConfigHarvester.getInstance().getExportFolder());
-            download("https://archive.org/download/", record.getIdentifier(), useProxy, downloadFolder);
+            download("https://archive.org/download/", rec.getIdentifier(), useProxy, downloadFolder);
         } catch (ClientProtocolException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             outcome.status = ExportOutcomeStatus.ERROR;
             outcome.message = e.getMessage();
         } catch (IOException e) {
             if (e.getMessage().startsWith("404")) {
-                logger.error(e.getMessage());
+                log.error(e.getMessage());
                 outcome.status = ExportOutcomeStatus.NOT_FOUND;
             } else {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
                 outcome.status = ExportOutcomeStatus.ERROR;
             }
             outcome.message = e.getMessage();
@@ -151,45 +138,42 @@ public class InternetArchiveRepository extends Repository {
      * @throws DBException
      * @return The number of harvested, non-duplicate records.
      */
-    private int querySolrToDB(String query, String jobId) throws HarvestException  {
+    private int querySolrToDB(String query, String jobId) throws HarvestException {
         int totalHarvested = 0;
         int numFound = 0;
 
         // Check numFound
-        {
-            Document doc = querySolrToXmlResult(new StringBuilder(query).append("&rows=0").toString());
-            if (doc != null && doc.getRootElement() != null && doc.getRootElement().getChild("result", null) != null) {
-                String numFoundString = doc.getRootElement().getChild("result", null).getAttributeValue("numFound");
-                try {
-                    numFound = Integer.valueOf(numFoundString);
-                } catch (NumberFormatException e) {
-                    logger.error("Could not retrieve the number of records, aborting...");
-                    return 0;
-                }
+
+        Document doc = querySolrToXmlResult(new StringBuilder(query).append("&rows=0").toString());
+        if (doc != null && doc.getRootElement() != null && doc.getRootElement().getChild("result", null) != null) {
+            String numFoundString = doc.getRootElement().getChild("result", null).getAttributeValue("numFound");
+            try {
+                numFound = Integer.parseInt(numFoundString);
+            } catch (NumberFormatException e) {
+                log.error("Could not retrieve the number of records, aborting...");
+                return 0;
             }
         }
 
         // Retrieve actual docs
-        // int batchSize = 1000;
-        // int batches = numFound / batchSize + 1;
+
         int batchSize = numFound;
         int batches = 1;
-        logger.info("{} records match the query, retrieving them in {} batch(es)...", numFound, batches);
+        log.info("{} records match the query, retrieving them in {} batch(es)...", numFound, batches);
         for (int i = 0; i < batches; ++i) {
             int start = i * batchSize;
             int end = start + batchSize - 1;
             if (end > numFound) {
                 end = numFound;
             }
-            logger.debug("Retrieving records {} - {}", start, end);
+            log.debug("Retrieving records {} - {}", start, end);
             StringBuilder sbQuery = new StringBuilder(query);
             sbQuery.append("&start=").append(start).append("&rows=").append(batchSize);
-            Document doc = querySolrToXmlResult(sbQuery.toString());
+            doc = querySolrToXmlResult(sbQuery.toString());
             if (doc != null && doc.getRootElement() != null && doc.getRootElement().getChild("result", null) != null) {
-                // logger.trace(new XMLOutputter().outputString(doc));
                 List<Record> recordList = new ArrayList<>();
                 List<Element> eleDocs = doc.getRootElement().getChild("result", null).getChildren("doc", null);
-                logger.debug("Docs retrieved: {}", eleDocs.size());
+                log.debug("Docs retrieved: {}", eleDocs.size());
                 for (Element eleDoc : eleDocs) {
                     String identifier = null;
                     String publicdate = null;
@@ -210,30 +194,32 @@ public class InternetArchiveRepository extends Repository {
                             case "creator":
                                 creator = eleChild.getTextTrim();
                                 break;
+                            default:
+                                break;
                         }
                     }
                     if (StringUtils.isNotEmpty(identifier) && StringUtils.isNotEmpty(publicdate)) {
-                        Record record = new Record();
-                        record.setIdentifier(identifier);
-                        record.setRepositoryTimestamp(publicdate);
+                        Record rec = new Record();
+                        rec.setIdentifier(identifier);
+                        rec.setRepositoryTimestamp(publicdate);
                         if (title != null) {
-                            record.setTitle(title);
+                            rec.setTitle(title);
                         }
                         if (creator != null) {
-                            record.setCreator(creator);
+                            rec.setCreator(creator);
                         }
-                        record.setJobId(jobId);
-                        record.setRepositoryId(id);
-                        recordList.add(record);
+                        rec.setJobId(jobId);
+                        rec.setRepositoryId(id);
+                        recordList.add(rec);
                     }
                 }
                 if (!recordList.isEmpty()) {
                     int numHarvested = HarvesterRepositoryManager.addRecords(recordList, allowUpdates);
                     totalHarvested += numHarvested;
-                    logger.debug("{} records have been harvested, {} of which were already in the DB.", recordList.size(),
+                    log.debug("{} records have been harvested, {} of which were already in the DB.", recordList.size(),
                             (recordList.size() - numHarvested));
                 } else {
-                    logger.debug("No new records harvested.");
+                    log.debug("No new records harvested.");
                 }
             }
         }
@@ -248,10 +234,8 @@ public class InternetArchiveRepository extends Repository {
      * @throws HarvestException
      */
     private static Document querySolrToXmlResult(String url) throws HarvestException {
-        logger.debug("querySolrToXmlResult: {}", url);
+        log.debug("querySolrToXmlResult: {}", url);
         if (StringUtils.isNotEmpty(url)) {
-            RequestConfig defaultRequestConfig =
-                    RequestConfig.custom().setSocketTimeout(30000).setConnectTimeout(30000).setConnectionRequestTimeout(30000).build();
             try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
                 HttpGet httpGet = new HttpGet(url);
                 try (StringWriter sw = new StringWriter(); CloseableHttpResponse response = httpClient.execute(httpGet)) {
@@ -270,7 +254,7 @@ public class InternetArchiveRepository extends Repository {
             } catch (IOException e) {
                 throw new HarvestException(e);
             } catch (JDOMException e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
                 throw new HarvestException(e.getMessage());
             }
         }
@@ -287,7 +271,7 @@ public class InternetArchiveRepository extends Repository {
      * @throws IOException
      */
     protected static void download(String urlRoot, String identifier, boolean useProxy, File downloadFolder)
-            throws ClientProtocolException, IOException {
+            throws IOException {
         String tempFolderPath = ConfigHarvester.getInstance().getImageTempFolder();
         File tempFolder = new File(tempFolderPath);
         if (!tempFolder.exists()) {
@@ -361,22 +345,21 @@ public class InternetArchiveRepository extends Repository {
         String scandataPart = "";
         for (String line : lines) {
             String lineTrim = line.trim();
-            // logger.trace("line: {}", lineTrim);
             if (lineTrim.contains("marc.xml")) {
                 marcPart = lineTrim.substring(lineTrim.indexOf("\">") + 2, lineTrim.indexOf("</a>"));
-                logger.trace("marc.xml: {}", marcPart);
+                log.trace("marc.xml: {}", marcPart);
             } else if (lineTrim.contains("meta.xml")) {
                 metaPart = lineTrim.substring(lineTrim.indexOf("\">") + 2, lineTrim.indexOf("</a>"));
-                logger.trace("meta.xml: {}", metaPart);
+                log.trace("meta.xml: {}", metaPart);
             } else if (lineTrim.contains("_jp2.zip") && !lineTrim.contains("orig") && !lineTrim.contains("raw")) {
                 jp2Part = lineTrim.substring(lineTrim.indexOf("\">") + 2, lineTrim.indexOf("</a>"));
-                logger.trace("jp2.zip: {}", jp2Part);
+                log.trace("jp2.zip: {}", jp2Part);
             } else if (lineTrim.contains("_abbyy.gz")) {
                 abbyyPart = lineTrim.substring(lineTrim.indexOf("\">") + 2, lineTrim.indexOf("</a>"));
-                logger.trace("abbyy.gz: {}", abbyyPart);
+                log.trace("abbyy.gz: {}", abbyyPart);
             } else if (lineTrim.contains("scandata")) {
                 scandataPart = lineTrim.substring(lineTrim.indexOf("\">") + 2, lineTrim.indexOf("</a>"));
-                logger.trace("scandata: {}", scandataPart);
+                log.trace("scandata: {}", scandataPart);
             } else if (lineTrim.contains("_hocr.html")) {
                 hocrPart = lineTrim.substring(lineTrim.indexOf("\">") + 2, lineTrim.indexOf("</a>"));
             }
@@ -416,10 +399,10 @@ public class InternetArchiveRepository extends Repository {
             multivolume = m.find();
         }
         if (multivolume) {
-            logger.debug("{} is multivolume.", identifier);
-            return folderNameMultivolume;
+            log.debug("{} is multivolume.", identifier);
+            return FOLDER_NAME_MULTIVOLUME;
         }
 
-        return folderNameMonograph;
+        return FOLDER_NAME_MONOGRAPH;
     }
 }

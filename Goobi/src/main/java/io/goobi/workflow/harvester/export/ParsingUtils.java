@@ -41,15 +41,14 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Utility class.
  **/
+@Log4j2
 public final class ParsingUtils {
-
-    private static final Logger logger = LoggerFactory.getLogger(ParsingUtils.class);
 
     /** Private constructor. */
     private ParsingUtils() {
@@ -73,7 +72,7 @@ public final class ParsingUtils {
             CharBuffer cbuf = decoder.decode(bbuf);
             return cbuf.toString();
         } catch (CharacterCodingException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return string;
@@ -128,16 +127,16 @@ public final class ParsingUtils {
                 }
                 httpClient = HttpClients.createDefault();
                 method = new HttpGet(urlNew);
-                logger.debug(urlNew);
+                log.debug(urlNew);
                 response = httpClient.execute(method);
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     resp = new byte[(int) response.getEntity().getContentLength()];
                     response.getEntity().getContent().read(resp);
                 } else {
-                    logger.error("Connection failed : " + response.getStatusLine().getReasonPhrase() + "\n URL: " + url);
+                    log.error("Connection failed : " + response.getStatusLine().getReasonPhrase() + "\n URL: " + url);
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             } finally {
                 if (response != null) {
                     try {
@@ -170,11 +169,11 @@ public final class ParsingUtils {
         List<String> ret = new ArrayList<>();
 
         if (StringUtils.isNotEmpty(url)) {
-            String regex = "\"[\\w|%|(|)]+[.]";
+            StringBuilder regex = new StringBuilder("\"[\\w|%|(|)]+[.]");
             for (int i = 0; i < fileExtension.length(); ++i) {
-                regex += "[" + fileExtension.charAt(i) + "]";
+                regex.append("[").append(fileExtension.charAt(i)).append("]");
             }
-            regex += "\"";
+            regex.append("\"");
 
             CloseableHttpClient httpClient = null;
             HttpGet method = null;
@@ -186,7 +185,7 @@ public final class ParsingUtils {
                 response = httpClient.execute(method);
                 sw = new StringWriter();
                 IOUtils.copy(response.getEntity().getContent(), sw);
-                Pattern pattern = Pattern.compile(regex);
+                Pattern pattern = Pattern.compile(regex.toString());
                 Matcher m = pattern.matcher(sw.toString());
                 while (m.find()) {
                     String fileName = m.group().replaceAll("[\"]", "");
@@ -195,7 +194,7 @@ public final class ParsingUtils {
                     }
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             } finally {
                 if (sw != null) {
                     try {
@@ -232,34 +231,24 @@ public final class ParsingUtils {
      */
     public static String convertUmlaut(String string) {
         if (StringUtils.isNotBlank(string)) {
-            string = string.replaceAll("[ä]", "ae");
-            string = string.replaceAll("[ö]", "oe");
-            string = string.replaceAll("[ü]", "ue");
-            logger.debug("upper: " + string.toUpperCase());
-            if (string.replaceAll("[ß]", "").toUpperCase().equals(string.replaceAll("[ß]", ""))) {
-                string = string.replaceAll("[Ä]", "AE");
-                string = string.replaceAll("[Ö]", "OE");
-                string = string.replaceAll("[Ü]", "UE");
-                string = string.replaceAll("[ß]", "SS");
+            string = string.replace("ä", "ae");
+            string = string.replace("ö", "oe");
+            string = string.replace("ü", "ue");
+            log.debug("upper: " + string.toUpperCase());
+            if (string.replace("ß", "").toUpperCase().equals(string.replace("ß", ""))) {
+                string = string.replace("Ä", "AE");
+                string = string.replace("Ö", "OE");
+                string = string.replace("Ü", "UE");
+                string = string.replace("ß", "SS");
             } else {
-                string = string.replaceAll("[Ä]", "Ae");
-                string = string.replaceAll("[Ö]", "Oe");
-                string = string.replaceAll("[Ü]", "Ue");
-                string = string.replaceAll("[ß]", "ss");
+                string = string.replace("Ä", "Ae");
+                string = string.replace("Ö", "Oe");
+                string = string.replace("Ü", "Ue");
+                string = string.replace("ß", "ss");
             }
         }
 
         return string;
     }
 
-    public static void main(String[] args) {
-        // String url = "http://www.dhm.uni-greifswald.de/textband/band_42/";
-        // List<String> fileNames = listImageFolderContents(url, "djvu");
-        // for (String s : fileNames) {
-        // System.out.println(s);
-        // }
-
-        String url = "http://greif.uni-greifswald.de/geogreif/geogreif-content/upload/P27Saßnitz-Hafen.jpg";
-        fetchImage(url);
-    }
 }

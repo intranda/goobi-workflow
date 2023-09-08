@@ -20,7 +20,6 @@ package io.goobi.workflow.harvester.export;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -28,10 +27,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.jdom2.Document;
 import org.jdom2.Namespace;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigHarvester;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.MetadataType;
@@ -40,10 +38,8 @@ import ugh.dl.Reference;
 import ugh.dl.VirtualFileGroup;
 import ugh.exceptions.PreferencesException;
 
+@Log4j2
 public abstract class AbstractConverter implements IConverter {
-
-    /** Loggers for this class. */
-    private static final Logger logger = LoggerFactory.getLogger(AbstractConverter.class);
 
     protected static DecimalFormat imageNameFormat = new DecimalFormat("00000000");
 
@@ -54,7 +50,7 @@ public abstract class AbstractConverter implements IConverter {
     protected static Namespace nsOaiDc = Namespace.getNamespace("oai_dc", "http://www.openarchives.org/OAI/2.0/oai_dc/");
     protected static Namespace nsDc = Namespace.getNamespace("dc", "http://purl.org/dc/elements/1.1/");
 
-    protected static final String defaultCollectionName = "Varia";
+    protected static final String DEFAULT_COLLECTION = "Varia";
 
     protected static String oaiPrefix;
     protected static String ughRulesetFile;
@@ -95,8 +91,8 @@ public abstract class AbstractConverter implements IConverter {
         List<String> hotfolderList = ConfigHarvester.getInstance().getGoobiHotfolders();
         if (hotfolderList != null) {
             String defaultHotfolder = null;
-            for (Iterator it = hotfolderList.iterator(); it.hasNext();) {
-                HierarchicalConfiguration sub = (HierarchicalConfiguration) it.next();
+            for (Object element : hotfolderList) {
+                HierarchicalConfiguration sub = (HierarchicalConfiguration) element;
                 if (repositoryType.equals(sub.getString("[@name]"))) {
                     hotfolderGoobi = sub.getString(".");
                 } else if ("_DEFAULT".equals(sub.getString("[@name]"))) {
@@ -108,10 +104,10 @@ public abstract class AbstractConverter implements IConverter {
             }
         }
         imageTempFolder = ConfigHarvester.getInstance().getImageTempFolder();
-        imageUrlLocal =ConfigHarvester.getInstance().getImageUrlLocal();
+        imageUrlLocal = ConfigHarvester.getInstance().getImageUrlLocal();
         imageUrlRemote = ConfigHarvester.getInstance().getImageUrlRemote();
         imageRoot = ConfigHarvester.getInstance().getImageRoot();
-        rightsOwner =ConfigHarvester.getInstance().getRightsOwner();
+        rightsOwner = ConfigHarvester.getInstance().getRightsOwner();
         rightsOwnerLogo = ConfigHarvester.getInstance().getRightsOwnerLogo();
         rightsOwnerSiteUrl = ConfigHarvester.getInstance().getRightsOwnerSiteUrl();
     }
@@ -125,10 +121,8 @@ public abstract class AbstractConverter implements IConverter {
                 prefFile = new File(Loader.getResource("resources" + File.separator + filename, Loader.getThreadContextClassLoader()).toURI());
             }
             mypreferences.loadPrefs(prefFile.getAbsolutePath());
-        } catch (PreferencesException e) {
-            logger.error(e.getMessage(), e);
-        } catch (URISyntaxException e) {
-            logger.error(e.getMessage(), e);
+        } catch (PreferencesException | URISyntaxException e) {
+            log.error(e.getMessage(), e);
         }
         return mypreferences;
     }
@@ -141,12 +135,10 @@ public abstract class AbstractConverter implements IConverter {
     @SuppressWarnings("rawtypes")
     protected void attachChildPages(DocStruct myDocStruct) {
         if (myDocStruct.getAllChildren() != null) {
-            // myDocStruct.getAllToReferences().clear();
-            for (Iterator iter = myDocStruct.getAllChildren().iterator(); iter.hasNext();) {
-                DocStruct child = (DocStruct) iter.next();
+            for (Object element : myDocStruct.getAllChildren()) {
+                DocStruct child = (DocStruct) element;
                 attachChildPages(child);
                 for (Reference ref : child.getAllToReferences()) {
-                    // if (!myDocStruct.getAllToReferences().contains(ref)) {
                     // Since Reference.equals() isn't properly implemented, the contains check must by done manually
                     boolean alreadyReferenced = false;
                     for (Reference myRef : myDocStruct.getAllToReferences()) {
@@ -159,7 +151,6 @@ public abstract class AbstractConverter implements IConverter {
                         myDocStruct.getAllToReferences().add(ref);
                     }
                 }
-                // myDocStruct.getAllReferences("to").addAll(child.getAllReferences("to"));
             }
         }
     }

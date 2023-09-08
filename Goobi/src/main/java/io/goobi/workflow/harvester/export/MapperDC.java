@@ -24,20 +24,17 @@ import java.util.Map;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigHarvester;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Mapping class for translating DC terminology into UGH.
  * 
  * @author andrey
  */
+@Log4j2
 public class MapperDC {
-
-    /** Loggers for this class. */
-    private static final Logger loggerInfo = LoggerFactory.getLogger(MapperDC.class);
 
     private static Map<String, String> terms = new HashMap<>();
     private static Map<String, String> languageCodes = new HashMap<>();
@@ -109,9 +106,9 @@ public class MapperDC {
                     terms.put(key, null);
                 }
             }
-            loggerInfo.info("Loaded " + terms.size() + " terms.");
+            log.info("Loaded " + terms.size() + " terms.");
         } catch (ConfigurationException e) {
-            loggerInfo.error(e.getMessage());
+            log.error(e.getMessage());
             return false;
         }
 

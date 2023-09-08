@@ -33,12 +33,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.helper.exceptions.HarvestException;
 import io.goobi.workflow.harvester.helper.SParser;
 import io.goobi.workflow.harvester.repository.Repository;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Abstract class for work with repository. All the logic about harvestering from repository is here. If you have some kind of "strange" Repository,
@@ -51,10 +50,8 @@ import io.goobi.workflow.harvester.repository.Repository;
  * @author Igor Toker
  * 
  */
+@Log4j2
 public abstract class OAIRepository extends Repository {
-
-    /** Logger for this class. */
-    private static final Logger logger = LoggerFactory.getLogger(OAIRepository.class);
 
     /**
      * @param id {@link String}
@@ -100,7 +97,7 @@ public abstract class OAIRepository extends Repository {
                     tokenId = null;
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
                 // try it one more time, maybe we have some download problems
                 try {
                     Thread.sleep(1000);
@@ -108,7 +105,7 @@ public abstract class OAIRepository extends Repository {
                 }
 
                 if (!f.delete()) {
-                    logger.warn("Could not delete temporary file '{}'!", f.getAbsolutePath());
+                    log.warn("Could not delete temporary file '{}'!", f.getAbsolutePath());
                 }
                 f = queryOAItoFile(newUrl);
                 tokenId = getTokenOfFile(f);
@@ -119,7 +116,7 @@ public abstract class OAIRepository extends Repository {
                 harvested += parseAndRecordXmlFile(f, jobId, null);
             } finally {
                 if (!f.delete()) {
-                    logger.warn("Could not delete temporary file '{}'!", f.getAbsolutePath());
+                    log.warn("Could not delete temporary file '{}'!", f.getAbsolutePath());
                 }
             }
 
@@ -131,7 +128,7 @@ public abstract class OAIRepository extends Repository {
                 }
                 newUrl = newUrl + "?verb=ListRecords&resumptionToken=" + tokenId;
 
-                logger.debug("request: {}", newUrl);
+                log.debug("request: {}", newUrl);
             }
         }
 
@@ -161,14 +158,14 @@ public abstract class OAIRepository extends Repository {
      * @throws HarvestException
      */
     public File queryOAItoFile(String url) throws HarvestException {
-        logger.trace("Query OAI: {}", url);
+        log.trace("Query OAI: {}", url);
 
         File xmlFile = null;
         if (StringUtils.isNotEmpty(url)) {
             HttpGet httpGet = new HttpGet(url);
             try (CloseableHttpClient httpClient = HttpClients.createDefault(); CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 xmlFile = File.createTempFile("oai", ".xml");
-                logger.trace("Created temp file '{}'.", xmlFile.getAbsolutePath());
+                log.trace("Created temp file '{}'.", xmlFile.getAbsolutePath());
 
                 int statusCode = response.getStatusLine().getStatusCode();
                 // handle http errors

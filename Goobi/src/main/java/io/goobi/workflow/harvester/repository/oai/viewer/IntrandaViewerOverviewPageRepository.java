@@ -19,19 +19,13 @@ package io.goobi.workflow.harvester.repository.oai.viewer;
 
 import java.sql.Timestamp;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class IntrandaViewerOverviewPageRepository extends IntrandaViewerRepository {
 
-    /** Logger for this class. */
-    private static final Logger logger = LoggerFactory.getLogger(IntrandaViewerOverviewPageRepository.class);
-
     public static final String TYPE = "IV_OVERVIEWPAGE";
-    private static String METADATA_PREFIX = "iv_overviewpage";
+    private static final String METADATA_PREFIX = "iv_overviewpage";
 
     public IntrandaViewerOverviewPageRepository() {
-        metadataPrefix = METADATA_PREFIX;
+        parameter.put("metadataPrefix", METADATA_PREFIX);
     }
 
     /**
@@ -47,7 +41,7 @@ public class IntrandaViewerOverviewPageRepository extends IntrandaViewerReposito
     public IntrandaViewerOverviewPageRepository(String id, String name, String url, String scriptPath, Timestamp lastHarvest, int frequency,
             int delay, boolean enabled) {
         super(id, name, url, scriptPath, lastHarvest, frequency, delay, enabled);
-        metadataPrefix = METADATA_PREFIX;
+        parameter.put("metadataPrefix", METADATA_PREFIX);
     }
 
     @Override

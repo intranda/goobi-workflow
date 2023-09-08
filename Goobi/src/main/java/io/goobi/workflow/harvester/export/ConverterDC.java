@@ -19,7 +19,6 @@ package io.goobi.workflow.harvester.export;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,11 +31,10 @@ import java.util.Map;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigHarvester;
 import io.goobi.workflow.harvester.export.ExportOutcome.ExportOutcomeStatus;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -55,18 +53,8 @@ import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 
+@Log4j2
 public class ConverterDC extends AbstractConverter {
-
-    /** Loggers for this class. */
-    private static final Logger logger = LoggerFactory.getLogger(ConverterDC.class);
-
-    /**
-     * Map that holds all physical DocStructs with their physical number IDs as keys (for sorted referencing from the top DocStruct).
-     */
-    private Map<Integer, DocStruct> docStructPhysPageNumberMap;
-
-    /** Map that holds ContentFiles with DC identifiers as keys. */
-    private Map<Integer, ContentFile> contentFileMap;
 
     private String rootDocstrctType;
 
@@ -79,41 +67,39 @@ public class ConverterDC extends AbstractConverter {
     public ExportOutcome createNewFileformat() {
         ExportOutcome outcome = new ExportOutcome();
         if (doc == null) {
-            logger.error("XML doc is null.");
+            log.error("XML doc is null.");
             outcome.status = ExportOutcomeStatus.ERROR;
             outcome.message = "XML doc is null.";
             return outcome;
         }
 
         Fileformat myRdf = null;
-        docStructPhysPageNumberMap = new HashMap<>();
-        contentFileMap = new HashMap<>();
+        Map<Integer, DocStruct> docStructPhysPageNumberMap = new HashMap<>();
+        Map<Integer, ContentFile> contentFileMap = new HashMap<>();
 
         if (doc.getRootElement().getChild("error", null) != null) {
-            logger.error("Error: {}", doc.getRootElement().getChild("error", null).getAttributeValue("code"));
+            log.error("Error: {}", doc.getRootElement().getChild("error", null).getAttributeValue("code"));
             outcome.status = ExportOutcomeStatus.NOT_FOUND;
             return outcome;
         }
         Element eleListRecords = doc.getRootElement().getChild("GetRecord", null);
         if (eleListRecords == null) {
-            logger.warn("No 'GetRecord' element found .");
+            log.warn("No 'GetRecord' element found .");
             outcome.status = ExportOutcomeStatus.NOT_FOUND;
             return outcome;
         }
         List<Element> recordList = eleListRecords.getChildren("record", null);
-        if (recordList.size() == 0) {
-            logger.warn("No 'record' elements found.");
+        if (recordList.isEmpty()) {
+            log.warn("No 'record' elements found.");
             outcome.status = ExportOutcomeStatus.NOT_FOUND;
             return outcome;
         }
 
         Element eleRecord = recordList.get(0);
-        // for (Element eleRecord : recordList) {
         // Information for target file name construction
         try {
-            // MetsMods fileFormat = new MetsMods(myPrefs);
             MetsMods fileFormat;
-            if (mode.equals(ExportMode.VIEWER)) {
+            if (ExportMode.VIEWER.equals(mode)) {
                 fileFormat = new MetsModsImportExport(myPrefs);
                 ((MetsModsImportExport) fileFormat).setRightsOwner(rightsOwner);
                 ((MetsModsImportExport) fileFormat).setRightsOwnerLogo(rightsOwnerLogo);
@@ -144,7 +130,7 @@ public class ConverterDC extends AbstractConverter {
 
             DocStructType dsTypeAnchor = myPrefs.getDocStrctTypeByName(rootDocstrctType);
             if (dsTypeAnchor == null) {
-                logger.error("Unknown root docstrct type, cannot proceed.");
+                log.error("Unknown root docstrct type, cannot proceed.");
                 outcome.status = ExportOutcomeStatus.ERROR;
                 outcome.message = "Unknown root docstrct type, cannot proceed.";
                 return outcome;
@@ -152,7 +138,7 @@ public class ConverterDC extends AbstractConverter {
 
             MetadataType mdTypeCollection = myPrefs.getMetadataTypeByName("singleDigCollection");
             if (mdTypeCollection == null) {
-                logger.error("Metadata type 'singleDigCollection' not defined, cannot proceed.");
+                log.error("Metadata type 'singleDigCollection' not defined, cannot proceed.");
                 outcome.status = ExportOutcomeStatus.ERROR;
                 outcome.message = "Metadata type 'singleDigCollection' not defined, cannot proceed.";
                 return outcome;
@@ -160,19 +146,16 @@ public class ConverterDC extends AbstractConverter {
 
             DocStruct dsAnchor = dd.createDocStruct(dsTypeAnchor);
             DocStruct dsPhysical = dd.getPhysicalDocStruct();
-            // dsAnchor.addReferenceTo(dsPhysical, "logical_physical");
             dsAnchor.setIdentifier("root");
             dd.setLogicalDocStruct(dsAnchor);
-            // docStructAgoraIdMap.put(agoraDoc.getAnchorElement().getAttributeValue("ID"), dsAnchor);
 
             // Set identifier
             Metadata metaId = new Metadata(myPrefs.getMetadataTypeByName("CatalogIDDigital"));
             metaId.setValue(piWithoutPrefix);
             dsAnchor.addMetadata(metaId);
 
-            for (Object eleMetaObj : eleRecord.getChild("metadata", null).getChild("dc", nsOaiDc).getChildren()) {
+            for (Element eleMeta : eleRecord.getChild("metadata", null).getChild("dc", nsOaiDc).getChildren()) {
                 boolean isPerson = false;
-                Element eleMeta = (Element) eleMetaObj;
                 String metaName = MapperDC.getUGHTerm(eleMeta.getName().trim().replace("dc:", ""));
                 if (metaName == null) {
                     continue;
@@ -183,7 +166,7 @@ public class ConverterDC extends AbstractConverter {
                     isPerson = true;
                 }
 
-                if (metaName.equals("CatalogIDDigital")) {
+                if ("CatalogIDDigital".equals(metaName)) {
                     if (dsAnchor.hasMetadataType(myPrefs.getMetadataTypeByName(metaName))) {
                         metaName = "CatalogIDSource";
                     }
@@ -200,9 +183,9 @@ public class ConverterDC extends AbstractConverter {
                     } else {
                         Metadata metadata = new Metadata(mdType);
                         dsAnchor.addMetadata(metadata);
-                        if (metaName.equals("DocLanguage")) {
+                        if ("DocLanguage".equals(metaName)) {
                             metadata.setValue(MapperDC.getUGHLanguageCode(eleMeta.getValue().trim()));
-                        } else if (metaName.equals("shelfmarksource") && eleMeta.getValue().contains("_")) {
+                        } else if ("shelfmarksource".equals(metaName) && eleMeta.getValue().contains("_")) {
                             String value = eleMeta.getValue().trim();
                             value = value.substring(0, value.indexOf("_"));
                             metadata.setValue(value);
@@ -211,7 +194,7 @@ public class ConverterDC extends AbstractConverter {
                         }
                     }
                 } else {
-                    logger.warn("Metadata type '" + metaName + "' is not allowed in the DocStrct type '" + dsAnchor.getType().getName() + "'.");
+                    log.warn("Metadata type '" + metaName + "' is not allowed in the DocStrct type '" + dsAnchor.getType().getName() + "'.");
                 }
             }
 
@@ -225,7 +208,7 @@ public class ConverterDC extends AbstractConverter {
                 if (collectionName1 != null && collectionName1.length() > 0) {
                     metaCollection.setValue(collectionName1);
                 } else {
-                    metaCollection.setValue(defaultCollectionName);
+                    metaCollection.setValue(DEFAULT_COLLECTION);
                 }
                 if (collectionName2 != null && collectionName2.length() > 0) {
                     Metadata metaCollection2 = new Metadata(mdTypeCollection);
@@ -240,7 +223,7 @@ public class ConverterDC extends AbstractConverter {
             List<String> fileNames = new ArrayList<>();
             String suffix = null;
             String imageFormat = "tiff";
-            if (eleRelations != null && eleRelations.size() > 0) {
+            if (eleRelations != null && !eleRelations.isEmpty()) {
                 FileSet fs = new FileSet();
                 dd.setFileSet(fs);
                 for (Element element : eleRelations) {
@@ -258,46 +241,19 @@ public class ConverterDC extends AbstractConverter {
                     suffix = baseFileNameSplit[baseFileNameSplit.length - 1];
 
                     List<String> imageNames = new ArrayList<>();
-                    if (suffix.equals("djvu")) {
+                    if ("djvu".equals(suffix)) {
                         imageNames = ParsingUtils.listImageFolderContents(imageFolderUrl, suffix);
                     } else {
                         imageNames.add(relationUrlSplit[relationUrlSplit.length - 1]);
                     }
 
-                    // http://www.dhm.uni-greifswald.de/textband/band_42/directory_Band_42.djvu
-
-                    // if (mode.equals(UGHMode.VIEWER)) {
-                    // // Add URLs for the viewer
-                    // for (String imageName : imageNames) {
-                    // String imageUrl = imageFolderUrl + imageName;
-                    // ContentFile cf = new ContentFile();
-                    // cf.setMimetype("image/" + imageFormat);
-                    // logger.debug(element.getText().trim());
-                    // cf.setLocation(imageUrl);
-                    // fs.addFile(cf);
-                    // contentFileMap.put(counter, cf);
-                    // File contentFile = new File(cf.getLocation());
-                    // if (contentFile != null) {
-                    // fileNames.add(contentFile.getName());
-                    // logger.debug("contentFile: " + contentFile.getName());
-                    // }
-                    //
-                    // if (suffix == null) {
-                    // // Read the file suffix so that it can be used in file groups with the same capitalization
-                    // int nameLength = cf.getLocation().length();
-                    // suffix = cf.getLocation().substring(nameLength - 3, nameLength);
-                    // logger.debug("File suffix: " + suffix);
-                    // }
-                    // }
-                    // } else {
                     // Download images for Goobi
-                    logger.info("Downloading {} images...",  imageNames.size());
+                    log.info("Downloading {} images...", imageNames.size());
                     int counter = 0;
                     for (String imageName : imageNames) {
                         if (counter >= 9) {
                             break;
                         }
-                        // byte[] imgBytes = null;
                         String newImageName = "";
                         byte[] imgBytes = ParsingUtils.fetchImage(imageFolderUrl + imageName);
                         if (imgBytes == null) {
@@ -312,36 +268,30 @@ public class ConverterDC extends AbstractConverter {
                         try (OutputStream out = new FileOutputStream(folderName + File.separator + newImageName)) {
                             out.write(imgBytes);
                             out.close();
-                            logger.debug("Downloaded image file '{}' to '{}/{}'", imageName, folderName, newImageName);
-                            // TODO convert to TIFF here?
+                            log.debug("Downloaded image file '{}' to '{}/{}'", imageName, folderName, newImageName);
                             counter++;
-                        } catch (FileNotFoundException e) {
-                            logger.error(e.getMessage(), e);
                         } catch (IOException e) {
-                            logger.error(e.getMessage(), e);
+                            log.error(e.getMessage(), e);
                         }
 
                         ContentFile cf = new ContentFile();
                         cf.setMimetype("image/" + imageFormat);
-                        // logger.debug(element.getText().trim());
                         cf.setLocation(imageUrlLocal + "/" + piWithoutPrefix + "/" + newImageName);
                         fs.addFile(cf);
                         contentFileMap.put(imageNames.indexOf(imageName), cf);
                         File contentFile = new File(cf.getLocation());
                         fileNames.add(contentFile.getName());
-                        // logger.debug("contentFile: " + contentFile.getName());
 
                         if (suffix == null) {
                             // Read the file suffix so that it can be used in file groups with the same capitalization
                             int nameLength = cf.getLocation().length();
                             suffix = cf.getLocation().substring(nameLength - 3, nameLength);
-                            // logger.debug("File suffix: " + suffix);
                         }
                     }
-                    logger.info("Image download completed.");
+                    log.info("Image download completed.");
                 }
             } else {
-                logger.warn("No images found for this record.");
+                log.warn("No images found for this record.");
             }
 
             if (suffix == null) {
@@ -354,18 +304,16 @@ public class ConverterDC extends AbstractConverter {
             try {
                 Metadata mdForPath = new Metadata(MDTypeForPath);
 
-                // mdForPath.setType(MDTypeForPath);
-                // TODO: add the possibility for using other image formats
                 mdForPath.setValue("./" + piWithoutPrefix);
                 physicaldocstruct.addMetadata(mdForPath);
             } catch (MetadataTypeNotAllowedException e1) {
-                logger.error("MetadataTypeNotAllowedException while reading images", e1);
+                log.error("MetadataTypeNotAllowedException while reading images", e1);
             } catch (DocStructHasNoTypeException e1) {
-                logger.error("DocStructHasNoTypeException while reading images", e1);
+                log.error("DocStructHasNoTypeException while reading images", e1);
             }
             dd.setPhysicalDocStruct(physicaldocstruct);
 
-            if (mode.equals(ExportMode.VIEWER)) {
+            if (ExportMode.VIEWER.equals(mode)) {
                 addVirtualFileGroup(imageUrlLocal + piWithoutPrefix, dd, suffix, "image/" + imageFormat, "LOCAL");
                 addVirtualFileGroup(imageUrlLocal + piWithoutPrefix, dd, suffix, "image/" + imageFormat, "PRESENTATION");
                 addVirtualFileGroup(imageUrlRemote + piWithoutPrefix + "/800/0", dd, "jpg", "image/jpeg", "DEFAULT");
@@ -376,60 +324,32 @@ public class ConverterDC extends AbstractConverter {
             }
 
             // Pages
-            {
-                logger.debug("Adding " + contentFileMap.keySet().size() + " pages...");
-                for (Integer i : contentFileMap.keySet()) {
-                    DocStruct dsPage = dd.createDocStruct(myPrefs.getDocStrctTypeByName("page"));
-                    dsPhysical.addChild(dsPage);
-                    Metadata metaPhysPageNumber = new Metadata(myPrefs.getMetadataTypeByName("physPageNumber"));
-                    dsPage.addMetadata(metaPhysPageNumber);
-                    metaPhysPageNumber.setValue(String.valueOf(i + 1));
-                    Metadata metaLogPageNumber = new Metadata(myPrefs.getMetadataTypeByName("logicalPageNumber"));
-                    dsPage.addMetadata(metaLogPageNumber);
-                    metaLogPageNumber.setValue(String.valueOf(i + 1));
-                    docStructPhysPageNumberMap.put(Integer.valueOf(metaPhysPageNumber.getValue()), dsPage);
-                    ContentFile cf = contentFileMap.get(i);
-                    if (cf != null) {
-                        dsPage.addContentFile(cf);
-                    }
-                    dsAnchor.addReferenceTo(dsPage, "logical_physical");
-                }
-            }
 
-            // if (true)
-            // return ExportOutcome.OK;
+            log.debug("Adding " + contentFileMap.keySet().size() + " pages...");
+            for (Integer i : contentFileMap.keySet()) {
+                DocStruct dsPage = dd.createDocStruct(myPrefs.getDocStrctTypeByName("page"));
+                dsPhysical.addChild(dsPage);
+                Metadata metaPhysPageNumber = new Metadata(myPrefs.getMetadataTypeByName("physPageNumber"));
+                dsPage.addMetadata(metaPhysPageNumber);
+                metaPhysPageNumber.setValue(String.valueOf(i + 1));
+                Metadata metaLogPageNumber = new Metadata(myPrefs.getMetadataTypeByName("logicalPageNumber"));
+                dsPage.addMetadata(metaLogPageNumber);
+                metaLogPageNumber.setValue(String.valueOf(i + 1));
+                docStructPhysPageNumberMap.put(Integer.valueOf(metaPhysPageNumber.getValue()), dsPage);
+                ContentFile cf = contentFileMap.get(i);
+                if (cf != null) {
+                    dsPage.addContentFile(cf);
+                }
+                dsAnchor.addReferenceTo(dsPage, "logical_physical");
+            }
 
             myRdf = fileFormat;
             String outputFileName = piWithoutPrefix;
             writeFileformat(myRdf, outputFileName, folderName);
             return outcome;
-        } catch (TypeNotAllowedForParentException e) {
-            logger.error(e.getMessage(), e);
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            return outcome;
-        } catch (TypeNotAllowedAsChildException e) {
-            logger.error(e.getMessage(), e);
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            return outcome;
-        } catch (PreferencesException e) {
-            logger.error(e.getMessage(), e);
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            return outcome;
-        } catch (MetadataTypeNotAllowedException e) {
-            logger.error(e.getMessage(), e);
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            return outcome;
-        } catch (WriteException e) {
-            logger.error(e.getMessage(), e);
-            outcome.status = ExportOutcomeStatus.ERROR;
-            outcome.message = e.getMessage();
-            return outcome;
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+        } catch (TypeNotAllowedForParentException | TypeNotAllowedAsChildException | PreferencesException | MetadataTypeNotAllowedException
+                | WriteException | IOException e) {
+            log.error(e.getMessage(), e);
             outcome.status = ExportOutcomeStatus.ERROR;
             outcome.message = e.getMessage();
             return outcome;
@@ -448,9 +368,8 @@ public class ConverterDC extends AbstractConverter {
      * @throws IOException
      */
     public void writeFileformat(Fileformat ff, String fileName, String imagePath) throws WriteException, PreferencesException, IOException {
-        // File outputDir = new File("output");
         File outputDir;
-        if (mode.equals(ExportMode.VIEWER)) {
+        if (ExportMode.VIEWER.equals(mode)) {
             outputDir = new File(hotfolderViewer);
         } else {
             outputDir = new File(hotfolderGoobi);
@@ -469,8 +388,6 @@ public class ConverterDC extends AbstractConverter {
             newImageFolder.mkdirs();
             int counter = 0;
             for (File oldImageFile : imageFiles) {
-                // File newImageFile = new File(folderName + File.separator +
-                // convertImageFileName(oldImageFile.getName()));
                 File newImageFile = new File(folderName + File.separator + oldImageFile.getName());
                 FileInputStream fis = new FileInputStream(oldImageFile);
                 FileOutputStream fos = new FileOutputStream(newImageFile);
@@ -485,19 +402,14 @@ public class ConverterDC extends AbstractConverter {
                 counter++;
             }
             imageFolder.delete();
-            logger.info(counter + " image files moved to '" + newImageFolder.getAbsolutePath() + "'");
+            log.info(counter + " image files moved to '" + newImageFolder.getAbsolutePath() + "'");
         } else {
-            logger.warn("'" + imageFolder.getAbsolutePath() + "' does not exist or is not a directory - no images copied.");
+            log.warn("'" + imageFolder.getAbsolutePath() + "' does not exist or is not a directory - no images copied.");
         }
 
         // Write METS file
         if (ff.write(fileName + ".xml")) {
-            logger.info("Successfully written '" + fileName + ".xml'.");
-            // MetsMods myRdf2 = new MetsMods(myPrefs);
-            // myRdf2.read("MetsMods.xml");
-            // loggerInfo.info("fileformat: " + myRdf2);
-            // loggerInfo.info("digDoc: " + myRdf2.getDigitalDocument());
-            // loggerInfo.info("logDocStrct: " + myRdf2.getDigitalDocument().getLogicalDocStruct());
+            log.info("Successfully written '" + fileName + ".xml'.");
         }
     }
 }

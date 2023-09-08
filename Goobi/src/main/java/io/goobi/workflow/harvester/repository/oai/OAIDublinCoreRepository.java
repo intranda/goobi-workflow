@@ -20,8 +20,6 @@ package io.goobi.workflow.harvester.repository.oai;
 import java.sql.Timestamp;
 
 import org.joda.time.MutableDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.helper.exceptions.HarvestException;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
@@ -43,9 +41,6 @@ import io.goobi.workflow.harvester.helper.Utils;
  */
 public class OAIDublinCoreRepository extends OAIRepository {
 
-    /** Logger for this class. */
-    private static final Logger logger = LoggerFactory.getLogger(OAIDublinCoreRepository.class);
-
     public static final String TYPE = "OAI_DC";
     private static final String METADATA_PREFIX = "oai_dc";
 
@@ -62,11 +57,11 @@ public class OAIDublinCoreRepository extends OAIRepository {
     public OAIDublinCoreRepository(String id, String name, String url, String exportFolder, String scriptPath, Timestamp lastHarvest, int frequency,
             int delay, boolean enabled) {
         super(id, name, url, exportFolder, scriptPath, lastHarvest, frequency, delay, enabled);
-        metadataPrefix = METADATA_PREFIX;
+        parameter.put("metadataPrefix", METADATA_PREFIX);
     }
 
     public OAIDublinCoreRepository() {
-        metadataPrefix = METADATA_PREFIX;
+        parameter.put("metadataPrefix", METADATA_PREFIX);
     }
 
     @Override
