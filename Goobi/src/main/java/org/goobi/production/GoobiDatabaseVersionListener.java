@@ -72,6 +72,92 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             }
         }
 
+        if (!DatabaseVersion.checkIfTableExists("export_history")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE export_history ( ");
+            sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sql.append("timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, ");
+            sql.append("record_id int NOT NULL, ");
+            sql.append("record_identifier varchar(255) NOT NULL, ");
+            sql.append("record_title text, ");
+            sql.append("repository_id varchar(255) NOT NULL, ");
+            sql.append("status varchar(255) NOT NULL, ");
+            sql.append("message varchar(255) DEFAULT NULL, ");
+            sql.append("PRIMARY KEY (id) ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if (!DatabaseVersion.checkIfTableExists("job")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE job ( ");
+            sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sql.append("timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, ");
+            sql.append("status varchar(64) NOT NULL DEFAULT 'WAITING', ");
+            sql.append("repository_id int NOT NULL, ");
+            sql.append("repository_name varchar(255) NOT NULL, ");
+            sql.append("message varchar(255) DEFAULT NULL, ");
+            sql.append("PRIMARY KEY (id) ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+        if (!DatabaseVersion.checkIfTableExists("record")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE record ( ");
+            sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sql.append("repository_id int NOT NULL, ");
+            sql.append("title text, ");
+            sql.append("creator text, ");
+            sql.append("timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, ");
+            sql.append("repository_datestamp datetime NOT NULL, ");
+            sql.append("setSpec text, ");
+            sql.append("identifier text NOT NULL, ");
+            sql.append("job_id int NOT NULL, ");
+            sql.append("source text, ");
+            sql.append("exported text, ");
+            sql.append("exported_datestamp datetime DEFAULT NULL, ");
+            sql.append("subquery varchar(255) DEFAULT NULL, ");
+            sql.append("PRIMARY KEY (id), ");
+            sql.append("KEY identifier (identifier(12)), ");
+            sql.append("KEY exported_datestamp (exported_datestamp) ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if (!DatabaseVersion.checkIfTableExists("repository")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE repository ( ");
+            sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sql.append("name varchar(255) NOT NULL, ");
+            sql.append("base_url text NOT NULL, ");
+            sql.append("export_folder varchar(255) DEFAULT NULL, ");
+            sql.append("script_path varchar(255) DEFAULT NULL, ");
+            sql.append("last_harvest timestamp NULL DEFAULT NULL, ");
+            sql.append("freq int NOT NULL DEFAULT '6', ");
+            sql.append("delay int NOT NULL DEFAULT '0', ");
+            sql.append("enabled tinyint(1) NOT NULL DEFAULT '1', ");
+            sql.append("type text, ");
+            sql.append("PRIMARY KEY (id) ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
     }
