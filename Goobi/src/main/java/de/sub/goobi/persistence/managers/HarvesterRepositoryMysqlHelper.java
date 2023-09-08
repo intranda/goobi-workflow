@@ -30,11 +30,9 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import io.goobi.workflow.harvester.repository.Repository;
 import io.goobi.workflow.harvester.repository.internetarchive.InternetArchiveCliRepository;
 import io.goobi.workflow.harvester.repository.internetarchive.InternetArchiveRepository;
-import io.goobi.workflow.harvester.repository.oai.GeogreifRepository;
 import io.goobi.workflow.harvester.repository.oai.MetsModsRepository;
 import io.goobi.workflow.harvester.repository.oai.MetsRepository;
 import io.goobi.workflow.harvester.repository.oai.OAIDublinCoreRepository;
-import io.goobi.workflow.harvester.repository.oai.UnimatrixRepository;
 import io.goobi.workflow.harvester.repository.oai.viewer.IntrandaViewerCrowdsourcingRepository;
 import io.goobi.workflow.harvester.repository.oai.viewer.IntrandaViewerOverviewPageRepository;
 import lombok.extern.log4j.Log4j2;
@@ -95,18 +93,6 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
                             r = new InternetArchiveRepository(rs.getString("id"), rs.getString("name"), rs.getString("base_url"),
                                     rs.getString("export_folder"), rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"),
                                     rs.getInt("delay"), rs.getBoolean("enabled"));
-                            break;
-                        case GeogreifRepository.TYPE:
-                            // Geogreif
-                            r = new GeogreifRepository(rs.getString("id"), rs.getString("name"), rs.getString("base_url"),
-                                    rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"), rs.getInt("delay"),
-                                    rs.getBoolean("enabled"));
-                            break;
-                        case UnimatrixRepository.TYPE:
-                            // Unimatrix
-                            r = new UnimatrixRepository(rs.getString("id"), rs.getString("name"), rs.getString("base_url"),
-                                    rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"), rs.getInt("delay"),
-                                    rs.getBoolean("enabled"));
                             break;
                         case IntrandaViewerOverviewPageRepository.TYPE:
                             // intranda viewer overview pages

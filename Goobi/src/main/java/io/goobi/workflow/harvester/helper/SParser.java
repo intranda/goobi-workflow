@@ -36,7 +36,6 @@ import org.jdom2.input.SAXBuilder;
 import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.exceptions.HarvestException;
 import io.goobi.workflow.harvester.beans.Record;
-import io.goobi.workflow.harvester.repository.oai.UnimatrixRepository;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -85,9 +84,9 @@ public class SParser {
             if (getRecord != null) {
                 List<Element> elements = getRecord.getChildren();
                 for (Element element : elements) {
-                    if (element.getName().equals("record")) {
+                    if ("record".equals(element.getName())) {
                         recordList.add(element);
-                    } else if (element.getName().equals("error")) {
+                    } else if ("error".equals(element.getName())) {
                         parseErrorMessage(element);
 
                     }
@@ -97,9 +96,9 @@ public class SParser {
             if (listRecords != null) {
                 List<Element> elements = getRecord.getChildren();
                 for (Element element : elements) {
-                    if (element.getName().equals("record")) {
+                    if ("record".equals(element.getName())) {
                         recordList.add(element);
-                    } else if (element.getName().equals("error")) {
+                    } else if ("error".equals(element.getName())) {
                         parseErrorMessage(element);
 
                     }
@@ -132,7 +131,7 @@ public class SParser {
         // <resumptionToken expirationDate="2010-09-30T15:13:08Z"
         // completeListSize="21" cursor="5">oai_1285600388343</resumptionToken>
 
-        // /OAI-PMH/ListRecords/resumptionToken
+        // TODO /OAI-PMH/ListRecords/resumptionToken
         //
         //        XMLInputFactory xmlif = XMLInputFactory.newInstance();
         //        allocator = xmlif.getEventAllocator();
@@ -194,9 +193,6 @@ public class SParser {
                     if (requiredSetSpec != null && requiredSetSpec.equals(setSpec)) {
                         requiredSetSpecFound = true;
                     }
-                    if (!repositoryType.equals(UnimatrixRepository.TYPE)) {
-                        rec.getSetSpecList().add(setSpec);
-                    }
                     break;
                 default:
                     // do nothing
@@ -218,11 +214,11 @@ public class SParser {
 
         Element format = metadata.getChildren().get(0);
         // TODO check getNamespacePrefix
-        if (format.getName().equals("dc") && format.getNamespacePrefix().equals("oai_dc")) {
+        if ("dc".equals(format.getName()) && "oai_dc".equals(format.getNamespacePrefix())) {
             // parse dc
             for (Element xmlr : format.getChildren()) {
                 // title
-                if (xmlr.getName().equals("title")) {
+                if ("title".equals(xmlr.getName())) {
                     String elementText = xmlr.getText();
                     if (rec.getTitle() == null) {
                         rec.setTitle("");
@@ -236,25 +232,19 @@ public class SParser {
                     }
                 }
                 // creator
-                if (xmlr.getName().equals("creator")) {
+                if ("creator".equals(xmlr.getName())) {
                     rec.setCreator(xmlr.getText());
                 }
                 // source
-                if (repositoryType.equals(UnimatrixRepository.TYPE)) {
-                    if (xmlr.getName().equals("rights")) {
-                        rec.setSource(xmlr.getText());
-                    }
-                } else {
-                    if (xmlr.getName().equals("source")) {
-                        rec.setSource(xmlr.getText());
-                    }
+                if ("source".equals(xmlr.getName())) {
+                    rec.setSource(xmlr.getText());
                 }
             }
             // end: parse dc
         } else if (format.getNamespacePrefix().startsWith("iv_")) {
             // intranda viewer metadata formats
             for (Element xmlr : format.getChildren()) {
-                if (xmlr.getName().equals("title")) {
+                if ("title".equals(xmlr.getName())) {
                     String elementText = xmlr.getText();
                     if (rec.getTitle() == null) {
                         rec.setTitle("");
