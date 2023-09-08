@@ -49,7 +49,7 @@ public interface IStatisticalQuestion extends Serializable {
      * @param dataSource
      * @return List<DataTable>
      ****************************************************************************/
-    public List<DataTable> getDataTables(String sqlFilter, String originalFilter);
+    public List<DataTable> getDataTables(String sqlFilter, String originalFilter, boolean showClosedProcesses, boolean showArchivedProjects );
 
     /**
      * This method is used to set a grouping unit for time based data

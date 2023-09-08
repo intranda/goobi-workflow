@@ -1,5 +1,6 @@
-// Generated from ExtendedDateTimeFormat.g4 by ANTLR 4.10.1
 package de.sub.goobi.validator;
+
+// Generated from ExtendedDateTimeFormat.g4 by ANTLR 4.13.0
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -9,6 +10,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * This class provides an empty implementation of {@link ExtendedDateTimeFormatListener}, which can be extended to create a listener which only needs
  * to handle a subset of the available methods.
  */
+@SuppressWarnings("CheckReturnValue")
 public class ExtendedDateTimeFormatBaseListener implements ExtendedDateTimeFormatListener {
     /**
      * {@inheritDoc}
@@ -866,6 +868,94 @@ public class ExtendedDateTimeFormatBaseListener implements ExtendedDateTimeForma
      */
     @Override
     public void exitPartial_uncertain_or_approximate_or_both(ExtendedDateTimeFormatParser.Partial_uncertain_or_approximate_or_bothContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation does nothing.
+     * </p>
+     */
+    @Override
+    public void enterSet_representation(ExtendedDateTimeFormatParser.Set_representationContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation does nothing.
+     * </p>
+     */
+    @Override
+    public void exitSet_representation(ExtendedDateTimeFormatParser.Set_representationContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation does nothing.
+     * </p>
+     */
+    @Override
+    public void enterOne_of_a_set(ExtendedDateTimeFormatParser.One_of_a_setContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation does nothing.
+     * </p>
+     */
+    @Override
+    public void exitOne_of_a_set(ExtendedDateTimeFormatParser.One_of_a_setContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation does nothing.
+     * </p>
+     */
+    @Override
+    public void enterAll_of_a_set(ExtendedDateTimeFormatParser.All_of_a_setContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation does nothing.
+     * </p>
+     */
+    @Override
+    public void exitAll_of_a_set(ExtendedDateTimeFormatParser.All_of_a_setContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation does nothing.
+     * </p>
+     */
+    @Override
+    public void enterList_value(ExtendedDateTimeFormatParser.List_valueContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation does nothing.
+     * </p>
+     */
+    @Override
+    public void exitList_value(ExtendedDateTimeFormatParser.List_valueContext ctx) {
     }
 
     /**

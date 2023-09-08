@@ -138,7 +138,7 @@
 
 									<!--  MODAL FOR METDATA POPUP  -->
 									<h:panelGroup
-										rendered="#{true or ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and item.temporaryMetadataFiles}">
+										rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and item.temporaryMetadataFiles}">
 										<a
 											class="text_head"
 											title="#{msgs.metadatenBearbeiten}"

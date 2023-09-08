@@ -2082,6 +2082,13 @@ grau: #dddddd
   background-color: var(--clr-neutral-200);
 }
 
+.btn-link-task span {
+  color: var(--clr-text-400);
+}
+
+.btn--plusMinus {
+  user-select: text;
+}
 .btn--plusMinus:hover i,
 .btn--plusMinus:hover span {
   color: var(--clr-primary-400);

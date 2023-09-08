@@ -34,6 +34,7 @@ var gwAjaxLoader = ( function() {
               break;
 
             case "success": // This is called when ajax response is successfully processed.
+             scrollDownScrollDowns();
               break;
 
           }

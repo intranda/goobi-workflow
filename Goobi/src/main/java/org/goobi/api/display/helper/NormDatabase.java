@@ -41,10 +41,7 @@ public class NormDatabase {
     }
 
     public static List<NormDatabase> getAllDatabases() {
-        if (allNormdatabases == null || allNormdatabases.isEmpty()) {
-            allNormdatabases = ConfigNormdata.getConfiguredNormdatabases();
-        }
-        return allNormdatabases;
+        return ConfigNormdata.getConfiguredNormdatabases();
     }
 
     public static void setAllNormdatabases(List<NormDatabase> allNormdatabases) {

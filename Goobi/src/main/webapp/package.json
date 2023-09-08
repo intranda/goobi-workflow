@@ -6,10 +6,10 @@
   "scripts": {
     "start": "npm run sass:dev",
     "grunt:start": "grunt",
-	"css:build": "npm run sass:prod && npm run postcss:build",
+    "css:build": "npm run sass:prod && npm run postcss:build",
     "postcss:build": "node runPostcss",
-    "sass:dev": "source .sass-config && SASS_PATH=${SASS_SRC_PATH} sass --watch ${SRC_BOOTSTRAP}:${DEST_DEV_BOOTSTRAP} ${SRC_CSS_CUSTOM}:${DEST_DEV_CSS_CUSTOM} ${SRC_CSS_ACCESSIBILITY}:${DEST_DEV_CSS_ACCESSIBILITY}",
-    "sass:prod": "source .sass-config && SASS_PATH=${SASS_SRC_PATH} sass uii/templatePG/css/src/:uii/templatePG/css/dist"
+    "sass:dev": ". ./.sass-config && SASS_PATH=${SASS_SRC_PATH} sass --watch ${SRC_BOOTSTRAP}:${DEST_DEV_BOOTSTRAP} ${SRC_CSS_CUSTOM}:${DEST_DEV_CSS_CUSTOM} ${SRC_CSS_ACCESSIBILITY}:${DEST_DEV_CSS_ACCESSIBILITY}",
+    "sass:prod": ". ./.sass-config && SASS_PATH=${SASS_SRC_PATH} sass uii/templatePG/css/src/:uii/templatePG/css/dist"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   "devDependencies": {
     "autoprefixer": "10.4.4",
     "cssnano": "5.1.7",
-    "grunt": "^1.5.2",
+    "grunt": "^1.6.1",
     "grunt-contrib-concat": "*",
     "grunt-contrib-less": "*",
     "grunt-contrib-watch": "*",

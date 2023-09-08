@@ -1,6 +1,6 @@
-// Generated from ExtendedDateTimeFormat.g4 by ANTLR 4.10.1
 package de.sub.goobi.validator;
 
+// Generated from ExtendedDateTimeFormat.g4 by ANTLR 4.13.0
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -552,6 +552,62 @@ public interface ExtendedDateTimeFormatListener extends ParseTreeListener {
      * @param ctx the parse tree
      */
     void exitPartial_uncertain_or_approximate_or_both(ExtendedDateTimeFormatParser.Partial_uncertain_or_approximate_or_bothContext ctx);
+
+    /**
+     * Enter a parse tree produced by {@link ExtendedDateTimeFormatParser#set_representation}.
+     * 
+     * @param ctx the parse tree
+     */
+    void enterSet_representation(ExtendedDateTimeFormatParser.Set_representationContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link ExtendedDateTimeFormatParser#set_representation}.
+     * 
+     * @param ctx the parse tree
+     */
+    void exitSet_representation(ExtendedDateTimeFormatParser.Set_representationContext ctx);
+
+    /**
+     * Enter a parse tree produced by {@link ExtendedDateTimeFormatParser#one_of_a_set}.
+     * 
+     * @param ctx the parse tree
+     */
+    void enterOne_of_a_set(ExtendedDateTimeFormatParser.One_of_a_setContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link ExtendedDateTimeFormatParser#one_of_a_set}.
+     * 
+     * @param ctx the parse tree
+     */
+    void exitOne_of_a_set(ExtendedDateTimeFormatParser.One_of_a_setContext ctx);
+
+    /**
+     * Enter a parse tree produced by {@link ExtendedDateTimeFormatParser#all_of_a_set}.
+     * 
+     * @param ctx the parse tree
+     */
+    void enterAll_of_a_set(ExtendedDateTimeFormatParser.All_of_a_setContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link ExtendedDateTimeFormatParser#all_of_a_set}.
+     * 
+     * @param ctx the parse tree
+     */
+    void exitAll_of_a_set(ExtendedDateTimeFormatParser.All_of_a_setContext ctx);
+
+    /**
+     * Enter a parse tree produced by {@link ExtendedDateTimeFormatParser#list_value}.
+     * 
+     * @param ctx the parse tree
+     */
+    void enterList_value(ExtendedDateTimeFormatParser.List_valueContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link ExtendedDateTimeFormatParser#list_value}.
+     * 
+     * @param ctx the parse tree
+     */
+    void exitList_value(ExtendedDateTimeFormatParser.List_valueContext ctx);
 
     /**
      * Enter a parse tree produced by {@link ExtendedDateTimeFormatParser#pua_base}.

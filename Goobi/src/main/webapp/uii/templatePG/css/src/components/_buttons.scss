@@ -20,7 +20,17 @@
   }
 }
 
+.btn-link-task { 
+  span {
+      color: var(--clr-text-400);
+  }
+  
+}
+
+
+
 .btn--plusMinus {
+        user-select: text;
   &:hover {
 	i,
     span {

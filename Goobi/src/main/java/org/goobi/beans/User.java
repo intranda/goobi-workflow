@@ -667,19 +667,19 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         List<SelectItem> taskList = new ArrayList<>();
         taskList.add(new SelectItem("prioritaet", Helper.getTranslation("prioritaet")));
         if (isDisplayIdColumn()) {
-            taskList.add(new SelectItem("prozesse.ProzesseID", Helper.getTranslation("id")));
+            taskList.add(new SelectItem("prioritaet desc, prozesse.ProzesseID", Helper.getTranslation("id")));
         }
-        taskList.add(new SelectItem("schritte.titel", Helper.getTranslation("arbeitsschritt")));
-        taskList.add(new SelectItem("prozesse.titel", Helper.getTranslation("prozessTitel")));
+        taskList.add(new SelectItem("prioritaet desc, schritte.titel", Helper.getTranslation("arbeitsschritt")));
+        taskList.add(new SelectItem("prioritaet desc, prozesse.titel", Helper.getTranslation("prozessTitel")));
         if (isDisplayProcessDateColumn()) {
-            taskList.add(new SelectItem("prozesse.erstellungsdatum", Helper.getTranslation("vorgangsdatum")));
+            taskList.add(new SelectItem("prioritaet desc, prozesse.erstellungsdatum", Helper.getTranslation("vorgangsdatum")));
         }
-        taskList.add(new SelectItem("projekte.titel", Helper.getTranslation("projekt")));
+        taskList.add(new SelectItem("prioritaet desc, projekte.titel", Helper.getTranslation("projekt")));
         if (isDisplayInstitutionColumn()) {
-            taskList.add(new SelectItem("institution.shortName", Helper.getTranslation("institution")));
+            taskList.add(new SelectItem("prioritaet desc, institution.shortName", Helper.getTranslation("institution")));
         }
         if (isDisplayBatchColumn()) {
-            taskList.add(new SelectItem("prozesse.batchID", Helper.getTranslation("batch")));
+            taskList.add(new SelectItem("prioritaet desc, prozesse.batchID", Helper.getTranslation("batch")));
         }
         return taskList;
     }

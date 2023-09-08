@@ -80,7 +80,7 @@
 														id="my_tasks_process" name="id"
 														form="#{AktuelleSchritteForm}" value="#{msgs.id}"
 														ajaxRender="processAllBox:myform" reverseOrder="true"
-                                                        sortField="prozesse.ProzesseID" 
+                                                        sortField="prioritaet desc, prozesse.ProzesseID" 
                                                         addClass="gw-table-fixed__sizeXXXXS"/>
 
 													<!-- Task -->
@@ -88,7 +88,7 @@
 														form="#{AktuelleSchritteForm}"
 														value="#{msgs.arbeitsschritt}"
 														ajaxRender="processAllBox:myform"
-                                                        sortField="schritte.titel" 
+                                                        sortField="prioritaet desc, schritte.titel" 
                                                         addClass="gw-table-fixed__sizeM"/>
 
 													<!-- Process -->
@@ -98,7 +98,7 @@
 														value="#{msgs.prozessTitel}"
 														ajaxRender="processAllBox:myform"
 														addClass="gw-table-fixed__sizeM"
-                                                        sortField="prozesse.titel" />
+                                                        sortField="prioritaet desc, prozesse.titel" />
 
 													<!-- Custom Columns -->
                                                     <c:forEach
@@ -109,7 +109,7 @@
                                                             form="#{ProzessverwaltungForm}"
                                                             ajaxRender="processAllProcessesBox:myform"
                                                             value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
-                                                            sortField="#{var}"
+                                                            sortField="prioritaet desc, #{var}"
                                                             rendered="#{LoginForm.isDisplaySortfield(var)}" />
                                                         <intranda:columnheader
                                                             addClass="gw-table-fixed__sizeS"
@@ -125,7 +125,7 @@
 														form="#{AktuelleSchritteForm}"
 														value="#{msgs.vorgangsdatum}"
 														ajaxRender="processAllBox:myform"
-                                                        sortField="prozesse.erstellungsdatum" 
+                                                        sortField="prioritaet desc, prozesse.erstellungsdatum" 
                                                         addClass="gw-table-fixed__sizeXXS"/>
 
 													<!-- Project -->
@@ -133,7 +133,7 @@
 														form="#{AktuelleSchritteForm}" value="#{msgs.projekt}"
 														ajaxRender="processAllBox:myform"
 														addClass="gw-table-fixed__sizeS"
-                                                        sortField="projekte.titel" />
+                                                        sortField="prioritaet desc, projekte.titel" />
 
                                                     <!-- Institution -->
 													<intranda:columnheader
@@ -141,7 +141,7 @@
 														addClass="gw-table-fixed__sizeXS" name="institution"
 														form="#{AktuelleSchritteForm}" value="#{msgs.institution}"
 														ajaxRender="processAllBox:myform"
-                                                        sortField="institution.shortName" />
+                                                        sortField="prioritaet desc, institution.shortName" />
 
 													<!-- Lockings -->
 													<intranda:columnheader
@@ -167,14 +167,14 @@
 														addClass="gw-table-fixed__sizeXXS"
 														name="numberOfImages" form="#{AktuelleSchritteForm}"
 														ajaxRender="processAllBox:myform"
-                                                        sortField="sortHelperImages" />
+                                                        sortField="prioritaet desc, sortHelperImages" />
 
 													<!-- Priority -->
 				                                    <intranda:columnheader id="sortStepPriority" name="priority"
                                                         form="#{AktuelleSchritteForm}"
                                                         value="#{msgs.prioritaet}"
                                                         ajaxRender="processAllBox:myform"
-                                                        sortField="schritte.prioritaet" 
+                                                        sortField="prioritaet desc, schritte.prioritaet" 
                                                         addClass="gw-table-fixed__sizeXXS"/>
 
 													<!-- Action -->
@@ -182,7 +182,7 @@
                                                         form="#{AktuelleSchritteForm}"
                                                         value="#{msgs.auswahl}"
                                                         ajaxRender="processAllBox:myform"
-                                                        sortField="schritte.bearbeitungsstatus" 
+                                                        sortField="prioritaet desc, schritte.bearbeitungsstatus" 
                                                         addClass="gw-table-fixed__sizeXXXS"/>
                                                         
 												</tr>

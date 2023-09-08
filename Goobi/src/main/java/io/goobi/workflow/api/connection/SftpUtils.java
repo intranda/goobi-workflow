@@ -181,4 +181,22 @@ public class SftpUtils implements ConnectionProvider {
 
     }
 
+    @Override
+    public void createSubFolder(String foldername) throws IOException {
+        try {
+            sftpChannel.mkdir(foldername);
+        } catch (SftpException e) {
+            throw new IOException(e);
+        }
+    }
+
+    @Override
+    public void deleteFile(String filename) throws IOException {
+        try {
+            sftpChannel.rm(filename);
+        } catch (SftpException e) {
+            throw new IOException(e);
+        }
+
+    }
 }
