@@ -72,6 +72,7 @@
              in the module-ci AND the parent project and this leads to an error because
              one file cannot be added twice -->
         <sonar.test.exclusions>src/test/java/**/*</sonar.test.exclusions>
+        <sonar.exclusions>src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatParser.java,src/main/java/de/sub/goobi/validator/validator/ExtendedDateTimeFormatLexer.java,src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatBaseListener.java</sonar.exclusions>
 
         <!-- intranda internal -->
         <ics.version>3.9.1</ics.version>
