@@ -256,7 +256,7 @@ public class MetaPerson implements SearchableMetadata {
         }
     }
 
-    public boolean isAdditionalParts() {
+    public boolean isShowAdditionalParts() {
         if (p.getType() == null) {
             return false;
         }
@@ -319,7 +319,7 @@ public class MetaPerson implements SearchableMetadata {
         } else if (isSearchInKulturnav) {
             if (Objects.nonNull(selectedRecord)) {
                 for (NormData normdata : selectedRecord.getNormdataList()) {
-                    if (normdata.getKey().equals("URI")) {
+                    if ("URI".equals(normdata.getKey())) {
                         String uriValue = normdata.getValues().get(0).getText();
                         p.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
                         break;
@@ -335,9 +335,9 @@ public class MetaPerson implements SearchableMetadata {
             normdataList = new ArrayList<>();
         } else {
             for (NormData normdata : currentData) {
-                if (normdata.getKey().equals("NORM_IDENTIFIER")) {
+                if ("NORM_IDENTIFIER".equals(normdata.getKey())) {
                     p.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
-                } else if (normdata.getKey().equals("NORM_NAME")) {
+                } else if ("NORM_NAME".equals(normdata.getKey())) {
                     mainValue = normdata.getValues().get(0).getText().replace("\\x152", "").replace("\\x156", "");
                 }
             }
