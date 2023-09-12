@@ -141,7 +141,7 @@
         <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
         <xmpcore.version>6.1.11</xmpcore.version>
         <!-- used in goobi-plugin-step-barcode-scanner -->
-        <zxing.version>3.5.1</zxing.version>
+        <zxing.version>3.5.2</zxing.version>
         <jsch.version>0.2.11</jsch.version>
         <slf4j.version>2.0.9</slf4j.version>
     </properties>
