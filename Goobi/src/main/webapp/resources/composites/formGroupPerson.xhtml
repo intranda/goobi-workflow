@@ -336,7 +336,7 @@
         <x:dataList
                 var="part"
                 value="#{cc.attrs.person.additionalNameParts}"
-                rendered="#{cc.attrs.person.additionalParts}">
+                rendered="#{cc.attrs.person.showAdditionalParts}">
 
             <div class="form-group form-group--flex">
                 <div class="row justify-content-between">
@@ -383,7 +383,7 @@
             </div>
         </x:dataList>
 
-        <ui:fragment rendered="#{cc.attrs.person.additionalParts}">
+        <ui:fragment rendered="#{cc.attrs.person.showAdditionalParts}">
             <div class="row">
                 <div class="col-auto mr-auto"></div>
                 <div class="col-auto">
@@ -400,6 +400,7 @@
                         <f:passThroughAttribute
                                 name="data-placement"
                                 value="top"/>
+                                <f:ajax execute="@this" render="@form"/>
                     </button>
                 </div>
             </div>

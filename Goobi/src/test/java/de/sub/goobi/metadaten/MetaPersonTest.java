@@ -218,9 +218,9 @@ public class MetaPersonTest extends AbstractTest {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
-        assertTrue(mp.isAdditionalParts());
+        assertTrue(mp.isShowAdditionalParts());
         p.getType().setAllowNameParts(false);
-        assertFalse(mp.isAdditionalParts());
+        assertFalse(mp.isShowAdditionalParts());
     }
 
     @Test
