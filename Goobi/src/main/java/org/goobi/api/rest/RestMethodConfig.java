@@ -45,10 +45,10 @@ public class RestMethodConfig {
         conf.setMethod(methodC.getString("@name"));
         Map<String, String> netmaskPasswordPairs = new TreeMap<>();
         List<?> allowedList = methodC.configurationsAt("allow");
-        for (int i = 0; i < allowedList.size(); i++) {
-            SubnodeConfiguration allowedC = (SubnodeConfiguration) allowedList.get(i);
+        for (Object element : allowedList) {
+            SubnodeConfiguration allowedC = (SubnodeConfiguration) element;
             String ip = allowedC.getString("@netmask");
-            String pw = allowedC.getString("@token", "");
+            String pw = allowedC.getString("@token");
             if (ip == null && pw == null) {
                 conf.setAllAllowed(true);
                 continue;
@@ -61,8 +61,8 @@ public class RestMethodConfig {
         conf.setNetmaskPasswordPairs(netmaskPasswordPairs);
         Map<String, List<String>> customHeaders = new TreeMap<>();
         List<?> headerList = methodC.configurationsAt("header");
-        for (int i = 0; i < headerList.size(); i++) {
-            SubnodeConfiguration headerC = (SubnodeConfiguration) headerList.get(i);
+        for (Object element : headerList) {
+            SubnodeConfiguration headerC = (SubnodeConfiguration) element;
             String name = headerC.getString("@name");
             if (name == null) {
                 continue;
