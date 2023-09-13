@@ -53,13 +53,13 @@ public class MetsRepository extends OAIDublinCoreRepository {
 
     public static final String TYPE = "METS";
 
-    public MetsRepository(String id, String name, String url, String exportFolder, String scriptPath, Timestamp lastHarvest, int frequency, int delay,
+    public MetsRepository(Integer id, String name, String url, String exportFolder, String scriptPath, Timestamp lastHarvest, int frequency, int delay,
             boolean enabled) {
         super(id, name, url, exportFolder, scriptPath, lastHarvest, frequency, delay, enabled);
     }
 
     @Override
-    public String getType() {
+    public String getRepositoryType() {
         return TYPE;
     }
 
@@ -136,7 +136,7 @@ public class MetsRepository extends OAIDublinCoreRepository {
                     }
                     break;
                 case FOLDER:
-                    if (exportFolderPath != null) {
+                    if (getExportFolderPath() != null) {
                         File exportFolder = checkAndCreateDownloadFolder(ConfigHarvester.getInstance().getExportFolder());
                         metsFile = new File(exportFolder, fileName);
                     } else {

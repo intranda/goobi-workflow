@@ -21,6 +21,7 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.goobi.beans.DatabaseObject;
@@ -38,21 +39,37 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
 
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
-        // TODO Auto-generated method stub
-        return 0;
+        int num = 0;
+        try {
+            num = HarvesterRepositoryMysqlHelper.getRepositoryCount(filter);
+        } catch (SQLException e) {
+            log.error("error while getting Docket hit size", e);
+            throw new DAOException(e);
+        }
+        return num;
     }
 
     @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
             throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        return getRepositories(order, filter, start, count);
+    }
+
+    private List<Repository> getRepositories(String order, String filter, Integer start, Integer count) throws DAOException {
+        List<Repository> answer = new ArrayList<>();
+        try {
+            answer = HarvesterRepositoryMysqlHelper.getRepositories(order, filter, start, count);
+        } catch (SQLException e) {
+            log.error("error while getting Dockets", e);
+            throw new DAOException(e);
+        }
+        return answer;
+
     }
 
     @Override
     public List<Integer> getIdList(String order, String filter, Institution institution) {
-        // TODO Auto-generated method stub
-        return null;
+        return java.util.Collections.emptyList();
     }
 
     public static Repository getRepository(String repositoryId) {
@@ -64,7 +81,21 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
         return null;
     }
 
+    public static void saveRepository(Repository repository) {
+        try {
+            HarvesterRepositoryMysqlHelper.saveRepository(repository);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
 
+    public static void deleteRepository(Repository repository) {
+        try {
+            HarvesterRepositoryMysqlHelper.deleteRepository(repository);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
 
     public static void changeStatusOfRepository(Repository repository)  {
         //        Connection connection = null;
@@ -99,35 +130,12 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
     }
 
 
-    public static Timestamp getLastHarvest(String repositoryId)  {
-        //        Connection connection = null;
-        //        try {
-        //            connection = getConnection();
-        //            Object[] param = { repositoryId };
-        //            String sql = "SELECT last_harvest FROM repository WHERE id=?";
-        //            Timestamp t = new QueryRunner().query(connection, sql, new ResultSetHandler<Timestamp>() {
-        //                @Override
-        //                public Timestamp handle(ResultSet rs) throws SQLException {
-        //                    if (!rs.next()) {
-        //                        return null;
-        //                    }
-        //                    Timestamp timestamp = rs.getTimestamp("last_harvest");
-        //
-        //                    return timestamp;
-        //                }
-        //            }, param);
-        //            return t;
-        //        } catch (SQLException e) {
-        //            throw new DBException(e);
-        //        } finally {
-        //            if (connection != null) {
-        //                try {
-        //                    closeConnection(connection);
-        //                } catch (SQLException e) {
-        //                    throw new DBException(e);
-        //                }
-        //            }
-        //        }
+    public static Timestamp getLastHarvest(Integer repositoryId)  {
+        try {
+            return HarvesterRepositoryMysqlHelper.getLastHarvest(repositoryId);
+        } catch (SQLException e) {
+            log.error(e);
+        }
         return null;
     }
 

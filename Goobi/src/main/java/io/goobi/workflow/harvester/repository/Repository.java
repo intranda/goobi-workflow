@@ -19,6 +19,7 @@ package io.goobi.workflow.harvester.repository;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.goobi.beans.DatabaseObject;
+import org.joda.time.MutableDateTime;
 
 import de.sub.goobi.helper.exceptions.HarvestException;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
@@ -47,42 +50,48 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Getter
 @Setter
-public abstract class Repository {
+public class Repository implements Serializable, DatabaseObject {
+
+    private static final long serialVersionUID = -2519150202057677342L;
 
     // generated
-    protected String id;
+    private Integer id;
 
     // repository name, should be unique
-    protected String name;
+    private String name;
 
     // repository url
-    protected String url;
+    private String url;
 
     // additional query parameter like set=xyz or metadataPrefix=oai_dc
-    protected Map<String, String> parameter = new HashMap<>();
+    private Map<String, String> parameter = new HashMap<>();
 
     // timestamp of the last harvest
-    protected Timestamp lastHarvest;
+    private Timestamp lastHarvest;
 
     // harvest frequency in hours
-    protected int frequency;
+    private int frequency = 24;
 
     // delay in days
-    protected int delay = 0;
+    private int delay = 0;
 
     // active/disabled
-    protected boolean enabled;
+    private boolean enabled;
 
     // store files in this folder
-    protected String exportFolderPath;
+    private String exportFolderPath;
 
     // run this script after file was stored
-    protected String scriptPath;
+    private String scriptPath;
 
     // update previous harvested files
-    protected boolean allowUpdates = true;
+    private boolean allowUpdates = true;
 
-    protected Repository() {
+    private boolean autoExport = true;
+
+    private String repositoryType;
+
+    public Repository() {
     }
 
     /**
@@ -96,9 +105,8 @@ public abstract class Repository {
      * @param delay
      * @param enabled
      */
-    protected Repository(String id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest, int frequency,
-            int delay,
-            boolean enabled) {
+    public Repository(Integer id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest, int frequency,
+            int delay, boolean enabled) {
         this.id = id;
         this.name = name;
         this.url = url;
@@ -110,18 +118,6 @@ public abstract class Repository {
         this.enabled = enabled;
 
     }
-
-    /**
-     * 
-     * @return
-     */
-    public abstract String getType();
-
-    /**
-     * 
-     * @return
-     */
-    public abstract boolean isAutoExport();
 
     /***************************************************************************************************************
      * This method is for GUI. Activate/Deactivates Repository
@@ -156,14 +152,49 @@ public abstract class Repository {
      * @throws ParserException
      * @throws DBException
      */
-    public abstract int harvest(String jobId) throws HarvestException;
+    public int harvest(String jobId) throws HarvestException {
+        // TODO different implementation for oai, ia, iacli
+        Timestamp lastHarvest = HarvesterRepositoryManager.getLastHarvest(getId());
+
+        switch (repositoryType) {
+            case "oai":
+                String url = parameter.get("url");
+                String metadataFormat = parameter.get("metadataPrefix");
+                String set = parameter.get("set");
+
+                StringBuilder oai = new StringBuilder();
+                oai.append(url).append("?verb=ListRecords");
+                oai.append("&metadataPrefix=" + metadataFormat);
+                if (StringUtils.isNotBlank(set)) {
+                    oai.append("&set=" + set);
+                }
+                if (lastHarvest != null) {
+                    MutableDateTime timestamp = Utils.formatterISO8601DateTimeMS.parseMutableDateTime(lastHarvest.toString());
+                    oai.append("&from=" + Utils.formatterISO8601DateTimeFullWithTimeZone.withZoneUTC().print(timestamp));
+                }
+                if (getDelay() > 0) {
+                    MutableDateTime now = new MutableDateTime();
+                    now.addDays(-getDelay());
+                    String untilDateTime = Utils.formatterISO8601DateTimeFullWithTimeZone.print(now);
+                    oai.append("&until=" + untilDateTime);
+                }
+                break;
+        }
+
+        // return number of records created
+        return 0;
+
+    }
 
     /**
      * Exports record to viewer or goobi.
      * 
      * @param mode {@link ExportMode} VIEWER or GOOBI
      */
-    public abstract ExportOutcome exportRecord(Record rec, ExportMode mode);
+    public ExportOutcome exportRecord(Record rec, ExportMode mode) {
+        // TODO different implementation for oai, ia, iacli
+        return null;
+    }
 
     /**
      * Parse Answer to {@link ArrayList} of {@link Record} and add this Records to DB.
@@ -180,7 +211,7 @@ public abstract class Repository {
         // parse files
         int harvested = 0;
         SParser parser = new SParser();
-        parser.setRepositoryType(getType());
+        parser.setRepositoryType(getRepositoryType());
         List<Record> recordList = parser.parseXML(f, jobId, getId(), requiredSetSpec, null);
         if (!recordList.isEmpty()) {
             harvested = HarvesterRepositoryManager.addRecords(recordList, allowUpdates);
@@ -236,4 +267,36 @@ public abstract class Repository {
         return downloadFolder;
     }
 
+    @Override
+    public void lazyLoad() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public String getOaiUrl() {
+        return url;
+    }
+
+    public void setOaiUrl(String url) {
+        this.url = url;
+        if (url.contains("?")) {
+            // first part is url root
+            String oaiUrl = url.substring(0, url.indexOf("?"));
+            String parameter = url.substring(url.indexOf("?") + 1);
+            String[] params = parameter.split("&");
+            for (String param : params) {
+                if (param.startsWith("metadataPrefix")) {
+                    String metadataPrefix = param.replace("metadataPrefix=", "");
+                    this.parameter.put("metadataPrefix", metadataPrefix);
+                } else if (param.startsWith("set")) {
+                    String set = param.replace("set=", "");
+                    this.parameter.put("set", set);
+                }
+            }
+            this.parameter.put("url", oaiUrl);
+            // parse get parameter
+        } else {
+            this.parameter.put("url", url);
+        }
+    }
 }

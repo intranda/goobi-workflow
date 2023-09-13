@@ -158,6 +158,21 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             }
         }
 
+        if (!DatabaseVersion.checkIfTableExists("repository_parameter")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE repository_parameter ( ");
+            sql.append("repository_id INT(11)  unsigned NOT NULL, ");
+            sql.append("name varchar(255), ");
+            sql.append("value text ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
     }

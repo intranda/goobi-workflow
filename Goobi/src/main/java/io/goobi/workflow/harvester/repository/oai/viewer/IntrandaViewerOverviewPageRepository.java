@@ -25,7 +25,7 @@ public class IntrandaViewerOverviewPageRepository extends IntrandaViewerReposito
     private static final String METADATA_PREFIX = "iv_overviewpage";
 
     public IntrandaViewerOverviewPageRepository() {
-        parameter.put("metadataPrefix", METADATA_PREFIX);
+        getParameter().put("metadataPrefix", METADATA_PREFIX);
     }
 
     /**
@@ -38,14 +38,14 @@ public class IntrandaViewerOverviewPageRepository extends IntrandaViewerReposito
      * @param delay int
      * @param enabled int
      */
-    public IntrandaViewerOverviewPageRepository(String id, String name, String url, String scriptPath, Timestamp lastHarvest, int frequency,
+    public IntrandaViewerOverviewPageRepository(Integer id, String name, String url, String scriptPath, Timestamp lastHarvest, int frequency,
             int delay, boolean enabled) {
         super(id, name, url, scriptPath, lastHarvest, frequency, delay, enabled);
-        parameter.put("metadataPrefix", METADATA_PREFIX);
+        getParameter().put("metadataPrefix", METADATA_PREFIX);
     }
 
     @Override
-    public String getType() {
+    public String getRepositoryType() {
         return TYPE;
     }
 }

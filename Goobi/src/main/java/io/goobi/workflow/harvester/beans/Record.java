@@ -39,7 +39,7 @@ public class Record implements Serializable, DatabaseObject {
     private String repositoryTimestamp;
     private String title;
     private String creator;
-    private String repositoryId;
+    private Integer repositoryId;
     private List<String> setSpecList = new ArrayList<>();
     private String subquery;
     private String jobId;

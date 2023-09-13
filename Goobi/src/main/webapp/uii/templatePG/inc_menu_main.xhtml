@@ -242,7 +242,14 @@
                                     action="quartz"
                                     rendered="#{LoginForm.hasRole('Admin_Quartz')}"
                                     icon="fa fa-spinner" />
-
+                                <!-- Repository -->
+                                <intranda:menuItem
+                                    id="a37d"
+                                    parentMenu="menu_administration"
+                                    label="#{msgs.intranda_administration_repository}"
+                                    action="#{harvesterBean.filter}"
+                                    rendered="#{LoginForm.hasRole('Admin_Repository')}"
+                                    icon="fa fa-database" />
 								<!-- Plugins overview -->
 								<intranda:menuItem
 									id="a42"
@@ -259,6 +266,7 @@
 									action="#{vocabularyBean.FilterKein}"
 									rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
 									icon="fa fa-database" />
+
 
 								<!-- SWAGGER-API -->
 								<intranda:menuItem

@@ -21,20 +21,18 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 
 import io.goobi.workflow.harvester.repository.Repository;
-import io.goobi.workflow.harvester.repository.internetarchive.InternetArchiveCliRepository;
-import io.goobi.workflow.harvester.repository.internetarchive.InternetArchiveRepository;
-import io.goobi.workflow.harvester.repository.oai.MetsModsRepository;
-import io.goobi.workflow.harvester.repository.oai.MetsRepository;
 import io.goobi.workflow.harvester.repository.oai.OAIDublinCoreRepository;
-import io.goobi.workflow.harvester.repository.oai.viewer.IntrandaViewerCrowdsourcingRepository;
-import io.goobi.workflow.harvester.repository.oai.viewer.IntrandaViewerOverviewPageRepository;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -60,22 +58,6 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
         }
     }
 
-    //    /**
-    //     * Converts {@link ResultSet} to {@link ArrayList} of {@link Job}
-    //     */
-    //    public static ResultSetHandler<List<Job>> resultSetToJobList = new ResultSetHandler<List<Job>>() {
-    //        @Override
-    //        public List<Job> handle(ResultSet rs) throws SQLException {
-    //            List<Job> retList = new ArrayList<>(rs.getFetchSize());
-    //            while (rs.next()) {
-    //                Job j = new Job(rs.getString("id"), rs.getString("status"), rs.getString("repository_id"), rs.getString("repository_name"),
-    //                        rs.getString("message"), rs.getTimestamp("timestamp"));
-    //                retList.add(j);
-    //            }
-    //            return retList;
-    //        }
-    //    };
-
     /**
      * Converts {@link ResultSet} to {@link ArrayList} of {@link OAIDublinCoreRepository}
      */
@@ -84,96 +66,159 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
         public List<Repository> handle(ResultSet rs) throws SQLException {
             List<Repository> retList = new ArrayList<>(rs.getFetchSize());
             while (rs.next()) {
-                Repository r = null;
-                String repositoryType = rs.getString("type");
-                if (repositoryType != null) {
-                    switch (repositoryType) {
-                        case InternetArchiveRepository.TYPE:
-                            // The Internet Archive
-                            r = new InternetArchiveRepository(rs.getString("id"), rs.getString("name"), rs.getString("base_url"),
-                                    rs.getString("export_folder"), rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"),
-                                    rs.getInt("delay"), rs.getBoolean("enabled"));
-                            break;
-                        case IntrandaViewerOverviewPageRepository.TYPE:
-                            // intranda viewer overview pages
-                            r = new IntrandaViewerOverviewPageRepository(rs.getString("id"), rs.getString("name"), rs.getString("base_url"),
-                                    rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"), rs.getInt("delay"),
-                                    rs.getBoolean("enabled"));
-                            break;
-                        case IntrandaViewerCrowdsourcingRepository.TYPE:
-                            // intranda viewer crowsourcing updates
-                            r = new IntrandaViewerCrowdsourcingRepository(rs.getString("id"), rs.getString("name"), rs.getString("base_url"),
-                                    rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"), rs.getInt("delay"),
-                                    rs.getBoolean("enabled"));
-                            break;
-                        case MetsRepository.TYPE:
-                            // METS
-                            r = new MetsRepository(rs.getString("id"), rs.getString("name"), rs.getString("base_url"), rs.getString("export_folder"),
-                                    rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"), rs.getInt("delay"),
-                                    rs.getBoolean("enabled"));
-                            break;
-                        case MetsModsRepository.TYPE:
-                            r = new MetsModsRepository(rs.getString("id"), rs.getString("name"), rs.getString("base_url"),
-                                    rs.getString("export_folder"), rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"),
-                                    rs.getInt("delay"), rs.getBoolean("enabled"));
-                            break;
-                        case InternetArchiveCliRepository.TYPE:
-                            r = new InternetArchiveCliRepository(rs.getString("id"), rs.getString("name"), rs.getString("base_url"),
-                                    rs.getString("export_folder"), rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"),
-                                    rs.getInt("delay"), rs.getBoolean("enabled"));
-                            break;
+                Repository r = new Repository(rs.getInt("id"), rs.getString("name"), rs.getString("base_url"), rs.getString("export_folder"),
+                        rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"), rs.getInt("delay"),
+                        rs.getBoolean("enabled"));
+                r.setRepositoryType(rs.getString("type"));
 
-                        default:
-                            log.error("Cannot instantiate unknown repository type: {}", repositoryType);
-                            break;
+                String query = "SELECT name, value FROM repository_parameter WHERE repository_id = ?";
+                Connection connection = null;
+                try {
+                    connection = MySQLHelper.getInstance().getConnection();
+                    Map<String, String> parameter = new QueryRunner().query(connection, query, resultSetToMapHandler, r.getId());
+                    r.setParameter(parameter);
+                } finally {
+                    if (connection != null) {
+                        MySQLHelper.closeConnection(connection);
                     }
                 }
-
-                if (r != null) {
-                    retList.add(r);
-                }
-                // TODO implement other repositories types
-                // Repository r = new Repository(rs.getString("id"),
-                // rs.getString("base_url"), rs.getTimestamp("last_harvest"),
-                // rs.getInt("freq"),
-                // rs.getBoolean("enabled"));
+                retList.add(r);
             }
             return retList;
         }
     };
 
-    //    /**
-    //     * Converts {@link ResultSet} to {@link ArrayList} of {@link Record}
-    //     */
-    //    public static ResultSetHandler<List<Record>> resultSetToRecordList = new ResultSetHandler<List<Record>>() {
-    //        @Override
-    //        public List<Record> handle(ResultSet rs) throws SQLException {
-    //            List<Record> retList = new ArrayList<>(rs.getFetchSize());
-    //            while (rs.next()) {
-    //                Record r = new Record(rs.getString("id"), rs.getTimestamp("timestamp"), rs.getString("identifier"),
-    //                        rs.getDate("repository_datestamp"), rs.getString("title"), rs.getString("creator"), rs.getString("repository_id"),
-    //                        rs.getString("setSpec"), rs.getString("job_id"), rs.getString("source"), rs.getString("exported"),
-    //                        rs.getTimestamp("exported_datestamp"), rs.getString("subquery"));
-    //                retList.add(r);
-    //            }
-    //            return retList;
-    //        }
-    //    };
+    public static int getRepositoryCount(String filter) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder("SELECT count(1) FROM repository");
+        if (filter != null && !filter.isEmpty()) {
+            sql.append(" WHERE " + filter);
+        }
 
-    //    /**
-    //     * Converts {@link ResultSet} to {@link ArrayList} of {@link ExportHistoryEntry}
-    //     */
-    //    public static ResultSetHandler<List<ExportHistoryEntry>> resultSetToExportHistoryEntryList = new ResultSetHandler<List<ExportHistoryEntry>>() {
-    //        @Override
-    //        public List<ExportHistoryEntry> handle(ResultSet rs) throws SQLException {
-    //            List<ExportHistoryEntry> retList = new ArrayList<>();
-    //            while (rs.next()) {
-    //                ExportHistoryEntry r = new ExportHistoryEntry(rs.getString("id"), rs.getTimestamp("timestamp"), rs.getString("record_id"),
-    //                        rs.getString("record_identifier"), rs.getString("record_title"), rs.getString("repository_id"), rs.getString("status"),
-    //                        rs.getString("message"));
-    //                retList.add(r);
-    //            }
-    //            return retList;
-    //        }
-    //    };
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
+    public static List<Repository> getRepositories(String order, String filter, Integer start, Integer count) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder("SELECT * FROM repository");
+        if (filter != null && !filter.isEmpty()) {
+            sql.append(" WHERE " + filter);
+        }
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            return new QueryRunner().query(connection, sql.toString(), resultSetToRepositoriesList);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void saveRepository(Repository repository) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            if (repository.getId() == null) {
+
+                StringBuilder sql = new StringBuilder();
+                sql.append("INSERT INTO repository ");
+                sql.append("(name, base_url, export_folder, script_path, last_harvest, freq, delay, enabled, type) ");
+                sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+                Integer id = runner.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, repository.getName(),
+                        repository.getUrl(), repository.getExportFolderPath(), repository.getScriptPath(), repository.getLastHarvest(),
+                        repository.getFrequency(), repository.getDelay(), repository.isEnabled(), repository.getRepositoryType());
+                repository.setId(id);
+            } else {
+                StringBuilder sql = new StringBuilder();
+                sql.append("UPDATE repository SET name = ?, base_url = ?, export_folder = ?, script_path = ?, last_harvest = ?, ");
+                sql.append("freq = ?, delay = ?, enabled = ?, type = ? WHERE id = ?");
+                runner.update(connection, sql.toString(), repository.getName(), repository.getUrl(), repository.getExportFolderPath(),
+                        repository.getScriptPath(), repository.getLastHarvest(), repository.getFrequency(), repository.getDelay(),
+                        repository.isEnabled(), repository.getRepositoryType(), repository.getId());
+            }
+
+            if (!repository.getParameter().isEmpty()) {
+                String deletion = "delete from repository_parameter where repository_id = ?";
+                runner.update(connection, deletion, repository.getId());
+
+                String insert = "INSERT INTO repository_parameter (repository_id, name, value) VALUES (?,?,?)";
+                for (Entry<String, String> param : repository.getParameter().entrySet()) {
+
+                    runner.update(connection, insert, repository.getId(), param.getKey(), param.getValue());
+
+                }
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
+    public static void deleteRepository(Repository repository) throws SQLException {
+        if (repository.getId() != null) {
+            String deletion = "DELETE FROM repository_parameter WHERE repository_id = ?";
+            String sql = "DELETE FROM repository WHERE id = ?";
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                new QueryRunner().update(connection, deletion, repository.getId());
+                new QueryRunner().update(connection, sql, repository.getId());
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
+    private static ResultSetHandler<Map<String, String>> resultSetToMapHandler = new ResultSetHandler<Map<String, String>>() {
+        @Override
+        public Map<String, String> handle(ResultSet rs) throws SQLException {
+            Map<String, String> map = new HashMap<>();
+            while (rs.next()) {
+                map.put(rs.getString("name"), rs.getString("value"));
+            }
+            return map;
+        }
+    };
+
+    public static Timestamp getLastHarvest(Integer repositoryId) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            Object[] param = { repositoryId };
+            String sql = "SELECT last_harvest FROM repository WHERE id=?";
+            return new QueryRunner().query(connection, sql, new ResultSetHandler<Timestamp>() {
+                @Override
+                public Timestamp handle(ResultSet rs) throws SQLException {
+                    if (!rs.next()) {
+                        return null;
+                    }
+                    return rs.getTimestamp("last_harvest");
+                }
+            }, param);
+
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }

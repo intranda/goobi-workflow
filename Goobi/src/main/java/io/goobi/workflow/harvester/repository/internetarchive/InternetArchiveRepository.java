@@ -65,14 +65,14 @@ public class InternetArchiveRepository extends Repository {
 
     private boolean useProxy = false;
 
-    public InternetArchiveRepository(String id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest,
+    public InternetArchiveRepository(Integer id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest,
             int frequency, int delay, boolean enabled) {
         super(id, name, url, exportFolderPath, scriptPath, lastHarvest, frequency, delay, enabled);
-        this.allowUpdates = false;
+        setAllowUpdates( false);
     }
 
     @Override
-    public String getType() {
+    public String getRepositoryType() {
         return TYPE;
     }
 
@@ -90,12 +90,12 @@ public class InternetArchiveRepository extends Repository {
     @Override
     public int harvest(String jobId) throws HarvestException {
         /* Get last harvestering timestamp */
-        StringBuilder query = new StringBuilder(url);
+        StringBuilder query = new StringBuilder(getUrl());
 
         // The Internet Archive has a 14-day delay
-        if (delay > 0) {
+        if (getDelay() > 0) {
             MutableDateTime now = new MutableDateTime();
-            now.addDays(-delay);
+            now.addDays(-getDelay());
             String untilDateTime = Utils.formatterISO8601DateTimeFullWithTimeZone.print(now);
 
             query.append("%20AND%20publicdate:[null%20TO%20").append(untilDateTime).append("]");
@@ -209,12 +209,13 @@ public class InternetArchiveRepository extends Repository {
                             rec.setCreator(creator);
                         }
                         rec.setJobId(jobId);
-                        rec.setRepositoryId(id);
+                        rec.setRepositoryId(getId());
                         recordList.add(rec);
                     }
                 }
                 if (!recordList.isEmpty()) {
-                    int numHarvested = HarvesterRepositoryManager.addRecords(recordList, allowUpdates);
+                    int numHarvested = HarvesterRepositoryManager.addRecords(recordList, isAllowUpdates()
+                            );
                     totalHarvested += numHarvested;
                     log.debug("{} records have been harvested, {} of which were already in the DB.", recordList.size(),
                             (recordList.size() - numHarvested));

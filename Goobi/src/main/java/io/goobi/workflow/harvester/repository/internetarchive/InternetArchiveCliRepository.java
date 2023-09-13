@@ -50,14 +50,14 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public InternetArchiveCliRepository(String id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest,
+    public InternetArchiveCliRepository(Integer id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest,
             int frequency, int delay, boolean enabled) {
         super(id, name, url, exportFolderPath, scriptPath, lastHarvest, frequency, delay, enabled);
-        this.allowUpdates = false;
+        setAllowUpdates(false);
     }
 
     @Override
-    public String getType() {
+    public String getRepositoryType() {
         return TYPE;
     }
 
@@ -109,7 +109,7 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
             log.debug("Configuration file exists.");
         }
 
-        String[] call = { iaCli, "search", url, "--itemlist", "-p", "scope:all" };
+        String[] call = { iaCli, "search", getUrl(), "--itemlist", "-p", "scope:all" };
         List<Record> recordList = new ArrayList<>();
         List<String> outputChannel = callProcess(call);
 
@@ -128,12 +128,12 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
             rec.setIdentifier(identifier);
             rec.setJobId(jobId);
             rec.setRepositoryTimestamp(dateString);
-            rec.setRepositoryId(id);
+            rec.setRepositoryId(getId());
             recordList.add(rec);
         }
 
         if (!recordList.isEmpty()) {
-            int numHarvested = HarvesterRepositoryManager.addRecords(recordList, allowUpdates);
+            int numHarvested = HarvesterRepositoryManager.addRecords(recordList, isAllowUpdates());
             totalHarvested += numHarvested;
             log.debug("{} records have been harvested, {} of which were already in the DB.", recordList.size(),
                     (recordList.size() - numHarvested));

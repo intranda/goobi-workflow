@@ -64,7 +64,7 @@ public abstract class OAIRepository extends Repository {
      * @param delay int
      * @param enabled int
      */
-    public OAIRepository(String id, String name, String url, String exportFolder, String scriptPath, Timestamp lastHarvest, int frequency, int delay,
+    public OAIRepository(Integer id, String name, String url, String exportFolder, String scriptPath, Timestamp lastHarvest, int frequency, int delay,
             boolean enabled) {
         super(id, name, url, exportFolder, scriptPath, lastHarvest, frequency, delay, enabled);
     }

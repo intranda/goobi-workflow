@@ -24,12 +24,12 @@ import io.goobi.workflow.harvester.beans.Record;
 
 public class ExportHistoryEntry {
 
-    private String id;
+    private Integer id;
     private String timestamp;
     private String recordId;
     private String recordIdentifier;
     private String recordTitle;
-    private String repositoryId;
+    private Integer repositoryId;
     private String status;
     private String message;
 
@@ -55,7 +55,7 @@ public class ExportHistoryEntry {
      * @param status
      * @param message
      */
-    public ExportHistoryEntry(String recordId, String recordIdentifier, String recordTitle, String repositoryId, String status, String message) {
+    public ExportHistoryEntry(String recordId, String recordIdentifier, String recordTitle, Integer repositoryId, String status, String message) {
         this.recordId = recordId;
         this.recordIdentifier = recordIdentifier;
         this.repositoryId = repositoryId;
@@ -75,7 +75,7 @@ public class ExportHistoryEntry {
      * @param status
      * @param message
      */
-    public ExportHistoryEntry(String id, Timestamp timestamp, String recordId, String recordIdentifier, String recordTitle, String repositoryId,
+    public ExportHistoryEntry(Integer id, Timestamp timestamp, String recordId, String recordIdentifier, String recordTitle, Integer repositoryId,
             String status, String message) {
         this.id = id;
         if (timestamp != null) {
@@ -99,14 +99,14 @@ public class ExportHistoryEntry {
     /**
      * @return the id
      */
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -169,14 +169,14 @@ public class ExportHistoryEntry {
     /**
      * @return the repositoryId
      */
-    public String getRepositoryId() {
+    public Integer getRepositoryId() {
         return repositoryId;
     }
 
     /**
      * @param repositoryId the repositoryId to set
      */
-    public void setRepositoryId(String repositoryId) {
+    public void setRepositoryId(Integer repositoryId) {
         this.repositoryId = repositoryId;
     }
 

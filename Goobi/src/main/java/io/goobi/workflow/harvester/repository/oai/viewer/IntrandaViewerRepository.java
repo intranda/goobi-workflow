@@ -63,7 +63,7 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
      * @param delay int
      * @param enabled int
      */
-    public IntrandaViewerRepository(String id, String name, String url, String scriptPath, Timestamp lastHarvest, int frequency, int delay,
+    public IntrandaViewerRepository(Integer id, String name, String url, String scriptPath, Timestamp lastHarvest, int frequency, int delay,
             boolean enabled) {
         super(id, name, url, null, scriptPath, lastHarvest, frequency, delay, enabled);
     }
@@ -84,13 +84,13 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
     @Override
     public int harvest(String jobId) throws HarvestException {
         /* Get last harvestering timestamp */
-        Timestamp lastHarvest = HarvesterRepositoryManager.getLastHarvest(id);
+        Timestamp lastHarvest = HarvesterRepositoryManager.getLastHarvest(getId());
         String url = getUrl().trim();
         String query;
         if (url.contains("?")) {
-            query = url + "&verb=ListRecords&metadataPrefix=" + parameter.get("metadataPrefix");
+            query = url + "&verb=ListRecords&metadataPrefix=" + getParameter().get("metadataPrefix");
         } else {
-            query = url + "?verb=ListRecords&metadataPrefix=" + parameter.get("metadataPrefix");
+            query = url + "?verb=ListRecords&metadataPrefix=" + getParameter().get("metadataPrefix");
         }
 
         StringBuilder sbQuery = new StringBuilder(query);
@@ -187,14 +187,14 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
             tempFolder.mkdirs();
         }
 
-        log.trace("metadataPrefix: {}", parameter.get("metadataPrefix"));
+        log.trace("metadataPrefix: {}", getParameter().get("metadataPrefix"));
         String dateRange = record.getSubquery() != null ? record.getSubquery() : "";
 
         String query;
         if (repositoryUrl.contains("?")) {
             repositoryUrl = repositoryUrl.substring(0, repositoryUrl.indexOf("?"));
         }
-        query = repositoryUrl + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + parameter.get("metadataPrefix") + dateRange;
+        query = repositoryUrl + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + getParameter().get("metadataPrefix") + dateRange;
 
         Path temp = null;
         Path tempDataFile = null;
@@ -307,10 +307,10 @@ public abstract class IntrandaViewerRepository extends OAIRepository {
         // parse files
         int harvested = 0;
         SParser parser = new SParser();
-        parser.setRepositoryType(getType());
+        parser.setRepositoryType(getRepositoryType());
         List<Record> recordList = parser.parseXML(f, jobId, getId(), requiredSetSpec, subquery);
         if (recordList.size() > 0) {
-            harvested = HarvesterRepositoryManager.addRecords(recordList, allowUpdates);
+            harvested = HarvesterRepositoryManager.addRecords(recordList, isAllowUpdates());
             log.info("{} records have been harvested, {} of which were already in the DB.", recordList.size(), (recordList.size() - harvested));
         } else {
             log.debug("No new records harvested.");

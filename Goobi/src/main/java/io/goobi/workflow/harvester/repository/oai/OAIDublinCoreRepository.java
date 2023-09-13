@@ -54,18 +54,18 @@ public class OAIDublinCoreRepository extends OAIRepository {
      * @param delay int
      * @param enabled int
      */
-    public OAIDublinCoreRepository(String id, String name, String url, String exportFolder, String scriptPath, Timestamp lastHarvest, int frequency,
+    public OAIDublinCoreRepository(Integer id, String name, String url, String exportFolder, String scriptPath, Timestamp lastHarvest, int frequency,
             int delay, boolean enabled) {
         super(id, name, url, exportFolder, scriptPath, lastHarvest, frequency, delay, enabled);
-        parameter.put("metadataPrefix", METADATA_PREFIX);
+        getParameter().put("metadataPrefix", METADATA_PREFIX);
     }
 
     public OAIDublinCoreRepository() {
-        parameter.put("metadataPrefix", METADATA_PREFIX);
+        getParameter().put("metadataPrefix", METADATA_PREFIX);
     }
 
     @Override
-    public String getType() {
+    public String getRepositoryType() {
         return TYPE;
     }
 
@@ -85,7 +85,7 @@ public class OAIDublinCoreRepository extends OAIRepository {
     @Override
     public int harvest(String jobId) {
         /* Get last harvestering timestamp */
-        Timestamp lastHarvest = HarvesterRepositoryManager.getLastHarvest(id);
+        Timestamp lastHarvest = HarvesterRepositoryManager.getLastHarvest(getId());
         String url = getUrl().trim();
         String query;
         if (url.contains("?")) {

@@ -25,7 +25,7 @@ public class IntrandaViewerCrowdsourcingRepository extends IntrandaViewerReposit
     private static final String METADATA_PREFIX = "iv_crowdsourcing";
 
     public IntrandaViewerCrowdsourcingRepository() {
-        parameter.put("metadataPrefix", METADATA_PREFIX);
+        getParameter().put("metadataPrefix", METADATA_PREFIX);
     }
 
     /**
@@ -38,14 +38,14 @@ public class IntrandaViewerCrowdsourcingRepository extends IntrandaViewerReposit
      * @param delay int
      * @param enabled int
      */
-    public IntrandaViewerCrowdsourcingRepository(String id, String name, String url, String scriptPath, Timestamp lastHarvest, int frequency,
+    public IntrandaViewerCrowdsourcingRepository(Integer id, String name, String url, String scriptPath, Timestamp lastHarvest, int frequency,
             int delay, boolean enabled) {
         super(id, name, url, scriptPath, lastHarvest, frequency, delay, enabled);
-        parameter.put("metadataPrefix", METADATA_PREFIX);
+        getParameter().put("metadataPrefix", METADATA_PREFIX);
     }
 
     @Override
-    public String getType() {
+    public String getRepositoryType() {
         return TYPE;
     }
 }

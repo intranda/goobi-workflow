@@ -1,0 +1,194 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{harvesterBean.repository.id == null?msgs.createNewRepository:msgs.editRepository}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="repositories"
+            label="#{msgs.repository}"
+            action="#{DocketForm.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb
+            id="repository"
+            label="#{myPageTitle}"
+            action="repository_edit"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form
+            id="myform"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Repository')}">
+
+            <div
+                class="row"
+                role="main">
+                <div class="col-12">
+
+                    <intranda:box
+                        boxType="action"
+                        boxForm="true"
+                        boxPadding="false"
+                        title="#{myPageTitle}"
+                        icon="fa-print"
+                        id="box">
+
+                        <intranda:formInputText
+                            id="title"
+                            name="titel"
+                            label="#{msgs.name}"
+                            focusOnLoad="true"
+                            field="#{harvesterBean.repository.name}"
+                            help="#{msgs.helpRepositoryTitle}"
+                            required="true"
+                            fieldStyle="form-control" />
+
+
+                        <div class="row">
+                            <div class="col-12 col-md-3 ">
+
+                                <h:outputLabel
+                                    styleClass="form__label"
+                                    for="repoType"
+                                    value="#{msgs.repositoryType}"
+                                    title="#{msgs.repositoryType}">
+
+                                    <f:passThroughAttribute
+                                        name="data-bs-toggle"
+                                        value="tooltip" />
+                                    <f:passThroughAttribute
+                                        name="data-bs-placement"
+                                        value="right" />
+
+
+                                    <i class="fa fa-asterisk form__required" />
+                                </h:outputLabel>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <h:selectOneMenu
+                                    id="repoType"
+                                    styleClass="form-select"
+                                    value="#{harvesterBean.repository.repositoryType}">
+                                    <f:ajax
+                                        render="myform:box:typeArea"
+                                        execute="@this" />
+                                    <f:selectItem
+                                        itemValue=""
+                                        itemLabel="#{msgs.bitteAuswaehlen}" />
+                                    <f:selectItems
+                                        value="#{harvesterBean.repositoryTypes}"
+                                        var="var"
+                                        itemLabel="#{var}"
+                                        itemValue="#{var}" />
+                                </h:selectOneMenu>
+                                <h:message
+                                    for="ldaprepoTypeGruppe"
+                                    showDetail="true"
+                                    styleClass="help-inline text-danger" />
+                                <intranda:formHelp content="#{msgs.helpRepositoryType}" />
+                            </div>
+                        </div>
+
+                        <h:panelGroup id="typeArea">
+                            <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'oai'}">
+
+                                <intranda:formInputTextAjax
+                                    classLeft="col-12 col-md-3"
+                                    id="oaiUrl"
+                                    label="#{msgs.oaiUrl}"
+                                    field="#{harvesterBean.repository.oaiUrl}"
+                                    help="#{msgs.helpOaiUrl}"
+                                    required="false"
+                                    name="oaiUrl"
+                                    execute="@this"
+                                    render="myform:box:typeArea" />
+
+                                <intranda:formInputText
+                                    classLeft="col-12 col-md-3"
+                                    id="rootUrl"
+                                    label="#{msgs.rootUrl}"
+                                    field="#{harvesterBean.repository.parameter['url']}"
+                                    help="#{msgs.helpOaiRootUrl}"
+                                    required="false"
+                                    name="rootUrl" />
+                                <intranda:formInputText
+                                    classLeft="col-12 col-md-3"
+                                    id="set"
+                                    label="#{msgs.metadataSet}"
+                                    field="#{harvesterBean.repository.parameter['set']}"
+                                    help="#{msgs.helpMetadataSet}"
+                                    required="false"
+                                    name="metadataSet" />
+                                <intranda:formInputText
+                                    classLeft="col-12 col-md-3"
+                                    id="metadataPrefix"
+                                    label="#{msgs.metadataPrefix}"
+                                    field="#{harvesterBean.repository.parameter['metadataPrefix']}"
+                                    help="#{msgs.helpOaimetadataPrefix}"
+                                    required="false"
+                                    name="metadataPrefix" />
+
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <intranda:formInputText
+                            classLeft="col-12 col-md-3"
+                            id="Frequency"
+                            label="#{msgs.HarvestingFrequency}"
+                            field="#{harvesterBean.repository.frequency}"
+                            help="#{msgs.helpHarvestingFrequency}"
+                            required="false"
+                            name="Frequency" />
+                        <intranda:formInputText
+                            classLeft="col-12 col-md-3"
+                            id="Delay"
+                            label="#{msgs.HarvestingDelay}"
+                            field="#{harvesterBean.repository.delay}"
+                            help="#{msgs.helpHarvestingDelay}"
+                            required="false"
+                            name="Delay" />
+
+                        <intranda:formButtonArea
+                            id="buttons"
+                            form="#{harvesterBean}"
+                            object="#{harvesterBean.repository.id}"
+                            actionCancel="#{harvesterBean.cancel}" />
+
+                    </intranda:box>
+
+                </div>
+                <!-- /col -->
+            </div>
+            <!-- /row -->
+        </h:form>
+
+        <!-- Focus first input field on load -->
+        <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
+        <script type="text/javascript">
+                                    gwFocusOnLoad.init()
+                                </script>
+
+    </ui:define>
+
+</ui:composition>
