@@ -30,12 +30,12 @@ import java.util.Map.Entry;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringEscapeUtils;
 
+import io.goobi.workflow.harvester.beans.Record;
 import io.goobi.workflow.harvester.repository.Repository;
 import io.goobi.workflow.harvester.repository.oai.OAIDublinCoreRepository;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 class HarvesterRepositoryMysqlHelper implements Serializable {
 
     private static final long serialVersionUID = -8160933323894230856L;
@@ -97,9 +97,6 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
-            }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
             if (connection != null) {
@@ -203,7 +200,6 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Object[] param = { repositoryId };
             String sql = "SELECT last_harvest FROM repository WHERE id=?";
             return new QueryRunner().query(connection, sql, new ResultSetHandler<Timestamp>() {
                 @Override
@@ -213,12 +209,53 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
                     }
                     return rs.getTimestamp("last_harvest");
                 }
-            }, param);
+            }, repositoryId);
 
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
         }
+    }
+
+    public static int addRecords(List<Record> recordList, boolean allowUpdates) throws SQLException {
+        int counterNew = 0;
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            // Check if same Record is already in DB. This check makes this method pretty slow, but secure..
+            String sqlCheck = "SELECT count(1) FROM record WHERE identifier=?";
+            QueryRunner run = new QueryRunner();
+            for (Record record : recordList) {
+                // Some repository types (e.g. intranda viewer) may allow multiple instances of the same record identifier, with the difference being different time frame subqueries
+                String subquery = record.getSubquery() == null ? "" : " AND subquery='" + record.getSubquery() + "'";
+                // Check whether the record has previously been harvested
+                int i = run.query(connection, sqlCheck + subquery, MySQLHelper.resultSetToIntegerHandler,
+                        StringEscapeUtils.escapeSql(record.getIdentifier()));
+                if (i == 0) {
+                    // Add record to DB
+                    String sql =
+                            "INSERT INTO record (repository_id,title,creator,repository_datestamp,setSpec,identifier,job_id,source,subquery) VALUES (?,?,?,?,?,?,?,?,?)";
+                    run.update(connection, sql, record.getRepositoryId(), StringEscapeUtils.escapeSql(record.getTitle()),
+                            StringEscapeUtils.escapeSql(record.getCreator()), record.getRepositoryTimestamp(), record.getSetSpec(),
+                            StringEscapeUtils.escapeSql(record.getIdentifier()), record.getJobId(), StringEscapeUtils.escapeSql(record.getSource()),
+                            StringEscapeUtils.escapeSql(record.getSubquery()));
+                    counterNew++;
+                } else if (allowUpdates) {
+                    // Update existing record and reset exported status
+                    String sql =
+                            "UPDATE record SET exported=NULL, title=?, creator=?, repository_datestamp=?, setSpec=?, job_id=?, source=?, subquery=? WHERE identifier=?";
+                    run.update(connection, sql, StringEscapeUtils.escapeSql(record.getTitle()), StringEscapeUtils.escapeSql(record.getCreator()),
+                            record.getRepositoryTimestamp(), record.getSetSpec(), record.getJobId(), StringEscapeUtils.escapeSql(record.getSource()),
+                            StringEscapeUtils.escapeSql(record.getSubquery()), record.getIdentifier());
+                }
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+        return counterNew;
     }
 }

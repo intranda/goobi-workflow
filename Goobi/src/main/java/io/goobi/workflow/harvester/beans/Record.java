@@ -49,8 +49,20 @@ public class Record implements Serializable, DatabaseObject {
 
     @Override
     public void lazyLoad() {
-        // TODO Auto-generated method stub
-
+        // do nothing
     }
 
+    public String getSetSpec() {
+        if (!setSpecList.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (String str : setSpecList) {
+                if (sb.length() > 0) {
+                    sb.append(", ");
+                }
+                sb.append(str);
+            }
+            return sb.toString();
+        }
+        return "";
+    }
 }

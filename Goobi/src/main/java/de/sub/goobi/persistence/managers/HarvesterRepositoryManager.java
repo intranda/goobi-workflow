@@ -97,7 +97,7 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
         }
     }
 
-    public static void changeStatusOfRepository(Repository repository)  {
+    public static void changeStatusOfRepository(Repository repository) {
         //        Connection connection = null;
         //        try {
         //            connection = getConnection();
@@ -120,17 +120,22 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
         //        }
     }
 
+    public static int addRecords(List<Record> recordList, boolean allowUpdates) {
+        if (allowUpdates) {
+            log.debug("Adding {} records to DB...", recordList.size());
+        } else {
+            log.debug("Adding {} records to DB (minus any duplicates)...", recordList.size());
+        }
 
-
-    public static int addRecords(List<Record> recList, boolean allowUpdates) {
-
-        // TODO
-
+        try {
+            return HarvesterRepositoryMysqlHelper.addRecords(recordList, allowUpdates);
+        } catch (SQLException e) {
+            log.error(e);
+        }
         return 0;
     }
 
-
-    public static Timestamp getLastHarvest(Integer repositoryId)  {
+    public static Timestamp getLastHarvest(Integer repositoryId) {
         try {
             return HarvesterRepositoryMysqlHelper.getLastHarvest(repositoryId);
         } catch (SQLException e) {

@@ -172,6 +172,7 @@ public class SParser {
      ***************************************************************************************************************/
     private Record parseRecord(Element element, String jobId, Integer repositoryId, String requiredSetSpec, String subquery) {
         Record rec = new Record();
+        rec.setJobId(jobId);
         rec.setSubquery(subquery);
 
         // ------------------------------------------------------------------------------------------------

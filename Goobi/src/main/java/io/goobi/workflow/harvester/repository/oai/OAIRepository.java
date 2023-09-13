@@ -113,7 +113,7 @@ public abstract class OAIRepository extends Repository {
 
             // try to write answer to DB
             try {
-                harvested += parseAndRecordXmlFile(f, jobId, null);
+                //                harvested += parseAndRecordXmlFile(f, jobId, null);
             } finally {
                 if (!f.delete()) {
                     log.warn("Could not delete temporary file '{}'!", f.getAbsolutePath());
