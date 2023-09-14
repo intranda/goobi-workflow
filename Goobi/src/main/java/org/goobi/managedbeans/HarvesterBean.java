@@ -18,12 +18,15 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.inject.Named;
 
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
+import io.goobi.workflow.harvester.beans.Job;
 import io.goobi.workflow.harvester.repository.Repository;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,5 +75,21 @@ public class HarvesterBean extends BasicBean implements Serializable {
 
     public String Loeschen() {
         return deleteRepository();
+    }
+
+
+    public String harvestNow() {
+        if (repository != null) {
+            Timestamp newTime = new Timestamp(new Date().getTime());
+
+
+            Job j = new Job(null, Job.WAITING, repository.getId(), repository.getName(), null, newTime);
+
+            j = HarvesterRepositoryManager.addNewJob(j);
+            j.run(true);
+
+        }
+
+        return null;
     }
 }

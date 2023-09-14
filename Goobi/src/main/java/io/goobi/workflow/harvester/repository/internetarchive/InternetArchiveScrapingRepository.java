@@ -99,7 +99,7 @@ public class InternetArchiveScrapingRepository extends InternetArchiveRepository
      * @return The number of harvested, non-duplicate records.
      */
     @Override
-    public int harvest(String jobId) {
+    public int harvest(Integer jobId) {
         /* Get last harvestering timestamp */
         StringBuilder query = new StringBuilder(getUrl());
 
@@ -126,7 +126,7 @@ public class InternetArchiveScrapingRepository extends InternetArchiveRepository
      * @throws DBException
      * @return The number of harvested, non-duplicate records.
      */
-    private int querySolrToDB(String query, String jobId) {
+    private int querySolrToDB(String query, Integer jobId) {
         int totalHarvested = 0;
         int numFound = 0;
 

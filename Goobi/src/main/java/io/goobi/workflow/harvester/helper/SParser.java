@@ -67,7 +67,7 @@ public class SParser {
      * @throws ParserException
      * @throws HarvestException
      ***************************************************************************************************************/
-    public List<Record> parseXML(File file, String jobId, Integer repositoryId, String requiredSetSpec, String subquery) throws HarvestException {
+    public List<Record> parseXML(File file, Integer jobId, Integer repositoryId, String requiredSetSpec, String subquery) throws HarvestException {
         List<Record> retList = new ArrayList<>();
 
         SAXBuilder builder = XmlTools.getSAXBuilder();
@@ -170,7 +170,7 @@ public class SParser {
      * @return {@link Record}
      * @throws XMLStreamException
      ***************************************************************************************************************/
-    private Record parseRecord(Element element, String jobId, Integer repositoryId, String requiredSetSpec, String subquery) {
+    private Record parseRecord(Element element, Integer jobId, Integer repositoryId, String requiredSetSpec, String subquery) {
         Record rec = new Record();
         rec.setJobId(jobId);
         rec.setSubquery(subquery);

@@ -106,6 +106,22 @@
                                                     target="#{harvesterBean.repository}"
                                                     value="#{item}" />
                                             </button>
+
+                                            <button
+                                                jsf:action="#{harvesterBean.harvestNow}"
+                                                jsf:rel="tooltip"
+                                                title="#{msgs.jobs_run_once_now}"
+                                                class="btn btn-blank float-end">
+                                                <i class="fa fa-repeat" />
+                                                <f:passThroughAttribute
+                                                    name="data-toggle"
+                                                    value="tooltip" />
+                                                <f:setPropertyActionListener
+                                                    target="#{harvesterBean.repository}"
+                                                    value="#{item}" />
+
+                                            </button>
+
                                         </div>
                                     </x:column>
 

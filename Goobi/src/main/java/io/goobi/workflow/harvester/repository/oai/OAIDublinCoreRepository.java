@@ -82,7 +82,7 @@ public class OAIDublinCoreRepository extends OAIRepository {
      * @throws ParserException
      * @throws HarvestException
      */
-    @Override
+
     public int harvest(String jobId) {
         /* Get last harvestering timestamp */
         Timestamp lastHarvest = HarvesterRepositoryManager.getLastHarvest(getId());

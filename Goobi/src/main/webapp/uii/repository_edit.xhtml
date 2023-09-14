@@ -168,6 +168,15 @@
                             help="#{msgs.helpHarvestingDelay}"
                             required="false"
                             name="Delay" />
+                            
+                            
+                            
+                       <intranda:formInputCheckBox
+                                id="active"
+                                label="#{msgs.isActive}"
+                                field="#{harvesterBean.repository.enabled}"
+                                help="#{msgs.helpHarvestingActive}"
+                                name="active" />
 
                         <intranda:formButtonArea
                             id="buttons"

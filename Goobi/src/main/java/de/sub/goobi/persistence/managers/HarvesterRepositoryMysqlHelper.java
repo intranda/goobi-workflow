@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +31,15 @@ import java.util.Map.Entry;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
+import io.goobi.workflow.harvester.beans.Job;
 import io.goobi.workflow.harvester.beans.Record;
+import io.goobi.workflow.harvester.export.ExportHistoryEntry;
 import io.goobi.workflow.harvester.repository.Repository;
 import io.goobi.workflow.harvester.repository.oai.OAIDublinCoreRepository;
 
@@ -40,7 +47,9 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
 
     private static final long serialVersionUID = -8160933323894230856L;
 
-    public static Repository getRepository(String repositoryId) throws SQLException {
+    public static DateTimeFormatter formatterISO8601DateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
+    public static Repository getRepository(Integer repositoryId) throws SQLException {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -228,7 +237,6 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
             String sqlCheck = "SELECT count(1) FROM record WHERE identifier=?";
             QueryRunner run = new QueryRunner();
             for (Record record : recordList) {
-                // Some repository types (e.g. intranda viewer) may allow multiple instances of the same record identifier, with the difference being different time frame subqueries
                 String subquery = record.getSubquery() == null ? "" : " AND subquery='" + record.getSubquery() + "'";
                 // Check whether the record has previously been harvested
                 int i = run.query(connection, sqlCheck + subquery, MySQLHelper.resultSetToIntegerHandler,
@@ -257,5 +265,251 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
             }
         }
         return counterNew;
+    }
+
+    public static List<String> getExistingIdentifier(List<String> identifiers) throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        for (String identifier : identifiers) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append("'");
+            sb.append(identifier);
+            sb.append("'");
+        }
+
+        String sql = "SELECT identifier from record where identifier in (" + sb.toString() + ")";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sql, new ColumnListHandler<>(1));
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static Job addNewJob(Job j) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            Object[] param = { j.getTimestamp().toString(), j.getStatus(), j.getRepositoryId(), j.getRepositoryName() };
+            j.getTimestamp().setNanos(0);
+            String propNames = "timestamp,status,repository_id,repository_name";
+            String values = "?,?,?,?";
+            String sql = "INSERT INTO job (" + propNames + ") VALUES (" + values + ")";
+            int rows = run.update(connection, sql, param);
+            if (rows != 0) {
+                Object[] selectParam = { j.getTimestamp().toString(), j.getRepositoryId() };
+                sql = "SELECT * FROM job WHERE timestamp=? AND repository_id=?";
+                List<Job> retList = run.query(connection, sql, resultSetToJobList, selectParam);
+                if (!retList.isEmpty()) {
+                    j.setId(retList.get(0).getId());
+                } else {
+                    sql = "SELECT * FROM job WHERE repository_id=? ORDER BY timestamp DESC LIMIT 1";
+                    Object[] altSelectParam = { j.getRepositoryId() };
+                    retList = run.query(connection, sql, resultSetToJobList, altSelectParam);
+                }
+            } else {
+                throw new SQLException("Job could not be added");
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+        return j;
+    }
+
+    public static ResultSetHandler<List<Job>> resultSetToJobList = new ResultSetHandler<List<Job>>() {
+        @Override
+        public List<Job> handle(ResultSet rs) throws SQLException {
+            List<Job> retList = new ArrayList<>(rs.getFetchSize());
+            while (rs.next()) {
+                Job j = new Job(rs.getInt("id"), rs.getString("status"), rs.getInt("repository_id"), rs.getString("repository_name"),
+                        rs.getString("message"), rs.getTimestamp("timestamp"));
+                retList.add(j);
+            }
+            return retList;
+        }
+    };
+
+    public static ResultSetHandler<List<Record>> resultSetToRecordList = new ResultSetHandler<List<Record>>() {
+        @Override
+        public List<Record> handle(ResultSet rs) throws SQLException {
+            List<Record> retList = new ArrayList<>(rs.getFetchSize());
+            while (rs.next()) {
+                Record r = new Record(rs.getInt("id"), rs.getTimestamp("timestamp"), rs.getString("identifier"), rs.getDate("repository_datestamp"),
+                        rs.getString("title"), rs.getString("creator"), rs.getInt("repository_id"), rs.getString("setSpec"), rs.getInt("job_id"),
+                        rs.getString("source"), rs.getString("exported"), rs.getTimestamp("exported_datestamp"), rs.getString("subquery"));
+                retList.add(r);
+            }
+            return retList;
+        }
+    };
+
+    public static void updateJobStatus(Job job) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            List<Object> paramList = new ArrayList<>();
+            String sql = "UPDATE job SET status=?";
+            paramList.add(job.getStatus());
+            if (StringUtils.isNotEmpty(job.getMessage())) {
+                sql += ", message=?";
+                paramList.add(job.getMessage());
+            }
+            sql += " WHERE id=?";
+            paramList.add(job.getId());
+            if (new QueryRunner().update(connection, sql, paramList.toArray()) == 0) {
+                throw new SQLException("Can't update status of Job with id: " + job.getId());
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static List<Record> getRecords(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters, boolean exported)
+            throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            List<Record> retList = new ArrayList<>();
+            String sql = generateGetRecordsQuery(first, pageSize, sortField, sortOrder, filters, exported);
+            retList = new QueryRunner().query(connection, sql, resultSetToRecordList);
+            return retList;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    private static String generateGetRecordsQuery(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters,
+            boolean exported) {
+        String notNull = "";
+        if (exported) {
+            notNull = "NOT ";
+        }
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM record WHERE exported IS ").append(notNull).append("NULL");
+        if (filters != null && filters.size() > 0) {
+            List<String> sortedKeys = new ArrayList<>(filters.keySet());
+            Collections.sort(sortedKeys);
+            for (String key : sortedKeys) {
+                String value = filters.get(key);
+                if (StringUtils.isNotBlank(value)) {
+                    sql.append(" AND ");
+                    switch (key) {
+                        case "repositoryTimestamp":
+                            key = "repository_datestamp";
+                            sql.append(key);
+                            sql.append(" LIKE '%").append(StringEscapeUtils.escapeSql(value)).append("%'");
+                            break;
+                        case "exportedDatestamp":
+                            key = "exported_datestamp";
+                            sql.append(key);
+                            sql.append(" LIKE '%").append(StringEscapeUtils.escapeSql(value)).append("%'");
+                            break;
+                        case "repositoryId":
+                            key = "repository_id";
+                            sql.append(key);
+                            sql.append(" = '").append(StringEscapeUtils.escapeSql(value)).append("'");
+                            break;
+                        default:
+                            sql.append(key);
+                            sql.append(" LIKE '%").append(StringEscapeUtils.escapeSql(value)).append("%'");
+                    }
+                }
+            }
+        }
+        if (StringUtils.isNotBlank(sortField)) {
+            if (sortField.equals("repositoryTimestamp")) {
+                sortField = "repository_datestamp";
+            } else if (sortField.equals("exportedDatestamp")) {
+                sortField = "exported_datestamp";
+            }
+            String so = "ASC";
+            if (!sortOrder) {
+                so = "DESC";
+            }
+            sql.append(" ORDER BY ").append(sortField).append(" ").append(so);
+        }
+        sql.append(" LIMIT ").append(pageSize).append(" OFFSET ").append(first);
+
+        return sql.toString();
+    }
+
+    public static void addExportHistoryEntry(ExportHistoryEntry hist) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            String values = "'" + hist.getRecordId() + "','" + StringEscapeUtils.escapeSql(hist.getRecordIdentifier()) + "','"
+                    + StringEscapeUtils.escapeSql(hist.getRecordTitle()) + "','" + hist.getRepositoryId() + "','" + hist.getStatus() + "','"
+                    + StringEscapeUtils.escapeSql(hist.getMessage()) + "'";
+            String sql = "INSERT INTO export_history (record_id,record_identifier,record_title,repository_id,status,message) VALUES (?,?,?,?,?,?)";
+            run.update(connection, sql, hist.getRecordId(), StringEscapeUtils.escapeSql(hist.getRecordIdentifier()),
+                    StringEscapeUtils.escapeSql(hist.getRecordTitle()), hist.getRepositoryId(), hist.getStatus(),
+                    StringEscapeUtils.escapeSql(hist.getMessage()));
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
+    public static void updateLastHarvestingTime(Integer repositoryId, Timestamp timestamp) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            Object[] param = { timestamp.toString(), repositoryId };
+            String sql = "UPDATE repository SET last_harvest=?";
+            sql += " WHERE id=?";
+            new QueryRunner().update(connection, sql, param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void setRecordExported(Record record) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            String sql = "UPDATE record SET exported='" + record.getExported() + "', exported_datestamp='"
+                    + formatterISO8601DateTime.print(record.getExportedDatestamp().getTime()) + "' WHERE id='" + record.getId() + "'";
+            new QueryRunner().update(connection, sql);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void changeStatusOfRepository(Repository repository) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            int i = 0;
+            if (repository.isEnabled()) {
+                i = 1;
+            }
+            Object[] param = { repository.getId() };
+            new QueryRunner().update(connection, "UPDATE repository SET enabled=" + i + " WHERE id= ?", param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
     }
 }

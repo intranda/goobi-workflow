@@ -22,6 +22,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,8 +37,11 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.joda.time.MutableDateTime;
 
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.exceptions.HarvestException;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
@@ -84,7 +89,7 @@ public class Repository implements Serializable, DatabaseObject {
     private int delay = 0;
 
     // active/disabled
-    private boolean enabled;
+    private boolean enabled = true;
 
     // store files in this folder
     private String exportFolderPath;
@@ -162,18 +167,17 @@ public class Repository implements Serializable, DatabaseObject {
      * @throws ParserException
      * @throws DBException
      */
-    public int harvest(String jobId) throws HarvestException {
-        // TODO different implementation for oai, ia, iacli
+    public int harvest(Integer jobId) throws HarvestException {
         Timestamp lastHarvest = HarvesterRepositoryManager.getLastHarvest(getId());
 
         switch (repositoryType) {
             case "oai":
-                String url = parameter.get("url");
+                String oaiurl = parameter.get("url");
                 String metadataFormat = "oai_dc";
                 String set = parameter.get("set");
 
                 StringBuilder oai = new StringBuilder();
-                oai.append(url).append("?verb=ListRecords");
+                oai.append(oaiurl).append("?verb=ListRecords");
                 oai.append("&metadataPrefix=" + metadataFormat);
                 if (StringUtils.isNotBlank(set)) {
                     oai.append("&set=" + set);
@@ -189,8 +193,7 @@ public class Repository implements Serializable, DatabaseObject {
                     oai.append("&until=" + untilDateTime);
                 }
 
-                getOaiRecords(url, jobId);
-                break;
+                return getOaiRecords(oai.toString(), jobId);
         }
 
         // return number of records created
@@ -198,7 +201,7 @@ public class Repository implements Serializable, DatabaseObject {
 
     }
 
-    private int getOaiRecords(String oaiUrl, String jobId) throws HarvestException {
+    private int getOaiRecords(String oaiUrl, Integer jobId) throws HarvestException {
         if (StringUtils.isEmpty(oaiUrl)) {
             return 0;
         }
@@ -219,7 +222,10 @@ public class Repository implements Serializable, DatabaseObject {
 
                 Element getRecord = oaiPmh.getChild("GetRecord", oaiNamespace);
                 Element listRecords = oaiPmh.getChild("ListRecords", oaiNamespace);
-
+                if (getRecord == null && listRecords == null) {
+                    // no record match
+                    return 0;
+                }
                 Element resumptionToken = listRecords.getChild("resumptionToken", oaiNamespace);
                 if (resumptionToken == null) {
                     tokenId = null;
@@ -243,7 +249,7 @@ public class Repository implements Serializable, DatabaseObject {
                 }
 
                 if (listRecords != null) {
-                    List<Element> elements = getRecord.getChildren();
+                    List<Element> elements = listRecords.getChildren();
                     for (Element element : elements) {
                         if ("record".equals(element.getName())) {
                             recordList.add(element);
@@ -281,7 +287,7 @@ public class Repository implements Serializable, DatabaseObject {
 
     }
 
-    private Record parseRecord(Element element, String jobId) {
+    private Record parseRecord(Element element, Integer jobId) {
         Record rec = new Record();
         rec.setJobId(jobId);
         rec.setRepositoryId(id);
@@ -294,7 +300,7 @@ public class Repository implements Serializable, DatabaseObject {
                     rec.setIdentifier(child.getText());
                     break;
                 case "datestamp":
-                    rec.setRepositoryTimestamp(child.getText());
+                    rec.setRepositoryTimestamp(child.getText().replace("T", " ").replace("Z", " "));
                     break;
                 case "setSpec":
                     String setSpec = child.getText().trim();
@@ -368,37 +374,70 @@ public class Repository implements Serializable, DatabaseObject {
      * 
      * @param mode {@link ExportMode} VIEWER or GOOBI
      */
-    public ExportOutcome exportRecord(Record rec, ExportMode mode) {
-        // TODO different implementation for oai, ia, iacli
-        return null;
+    public ExportOutcome exportRecord(Record record, ExportMode mode) {
+        ExportOutcome outcome = new ExportOutcome();
+
+        //  different implementation for oai, ia, iacli
+        switch (repositoryType) {
+            case "oai":
+                // get download folder, create if missing
+                Path downloadFolder = Paths.get("/tmp/harvest"); // TODO get this from repository
+                if (!StorageProvider.getInstance().isDirectory(downloadFolder)) {
+                    try {
+                        StorageProvider.getInstance().createDirectories(downloadFolder);
+                    } catch (IOException e) {
+                        log.error(e);
+                    }
+                }
+                // download file
+                String identifier = record.getIdentifier();
+                String
+
+                query = parameter.get("url") + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + parameter.get("metadataPrefix");
+                Path recordFile = downloadOaiRecord(identifier, query, downloadFolder);
+                // call script for file
+
+                break;
+            case "ia":
+            case "iacli":
+            default:
+                //TODO
+                break;
+
+        }
+
+        return outcome;
     }
 
-    //    /**
-    //     * Parse Answer to {@link ArrayList} of {@link Record} and add this Records to DB.
-    //     *
-    //     * @param f {@link File} xml file with OAI Answer
-    //     * @param jobId {@link String}
-    //     * @param requiredSetSpec {@link String}
-    //     * @return Number of records harvested from the given file.
-    //     * @throws ParserException
-    //     * @throws HarvestException
-    //     * @throws DBException
-    //     */
-    //    protected int parseAndRecordXmlFile(File f, String jobId, String requiredSetSpec) throws HarvestException {
-    //        // parse files
-    //        int harvested = 0;
-    //        SParser parser = new SParser();
-    //        parser.setRepositoryType(getRepositoryType());
-    //        List<Record> recordList = parser.parseXML(f, jobId, getId(), requiredSetSpec, null);
-    //        if (!recordList.isEmpty()) {
-    //            harvested = HarvesterRepositoryManager.addRecords(recordList, allowUpdates);
-    //            log.info("{} records have been harvested, {} of which were already in the DB.", recordList.size(), (recordList.size() - harvested));
-    //        } else {
-    //            log.debug("No new records harvested.");
-    //        }
-    //
-    //        return harvested;
-    //    }
+    private Path downloadOaiRecord(String identifier, String oaiUrl, Path downloadFolder) {
+        String response = HttpUtils.getStringFromUrl(oaiUrl);
+        // parse response
+        SAXBuilder builder = XmlTools.getSAXBuilder();
+
+        try {
+            // get actual record from oai record
+            Document oaiDoc = builder.build(new StringReader(response));
+            Element oaiPmh = oaiDoc.getRootElement();
+            List<Element> recordList = new ArrayList<>();
+
+            Element getRecord = oaiPmh.getChild("GetRecord", oaiNamespace);
+
+            Element record = getRecord.getChild("record", oaiNamespace);
+            Element metadata = record.getChild("metadata", oaiNamespace);
+            Element child = metadata.getChildren().get(0);
+
+            // store it in a file
+            Path file = Paths.get(downloadFolder.toString(), identifier + ".xml");
+            Document d = new Document();
+            d.setRootElement(child.clone());
+            XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
+            xmlOutputter.output(d, StorageProvider.getInstance().newOutputStream(file));
+            return file;
+        } catch (JDOMException | IOException e) {
+            log.error(e);
+        }
+        return null;
+    }
 
     /**
      * 

@@ -26,7 +26,7 @@ public class ExportHistoryEntry {
 
     private Integer id;
     private String timestamp;
-    private String recordId;
+    private Integer recordId;
     private String recordIdentifier;
     private String recordTitle;
     private Integer repositoryId;
@@ -55,7 +55,7 @@ public class ExportHistoryEntry {
      * @param status
      * @param message
      */
-    public ExportHistoryEntry(String recordId, String recordIdentifier, String recordTitle, Integer repositoryId, String status, String message) {
+    public ExportHistoryEntry(Integer recordId, String recordIdentifier, String recordTitle, Integer repositoryId, String status, String message) {
         this.recordId = recordId;
         this.recordIdentifier = recordIdentifier;
         this.repositoryId = repositoryId;
@@ -75,7 +75,7 @@ public class ExportHistoryEntry {
      * @param status
      * @param message
      */
-    public ExportHistoryEntry(Integer id, Timestamp timestamp, String recordId, String recordIdentifier, String recordTitle, Integer repositoryId,
+    public ExportHistoryEntry(Integer id, Timestamp timestamp, Integer recordId, String recordIdentifier, String recordTitle, Integer repositoryId,
             String status, String message) {
         this.id = id;
         if (timestamp != null) {
@@ -127,14 +127,14 @@ public class ExportHistoryEntry {
     /**
      * @return the recordId
      */
-    public String getRecordId() {
+    public Integer getRecordId() {
         return recordId;
     }
 
     /**
      * @param recordId the recordId to set
      */
-    public void setRecordId(String recordId) {
+    public void setRecordId(Integer recordId) {
         this.recordId = recordId;
     }
 

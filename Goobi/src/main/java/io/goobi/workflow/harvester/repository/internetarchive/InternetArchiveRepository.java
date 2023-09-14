@@ -88,7 +88,7 @@ public class InternetArchiveRepository extends Repository {
      * @throws HarvestException
      */
     @Override
-    public int harvest(String jobId) throws HarvestException {
+    public int harvest(Integer jobId) throws HarvestException {
         /* Get last harvestering timestamp */
         StringBuilder query = new StringBuilder(getUrl());
 
@@ -138,7 +138,7 @@ public class InternetArchiveRepository extends Repository {
      * @throws DBException
      * @return The number of harvested, non-duplicate records.
      */
-    private int querySolrToDB(String query, String jobId) throws HarvestException {
+    private int querySolrToDB(String query, Integer jobId) throws HarvestException {
         int totalHarvested = 0;
         int numFound = 0;
 

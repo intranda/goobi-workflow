@@ -22,13 +22,17 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import io.goobi.workflow.harvester.beans.Job;
 import io.goobi.workflow.harvester.beans.Record;
+import io.goobi.workflow.harvester.export.ExportHistoryEntry;
 import io.goobi.workflow.harvester.repository.Repository;
 import lombok.extern.log4j.Log4j2;
 
@@ -55,7 +59,7 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
         return getRepositories(order, filter, start, count);
     }
 
-    private List<Repository> getRepositories(String order, String filter, Integer start, Integer count) throws DAOException {
+    public static List<Repository> getRepositories(String order, String filter, Integer start, Integer count) throws DAOException {
         List<Repository> answer = new ArrayList<>();
         try {
             answer = HarvesterRepositoryMysqlHelper.getRepositories(order, filter, start, count);
@@ -72,7 +76,7 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
         return java.util.Collections.emptyList();
     }
 
-    public static Repository getRepository(String repositoryId) {
+    public static Repository getRepository(Integer repositoryId) {
         try {
             return HarvesterRepositoryMysqlHelper.getRepository(repositoryId);
         } catch (SQLException e) {
@@ -98,26 +102,11 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
     }
 
     public static void changeStatusOfRepository(Repository repository) {
-        //        Connection connection = null;
-        //        try {
-        //            connection = getConnection();
-        //            int i = 0;
-        //            if (repository.isEnabled()) {
-        //                i = 1;
-        //            }
-        //            Object[] param = { repository.getId() };
-        //            new QueryRunner().update(connection, "UPDATE repository SET enabled=" + i + " WHERE id= ?", param);
-        //        } catch (SQLException e) {
-        //            throw new DBException(e);
-        //        } finally {
-        //            if (connection != null) {
-        //                try {
-        //                    closeConnection(connection);
-        //                } catch (SQLException e) {
-        //                    throw new DBException(e);
-        //                }
-        //            }
-        //        }
+        try {
+            HarvesterRepositoryMysqlHelper.changeStatusOfRepository(repository);
+        } catch (SQLException e) {
+            log.error(e);
+        }
     }
 
     public static int addRecords(List<Record> recordList, boolean allowUpdates) {
@@ -144,9 +133,67 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
         return null;
     }
 
-    public static List<String> getExistingIdentifier(List<String> outputChannel) {
-        // TODO Auto-generated method stub
-        return null;
+    public static List<String> getExistingIdentifier(List<String> identifiers) {
+        try {
+            return HarvesterRepositoryMysqlHelper.getExistingIdentifier(identifiers);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return Collections.emptyList();
+    }
+
+    public static Job addNewJob(Job j) {
+        try {
+            return HarvesterRepositoryMysqlHelper.addNewJob(j);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return j;
+
+    }
+
+    public static void updateJobStatus(Job job) {
+        try {
+            HarvesterRepositoryMysqlHelper.updateJobStatus(job);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+
+    }
+
+    public static List<Record> getRecords(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters,
+            boolean exported) {
+        try {
+            return HarvesterRepositoryMysqlHelper.getRecords(first, pageSize, sortField, sortOrder, filters, exported);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return Collections.emptyList();
+
+    }
+
+    public static void addExportHistoryEntry(ExportHistoryEntry hist) {
+        try {
+            HarvesterRepositoryMysqlHelper.addExportHistoryEntry(hist);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static void updateLastHarvestingTime(Integer repositoryId, Timestamp timestamp) {
+        try {
+            HarvesterRepositoryMysqlHelper.updateLastHarvestingTime(repositoryId, timestamp);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static void setRecordExported(Record record) {
+        try {
+            HarvesterRepositoryMysqlHelper.setRecordExported(record);
+        } catch (SQLException e) {
+            log.error(e);
+        }
     }
 
 }

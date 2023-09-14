@@ -90,7 +90,7 @@ public class InternetArchiveCliRepository extends InternetArchiveRepository {
      * @return The number of harvested, non-duplicate records.
      */
     @Override
-    public int harvest(String jobId) {
+    public int harvest(Integer jobId) {
         Date currentDate = new Date();
         String dateString = dateFormat.format(currentDate);
         int totalHarvested = 0;
