@@ -20,6 +20,7 @@ package org.goobi.goobiScript;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -51,6 +52,7 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
+import ugh.dl.Metadata;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Helper.class, ProcessManager.class, ConfigurationHelper.class, MetadataManager.class })
@@ -154,7 +156,7 @@ public class GoobiScriptMetadataAddTest extends AbstractTest {
         GoobiScriptMetadataAdd fixture = new GoobiScriptMetadataAdd();
         assertNotNull(fixture);
         assertEquals(
-                "---\\n# This GoobiScript allows to add a new metadata to a METS file.\\naction: metadataAdd\\n\\n# Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).\\nfield: Description\\n\\n# This is used to define the value that shall be stored inside of the newly created metadata field.\\nvalue: This is my content.\\n\\n# Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`\\nposition: work\\n\\n# Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.\\nignoreErrors: true\\n\\n# Define what type of metadata you would like to add. Possible values are `metadata` and `group`. Default is metadata.\\ntype: metadata\\n\\n# Internal name of the group. Use it when the metadata to add is located within a group or if a new group should be added.\\ngroup: ",
+                "---\\n# This GoobiScript allows to add a new metadata to a METS file.\\naction: metadataAdd\\n\\n# Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).\\nfield: Description\\n\\n# This is used to define the value that shall be stored inside of the newly created metadata field.\\nvalue: This is my content.\\n\\n# Name of the normdatabase, e.g. viaf or gnd.\\nauthorityName: \\n\\n# Define the normdata value for this metadata field.\\nauthorityValue: \\n\\n# Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`\\nposition: work\\n\\n# Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.\\nignoreErrors: true\\n\\n# Define what type of metadata you would like to add. Possible values are `metadata` and `group`. Default is metadata.\\ntype: metadata\\n\\n# Internal name of the group. Use it when the metadata to add is located within a group or if a new group should be added.\\ngroup: ",
                 fixture.getSampleCall());
     }
 
@@ -198,4 +200,70 @@ public class GoobiScriptMetadataAddTest extends AbstractTest {
         assertEquals(4, monograph.getAllMetadata().size());
     }
 
+    @Test
+    public void testAddMetadataToGroup() throws Exception {
+        // test process has no metadata group
+        Fileformat ff = process.readMetadataFile();
+        DocStruct monograph = ff.getDigitalDocument().getLogicalDocStruct();
+        assertNull(monograph.getAllMetadataGroups());
+
+        List<Integer> processes = new ArrayList<>();
+        processes.add(1);
+        String command = "metadataAdd";
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("field", "junitMetadata");
+        parameters.put("value", "value");
+        parameters.put("position", "work");
+        parameters.put("type", "group");
+        parameters.put("group", "junitgrp");
+        GoobiScriptMetadataAdd fixture = new GoobiScriptMetadataAdd();
+
+        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+        fixture.execute(results.get(0));
+        // now we have a group with a new metadata field
+        ff = process.readMetadataFile();
+        monograph = ff.getDigitalDocument().getLogicalDocStruct();
+        assertEquals(1, monograph.getAllMetadataGroups().size());
+    }
+
+    @Test
+    public void testAddMetadataWithAuthorityData() throws Exception {
+        // test process has 3 metadata fields
+        Fileformat ff = process.readMetadataFile();
+        DocStruct monograph = ff.getDigitalDocument().getLogicalDocStruct();
+        assertEquals(3, monograph.getAllMetadata().size());
+
+        List<Integer> processes = new ArrayList<>();
+        processes.add(1);
+        String command = "metadataAdd";
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("field", "junitMetadata");
+        parameters.put("value", "value");
+        parameters.put("position", "work");
+        parameters.put("type", "metadata");
+
+        parameters.put("authorityName", "gnd");
+        parameters.put("authorityValue", "https://d-nb.info/gnd/12345");
+
+        parameters.put("group", "");
+        GoobiScriptMetadataAdd fixture = new GoobiScriptMetadataAdd();
+
+        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+        fixture.execute(results.get(0));
+        // now we have 4 fields
+        ff = process.readMetadataFile();
+        monograph = ff.getDigitalDocument().getLogicalDocStruct();
+        assertEquals(4, monograph.getAllMetadata().size());
+        Metadata meta = null;
+        for (Metadata md : monograph.getAllMetadata()) {
+            if ("junitMetadata".equals(md.getType().getName())) {
+                meta = md;
+            }
+        }
+        assertNotNull(meta);
+        assertEquals("value", meta.getValue());
+        assertEquals("gnd", meta.getAuthorityID());
+        assertEquals("http://d-nb.info/gnd/", meta.getAuthorityURI());
+        assertEquals("https://d-nb.info/gnd/12345", meta.getAuthorityValue());
+    }
 }
