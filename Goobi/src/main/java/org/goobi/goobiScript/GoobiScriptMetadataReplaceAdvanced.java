@@ -48,15 +48,15 @@ import ugh.dl.MetadataGroup;
 import ugh.dl.Prefs;
 
 @Log4j2
-public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript implements IGoobiScript {
 
     // action:metadataReplace field:DocLanguage search:deutschTop replace:deutschNewTop position:top
     // action:metadataReplace field:DocLanguage search:deutschChild replace:deutschNewChild position:child
 
     private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
     private static final String FIELD = "field";
-    private static final String SEARCH = "search";
-    private static final String REPLACE = "replace";
+    private static final String VALUE = "value";
+    private static final String NORMDATA_VALUE = "authorityValue";
     private static final String POSITION = "position";
     private static final String GROUP = "group";
 
@@ -67,7 +67,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
 
     @Override
     public String getAction() {
-        return "metadataReplace";
+        return "metadataReplaceAdvanced";
     }
 
     @Override
@@ -76,10 +76,10 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
         addNewActionToSampleCall(sb, "This GoobiScript allows to replace an existing metadata within the METS file.");
         addParameterToSampleCall(sb, FIELD, "Description",
                 "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
-        addParameterToSampleCall(sb, SEARCH, "Phone", "Term to be searched for");
-        addParameterToSampleCall(sb, REPLACE, "Telephone", "Term that shall replace the searched term");
+        addParameterToSampleCall(sb, VALUE, "s/old value/new value/g", "Regular expression to replace old term with the new term");
         addParameterToSampleCall(sb, "authorityName", "", "Name of the normdatabase, e.g. viaf or gnd.");
-        addParameterToSampleCall(sb, "authorityValue", "", "Define the normdata value for this metadata field.");
+        addParameterToSampleCall(sb, NORMDATA_VALUE, "",
+                "Regular expression to replace old normdata value with new normdata value. e.g. `s/http:(.+)/https:$1/g` to replace http with https in all uris");
         addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, GROUP, "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");
@@ -97,8 +97,21 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             return Collections.emptyList();
         }
 
-        if (StringUtils.isBlank(parameters.get(SEARCH))) {
-            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, SEARCH);
+        if (StringUtils.isBlank(parameters.get(VALUE))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, VALUE);
+            return Collections.emptyList();
+        }
+        String searchValue = parameters.get(VALUE);
+        if (!searchValue.startsWith("s/") || !searchValue.endsWith("/g")) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD,
+                    "Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", VALUE);
+            return Collections.emptyList();
+        }
+
+        String normdataValue = parameters.get(NORMDATA_VALUE);
+        if (StringUtils.isNotBlank(normdataValue) && (!normdataValue.startsWith("s/") || !normdataValue.endsWith("/g"))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD,
+                    "Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", NORMDATA_VALUE);
             return Collections.emptyList();
         }
 
@@ -178,26 +191,42 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                     break;
             }
 
-            String replace = parameters.get(REPLACE);
-            if (replace == null) {
-                replace = "";
+            String val = parameters.get(VALUE).substring(2, parameters.get(VALUE).length() - 2);
+            String[] parts = val.split("(?<!\\\\)\\/"); // slash that is not preceded by a backslash
+            String searchValue = parts[0];
+            String replacement = parts[1];
+            String normdata = parameters.get(NORMDATA_VALUE);
+            String normdataValue = null;
+            String normdataReplacement = null;
+            if (StringUtils.isNotBlank(normdata)) {
+                normdata = parameters.get(NORMDATA_VALUE).substring(2, parameters.get(NORMDATA_VALUE).length() - 2);
+                parts = normdata.split("(?<!\\\\)\\/"); // slash that is not preceded by a backslash
+                normdataValue = parts[0];
+                normdataReplacement = parts[1];
             }
-
-            // get the content to be set and pipe it through the variable replacer
+            //            // get the content to be set and pipe it through the variable replacer
             VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
             String field = parameters.get(FIELD);
-            String search = parameters.get(SEARCH);
             field = replacer.replace(field);
-            search = replacer.replace(search);
-            replace = replacer.replace(replace);
+            searchValue = replacer.replace(searchValue);
+            replacement = replacer.replace(replacement);
+            if (StringUtils.isNotBlank(normdataValue)) {
+                normdataValue = replacer.replace(normdataValue);
+            }
+            if (StringUtils.isNotBlank(normdataReplacement)) {
+                normdataReplacement = replacer.replace(normdataReplacement);
+            }
+
             String group = parameters.get(GROUP);
             // now change the searched metadata and save the file
-            replaceMetadata(dsList, group, field, search, replace, p.getRegelsatz().getPreferences(),
-                    parameters.get("authorityName"), parameters.get("authorityValue"));
+            replaceMetadata(dsList, group, field, searchValue, replacement, p.getRegelsatz().getPreferences(), parameters.get("authorityName"),
+                    normdataValue,
+                    normdataReplacement);
+
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Metadata changed using GoobiScript: " + parameters.get(FIELD) + " - "
-                    + parameters.get(SEARCH) + " - " + parameters.get(REPLACE), username);
+                    + parameters.get(VALUE), username);
             log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Metadata changed successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
@@ -224,9 +253,9 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
      */
     @SuppressWarnings("unchecked")
     private void replaceMetadata(List<DocStruct> dsList, String groupName, String field, String search, String replace, Prefs prefs,
-            String authorityName, String authorityValue) {
+            String authorityName, String oldAuthorityValue, String newAuthorityValue) {
         String authorityUri = null;
-        if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
+        if (StringUtils.isNotBlank(authorityName)) {
             List<NormDatabase> dblist = ConfigNormdata.getConfiguredNormdatabases();
             for (NormDatabase db : dblist) {
                 if (db.getAbbreviation().equalsIgnoreCase(authorityName)) {
@@ -248,11 +277,9 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
 
             if (mdlist != null && !mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
-                    if (md.getValue().contains(search)) {
-                        md.setValue(md.getValue().replace(search, replace));
-                        if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
-                            md.setAutorityFile(authorityName, authorityUri, authorityValue);
-                        }
+                    md.setValue(md.getValue().replaceAll(search, replace));
+                    if (StringUtils.isNotBlank(md.getAuthorityValue()) && StringUtils.isNotBlank(oldAuthorityValue)) {
+                        md.setAutorityFile(authorityName, authorityUri, md.getAuthorityValue().replaceAll(oldAuthorityValue, newAuthorityValue));
                     }
                 }
             }
