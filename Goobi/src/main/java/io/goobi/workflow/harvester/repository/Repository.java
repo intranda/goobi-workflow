@@ -20,6 +20,7 @@ package io.goobi.workflow.harvester.repository;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.nio.file.Path;
@@ -41,6 +42,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.joda.time.MutableDateTime;
 
+import de.sub.goobi.helper.ShellScript;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.exceptions.HarvestException;
@@ -381,7 +383,7 @@ public class Repository implements Serializable, DatabaseObject {
         switch (repositoryType) {
             case "oai":
                 // get download folder, create if missing
-                Path downloadFolder = Paths.get("/tmp/harvest"); // TODO get this from repository
+                Path downloadFolder = Paths.get("/tmp/harvest"); // TODO get this from repository object
                 if (!StorageProvider.getInstance().isDirectory(downloadFolder)) {
                     try {
                         StorageProvider.getInstance().createDirectories(downloadFolder);
@@ -396,8 +398,30 @@ public class Repository implements Serializable, DatabaseObject {
                 query = parameter.get("url") + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + parameter.get("metadataPrefix");
                 Path recordFile = downloadOaiRecord(identifier, query, downloadFolder);
                 // call script for file
+                if (recordFile == null) {
+                    // TODO error during download
+                }
 
+                String script = "/bin/echo"; // TODO get this from repository object
+
+                if (StringUtils.isNotBlank(script)) {
+                    try {
+                        ShellScript shellScript = new ShellScript(Paths.get(script));
+                        List<String> param = new ArrayList<>();
+                        param.add(recordFile.toString());
+                        int returnValue = shellScript.run(param);
+                        if (returnValue != 0) {
+                            // TODO error during manipulation
+                        }
+                    } catch (IOException e) {
+                        log.error(e);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+
+                }
                 break;
+
             case "ia":
             case "iacli":
             default:
@@ -407,6 +431,7 @@ public class Repository implements Serializable, DatabaseObject {
         }
 
         return outcome;
+
     }
 
     private Path downloadOaiRecord(String identifier, String oaiUrl, Path downloadFolder) {
@@ -418,20 +443,20 @@ public class Repository implements Serializable, DatabaseObject {
             // get actual record from oai record
             Document oaiDoc = builder.build(new StringReader(response));
             Element oaiPmh = oaiDoc.getRootElement();
-            List<Element> recordList = new ArrayList<>();
 
-            Element getRecord = oaiPmh.getChild("GetRecord", oaiNamespace);
-
-            Element record = getRecord.getChild("record", oaiNamespace);
-            Element metadata = record.getChild("metadata", oaiNamespace);
-            Element child = metadata.getChildren().get(0);
+            Element getRecordE = oaiPmh.getChild("GetRecord", oaiNamespace);
+            Element recordE = getRecordE.getChild("record", oaiNamespace);
+            Element metadataE = recordE.getChild("metadata", oaiNamespace);
+            Element childE = metadataE.getChildren().get(0);
 
             // store it in a file
-            Path file = Paths.get(downloadFolder.toString(), identifier + ".xml");
+            Path file = Paths.get(downloadFolder.toString(), identifier.replaceAll("[^\\w-]", "_") + ".xml");
             Document d = new Document();
-            d.setRootElement(child.clone());
-            XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
-            xmlOutputter.output(d, StorageProvider.getInstance().newOutputStream(file));
+            d.setRootElement(childE.clone());
+            try (OutputStream out = StorageProvider.getInstance().newOutputStream(file)) {
+                XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
+                xmlOutputter.output(d, out);
+            }
             return file;
         } catch (JDOMException | IOException e) {
             log.error(e);
