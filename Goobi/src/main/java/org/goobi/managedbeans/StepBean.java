@@ -620,11 +620,11 @@ public class StepBean extends BasicBean implements Serializable {
                 messageText = problemMessage;
             }
 
+            String suffix = "";
             if (ben != null) {
-                se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + messageText);
-            } else {
-                se.setWert("[" + this.formatter.format(new Date()) + "] " + messageText);
+                suffix = " (" + ben.getNachVorname() + ")";
             }
+            se.setWert(messageText + suffix);
             se.setType(PropertyType.MESSAGE_ERROR);
             se.setCreationDate(myDate);
             se.setSchritt(temp);
@@ -658,7 +658,7 @@ public class StepBean extends BasicBean implements Serializable {
                 step.setBearbeitungsende(null);
                 ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText);
+                seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText + suffix);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
                 seg.setCreationDate(new Date());
@@ -755,12 +755,12 @@ public class StepBean extends BasicBean implements Serializable {
                 }
                 ErrorProperty seg = new ErrorProperty();
                 seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
+                String suffix = "";
                 if (user != null) {
                     step.setBearbeitungsbenutzer(user);
-                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + user.getNachVorname() + "] " + message);
-                } else {
-                    seg.setWert("[" + this.formatter.format(new Date()) + "] " + message);
+                    suffix = (" (" + user.getNachVorname() + ")");
                 }
+                seg.setWert(message + suffix);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
                 seg.setCreationDate(new Date());

@@ -73,7 +73,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
      ****************************************************************************/
     @Override
-    public List<DataTable> getDataTables(String sqlFilter, String originalFilter) {
+    public List<DataTable> getDataTables(String sqlFilter, String originalFilter, boolean showClosedProcesses, boolean showArchivedProjects) {
 
         // contains an intger representing "reihenfolge" in schritte, as defined for this request
         // if not defined it will trigger a fall back on a different way of retrieving the statistical data
@@ -159,14 +159,14 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
                         dataRow.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
 
                     }
-                        break;
+                    break;
 
                     case volumes: {
                         dataRowChart.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
                         dataRow.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
 
                     }
-                        break;
+                    break;
 
                     case pages: {
 
@@ -174,7 +174,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
                         dataRow.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
 
                     }
-                        break;
+                    break;
 
                 }
 

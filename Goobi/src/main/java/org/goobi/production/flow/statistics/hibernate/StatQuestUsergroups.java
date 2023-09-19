@@ -59,7 +59,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
      */
     @Override
-    public List<DataTable> getDataTables(String filter, String originalFilter) {
+    public List<DataTable> getDataTables(String filter, String originalFilter, boolean showClosedProcesses, boolean showArchivedProjects) {
 
         Institution institution = null;
         User user = Helper.getCurrentUser();
@@ -68,15 +68,20 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
         }
 
         List<Step> stepList = null;
+        String filterString = null;
         if (filter == null || filter.length() == 0) {
-            stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2)  ", institution);
+            filterString = " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2)  ";
         } else {
-            stepList = StepManager.getSteps(null,
-                    " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND schritte.ProzesseID in (select ProzesseID from prozesse where " + filter
-                            + ")",
-                    institution);
+            filterString = " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND schritte.ProzesseID in (select ProzesseID from prozesse where "
+                    + filter + ")";
         }
-
+        if (!showClosedProcesses) {
+            filterString = filterString + " AND  prozesse.sortHelperStatus <> '100000000' ";
+        }
+        if (!showArchivedProjects) {
+            filterString = filterString + " AND projekte.projectIsArchived = false ";
+        }
+        stepList = StepManager.getSteps(null, filterString, institution);
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
 
         DataTable dtbl = new DataTable(title.toString());

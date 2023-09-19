@@ -4,7 +4,7 @@
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in the submodules -->
-    <version>23.07.3</version>
+    <version>23.08</version>
     <packaging>pom</packaging>
 
 
@@ -56,7 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>23.07.3</publicVersion>
+        <publicVersion>23.08</publicVersion>
         <!-- Use Java 11 for compiling -->
         <maven.compiler.release>11</maven.compiler.release>
 
@@ -72,31 +72,32 @@
              in the module-ci AND the parent project and this leads to an error because
              one file cannot be added twice -->
         <sonar.test.exclusions>src/test/java/**/*</sonar.test.exclusions>
+        <sonar.exclusions>src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatParser.java,src/main/java/de/sub/goobi/validator/validator/ExtendedDateTimeFormatLexer.java,src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatBaseListener.java,src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatLexer.java</sonar.exclusions>
 
         <!-- intranda internal -->
         <ics.version>3.9.1</ics.version>
-        <normdataimporter.version>1.10.2</normdataimporter.version>
+        <normdataimporter.version>1.10.3</normdataimporter.version>
         <ugh-core.version>5.0.14-legacy</ugh-core.version>
         <ugh-marc.version>1.3.2</ugh-marc.version>
         <ugh-lido.version>0.0.14</ugh-lido.version>
 
         <!-- Be careful with updates here -->
 
-        <quartz.version>2.3.2</quartz.version>
+        <quartz.version>2.5.0-rc1</quartz.version>
         <cron-expression-descriptor.version>1.2.6</cron-expression-descriptor.version>
         
         <antlr4.version>4.11.1</antlr4.version>
         <avalon-framework.version>4.2.0</avalon-framework.version>
         <h2.version>1.4.200</h2.version>
         <oscache.version>2.3</oscache.version>
-        <shiro.version>1.11.0</shiro.version>
+        <shiro.version>1.12.0</shiro.version>
         <activemq.version>5.18.2</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <aws.version>1.12.515</aws.version>
+        <aws.version>1.12.548</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
         <commons-csv.version>1.10.0</commons-csv.version>
-        <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
+        <commons-dbcp2.version>2.10.0</commons-dbcp2.version>
         <commons-io.version>2.13.0</commons-io.version>
         <!-- JXPath is used at XPathExpressionEngine from org.apache.commons.configuration2 -->
         <commons-jxpath.version>1.3</commons-jxpath.version>                
@@ -140,9 +141,9 @@
         <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
         <xmpcore.version>6.1.11</xmpcore.version>
         <!-- used in goobi-plugin-step-barcode-scanner -->
-        <zxing.version>3.5.1</zxing.version>
-        <jsch.version>0.2.8</jsch.version>
-        <slf4j.version>2.0.7</slf4j.version>
+        <zxing.version>3.5.2</zxing.version>
+        <jsch.version>0.2.11</jsch.version>
+        <slf4j.version>2.0.9</slf4j.version>
     </properties>
 
 
@@ -337,7 +338,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.23.0</version>
+            <version>1.24.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -672,7 +673,7 @@
         <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
-            <version>3.5.0.Final</version>
+            <version>3.5.3.Final</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.transaction</groupId>
@@ -854,7 +855,7 @@
 		<dependency>
 		    <groupId>software.aws.rds</groupId>
 		    <artifactId>aws-mysql-jdbc</artifactId>
-		    <version>1.1.8</version>
+		    <version>1.1.9</version>
 		</dependency>
         
         <dependency>
@@ -1320,7 +1321,7 @@
         <dependency>
             <groupId>de.intranda.goobi</groupId>
             <artifactId>alto</artifactId>
-            <version>1.5.11</version>
+            <version>1.5.12</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
