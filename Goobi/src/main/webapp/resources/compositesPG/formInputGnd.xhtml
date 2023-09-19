@@ -114,15 +114,17 @@
                     styleClass="modal-content"
                     layout="block"
                     id="gndSearchBoxContent">
-                    <div class="modal-header">
+                    <div class="modal-header bg-primary text-white">
                         <h4
                             class="modal-title"
                             style="width: 90%">#{msgs.NORM_gndSearch}</h4>
                         <button
                             type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                            class="btn text-white"
+                            title="Abbrechen"
+                            data-bs-dismiss="modal">
+                            <i class="fa fa-times"></i>
+                        </button>
                     </div>
                     <div class="modal-body">
                         <p>
@@ -177,6 +179,9 @@
                                 </button>
                             </div>
                         </div>
+
+<hr/>
+
                         <h:panelGroup
                             id="gndSearchlist"
                             layout="block"
