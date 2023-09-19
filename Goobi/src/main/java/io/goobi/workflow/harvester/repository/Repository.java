@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,7 +195,7 @@ public class Repository implements Serializable, DatabaseObject {
                     String untilDateTime = Utils.formatterISO8601DateTimeFullWithTimeZone.print(now);
                     oai.append("&until=" + untilDateTime);
                 }
-
+                HarvesterRepositoryManager.updateLastHarvestingTime(jobId,  new Timestamp(new Date().getTime()));
                 return getOaiRecords(oai.toString(), jobId);
         }
 

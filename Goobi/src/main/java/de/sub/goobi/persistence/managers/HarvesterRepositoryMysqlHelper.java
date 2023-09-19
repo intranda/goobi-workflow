@@ -115,7 +115,7 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
 
     }
 
-    public static List<Repository> getRepositories(String order, String filter, Integer start, Integer count) throws SQLException {
+    public static List<Repository> getRepositories(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder("SELECT * FROM repository");
         if (filter != null && !filter.isEmpty()) {

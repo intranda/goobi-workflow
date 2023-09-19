@@ -56,13 +56,13 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
     @Override
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
             throws DAOException {
-        return getRepositories(order, filter, start, count);
+        return getRepositories(filter);
     }
 
-    public static List<Repository> getRepositories(String order, String filter, Integer start, Integer count) throws DAOException {
+    public static List<Repository> getRepositories(String filter) throws DAOException {
         List<Repository> answer = new ArrayList<>();
         try {
-            answer = HarvesterRepositoryMysqlHelper.getRepositories(order, filter, start, count);
+            answer = HarvesterRepositoryMysqlHelper.getRepositories(filter);
         } catch (SQLException e) {
             log.error("error while getting Dockets", e);
             throw new DAOException(e);
