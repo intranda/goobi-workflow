@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,8 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.joda.time.MutableDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import de.sub.goobi.helper.ShellScript;
 import de.sub.goobi.helper.StorageProvider;
@@ -51,8 +54,6 @@ import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
 import io.goobi.workflow.api.connection.HttpUtils;
 import io.goobi.workflow.harvester.beans.Record;
 import io.goobi.workflow.harvester.export.ExportOutcome;
-import io.goobi.workflow.harvester.export.IConverter.ExportMode;
-import io.goobi.workflow.harvester.helper.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -108,6 +109,9 @@ public class Repository implements Serializable, DatabaseObject {
     private String repositoryType;
 
     private static final Namespace oaiNamespace = Namespace.getNamespace("oai", "http://www.openarchives.org/OAI/2.0/");
+
+    private static DateTimeFormatter formatterISO8601DateTimeMS = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    private static DateTimeFormatter formatterISO8601DateTimeFullWithTimeZone = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     public Repository() {
     }
@@ -186,13 +190,13 @@ public class Repository implements Serializable, DatabaseObject {
                     oai.append("&set=" + set);
                 }
                 if (lastHarvest != null) {
-                    MutableDateTime timestamp = Utils.formatterISO8601DateTimeMS.parseMutableDateTime(lastHarvest.toString());
-                    oai.append("&from=" + Utils.formatterISO8601DateTimeFullWithTimeZone.withZoneUTC().print(timestamp));
+                    MutableDateTime timestamp = formatterISO8601DateTimeMS.parseMutableDateTime(lastHarvest.toString());
+                    oai.append("&from=" + formatterISO8601DateTimeFullWithTimeZone.withZoneUTC().print(timestamp));
                 }
                 if (getDelay() > 0) {
                     MutableDateTime now = new MutableDateTime();
                     now.addDays(-getDelay());
-                    String untilDateTime = Utils.formatterISO8601DateTimeFullWithTimeZone.print(now);
+                    String untilDateTime = formatterISO8601DateTimeFullWithTimeZone.print(now);
                     oai.append("&until=" + untilDateTime);
                 }
                 HarvesterRepositoryManager.updateLastHarvestingTime(jobId,  new Timestamp(new Date().getTime()));
@@ -375,9 +379,8 @@ public class Repository implements Serializable, DatabaseObject {
     /**
      * Exports record to viewer or goobi.
      * 
-     * @param mode {@link ExportMode} VIEWER or GOOBI
      */
-    public ExportOutcome exportRecord(Record record, ExportMode mode) {
+    public ExportOutcome exportRecord(Record record) {
         ExportOutcome outcome = new ExportOutcome();
 
         //  different implementation for oai, ia, iacli
@@ -478,7 +481,7 @@ public class Repository implements Serializable, DatabaseObject {
                 path = path.replace("$exportpath", "");
                 args.add(exportFolderPath);
             }
-            return Utils.runScript(path, args.toArray(new String[args.size()]));
+            return runScript(path, args.toArray(new String[args.size()]));
         }
 
         return null;
@@ -540,5 +543,36 @@ public class Repository implements Serializable, DatabaseObject {
         } else {
             this.parameter.put("url", url);
         }
+    }
+
+    // TODO replace this witch
+    public static String runScript(String scriptFilePath, String[] args) throws FileNotFoundException {
+        log.trace("runScript: {}, {}", scriptFilePath, args);
+        Path toolPath = Paths.get(scriptFilePath.trim());
+        ShellScript script = new ShellScript(toolPath);
+        try {
+            script.run(Arrays.asList(args));
+            if (!script.getStdErr().isEmpty()) {
+                StringBuilder sbErr = new StringBuilder();
+                for (String error : script.getStdErr()) {
+                    sbErr.append(error).append("\n");
+                }
+                log.error(sbErr.toString());
+                return sbErr.toString();
+            } else if (!script.getStdOut().isEmpty()) {
+                StringBuilder sbOut = new StringBuilder();
+                for (String out : script.getStdOut()) {
+                    sbOut.append(out).append("\n");
+                }
+                log.info(sbOut.toString());
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            return e.getMessage();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        return "";
     }
 }

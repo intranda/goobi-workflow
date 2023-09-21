@@ -29,7 +29,6 @@ import de.sub.goobi.helper.exceptions.HarvestException;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
 import io.goobi.workflow.harvester.export.ExportHistoryEntry;
 import io.goobi.workflow.harvester.export.ExportOutcome;
-import io.goobi.workflow.harvester.export.IConverter.ExportMode;
 import io.goobi.workflow.harvester.repository.Repository;
 import lombok.Getter;
 import lombok.Setter;
@@ -96,16 +95,14 @@ public class Record implements Serializable, DatabaseObject {
      * @return
      * @throws DBException
      */
-    public ExportOutcome export(ExportMode mode, ExportHistoryEntry hist) throws HarvestException {
+    public ExportOutcome export(ExportHistoryEntry hist) throws HarvestException {
         Repository repository = HarvesterRepositoryManager.getRepository(getRepositoryId());
-        ExportOutcome outcome = repository.exportRecord(this, mode);
+        ExportOutcome outcome = repository.exportRecord(this);
         hist.setStatus(outcome.status.toString());
         switch (outcome.status) {
             case OK:
-                setExported(mode.toString());
                 setExportedDatestamp(new Date());
                 HarvesterRepositoryManager.setRecordExported(this);
-                hist.setMessage(mode.toString());
                 break;
             case NOT_FOUND:
                 log.error("Record '{}' not found.", getIdentifier());
@@ -115,13 +112,11 @@ public class Record implements Serializable, DatabaseObject {
                 log.error("Export failed for '{}'.", getIdentifier());
                 setExported(null);
                 setExportedDatestamp(null);
-                hist.setMessage(mode.toString());
                 break;
             case SKIP:
                 setExported("SKIPPED");
                 setExportedDatestamp(new Date());
                 HarvesterRepositoryManager.setRecordExported(this);
-                hist.setMessage(mode.toString());
                 break;
             default:
                 log.error("Unknown export outcome: {}", outcome.status.toString());

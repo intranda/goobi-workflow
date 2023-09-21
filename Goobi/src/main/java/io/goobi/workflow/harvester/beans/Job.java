@@ -33,7 +33,6 @@ import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
 import io.goobi.workflow.harvester.export.ExportHistoryEntry;
 import io.goobi.workflow.harvester.export.ExportOutcome;
 import io.goobi.workflow.harvester.export.ExportOutcome.ExportOutcomeStatus;
-import io.goobi.workflow.harvester.export.IConverter.ExportMode;
 import io.goobi.workflow.harvester.repository.Repository;
 import lombok.Getter;
 import lombok.Setter;
@@ -134,11 +133,10 @@ public class Job implements Serializable, DatabaseObject {
                 List<Record> unexportedRecords = HarvesterRepositoryManager.getRecords(0, Integer.MAX_VALUE, null, false, filters, false);
                 log.info("Exporting {} not yet exported records...", unexportedRecords.size());
                 int count = 0;
-                ExportMode mode = ExportMode.FOLDER;
 
                 for (Record record : unexportedRecords) {
                     ExportHistoryEntry hist = new ExportHistoryEntry(record);
-                    ExportOutcome outcome = record.export(mode, hist);
+                    ExportOutcome outcome = record.export( hist);
                     switch (outcome.status) {
                         case OK:
                             count++;

@@ -41,7 +41,6 @@ import io.goobi.workflow.harvester.beans.Job;
 import io.goobi.workflow.harvester.beans.Record;
 import io.goobi.workflow.harvester.export.ExportHistoryEntry;
 import io.goobi.workflow.harvester.repository.Repository;
-import io.goobi.workflow.harvester.repository.oai.OAIDublinCoreRepository;
 
 class HarvesterRepositoryMysqlHelper implements Serializable {
 
@@ -451,9 +450,6 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            String values = "'" + hist.getRecordId() + "','" + StringEscapeUtils.escapeSql(hist.getRecordIdentifier()) + "','"
-                    + StringEscapeUtils.escapeSql(hist.getRecordTitle()) + "','" + hist.getRepositoryId() + "','" + hist.getStatus() + "','"
-                    + StringEscapeUtils.escapeSql(hist.getMessage()) + "'";
             String sql = "INSERT INTO export_history (record_id,record_identifier,record_title,repository_id,status,message) VALUES (?,?,?,?,?,?)";
             run.update(connection, sql, hist.getRecordId(), StringEscapeUtils.escapeSql(hist.getRecordIdentifier()),
                     StringEscapeUtils.escapeSql(hist.getRecordTitle()), hist.getRepositoryId(), hist.getStatus(),
