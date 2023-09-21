@@ -44,6 +44,8 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.rest.model.RestJournalResource;
 import org.goobi.api.rest.model.RestMetadataResource;
+import org.goobi.api.rest.model.RestProcessQueryResource;
+import org.goobi.api.rest.model.RestProcessQueryResult;
 import org.goobi.api.rest.model.RestProcessResource;
 import org.goobi.api.rest.model.RestPropertyResource;
 import org.goobi.api.rest.model.RestStepResource;
@@ -59,6 +61,7 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
@@ -172,6 +175,60 @@ public class ProcessService implements IRestAuthentication {
 
         Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "open automatic steps are started using REST-API.");
         return Response.status(200).entity(new RestProcessResource(process)).build();
+    }
+
+    /*
+    JSON:
+    curl -H 'Accept: application/json' -X POST http://localhost:8080/goobi/api/process/15
+    
+    XML:
+    curl -H 'Accept: application/xml' -X POST http://localhost:8080/goobi/api/process/15
+    
+     */
+    @POST
+    @Path("/query")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Retrieve ids of processes satisfying the input condition.",
+            description = "retrieve ids of processes satisfying the input condition")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response retrieveProcessesSatisfyingCondition(RestProcessQueryResource resource) {
+        String originalFilter = resource.getFilter();
+        String[] splittedConditions = resource.getConditions();
+        log.debug("originalFilter = " + originalFilter);
+        log.debug("splitted conditions are:");
+        for (String condition : splittedConditions) {
+            log.debug(condition);
+        }
+
+        String criteria = FilterHelper.criteriaBuilder(originalFilter, false, null, null, null, true, false);
+        log.debug("filter criteria = " + criteria);
+
+        StringBuilder builder = new StringBuilder();
+        for (String condition : splittedConditions) {
+            String filterCondition = FilterHelper.criteriaBuilder(condition, false, null, null, null, true, false);
+            builder.append(filterCondition);
+            builder.append(" AND ");
+        }
+        builder.append("TRUE");
+        log.debug("combined criteria = " + builder.toString());
+
+        List<Process> processes1 = ProcessManager.getProcesses("prozesse.titel", criteria, null);
+        log.debug("processes1 has " + processes1.size() + " processes: ");
+        for (Process process : processes1) {
+            log.debug(process.getTitel());
+        }
+        
+        List<Process> processes2 = ProcessManager.getProcesses("prozesse.titel", builder.toString(), null);
+        log.debug("processes2 has " + processes2.size() + " processes: ");
+        for (Process process : processes2) {
+            log.debug(process.getTitel());
+        }
+
+        return Response.status(200).entity(new RestProcessQueryResult(processes2)).build();
     }
 
     /*
@@ -1008,7 +1065,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "query")
     public Response deleteStep(RestStepResource resource) {
 
         // get id from request
