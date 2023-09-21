@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Date;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.LogType;
 
@@ -92,7 +93,19 @@ public class JournalEntry implements Serializable {
     }
 
     public String getFormattedContent() {
-        return content != null ? content.replace("\n", "<br/>") : null;
+        if (content == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        String[] lines = content.split("\\n|<br\\/>");
+        for (String line : lines) {
+            if (sb.length() > 0) {
+                sb.append("<br/>");
+            }
+            sb.append(StringEscapeUtils.escapeHtml(line));
+        }
+
+        return sb.toString();
     }
 
     @AllArgsConstructor
