@@ -180,10 +180,10 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/query -d '{"filter":" 'process_title' 'stepopen:file upload' 'meta:mmsId:1234' "}'
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/query -d '{"filter" : " 'process_title' 'stepopen:file upload' 'meta:mmsId:1234' "}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/query -d '<query><filter>'process_title' 'stepopen:file upload' 'meta:mmsId:1234'</filter></query>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/query -d "<query><filter>'process_title' 'stepopen:file upload' 'meta:mmsId:1234'</filter></query>"
      */
     @POST
     @Path("/query")
