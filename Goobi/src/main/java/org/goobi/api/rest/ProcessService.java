@@ -199,8 +199,7 @@ public class ProcessService implements IRestAuthentication {
 
         StringBuilder builder = new StringBuilder();
         for (String condition : splittedConditions) {
-            // surround condition with "" to avoid bugs caused by empty spaces that appear in names e.g. of steps
-            String filterCondition = FilterHelper.criteriaBuilder("\"" + condition + "\"", false, null, null, null, true, false);
+            String filterCondition = FilterHelper.criteriaBuilder(condition, false, null, null, null, true, false);
             builder.append(filterCondition);
             builder.append(" AND ");
         }
