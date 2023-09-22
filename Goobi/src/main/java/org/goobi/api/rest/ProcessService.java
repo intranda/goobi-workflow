@@ -48,6 +48,7 @@ import org.goobi.api.rest.model.RestProcessQueryResource;
 import org.goobi.api.rest.model.RestProcessQueryResult;
 import org.goobi.api.rest.model.RestProcessResource;
 import org.goobi.api.rest.model.RestPropertyResource;
+import org.goobi.api.rest.model.RestStepQueryResource;
 import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
@@ -1063,6 +1064,73 @@ public class ProcessService implements IRestAuthentication {
         StepManager.deleteStep(step);
         Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step deleted using REST-API: " + step.getTitel());
         return Response.ok().build();
+    }
+
+    /*
+     * TODO
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/120/step/413/close
+     */
+
+    @POST
+    @Path("/{processid}/step/close")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Close the step matching the given name", description = "Close the step matching the given name")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response closeStepGivenName(@PathParam("processid") String processid, RestStepQueryResource resource) {
+
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+
+        int processId = Integer.parseInt(processid);
+        // get process by id
+        Process process = ProcessManager.getProcessById(processId);
+
+        // get the list of all steps of this process
+        List<Step> steps = process.getSchritteList();
+        log.debug("process has " + steps.size() + " steps");
+
+        // find the first match and close it
+        Step stepFound = null;
+        String targetStepname = resource.getStepname();
+        log.debug("targetStepname = " + targetStepname);
+
+        for (Step step : steps) {
+            String title = step.getTitel();
+            if (targetStepname.equals(title)) {
+                stepFound = step;
+                break;
+            }
+        }
+
+        // step does not exist
+        if (stepFound == null) {
+            return Response.status(404).entity("Step not found").build();
+        }
+        if (stepFound.getProcessId().intValue() != processId) {
+            return Response.status(409).entity("Step belongs to a different process.").build();
+        }
+
+        switch (stepFound.getBearbeitungsstatusEnum()) {
+            case DEACTIVATED:
+            case DONE:
+            case LOCKED:
+                // wrong status
+                return Response.status(409).entity("Step is not in work.").build();
+            case ERROR:
+            case INFLIGHT:
+            case INWORK:
+            case OPEN:
+            default:
+                Helper.addMessageToProcessJournal(stepFound.getProcessId(), LogType.DEBUG, "Step closed using REST-API: " + stepFound.getTitel());
+                CloseStepHelper.closeStep(stepFound, null);
+                return Response.ok().build();
+        }
+
     }
 
     /*
