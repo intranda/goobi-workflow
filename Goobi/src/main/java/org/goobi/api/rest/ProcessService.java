@@ -178,6 +178,7 @@ public class ProcessService implements IRestAuthentication {
     }
 
     /*
+     * TODO
     JSON:
     curl -H 'Accept: application/json' -X POST http://localhost:8080/goobi/api/process/15
     
@@ -209,20 +210,22 @@ public class ProcessService implements IRestAuthentication {
 
         StringBuilder builder = new StringBuilder();
         for (String condition : splittedConditions) {
-            String filterCondition = FilterHelper.criteriaBuilder(condition, false, null, null, null, true, false);
+            String filterCondition = FilterHelper.criteriaBuilder("\"" + condition + "\"", false, null, null, null, true, false);
+            log.debug("filtercondition = " + filterCondition);
             builder.append(filterCondition);
             builder.append(" AND ");
         }
         builder.append("TRUE");
         log.debug("combined criteria = " + builder.toString());
 
-        List<Process> processes1 = ProcessManager.getProcesses("prozesse.titel", criteria, null);
+        //        List<Process> processes1 = ProcessManager.getProcesses("prozesse.titel", criteria, null);
+        List<Process> processes1 = ProcessManager.getProcesses("prozesse.Titel", criteria, null);
         log.debug("processes1 has " + processes1.size() + " processes: ");
         for (Process process : processes1) {
             log.debug(process.getTitel());
         }
         
-        List<Process> processes2 = ProcessManager.getProcesses("prozesse.titel", builder.toString(), null);
+        List<Process> processes2 = ProcessManager.getProcesses("prozesse.Titel", builder.toString(), null);
         log.debug("processes2 has " + processes2.size() + " processes: ");
         for (Process process : processes2) {
             log.debug(process.getTitel());
