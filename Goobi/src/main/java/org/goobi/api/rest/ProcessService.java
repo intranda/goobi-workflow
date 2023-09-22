@@ -178,13 +178,11 @@ public class ProcessService implements IRestAuthentication {
     }
 
     /*
-     * TODO
     JSON:
-    curl -H 'Accept: application/json' -X POST http://localhost:8080/goobi/api/process/15
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/query -d '{"filter":" 'process_title' 'stepopen:file upload' 'meta:mmsId:1234' "}'
     
     XML:
-    curl -H 'Accept: application/xml' -X POST http://localhost:8080/goobi/api/process/15
-    
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/query -d '<query><filter>'process_title' 'stepopen:file upload' 'meta:mmsId:1234'</filter></query>'
      */
     @POST
     @Path("/query")
@@ -197,41 +195,21 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Tag(name = "process")
     public Response retrieveProcessesSatisfyingCondition(RestProcessQueryResource resource) {
-        String originalFilter = resource.getFilter();
         String[] splittedConditions = resource.getConditions();
-        log.debug("originalFilter = " + originalFilter);
-        log.debug("splitted conditions are:");
-        for (String condition : splittedConditions) {
-            log.debug(condition);
-        }
-
-        String criteria = FilterHelper.criteriaBuilder(originalFilter, false, null, null, null, true, false);
-        log.debug("filter criteria = " + criteria);
 
         StringBuilder builder = new StringBuilder();
         for (String condition : splittedConditions) {
+            // surround condition with "" to avoid bugs caused by empty spaces that appear in names e.g. of steps
             String filterCondition = FilterHelper.criteriaBuilder("\"" + condition + "\"", false, null, null, null, true, false);
-            log.debug("filtercondition = " + filterCondition);
             builder.append(filterCondition);
             builder.append(" AND ");
         }
         builder.append("TRUE");
-        log.debug("combined criteria = " + builder.toString());
-
-        //        List<Process> processes1 = ProcessManager.getProcesses("prozesse.titel", criteria, null);
-        List<Process> processes1 = ProcessManager.getProcesses("prozesse.Titel", criteria, null);
-        log.debug("processes1 has " + processes1.size() + " processes: ");
-        for (Process process : processes1) {
-            log.debug(process.getTitel());
-        }
+        String criteria = builder.toString();
         
-        List<Process> processes2 = ProcessManager.getProcesses("prozesse.Titel", builder.toString(), null);
-        log.debug("processes2 has " + processes2.size() + " processes: ");
-        for (Process process : processes2) {
-            log.debug(process.getTitel());
-        }
+        List<Process> processes = ProcessManager.getProcesses("prozesse.Titel", criteria, null);
 
-        return Response.status(200).entity(new RestProcessQueryResult(processes2)).build();
+        return Response.status(200).entity(new RestProcessQueryResult(processes)).build();
     }
 
     /*
