@@ -1067,15 +1067,18 @@ public class ProcessService implements IRestAuthentication {
     }
 
     /*
-     * TODO
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/120/step/413/close
+     * JSON:
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/10/step/close -d '{"stepname":"file upload"}'
+    
+     * XML:
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/10/step/close -d '<step><stepname>file upload</stepname></step>'
      */
 
     @POST
     @Path("/{processid}/step/close")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Operation(summary = "Close the step matching the given name", description = "Close the step matching the given name")
+    @Operation(summary = "Close the first step matching the given name", description = "Close the first step matching the given name")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
@@ -1092,12 +1095,10 @@ public class ProcessService implements IRestAuthentication {
 
         // get the list of all steps of this process
         List<Step> steps = process.getSchritteList();
-        log.debug("process has " + steps.size() + " steps");
 
         // find the first match and close it
         Step stepFound = null;
         String targetStepname = resource.getStepname();
-        log.debug("targetStepname = " + targetStepname);
 
         for (Step step : steps) {
             String title = step.getTitel();
@@ -1110,9 +1111,6 @@ public class ProcessService implements IRestAuthentication {
         // step does not exist
         if (stepFound == null) {
             return Response.status(404).entity("Step not found").build();
-        }
-        if (stepFound.getProcessId().intValue() != processId) {
-            return Response.status(409).entity("Step belongs to a different process.").build();
         }
 
         switch (stepFound.getBearbeitungsstatusEnum()) {
