@@ -109,6 +109,14 @@ public class Repository implements Serializable, DatabaseObject {
 
     private String repositoryType;
 
+    // if enabled, import downloaded records to goobi
+    private boolean goobiImport = false;
+
+    // TODO should this be the id?
+    private Integer importProjectId;
+    private String processTemplateName; // TODO should this be the id?
+
+
     private static final Namespace oaiNamespace = Namespace.getNamespace("oai", "http://www.openarchives.org/OAI/2.0/");
 
     private static DateTimeFormatter formatterISO8601DateTimeMS = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -673,8 +681,7 @@ public class Repository implements Serializable, DatabaseObject {
         }
     }
 
-    // TODO replace this witch
-    public static String runScript(String scriptFilePath, String[] args) throws FileNotFoundException {
+    private static String runScript(String scriptFilePath, String[] args) throws FileNotFoundException {
         log.trace("runScript: {}, {}", scriptFilePath, args);
         Path toolPath = Paths.get(scriptFilePath.trim());
         ShellScript script = new ShellScript(toolPath);
@@ -703,5 +710,8 @@ public class Repository implements Serializable, DatabaseObject {
 
         return "";
     }
+
+
+
 
 }

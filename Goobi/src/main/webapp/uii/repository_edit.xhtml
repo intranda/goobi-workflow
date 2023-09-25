@@ -148,32 +148,29 @@
                                     required="false"
                                     name="metadataPrefix" />
                             </h:panelGroup>
-                            
-                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia'}">
-                                                             <intranda:formInputText
+
+                            <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia'}">
+                                <intranda:formInputText
                                     classLeft="col-12 col-md-3"
                                     id="iaUrl"
                                     label="#{msgs.iaUrl}"
                                     field="#{harvesterBean.repository.oaiUrl}"
                                     help="#{msgs.helpIaUrl}"
                                     required="false"
-                                    name="iaUrl"
-                            />
-                               </h:panelGroup>
-                            
-                              <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia cli'}">
-                                                             <intranda:formInputText
+                                    name="iaUrl" />
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia cli'}">
+                                <intranda:formInputText
                                     classLeft="col-12 col-md-3"
                                     id="iafilter"
                                     label="#{msgs.filter}"
                                     field="#{harvesterBean.repository.oaiUrl}"
                                     help="#{msgs.helpIaFilter}"
                                     required="false"
-                                    name="iafilter"
-                            />
-                             
-                             </h:panelGroup>
-                            
+                                    name="iafilter" />
+                            </h:panelGroup>
+
                         </h:panelGroup>
 
                         <intranda:formInputText
@@ -219,6 +216,42 @@
                             field="#{harvesterBean.repository.enabled}"
                             help="#{msgs.helpHarvestingActive}"
                             name="active" />
+
+
+                        <intranda:formInputCheckBoxAjax
+                            id="enableGoobiImport"
+                            label="#{msgs.enableGoobiImport}"
+                            field="#{harvesterBean.repository.goobiImport}"
+                            help="#{msgs.helpGoobiUmport}"
+                            name="enableGoobiImport"
+                            ajaxEvent="change"
+                            ajaxRender="myform:box:goobiImportArea" />
+
+                        <h:panelGroup id="goobiImportArea">
+                            <h:panelGroup rendered="#{harvesterBean.repository.goobiImport}">
+
+                                <intranda:formInputDropDown
+                                    id="project"
+                                    label="#{msgs.projekt}"
+                                    field="#{harvesterBean.repository.importProjectId}"
+                                    help="#{msgs.helpProcessProject}"
+                                    name="prozess"
+                                    selectItems="#{harvesterBean.projectList}"
+                                    required="true" />
+
+                                <intranda:formInputDropDown
+                                    id="template"
+                                    label="#{msgs.template}"
+                                    field="#{harvesterBean.repository.processTemplateName}"
+                                    help="#{msgs.helpProcessProject}"
+                                    name="template"
+                                    selectItems="#{harvesterBean.processTemplateList}"
+                                    required="true" />
+                                <!--  TODO configure rest endpoint -->
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+
 
                         <intranda:formButtonArea
                             id="buttons"
