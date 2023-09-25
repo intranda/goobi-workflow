@@ -153,11 +153,23 @@
                                                              <intranda:formInputText
                                     classLeft="col-12 col-md-3"
                                     id="iaUrl"
-                                    label="#{msgs.oaiUrl}"
+                                    label="#{msgs.iaUrl}"
                                     field="#{harvesterBean.repository.oaiUrl}"
                                     help="#{msgs.helpIaUrl}"
                                     required="false"
                                     name="iaUrl"
+                            />
+                               </h:panelGroup>
+                            
+                              <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia cli'}">
+                                                             <intranda:formInputText
+                                    classLeft="col-12 col-md-3"
+                                    id="iafilter"
+                                    label="#{msgs.filter}"
+                                    field="#{harvesterBean.repository.oaiUrl}"
+                                    help="#{msgs.helpIaFilter}"
+                                    required="false"
+                                    name="iafilter"
                             />
                              
                              </h:panelGroup>
@@ -195,7 +207,7 @@
                         <intranda:formInputText
                             classLeft="col-12 col-md-3"
                             id="script"
-                            label="#{msgs.exportFolder}"
+                            label="#{msgs.script}"
                             field="#{harvesterBean.repository.scriptPath}"
                             help="#{msgs.helpScript}"
                             required="false"

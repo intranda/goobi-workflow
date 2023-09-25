@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -112,6 +113,7 @@ public class Repository implements Serializable, DatabaseObject {
 
     private static DateTimeFormatter formatterISO8601DateTimeMS = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private static DateTimeFormatter formatterISO8601DateTimeFullWithTimeZone = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public Repository() {
     }
@@ -181,8 +183,79 @@ public class Repository implements Serializable, DatabaseObject {
                 return harvestOai(jobId);
             case "ia":
                 return harvestIa(jobId);
-            case "iacli":
+            case "ia cli":
+                Date currentDate = new Date();
+                String dateString = dateFormat.format(currentDate);
+                int totalHarvested = 0;
+                // search term is stored in parameter url
+                Path iaCli = Paths.get("/usr/local/bin/ia"); // TODO config
+                String home = System.getenv("HOME");
+                Path iaConfigFile = Paths.get(home + "/.config/ia.ini");
+                Path iaConfigFile2 = Paths.get(home + "/.ia.ini");
+                Path iaConfigFile3 = Paths.get(home + "/.ia");
+                if (!StorageProvider.getInstance().isFileExists(iaConfigFile) && !StorageProvider.getInstance().isFileExists(iaConfigFile2)
+                        && !StorageProvider.getInstance().isFileExists(iaConfigFile3)) {
+                    // create credentials file
+                    List<String> params = new ArrayList<>();
+                    params.add("configure");
+                    params.add("--username=" + System.getenv("IA_USERNAME"));
+                    params.add("--password=" + System.getenv("IA_PASSWORD"));
 
+                    try {
+                        ShellScript script = new ShellScript(iaCli);
+                        script.run(params);
+                    } catch (IOException | InterruptedException e) {
+                        log.error(e);
+                    }
+
+                } else {
+                    log.trace("Configuration file exists.");
+                }
+                List<String> params = new ArrayList<>();
+                params.add("search");
+                params.add(getUrl());
+                params.add("--itemlist");
+                params.add("-p");
+                params.add("scope:all");
+
+                List<Record> recordList = new ArrayList<>();
+                List<String> outputChannel = new ArrayList<>();
+                try {
+                    ShellScript script = new ShellScript(iaCli);
+                    script.run(params);
+                    outputChannel = script.getStdOut();
+                } catch (IOException | InterruptedException e) {
+                    log.error(e);
+                }
+
+                if (outputChannel.isEmpty()) {
+                    return 0;
+                }
+
+                List<String> existingRecords = HarvesterRepositoryManager.getExistingIdentifier(outputChannel);
+
+                for (String existing : existingRecords) {
+                    outputChannel.remove(existing);
+                }
+
+                for (String identifier : outputChannel) {
+                    Record rec = new Record();
+                    rec.setIdentifier(identifier);
+                    rec.setJobId(jobId);
+                    rec.setRepositoryTimestamp(dateString);
+                    rec.setRepositoryId(getId());
+                    recordList.add(rec);
+                }
+
+                if (!recordList.isEmpty()) {
+                    int numHarvested = HarvesterRepositoryManager.addRecords(recordList, isAllowUpdates());
+                    totalHarvested += numHarvested;
+                    log.debug("{} records have been harvested, {} of which were already in the DB.", recordList.size(),
+                            (recordList.size() - numHarvested));
+                } else {
+                    log.debug("No new records harvested.");
+                }
+                return totalHarvested;
             default:
                 // not implemented
 
@@ -432,8 +505,6 @@ public class Repository implements Serializable, DatabaseObject {
                     // TODO error during download
                 }
 
-
-
                 if (StringUtils.isNotBlank(scriptPath)) {
                     try {
                         ShellScript shellScript = new ShellScript(Paths.get(scriptPath));
@@ -458,8 +529,34 @@ public class Repository implements Serializable, DatabaseObject {
                 } catch (IOException e) {
                     log.error(e);
                 }
+                break;
+            case "ia cli":
+                // TODO create missing folder
 
-            case "iacli":
+                // call ia cli to download marc file
+                String subfolder = IaTools.getOutputDirName(record.getIdentifier());
+                // TODO get this from config/variable
+                Path iaExecutable = Paths.get("/usr/local/bin/ia");
+                List<String> parameter = new ArrayList<>();
+                parameter.add("download");
+                parameter.add(record.getIdentifier());
+                parameter.add(record.getIdentifier() + "_marc.xml");
+                parameter.add("--no-directories");
+                parameter.add("--destdir=" + downloadFolder.toString() + "/" + subfolder);
+
+                try {
+                    ShellScript script = new ShellScript(iaExecutable);
+                    int res = script.run(parameter);
+                    if (res != 0) {
+                        // script failure
+
+                    }
+                } catch (IOException | InterruptedException e) {
+                    log.error(e);
+                }
+                //                        // copy
+                //
+                break;
             default:
                 //TODO
                 break;
@@ -606,6 +703,5 @@ public class Repository implements Serializable, DatabaseObject {
 
         return "";
     }
-
 
 }

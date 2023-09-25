@@ -32,6 +32,10 @@ public class IaTools {
     private static final String FOLDER_NAME_MULTIVOLUME = "multivolume";
     private static Pattern patternMultivolumeIdentifier = Pattern.compile("_\\d+$");
 
+    private IaTools() {
+        // do nothing
+    }
+
     public static int querySolrToDB(String query, Integer jobId, Integer repositoryId) {
         int totalHarvested = 0;
         int numFound = 0;
