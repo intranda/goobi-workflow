@@ -147,9 +147,21 @@
                                     help="#{msgs.helpOaimetadataPrefix}"
                                     required="false"
                                     name="metadataPrefix" />
-
-
                             </h:panelGroup>
+                            
+                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia'}">
+                                                             <intranda:formInputText
+                                    classLeft="col-12 col-md-3"
+                                    id="iaUrl"
+                                    label="#{msgs.oaiUrl}"
+                                    field="#{harvesterBean.repository.oaiUrl}"
+                                    help="#{msgs.helpIaUrl}"
+                                    required="false"
+                                    name="iaUrl"
+                            />
+                             
+                             </h:panelGroup>
+                            
                         </h:panelGroup>
 
                         <intranda:formInputText
@@ -168,15 +180,33 @@
                             help="#{msgs.helpHarvestingDelay}"
                             required="false"
                             name="Delay" />
-                            
-                            
-                            
-                       <intranda:formInputCheckBox
-                                id="active"
-                                label="#{msgs.isActive}"
-                                field="#{harvesterBean.repository.enabled}"
-                                help="#{msgs.helpHarvestingActive}"
-                                name="active" />
+
+
+                        <intranda:formInputText
+                            classLeft="col-12 col-md-3"
+                            id="exportFolder"
+                            label="#{msgs.exportFolder}"
+                            field="#{harvesterBean.repository.exportFolderPath}"
+                            help="#{msgs.helpExportFolder}"
+                            required="false"
+                            name="exportFolder" />
+
+
+                        <intranda:formInputText
+                            classLeft="col-12 col-md-3"
+                            id="script"
+                            label="#{msgs.exportFolder}"
+                            field="#{harvesterBean.repository.scriptPath}"
+                            help="#{msgs.helpScript}"
+                            required="false"
+                            name="script" />
+
+                        <intranda:formInputCheckBox
+                            id="active"
+                            label="#{msgs.isActive}"
+                            field="#{harvesterBean.repository.enabled}"
+                            help="#{msgs.helpHarvestingActive}"
+                            name="active" />
 
                         <intranda:formButtonArea
                             id="buttons"

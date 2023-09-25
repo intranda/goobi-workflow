@@ -17,7 +17,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 
-import de.sub.goobi.config.ConfigHarvester;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
@@ -93,7 +93,7 @@ public class IaTools {
                     if (StringUtils.isNotEmpty(identifier) && StringUtils.isNotEmpty(publicdate)) {
                         Record rec = new Record();
                         rec.setIdentifier(identifier);
-                        rec.setRepositoryTimestamp(publicdate);
+                        rec.setRepositoryTimestamp(publicdate.replace("T", " ").replace("Z", " "));
                         if (title != null) {
                             rec.setTitle(title);
                         }
@@ -135,7 +135,7 @@ public class IaTools {
     }
 
     public static void download(String urlRoot, String identifier, Path downloadFolder) throws IOException {
-        String tempFolderPath = ConfigHarvester.getInstance().getImageTempFolder();
+        String tempFolderPath = ConfigurationHelper.getInstance().getTemporaryFolder();
         Path tempFolder = Paths.get(tempFolderPath);
         if (!StorageProvider.getInstance().isDirectory(tempFolder)) {
             try {

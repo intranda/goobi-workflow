@@ -45,7 +45,7 @@ import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import de.sub.goobi.config.ConfigHarvester;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.ShellScript;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlTools;
@@ -408,7 +408,8 @@ public class Repository implements Serializable, DatabaseObject {
      */
     public ExportOutcome exportRecord(Record record) {
         ExportOutcome outcome = new ExportOutcome();
-        Path downloadFolder = checkAndCreateDownloadFolder(ConfigHarvester.getInstance().getExportFolder());
+
+        Path downloadFolder = checkAndCreateDownloadFolder(ConfigurationHelper.getInstance().getTemporaryFolder());
         //  different implementation for oai, ia, iacli
         switch (repositoryType) {
             case "oai":
@@ -431,11 +432,11 @@ public class Repository implements Serializable, DatabaseObject {
                     // TODO error during download
                 }
 
-                String script = "/bin/echo"; // TODO get this from repository object
 
-                if (StringUtils.isNotBlank(script)) {
+
+                if (StringUtils.isNotBlank(scriptPath)) {
                     try {
-                        ShellScript shellScript = new ShellScript(Paths.get(script));
+                        ShellScript shellScript = new ShellScript(Paths.get(scriptPath));
                         List<String> param = new ArrayList<>();
                         param.add(recordFile.toString());
                         int returnValue = shellScript.run(param);
