@@ -124,14 +124,6 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
         return 0;
     }
 
-    public static Timestamp getLastHarvest(Integer repositoryId) {
-        try {
-            return HarvesterRepositoryMysqlHelper.getLastHarvest(repositoryId);
-        } catch (SQLException e) {
-            log.error(e);
-        }
-        return null;
-    }
 
     public static List<String> getExistingIdentifier(List<String> identifiers) {
         try {

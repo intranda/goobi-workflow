@@ -17,7 +17,6 @@
  */
 package io.goobi.workflow.harvester.repository;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -46,6 +45,7 @@ import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import de.sub.goobi.config.ConfigHarvester;
 import de.sub.goobi.helper.ShellScript;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlTools;
@@ -175,37 +175,63 @@ public class Repository implements Serializable, DatabaseObject {
      * @throws DBException
      */
     public int harvest(Integer jobId) throws HarvestException {
-        Timestamp lastHarvest = HarvesterRepositoryManager.getLastHarvest(getId());
 
         switch (repositoryType) {
             case "oai":
-                String oaiurl = parameter.get("url");
-                String metadataFormat = "oai_dc";
-                String set = parameter.get("set");
+                return harvestOai(jobId);
+            case "ia":
+                return harvestIa(jobId);
+            case "iacli":
 
-                StringBuilder oai = new StringBuilder();
-                oai.append(oaiurl).append("?verb=ListRecords");
-                oai.append("&metadataPrefix=" + metadataFormat);
-                if (StringUtils.isNotBlank(set)) {
-                    oai.append("&set=" + set);
-                }
-                if (lastHarvest != null) {
-                    MutableDateTime timestamp = formatterISO8601DateTimeMS.parseMutableDateTime(lastHarvest.toString());
-                    oai.append("&from=" + formatterISO8601DateTimeFullWithTimeZone.withZoneUTC().print(timestamp));
-                }
-                if (getDelay() > 0) {
-                    MutableDateTime now = new MutableDateTime();
-                    now.addDays(-getDelay());
-                    String untilDateTime = formatterISO8601DateTimeFullWithTimeZone.print(now);
-                    oai.append("&until=" + untilDateTime);
-                }
-                HarvesterRepositoryManager.updateLastHarvestingTime(jobId,  new Timestamp(new Date().getTime()));
-                return getOaiRecords(oai.toString(), jobId);
+            default:
+                // not implemented
+
         }
 
         // return number of records created
         return 0;
 
+    }
+
+    private int harvestIa(Integer jobId) throws HarvestException {
+        StringBuilder query = new StringBuilder(getUrl());
+
+        // The Internet Archive has a 14-day delay
+        if (getDelay() > 0) {
+            MutableDateTime now = new MutableDateTime();
+            now.addDays(-getDelay());
+            String untilDateTime = formatterISO8601DateTimeFullWithTimeZone.print(now);
+
+            query.append("%20AND%20publicdate:[null%20TO%20").append(untilDateTime).append("]");
+        }
+        query.append("&fields=identifier,publicdate,title&output=xml");
+
+        return IaTools.querySolrToDB(query.toString(), jobId, id);
+    }
+
+    private int harvestOai(Integer jobId) throws HarvestException {
+        String oaiurl = parameter.get("url");
+        String metadataFormat = "oai_dc";
+        String set = parameter.get("set");
+
+        StringBuilder oai = new StringBuilder();
+        oai.append(oaiurl).append("?verb=ListRecords");
+        oai.append("&metadataPrefix=" + metadataFormat);
+        if (StringUtils.isNotBlank(set)) {
+            oai.append("&set=" + set);
+        }
+        if (lastHarvest != null) {
+            MutableDateTime timestamp = formatterISO8601DateTimeMS.parseMutableDateTime(lastHarvest.toString());
+            oai.append("&from=" + formatterISO8601DateTimeFullWithTimeZone.withZoneUTC().print(timestamp));
+        }
+        if (getDelay() > 0) {
+            MutableDateTime now = new MutableDateTime();
+            now.addDays(-getDelay());
+            String untilDateTime = formatterISO8601DateTimeFullWithTimeZone.print(now);
+            oai.append("&until=" + untilDateTime);
+        }
+        HarvesterRepositoryManager.updateLastHarvestingTime(jobId, new Timestamp(new Date().getTime()));
+        return getOaiRecords(oai.toString(), jobId);
     }
 
     private int getOaiRecords(String oaiUrl, Integer jobId) throws HarvestException {
@@ -382,12 +408,11 @@ public class Repository implements Serializable, DatabaseObject {
      */
     public ExportOutcome exportRecord(Record record) {
         ExportOutcome outcome = new ExportOutcome();
-
+        Path downloadFolder = checkAndCreateDownloadFolder(ConfigHarvester.getInstance().getExportFolder());
         //  different implementation for oai, ia, iacli
         switch (repositoryType) {
             case "oai":
                 // get download folder, create if missing
-                Path downloadFolder = Paths.get("/tmp/harvest"); // TODO get this from repository object
                 if (!StorageProvider.getInstance().isDirectory(downloadFolder)) {
                     try {
                         StorageProvider.getInstance().createDirectories(downloadFolder);
@@ -427,6 +452,12 @@ public class Repository implements Serializable, DatabaseObject {
                 break;
 
             case "ia":
+                try {
+                    IaTools.download("https://archive.org/download/", record.getIdentifier(), downloadFolder);
+                } catch (IOException e) {
+                    log.error(e);
+                }
+
             case "iacli":
             default:
                 //TODO
@@ -492,21 +523,21 @@ public class Repository implements Serializable, DatabaseObject {
      * @should create custom download folder correctly
      * @should create default download folder correctly
      */
-    protected File checkAndCreateDownloadFolder(String defaultDownloadFolderPath) {
-        File downloadFolder = null;
+    protected Path checkAndCreateDownloadFolder(String defaultDownloadFolderPath) {
+        Path downloadFolder = null;
         if (StringUtils.isNotEmpty(exportFolderPath)) {
-            downloadFolder = new File(exportFolderPath);
+            downloadFolder = Paths.get(exportFolderPath);
             log.trace("Found custom export path: {}", exportFolderPath);
-            if (!downloadFolder.exists()) {
-                downloadFolder.mkdirs();
-            }
-        }
-        if (downloadFolder == null || !downloadFolder.isDirectory()) {
-            downloadFolder = new File(defaultDownloadFolderPath);
+        } else {
+            downloadFolder = Paths.get(defaultDownloadFolderPath);
             log.trace("Using default download folder: {}", defaultDownloadFolderPath);
         }
-        if (!downloadFolder.exists()) {
-            downloadFolder.mkdirs();
+        if (!StorageProvider.getInstance().isDirectory(downloadFolder)) {
+            try {
+                StorageProvider.getInstance().createDirectories(downloadFolder);
+            } catch (IOException e) {
+                log.error(e);
+            }
         }
 
         return downloadFolder;
@@ -514,8 +545,7 @@ public class Repository implements Serializable, DatabaseObject {
 
     @Override
     public void lazyLoad() {
-        // TODO Auto-generated method stub
-
+        // do nothing
     }
 
     public String getOaiUrl() {
@@ -575,4 +605,6 @@ public class Repository implements Serializable, DatabaseObject {
 
         return "";
     }
+
+
 }
