@@ -125,8 +125,6 @@ public class HarvesterBean extends BasicBean implements Serializable {
         return availableProjects;
     }
 
-
-
     public List<SelectItem> getProcessTemplateList() {
 
         if (availableProcessTemplates == null) {
@@ -145,6 +143,17 @@ public class HarvesterBean extends BasicBean implements Serializable {
             }
         }
         return availableProcessTemplates;
+    }
+
+    public List<SelectItem> getRestApiList() {
+        // TODO
+        List<SelectItem> data = new ArrayList<>();
+        data.add(new SelectItem("", Helper.getTranslation("METS/MODS")));
+        data.add(new SelectItem("", Helper.getTranslation("PICA")));
+        data.add(new SelectItem("", Helper.getTranslation("MARC")));
+        data.add(new SelectItem("", Helper.getTranslation("LIDO")));
+
+        return data;
 
     }
 

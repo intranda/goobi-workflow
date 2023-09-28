@@ -46,7 +46,7 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
 
     private static final long serialVersionUID = -8160933323894230856L;
 
-    public static DateTimeFormatter formatterISO8601DateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter formatterISO8601DateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     public static Repository getRepository(Integer repositoryId) throws SQLException {
         Connection connection = null;
@@ -69,14 +69,14 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
     /**
      * Converts {@link ResultSet} to {@link ArrayList} of {@link OAIDublinCoreRepository}
      */
-    public static ResultSetHandler<List<Repository>> resultSetToRepositoriesList = new ResultSetHandler<List<Repository>>() {
+    public static final ResultSetHandler<List<Repository>> resultSetToRepositoriesList = new ResultSetHandler<List<Repository>>() {
         @Override
         public List<Repository> handle(ResultSet rs) throws SQLException {
             List<Repository> retList = new ArrayList<>(rs.getFetchSize());
             while (rs.next()) {
                 Repository r = new Repository(rs.getInt("id"), rs.getString("name"), rs.getString("base_url"), rs.getString("export_folder"),
-                        rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"), rs.getInt("delay"),
-                        rs.getBoolean("enabled"));
+                        rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"), rs.getInt("delay"), rs.getBoolean("enabled"),
+                        rs.getBoolean("goobi_import"), rs.getInt("project_id"), rs.getInt("template_id"), rs.getString("fileformat"));
                 r.setRepositoryType(rs.getString("type"));
 
                 String query = "SELECT name, value FROM repository_parameter WHERE repository_id = ?";
@@ -141,22 +141,24 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
 
                 StringBuilder sql = new StringBuilder();
                 sql.append("INSERT INTO repository ");
-                sql.append("(name, base_url, export_folder, script_path, last_harvest, freq, delay, enabled, type) ");
-                sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
+                sql.append("(name, base_url, export_folder, script_path, last_harvest, freq, delay, enabled, type, ");
+                sql.append("goobi_import, project_id, template_id, fileformat) ");
+                sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 Integer id = runner.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, repository.getName(),
                         repository.getUrl(), repository.getExportFolderPath(), repository.getScriptPath(), repository.getLastHarvest(),
-                        repository.getFrequency(), repository.getDelay(), repository.isEnabled(), repository.getRepositoryType());
+                        repository.getFrequency(), repository.getDelay(), repository.isEnabled(), repository.getRepositoryType(),
+                        repository.isGoobiImport(), repository.getImportProjectId(), repository.getProcessTemplateId(), repository.getFileformat());
                 repository.setId(id);
             } else {
                 StringBuilder sql = new StringBuilder();
                 sql.append("UPDATE repository SET name = ?, base_url = ?, export_folder = ?, script_path = ?, last_harvest = ?, ");
-                sql.append("freq = ?, delay = ?, enabled = ?, type = ? WHERE id = ?");
+                sql.append("freq = ?, delay = ?, enabled = ?, type = ?, goobi_import = ?, project_id = ?, ");
+                sql.append("template_id = ?, fileformat = ? WHERE id = ? ");
                 runner.update(connection, sql.toString(), repository.getName(), repository.getUrl(), repository.getExportFolderPath(),
                         repository.getScriptPath(), repository.getLastHarvest(), repository.getFrequency(), repository.getDelay(),
-                        repository.isEnabled(), repository.getRepositoryType(), repository.getId());
+                        repository.isEnabled(), repository.getRepositoryType(), repository.isGoobiImport(), repository.getImportProjectId(),
+                        repository.getProcessTemplateId(), repository.getFileformat(), repository.getId());
             }
-
             if (!repository.getParameter().isEmpty()) {
                 String deletion = "delete from repository_parameter where repository_id = ?";
                 runner.update(connection, deletion, repository.getId());
@@ -235,27 +237,33 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
             // Check if same Record is already in DB. This check makes this method pretty slow, but secure..
             String sqlCheck = "SELECT count(1) FROM record WHERE identifier=?";
             QueryRunner run = new QueryRunner();
-            for (Record record : recordList) {
-                String subquery = record.getSubquery() == null ? "" : " AND subquery='" + record.getSubquery() + "'";
+            for (Record rec : recordList) {
+                String subquery = rec.getSubquery() == null ? "" : " AND subquery='" + rec.getSubquery() + "'";
                 // Check whether the record has previously been harvested
                 int i = run.query(connection, sqlCheck + subquery, MySQLHelper.resultSetToIntegerHandler,
-                        StringEscapeUtils.escapeSql(record.getIdentifier()));
+                        StringEscapeUtils.escapeSql(rec.getIdentifier()));
                 if (i == 0) {
                     // Add record to DB
-                    String sql =
-                            "INSERT INTO record (repository_id,title,creator,repository_datestamp,setSpec,identifier,job_id,source,subquery) VALUES (?,?,?,?,?,?,?,?,?)";
-                    run.update(connection, sql, record.getRepositoryId(), StringEscapeUtils.escapeSql(record.getTitle()),
-                            StringEscapeUtils.escapeSql(record.getCreator()), record.getRepositoryTimestamp(), record.getSetSpec(),
-                            StringEscapeUtils.escapeSql(record.getIdentifier()), record.getJobId(), StringEscapeUtils.escapeSql(record.getSource()),
-                            StringEscapeUtils.escapeSql(record.getSubquery()));
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("INSERT INTO record ");
+                    sb.append("(repository_id,title,creator,repository_datestamp,setSpec,identifier,job_id,source,subquery) ");
+                    sb.append("VALUES ");
+                    sb.append("(?,?,?,?,?,?,?,?,?) ");
+                    run.update(connection, sb.toString(), rec.getRepositoryId(), StringEscapeUtils.escapeSql(rec.getTitle()),
+                            StringEscapeUtils.escapeSql(rec.getCreator()), rec.getRepositoryTimestamp(), rec.getSetSpec(),
+                            StringEscapeUtils.escapeSql(rec.getIdentifier()), rec.getJobId(), StringEscapeUtils.escapeSql(rec.getSource()),
+                            StringEscapeUtils.escapeSql(rec.getSubquery()));
                     counterNew++;
                 } else if (allowUpdates) {
                     // Update existing record and reset exported status
-                    String sql =
-                            "UPDATE record SET exported=NULL, title=?, creator=?, repository_datestamp=?, setSpec=?, job_id=?, source=?, subquery=? WHERE identifier=?";
-                    run.update(connection, sql, StringEscapeUtils.escapeSql(record.getTitle()), StringEscapeUtils.escapeSql(record.getCreator()),
-                            record.getRepositoryTimestamp(), record.getSetSpec(), record.getJobId(), StringEscapeUtils.escapeSql(record.getSource()),
-                            StringEscapeUtils.escapeSql(record.getSubquery()), record.getIdentifier());
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("UPDATE record SET ");
+                    sb.append(" exported=NULL, title=?, creator=?, repository_datestamp=?, ");
+                    sb.append("setSpec=?, job_id=?, source=?, subquery=? ");
+                    sb.append("WHERE identifier = ? ");
+                    run.update(connection, sb.toString(), StringEscapeUtils.escapeSql(rec.getTitle()), StringEscapeUtils.escapeSql(rec.getCreator()),
+                            rec.getRepositoryTimestamp(), rec.getSetSpec(), rec.getJobId(), StringEscapeUtils.escapeSql(rec.getSource()),
+                            StringEscapeUtils.escapeSql(rec.getSubquery()), rec.getIdentifier());
                 }
             }
         } finally {
@@ -324,7 +332,7 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
         return j;
     }
 
-    public static ResultSetHandler<List<Job>> resultSetToJobList = new ResultSetHandler<List<Job>>() {
+    public static final ResultSetHandler<List<Job>> resultSetToJobList = new ResultSetHandler<List<Job>>() {
         @Override
         public List<Job> handle(ResultSet rs) throws SQLException {
             List<Job> retList = new ArrayList<>(rs.getFetchSize());
@@ -337,7 +345,7 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<List<Record>> resultSetToRecordList = new ResultSetHandler<List<Record>>() {
+    public static final ResultSetHandler<List<Record>> resultSetToRecordList = new ResultSetHandler<List<Record>>() {
         @Override
         public List<Record> handle(ResultSet rs) throws SQLException {
             List<Record> retList = new ArrayList<>(rs.getFetchSize());
@@ -477,12 +485,12 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
         }
     }
 
-    public static void setRecordExported(Record record) throws SQLException {
+    public static void setRecordExported(Record rec) throws SQLException {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String sql = "UPDATE record SET exported='" + record.getExported() + "', exported_datestamp='"
-                    + formatterISO8601DateTime.print(record.getExportedDatestamp().getTime()) + "' WHERE id='" + record.getId() + "'";
+            String sql = "UPDATE record SET exported='" + rec.getExported() + "', exported_datestamp='"
+                    + formatterISO8601DateTime.print(rec.getExportedDatestamp().getTime()) + "' WHERE id='" + rec.getId() + "'";
             new QueryRunner().update(connection, sql);
         } finally {
             if (connection != null) {

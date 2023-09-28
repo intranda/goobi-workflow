@@ -149,6 +149,10 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             sql.append("delay int NOT NULL DEFAULT '0', ");
             sql.append("enabled tinyint(1) NOT NULL DEFAULT '1', ");
             sql.append("type text, ");
+            sql.append("goobi_import tinyint(1) NOT NULL DEFAULT '1', ");
+            sql.append("project_id INT(11) DEFAULT NULL, ");
+            sql.append("template_id INT(11)  DEFAULT NULL, ");
+            sql.append("fileformat varchar(255)  DEFAULT NULL, ");
             sql.append("PRIMARY KEY (id) ");
             sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
             try {

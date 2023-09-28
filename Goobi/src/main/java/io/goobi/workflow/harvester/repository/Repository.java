@@ -112,10 +112,9 @@ public class Repository implements Serializable, DatabaseObject {
     // if enabled, import downloaded records to goobi
     private boolean goobiImport = false;
 
-    // TODO should this be the id?
     private Integer importProjectId;
-    private String processTemplateName; // TODO should this be the id?
-
+    private Integer processTemplateId;
+    private String fileformat;
 
     private static final Namespace oaiNamespace = Namespace.getNamespace("oai", "http://www.openarchives.org/OAI/2.0/");
 
@@ -138,7 +137,7 @@ public class Repository implements Serializable, DatabaseObject {
      * @param enabled
      */
     public Repository(Integer id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest, int frequency,
-            int delay, boolean enabled) {
+            int delay, boolean enabled, boolean goobiImport, Integer importProjectId, Integer processTemplateId, String fileformat) {
         this.id = id;
         this.name = name;
         this.url = url;
@@ -148,7 +147,10 @@ public class Repository implements Serializable, DatabaseObject {
         this.frequency = frequency;
         this.delay = delay;
         this.enabled = enabled;
-
+        this.goobiImport = goobiImport;
+        this.importProjectId = importProjectId;
+        this.processTemplateId = processTemplateId;
+        this.fileformat = fileformat;
     }
 
     /***************************************************************************************************************
@@ -710,8 +712,5 @@ public class Repository implements Serializable, DatabaseObject {
 
         return "";
     }
-
-
-
 
 }

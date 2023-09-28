@@ -242,13 +242,19 @@
                                 <intranda:formInputDropDown
                                     id="template"
                                     label="#{msgs.template}"
-                                    field="#{harvesterBean.repository.processTemplateName}"
+                                    field="#{harvesterBean.repository.processTemplateId}"
                                     help="#{msgs.helpProcessProject}"
                                     name="template"
                                     selectItems="#{harvesterBean.processTemplateList}"
                                     required="true" />
-                                <!--  TODO configure rest endpoint -->
-
+                                <intranda:formInputDropDown
+                                    id="fileformat"
+                                    label="#{msgs.fileformat}"
+                                    field="#{harvesterBean.repository.fileformat}"
+                                    help="#{msgs.helpFileformat}"
+                                    name="fileformat"
+                                    selectItems="#{harvesterBean.restApiList}"
+                                    required="true" />
                             </h:panelGroup>
                         </h:panelGroup>
 
