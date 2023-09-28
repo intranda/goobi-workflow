@@ -10,7 +10,7 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
-        <composite:attribute name="name" />
+         <composite:attribute name="name" />
         <composite:attribute name="label" />
         <composite:attribute name="field" />
         <composite:attribute name="help" />
@@ -24,13 +24,13 @@
         <composite:attribute name="classRight" default="col-12 col-md-8" />
         <composite:attribute name="tabindex" default="0" />
         <composite:attribute name="onfocus" default="" />
+        <composite:attribute name="render" default="@form" />
     </composite:interface>
 
     <composite:implementation>
 
-        <style>
 <!--TODO move this to css file -->
-
+        <style>
 .searchgroup__container {
     position: relative;
     margin-bottom: 10px;
@@ -101,10 +101,15 @@
             style="#{cc.attrs.style}">
 
             <!-- LABEL -->
-            <div class="#{cc.attrs.classLeft}" tabindex="-1">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
-                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
-                <composite:insertChildren />                        
+            <div
+                class="#{cc.attrs.classLeft}"
+                tabindex="-1">
+                <intranda:formLabel
+                    label="#{cc.attrs.label}"
+                    labelFor="#{cc.attrs.name}"
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"
+                    rendered="#{cc.attrs.displayLabel}" />
+                <composite:insertChildren />
             </div>
             <!-- // LABEL -->
 
@@ -116,19 +121,20 @@
                 <x:inputText
                     id="inputTextViaf"
                     pt:aria-label="#{cc.attrs.label}"
-                    styleClass="form-control"
+                    styleClass="form-control form_field"
                     disabled="true"
                     readonly="true"
                     value="#{cc.attrs.field.value}"
-                    onfocus="#{cc.attrs.onfocus}" />
+                    tabindex="-1" />
 
                 <x:inputText
                     id="viafId"
                     pt:aria-label="#{cc.attrs.label}"
-                    styleClass="form-control"
+                    styleClass="form-control form_field"
                     disabled="true"
                     readonly="true"
-                    value="#{cc.attrs.field.viafNumber}" />
+                    value="#{cc.attrs.field.viafNumber}"
+                    tabindex="-1" />
 
 
                 <h:message
@@ -146,10 +152,11 @@
                 styleClass="col-12 col-md-1">
                 <button
                     jsf:id="viafButton"
-                    class="btn btn-blank me-2"
+                    class="btn btn-blank me-2 float-end"
                     title="#{msgs.NORM_viafSearch}"
                     aria-label="#{msgs.NORM_viafSearch}"
                     jsf:onclick="$(this).parent().parent().next().modal('show');"
+                    onfocus="#{cc.attrs.onfocus}"
                     type="button">
                     <img
                         class="toggle"
@@ -391,8 +398,8 @@
                             </div>
                         </h:panelGroup>
 
-<hr/>
 
+<hr/>
 
                         <h:panelGroup
                             id="viafSearchlist"
@@ -452,6 +459,7 @@
                                                         jsf:id="select"
                                                         aria-label="#{msgs.selectFile}"
                                                         class="btn btn-success float-end"
+                                                        jsf:onclick="$(this).parent().parent().parent().parent().parent().parent().parent().parent().modal('hide');;"
                                                         jsf:action="#{cc.attrs.field.importViafData}">
                                                         <f:setPropertyActionListener
                                                             value="#{database}"
@@ -460,6 +468,9 @@
                                                             value="#{record.getFieldValues('024','7',' ','a').get(0)}"
                                                             target="#{cc.attrs.field.viafSearch.currentCluster}" />
                                                         <i class="fa fa-check" />
+                                                        <f:ajax
+                                                            execute="@this"
+                                                            render="#{cc.attrs.render}" />
                                                     </button>
 
                                                     <a

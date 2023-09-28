@@ -106,6 +106,9 @@ public class StatisticsManager implements Serializable {
     private Boolean includeLoops = null;
     private String filter = "";
 
+    private boolean showClosedProcesses;
+    private boolean showArchivedProjects;
+
     private StatisticsManager() {
         super();
     }
@@ -116,13 +119,15 @@ public class StatisticsManager implements Serializable {
      * @param inMode as {@link StatisticsMode}
      * @param inDataSource as {@link IDataSource}
      ****************************************************************************/
-    public StatisticsManager(StatisticsMode inMode, Locale locale, String filter) {
+    public StatisticsManager(StatisticsMode inMode, Locale locale, String filter, boolean showClosedProcesses, boolean showArchivedProjects) {
         this();
         statisticMode = inMode;
         this.filter = filter;
         targetResultOutput = ResultOutput.chartAndTable;
         targetTimeUnit = TimeUnit.months;
         sourceTimeUnit = TimeUnit.months;
+        this.showClosedProcesses = showClosedProcesses;
+        this.showArchivedProjects = showArchivedProjects;
         myLocale = locale;
         /* for backward compatibility create old jfreechart datasets */
         Institution inst = null;
@@ -134,6 +139,13 @@ public class StatisticsManager implements Serializable {
 
         if (Boolean.TRUE.equals(inMode.getIsSimple())) {
             filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+
+            if (!showClosedProcesses) {
+                filter = filter + " AND  prozesse.sortHelperStatus <> '100000000' ";
+            }
+            if (!showArchivedProjects) {
+                filter = filter + " AND projekte.projectIsArchived = false ";
+            }
 
             if (inMode == StatisticsMode.SIMPLE_RUNTIME_STEPS) {
                 try {
@@ -172,6 +184,13 @@ public class StatisticsManager implements Serializable {
 
     public void calculate() {
         String filterString = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+
+        if (!showClosedProcesses) {
+            filterString = filterString + " AND  prozesse.sortHelperStatus <> '100000000' ";
+        }
+        if (!showArchivedProjects) {
+            filterString = filterString + " AND projekte.projectIsArchived = false ";
+        }
 
         /*
          * -------------------------------- if to-date is before from-date, show
@@ -217,7 +236,7 @@ public class StatisticsManager implements Serializable {
                 question.setCalculationUnit(targetCalculationUnit);
             }
             renderingElements = new ArrayList<>();
-            List<DataTable> myDataTables = question.getDataTables(filterString, filter);
+            List<DataTable> myDataTables = question.getDataTables(filterString, filter, showClosedProcesses, showArchivedProjects);
 
             /*
              * -------------------------------- if DataTables exist analyze them

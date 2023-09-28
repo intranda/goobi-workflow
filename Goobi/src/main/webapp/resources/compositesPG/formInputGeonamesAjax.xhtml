@@ -29,6 +29,7 @@
         <composite:attribute name="render" default="" />
         <composite:attribute name="submitDataAction" method-signature="void importGeonamesData()"/>
         <composite:attribute name="onfocus" default="" />
+        <composite:attribute name="render" default="@form" />
     </composite:interface>
 
     <composite:implementation>
@@ -39,10 +40,15 @@
             style="#{cc.attrs.style}">
 
             <!-- LABEL -->
-            <div class="#{cc.attrs.classLeft}" tabindex="-1">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
-                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
-                <composite:insertChildren />                        
+            <div
+                class="#{cc.attrs.classLeft}"
+                tabindex="-1">
+                <intranda:formLabel
+                    label="#{cc.attrs.label}"
+                    labelFor="#{cc.attrs.name}"
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"
+                    rendered="#{cc.attrs.displayLabel}" />
+                <composite:insertChildren />
             </div>
             <!-- // LABEL -->
 
@@ -54,19 +60,20 @@
                 <x:inputText
                     id="inputTextGeonames"
                     pt:aria-label="#{cc.attrs.label}"
-                    styleClass="form-control"
+                    styleClass="form-control form_field"
                     disabled="true"
                     readonly="true"
-                    value="#{cc.attrs.field.value}" 
-                    onfocus="#{cc.attrs.onfocus}"/>
+                    value="#{cc.attrs.field.value}"
+                    tabindex="-1" />
 
                 <x:inputText
                     id="geonamesid"
                     pt:aria-label="#{cc.attrs.label}"
-                    styleClass="form-control"
+                    styleClass="form-control form_field"
                     disabled="true"
                     readonly="true"
-                    value="#{cc.attrs.field.geonamesNumber}" />
+                    value="#{cc.attrs.field.geonamesNumber}"
+                    tabindex="-1" />
 
 
                 <h:message
@@ -88,6 +95,7 @@
                     title="#{msgs.NORM_geonamesSearch}"
                     aria-label="#{msgs.NORM_gndSearch}"
                     jsf:onclick="$(this).parent().parent().next().modal('show');"
+                    onfocus="#{cc.attrs.onfocus}"
                     type="button">
                     <img
                         class="toggle"
@@ -100,7 +108,6 @@
         </div>
 
         <!-- MODAL -->
-
 
         <h:panelGroup
             data-target="geonames-modal"
@@ -157,9 +164,7 @@
                                     jsf:action="#{cc.attrs.field.searchGeonames}">
                                     <i
                                         class="fa fa-search"
-                                        aria-hidden="true"></i>
-                                    <span>
-                                        <h:outputText value="#{msgs.search}" />
+                                        aria-hidden="true"></i> <span> <h:outputText value="#{msgs.search}" />
                                     </span>
                                     <f:ajax
                                         execute="@form"
@@ -168,8 +173,8 @@
                             </div>
                         </div>
 
-<hr/>
 
+<hr/>
 
                         <!-- GEONAMES LIST -->
                         <h:panelGroup id="geonamesList">
@@ -261,13 +266,14 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-2 text-right">
+                                            <div class="col-2">
 
 
 
                                                 <button
                                                     jsf:id="importGeonamesData"
                                                     class="btn btn-success float-end"
+                                                    jsf:onclick="$(this).parent().parent().parent().parent().parent().parent().parent().parent().parent().modal('hide');"
                                                     jsf:action="#{cc.attrs.submitDataAction}">
                                                     <f:setPropertyActionListener
                                                         value="#{geonames}"
@@ -276,7 +282,9 @@
                                                         value=""
                                                         target="#{cc.attrs.field.searchValue}" />
                                                     <i class="fa fa-check" />
-
+                                                    <f:ajax
+                                                        execute="@this"
+                                                        render="#{cc.attrs.render}" />
                                                 </button>
                                             </div>
                                         </div>

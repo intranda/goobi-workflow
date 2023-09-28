@@ -65,7 +65,7 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptManager {
 
     @Getter
-    private List<GoobiScriptResult> goobiScriptResults = Collections.synchronizedList(new ArrayList<GoobiScriptResult>());
+    private List<GoobiScriptResult> goobiScriptResults = Collections.synchronizedList(new ArrayList<>());
     @Getter
     @Setter
     private int showMax = 100;
@@ -79,7 +79,7 @@ public class GoobiScriptManager {
 
     private Thread workerThread;
     private GoobiScriptWorker goobiScriptWorker;
-    private List<GoobiScriptResult> workList = Collections.synchronizedList(new ArrayList<GoobiScriptResult>());
+    private List<GoobiScriptResult> workList = Collections.synchronizedList(new ArrayList<>());
     private int nextScriptPointer = 0;
 
     private Map<String, IGoobiScript> actionToScriptImplMap;
@@ -297,8 +297,12 @@ public class GoobiScriptManager {
                             row.createCell(3).setCellValue(gsr.getUsername());
                             row.createCell(4).setCellValue(gsr.getFormattedTimestamp());
                             row.createCell(5).setCellValue(gsr.getResultType().toString());
-                            row.createCell(6).setCellValue(gsr.getResultMessage());
-                            row.createCell(7).setCellValue(gsr.getErrorText());
+                            // reduce length to max 2000 char to avoid 'maximum length of cell contents (text) is 32767 characters' error in xls
+                            row.createCell(6)
+                            .setCellValue(gsr.getResultMessage() != null && gsr.getResultMessage().length() > 2000
+                            ? gsr.getResultMessage().substring(0, 2000) : gsr.getResultMessage());
+                            row.createCell(7).setCellValue(gsr.getErrorText() != null && gsr.getErrorText().length() > 2000
+                                    ? gsr.getErrorText().substring(0, 2000) : gsr.getErrorText());
                             count++;
                         }
                     }

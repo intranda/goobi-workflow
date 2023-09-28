@@ -641,13 +641,14 @@
                 </div>
 
             </div>
-            <div class="row mt-3">
+            <div class="row mt-3" jsf:rendered="#{!ProzesskopieForm.configuredProperties.isEmpty()}">
                 <div class="col-sm-12">
 
                     <intranda:box
                         boxType="action"
-                        boxPadding="true"
-                        icon="fa-search"
+                        boxPadding="false"
+                        boxForm="true"
+                        icon="fa-list"
                         title="#{msgs.eigenschaften}">
                         <ui:include src="includes/process/processcreation_properties.xhtml">
                             <ui:param

@@ -25,7 +25,7 @@
 
 	<composite:implementation>
 		<ui:param name="descendingLabel" value="#{cc.attrs.sortField} desc" />
-		<ui:param name="ascendingLabel" value="#{cc.attrs.sortField}" />
+		<ui:param name="ascendingLabel" value="#{cc.attrs.sortField} asc" />
 
 		<th scope="col" role="columnheader" id="#{cc.attrs.id}" style="#{cc.attrs.style}" class="#{cc.attrs.addClass}" jsf:rendered="#{cc.attrs.sortable}"
 			aria-sort="#{cc.attrs.form.sortField== descendingLabel ? 'descending' : cc.attrs.form.sortField== ascendingLabel ? 'ascending' :'none'}">

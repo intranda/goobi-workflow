@@ -24,6 +24,7 @@
         <composite:attribute name="classRight" default="col-12 col-md-8" />
         <composite:attribute name="tabindex" default="0" />
         <composite:attribute name="onfocus" default="" />
+        <composite:attribute name="render" default="@form" />
     </composite:interface>
 
     <composite:implementation>
@@ -34,10 +35,15 @@
             style="#{cc.attrs.style}">
 
             <!-- LABEL -->
-            <div class="#{cc.attrs.classLeft}" tabindex="-1">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
-                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
-                <composite:insertChildren />                        
+            <div
+                class="#{cc.attrs.classLeft}"
+                tabindex="-1">
+                <intranda:formLabel
+                    label="#{cc.attrs.label}"
+                    labelFor="#{cc.attrs.name}"
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"
+                    rendered="#{cc.attrs.displayLabel}" />
+                <composite:insertChildren />
             </div>
             <!-- // LABEL -->
 
@@ -49,20 +55,20 @@
                 <x:inputText
                     id="inputTextRO"
                     pt:aria-label="#{cc.attrs.label}"
-                    styleClass="form-control"
+                    styleClass="form-control form_field"
                     disabled="true"
                     readonly="true"
                     value="#{cc.attrs.field.value}"
-                    onfocus="#{cc.attrs.onfocus}" />
+                    tabindex="-1" />
 
                 <x:inputText
                     id="gndid"
                     pt:aria-label="#{cc.attrs.label}"
-                    styleClass="form-control"
+                    styleClass="form-control form_field"
                     disabled="true"
                     readonly="true"
-                    value="#{cc.attrs.field.gndNumber}" />
-
+                    value="#{cc.attrs.field.gndNumber}"
+                    tabindex="-1" />
 
                 <h:message
                     for="#{cc.attrs.name}"
@@ -79,10 +85,11 @@
                 styleClass="col-12 col-md-1">
                 <button
                     jsf:id="gndButton"
-                    class="btn btn-blank me-2"
+                    class="btn btn-blank me-2 float-end"
                     title="#{msgs.NORM_gndSearch}"
                     aria-label="#{msgs.NORM_gndSearch}"
                     jsf:onclick="$(this).parent().parent().next().modal('show');"
+                    onfocus="#{cc.attrs.onfocus}"
                     type="button">
                     <img
                         class="toggle"
@@ -108,7 +115,7 @@
             aria-hidden="true">
             <div
                 style="width: 50%; max-width: 50%;"
-                class="modal-dialog modal-dialog-scrollable"
+                class="modal-dialog modal-xl modal-dialog-scrollable"
                 role="document">
                 <h:panelGroup
                     styleClass="modal-content"
@@ -135,7 +142,7 @@
                         <div class="row">
                             <div class="col-12 col-md-3">
                                 <h:selectOneMenu
-                                    styleClass="form-control"
+                                    styleClass="form-control form-select"
                                     value="#{cc.attrs.field.searchOption}"
                                     pt:aria-label="#{msgs.filter}">
                                     <f:selectItem
@@ -169,9 +176,7 @@
                                     jsf:action="#{cc.attrs.field.searchGnd}">
                                     <i
                                         class="fa fa-search"
-                                        aria-hidden="true"></i>
-                                    <span>
-                                        <h:outputText value="#{msgs.search}" />
+                                        aria-hidden="true"></i> <span> <h:outputText value="#{msgs.search}" />
                                     </span>
                                     <f:ajax
                                         execute="@form"
@@ -179,9 +184,8 @@
                                 </button>
                             </div>
                         </div>
-
-<hr/>
-
+                        <hr/>
+                        
                         <h:panelGroup
                             id="gndSearchlist"
                             layout="block"
@@ -230,7 +234,8 @@
                                         <button
                                             jsf:id="check"
                                             aria-label="#{msgs.selectFile}"
-                                            class="btn btn-success"
+                                            class="btn btn-success float-end"
+                                            jsf:onclick="$(this).parent().parent().parent().parent().parent().parent().parent().modal('hide');"
                                             jsf:action="#{cc.attrs.field.importGndData}">
                                             <f:setPropertyActionListener
                                                 value="#{normdataList}"
@@ -242,6 +247,9 @@
                                                 value=""
                                                 target="#{cc.attrs.field.searchValue}" />
                                             <i class="fa fa-check" />
+                                            <f:ajax
+                                                execute="@this"
+                                                render="#{cc.attrs.render}" />
                                         </button>
                                     </div>
                                 </div>

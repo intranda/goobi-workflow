@@ -354,7 +354,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (this.statisticsManager1 == null) {
             Locale locale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
             String sql = this.createProjectSQLString();
-            this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, locale, sql);
+            this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, locale, sql, true, true);
         }
         return this.statisticsManager1;
     }
@@ -367,7 +367,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (this.statisticsManager2 == null) {
             Locale locale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
             String sql = this.createProjectSQLString();
-            this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, locale, sql);
+            this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, locale, sql, true, true);
 
         }
         return this.statisticsManager2;
@@ -381,7 +381,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (this.statisticsManager3 == null) {
             Locale locale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
             String sql = this.createProjectSQLString();
-            this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, locale, sql);
+            this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, locale, sql, true, true);
         }
         return this.statisticsManager3;
     }
@@ -394,7 +394,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (this.statisticsManager4 == null) {
             Locale locale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
             String sql = this.createProjectSQLString();
-            this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, locale, sql);
+            this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, locale, sql, true, true);
         }
         return this.statisticsManager4;
     }

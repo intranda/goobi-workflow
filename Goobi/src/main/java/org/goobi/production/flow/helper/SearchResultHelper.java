@@ -322,6 +322,7 @@ public class SearchResultHelper {
         // add column labels to query
         for (SearchColumn sc : columnList) {
             if (sc.getTableName().startsWith("log")) {
+                // reduce length to max 2000 chararcters to avoid 'maximum length of cell contents (text) is 32767 characters' error in xls
                 sb.append("if (LENGTH(log.content) > 2000, SUBSTRING(log.content, 1, 2000), log.content), ");
                 includeLog = true;
             }
