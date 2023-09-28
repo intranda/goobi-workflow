@@ -105,10 +105,10 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15
-    
+
      */
     @GET
     @Path("/{processid}")
@@ -139,7 +139,7 @@ public class ProcessService implements IRestAuthentication {
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"id":15,"title":"990743934_1885","projectName":"Archive_Project",
     "creationDate":1643983095000,"status":"020040040","numberOfImages":248,"numberOfMetadata":804,"numberOfDocstructs":67,"rulesetName":"ruleset.xml",
     "docketName":"Standard"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><creationDate>2022-02-04T14:58:15+01:00
     </creationDate><docketName>Standard</docketName><id>15</id><numberOfDocstructs>67</numberOfDocstructs><numberOfImages>248</numberOfImages>
@@ -328,7 +328,7 @@ public class ProcessService implements IRestAuthentication {
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template",
     "documentType": "Monograph"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template
     </processTemplateName><documentType>Monograph</documentType></process>'
@@ -451,7 +451,7 @@ public class ProcessService implements IRestAuthentication {
         }
     }
 
-    private Process prepareProcess(String processName, Process template) {
+    public static Process prepareProcess(String processName, Process template) {
         BeanHelper helper = new BeanHelper();
         Process newProcess = new Process();
         newProcess.setTitel(processName);
@@ -486,7 +486,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/ -d '{"id":"123"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/ -d '<process><id>1234</id></process>'
      */
@@ -527,7 +527,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/steps
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/steps
      */
@@ -566,7 +566,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/step/67
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/step/67
      */
@@ -606,7 +606,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "steptitle": "new step name", "processId": 15}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><steptitle>new step name</steptitle></step>'
      */
@@ -664,8 +664,8 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"steptitle": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
-    
-    
+
+
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><steptitle>new step name</steptitle><usergroups>Administration</usergroups></step>'
      */
@@ -742,7 +742,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/step -d '{"stepId":"123"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/step -d '<step><stepId>1234</stepId></step>'
      */
@@ -829,7 +829,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/journal
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/journal
      */
@@ -865,7 +865,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "type": "info", "message": "content"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
      */
@@ -912,7 +912,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "type": "info", "message": "content"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
      */
@@ -958,7 +958,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id></journal>'
      */
@@ -997,7 +997,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/properties
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/properties
      */
@@ -1033,7 +1033,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/property/76
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/property/76
      */
@@ -1067,7 +1067,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/property -d '{"id":76,"name":"name","value":"value"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/property -d '<property><id>76</id><name>name</name><value>value</value></property>'
      */
@@ -1110,7 +1110,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/property -d '{"name":"name","value":"value"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/property -d '<property><name>name</name><value>value</value></property>'
      */
@@ -1160,7 +1160,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/15/property -d '{"id":"697"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/15/property -d '<property><id>697</id></property>'
      */
@@ -1331,7 +1331,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/15/metadata
-    
+
     XML:
     curl -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/15/metadata
      */
@@ -1407,7 +1407,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"_VolumeBoxNumber","value":"19","metadataLevel":"topstruct"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>_VolumeBoxNumber</name><value>19</value></metadata>'
      */
@@ -1498,7 +1498,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"DisplayLayout","value":"1","metadataLevel":"topstruct"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>DisplayLayout</name><value>1</value></metadata>'
      */
@@ -1573,7 +1573,7 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X DELETE http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"DisplayLayout","metadataLevel":"topstruct"}'
-    
+
     XML:
     curl -H 'Content-Type: application/xml' -X DELETE http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>DisplayLayout</name></metadata>'
      */

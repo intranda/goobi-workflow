@@ -18,10 +18,12 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
@@ -32,12 +34,14 @@ import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.production.enums.UserRole;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
+import org.reflections.Reflections;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import io.goobi.workflow.harvester.HarvesterGoobiImport;
 import io.goobi.workflow.harvester.beans.Job;
 import io.goobi.workflow.harvester.repository.Repository;
 import lombok.Getter;
@@ -146,12 +150,26 @@ public class HarvesterBean extends BasicBean implements Serializable {
     }
 
     public List<SelectItem> getRestApiList() {
-        // TODO
+
+        // get all methods marked with the @HarvesterGoobiImport annotation
+
+        Reflections reflections = new Reflections("org.goobi.api.rest.*");
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(HarvesterGoobiImport.class);
+        List<String> annotatedMethods = new ArrayList<>();
+
+        for (Class<?> clazz : classes) {
+            for (Method method : clazz.getMethods()) {
+                HarvesterGoobiImport annotation = method.getAnnotation(HarvesterGoobiImport.class);
+                if (annotation != null) {
+                    annotatedMethods.add(annotation.description());
+                }
+            }
+        }
+
         List<SelectItem> data = new ArrayList<>();
-        data.add(new SelectItem("", Helper.getTranslation("METS/MODS")));
-        data.add(new SelectItem("", Helper.getTranslation("PICA")));
-        data.add(new SelectItem("", Helper.getTranslation("MARC")));
-        data.add(new SelectItem("", Helper.getTranslation("LIDO")));
+        for (String name : annotatedMethods) {
+            data.add(new SelectItem(name, Helper.getTranslation(name)));
+        }
 
         return data;
 
