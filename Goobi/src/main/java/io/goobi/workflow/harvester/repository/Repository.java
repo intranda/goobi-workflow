@@ -331,6 +331,11 @@ public class Repository implements Serializable, DatabaseObject {
             // parse response
             SAXBuilder builder = XmlTools.getSAXBuilder();
 
+            // response is empty
+            if (StringUtils.isBlank(response)) {
+                return 0;
+            }
+
             try {
                 Document oaiDoc = builder.build(new StringReader(response));
                 Element oaiPmh = oaiDoc.getRootElement();
