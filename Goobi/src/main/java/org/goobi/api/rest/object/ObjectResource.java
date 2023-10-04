@@ -287,7 +287,7 @@ public class ObjectResource {
 
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath =
-                Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, filename).toString(),
+                Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, subfolder, filename).toString(),
                         process.getImagesDirectory()));
         if (!objectPath.toFile().isFile()) {
             throw new FileNotFoundException(FILE_NOT_FOUND + objectPath);
@@ -315,7 +315,7 @@ public class ObjectResource {
 
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath =
-                Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, filename).toString(),
+                Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, subfolder1, subfolder2, filename).toString(),
                         process.getImagesDirectory()));
         if (!objectPath.toFile().isFile()) {
             throw new FileNotFoundException(FILE_NOT_FOUND + objectPath);
