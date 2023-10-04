@@ -2,9 +2,9 @@ package org.goobi.api.rest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,7 +15,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.w3c.dom.Document;
@@ -39,25 +38,27 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.UGHException;
+import ugh.fileformats.extension.Lido;
 import ugh.fileformats.mets.XStream;
+import ugh.fileformats.opac.PicaPlus;
 
 @Log4j2
 @Path("/metadata")
-@HarvesterGoobiImport(description = "test")
+@HarvesterGoobiImport
 public class MetadataService implements IRestAuthentication {
 
     @Override
     public List<AuthenticationMethodDescription> getAuthenticationMethods() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        List<AuthenticationMethodDescription> implementedMethods = new ArrayList<>();
+        // process data
+        AuthenticationMethodDescription md =
+                new AuthenticationMethodDescription("POST", "Upload a new marc record to an existing process", "/metadata/\\d+/marc");
+        implementedMethods.add(md);
 
-    @POST
-    @Consumes("*/*")
-    public void upload(InputStream stream) throws IOException {
-        //consume input stream
-        System.out.println("Read: " + stream.read());
+        md = new AuthenticationMethodDescription("POST", "Upload a new marc record and create a new process", "/metadata/\\w+/\\w+/\\w+/marc");
+        implementedMethods.add(md);
 
+        return implementedMethods;
     }
 
     // get metadata for an existing process
@@ -79,7 +80,7 @@ public class MetadataService implements IRestAuthentication {
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    public Response uploadMarcRecord(@PathParam("processid") Integer processid, @FormDataParam("file") InputStream inputStream) {
+    public Response uploadMarcRecord(@PathParam("processid") Integer processid, InputStream inputStream) {
 
         Process process = ProcessManager.getProcessById(processid);
 
@@ -89,8 +90,16 @@ public class MetadataService implements IRestAuthentication {
         Prefs prefs = process.getRegelsatz().getPreferences();
 
         try {
-            Fileformat ff = readMarcMetadataFile(inputStream, prefs);
+            Fileformat fileformat = readMetadataFile(inputStream, prefs, "marc");
+            DigitalDocument dd = fileformat.getDigitalDocument();
+            Fileformat ff = new XStream(prefs);
+            ff.setDigitalDocument(dd);
+            /* add physical docstruct */
+            DocStructType dst = prefs.getDocStrctTypeByName("BoundBook");
+            DocStruct dsBoundBook = dd.createDocStruct(dst);
+            dd.setPhysicalDocStruct(dsBoundBook);
 
+            process.writeMetadataFile(ff);
             process.writeMetadataFile(ff);
         } catch (ParserConfigurationException | UGHException | SAXException | IOException | SwapException e) {
             log.error(e);
@@ -100,7 +109,44 @@ public class MetadataService implements IRestAuthentication {
         return Response.status(200).build();
     }
 
-    private Fileformat readMarcMetadataFile(InputStream inputStream, Prefs prefs)
+    @Path("/{processid}/pica")
+    @POST
+    @Operation(summary = "Replace existing metadata with the content of the marc file",
+            description = "Replace existing metadata with the content of the marc file")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response uploadPicaRecord(@PathParam("processid") Integer processid, InputStream inputStream) {
+
+        Process process = ProcessManager.getProcessById(processid);
+
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+        Prefs prefs = process.getRegelsatz().getPreferences();
+
+        try {
+            Fileformat fileformat = readMetadataFile(inputStream, prefs, "pica");
+            DigitalDocument dd = fileformat.getDigitalDocument();
+            Fileformat ff = new XStream(prefs);
+            ff.setDigitalDocument(dd);
+            /* add physical docstruct */
+            DocStructType dst = prefs.getDocStrctTypeByName("BoundBook");
+            DocStruct dsBoundBook = dd.createDocStruct(dst);
+            dd.setPhysicalDocStruct(dsBoundBook);
+
+            process.writeMetadataFile(ff);
+            process.writeMetadataFile(ff);
+        } catch (ParserConfigurationException | UGHException | SAXException | IOException | SwapException e) {
+            log.error(e);
+            return Response.status(500).entity("Error during metadata creation").build();
+        }
+
+        return Response.status(200).build();
+    }
+
+    private Fileformat readMetadataFile(InputStream inputStream, Prefs prefs, String type)
             throws ParserConfigurationException, SAXException, IOException, ReadException, PreferencesException, TypeNotAllowedForParentException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
@@ -108,18 +154,42 @@ public class MetadataService implements IRestAuthentication {
 
         DocumentBuilder builder = dbf.newDocumentBuilder();
         Document doc = builder.parse(inputStream);
-        MarcFileformat fileformat = new MarcFileformat(prefs);
 
-        fileformat.read(doc.getDocumentElement());
+        if ("marc".equals(type)) {
+            MarcFileformat fileformat = new MarcFileformat(prefs);
+            fileformat.read(doc.getDocumentElement());
+            return fileformat;
+        } else if ("pica".equals(type)) {
+            PicaPlus fileformat = new PicaPlus(prefs);
+            fileformat.read(doc.getDocumentElement());
+            return fileformat;
+        } else if ("lido".equals(type)) {
+            Lido fileformat = new Lido(prefs);
+            // fileformat.read(doc.getDocumentElement());//TODO
+            return fileformat;
 
-        DigitalDocument dd = fileformat.getDigitalDocument();
-        Fileformat ff = new XStream(prefs);
-        ff.setDigitalDocument(dd);
-        /* add physical docstruct */
-        DocStructType dst = prefs.getDocStrctTypeByName("BoundBook");
-        DocStruct dsBoundBook = dd.createDocStruct(dst);
-        dd.setPhysicalDocStruct(dsBoundBook);
-        return ff;
+        }
+
+        else {
+            return null;
+        }
+
+    }
+
+    @HarvesterGoobiImport(description = "Import Pica-XML Records")
+    @POST
+    @Path("/{projectName}/{templateName}/{processTitle}/pica")
+    @Operation(summary = "Create a process with given pica file",
+            description = "Create a new process, get metadata from content of the pica file ")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Project not found or process template not found.")
+    @ApiResponse(responseCode = "409", description = "The process title is already used.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public Response createProcessWithPicaRecord(@PathParam("projectName") String projectName, @PathParam("templateName") String templateName,
+            @PathParam("processTitle") String processTitle,
+            InputStream inputStream) {
+        return createRecord(projectName, templateName, processTitle, inputStream, "pica");
     }
 
     @HarvesterGoobiImport(description = "Import MARC-XML Records")
@@ -135,6 +205,10 @@ public class MetadataService implements IRestAuthentication {
     public Response createProcessWithMarcRecord(@PathParam("projectName") String projectName, @PathParam("templateName") String templateName,
             @PathParam("processTitle") String processTitle,
             InputStream inputStream) {
+        return createRecord(projectName, templateName, processTitle, inputStream, "marc");
+    }
+
+    private Response createRecord(String projectName, String templateName, String processTitle, InputStream inputStream, String type) {
         Project project = null;
         try {
             project = ProjectManager.getProjectByName(projectName);
@@ -170,7 +244,16 @@ public class MetadataService implements IRestAuthentication {
             // save process to create id and directories
             ProcessManager.saveProcess(process);
             // save metadata file
-            Fileformat ff = readMarcMetadataFile(inputStream, prefs);
+            Fileformat fileformat = readMetadataFile(inputStream, prefs, type);
+
+            DigitalDocument dd = fileformat.getDigitalDocument();
+            Fileformat ff = new XStream(prefs);
+            ff.setDigitalDocument(dd);
+            /* add physical docstruct */
+            DocStructType dst = prefs.getDocStrctTypeByName("BoundBook");
+            DocStruct dsBoundBook = dd.createDocStruct(dst);
+            dd.setPhysicalDocStruct(dsBoundBook);
+
             process.writeMetadataFile(ff);
             log.debug("Generated process {} using marc upload", processTitle);
         } catch (DAOException | UGHException | ParserConfigurationException | SAXException | IOException | SwapException e) {
