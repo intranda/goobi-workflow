@@ -29,14 +29,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import de.sub.goobi.config.ConfigNormdata;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -57,7 +57,6 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
     private static final String FIELD = "field";
     private static final String SEARCH = "search";
     private static final String REPLACE = "replace";
-    private static final String REGULAR_EXPRESSION = "regularExpression";
     private static final String POSITION = "position";
     private static final String GROUP = "group";
 
@@ -79,8 +78,8 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                 "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameterToSampleCall(sb, SEARCH, "Phone", "Term to be searched for");
         addParameterToSampleCall(sb, REPLACE, "Telephone", "Term that shall replace the searched term");
-        addParameterToSampleCall(sb, REGULAR_EXPRESSION, "false",
-                "If the search term shall used used as regular expression set this value to `true` here.");
+        addParameterToSampleCall(sb, "authorityName", "", "Name of the normdatabase, e.g. viaf or gnd.");
+        addParameterToSampleCall(sb, "authorityValue", "", "Define the normdata value for this metadata field.");
         addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, GROUP, "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");
@@ -179,9 +178,6 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                     break;
             }
 
-            // check if regular expressions shall be interpreted
-            boolean searchFieldIsRegularExpression = getParameterAsBoolean(REGULAR_EXPRESSION);
-
             String replace = parameters.get(REPLACE);
             if (replace == null) {
                 replace = "";
@@ -196,7 +192,8 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             replace = replacer.replace(replace);
             String group = parameters.get(GROUP);
             // now change the searched metadata and save the file
-            replaceMetadata(dsList, group, field, search, replace, p.getRegelsatz().getPreferences(), searchFieldIsRegularExpression);
+            replaceMetadata(dsList, group, field, search, replace, p.getRegelsatz().getPreferences(),
+                    parameters.get("authorityName"), parameters.get("authorityValue"));
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Metadata changed using GoobiScript: " + parameters.get(FIELD) + " - "
@@ -227,7 +224,17 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
      */
     @SuppressWarnings("unchecked")
     private void replaceMetadata(List<DocStruct> dsList, String groupName, String field, String search, String replace, Prefs prefs,
-            boolean searchFieldIsRegularExpression) {
+            String authorityName, String authorityValue) {
+        String authorityUri = null;
+        if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
+            List<NormDatabase> dblist = ConfigNormdata.getConfiguredNormdatabases();
+            for (NormDatabase db : dblist) {
+                if (db.getAbbreviation().equalsIgnoreCase(authorityName)) {
+                    authorityUri = db.getPath();
+                }
+            }
+        }
+
         for (DocStruct ds : dsList) {
             List<Metadata> mdlist = new ArrayList<>();
             if (StringUtils.isNotBlank(groupName)) {
@@ -241,13 +248,10 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
 
             if (mdlist != null && !mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
-                    if (searchFieldIsRegularExpression) {
-                        for (Matcher m = Pattern.compile(search).matcher(md.getValue()); m.find();) {
-                            md.setValue(md.getValue().replace(m.group(), replace));
-                        }
-                    } else {
-                        if (md.getValue().contains(search)) {
-                            md.setValue(md.getValue().replace(search, replace));
+                    if (md.getValue().contains(search)) {
+                        md.setValue(md.getValue().replace(search, replace));
+                        if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
+                            md.setAutorityFile(authorityName, authorityUri, authorityValue);
                         }
                     }
                 }
