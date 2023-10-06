@@ -122,7 +122,7 @@ public class HarvesterBean extends BasicBean implements Serializable {
             }
 
             for (Project proj : temp) {
-                availableProjects.add(new SelectItem(proj.getId(), proj.getTitel(), null));
+                availableProjects.add(new SelectItem(proj.getTitel(), proj.getTitel()));
             }
         }
         return availableProjects;
@@ -142,7 +142,7 @@ public class HarvesterBean extends BasicBean implements Serializable {
             String sql = FilterHelper.criteriaBuilder("", true, null, null, null, true, false);
             List<org.goobi.beans.Process> processes = ProcessManager.getProcesses("prozesse.titel", sql, inst);
             for (org.goobi.beans.Process p : processes) {
-                availableProcessTemplates.add(new SelectItem(p.getId(), p.getTitel()));
+                availableProcessTemplates.add(new SelectItem(p.getTitel(), p.getTitel()));
             }
         }
         return availableProcessTemplates;

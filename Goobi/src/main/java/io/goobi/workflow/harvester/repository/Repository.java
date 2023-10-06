@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
@@ -32,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.DatabaseObject;
@@ -45,6 +47,7 @@ import org.jdom2.output.XMLOutputter;
 import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.reflections.Reflections;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.ShellScript;
@@ -53,6 +56,8 @@ import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.exceptions.HarvestException;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
 import io.goobi.workflow.api.connection.HttpUtils;
+import io.goobi.workflow.harvester.HarvesterGoobiImport;
+import io.goobi.workflow.harvester.MetadataParser;
 import io.goobi.workflow.harvester.beans.Record;
 import io.goobi.workflow.harvester.export.ExportOutcome;
 import lombok.Getter;
@@ -112,8 +117,8 @@ public class Repository implements Serializable, DatabaseObject {
     // if enabled, import downloaded records to goobi
     private boolean goobiImport = false;
 
-    private Integer importProjectId;
-    private Integer processTemplateId;
+    private String importProjectName;
+    private String processTemplateName;
     private String fileformat;
 
     private static final Namespace oaiNamespace = Namespace.getNamespace("oai", "http://www.openarchives.org/OAI/2.0/");
@@ -137,7 +142,7 @@ public class Repository implements Serializable, DatabaseObject {
      * @param enabled
      */
     public Repository(Integer id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest, int frequency,
-            int delay, boolean enabled, boolean goobiImport, Integer importProjectId, Integer processTemplateId, String fileformat) {
+            int delay, boolean enabled, boolean goobiImport, String importProjectName, String processTemplateName, String fileformat) {
         this.id = id;
         this.name = name;
         this.url = url;
@@ -148,8 +153,8 @@ public class Repository implements Serializable, DatabaseObject {
         this.delay = delay;
         this.enabled = enabled;
         this.goobiImport = goobiImport;
-        this.importProjectId = importProjectId;
-        this.processTemplateId = processTemplateId;
+        this.importProjectName = importProjectName;
+        this.processTemplateName = processTemplateName;
         this.fileformat = fileformat;
     }
 
@@ -440,6 +445,9 @@ public class Repository implements Serializable, DatabaseObject {
 
         // parse metadata
         Element metadata = element.getChild("metadata", oaiNamespace);
+        if (metadata == null) {
+            return null;
+        }
 
         Element format = metadata.getChildren().get(0);
         if ("dc".equals(format.getName()) && "oai_dc".equals(format.getNamespacePrefix())) {
@@ -487,6 +495,7 @@ public class Repository implements Serializable, DatabaseObject {
                 }
             }
         }
+
         // ------------------------------------------------------------------------------------------------
         // end : parse metadata
         // ------------------------------------------------------------------------------------------------
@@ -538,8 +547,26 @@ public class Repository implements Serializable, DatabaseObject {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-
                 }
+
+                if (goobiImport && StringUtils.isNotBlank(fileformat)) {
+                    Reflections reflections = new Reflections("org.goobi.api.rest.*");
+                    Set<Class<?>> classes = reflections.getTypesAnnotatedWith(HarvesterGoobiImport.class);
+                    for (Class<?> clazz : classes) {
+                        HarvesterGoobiImport annotation = clazz.getAnnotation(HarvesterGoobiImport.class);
+                        if (annotation != null && annotation.description().equals(fileformat)) {
+                            try {
+                                MetadataParser parser = (MetadataParser) clazz.getDeclaredConstructor().newInstance();
+                                parser.createNewProcess(importProjectName, processTemplateName, record.getIdentifier(),
+                                        StorageProvider.getInstance().newInputStream(recordFile));
+                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                                    | NoSuchMethodException | SecurityException | IOException e) {
+                                log.error(e);
+                            }
+                        }
+                    }
+                }
+
                 break;
 
             case "ia":

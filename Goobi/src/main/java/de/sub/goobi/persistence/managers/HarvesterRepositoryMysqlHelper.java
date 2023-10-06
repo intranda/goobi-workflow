@@ -76,7 +76,7 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
             while (rs.next()) {
                 Repository r = new Repository(rs.getInt("id"), rs.getString("name"), rs.getString("base_url"), rs.getString("export_folder"),
                         rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"), rs.getInt("delay"), rs.getBoolean("enabled"),
-                        rs.getBoolean("goobi_import"), rs.getInt("project_id"), rs.getInt("template_id"), rs.getString("fileformat"));
+                        rs.getBoolean("goobi_import"), rs.getString("project_name"), rs.getString("template_name"), rs.getString("fileformat"));
                 r.setRepositoryType(rs.getString("type"));
 
                 String query = "SELECT name, value FROM repository_parameter WHERE repository_id = ?";
@@ -142,22 +142,23 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
                 StringBuilder sql = new StringBuilder();
                 sql.append("INSERT INTO repository ");
                 sql.append("(name, base_url, export_folder, script_path, last_harvest, freq, delay, enabled, type, ");
-                sql.append("goobi_import, project_id, template_id, fileformat) ");
+                sql.append("goobi_import, project_name, template_name, fileformat) ");
                 sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 Integer id = runner.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, repository.getName(),
                         repository.getUrl(), repository.getExportFolderPath(), repository.getScriptPath(), repository.getLastHarvest(),
                         repository.getFrequency(), repository.getDelay(), repository.isEnabled(), repository.getRepositoryType(),
-                        repository.isGoobiImport(), repository.getImportProjectId(), repository.getProcessTemplateId(), repository.getFileformat());
+                        repository.isGoobiImport(), repository.getImportProjectName(), repository.getProcessTemplateName(),
+                        repository.getFileformat());
                 repository.setId(id);
             } else {
                 StringBuilder sql = new StringBuilder();
                 sql.append("UPDATE repository SET name = ?, base_url = ?, export_folder = ?, script_path = ?, last_harvest = ?, ");
-                sql.append("freq = ?, delay = ?, enabled = ?, type = ?, goobi_import = ?, project_id = ?, ");
-                sql.append("template_id = ?, fileformat = ? WHERE id = ? ");
+                sql.append("freq = ?, delay = ?, enabled = ?, type = ?, goobi_import = ?, project_name = ?, ");
+                sql.append("template_name = ?, fileformat = ? WHERE id = ? ");
                 runner.update(connection, sql.toString(), repository.getName(), repository.getUrl(), repository.getExportFolderPath(),
                         repository.getScriptPath(), repository.getLastHarvest(), repository.getFrequency(), repository.getDelay(),
-                        repository.isEnabled(), repository.getRepositoryType(), repository.isGoobiImport(), repository.getImportProjectId(),
-                        repository.getProcessTemplateId(), repository.getFileformat(), repository.getId());
+                        repository.isEnabled(), repository.getRepositoryType(), repository.isGoobiImport(), repository.getImportProjectName(),
+                        repository.getProcessTemplateName(), repository.getFileformat(), repository.getId());
             }
             if (!repository.getParameter().isEmpty()) {
                 String deletion = "delete from repository_parameter where repository_id = ?";
@@ -364,15 +365,15 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             List<Object> paramList = new ArrayList<>();
-            String sql = "UPDATE job SET status=?";
+            StringBuilder sql = new StringBuilder("UPDATE job SET status=?");
             paramList.add(job.getStatus());
             if (StringUtils.isNotEmpty(job.getMessage())) {
-                sql += ", message=?";
+                sql.append(", message=?");
                 paramList.add(job.getMessage());
             }
-            sql += " WHERE id=?";
+            sql.append(" WHERE id=?");
             paramList.add(job.getId());
-            if (new QueryRunner().update(connection, sql, paramList.toArray()) == 0) {
+            if (new QueryRunner().update(connection, sql.toString(), paramList.toArray()) == 0) {
                 throw new SQLException("Can't update status of Job with id: " + job.getId());
             }
         } finally {
@@ -437,9 +438,9 @@ class HarvesterRepositoryMysqlHelper implements Serializable {
             }
         }
         if (StringUtils.isNotBlank(sortField)) {
-            if (sortField.equals("repositoryTimestamp")) {
+            if ("repositoryTimestamp".equals(sortField)) {
                 sortField = "repository_datestamp";
-            } else if (sortField.equals("exportedDatestamp")) {
+            } else if ("exportedDatestamp".equals(sortField)) {
                 sortField = "exported_datestamp";
             }
             String so = "ASC";

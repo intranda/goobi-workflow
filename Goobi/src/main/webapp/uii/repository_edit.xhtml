@@ -233,16 +233,16 @@
                                 <intranda:formInputDropDown
                                     id="project"
                                     label="#{msgs.projekt}"
-                                    field="#{harvesterBean.repository.importProjectId}"
+                                    field="#{harvesterBean.repository.importProjectName}"
                                     help="#{msgs.helpProcessProject}"
-                                    name="prozess"
+                                    name="project"
                                     selectItems="#{harvesterBean.projectList}"
                                     required="true" />
 
                                 <intranda:formInputDropDown
                                     id="template"
                                     label="#{msgs.template}"
-                                    field="#{harvesterBean.repository.processTemplateId}"
+                                    field="#{harvesterBean.repository.processTemplateName}"
                                     help="#{msgs.helpProcessProject}"
                                     name="template"
                                     selectItems="#{harvesterBean.processTemplateList}"
