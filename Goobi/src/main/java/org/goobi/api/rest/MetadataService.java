@@ -17,10 +17,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import de.intranda.ugh.extension.MarcFileformat;
+import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -152,17 +158,63 @@ public class MetadataService implements IRestAuthentication {
         dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
         dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 
-        DocumentBuilder builder = dbf.newDocumentBuilder();
-        Document doc = builder.parse(inputStream);
-
         if ("marc".equals(type)) {
+            DocumentBuilder builder = dbf.newDocumentBuilder();
+            Document doc = builder.parse(inputStream);
             MarcFileformat fileformat = new MarcFileformat(prefs);
             fileformat.read(doc.getDocumentElement());
             return fileformat;
         } else if ("pica".equals(type)) {
             PicaPlus fileformat = new PicaPlus(prefs);
-            fileformat.read(doc.getDocumentElement());
-            return fileformat;
+            org.w3c.dom.Document xmlDoc = new org.apache.xerces.dom.DocumentImpl();
+            Node collection = xmlDoc.createElement("collection");
+            // add anchor + volume to collection
+            xmlDoc.appendChild(collection);
+            // read input stream, convert records, add them to collection node
+            SAXBuilder builder = XmlTools.getSAXBuilder();
+            try {
+                org.jdom2.Document jdomDoc = builder.build(inputStream);
+                List<Element> records = new ArrayList<>();
+                Element root = jdomDoc.getRootElement();
+                if ("record".equals(root.getName())) {
+                    records.add(root);
+                } else {
+                    // we have a collection of elements, add all
+                    records.addAll(root.getChildren());
+                }
+                for (Element picaRecord : records) {
+                    Node record = xmlDoc.createElement("record");
+                    collection.appendChild(record);
+
+                    for (Element datafield : picaRecord.getChildren()) {
+                        org.w3c.dom.Element field = xmlDoc.createElement("field");
+                        record.appendChild(field);
+                        String fieldCode = datafield.getAttributeValue("tag");
+                        Attr tag = xmlDoc.createAttribute("tag");
+                        tag.setNodeValue(fieldCode);
+                        field.setAttributeNode(tag);
+
+                        for (Element subfieldElement : datafield.getChildren()) {
+
+                            String subfieldCode = subfieldElement.getAttributeValue("code");
+                            String subfieldValue = subfieldElement.getText();
+
+                            org.w3c.dom.Element subfieldNode = xmlDoc.createElement("subfield");
+                            subfieldNode.setTextContent(subfieldValue);
+                            Attr code = xmlDoc.createAttribute("code");
+                            code.setNodeValue(subfieldCode);
+                            subfieldNode.setAttributeNode(code);
+                            field.appendChild(subfieldNode);
+                        }
+                    }
+                }
+
+                fileformat.read(xmlDoc.getDocumentElement());
+                return fileformat;
+            } catch (JDOMException | IOException e) {
+                log.error(e);
+            }
+
         } else if ("lido".equals(type)) {
             Lido fileformat = new Lido(prefs);
             // fileformat.read(doc.getDocumentElement());//TODO
@@ -170,9 +222,7 @@ public class MetadataService implements IRestAuthentication {
 
         }
 
-        else {
-            return null;
-        }
+        return null;
 
     }
 
