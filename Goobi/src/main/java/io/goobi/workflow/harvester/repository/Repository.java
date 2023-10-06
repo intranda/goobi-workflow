@@ -214,8 +214,10 @@ public class Repository implements Serializable, DatabaseObject {
                     try {
                         ShellScript script = new ShellScript(iaCli);
                         script.run(params);
-                    } catch (IOException | InterruptedException e) {
+                    } catch (IOException e) {
                         log.error(e);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
 
                 } else {
@@ -234,8 +236,10 @@ public class Repository implements Serializable, DatabaseObject {
                     ShellScript script = new ShellScript(iaCli);
                     script.run(params);
                     outputChannel = script.getStdOut();
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException e) {
                     log.error(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
 
                 if (outputChannel.isEmpty()) {

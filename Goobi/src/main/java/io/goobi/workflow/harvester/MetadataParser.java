@@ -1,4 +1,3 @@
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -16,22 +15,36 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
 package io.goobi.workflow.harvester;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.InputStream;
 
-/**
- * Mark methods with this annotation if they can be used to create processes with the harvester output
- * 
- */
+import javax.ws.rs.core.Response;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface HarvesterGoobiImport {
+public interface MetadataParser {
 
-    public String description() default "";
+    /**
+     * 
+     * Create a new process, get metadata from the input stream
+     * 
+     * @param projectName
+     * @param templateName
+     * @param processTitle
+     * @param inputStream
+     * @return
+     */
 
+    public Response createNewProcess(String projectName, String templateName,
+            String processTitle, InputStream inputStream);
+
+    /**
+     * Replace existing metadata of a process with the content of the input stream
+     *
+     * @param processid
+     * @param inputStream
+     * @return
+     */
+
+    public Response replaceMetadata(Integer processid, InputStream inputStream);
 }

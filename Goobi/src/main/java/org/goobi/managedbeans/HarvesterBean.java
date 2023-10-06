@@ -18,7 +18,6 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -155,19 +154,17 @@ public class HarvesterBean extends BasicBean implements Serializable {
 
         Reflections reflections = new Reflections("org.goobi.api.rest.*");
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(HarvesterGoobiImport.class);
-        List<String> annotatedMethods = new ArrayList<>();
+        List<String> annotationDescription = new ArrayList<>();
 
         for (Class<?> clazz : classes) {
-            for (Method method : clazz.getMethods()) {
-                HarvesterGoobiImport annotation = method.getAnnotation(HarvesterGoobiImport.class);
-                if (annotation != null) {
-                    annotatedMethods.add(annotation.description());
-                }
+            HarvesterGoobiImport annotation = clazz.getAnnotation(HarvesterGoobiImport.class);
+            if (annotation != null) {
+                annotationDescription.add(annotation.description());
             }
         }
 
         List<SelectItem> data = new ArrayList<>();
-        for (String name : annotatedMethods) {
+        for (String name : annotationDescription) {
             data.add(new SelectItem(name, Helper.getTranslation(name)));
         }
 
