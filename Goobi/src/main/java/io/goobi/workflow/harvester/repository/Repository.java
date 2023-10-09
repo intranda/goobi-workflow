@@ -334,75 +334,75 @@ public class Repository implements Serializable, DatabaseObject {
         List<Record> retList = new ArrayList<>();
         int harvested = 0;
         String tokenId = null;
-        do {
-            // get oai response
-            String response = HttpUtils.getStringFromUrl(oaiUrl);
-            // parse response
-            SAXBuilder builder = XmlTools.getSAXBuilder();
+        //        do {
+        // get oai response
+        String response = HttpUtils.getStringFromUrl(oaiUrl);
+        // parse response
+        SAXBuilder builder = XmlTools.getSAXBuilder();
 
-            // response is empty
-            if (StringUtils.isBlank(response)) {
+        // response is empty
+        if (StringUtils.isBlank(response)) {
+            return 0;
+        }
+
+        try {
+            Document oaiDoc = builder.build(new StringReader(response));
+            Element oaiPmh = oaiDoc.getRootElement();
+            List<Element> recordList = new ArrayList<>();
+
+            Element getRecord = oaiPmh.getChild("GetRecord", oaiNamespace);
+            Element listRecords = oaiPmh.getChild("ListRecords", oaiNamespace);
+            if (getRecord == null && listRecords == null) {
+                // no record match
                 return 0;
             }
-
-            try {
-                Document oaiDoc = builder.build(new StringReader(response));
-                Element oaiPmh = oaiDoc.getRootElement();
-                List<Element> recordList = new ArrayList<>();
-
-                Element getRecord = oaiPmh.getChild("GetRecord", oaiNamespace);
-                Element listRecords = oaiPmh.getChild("ListRecords", oaiNamespace);
-                if (getRecord == null && listRecords == null) {
-                    // no record match
-                    return 0;
-                }
-                Element resumptionToken = listRecords.getChild("resumptionToken", oaiNamespace);
-                if (resumptionToken == null) {
-                    tokenId = null;
-                } else {
-                    tokenId = resumptionToken.getText();
-                    oaiUrl = parameter.get("url") + "?verb=ListRecords&resumptionToken=" + tokenId;
-                }
-
-                if (getRecord != null) {
-                    List<Element> elements = getRecord.getChildren();
-                    for (Element element : elements) {
-                        if ("record".equals(element.getName())) {
-                            recordList.add(element);
-                        } else if ("error".equals(element.getName())) {
-                            String errorCode = element.getAttributeValue("code");
-                            String errorMessage = element.getText();
-                            throw new HarvestException(errorCode, errorMessage);
-
-                        }
-                    }
-                }
-
-                if (listRecords != null) {
-                    List<Element> elements = listRecords.getChildren();
-                    for (Element element : elements) {
-                        if ("record".equals(element.getName())) {
-                            recordList.add(element);
-                        } else if ("error".equals(element.getName())) {
-                            String errorCode = element.getAttributeValue("code");
-                            String errorMessage = element.getText();
-                            throw new HarvestException(errorCode, errorMessage);
-                        }
-                    }
-                }
-
-                for (Element recordElement : recordList) {
-                    Record rec = parseRecord(recordElement, jobId);
-                    if (rec != null) {
-                        retList.add(rec);
-                    }
-                }
-
-            } catch (JDOMException | IOException e) {
-                log.error(e);
+            Element resumptionToken = listRecords.getChild("resumptionToken", oaiNamespace);
+            if (resumptionToken == null) {
+                tokenId = null;
+            } else {
+                tokenId = resumptionToken.getText();
+                oaiUrl = parameter.get("url") + "?verb=ListRecords&resumptionToken=" + tokenId;
             }
 
-        } while (tokenId != null);
+            if (getRecord != null) {
+                List<Element> elements = getRecord.getChildren();
+                for (Element element : elements) {
+                    if ("record".equals(element.getName())) {
+                        recordList.add(element);
+                    } else if ("error".equals(element.getName())) {
+                        String errorCode = element.getAttributeValue("code");
+                        String errorMessage = element.getText();
+                        throw new HarvestException(errorCode, errorMessage);
+
+                    }
+                }
+            }
+
+            if (listRecords != null) {
+                List<Element> elements = listRecords.getChildren();
+                for (Element element : elements) {
+                    if ("record".equals(element.getName())) {
+                        recordList.add(element);
+                    } else if ("error".equals(element.getName())) {
+                        String errorCode = element.getAttributeValue("code");
+                        String errorMessage = element.getText();
+                        throw new HarvestException(errorCode, errorMessage);
+                    }
+                }
+            }
+
+            for (Element recordElement : recordList) {
+                Record rec = parseRecord(recordElement, jobId);
+                if (rec != null) {
+                    retList.add(rec);
+                }
+            }
+
+        } catch (JDOMException | IOException e) {
+            log.error(e);
+        }
+
+        //        } while (tokenId != null);
 
         // finally store all new! records in database
 
@@ -556,8 +556,10 @@ public class Repository implements Serializable, DatabaseObject {
                         HarvesterGoobiImport annotation = clazz.getAnnotation(HarvesterGoobiImport.class);
                         if (annotation != null && annotation.description().equals(fileformat)) {
                             try {
+                                String processTitle =
+                                        record.getIdentifier().replaceAll(ConfigurationHelper.getInstance().getProcessTitleReplacementRegex(), "_");
                                 MetadataParser parser = (MetadataParser) clazz.getDeclaredConstructor().newInstance();
-                                parser.createNewProcess(importProjectName, processTemplateName, record.getIdentifier(),
+                                parser.createNewProcess(importProjectName, processTemplateName, processTitle,
                                         StorageProvider.getInstance().newInputStream(recordFile));
                             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                                     | NoSuchMethodException | SecurityException | IOException e) {

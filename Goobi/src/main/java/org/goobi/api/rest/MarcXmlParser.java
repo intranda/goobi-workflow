@@ -59,7 +59,7 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
     @POST
     @Path("/{projectName}/{templateName}/{processTitle}")
     @Operation(summary = "Create a process with given marc file",
-            description = "Create a new process, get metadata from content of the marc file ")
+    description = "Create a new process, get metadata from content of the marc file ")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Project not found or process template not found.")
@@ -74,7 +74,7 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
     @Path("/{processid}")
     @POST
     @Operation(summary = "Replace existing metadata with the content of the marc file",
-            description = "Replace existing metadata with the content of the marc file")
+    description = "Replace existing metadata with the content of the marc file")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
@@ -90,7 +90,10 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
         dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-
+        // Do not validate XML file.
+        dbf.setValidating(false);
+        // Namespace does not matter.
+        dbf.setNamespaceAware(false);
         DocumentBuilder builder = dbf.newDocumentBuilder();
         Document doc = builder.parse(inputStream);
         MarcFileformat fileformat = new MarcFileformat(prefs);
