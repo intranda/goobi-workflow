@@ -512,16 +512,16 @@ public class Repository implements Serializable, DatabaseObject {
 
         Path downloadFolder = checkAndCreateDownloadFolder(ConfigurationHelper.getInstance().getTemporaryFolder());
         //  different implementation for oai, ia, iacli
+        // get download folder, create if missing
+        if (!StorageProvider.getInstance().isDirectory(downloadFolder)) {
+            try {
+                StorageProvider.getInstance().createDirectories(downloadFolder);
+            } catch (IOException e) {
+                log.error(e);
+            }
+        }
         switch (repositoryType) {
             case "oai":
-                // get download folder, create if missing
-                if (!StorageProvider.getInstance().isDirectory(downloadFolder)) {
-                    try {
-                        StorageProvider.getInstance().createDirectories(downloadFolder);
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
-                }
                 // download file
                 String identifier = record.getIdentifier();
                 String
@@ -530,7 +530,8 @@ public class Repository implements Serializable, DatabaseObject {
                 Path recordFile = downloadOaiRecord(identifier, query, downloadFolder);
                 // call script for file
                 if (recordFile == null) {
-                    // TODO error during download
+                    // error during download
+                    return outcome;
                 }
 
                 if (StringUtils.isNotBlank(scriptPath)) {
@@ -550,6 +551,7 @@ public class Repository implements Serializable, DatabaseObject {
                 }
 
                 if (goobiImport && StringUtils.isNotBlank(fileformat)) {
+
                     Reflections reflections = new Reflections("org.goobi.api.rest.*");
                     Set<Class<?>> classes = reflections.getTypesAnnotatedWith(HarvesterGoobiImport.class);
                     for (Class<?> clazz : classes) {
@@ -559,8 +561,11 @@ public class Repository implements Serializable, DatabaseObject {
                                 String processTitle =
                                         record.getIdentifier().replaceAll(ConfigurationHelper.getInstance().getProcessTitleReplacementRegex(), "_");
                                 MetadataParser parser = (MetadataParser) clazz.getDeclaredConstructor().newInstance();
-                                parser.createNewProcess(importProjectName, processTemplateName, processTitle,
-                                        StorageProvider.getInstance().newInputStream(recordFile));
+                                parser.extendMetadata(this, recordFile);
+                                if (StorageProvider.getInstance().isFileExists(recordFile)) {
+                                    parser.createNewProcess(importProjectName, processTemplateName, processTitle,
+                                            StorageProvider.getInstance().newInputStream(recordFile));
+                                }
                             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                                     | NoSuchMethodException | SecurityException | IOException e) {
                                 log.error(e);
@@ -579,7 +584,6 @@ public class Repository implements Serializable, DatabaseObject {
                 }
                 break;
             case "ia cli":
-                // TODO create missing folder
 
                 // call ia cli to download marc file
                 String subfolder = IaTools.getOutputDirName(record.getIdentifier());
@@ -615,7 +619,7 @@ public class Repository implements Serializable, DatabaseObject {
 
     }
 
-    private Path downloadOaiRecord(String identifier, String oaiUrl, Path downloadFolder) {
+    public Path downloadOaiRecord(String identifier, String oaiUrl, Path downloadFolder) {
         String response = HttpUtils.getStringFromUrl(oaiUrl);
         // parse response
         SAXBuilder builder = XmlTools.getSAXBuilder();
@@ -626,6 +630,9 @@ public class Repository implements Serializable, DatabaseObject {
             Element oaiPmh = oaiDoc.getRootElement();
 
             Element getRecordE = oaiPmh.getChild("GetRecord", oaiNamespace);
+            if (getRecordE == null) {
+                return null;
+            }
             Element recordE = getRecordE.getChild("record", oaiNamespace);
             Element metadataE = recordE.getChild("metadata", oaiNamespace);
             Element childE = metadataE.getChildren().get(0);
@@ -669,7 +676,7 @@ public class Repository implements Serializable, DatabaseObject {
      * @should create custom download folder correctly
      * @should create default download folder correctly
      */
-    protected Path checkAndCreateDownloadFolder(String defaultDownloadFolderPath) {
+    public Path checkAndCreateDownloadFolder(String defaultDownloadFolderPath) {
         Path downloadFolder = null;
         if (StringUtils.isNotEmpty(exportFolderPath)) {
             downloadFolder = Paths.get(exportFolderPath);

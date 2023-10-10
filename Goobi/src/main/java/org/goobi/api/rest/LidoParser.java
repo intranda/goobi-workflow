@@ -36,6 +36,7 @@ import org.xml.sax.SAXException;
 
 import io.goobi.workflow.harvester.HarvesterGoobiImport;
 import io.goobi.workflow.harvester.MetadataParser;
+import io.goobi.workflow.harvester.repository.Repository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import ugh.dl.Fileformat;
@@ -52,7 +53,7 @@ public class LidoParser extends MetadataService implements MetadataParser, IRest
     @POST
     @Path("/{projectName}/{templateName}/{processTitle}")
     @Operation(summary = "Create a process with given lido file",
-            description = "Create a new process, get metadata from content of the lido file ")
+    description = "Create a new process, get metadata from content of the lido file ")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Project not found or process template not found.")
@@ -67,7 +68,7 @@ public class LidoParser extends MetadataService implements MetadataParser, IRest
     @Path("/{processid}")
     @POST
     @Operation(summary = "Replace existing metadata with the content of the lido file",
-            description = "Replace existing metadata with the content of the lido file")
+    description = "Replace existing metadata with the content of the lido file")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
@@ -99,6 +100,12 @@ public class LidoParser extends MetadataService implements MetadataParser, IRest
         //TODO either implement read method for Node or temporary save file, read it from filesystem, delete file
         // fileformat.read(doc.getDocumentElement());
         return fileformat;
+    }
+
+    @Override
+    public void extendMetadata(Repository repository, java.nio.file.Path file) {
+        // TODO Auto-generated method stub
+
     }
 
 }

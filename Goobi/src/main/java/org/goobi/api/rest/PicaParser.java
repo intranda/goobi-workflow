@@ -39,6 +39,7 @@ import org.xml.sax.SAXException;
 import de.sub.goobi.helper.XmlTools;
 import io.goobi.workflow.harvester.HarvesterGoobiImport;
 import io.goobi.workflow.harvester.MetadataParser;
+import io.goobi.workflow.harvester.repository.Repository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j2;
@@ -57,7 +58,7 @@ public class PicaParser extends MetadataService implements MetadataParser, IRest
     @POST
     @Path("/{projectName}/{templateName}/{processTitle}")
     @Operation(summary = "Create a process with given pica file",
-            description = "Create a new process, get metadata from content of the pica file ")
+    description = "Create a new process, get metadata from content of the pica file ")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Project not found or process template not found.")
@@ -72,7 +73,7 @@ public class PicaParser extends MetadataService implements MetadataParser, IRest
     @Path("/{processid}")
     @POST
     @Operation(summary = "Replace existing metadata with the content of the pica file",
-            description = "Replace existing metadata with the content of the pica file")
+    description = "Replace existing metadata with the content of the pica file")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
@@ -143,5 +144,16 @@ public class PicaParser extends MetadataService implements MetadataParser, IRest
             log.error(e);
         }
         return null;
+    }
+
+    @Override
+    public void extendMetadata(Repository repository, java.nio.file.Path file) {
+        // open file
+
+        // check record type
+
+        // if anchor: remove file
+
+        // if volume: get anchor id, download anchor file, add anchor record to main file
     }
 }
