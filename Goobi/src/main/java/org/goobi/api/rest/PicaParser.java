@@ -29,6 +29,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -36,6 +37,8 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlTools;
 import io.goobi.workflow.harvester.HarvesterGoobiImport;
 import io.goobi.workflow.harvester.MetadataParser;
@@ -58,7 +61,7 @@ public class PicaParser extends MetadataService implements MetadataParser, IRest
     @POST
     @Path("/{projectName}/{templateName}/{processTitle}")
     @Operation(summary = "Create a process with given pica file",
-    description = "Create a new process, get metadata from content of the pica file ")
+            description = "Create a new process, get metadata from content of the pica file ")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Project not found or process template not found.")
@@ -73,7 +76,7 @@ public class PicaParser extends MetadataService implements MetadataParser, IRest
     @Path("/{processid}")
     @POST
     @Operation(summary = "Replace existing metadata with the content of the pica file",
-    description = "Replace existing metadata with the content of the pica file")
+            description = "Replace existing metadata with the content of the pica file")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
@@ -149,11 +152,95 @@ public class PicaParser extends MetadataService implements MetadataParser, IRest
     @Override
     public void extendMetadata(Repository repository, java.nio.file.Path file) {
         // open file
+        boolean isAnchor = false;
+        boolean isMultiVolume = false;
+        boolean isPeriodical = false;
+        String anchorIdentifier = "";
+        Element rec = null;
+        SAXBuilder builder = XmlTools.getSAXBuilder();
+        try {
+            org.jdom2.Document recordDoc = builder.build(file.toFile());
+            rec = recordDoc.getRootElement();
+            List<Element> data = rec.getChildren();
+            // check record type
+            for (Element datafield : data) {
+                String tag = datafield.getAttributeValue("tag");
+                if ("002@".equals(tag)) {
+                    for (Element subfield : datafield.getChildren()) {
+                        if ("0".equals(subfield.getAttributeValue("code"))) {
+                            String value = subfield.getText().trim();
+                            // get second position
+                            String pos2 = value.substring(1, 2);
+                            switch (pos2) {
+                                case "c":
+                                case "C":
+                                    // monographic anchor record
+                                    isAnchor = true;
+                                    break;
+                                case "f":
+                                case "F":
+                                    // monographic volume
+                                    isMultiVolume = true;
+                                    break;
+                                case "b":
+                                    isPeriodical = true;
+                                    // periodical anchor
+                                    break;
+                                case "d":
+                                case "s":
+                                    isMultiVolume = true;
+                                    // periodical volume
+                                    break;
+                                default:
+                                    // independent title
+                                    break;
+                            }
+                        }
+                    }
 
-        // check record type
+                } else if ("036D".equals(tag) || "034D".equals(tag)) {
+                    for (Element subfield : datafield.getChildren()) {
+                        if ("9".equals(subfield.getAttributeValue("code"))) {
+                            anchorIdentifier = subfield.getText().trim();
+                        }
+                    }
+                }
+            }
 
-        // if anchor: remove file
+            // if anchor: remove file
+            if (isAnchor) {
+                StorageProvider.getInstance().deleteFile(file);
+            }
+            // TODO how to handle periodica without any volume information? Delete them for now
+            if (isPeriodical) {
+                StorageProvider.getInstance().deleteFile(file);
+            }
+            // if volume: get anchor id, download anchor file, add anchor record to main file
+            if (isMultiVolume && StringUtils.isNotBlank(anchorIdentifier)) {
+                java.nio.file.Path downloadFolder =
+                        repository.checkAndCreateDownloadFolder(ConfigurationHelper.getInstance().getTemporaryFolder());
+                String query = repository.getParameter().get("url") + "?verb=GetRecord&identifier=" + anchorIdentifier + "&metadataPrefix="
+                        + repository.getParameter().get("metadataPrefix");
+                java.nio.file.Path anchorFile = repository.downloadOaiRecord(anchorIdentifier, query, downloadFolder);
+                if (anchorFile == null) {
+                    return;
+                }
 
-        // if volume: get anchor id, download anchor file, add anchor record to main file
+                org.jdom2.Document anchorDoc = builder.build(anchorFile.toFile());
+                Element anchorRec = anchorDoc.getRootElement();
+                Element collection = new Element("collection");
+                collection.addContent(anchorRec.clone());
+                collection.addContent(rec.clone());
+                org.jdom2.Document root = new org.jdom2.Document();
+                root.setRootElement(collection);
+                XmlTools.saveDocument(root, file);
+                StorageProvider.getInstance().deleteFile(anchorFile);
+
+            }
+
+        } catch (JDOMException | IOException e) {
+            log.error(e);
+        }
+
     }
 }
