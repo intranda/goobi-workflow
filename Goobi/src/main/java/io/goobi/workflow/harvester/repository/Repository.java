@@ -621,6 +621,9 @@ public class Repository implements Serializable, DatabaseObject {
 
     public Path downloadOaiRecord(String identifier, String oaiUrl, Path downloadFolder) {
         String response = HttpUtils.getStringFromUrl(oaiUrl);
+        if (StringUtils.isBlank(response)) {
+            return null;
+        }
         // parse response
         SAXBuilder builder = XmlTools.getSAXBuilder();
 

@@ -84,7 +84,7 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
     @Path("/{processid}")
     @POST
     @Operation(summary = "Replace existing metadata with the content of the marc file",
-    description = "Replace existing metadata with the content of the marc file")
+            description = "Replace existing metadata with the content of the marc file")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
@@ -131,7 +131,7 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
 
             // check record type
             for (Element el : data) {
-                if (el.getName().equalsIgnoreCase("leader")) {
+                if ("leader".equalsIgnoreCase(el.getName())) {
                     String value = el.getText();
                     if (value.length() < 24) {
                         value = "00000" + value;
@@ -145,32 +145,51 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
                         isManuscript = true;
                     } else if (c6 == 'e') {
                         isCartographic = true;
+                    } else if (c6 == 'a' && c7 == 'b') {
+                        // periodical volume
+                        isMultiVolume = true;
                     }
+
                     if (c19 == 'b' || c19 == 'c') {
                         isMultiVolume = true;
                     }
                     if (c19 == 'a') {
                         isAnchor = true;
                     }
+                } else if ("controlfield".equalsIgnoreCase(el.getName())) {
 
-                } else if (el.getName().equalsIgnoreCase("datafield")) {
+                } else if ("datafield".equalsIgnoreCase(el.getName())) {
                     String tag = el.getAttributeValue("tag");
                     List<Element> subfields = el.getChildren();
                     for (Element sub : subfields) {
                         String code = sub.getAttributeValue("code");
                         // anchor identifier
-                        if (tag.equals("773") && code.equals("w")) {
+                        if ("773".equals(tag) && "w".equals(code)) {
                             if (!isMultiVolume && !isPeriodical) {
                                 sub.setText("");
                             } else {
-                                anchorIdentifier = sub.getText().replaceAll("\\(.+\\)", "").replace("KXP", "");
+                                String identifierPrefix = repository.getParameter().get("identifierPrefix");
+                                if (StringUtils.isNotBlank(identifierPrefix)) {
+                                    /*
+                                      find the correct identifier, if field is repeated:
+                                      <subfield code="w">(DE-600)2541163-9</subfield>
+                                      <subfield code="w">(DE-101)1000415899</subfield>
+                                    */
+                                    String value = sub.getText();
+                                    if (value.startsWith(identifierPrefix)) {
+                                        anchorIdentifier = value.replace(identifierPrefix, "");
+                                    }
+                                } else {
+                                    // TODO handle multiple subfield $w
+                                    anchorIdentifier = sub.getText().replaceAll("\\(.+\\)", "").replace("KXP", "");
+                                }
                             }
-                        } else if (tag.equals("800") && code.equals("w") && isMultiVolume) {
+                        } else if ("800".equals(tag) && "w".equals(code) && isMultiVolume) {
                             anchorIdentifier = sub.getText().replaceAll("\\(.+\\)", "").replace("KXP", "");
-                        } else if (isManuscript && tag.equals("810") && code.equals("w")) {
+                        } else if (isManuscript && "810".equals(tag) && "w".equals(code)) {
                             isMultiVolume = true;
                             anchorIdentifier = sub.getText().replaceAll("\\(.+\\)", "").replace("KXP", "");
-                        } else if (tag.equals("830") && code.equals("w")
+                        } else if ("830".equals(tag) && "w".equals(code)
                                 && (isCartographic || (isMultiVolume && StringUtils.isBlank(anchorIdentifier)))) {
                             anchorIdentifier = sub.getText().replaceAll("\\(.+\\)", "").replace("KXP", "");
                         }
@@ -181,7 +200,6 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
             log.error(e);
         }
 
-
         if (isAnchor) {
             // delete anchor record, don't import it
             try {
@@ -190,15 +208,16 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
                 log.error(e);
             }
         }
-
+        String newIdentifierPrefix = "oai:dnb.de/dnb-all/"; //TODO
         // if volume: get anchor id, download anchor file, add anchor record to main file
         if (isMultiVolume) {
             // if anchor: remove file
             java.nio.file.Path downloadFolder = repository.checkAndCreateDownloadFolder(ConfigurationHelper.getInstance().getTemporaryFolder());
-            String query = repository.getParameter().get("url") + "?verb=GetRecord&identifier=" + anchorIdentifier + "&metadataPrefix="
-                    + repository.getParameter().get("metadataPrefix");
-            java.nio.file.Path anchorFile = repository.downloadOaiRecord(anchorIdentifier, query, downloadFolder);
-            if (anchorFile ==null) {
+            String query =
+                    repository.getParameter().get("url") + "?verb=GetRecord&identifier=" + newIdentifierPrefix + anchorIdentifier + "&metadataPrefix="
+                            + repository.getParameter().get("metadataPrefix");
+            java.nio.file.Path anchorFile = repository.downloadOaiRecord(newIdentifierPrefix + anchorIdentifier, query, downloadFolder);
+            if (anchorFile == null) {
                 return;
             }
             try {
