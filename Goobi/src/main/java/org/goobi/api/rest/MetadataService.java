@@ -98,7 +98,11 @@ public abstract class MetadataService {
             DocStruct dsBoundBook = dd.createDocStruct(dst);
             dd.setPhysicalDocStruct(dsBoundBook);
 
-            process.writeMetadataFile(ff);
+            if (dd.getLogicalDocStruct() == null || dd.getLogicalDocStruct().getType() == null) {
+                log.error("Cannot parse record for {}", processTitle);
+            } else {
+                process.writeMetadataFile(ff);
+            }
             log.debug("Generated process {} using marc upload", processTitle);
         } catch (DAOException | UGHException | ParserConfigurationException | SAXException | IOException | SwapException e) {
             log.error(e);
@@ -107,7 +111,7 @@ public abstract class MetadataService {
         return Response.status(204).build();
     }
 
-    protected Response replaceMetadata(Integer processid, InputStream inputStream) {
+    protected Response replaceMetadataInProcess(Integer processid, InputStream inputStream) {
 
         Process process = ProcessManager.getProcessById(processid);
 

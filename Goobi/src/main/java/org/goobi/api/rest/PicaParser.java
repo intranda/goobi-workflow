@@ -83,7 +83,7 @@ public class PicaParser extends MetadataService implements MetadataParser, IRest
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Override
     public Response replaceMetadata(@PathParam("processid") Integer processid, InputStream inputStream) {
-        return replaceMetadata(processid, inputStream);
+        return replaceMetadataInProcess(processid, inputStream);
     }
 
     @Override

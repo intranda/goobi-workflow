@@ -36,12 +36,15 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.w3c.dom.Document;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import de.intranda.ugh.extension.MarcFileformat;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlTools;
+import de.unigoettingen.sub.search.opac.ConfigOpac;
+import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import io.goobi.workflow.harvester.HarvesterGoobiImport;
 import io.goobi.workflow.harvester.MetadataParser;
 import io.goobi.workflow.harvester.repository.Repository;
@@ -91,7 +94,7 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Override
     public Response replaceMetadata(@PathParam("processid") Integer processid, InputStream inputStream) {
-        return replaceMetadata(processid, inputStream);
+        return replaceMetadataInProcess(processid, inputStream);
     }
 
     @Override
@@ -105,16 +108,140 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
         // Namespace does not matter.
         dbf.setNamespaceAware(false);
 
-        DocumentBuilder builder = dbf.newDocumentBuilder();
-        Document doc = builder.parse(inputStream);
+        Document doc = convertRecord(inputStream);
+
         MarcFileformat fileformat = new MarcFileformat(prefs);
         fileformat.read(doc.getDocumentElement());
         return fileformat;
 
     }
 
+    public Document convertRecord(InputStream inputStream) throws ParserConfigurationException {
+        // read input stream
+        DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
+        org.w3c.dom.Document answer = docBuilder.newDocument();
+        org.w3c.dom.Element collection = answer.createElement("collection");
+        answer.appendChild(collection);
+
+        List<Element> recordsInData = new ArrayList<>();
+        org.jdom2.Document in = XmlTools.readDocumentFromStream(inputStream);
+        Element root = in.getRootElement();
+        // check if name contains record or collection
+        if ("record".equals(root.getName())) {
+            recordsInData.add(root);
+        } else {
+            // we have /collection/record
+            recordsInData.addAll(root.getChildren());
+        }
+
+        for (Element rec : recordsInData) {
+            org.w3c.dom.Element marcRecord = answer.createElement("record");
+            collection.appendChild(marcRecord);
+            org.w3c.dom.Element leader = null;
+            for (Element datafield : rec.getChildren()) {
+                if ("leader".equals(datafield.getName()) && leader == null) {
+                    leader = answer.createElement("leader");
+                    marcRecord.appendChild(leader);
+                    String ldr = datafield.getText();
+                    if (ldr.length() < 24) {
+                        ldr = "00000" + ldr;
+                    }
+                    Text text = answer.createTextNode(ldr);
+                    leader.appendChild(text);
+
+                    // get the leader field as a datafield
+                    org.w3c.dom.Element leaderDataField = answer.createElement("datafield");
+                    leaderDataField.setAttribute("tag", "leader");
+                    leaderDataField.setAttribute("ind1", " ");
+                    leaderDataField.setAttribute("ind2", " ");
+
+                    org.w3c.dom.Element subfield = answer.createElement("subfield");
+                    leaderDataField.appendChild(subfield);
+                    subfield.setAttribute("code", "a");
+                    Text dataFieldtext = answer.createTextNode(datafield.getText());
+                    subfield.appendChild(dataFieldtext);
+                    marcRecord.appendChild(leaderDataField);
+
+                } else if ("controlfield".equals(datafield.getName())) {
+                    org.w3c.dom.Element field = answer.createElement("controlfield");
+
+                    Text text = answer.createTextNode(datafield.getText());
+                    field.appendChild(text);
+
+                    String tag = datafield.getAttributeValue("tag");
+                    field.setAttribute("tag", tag);
+                    marcRecord.appendChild(field);
+
+                    // get the controlfields as datafields
+                    org.w3c.dom.Element leaderDataField = answer.createElement("datafield");
+                    leaderDataField.setAttribute("tag", tag);
+                    leaderDataField.setAttribute("ind1", " ");
+                    leaderDataField.setAttribute("ind2", " ");
+
+                    org.w3c.dom.Element subfield = answer.createElement("subfield");
+                    leaderDataField.appendChild(subfield);
+                    subfield.setAttribute("code", "a");
+                    Text dataFieldtext = answer.createTextNode(datafield.getText());
+                    subfield.appendChild(dataFieldtext);
+                    marcRecord.appendChild(leaderDataField);
+
+                } else if ("datafield".equals(datafield.getName())) {
+                    String tag = datafield.getAttributeValue("tag");
+                    String ind1 = datafield.getAttributeValue("ind1");
+                    String ind2 = datafield.getAttributeValue("ind2");
+
+                    org.w3c.dom.Element field = answer.createElement("datafield");
+                    marcRecord.appendChild(field);
+
+                    field.setAttribute("tag", tag);
+                    field.setAttribute("ind1", ind1);
+                    field.setAttribute("ind2", ind2);
+                    List<Element> subfields = datafield.getChildren();
+
+                    for (Element sub : subfields) {
+                        org.w3c.dom.Element subfield = answer.createElement("subfield");
+                        field.appendChild(subfield);
+                        String code = sub.getAttributeValue("code");
+                        subfield.setAttribute("code", code);
+                        Text text = answer.createTextNode(sub.getText());
+                        subfield.appendChild(text);
+                        // main title, create sorting title
+                        if ("245".equals(tag) && "a".equals(code)) {
+                            org.w3c.dom.Element sorting = answer.createElement("subfield");
+                            field.appendChild(sorting);
+                            sorting.setAttribute("code", "x");
+                            String subtext = sub.getText();
+                            if (!ind2.trim().isEmpty()) {
+                                int numberOfNonfillingCharacter = Integer.parseInt(ind2);
+                                subtext = subtext.substring(numberOfNonfillingCharacter);
+                            }
+                            Text sortingtext = answer.createTextNode(subtext);
+                            sorting.appendChild(sortingtext);
+
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return answer;
+    }
+
     @Override
     public void extendMetadata(Repository repository, java.nio.file.Path file) {
+
+        // check, if we have a special configuration for the repository (prefix to delete, prefix to add, ...)
+        ConfigOpacCatalogue cat = ConfigOpac.getInstance().getCatalogueByName(repository.getName());
+
+        String identifierPrefix = null;
+        String newIdentifierPrefix = "";
+        if (cat != null) {
+            identifierPrefix = cat.getBeautifySetList().get(0).getTagElementToChange().getTag();
+            newIdentifierPrefix = cat.getBeautifySetList().get(0).getTagElementToChange().getSubtag();
+        }
+
         // open file
         boolean isMultiVolume = false;
         boolean isPeriodical = false;
@@ -167,22 +294,18 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
                         if ("773".equals(tag) && "w".equals(code)) {
                             if (!isMultiVolume && !isPeriodical) {
                                 sub.setText("");
-                            } else {
-                                String identifierPrefix = repository.getParameter().get("identifierPrefix");
-                                if (StringUtils.isNotBlank(identifierPrefix)) {
-                                    /*
-                                      find the correct identifier, if field is repeated:
-                                      <subfield code="w">(DE-600)2541163-9</subfield>
-                                      <subfield code="w">(DE-101)1000415899</subfield>
-                                    */
-                                    String value = sub.getText();
-                                    if (value.startsWith(identifierPrefix)) {
-                                        anchorIdentifier = value.replace(identifierPrefix, "");
-                                    }
-                                } else {
-                                    // TODO handle multiple subfield $w
-                                    anchorIdentifier = sub.getText().replaceAll("\\(.+\\)", "").replace("KXP", "");
+                            } else if (StringUtils.isNotBlank(identifierPrefix)) {
+                                /*
+                                  find the correct identifier, if field is repeated:
+                                  <subfield code="w">(DE-600)2541163-9</subfield>
+                                  <subfield code="w">(DE-101)1000415899</subfield>
+                                */
+                                String value = sub.getText();
+                                if (value.startsWith(identifierPrefix)) {
+                                    anchorIdentifier = value.replace(identifierPrefix, "");
                                 }
+                            } else {
+                                anchorIdentifier = sub.getText().replaceAll("\\(.+\\)", "").replace("KXP", "");
                             }
                         } else if ("800".equals(tag) && "w".equals(code) && isMultiVolume) {
                             anchorIdentifier = sub.getText().replaceAll("\\(.+\\)", "").replace("KXP", "");
@@ -200,15 +323,14 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
             log.error(e);
         }
 
-        if (isAnchor) {
-            // delete anchor record, don't import it
+        if (isAnchor || (isPeriodical && StringUtils.isBlank(anchorIdentifier))) {
+            // delete anchor records
             try {
                 StorageProvider.getInstance().deleteFile(file);
             } catch (IOException e) {
                 log.error(e);
             }
         }
-        String newIdentifierPrefix = "oai:dnb.de/dnb-all/"; //TODO
         // if volume: get anchor id, download anchor file, add anchor record to main file
         if (isMultiVolume) {
             // if anchor: remove file

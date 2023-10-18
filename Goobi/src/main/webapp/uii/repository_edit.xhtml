@@ -147,15 +147,7 @@
                                     help="#{msgs.helpOaimetadataPrefix}"
                                     required="false"
                                     name="metadataPrefix" />
-
- <intranda:formInputText
-                                    classLeft="col-12 col-md-3"
-                                    id="identifierPrefix"
-                                    label="#{msgs.metadataPrefix}"
-                                    field="#{harvesterBean.repository.parameter['identifierPrefix']}"
-                                    help="#{msgs.helpOaiIdentifierPrefix}"
-                                    required="false"
-                                    name="identifierPrefix" />                                    
+                             
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia'}">
