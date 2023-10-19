@@ -203,7 +203,7 @@ public class Repository implements Serializable, DatabaseObject {
                 String dateString = dateFormat.format(currentDate);
                 int totalHarvested = 0;
                 // search term is stored in parameter url
-                Path iaCli = Paths.get("/usr/local/bin/ia"); // TODO config
+                Path iaCli = Paths.get(ConfigurationHelper.getInstance().getPathToIaCli());
                 String home = System.getenv("HOME");
                 Path iaConfigFile = Paths.get(home + "/.config/ia.ini");
                 Path iaConfigFile2 = Paths.get(home + "/.ia.ini");
@@ -334,75 +334,75 @@ public class Repository implements Serializable, DatabaseObject {
         List<Record> retList = new ArrayList<>();
         int harvested = 0;
         String tokenId = null;
-        //        do {
-        // get oai response
-        String response = HttpUtils.getStringFromUrl(oaiUrl);
-        // parse response
-        SAXBuilder builder = XmlTools.getSAXBuilder();
+        do {
+            // get oai response
+            String response = HttpUtils.getStringFromUrl(oaiUrl);
+            // parse response
+            SAXBuilder builder = XmlTools.getSAXBuilder();
 
-        // response is empty
-        if (StringUtils.isBlank(response)) {
-            return 0;
-        }
-
-        try {
-            Document oaiDoc = builder.build(new StringReader(response));
-            Element oaiPmh = oaiDoc.getRootElement();
-            List<Element> recordList = new ArrayList<>();
-
-            Element getRecord = oaiPmh.getChild("GetRecord", oaiNamespace);
-            Element listRecords = oaiPmh.getChild("ListRecords", oaiNamespace);
-            if (getRecord == null && listRecords == null) {
-                // no record match
+            // response is empty
+            if (StringUtils.isBlank(response)) {
                 return 0;
             }
-            Element resumptionToken = listRecords.getChild("resumptionToken", oaiNamespace);
-            if (resumptionToken == null) {
-                tokenId = null;
-            } else {
-                tokenId = resumptionToken.getText();
-                oaiUrl = parameter.get("url") + "?verb=ListRecords&resumptionToken=" + tokenId;
-            }
 
-            if (getRecord != null) {
-                List<Element> elements = getRecord.getChildren();
-                for (Element element : elements) {
-                    if ("record".equals(element.getName())) {
-                        recordList.add(element);
-                    } else if ("error".equals(element.getName())) {
-                        String errorCode = element.getAttributeValue("code");
-                        String errorMessage = element.getText();
-                        throw new HarvestException(errorCode, errorMessage);
+            try {
+                Document oaiDoc = builder.build(new StringReader(response));
+                Element oaiPmh = oaiDoc.getRootElement();
+                List<Element> recordList = new ArrayList<>();
 
+                Element getRecord = oaiPmh.getChild("GetRecord", oaiNamespace);
+                Element listRecords = oaiPmh.getChild("ListRecords", oaiNamespace);
+                if (getRecord == null && listRecords == null) {
+                    // no record match
+                    return 0;
+                }
+                Element resumptionToken = listRecords.getChild("resumptionToken", oaiNamespace);
+                if (resumptionToken == null) {
+                    tokenId = null;
+                } else {
+                    tokenId = resumptionToken.getText();
+                    oaiUrl = parameter.get("url") + "?verb=ListRecords&resumptionToken=" + tokenId;
+                }
+
+                if (getRecord != null) {
+                    List<Element> elements = getRecord.getChildren();
+                    for (Element element : elements) {
+                        if ("record".equals(element.getName())) {
+                            recordList.add(element);
+                        } else if ("error".equals(element.getName())) {
+                            String errorCode = element.getAttributeValue("code");
+                            String errorMessage = element.getText();
+                            throw new HarvestException(errorCode, errorMessage);
+
+                        }
                     }
                 }
-            }
 
-            if (listRecords != null) {
-                List<Element> elements = listRecords.getChildren();
-                for (Element element : elements) {
-                    if ("record".equals(element.getName())) {
-                        recordList.add(element);
-                    } else if ("error".equals(element.getName())) {
-                        String errorCode = element.getAttributeValue("code");
-                        String errorMessage = element.getText();
-                        throw new HarvestException(errorCode, errorMessage);
+                if (listRecords != null) {
+                    List<Element> elements = listRecords.getChildren();
+                    for (Element element : elements) {
+                        if ("record".equals(element.getName())) {
+                            recordList.add(element);
+                        } else if ("error".equals(element.getName())) {
+                            String errorCode = element.getAttributeValue("code");
+                            String errorMessage = element.getText();
+                            throw new HarvestException(errorCode, errorMessage);
+                        }
                     }
                 }
-            }
 
-            for (Element recordElement : recordList) {
-                Record rec = parseRecord(recordElement, jobId);
-                if (rec != null) {
-                    retList.add(rec);
+                for (Element recordElement : recordList) {
+                    Record rec = parseRecord(recordElement, jobId);
+                    if (rec != null) {
+                        retList.add(rec);
+                    }
                 }
+
+            } catch (JDOMException | IOException e) {
+                log.error(e);
             }
 
-        } catch (JDOMException | IOException e) {
-            log.error(e);
-        }
-
-        //        } while (tokenId != null);
+        } while (tokenId != null);
 
         // finally store all new! records in database
 
@@ -507,7 +507,7 @@ public class Repository implements Serializable, DatabaseObject {
      * Exports record to viewer or goobi.
      * 
      */
-    public ExportOutcome exportRecord(Record record) {
+    public ExportOutcome exportRecord(Record rec) {
         ExportOutcome outcome = new ExportOutcome();
 
         Path downloadFolder = checkAndCreateDownloadFolder(ConfigurationHelper.getInstance().getTemporaryFolder());
@@ -523,7 +523,7 @@ public class Repository implements Serializable, DatabaseObject {
         switch (repositoryType) {
             case "oai":
                 // download file
-                String identifier = record.getIdentifier();
+                String identifier = rec.getIdentifier();
                 String
 
                 query = parameter.get("url") + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + parameter.get("metadataPrefix");
@@ -559,7 +559,7 @@ public class Repository implements Serializable, DatabaseObject {
                         if (annotation != null && annotation.description().equals(fileformat)) {
                             try {
                                 String processTitle =
-                                        record.getIdentifier().replaceAll(ConfigurationHelper.getInstance().getProcessTitleReplacementRegex(), "_");
+                                        rec.getIdentifier().replaceAll(ConfigurationHelper.getInstance().getProcessTitleReplacementRegex(), "_");
                                 MetadataParser parser = (MetadataParser) clazz.getDeclaredConstructor().newInstance();
                                 parser.extendMetadata(this, recordFile);
                                 if (StorageProvider.getInstance().isFileExists(recordFile)) {
@@ -578,7 +578,7 @@ public class Repository implements Serializable, DatabaseObject {
 
             case "ia":
                 try {
-                    IaTools.download("https://archive.org/download/", record.getIdentifier(), downloadFolder);
+                    IaTools.download("https://archive.org/download/", rec.getIdentifier(), downloadFolder);
                 } catch (IOException e) {
                     log.error(e);
                 }
@@ -586,19 +586,19 @@ public class Repository implements Serializable, DatabaseObject {
             case "ia cli":
 
                 // call ia cli to download marc file
-                String subfolder = IaTools.getOutputDirName(record.getIdentifier());
-                // TODO get this from config/variable
-                Path iaExecutable = Paths.get("/usr/local/bin/ia");
-                List<String> parameter = new ArrayList<>();
-                parameter.add("download");
-                parameter.add(record.getIdentifier());
-                parameter.add(record.getIdentifier() + "_marc.xml");
-                parameter.add("--no-directories");
-                parameter.add("--destdir=" + downloadFolder.toString() + "/" + subfolder);
+                String subfolder = IaTools.getOutputDirName(rec.getIdentifier());
+
+                Path iaExecutable = Paths.get(ConfigurationHelper.getInstance().getPathToIaCli());
+                List<String> params = new ArrayList<>();
+                params.add("download");
+                params.add(rec.getIdentifier());
+                params.add(rec.getIdentifier() + "_marc.xml");
+                params.add("--no-directories");
+                params.add("--destdir=" + downloadFolder.toString() + "/" + subfolder);
 
                 try {
                     ShellScript script = new ShellScript(iaExecutable);
-                    int res = script.run(parameter);
+                    int res = script.run(params);
                     if (res != 0) {
                         // script failure
 
@@ -713,8 +713,8 @@ public class Repository implements Serializable, DatabaseObject {
         if (url.contains("?")) {
             // first part is url root
             String oaiUrl = url.substring(0, url.indexOf("?"));
-            String parameter = url.substring(url.indexOf("?") + 1);
-            String[] params = parameter.split("&");
+            String urlParameter = url.substring(url.indexOf("?") + 1);
+            String[] params = urlParameter.split("&");
             for (String param : params) {
                 if (param.startsWith("metadataPrefix")) {
                     String metadataPrefix = param.replace("metadataPrefix=", "");

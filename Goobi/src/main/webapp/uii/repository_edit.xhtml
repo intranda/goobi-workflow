@@ -11,7 +11,7 @@
 
     <ui:param
         name="myPageTitle"
-        value="#{harvesterBean.repository.id == null?msgs.createNewRepository:msgs.editRepository}" />
+        value="#{harvesterBean.repository.id == null?msgs.intranda_administration_create_repository:msgs.intranda_administration_edit_repository}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
@@ -21,7 +21,7 @@
             navId="a0" />
         <intranda:breadcrumb
             id="repositories"
-            label="#{msgs.repository}"
+            label="#{msgs.intranda_administration_repository}"
             action="#{DocketForm.paginator.returnToPreviousPage}" />
         <intranda:breadcrumb
             id="repository"
@@ -59,7 +59,7 @@
                             label="#{msgs.name}"
                             focusOnLoad="true"
                             field="#{harvesterBean.repository.name}"
-                            help="#{msgs.helpRepositoryTitle}"
+                            help="#{msgs.help_intranda_administration_repository_name}"
                             required="true"
                             fieldStyle="form-control" />
 
@@ -70,8 +70,8 @@
                                 <h:outputLabel
                                     styleClass="form__label"
                                     for="repoType"
-                                    value="#{msgs.repositoryType}"
-                                    title="#{msgs.repositoryType}">
+                                    value="#{msgs.intranda_administration_repository_type}"
+                                    title="#{msgs.intranda_administration_repository_type}">
 
                                     <f:passThroughAttribute
                                         name="data-bs-toggle"
@@ -102,10 +102,10 @@
                                         itemValue="#{var}" />
                                 </h:selectOneMenu>
                                 <h:message
-                                    for="ldaprepoTypeGruppe"
+                                    for="repoType"
                                     showDetail="true"
                                     styleClass="help-inline text-danger" />
-                                <intranda:formHelp content="#{msgs.helpRepositoryType}" />
+                                <intranda:formHelp content="#{msgs.help_intranda_administration_repository_type}" />
                             </div>
                         </div>
 
@@ -115,9 +115,9 @@
                                 <intranda:formInputTextAjax
                                     classLeft="col-12 col-md-3"
                                     id="oaiUrl"
-                                    label="#{msgs.oaiUrl}"
+                                    label="#{msgs.intranda_administration_repository_oaiUrl}"
                                     field="#{harvesterBean.repository.oaiUrl}"
-                                    help="#{msgs.helpOaiUrl}"
+                                    help="#{msgs.help_intranda_administration_repository_oaiUrl}"
                                     required="false"
                                     name="oaiUrl"
                                     execute="@this"
@@ -126,25 +126,25 @@
                                 <intranda:formInputText
                                     classLeft="col-12 col-md-3"
                                     id="rootUrl"
-                                    label="#{msgs.rootUrl}"
+                                    label="#{msgs.intranda_administration_repository_rootUrl}"
                                     field="#{harvesterBean.repository.parameter['url']}"
-                                    help="#{msgs.helpOaiRootUrl}"
+                                    help="#{msgs.help_intranda_administration_repository_rootUrl}"
                                     required="false"
                                     name="rootUrl" />
                                 <intranda:formInputText
                                     classLeft="col-12 col-md-3"
                                     id="set"
-                                    label="#{msgs.metadataSet}"
+                                    label="#{msgs.intranda_administration_repository_metadataSet}"
                                     field="#{harvesterBean.repository.parameter['set']}"
-                                    help="#{msgs.helpMetadataSet}"
+                                    help="#{msgs.help_intranda_administration_repository_metadataSet}"
                                     required="false"
                                     name="metadataSet" />
                                 <intranda:formInputText
                                     classLeft="col-12 col-md-3"
                                     id="metadataPrefix"
-                                    label="#{msgs.metadataPrefix}"
+                                    label="#{msgs.intranda_administration_repository_metadataPrefix}"
                                     field="#{harvesterBean.repository.parameter['metadataPrefix']}"
-                                    help="#{msgs.helpOaimetadataPrefix}"
+                                    help="#{msgs.help_intranda_administration_repository_metadataPrefix}"
                                     required="false"
                                     name="metadataPrefix" />
                              
@@ -154,9 +154,9 @@
                                 <intranda:formInputText
                                     classLeft="col-12 col-md-3"
                                     id="iaUrl"
-                                    label="#{msgs.iaUrl}"
+                                    label="#{msgs.intranda_administration_repository_iaUrl}"
                                     field="#{harvesterBean.repository.oaiUrl}"
-                                    help="#{msgs.helpIaUrl}"
+                                    help="#{msgs.help_intranda_administration_repository_iaUrl}"
                                     required="false"
                                     name="iaUrl" />
                             </h:panelGroup>
@@ -167,7 +167,7 @@
                                     id="iafilter"
                                     label="#{msgs.filter}"
                                     field="#{harvesterBean.repository.oaiUrl}"
-                                    help="#{msgs.helpIaFilter}"
+                                    help="#{msgs.help_intranda_administration_repository_ia_filter}"
                                     required="false"
                                     name="iafilter" />
                             </h:panelGroup>
@@ -177,17 +177,17 @@
                         <intranda:formInputText
                             classLeft="col-12 col-md-3"
                             id="Frequency"
-                            label="#{msgs.HarvestingFrequency}"
+                            label="#{msgs.intranda_administration_repository_frequency}"
                             field="#{harvesterBean.repository.frequency}"
-                            help="#{msgs.helpHarvestingFrequency}"
+                            help="#{msgs.help_intranda_administration_repository_frequency}"
                             required="false"
                             name="Frequency" />
                         <intranda:formInputText
                             classLeft="col-12 col-md-3"
                             id="Delay"
-                            label="#{msgs.HarvestingDelay}"
+                            label="#{msgs.intranda_administration_repository_delay}"
                             field="#{harvesterBean.repository.delay}"
-                            help="#{msgs.helpHarvestingDelay}"
+                            help="#{msgs.help_intranda_administration_repository_delay}"
                             required="false"
                             name="Delay" />
 
@@ -195,9 +195,9 @@
                         <intranda:formInputText
                             classLeft="col-12 col-md-3"
                             id="exportFolder"
-                            label="#{msgs.exportFolder}"
+                            label="#{msgs.intranda_administration_repository_exportFolder}"
                             field="#{harvesterBean.repository.exportFolderPath}"
-                            help="#{msgs.helpExportFolder}"
+                            help="#{msgs.help_intranda_administration_repository_export_folder}"
                             required="false"
                             name="exportFolder" />
 
@@ -207,23 +207,23 @@
                             id="script"
                             label="#{msgs.script}"
                             field="#{harvesterBean.repository.scriptPath}"
-                            help="#{msgs.helpScript}"
+                            help="#{msgs.help_intranda_administration_repository_script}"
                             required="false"
                             name="script" />
 
                         <intranda:formInputCheckBox
                             id="active"
-                            label="#{msgs.isActive}"
+                            label="#{msgs.intranda_administration_repository_isActive}"
                             field="#{harvesterBean.repository.enabled}"
-                            help="#{msgs.helpHarvestingActive}"
+                            help="#{msgs.help_intranda_administration_repository_active}"
                             name="active" />
 
 
                         <intranda:formInputCheckBoxAjax
                             id="enableGoobiImport"
-                            label="#{msgs.enableGoobiImport}"
+                            label="#{msgs.intranda_administration_repository_enableGoobiImport}"
                             field="#{harvesterBean.repository.goobiImport}"
-                            help="#{msgs.helpGoobiUmport}"
+                            help="#{msgs.help_intranda_administration_repository_enableImport}"
                             name="enableGoobiImport"
                             ajaxEvent="change"
                             ajaxRender="myform:box:goobiImportArea" />
@@ -235,24 +235,24 @@
                                     id="project"
                                     label="#{msgs.projekt}"
                                     field="#{harvesterBean.repository.importProjectName}"
-                                    help="#{msgs.helpProcessProject}"
+                                    help="#{msgs.help_intranda_administration_repository_project}"
                                     name="project"
                                     selectItems="#{harvesterBean.projectList}"
                                     required="true" />
 
                                 <intranda:formInputDropDown
                                     id="template"
-                                    label="#{msgs.template}"
+                                    label="#{msgs.intranda_administration_repository_template}"
                                     field="#{harvesterBean.repository.processTemplateName}"
-                                    help="#{msgs.helpProcessProject}"
+                                    help="#{msgs.help_intranda_administration_repository_template}"
                                     name="template"
                                     selectItems="#{harvesterBean.processTemplateList}"
                                     required="true" />
                                 <intranda:formInputDropDown
                                     id="fileformat"
-                                    label="#{msgs.fileformat}"
+                                    label="#{msgs.intranda_administration_repository_fileformat}"
                                     field="#{harvesterBean.repository.fileformat}"
-                                    help="#{msgs.helpFileformat}"
+                                    help="#{msgs.help_intranda_administration_repository_fileformat}"
                                     name="fileformat"
                                     selectItems="#{harvesterBean.restApiList}"
                                     required="true" />
