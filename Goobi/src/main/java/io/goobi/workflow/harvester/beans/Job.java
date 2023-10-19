@@ -46,11 +46,11 @@ public class Job implements Serializable, DatabaseObject {
     private static final long serialVersionUID = 6402861322926991487L;
 
     // Status of job
-    public final static String WAITING = "WAITING";
-    public final static String WORKING = "WORKING";
-    public final static String DONE = "DONE";
-    public final static String ERROR = "ERROR";
-    public final static String CANCELLED = "CANCELLED";
+    public static final String WAITING = "WAITING";
+    public static final String WORKING = "WORKING";
+    public static final String DONE = "DONE";
+    public static final String ERROR = "ERROR";
+    public static final String CANCELLED = "CANCELLED";
 
     private Integer id;
     private final Integer repositoryId;
