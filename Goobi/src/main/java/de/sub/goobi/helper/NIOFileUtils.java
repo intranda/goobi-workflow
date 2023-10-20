@@ -155,7 +155,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 return Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix));
             }
 
-            ).size();
+                    ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -768,7 +768,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
         String fileExtension = path.getFileName().toString();
         if (!fileExtension.contains(".")) {
-            return mimeType;
+            return "application/octet-stream";
         }
         fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".") + 1).toLowerCase(); // .tar.gz will not work
         try {

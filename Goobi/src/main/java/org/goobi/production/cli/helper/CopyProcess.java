@@ -371,7 +371,7 @@ public class CopyProcess {
                         try {
                             myTempStruct = myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
                         } catch (RuntimeException exception) {
-                            log.error(exception);
+                            // do nothing
                         }
                     }
                     if (FIELD_BOUNDBOOK.equals(field.getDocstruct())) {
