@@ -402,10 +402,10 @@ public class Repository implements Serializable, DatabaseObject {
                 log.error(e);
             }
 
-        } while (tokenId != null);
+            //        } while (StringUtils.isNotBlank(tokenId));
+        } while (1 == 0); // for testing
 
         // finally store all new! records in database
-
         if (!retList.isEmpty()) {
             harvested = HarvesterRepositoryManager.addRecords(retList, allowUpdates);
             log.info("{} records have been harvested, {} of which were already in the DB.", retList.size(), (retList.size() - harvested));
@@ -524,9 +524,8 @@ public class Repository implements Serializable, DatabaseObject {
             case "oai":
                 // download file
                 String identifier = rec.getIdentifier();
-                String
-
-                query = parameter.get("url") + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + parameter.get("metadataPrefix");
+                String query =
+                        parameter.get("url") + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + parameter.get("metadataPrefix");
                 Path recordFile = downloadOaiRecord(identifier, query, downloadFolder);
                 // call script for file
                 if (recordFile == null) {
