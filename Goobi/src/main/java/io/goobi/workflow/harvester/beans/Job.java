@@ -92,8 +92,7 @@ public class Job implements Serializable, DatabaseObject {
 
     @Override
     public void lazyLoad() {
-        // TODO Auto-generated method stub
-
+        // do nothing
     }
 
     public void run(boolean createNewJob) {
@@ -102,8 +101,10 @@ public class Job implements Serializable, DatabaseObject {
             setStatus(WORKING);
             HarvesterRepositoryManager.updateJobStatus(this);
 
+            Repository repository = HarvesterRepositoryManager.getRepository(repositoryId);
+
             // check if repository is enabled
-            if (!HarvesterRepositoryManager.getRepository(getRepositoryId()).isEnabled()) {
+            if (!repository.isEnabled()) {
                 setStatus(CANCELLED);
                 setMessage("Repository is disabled");
                 log.info(
@@ -120,7 +121,6 @@ public class Job implements Serializable, DatabaseObject {
             // Parse this xml Files directly to Records..
             // ---------------------------------------------------------------------------------------------------
             log.info("Harvesting repository: {}", repositoryId);
-            Repository repository = HarvesterRepositoryManager.getRepository(repositoryId);
             int harvested = repository.harvest(getId());
             setMessage(harvested + " records harvested");
 
@@ -132,25 +132,19 @@ public class Job implements Serializable, DatabaseObject {
 
                 List<Record> unexportedRecords = HarvesterRepositoryManager.getRecords(0, Integer.MAX_VALUE, null, false, filters, false);
                 log.info("Exporting {} not yet exported records...", unexportedRecords.size());
-                int count = 0;
 
-                for (Record record : unexportedRecords) {
-                    ExportHistoryEntry hist = new ExportHistoryEntry(record);
-                    ExportOutcome outcome = record.export( hist);
+                for (Record rec : unexportedRecords) {
+                    ExportHistoryEntry hist = new ExportHistoryEntry(rec);
+                    ExportOutcome outcome = rec.export(hist);
                     switch (outcome.status) {
                         case OK:
-                            count++;
-
                             HarvesterRepositoryManager.addExportHistoryEntry(hist);
-
                             break;
                         case SKIP:
                             break;
                         default:
-                            log.error("Export failed ({}): {}", record.getIdentifier(), outcome.message);
-
+                            log.error("Export failed ({}): {}", rec.getIdentifier(), outcome.message);
                             HarvesterRepositoryManager.addExportHistoryEntry(hist);
-
                             break;
                     }
                 }
@@ -163,7 +157,6 @@ public class Job implements Serializable, DatabaseObject {
                             new ExportHistoryEntry(0, "-", "shell script", repository.getId(), ExportOutcomeStatus.ERROR.name(), err);
                     HarvesterRepositoryManager.addExportHistoryEntry(hist);
                 }
-                //                }
             }
 
             // ---------------------------------------------------------------------------------------------------
@@ -182,7 +175,7 @@ public class Job implements Serializable, DatabaseObject {
         } catch (HarvestException e) {
             error("Database error: " + e.getMessage(), e);
 
-            if (e.getErrorCode().equals("noRecordsMatch")) {
+            if ("noRecordsMatch".equals(e.getErrorCode())) {
                 setStatus(DONE);
                 setMessage("No new records found");
                 log.info("No new records found. Job is done.");
