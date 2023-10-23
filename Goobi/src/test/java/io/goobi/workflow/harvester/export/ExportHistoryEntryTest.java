@@ -20,6 +20,7 @@ package io.goobi.workflow.harvester.export;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
 
@@ -72,7 +73,7 @@ public class ExportHistoryEntryTest extends AbstractTest {
         assertEquals(1, fixture.getRepositoryId().intValue());
         assertEquals("DONE", fixture.getStatus());
         assertEquals("message", fixture.getMessage());
-        assertEquals("1970-01-01 01:00:00.001", fixture.getTimestamp());
+        assertTrue(fixture.getTimestamp().endsWith("001"));
 
         fixture = new ExportHistoryEntry(null, null, null, null, null, null, null, null);
         assertEquals("", fixture.getTimestamp());

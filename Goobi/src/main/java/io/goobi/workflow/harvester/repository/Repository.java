@@ -208,37 +208,28 @@ public class Repository implements Serializable, DatabaseObject {
                 Path iaConfigFile = Paths.get(home + "/.config/ia.ini");
                 Path iaConfigFile2 = Paths.get(home + "/.ia.ini");
                 Path iaConfigFile3 = Paths.get(home + "/.ia");
-                if (!StorageProvider.getInstance().isFileExists(iaConfigFile) && !StorageProvider.getInstance().isFileExists(iaConfigFile2)
-                        && !StorageProvider.getInstance().isFileExists(iaConfigFile3)) {
-                    // create credentials file
-                    List<String> params = new ArrayList<>();
-                    params.add("configure");
-                    params.add("--username=" + System.getenv("IA_USERNAME"));
-                    params.add("--password=" + System.getenv("IA_PASSWORD"));
-
-                    try {
-                        ShellScript script = new ShellScript(iaCli);
-                        script.run(params);
-                    } catch (IOException e) {
-                        log.error(e);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-
-                } else {
-                    log.trace("Configuration file exists.");
-                }
-                List<String> params = new ArrayList<>();
-                params.add("search");
-                params.add(getUrl());
-                params.add("--itemlist");
-                params.add("-p");
-                params.add("scope:all");
-
                 List<Record> recordList = new ArrayList<>();
                 List<String> outputChannel = new ArrayList<>();
+
                 try {
                     ShellScript script = new ShellScript(iaCli);
+                    if (!StorageProvider.getInstance().isFileExists(iaConfigFile) && !StorageProvider.getInstance().isFileExists(iaConfigFile2)
+                            && !StorageProvider.getInstance().isFileExists(iaConfigFile3)) {
+                        // create credentials file
+                        List<String> params = new ArrayList<>();
+                        params.add("configure");
+                        params.add("--username=" + System.getenv("IA_USERNAME"));
+                        params.add("--password=" + System.getenv("IA_PASSWORD"));
+                        script.run(params);
+                    } else {
+                        log.trace("Configuration file exists.");
+                    }
+                    List<String> params = new ArrayList<>();
+                    params.add("search");
+                    params.add(getUrl());
+                    params.add("--itemlist");
+                    params.add("-p");
+                    params.add("scope:all");
                     script.run(params);
                     outputChannel = script.getStdOut();
                 } catch (IOException e) {
