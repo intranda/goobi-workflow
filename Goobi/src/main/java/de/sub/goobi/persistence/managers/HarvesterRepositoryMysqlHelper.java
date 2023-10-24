@@ -42,7 +42,7 @@ import io.goobi.workflow.harvester.beans.Record;
 import io.goobi.workflow.harvester.export.ExportHistoryEntry;
 import io.goobi.workflow.harvester.repository.Repository;
 
-class HarvesterRepositoryMysqlHelper implements Serializable {
+public class HarvesterRepositoryMysqlHelper implements Serializable {
 
     private static final long serialVersionUID = -8160933323894230856L;
 

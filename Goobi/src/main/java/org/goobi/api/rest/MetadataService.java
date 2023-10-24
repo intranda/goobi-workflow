@@ -131,7 +131,6 @@ public abstract class MetadataService {
             dd.setPhysicalDocStruct(dsBoundBook);
 
             process.writeMetadataFile(ff);
-            process.writeMetadataFile(ff);
         } catch (ParserConfigurationException | UGHException | SAXException | IOException | SwapException e) {
             log.error(e);
             return Response.status(500).entity("Error during metadata creation").build();

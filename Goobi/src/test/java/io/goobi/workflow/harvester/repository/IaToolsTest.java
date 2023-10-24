@@ -65,7 +65,7 @@ public class IaToolsTest extends AbstractTest {
         tempFolder = folder.newFolder().toPath();
         Files.createDirectories(template);
 
-        Path marcFile = Paths.get(samplefiles.toString(), "b20411595_marc.xml");
+        Path marcFile = Paths.get(samplefiles.toString(), "marc_monograph.xml");
         testFile = Paths.get(tempFolder.toString(), "b20411595_marc.xml");
         Files.copy(marcFile, testFile);
 

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record xmlns="info:srw/schema/5/picaXML-v1.0">
+  <datafield tag="001@">
+    <subfield code="0">70</subfield>
+  </datafield>
+  <datafield tag="001A">
+    <subfield code="0">0089:12-04-23</subfield>
+  </datafield>
+  <datafield tag="001B">
+    <subfield code="0">2026:23-04-23</subfield>
+    <subfield code="t">04:30:33.000</subfield>
+  </datafield>
+  <datafield tag="001D">
+    <subfield code="0">0089:12-04-23</subfield>
+  </datafield>
+  <datafield tag="001U">
+    <subfield code="0">utf8</subfield>
+  </datafield>
+  <datafield tag="001X">
+    <subfield code="0">0</subfield>
+  </datafield>
+  <datafield tag="002@">
+    <subfield code="0">Oai</subfield>
+  </datafield>
+  <datafield tag="002C">
+    <subfield code="a">Text</subfield>
+    <subfield code="b">txt</subfield>
+  </datafield>
+  <datafield tag="002D">
+    <subfield code="a">Computermedien</subfield>
+    <subfield code="b">c</subfield>
+  </datafield>
+  <datafield tag="002E">
+    <subfield code="a">Online-Ressource</subfield>
+    <subfield code="b">cr</subfield>
+  </datafield>
+  <datafield tag="003@">
+    <subfield code="0">1842089293</subfield>
+  </datafield>
+  <datafield tag="003O">
+    <subfield code="a">OCoLC</subfield>
+    <subfield code="0">1376954628</subfield>
+  </datafield>
+  <datafield tag="004V">
+    <subfield code="0">10.14463/KXP:1842089293</subfield>
+  </datafield>
+  <datafield tag="007G">
+    <subfield code="i">KXP</subfield>
+    <subfield code="0">1842089293</subfield>
+  </datafield>
+  <datafield tag="009A">
+    <subfield code="b">XA-DE</subfield>
+    <subfield code="c">Technische Informationsbibliothek (TIB)</subfield>
+    <subfield code="a">a 3133</subfield>
+  </datafield>
+  <datafield tag="009B">
+    <subfield code="b">XA-DE</subfield>
+    <subfield code="c">DE-89</subfield>
+  </datafield>
+  <datafield tag="010@">
+    <subfield code="a">ger</subfield>
+  </datafield>
+  <datafield tag="010E">
+    <subfield code="e">rda</subfield>
+  </datafield>
+  <datafield tag="011@">
+    <subfield code="a">1929</subfield>
+    <subfield code="n">[1929]</subfield>
+  </datafield>
+  <datafield tag="011B">
+    <subfield code="a">2023</subfield>
+  </datafield>
+  <datafield tag="016A">
+    <subfield code="0">crxcu 024upaxp</subfield>
+  </datafield>
+  <datafield tag="017C">
+    <subfield code="u">https://doi.org/10.14463/KXP:1842089293</subfield>
+    <subfield code="x">D</subfield>
+    <subfield code="x">R</subfield>
+    <subfield code="4">ZZ</subfield>
+  </datafield>
+  <datafield tag="017M">
+    <subfield code="b">DE-89</subfield>
+    <subfield code="a">Urheberrechtsschutz 1.0</subfield>
+    <subfield code="g">Rights Statements</subfield>
+    <subfield code="u">https://rightsstatements.org/vocab/InC/1.0/</subfield>
+  </datafield>
+  <datafield tag="017R">
+    <subfield code="b">DE-89</subfield>
+    <subfield code="a">Closed Access</subfield>
+    <subfield code="g">Eprints AccessRights Vocabulary Encoding Scheme</subfield>
+    <subfield code="u">https://purl.org/eprint/accessRights/ClosedAccess</subfield>
+  </datafield>
+  <datafield tag="019@">
+    <subfield code="a">XA-DXDE</subfield>
+  </datafield>
+  <datafield tag="021A">
+    <subfield code="a">Gasweiser für Architekten, Bauherren, Gasfachleute</subfield>
+    <subfield code="h">zusammengestellt auf Anregung des Städt. Gaswerks Stuttgart von Walter Bauser, Baurat (am Städt. Gaswerk) und Hans Zimmermann, Architekt Bda ; herausgegeben von der Gasverbrauch G.m.b.H., Berlin</subfield>
+  </datafield>
+  <datafield tag="027A">
+    <subfield code="a">Gasweiser für Architekten und andere Bauleute</subfield>
+  </datafield>
+  <datafield tag="027A">
+    <subfield code="a">Gasweiser für Architekten und Gaseinrichter</subfield>
+  </datafield>
+  <datafield tag="028A">
+    <subfield code="9">82020594X</subfield>
+    <subfield code="V">Tpv1</subfield>
+    <subfield code="7">gnd/106837084X</subfield>
+    <subfield code="3">427738768</subfield>
+    <subfield code="w">piz</subfield>
+    <subfield code="A">Bauser</subfield>
+    <subfield code="D">Walter</subfield>
+    <subfield code="M">1986</subfield>
+    <subfield code="B">VerfasserIn</subfield>
+    <subfield code="4">aut</subfield>
+  </datafield>
+  <datafield tag="028C">
+    <subfield code="9">822094843</subfield>
+    <subfield code="V">Tpv1</subfield>
+    <subfield code="7">gnd/1069612545</subfield>
+    <subfield code="3">429327390</subfield>
+    <subfield code="w">piz</subfield>
+    <subfield code="A">Zimmermann</subfield>
+    <subfield code="D">Hans</subfield>
+    <subfield code="E">1887</subfield>
+    <subfield code="M">1954</subfield>
+    <subfield code="B">VerfasserIn</subfield>
+    <subfield code="4">aut</subfield>
+  </datafield>
+  <datafield tag="029F">
+    <subfield code="9">708357628</subfield>
+    <subfield code="V">Tbv1</subfield>
+    <subfield code="7">gnd/17214-5</subfield>
+    <subfield code="3">190259701</subfield>
+    <subfield code="A">Gasverbrauch-GmbH</subfield>
+    <subfield code="G">Berlin</subfield>
+    <subfield code="B">Herausgebendes Organ</subfield>
+    <subfield code="4">isb</subfield>
+  </datafield>
+  <datafield tag="032C">
+    <subfield code="a">Online-Ausgabe</subfield>
+  </datafield>
+  <datafield tag="033A">
+    <subfield code="p">Berlin</subfield>
+    <subfield code="n">Gasverbrauch G.m.b.H.</subfield>
+  </datafield>
+  <datafield tag="033N">
+    <subfield code="p">Hannover</subfield>
+    <subfield code="n">Technische Informationsbibliothek (TIB)</subfield>
+  </datafield>
+  <datafield tag="033Q">
+    <subfield code="a">1 Online-Ressource</subfield>
+  </datafield>
+  <datafield tag="034D">
+    <subfield code="a">72 Seiten</subfield>
+  </datafield>
+  <datafield tag="034M">
+    <subfield code="a">Illustrationen, Diagramme</subfield>
+  </datafield>
+  <datafield tag="037A">
+    <subfield code="a">Erscheinungsdatum des Originals ist ermittelt</subfield>
+  </datafield>
+  <datafield tag="037A">
+    <subfield code="a">5-7. Auflage unter dem Titel: Gasweiser für Architekten und Gaseinrichter</subfield>
+  </datafield>
+  <datafield tag="037A">
+    <subfield code="a">Ab 8. Auflage unter dem Titel: Gasweiser für Architekten und andere Bauleute</subfield>
+  </datafield>
+  <datafield tag="037H">
+    <subfield code="a">Digitalisierungsvorlage: Original</subfield>
+  </datafield>
+  <datafield tag="039I">
+    <subfield code="i">Elektronische Reproduktion von</subfield>
+    <subfield code="9">194408000</subfield>
+    <subfield code="R">Aau</subfield>
+    <subfield code="V">Tpv1</subfield>
+    <subfield code="7">gnd/106837084X</subfield>
+    <subfield code="3">427738768</subfield>
+    <subfield code="w">piz</subfield>
+    <subfield code="A">Bauser</subfield>
+    <subfield code="D">Walter</subfield>
+    <subfield code="M">1986</subfield>
+    <subfield code="t">Gasweiser für Architekten, Bauherren, Gasfachleute</subfield>
+    <subfield code="d">Berlin</subfield>
+    <subfield code="e">Gasverbrauch</subfield>
+    <subfield code="f">1929</subfield>
+    <subfield code="h">72 S.</subfield>
+  </datafield>
+  <datafield tag="046X">
+    <subfield code="a">aa</subfield>
+    <subfield code="5">DE-89</subfield>
+  </datafield>
+  <datafield tag="101@">
+    <subfield code="a">70</subfield>
+    <subfield code="c">PICA</subfield>
+  </datafield>
+  <datafield tag="201A" occurrence="01">
+    <subfield code="0">12-04-23</subfield>
+  </datafield>
+  <datafield tag="201B" occurrence="01">
+    <subfield code="0">12-04-23</subfield>
+    <subfield code="t">16:37:24.000</subfield>
+  </datafield>
+  <datafield tag="201U" occurrence="01">
+    <subfield code="0">utf8</subfield>
+  </datafield>
+  <datafield tag="202D" occurrence="01">
+    <subfield code="0">12-04-23</subfield>
+    <subfield code="b">2757</subfield>
+    <subfield code="a">0089</subfield>
+  </datafield>
+  <datafield tag="203@" occurrence="01">
+    <subfield code="0">4307863410</subfield>
+  </datafield>
+  <datafield tag="208@" occurrence="01">
+    <subfield code="a">12-04-23</subfield>
+    <subfield code="b">d</subfield>
+  </datafield>
+  <datafield tag="209O" occurrence="01">
+    <subfield code="a">retrodigitib2023</subfield>
+    <subfield code="x">00</subfield>
+  </datafield>
+  <datafield tag="209R" occurrence="01">
+    <subfield code="u">https://doi.org/10.14463/KXP:1842089293</subfield>
+    <subfield code="x">D</subfield>
+    <subfield code="x">R</subfield>
+    <subfield code="4">ZZ</subfield>
+  </datafield>
+  <datafield tag="220B" occurrence="01">
+    <subfield code="a">Digitaler Master wird in Rosetta verzeichnet.</subfield>
+  </datafield>
+  <datafield tag="245P" occurrence="01">
+    <subfield code="a">OA</subfield>
+  </datafield>
+</record>
