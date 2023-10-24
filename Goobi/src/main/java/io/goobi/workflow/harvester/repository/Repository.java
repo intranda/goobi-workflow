@@ -593,11 +593,11 @@ public class Repository implements Serializable, DatabaseObject {
                         // script failure
 
                     }
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException e) {
                     log.error(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
-                //                        // copy
-                //
                 break;
             default:
                 //TODO

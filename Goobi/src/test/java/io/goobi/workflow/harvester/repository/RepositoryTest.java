@@ -45,7 +45,7 @@ import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
 import io.goobi.workflow.api.connection.HttpUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ HttpUtils.class, HarvesterRepositoryManager.class, ShellScript.class, Repository.class })
+@PrepareForTest({ HttpUtils.class, HarvesterRepositoryManager.class, ShellScript.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class RepositoryTest extends AbstractTest {
 
