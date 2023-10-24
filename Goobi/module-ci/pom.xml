@@ -130,14 +130,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M8</version>
                 <configuration>
-					    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED 
-								 --add-opens java.base/java.io=ALL-UNNAMED  
-								 --add-opens java.base/java.net=ALL-UNNAMED 
-								 --add-opens java.base/java.nio.file=ALL-UNNAMED 
-								 --add-opens java.base/java.util=ALL-UNNAMED
-								 --add-opens java.base/sun.nio.fs=ALL-UNNAMED
-								 --add-opens java.base/java.nio.charset=ALL-UNNAMED  
-						</argLine>
                     <skipTests>${skipTests}</skipTests>
                     <excludes>
                         <exclude>**/*/TestAll.java</exclude>
