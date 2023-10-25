@@ -342,8 +342,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         int columnCounter = 0;
         for (Definition definition : definitionList) {
             headerRow.createCell(columnCounter)
-                    .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
-                            : definition.getLabel());
+            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                    : definition.getLabel());
             columnCounter = columnCounter + 1;
         }
 
@@ -598,7 +598,12 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 if (mainEntryColumnNumber != null) {
                     String uniqueIdentifierEntry = getCellValue(row.getCell(mainEntryColumnNumber));
                     outerloop: for (VocabRecord vr : currentVocabulary.getRecords()) {
-                        for (Field field : vr.getFields()) {
+                        for (Field field : new ArrayList<>(vr.getFields())) {
+                            if (field.getDefinition() == null) {
+                                vr.getFields().remove(field);
+                                continue;
+                            }
+
                             if (field.getDefinition().isMainEntry() && uniqueIdentifierEntry.equals(field.getValue())) {
                                 recordToUpdate = vr;
                                 break outerloop;
