@@ -1792,7 +1792,7 @@ public class ProcessService implements IRestAuthentication {
             Fileformat fileformat = process.readMetadataFile();
             DocStruct logical = fileformat.getDigitalDocument().getLogicalDocStruct();
             if (logical.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
-                logical = logical.getAllChildren().get(id);
+                logical = logical.getAllChildren().get(0);
             }
 
             if (updateMetadata(logical, resource)) {
@@ -1884,7 +1884,7 @@ public class ProcessService implements IRestAuthentication {
             Fileformat fileformat = process.readMetadataFile();
             DocStruct logical = fileformat.getDigitalDocument().getLogicalDocStruct();
             if (logical.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
-                logical = logical.getAllChildren().get(id);
+                logical = logical.getAllChildren().get(0);
             }
 
             Prefs prefs = process.getRegelsatz().getPreferences();

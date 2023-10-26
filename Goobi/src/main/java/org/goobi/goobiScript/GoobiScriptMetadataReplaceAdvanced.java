@@ -29,9 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.display.helper.NormDatabase;
@@ -49,17 +46,18 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.Prefs;
-import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
-public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript implements IGoobiScript {
+
+    // action:metadataReplace field:DocLanguage search:deutschTop replace:deutschNewTop position:top
+    // action:metadataReplace field:DocLanguage search:deutschChild replace:deutschNewChild position:child
 
     private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
     private static final String FIELD = "field";
     private static final String VALUE = "value";
+    private static final String NORMDATA_VALUE = "authorityValue";
     private static final String POSITION = "position";
-    private static final String IGNORE_ERRORS = "ignoreErrors";
-    private static final String TYPE = "type";
     private static final String GROUP = "group";
 
     private static final String POSITION_TOP = "top";
@@ -69,27 +67,23 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
 
     @Override
     public String getAction() {
-        return "metadataAdd";
+        return "metadataReplaceAdvanced";
     }
 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewActionToSampleCall(sb, "This GoobiScript allows to add a new metadata to a METS file.");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to replace an existing metadata within the METS file.");
         addParameterToSampleCall(sb, FIELD, "Description",
                 "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
-        addParameterToSampleCall(sb, VALUE, "This is my content.",
-                "This is used to define the value that shall be stored inside of the newly created metadata field.");
+        addParameterToSampleCall(sb, VALUE, "s/old value/new value/g", "Regular expression to replace old term with the new term");
         addParameterToSampleCall(sb, "authorityName", "", "Name of the normdatabase, e.g. viaf or gnd.");
-        addParameterToSampleCall(sb, "authorityValue", "", "Define the normdata value for this metadata field.");
+        addParameterToSampleCall(sb, NORMDATA_VALUE, "",
+                "Regular expression to replace old normdata value with new normdata value. e.g. `s/http:(.+)/https:$1/g` to replace http with https in all uris");
         addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
-        addParameterToSampleCall(sb, IGNORE_ERRORS, "true",
-                "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
-        addParameterToSampleCall(sb, TYPE, "metadata",
-                "Define what type of metadata you would like to add. Possible values are `metadata` and `group`. Default is metadata.");
-        addParameterToSampleCall(sb, GROUP, "",
-                "Internal name of the group. Use it when the metadata to add is located within a group or if a new group should be added.");
+        addParameterToSampleCall(sb, GROUP, "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");
+
         return sb.toString();
     }
 
@@ -105,6 +99,19 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
 
         if (StringUtils.isBlank(parameters.get(VALUE))) {
             Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, VALUE);
+            return Collections.emptyList();
+        }
+        String searchValue = parameters.get(VALUE);
+        if (!searchValue.startsWith("s/") || !searchValue.endsWith("/g")) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD,
+                    "Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", VALUE);
+            return Collections.emptyList();
+        }
+
+        String normdataValue = parameters.get(NORMDATA_VALUE);
+        if (StringUtils.isNotBlank(normdataValue) && (!normdataValue.startsWith("s/") || !normdataValue.endsWith("/g"))) {
+            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD,
+                    "Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", NORMDATA_VALUE);
             return Collections.emptyList();
         }
 
@@ -134,7 +141,6 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             // first get the top element
             DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
             DocStruct physical = ff.getDigitalDocument().getPhysicalDocStruct();
-
             // find the right elements to adapt
             List<DocStruct> dsList = new ArrayList<>();
             switch (parameters.get(POSITION)) {
@@ -165,6 +171,9 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                 case POSITION_ANY:
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
+                    if (physical != null) {
+                        dsList.add(physical);
+                    }
                     break;
                 case POSITION_PHYSICAL:
                     if (physical != null) {
@@ -182,36 +191,50 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                     break;
             }
 
-            // check if errors shall be ignored
-            boolean ignoreErrors = getParameterAsBoolean(IGNORE_ERRORS);
-
-            // get the content to be set and pipe it through the variable replacer
-            String newvalue = parameters.get(VALUE);
+            String val = parameters.get(VALUE).substring(2, parameters.get(VALUE).length() - 2);
+            String[] parts = val.split("(?<!\\\\)\\/"); // slash that is not preceded by a backslash
+            String searchValue = parts[0];
+            String replacement = parts[1];
+            String normdata = parameters.get(NORMDATA_VALUE);
+            String normdataValue = null;
+            String normdataReplacement = null;
+            if (StringUtils.isNotBlank(normdata)) {
+                normdata = parameters.get(NORMDATA_VALUE).substring(2, parameters.get(NORMDATA_VALUE).length() - 2);
+                parts = normdata.split("(?<!\\\\)\\/"); // slash that is not preceded by a backslash
+                normdataValue = parts[0];
+                normdataReplacement = parts[1];
+            }
+            //            // get the content to be set and pipe it through the variable replacer
             VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
-            newvalue = replacer.replace(newvalue);
-            String type = parameters.get(TYPE);
+            String field = parameters.get(FIELD);
+            field = replacer.replace(field);
+            searchValue = replacer.replace(searchValue);
+            replacement = replacer.replace(replacement);
+            if (StringUtils.isNotBlank(normdataValue)) {
+                normdataValue = replacer.replace(normdataValue);
+            }
+            if (StringUtils.isNotBlank(normdataReplacement)) {
+                normdataReplacement = replacer.replace(normdataReplacement);
+            }
+
             String group = parameters.get(GROUP);
+            // now change the searched metadata and save the file
+            replaceMetadata(dsList, group, field, searchValue, replacement, p.getRegelsatz().getPreferences(), parameters.get("authorityName"),
+                    normdataValue,
+                    normdataReplacement);
 
-            String authorityName = parameters.get("authorityName");
-            String authorityValue = parameters.get("authorityValue");
-
-            // now add the new metadata and save the file
-            addMetadata(dsList, type, group, parameters.get(FIELD), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors, authorityName,
-                    authorityValue);
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
-            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                    "Metadata added using GoobiScript: " + parameters.get(FIELD) + " - " + parameters.get(VALUE), username);
-            log.info("Metadata added using GoobiScript for process with ID " + p.getId());
-            gsr.setResultMessage("Metadata added successfully.");
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Metadata changed using GoobiScript: " + parameters.get(FIELD) + " - "
+                    + parameters.get(VALUE), username);
+            log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
+            gsr.setResultMessage("Metadata changed successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e1) {
-            String message = "Problem while adding the metadata using GoobiScript for process with id: " + p.getId();
-            Helper.addMessageToProcessJournal(p.getId(), LogType.ERROR, message, username);
-            log.error(message, e1);
-            gsr.setResultMessage("Error while adding metadata: " + e1.getMessage());
+            log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
+            gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e1.getMessage());
         }
@@ -219,20 +242,20 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
     }
 
     /**
-     * Method to add a specific metadata to a given structural element
+     * Method to replace a string in a given metadata from a {@link DocStruct}
      * 
      * @param dsList as List of structural elements to use
-     * @param field the metadata field to create
+     * @param field the metadata field that is used
+     * @param search a partial string to be replaced
+     * @param replace the replacement to be used
      * @param prefs the {@link Preferences} to use
-     * @param value the information the shall be stored as metadata in the given field
-     * @throws MetadataTypeNotAllowedException
+     * @param searchFieldIsRegularExpression interpret the search field as regular expression or as string
      */
     @SuppressWarnings("unchecked")
-    private void addMetadata(List<DocStruct> dsList, String addType, String groupName, String field, String value, Prefs prefs, boolean ignoreErrors,
-            String authorityName, String authorityValue)
-            throws MetadataTypeNotAllowedException {
+    private void replaceMetadata(List<DocStruct> dsList, String groupName, String field, String search, String replace, Prefs prefs,
+            String authorityName, String oldAuthorityValue, String newAuthorityValue) {
         String authorityUri = null;
-        if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
+        if (StringUtils.isNotBlank(authorityName)) {
             List<NormDatabase> dblist = ConfigNormdata.getConfiguredNormdatabases();
             for (NormDatabase db : dblist) {
                 if (db.getAbbreviation().equalsIgnoreCase(authorityName)) {
@@ -241,79 +264,26 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             }
         }
 
-        if (StringUtils.isNotBlank(addType) && GROUP.equals(addType)) {
-            for (DocStruct ds : dsList) {
-                MetadataGroup mg = new MetadataGroup(prefs.getMetadataGroupTypeByName(groupName));
-                ds.addMetadataGroup(mg);
-                Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
-                mdColl.setValue(value);
-                if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
-                    mdColl.setAutorityFile(authorityName, authorityUri, authorityValue);
+        for (DocStruct ds : dsList) {
+            List<Metadata> mdlist = new ArrayList<>();
+            if (StringUtils.isNotBlank(groupName)) {
+                List<MetadataGroup> groups = ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(groupName));
+                for (MetadataGroup mg : groups) {
+                    mdlist.addAll(mg.getMetadataByType(field));
                 }
-                mg.addMetadata(mdColl);
+            } else {
+                mdlist = (List<Metadata>) ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
             }
-        } else {
-            outer: for (DocStruct ds : dsList) {
-                List<Metadata> metadatalist = new ArrayList<>();
-                String tmpValue = value;
-                if (tmpValue.contains("metadata.")) {
-                    for (Matcher m = VariableReplacer.getMetadataPattern().matcher(tmpValue); m.find();) {
-                        String metadataName = m.group(1);
-                        if (StringUtils.isNotBlank(groupName)) {
-                            for (MetadataGroup grp : ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(field))) {
-                                metadatalist.addAll(grp.getMetadataByType(metadataName));
-                            }
-                        } else {
-                            metadatalist = (List<Metadata>) ds.getAllMetadataByType(prefs.getMetadataTypeByName(metadataName));
-                        }
 
-                        if (metadatalist != null && !metadatalist.isEmpty()) {
-                            Metadata md = metadatalist.get(0);
-                            tmpValue = tmpValue.replace(m.group(), md.getValue());
-                        } else {
-                            continue outer;
-                        }
-                    }
-                }
-                if (StringUtils.isNotBlank(groupName)) {
-                    try {
-                        for (MetadataGroup grp : ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(field))) {
-                            Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
-                            mdColl.setValue(tmpValue);
-                            if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
-                                mdColl.setAutorityFile(authorityName, authorityUri, authorityValue);
-                            }
-                            grp.addMetadata(mdColl);
-                        }
-                    } catch (MetadataTypeNotAllowedException e) {
-                        if (!ignoreErrors) {
-                            throw e;
-                        }
-                    }
-                } else {
-                    Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
-                    mdColl.setValue(tmpValue);
-                    if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
-                        mdColl.setAutorityFile(authorityName, authorityUri, authorityValue);
-                    }
-                    try {
-                        ds.addMetadata(mdColl);
-                    } catch (MetadataTypeNotAllowedException e) {
-                        if (!ignoreErrors) {
-                            throw e;
-                        }
+            if (mdlist != null && !mdlist.isEmpty()) {
+                for (Metadata md : mdlist) {
+                    md.setValue(md.getValue().replaceAll(search, replace));
+                    if (StringUtils.isNotBlank(md.getAuthorityValue()) && StringUtils.isNotBlank(oldAuthorityValue)) {
+                        md.setAutorityFile(authorityName, authorityUri, md.getAuthorityValue().replaceAll(oldAuthorityValue, newAuthorityValue));
                     }
                 }
             }
         }
-    }
-
-    public static Iterable<MatchResult> findRegexMatches(String pattern, CharSequence s) {
-        List<MatchResult> results = new ArrayList<>();
-        for (Matcher m = Pattern.compile(pattern).matcher(s); m.find();) {
-            results.add(m.toMatchResult());
-        }
-        return results;
     }
 
 }

@@ -66,7 +66,7 @@ public class MockProcess {
         ConfigurationHelper.getInstance().setParameter("ExportFilesFromOptionalMetsFileGroups", "true");
     }
 
-    private static void setUpProject(Process testProcess) throws IOException {
+    public static void setUpProject(Process testProcess) throws IOException {
         Project project = new Project();
         project.setTitel("project");
         project.setId(666);
@@ -107,7 +107,7 @@ public class MockProcess {
 
     }
 
-    private static void setUpRuleset(Process testProcess) throws IOException, URISyntaxException {
+    public static void setUpRuleset(Process testProcess) throws IOException, URISyntaxException {
         Ruleset ruleset = new Ruleset();
         ruleset.setId(11111);
         ruleset.setOrderMetadataByRuleset(true);
