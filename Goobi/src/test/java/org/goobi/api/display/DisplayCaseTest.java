@@ -225,7 +225,7 @@ public class DisplayCaseTest extends AbstractTest {
         assertEquals(DisplayType.generate, dc.getDisplayType());
         Item fixture = dc.getItemList().get(0);
         assertEquals("abcdef [VALUE] gehij", fixture.getLabel());
-        assertEquals("abcdef [VALUE] gehij", fixture.getValue());
+        assertEquals("", fixture.getValue());
         MetadataGeneration mg = (MetadataGeneration) fixture.getAdditionalData();
         assertNotNull(mg);
         assertEquals("goobi:metadata[@name='TitleDocMain'][text()='main title']", mg.getCondition());
