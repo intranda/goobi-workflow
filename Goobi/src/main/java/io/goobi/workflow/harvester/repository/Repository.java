@@ -393,7 +393,8 @@ public class Repository implements Serializable, DatabaseObject {
                 log.error(e);
             }
 
-            //        } while (StringUtils.isNotBlank(tokenId));
+            // TODO enable this afer tests
+            // } while (StringUtils.isNotBlank(tokenId));
         } while (1 == 0); // for testing
 
         // finally store all new! records in database
