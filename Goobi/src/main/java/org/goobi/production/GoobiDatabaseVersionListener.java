@@ -72,6 +72,53 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             }
         }
 
+        if (!DatabaseVersion.checkIfColumnExists("mq_results", "objects")) {
+            try {
+                DatabaseVersion.runSql("alter table mq_results add column processid INT(11) default 0");
+                DatabaseVersion.runSql("alter table mq_results add column stepid INT(11) default 0");
+                DatabaseVersion.runSql("alter table mq_results add column scriptName VARCHAR(255)");
+                DatabaseVersion.runSql("alter table mq_results add column objects INT(11) default 0");
+                DatabaseVersion.runSql("alter table mq_results add column ticketType VARCHAR(255)");
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("insert into mq_results (processid, stepid, time, scriptName, status, ticketType) ");
+                sb.append("select ProzesseID, SchritteID, time, scriptName, 'ERROR_DLQ', scriptName from ( ");
+                sb.append("select * from external_mq_results)x ");
+
+                DatabaseVersion.runSql(sb.toString());
+                DatabaseVersion.runSql(
+                        "update mq_results set objects = (select sortHelperImages from prozesse where prozesse.ProzesseID = mq_results.processid)");
+
+                //   DatabaseVersion.runSql("drop table external_mq_results");
+
+                // TODO process id, objects, ticketType from
+
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        // TODO merge both tables
+        //            external_mq_results
+
+        //            'ProzesseID', 'int(11)', 'YES', '', NULL, ''
+        //            'SchritteID', 'int(11)', 'YES', '', NULL, ''
+        //            'time', 'datetime', 'YES', '', NULL, ''
+        //            'scriptName', 'varchar(255)', 'YES', '', NULL, ''
+
+        //            mq_results
+        //            'ticket_id', 'varchar(255)', 'YES', '', NULL, ''
+        //            'time', 'datetime', 'YES', '', NULL, ''
+        //            'status', -> ERROR_DLQ in merge
+        //            'message' / scriptName
+
+        //            'original_message', 'text', 'YES', '', NULL, ''
+
+        // processId -> select JSON_VALUE(original_message, '$.processId') from mq_results
+
+        //            'objects', 'int(11)', 'YES', '', '0', '' -> numberOfPages
+        //            'ticketType', 'varchar(255)' -> select JSON_VALUE(original_message, '$.taskType') from mq_results order by time desc;
+
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
     }

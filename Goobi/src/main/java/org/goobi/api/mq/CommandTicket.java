@@ -46,4 +46,6 @@ public class CommandTicket {
     private String logType;
     private String issuer;
     private String content;
+
+    private int objects;
 }

@@ -75,7 +75,9 @@ public class ExternalMQMysqlHelper {
         int processId = rs.getInt("ProzesseID");
         int stepId = rs.getInt("SchritteID");
         String scriptName = rs.getString("scriptName");
-        return new ExternalCommandResult(processId, stepId, scriptName);
+        int numberOfObjects = rs.getInt("objects");
+        String ticketType = rs.getString("ticketType");
+        return new ExternalCommandResult(processId, stepId, scriptName, numberOfObjects, ticketType);
     }
 
     private static Object[] generateParameter(ExternalCommandResult message) {

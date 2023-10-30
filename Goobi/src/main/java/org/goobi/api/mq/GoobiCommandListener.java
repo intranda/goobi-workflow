@@ -118,6 +118,8 @@ public class GoobiCommandListener {
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // change step
+                        // TODO save result
+
                         String newStatus = t.getNewStatus();
                         if ("error".equals(newStatus)) {
                             step.setBearbeitungsstatusEnum(StepStatus.ERROR);
@@ -127,7 +129,8 @@ public class GoobiCommandListener {
                         } else if ("done".equals(newStatus)) {
                             // Write to DB with date.
                             for (String scriptName : t.getScriptNames()) {
-                                ExternalMQManager.insertResult(new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName));
+                                ExternalMQManager.insertResult(
+                                        new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName, t.getObjects(), t.getStepName()));
                             }
                             new HelperSchritte().CloseStepObjectAutomatic(step);
                         } else if ("paused".equals(newStatus)) {
@@ -145,9 +148,8 @@ public class GoobiCommandListener {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // add to process log
 
-                        JournalEntry entry =
-                                new JournalEntry(processId, new Date(), t.getIssuer(), LogType.getByTitle(t.getLogType()), t.getContent(),
-                                        EntryType.PROCESS);
+                        JournalEntry entry = new JournalEntry(processId, new Date(), t.getIssuer(), LogType.getByTitle(t.getLogType()),
+                                t.getContent(), EntryType.PROCESS);
 
                         JournalManager.saveJournalEntry(entry);
                     }

@@ -37,6 +37,8 @@ public class ExternalCommandResult implements DatabaseObject {
     private int processId;
     private int stepId;
     private String scriptName;
+    private int numberOfObjects;
+    private String ticketType;
 
     @Override
     public void lazyLoad() {

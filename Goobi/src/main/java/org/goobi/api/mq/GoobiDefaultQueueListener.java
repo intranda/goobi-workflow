@@ -114,6 +114,7 @@ public class GoobiDefaultQueueListener {
                 optTicket = Optional.of(gson.fromJson(new String(bytes), TaskTicket.class));
             }
             if (optTicket.isPresent()) {
+                // TODO save result to db
                 log.debug("Handling ticket {}", optTicket.get());
                 try {
                     PluginReturnValue result = handleTicket(optTicket.get());

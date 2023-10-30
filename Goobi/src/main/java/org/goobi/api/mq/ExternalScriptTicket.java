@@ -42,4 +42,6 @@ public class ExternalScriptTicket {
 
     private List<String> scriptNames;
     private List<List<String>> scripts;
+    private int numberOfObjects;
+
 }

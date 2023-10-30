@@ -43,6 +43,14 @@
 				<h:outputText value="#{ticket.message}" />
 			</x:column>
 
+            <x:column>
+                <f:facet name="header">
+                    <h:outputText value="#{msgs.numberOfObjects}" />
+                </f:facet>
+                <h:outputText value="#{ticket.numberOfObjects}" />
+            </x:column>
+
+
 			<x:column>
 				<f:facet name="header">
 					<h:outputText value="#{msgs.originalMessage}" />

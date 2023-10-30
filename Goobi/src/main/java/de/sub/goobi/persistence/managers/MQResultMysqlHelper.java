@@ -44,7 +44,7 @@ import lombok.extern.log4j.Log4j2;
 public class MQResultMysqlHelper {
 
     public static void insertMessage(MqStatusMessage message) throws SQLException {
-        String sql = "INSERT INTO mq_results (ticket_id, time, status, message, original_message) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO mq_results (ticket_id, time, status, message, original_message, objects) VALUES (?,?,?,?,?, ?)";
         Object[] param = generateParameter(message);
         Connection connection = null;
         try {
@@ -79,17 +79,14 @@ public class MQResultMysqlHelper {
         MqStatusMessage.MessageStatus status = MqStatusMessage.MessageStatus.valueOf(rs.getString("status"));
         String message = rs.getString("message");
         String origMessage = rs.getString("original_message");
-        return new MqStatusMessage(ticketId, time, status, message, origMessage);
+        int numberOfObjects = rs.getInt("objects");
+        String ticketType = rs.getString("ticketType");
+        return new MqStatusMessage(ticketId, time, status, message, origMessage, numberOfObjects, ticketType);
     }
 
     private static Object[] generateParameter(MqStatusMessage message) {
-        return new Object[] {
-                message.getTicketId(),
-                message.getTime(),
-                message.getStatus().getName(),
-                message.getMessage(),
-                message.getOriginalMessage()
-        };
+        return new Object[] { message.getTicketId(), message.getTime(), message.getStatus().getName(), message.getMessage(),
+                message.getOriginalMessage() };
     }
 
     public static int getMessagesCount(String filter) throws SQLException {
