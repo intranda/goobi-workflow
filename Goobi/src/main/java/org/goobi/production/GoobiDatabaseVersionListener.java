@@ -98,8 +98,14 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 sb = new StringBuilder();
                 sb.append("update mq_results set objects = ");
                 sb.append("(select sortHelperImages from prozesse where prozesse.ProzesseID = mq_results.processid)");
-                //   DatabaseVersion.runSql("drop table external_mq_results");
+                DatabaseVersion.runSql("drop table external_mq_results");
 
+                // generate entries for all finished automatic mq tasks
+                sb = new StringBuilder();
+                sb.append("insert into mq_results (processid, stepid, time, scriptName, status, ticketType, ticketName) ");
+                sb.append("select ProzesseID, SchritteID, BearbeitungsEnde, scriptName1, 'DONE', 'generic_automatic_step', ");
+                sb.append("titel from schritte where typAutomatisch = true and messageQueue != 'NO_QUEUE' and Bearbeitungsstatus = 3; ");
+                DatabaseVersion.runSql(sb.toString());
             } catch (SQLException e) {
                 log.error(e);
             }
