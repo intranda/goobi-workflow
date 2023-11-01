@@ -142,13 +142,13 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Accept: application/json' -X POST http://localhost:8080/goobi/api/process/15
+    curl -H 'Accept: application/json' -X PUT http://localhost:8080/goobi/api/process/15
     
     XML:
-    curl -H 'Accept: application/xml' -X POST http://localhost:8080/goobi/api/process/15
+    curl -H 'Accept: application/xml' -X PUT http://localhost:8080/goobi/api/process/15
     
      */
-    @POST
+    @PUT
     @Path("/{processid}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Update an existing process", description = "start open automatic steps of this process")
@@ -180,12 +180,12 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/query -d '{"filter" : " 'process_title' 'stepopen:file upload' 'meta:mmsId:1234' "}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/query -d '{"filter" : " 'process_title' 'stepopen:file upload' 'meta:mmsId:1234' "}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/query -d "<query><filter>'process_title' 'stepopen:file upload' 'meta:mmsId:1234'</filter></query>"
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/query -d "<query><filter>'process_title' 'stepopen:file upload' 'meta:mmsId:1234'</filter></query>"
      */
-    @POST
+    @PUT
     @Path("/query")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Retrieve ids of processes satisfying the input condition.",
@@ -206,7 +206,7 @@ public class ProcessService implements IRestAuthentication {
         }
         builder.append("TRUE");
         String criteria = builder.toString();
-        
+
         List<Process> processes = ProcessManager.getProcesses("prozesse.Titel", criteria, null);
 
         return Response.status(200).entity(new RestProcessQueryResult(processes)).build();
@@ -214,17 +214,17 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"id":15,"title":"990743934_1885","projectName":"Archive_Project",
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"id":15,"title":"990743934_1885","projectName":"Archive_Project",
     "creationDate":1643983095000,"status":"020040040","numberOfImages":248,"numberOfMetadata":804,"numberOfDocstructs":67,"rulesetName":"ruleset.xml",
     "docketName":"Standard"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><creationDate>2022-02-04T14:58:15+01:00
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><creationDate>2022-02-04T14:58:15+01:00
     </creationDate><docketName>Standard</docketName><id>15</id><numberOfDocstructs>67</numberOfDocstructs><numberOfImages>248</numberOfImages>
     <numberOfMetadata>804 </numberOfMetadata><projectName>Archive_Project</projectName><rulesetName>ruleset.xml</rulesetName>
     <status>020040040</status><title>990743934_1885</title></process>'
      */
-    @POST
+    @PUT
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -404,15 +404,15 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template",
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template",
     "documentType": "Monograph"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template
     </processTemplateName><documentType>Monograph</documentType></process>'
      */
 
-    @PUT
+    @POST
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -504,13 +504,13 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/withdetails/ -d '{"title":"1234", "processTemplateName": "template", "projectName": "Archive_Project",
-    "rulesetName": "Standard", "docketName": "Standard", "documentType": "Monograph", "propertiesMap": {"propertyName1": "propertyValue1", "propertyName2": "propertyValue2"}, 
-    "metadataList": [ {"name": "TitleDocMainShort", "value": "short title", "authorityValue": "authorityValue1"}, {"name": "Author", "value": "Jack Sparrow"}, 
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/withdetails/ -d '{"title":"1234", "processTemplateName": "template", "projectName": "Archive_Project",
+    "rulesetName": "Standard", "docketName": "Standard", "documentType": "Monograph", "propertiesMap": {"propertyName1": "propertyValue1", "propertyName2": "propertyValue2"},
+    "metadataList": [ {"name": "TitleDocMainShort", "value": "short title", "authorityValue": "authorityValue1"}, {"name": "Author", "value": "Jack Sparrow"},
     {"name": "Creator", "authorityValue": "authorityValue3", "firstName": "Nicolas", "lastName": "Bourbaki"} ]}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/withdetails/ -d '<process><title>1234</title><processTemplateName>template</processTemplateName>
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/withdetails/ -d '<process><title>1234</title><processTemplateName>template</processTemplateName>
     <projectName>Archive_Project</projectName><rulesetName>Standard</rulesetName><docketName>Standard</docketName><documentType>Monograph</documentType>
     <propertiesMap><propertyName1>propertyValue1</propertyName1><propertyName2>propertyValue2</propertyName2></propertiesMap>
     <metadataList><element><authorityValue>authorityValue1</authorityValue><name>TitleDocMainShort</name><value>short title</value></element>
@@ -518,7 +518,7 @@ public class ProcessService implements IRestAuthentication {
     <element><authorityValue>authorityValue3</authorityValue><firstName>Nicolas</firstName><lastName>Bourbaki</lastName><name>Creator</name></element>
     </metadataList></process>'
      */
-    @PUT
+    @POST
     @Path("/withdetails")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -621,7 +621,7 @@ public class ProcessService implements IRestAuthentication {
             }
 
             Prefs prefs = process.getRegelsatz().getPreferences();
-            
+
             // add metadata items one by one
             List<Map<String, String>> metadataList = resource.getMetadataList();
             for (Map<String, String> metadataMap : metadataList) {
@@ -706,7 +706,7 @@ public class ProcessService implements IRestAuthentication {
     private void startOpenAutomaticTasks(Process process) {
         // start any open automatic tasks for the process
         for (Step s : process.getSchritteList()) {
-            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) && s.isTypAutomatisch()) {
+            if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum()) && s.isTypAutomatisch()) {
                 ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);
                 myThread.startOrPutToQueue();
             }
@@ -895,12 +895,12 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "steptitle": "new step name", "processId": 15}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "steptitle": "new step name", "processId": 15}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><steptitle>new step name</steptitle></step>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><steptitle>new step name</steptitle></step>'
      */
-    @POST
+    @PUT
     @Path("/{processid}/step")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -953,14 +953,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"steptitle": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"steptitle": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
     
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><steptitle>new step name</steptitle><usergroups>Administration</usergroups></step>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><steptitle>new step name</steptitle><usergroups>Administration</usergroups></step>'
      */
 
-    @PUT
+    @POST
     @Path("/{processid}/step")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -1068,13 +1068,13 @@ public class ProcessService implements IRestAuthentication {
 
     /*
      * JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/10/step/close -d '{"stepname":"file upload"}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/10/step/close -d '{"stepname":"file upload"}'
     
      * XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/10/step/close -d '<step><stepname>file upload</stepname></step>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/10/step/close -d '<step><stepname>file upload</stepname></step>'
      */
 
-    @POST
+    @PUT
     @Path("/{processid}/step/close")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -1132,10 +1132,10 @@ public class ProcessService implements IRestAuthentication {
     }
 
     /*
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/120/step/413/close
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/120/step/413/close
      */
 
-    @POST
+    @PUT
     @Path("/{processid}/step/{stepid}/close")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -1219,14 +1219,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "type": "info", "message": "content"}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "type": "info", "message": "content"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
      */
 
     @Path("/{processid}/journal")
-    @POST
+    @PUT
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Update a journal entry", description = "Update an existing journal entry for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -1266,14 +1266,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "type": "info", "message": "content"}'
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "type": "info", "message": "content"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
      */
 
     @Path("/{processid}/journal")
-    @PUT
+    @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Create a new journal entry", description = "Create a new journal entry for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -1421,14 +1421,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/property -d '{"id":76,"name":"name","value":"value"}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/property -d '{"id":76,"name":"name","value":"value"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/property -d '<property><id>76</id><name>name</name><value>value</value></property>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/property -d '<property><id>76</id><name>name</name><value>value</value></property>'
      */
 
     @Path("/{processid}/property")
-    @POST
+    @PUT
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Update a property", description = "Update an existing property for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -1464,14 +1464,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/property -d '{"name":"name","value":"value"}'
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/property -d '{"name":"name","value":"value"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/property -d '<property><name>name</name><value>value</value></property>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/property -d '<property><name>name</name><value>value</value></property>'
      */
 
     @Path("/{processid}/property")
-    @PUT
+    @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Create a property", description = "Create a new property for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -1753,14 +1753,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"_VolumeBoxNumber","value":"19","metadataLevel":"topstruct"}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"_VolumeBoxNumber","value":"19","metadataLevel":"topstruct"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>_VolumeBoxNumber</name><value>19</value></metadata>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>_VolumeBoxNumber</name><value>19</value></metadata>'
      */
 
     @Path("/{processid}/metadata")
-    @POST
+    @PUT
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Update a property", description = "Update an existing property for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -1844,14 +1844,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"DisplayLayout","value":"1","metadataLevel":"topstruct"}'
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"DisplayLayout","value":"1","metadataLevel":"topstruct"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>DisplayLayout</name><value>1</value></metadata>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>DisplayLayout</name><value>1</value></metadata>'
      */
 
     @Path("/{processid}/metadata")
-    @PUT
+    @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Add metadata to a docstruct", description = "Create a new metadata field and add it to the given docstruct")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -1999,9 +1999,9 @@ public class ProcessService implements IRestAuthentication {
         // process data
         AuthenticationMethodDescription md = new AuthenticationMethodDescription("GET", "Get process data", "/process/\\d+");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("POST", "Update an existing process", "/process");
+        md = new AuthenticationMethodDescription("PUT", "Update an existing process", "/process");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("PUT", "Create a new process", "/process");
+        md = new AuthenticationMethodDescription("POST", "Create a new process", "/process");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete an existing process", "/process");
         implementedMethods.add(md);
@@ -2011,9 +2011,9 @@ public class ProcessService implements IRestAuthentication {
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("GET", "Get a specific step", "/process/\\d+/step/\\d+");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("POST", "Update an existing step", "/process/\\d+/step");
+        md = new AuthenticationMethodDescription("PUT", "Update an existing step", "/process/\\d+/step");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("PUT", "Add a new step to an existing process", "/process/\\d+/step");
+        md = new AuthenticationMethodDescription("POST", "Add a new step to an existing process", "/process/\\d+/step");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete a step", "/process/\\d+/step");
         implementedMethods.add(md);
@@ -2021,9 +2021,9 @@ public class ProcessService implements IRestAuthentication {
         // journal
         md = new AuthenticationMethodDescription("GET", "Get the journal for a process", "/process/\\d+/journal");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("POST", "Update an existing journal entry for a given process", "/process/\\d+/journal");
+        md = new AuthenticationMethodDescription("PUT", "Update an existing journal entry for a given process", "/process/\\d+/journal");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("PUT", "Create a new journal entry for a given process", "/process/\\d+/journal");
+        md = new AuthenticationMethodDescription("POST", "Create a new journal entry for a given process", "/process/\\d+/journal");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete an existing journal entry", "/process/\\d+/journal");
         implementedMethods.add(md);
@@ -2033,9 +2033,9 @@ public class ProcessService implements IRestAuthentication {
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("GET", "Get a property for a given process", "/process/\\d+/property/\\d+");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("POST", "Update an existing property for a given process", "/process/\\d+/property");
+        md = new AuthenticationMethodDescription("PUT", "Update an existing property for a given process", "/process/\\d+/property");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("PUT", "Create a new property for a given process", "/process/\\d+/property");
+        md = new AuthenticationMethodDescription("POST", "Create a new property for a given process", "/process/\\d+/property");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete a property from a given process", "/process/\\d+/property");
         implementedMethods.add(md);
