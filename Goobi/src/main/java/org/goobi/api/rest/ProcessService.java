@@ -142,16 +142,16 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Accept: application/json' -X POST http://localhost:8080/goobi/api/process/15
+    curl -H 'Accept: application/json' -X POST http://localhost:8080/goobi/api/process/15/startsteps
     
     XML:
-    curl -H 'Accept: application/xml' -X POST http://localhost:8080/goobi/api/process/15
+    curl -H 'Accept: application/xml' -X POST http://localhost:8080/goobi/api/process/15/startsteps
     
      */
     @POST
-    @Path("/{processid}")
+    @Path("/{processid}/startsteps")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Operation(summary = "Update an existing process", description = "start open automatic steps of this process")
+    @Operation(summary = "Start open automatic steps of a process", description = "start open automatic steps of this process")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
@@ -404,14 +404,20 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template",
-    "documentType": "Monograph"}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template", "projectName": "Archive_Project",
+    "rulesetName": "Standard", "docketName": "Standard", "documentType": "Monograph", "propertiesMap": {"propertyName1": "propertyValue1", "propertyName2": "propertyValue2"}, 
+    "metadataList": [ {"name": "TitleDocMainShort", "value": "short title", "authorityValue": "authorityValue1"}, {"name": "Author", "value": "Jack Sparrow"}, 
+    {"name": "Creator", "authorityValue": "authorityValue3", "firstName": "Nicolas", "lastName": "Bourbaki"} ]}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template
-    </processTemplateName><documentType>Monograph</documentType></process>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template</processTemplateName>
+    <projectName>Archive_Project</projectName><rulesetName>Standard</rulesetName><docketName>Standard</docketName><documentType>Monograph</documentType>
+    <propertiesMap><propertyName1>propertyValue1</propertyName1><propertyName2>propertyValue2</propertyName2></propertiesMap>
+    <metadataList><element><authorityValue>authorityValue1</authorityValue><name>TitleDocMainShort</name><value>short title</value></element>
+    <element><name>Author</name><value>Jack Sparrow</value></element>
+    <element><authorityValue>authorityValue3</authorityValue><firstName>Nicolas</firstName><lastName>Bourbaki</lastName><name>Creator</name></element>
+    </metadataList></process>'
      */
-
     @PUT
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -426,112 +432,6 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Tag(name = "process")
     public Response createProcess(RestProcessResource resource) {
-
-        //TODO optional metadata
-        //TODO optional properties
-        //TODO save RestProcessResource object in import/ folder
-
-        // validate required fields - template name and process title
-
-        //  check template name
-        if (StringUtils.isBlank(resource.getProcessTemplateName())) {
-            return Response.status(400).entity("Process template name cannot be empty.").build();
-        }
-        Process template = ProcessManager.getProcessByExactTitle(resource.getProcessTemplateName());
-        // process does not exist
-        if (template == null) {
-            return Response.status(404).entity("Process template not found").build();
-        }
-
-        // check process title
-        String processTitle = resource.getTitle();
-        Response resp = validateProcessTitle(processTitle, null);
-        if (resp != null) {
-            // error found, break up
-            return resp;
-        }
-
-        Process process = prepareProcess(processTitle, template);
-
-        // optional: change project
-        if (StringUtils.isNotBlank(resource.getProjectName())) {
-            resp = changeProject(resource, process);
-            if (resp != null) {
-                // error found, break up
-                return resp;
-            }
-        }
-        // optional: change ruleset
-        resp = changeRuleset(resource, process);
-        if (resp != null) {
-            // error found, break up
-            return resp;
-        }
-        // optional: change docket
-        if (StringUtils.isNotBlank(resource.getDocketName())) {
-            resp = changeDocket(resource, process);
-            if (resp != null) {
-                // error found, break up
-                return resp;
-            }
-        }
-        // optional: add process to a batch
-        if (resource.getBatchNumber() != null) {
-            resp = changeBatch(resource, process);
-            if (resp != null) {
-                // error found, break up
-                return resp;
-            }
-        }
-
-        changeProcessParameter(resource, process);
-
-        try {
-            // save process to create ids and directories
-            ProcessManager.saveProcess(process);
-
-            // create dummy metadata file
-            if (StringUtils.isNotBlank(resource.getDocumentType())) {
-                createMetadataFile(resource, process);
-            }
-
-        } catch (DAOException | UGHException e) {
-            log.error(e);
-        }
-        Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Process created using REST-API.");
-        return getProcessData(String.valueOf(process.getId()));
-    }
-
-    /*
-    JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/withdetails/ -d '{"title":"1234", "processTemplateName": "template", "projectName": "Archive_Project",
-    "rulesetName": "Standard", "docketName": "Standard", "documentType": "Monograph", "propertiesMap": {"propertyName1": "propertyValue1", "propertyName2": "propertyValue2"}, 
-    "metadataList": [ {"name": "TitleDocMainShort", "value": "short title", "authorityValue": "authorityValue1"}, {"name": "Author", "value": "Jack Sparrow"}, 
-    {"name": "Creator", "authorityValue": "authorityValue3", "firstName": "Nicolas", "lastName": "Bourbaki"} ]}'
-    
-    XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/withdetails/ -d '<process><title>1234</title><processTemplateName>template</processTemplateName>
-    <projectName>Archive_Project</projectName><rulesetName>Standard</rulesetName><docketName>Standard</docketName><documentType>Monograph</documentType>
-    <propertiesMap><propertyName1>propertyValue1</propertyName1><propertyName2>propertyValue2</propertyName2></propertiesMap>
-    <metadataList><element><authorityValue>authorityValue1</authorityValue><name>TitleDocMainShort</name><value>short title</value></element>
-    <element><name>Author</name><value>Jack Sparrow</value></element>
-    <element><authorityValue>authorityValue3</authorityValue><firstName>Nicolas</firstName><lastName>Bourbaki</lastName><name>Creator</name></element>
-    </metadataList></process>'
-     */
-    @PUT
-    @Path("/withdetails")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Operation(summary = "Create a new process with details", description = "Create a new process with metadata and properties")
-    @ApiResponse(responseCode = "200", description = "OK")
-    @ApiResponse(responseCode = "400", description = "Bad request - required data is missing")
-    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
-    @ApiResponse(responseCode = "404", description = "Data not found")
-    @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
-    @ApiResponse(responseCode = "409", description = "New process title already exists.")
-    @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
-    public Response createProcessWithMetadataAndProperties(RestProcessResource resource) {
 
         //TODO save RestProcessResource object in import/ folder
 
