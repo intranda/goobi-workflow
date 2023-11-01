@@ -28,6 +28,7 @@ package org.goobi.managedbeans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -49,11 +50,14 @@ import org.apache.activemq.command.ActiveMQTextMessage;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mq.TaskTicket;
+import org.goobi.production.flow.statistics.enums.TimeUnit;
 
 import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MQResultManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -91,6 +95,21 @@ public class MessageQueueBean extends BasicBean implements Serializable {
     @Getter
     @Setter
     private String queueType;
+
+    @Getter
+    @Setter
+    private Date sourceDateFrom;
+    @Getter
+    @Setter
+    private Date sourceDateTo = new Date();
+    @Getter
+    @Setter
+    private TimeUnit sourceTimeUnit;
+    @Getter
+    @Setter
+    private String ticketType;
+
+    private List<String> allTicketTypes = null;
 
     public MessageQueueBean() {
         this.initMessageBrokerStart();
@@ -294,4 +313,86 @@ public class MessageQueueBean extends BasicBean implements Serializable {
         }
     }
 
+    public List<TimeUnit> getAllTimeUnits() {
+        return Arrays.asList(TimeUnit.values());
+    }
+
+    public List<String> getAllTicketTypes() {
+        if (allTicketTypes == null) {
+            allTicketTypes = MQResultManager.getAllTicketNames();
+        }
+
+        return allTicketTypes;
+    }
+
+    public void calculateStatistics() {
+        // if start and end are selected, end must be >= than start
+        if (sourceDateFrom != null && sourceDateTo != null && sourceDateFrom.after(sourceDateTo)) {
+            // start date is after end date, abort
+            Helper.setFehlerMeldung("");
+            return;
+        }
+
+        String intervall = getIntervallExpression(sourceTimeUnit);
+        StringBuilder sql = new StringBuilder("select count(objects) as volumes, sum(objects) as pages from mq_results ");
+        if (StringUtils.isNotBlank(intervall)) {
+            sql.append(intervall).append(" as intervall ");
+
+        }
+
+        sql.append(" where status = 'DONE' ");
+        sql.append("and time >= '2022-01-01' ");
+        sql.append("and time <= '2024-01-01' ");
+        sql.append("and ticketName= 'Export' ");
+        if (StringUtils.isNotBlank(intervall)) {
+            sql.append("group by intervall");
+        }
+
+        // first column: number of tickets
+        // second column: number of objects
+        // third column (if available): time period
+
+        List<?> rows = ProcessManager.runSQL(sql.toString());
+
+        if (rows != null && !rows.isEmpty()) {
+            for (Object row : rows) {
+                Object[] rowData = (Object[]) row;
+                String processes = (String) rowData[0];
+                String pages = (String) rowData[1];
+                String period = null;
+                if (rowData.length > 2) {
+                    period = (String) rowData[2];
+                }
+            }
+        }
+
+    }
+
+    private static String getIntervallExpression(TimeUnit timeUnit) {
+
+        if (timeUnit == null) {
+            return "";
+        }
+
+        switch (timeUnit) {
+
+            case years:
+                return "year(time)";
+
+            case months:
+                return "concat(year(time) , '/' , date_format(time,'%m'))";
+
+            case quarters:
+                return "concat(year(time) , '/' , quarter(time))";
+
+            case weeks:
+                return "concat(left(yearweek(time,3),4), '/', right(yearweek(time,3),2))";
+
+            case days:
+                return "concat(year(time) , '-' , date_format(time,'%m') , '-' , date_format(time,'%d'))";
+
+            default:
+                return "";
+        }
+    }
 }

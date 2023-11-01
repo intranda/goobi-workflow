@@ -1,66 +1,107 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:x="http://myfaces.apache.org/tomahawk">
 
-	<h3 class="mt-4">#{msgs.history}</h3>
-	<h:form>
-
-	<div class="gw-table gw-table-fixed">
-		<div class="gw-table__wrapper">
-
-
-		<x:dataTable
-			styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-			var="ticket" value="#{messageQueueBean.paginator.list}">
-			<x:column>
-				<f:facet name="header">
-					<h:outputText value="#{msgs.message_queue_ticket_id}" />
-				</f:facet>
-				<h:outputText value="#{ticket.ticketId}" />
-			</x:column>
-
-			<x:column>
-				<f:facet name="header">
-					<h:outputText value="#{msgs.time}" />
-				</f:facet>
-				<h:outputText value="#{ticket.time}" />
-			</x:column>
-
-			<x:column>
-				<f:facet name="header">
-					<h:outputText value="#{msgs.status}" />
-				</f:facet>
-				<h:outputText value="#{ticket.status}" />
-			</x:column>
-
-			<x:column>
-				<f:facet name="header">
-					<h:outputText value="#{msgs.message}" />
-				</f:facet>
-				<h:outputText value="#{ticket.statusMessage}" />
-			</x:column>
-
-            <x:column>
-                <f:facet name="header">
-                    <h:outputText value="#{msgs.numberOfObjects}" />
-                </f:facet>
-                <h:outputText value="#{ticket.numberOfObjects}" />
-            </x:column>
+    <h3 class="mt-4">#{msgs.history}</h3>
+    <h:form>
+        <main class="row">
+            <div class="gw-table gw-table-fixed">
+                        <div class="gw-table__search">
+                <div class="gw-table__search__length">
+                    <h:outputText value="#{msgs.treffer}: #{messageQueueBean.paginator.totalResults}" />
+                </div>
+            </div>
+            
+            
+                <div class="gw-table__wrapper">
 
 
-			<x:column>
-				<f:facet name="header">
-					<h:outputText value="#{msgs.originalMessage}" />
-				</f:facet>
-				<h:outputText value="#{ticket.originalMessage}" />
-			</x:column>
-		</x:dataTable>
+                    <x:dataTable
+                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                        var="ticket"
+                        value="#{messageQueueBean.paginator.list}">
+<!--                         <x:column> -->
+<!--                             <f:facet name="header"> -->
+<!--                                 <h:outputText value="#{msgs.message_queue_ticket_id}" /> -->
+<!--                             </f:facet> -->
+<!--                             <h:outputText value="#{ticket.ticketId}" /> -->
+<!--                         </x:column> -->
 
-		</div>
-	</div>
+                        <x:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.time}" />
+                            </f:facet>
+                            <h:outputText value="#{ticket.time}" />
+                        </x:column>
+                        <x:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.status}" />
+                            </f:facet>
+                            <h:outputText value="#{ticket.status}" />
+                        </x:column>
 
-	</h:form>
+<!--                         <x:column> -->
+<!--                             <f:facet name="header"> -->
+<!--                                 <h:outputText value="#{msgs.message}" /> -->
+<!--                             </f:facet> -->
+<!--                             <h:outputText value="#{ticket.statusMessage}" /> -->
+<!--                         </x:column> -->
+                        <x:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.ticketType}" />
+                            </f:facet>
+                            <h:outputText value="#{ticket.ticketType}" />
+                        </x:column>
+                        <x:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.ticketName}" />
+                            </f:facet>
+                            <h:outputText value="#{ticket.ticketName}" />
+                        </x:column>
+
+
+                        <x:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.processid}" />
+                            </f:facet>
+                            <h:outputText value="#{ticket.processid}" />
+                        </x:column>
+<!--                         <x:column> -->
+<!--                             <f:facet name="header"> -->
+<!--                                 <h:outputText value="#{msgs.stepId}" /> -->
+<!--                             </f:facet> -->
+<!--                             <h:outputText value="#{ticket.stepId}" /> -->
+<!--                         </x:column> -->
+                        <x:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.numberOfObjects}" />
+                            </f:facet>
+                            <h:outputText value="#{ticket.numberOfObjects}" />
+                        </x:column>
+
+
+                        <x:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.originalMessage}" />
+                            </f:facet>
+                            <h:outputText value="#{ticket.originalMessage}" />
+                        </x:column>
+                    </x:dataTable>
+
+                </div>
+            </div>
+
+            <div class="box__actions">
+                <intranda:tablePaginator
+                    id="paginator"
+                    paginator="#{messageQueueBean.paginator}" />
+            </div>
+
+        </main>
+    </h:form>
 </ui:composition>

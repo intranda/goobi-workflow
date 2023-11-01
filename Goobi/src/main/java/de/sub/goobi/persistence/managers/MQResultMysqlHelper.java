@@ -35,6 +35,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mq.MqStatusMessage;
 import org.goobi.beans.DatabaseObject;
 
@@ -95,9 +96,13 @@ public class MQResultMysqlHelper {
     }
 
     public static int getMessagesCount(String filter) throws SQLException {
-        String sql = "SELECT COUNT(1) FROM mq_results WHERE " + filter;
+        StringBuilder sql = new StringBuilder("SELECT COUNT(1) FROM mq_results ");
+        if (StringUtils.isNotBlank(filter)) {
+            sql.append("WHERE " + filter);
+        }
+
         try (Connection conn = MySQLHelper.getInstance().getConnection()) {
-            return new QueryRunner().query(conn, sql, MySQLHelper.resultSetToIntegerHandler);
+            return new QueryRunner().query(conn, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         }
     }
 
@@ -115,6 +120,18 @@ public class MQResultMysqlHelper {
         try (Connection conn = MySQLHelper.getInstance().getConnection()) {
             return new QueryRunner().query(conn, sql.toString(), rsToStatusMessageListHandler);
         }
+    }
+
+    public static List<String> getAllTicketNames() throws SQLException {
+        List<String> values = new ArrayList<>();
+        values.add(""); // to select all ticket types
+
+        String sql = "select distinct ticketName from mq_results order by ticketName";
+        try (Connection conn = MySQLHelper.getInstance().getConnection()) {
+            values.addAll(new QueryRunner().query(conn, sql, MySQLHelper.resultSetToStringListHandler));
+        }
+
+        return values;
     }
 
 }
