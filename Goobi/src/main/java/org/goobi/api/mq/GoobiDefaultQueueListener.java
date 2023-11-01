@@ -129,8 +129,8 @@ public class GoobiDefaultQueueListener {
                         message.acknowledge();
 
                         MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.DONE, "",
-                                origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getStepName(), optTicket.get().getProcessId(),
-                                optTicket.get().getStepId());
+                                origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
+                                optTicket.get().getStepId(), optTicket.get().getStepName());
                         MQResultManager.insertResult(statusMessage);
                     } else {
                         //error or wait => put back to queue and retry by redeliveryPolicy
@@ -140,8 +140,8 @@ public class GoobiDefaultQueueListener {
                     log.error("Error handling ticket " + message.getJMSMessageID() + ": ", t);
                     sess.recover();
                     MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.ERROR, t.getMessage(),
-                            origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getStepName(), optTicket.get().getProcessId(),
-                            optTicket.get().getStepId());
+                            origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
+                            optTicket.get().getStepId(), optTicket.get().getStepName());
                     MQResultManager.insertResult(statusMessage);
                 }
             }

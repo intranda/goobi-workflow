@@ -94,8 +94,8 @@ public class GoobiCommandListener {
                     message.acknowledge();
 
                     MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.DONE, "",
-                            strMessage, t.getObjects(), t.getStepName(), t.getProcessId(),
-                            t.getStepId());
+                            strMessage, t.getObjects(), t.getTicketType(), t.getProcessId(),
+                            t.getStepId(), t.getStepName());
                     MQResultManager.insertResult(statusMessage);
 
                 } catch (Exception e) {

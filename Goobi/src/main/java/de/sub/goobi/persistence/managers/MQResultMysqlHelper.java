@@ -45,7 +45,7 @@ public class MQResultMysqlHelper {
 
     public static void insertMessage(MqStatusMessage message) throws SQLException {
         String sql =
-                "INSERT INTO mq_results (ticket_id, time, status, message, original_message, objects, processid, stepid, ticketType) VALUES (?,?,?,?,?, ?,?,?,?)";
+                "INSERT INTO mq_results (ticket_id, time, status, message, original_message, objects, processid, stepid, ticketType, ticketName) VALUES (?,?,?,?,?, ?,?,?,?,?)";
         Object[] param = generateParameter(message);
         Connection connection = null;
         try {
@@ -84,12 +84,14 @@ public class MQResultMysqlHelper {
         String ticketType = rs.getString("ticketType");
         int processid = rs.getInt("processid");
         int stepid = rs.getInt("stepid");
-        return new MqStatusMessage(ticketId, time, status, message, origMessage, numberOfObjects, ticketType, processid, stepid);
+        String ticketName = rs.getString("ticketName");
+        return new MqStatusMessage(ticketId, time, status, message, origMessage, numberOfObjects, ticketType, processid, stepid, ticketName);
     }
 
     private static Object[] generateParameter(MqStatusMessage message) {
         return new Object[] { message.getTicketId(), message.getTime(), message.getStatus().getName(), message.getStatusMessage(),
-                message.getOriginalMessage(), message.getNumberOfObjects(), message.getProcessid(), message.getStepId(), message.getTicketType() };
+                message.getOriginalMessage(), message.getNumberOfObjects(), message.getProcessid(), message.getStepId(), message.getTicketType(),
+                message.getTicketName() };
     }
 
     public static int getMessagesCount(String filter) throws SQLException {
