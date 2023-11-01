@@ -547,6 +547,8 @@ public class ProcessService implements IRestAuthentication {
 
         } catch (IOException | SwapException | UGHException e) {
             Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Cannot read or save metadata.");
+        } catch (Exception e) {
+            Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Unknown error occurred: " + e.getMessage());
         }
 
         // start open automatic steps
