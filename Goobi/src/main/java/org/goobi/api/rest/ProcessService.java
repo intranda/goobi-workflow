@@ -1662,7 +1662,7 @@ public class ProcessService implements IRestAuthentication {
     @Path("/{processid}/metadata")
     @PUT
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Operation(summary = "Update a property", description = "Update an existing property for a given process")
+    @Operation(summary = "Update a metadata", description = "Update an existing metadata for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
