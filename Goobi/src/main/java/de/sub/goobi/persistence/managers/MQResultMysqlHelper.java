@@ -44,7 +44,8 @@ import lombok.extern.log4j.Log4j2;
 public class MQResultMysqlHelper {
 
     public static void insertMessage(MqStatusMessage message) throws SQLException {
-        String sql = "INSERT INTO mq_results (ticket_id, time, status, message, original_message, objects) VALUES (?,?,?,?,?, ?)";
+        String sql =
+                "INSERT INTO mq_results (ticket_id, time, status, message, original_message, objects, processid, stepid, ticketType) VALUES (?,?,?,?,?, ?,?,?,?)";
         Object[] param = generateParameter(message);
         Connection connection = null;
         try {
@@ -81,12 +82,14 @@ public class MQResultMysqlHelper {
         String origMessage = rs.getString("original_message");
         int numberOfObjects = rs.getInt("objects");
         String ticketType = rs.getString("ticketType");
-        return new MqStatusMessage(ticketId, time, status, message, origMessage, numberOfObjects, ticketType);
+        int processid = rs.getInt("processid");
+        int stepid = rs.getInt("stepid");
+        return new MqStatusMessage(ticketId, time, status, message, origMessage, numberOfObjects, ticketType, processid, stepid);
     }
 
     private static Object[] generateParameter(MqStatusMessage message) {
-        return new Object[] { message.getTicketId(), message.getTime(), message.getStatus().getName(), message.getMessage(),
-                message.getOriginalMessage() };
+        return new Object[] { message.getTicketId(), message.getTime(), message.getStatus().getName(), message.getStatusMessage(),
+                message.getOriginalMessage(), message.getNumberOfObjects(), message.getProcessid(), message.getStepId(), message.getTicketType() };
     }
 
     public static int getMessagesCount(String filter) throws SQLException {
@@ -97,18 +100,18 @@ public class MQResultMysqlHelper {
     }
 
     public static List<? extends DatabaseObject> getMessageList(String order, String filter, Integer start, Integer count) throws SQLException {
-        String sql = "SELECT * FROM mq_results";
+        StringBuilder sql = new StringBuilder("SELECT * FROM mq_results");
         if (filter != null && !filter.isEmpty()) {
-            sql += " WHERE " + filter;
+            sql.append(" WHERE ").append(filter);
         }
         if (order != null && !order.isEmpty()) {
-            sql += " ORDER BY " + order;
+            sql.append(" ORDER BY ").append(order);
         }
         if (start != null && count != null) {
-            sql += " LIMIT " + start + ", " + count;
+            sql.append(" LIMIT ").append(start).append(", ").append(count);
         }
         try (Connection conn = MySQLHelper.getInstance().getConnection()) {
-            return new QueryRunner().query(conn, sql, rsToStatusMessageListHandler);
+            return new QueryRunner().query(conn, sql.toString(), rsToStatusMessageListHandler);
         }
     }
 

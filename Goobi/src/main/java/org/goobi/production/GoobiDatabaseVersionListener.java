@@ -86,38 +86,22 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 sb.append("select * from external_mq_results)x ");
 
                 DatabaseVersion.runSql(sb.toString());
-                DatabaseVersion.runSql(
-                        "update mq_results set objects = (select sortHelperImages from prozesse where prozesse.ProzesseID = mq_results.processid)");
 
+                sb = new StringBuilder();
+                sb.append("update mq_results set processid = (select JSON_VALUE(original_message, '$.processId'), ");
+                sb.append("ticketType = (select JSON_VALUE(original_message, '$.taskType') ");
+                sb.append("from mq_results where original_message is not null) ");
+                DatabaseVersion.runSql(sb.toString());
+
+                sb = new StringBuilder();
+                sb.append("update mq_results set objects = ");
+                sb.append("(select sortHelperImages from prozesse where prozesse.ProzesseID = mq_results.processid)");
                 //   DatabaseVersion.runSql("drop table external_mq_results");
-
-                // TODO process id, objects, ticketType from
 
             } catch (SQLException e) {
                 log.error(e);
             }
         }
-
-        // TODO merge both tables
-        //            external_mq_results
-
-        //            'ProzesseID', 'int(11)', 'YES', '', NULL, ''
-        //            'SchritteID', 'int(11)', 'YES', '', NULL, ''
-        //            'time', 'datetime', 'YES', '', NULL, ''
-        //            'scriptName', 'varchar(255)', 'YES', '', NULL, ''
-
-        //            mq_results
-        //            'ticket_id', 'varchar(255)', 'YES', '', NULL, ''
-        //            'time', 'datetime', 'YES', '', NULL, ''
-        //            'status', -> ERROR_DLQ in merge
-        //            'message' / scriptName
-
-        //            'original_message', 'text', 'YES', '', NULL, ''
-
-        // processId -> select JSON_VALUE(original_message, '$.processId') from mq_results
-
-        //            'objects', 'int(11)', 'YES', '', '0', '' -> numberOfPages
-        //            'ticketType', 'varchar(255)' -> select JSON_VALUE(original_message, '$.taskType') from mq_results order by time desc;
 
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();

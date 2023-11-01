@@ -48,4 +48,5 @@ public class CommandTicket {
     private String content;
 
     private int objects;
+    private String ticketType;
 }

@@ -37,6 +37,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.naming.ConfigurationException;
 
+import org.goobi.api.mq.MqStatusMessage.MessageStatus;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Step;
@@ -49,8 +50,8 @@ import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.ExternalMQManager;
 import de.sub.goobi.persistence.managers.JournalManager;
+import de.sub.goobi.persistence.managers.MQResultManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
@@ -91,6 +92,12 @@ public class GoobiCommandListener {
 
                     handleCommandTicket(t);
                     message.acknowledge();
+
+                    MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.DONE, "",
+                            strMessage, t.getObjects(), t.getTicketType(), t.getProcessId(),
+                            t.getStepId());
+                    MQResultManager.insertResult(statusMessage);
+
                 } catch (Exception e) {
                     log.error(e);
                 }
@@ -118,8 +125,6 @@ public class GoobiCommandListener {
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // change step
-                        // TODO save result
-
                         String newStatus = t.getNewStatus();
                         if ("error".equals(newStatus)) {
                             step.setBearbeitungsstatusEnum(StepStatus.ERROR);
@@ -127,11 +132,6 @@ public class GoobiCommandListener {
                             step.setBearbeitungsende(step.getBearbeitungszeitpunkt());
                             StepManager.saveStep(step);
                         } else if ("done".equals(newStatus)) {
-                            // Write to DB with date.
-                            for (String scriptName : t.getScriptNames()) {
-                                ExternalMQManager.insertResult(
-                                        new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName, t.getObjects(), t.getStepName()));
-                            }
                             new HelperSchritte().CloseStepObjectAutomatic(step);
                         } else if ("paused".equals(newStatus)) {
                             // Step was paused when the workernode tried to run it. Persist this to schritte table

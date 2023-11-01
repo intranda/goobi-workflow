@@ -60,10 +60,13 @@ public class MqStatusMessage implements DatabaseObject {
     private String ticketId;
     private Date time;
     private MessageStatus status;
-    private String message;
+    private String statusMessage;
     private String originalMessage;
     private int numberOfObjects;
     private String ticketType;
+
+    private int processid;
+    private int stepId;
 
     @Override
     public void lazyLoad() {

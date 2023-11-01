@@ -114,6 +114,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 t.setStepId(this.step.getId());
                 t.setProcessId(this.step.getProzess().getId());
                 t.setStepName(this.step.getTitel());
+                t.setNumberOfObjects(step.getProzess().getSortHelperImages());
                 try {
                     TicketGenerator.submitInternalTicket(t, queueType, step.getTitel(), step.getProzess().getId());
                     step.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
@@ -178,12 +179,10 @@ public class ScriptThreadWithoutHibernate extends Thread {
                         // stay in status inwork
                     }
 
+                } else if (isp.execute()) {
+                    hs.CloseStepObjectAutomatic(step);
                 } else {
-                    if (isp.execute()) {
-                        hs.CloseStepObjectAutomatic(step);
-                    } else {
-                        hs.errorStep(step);
-                    }
+                    hs.errorStep(step);
                 }
             } else if (this.step.isHttpStep()) {
                 this.hs.runHttpStep(this.step);
