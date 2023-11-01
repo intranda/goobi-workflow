@@ -112,7 +112,7 @@ public class GoobiInternalDLQListener {
 
                 TaskTicket t = gson.fromJson(origMessage, TaskTicket.class);
                 MqStatusMessage statusMessage = new MqStatusMessage(id, new Date(), MessageStatus.ERROR_DLQ, "Message failed after retries.",
-                        origMessage, 0, t.getTaskType(), t.getProcessId(), t.getStepId());
+                        origMessage, 0, t.getStepName(), t.getProcessId(), t.getStepId());
                 MQResultManager.insertResult(statusMessage);
             }
         } catch (JMSException e) {

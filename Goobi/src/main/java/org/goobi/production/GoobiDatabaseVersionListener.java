@@ -89,7 +89,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
                 sb = new StringBuilder();
                 sb.append("update mq_results set processid = (select JSON_VALUE(original_message, '$.processId'), ");
-                sb.append("ticketType = (select JSON_VALUE(original_message, '$.taskType') ");
+                sb.append("ticketType = (select JSON_VALUE(original_message, '$.stepName') ");
                 sb.append("from mq_results where original_message is not null) ");
                 DatabaseVersion.runSql(sb.toString());
 

@@ -129,7 +129,7 @@ public class GoobiDefaultQueueListener {
                         message.acknowledge();
 
                         MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.DONE, "",
-                                origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
+                                origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getStepName(), optTicket.get().getProcessId(),
                                 optTicket.get().getStepId());
                         MQResultManager.insertResult(statusMessage);
                     } else {
@@ -140,7 +140,7 @@ public class GoobiDefaultQueueListener {
                     log.error("Error handling ticket " + message.getJMSMessageID() + ": ", t);
                     sess.recover();
                     MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.ERROR, t.getMessage(),
-                            origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
+                            origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getStepName(), optTicket.get().getProcessId(),
                             optTicket.get().getStepId());
                     MQResultManager.insertResult(statusMessage);
                 }
