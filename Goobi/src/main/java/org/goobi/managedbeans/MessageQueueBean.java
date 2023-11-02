@@ -52,6 +52,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.axes.cartesian.CartesianScales;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearTicks;
+import org.primefaces.model.charts.bar.BarChartOptions;
+import org.primefaces.model.charts.hbar.HorizontalBarChartDataSet;
+import org.primefaces.model.charts.hbar.HorizontalBarChartModel;
+import org.primefaces.model.charts.optionconfig.title.Title;
 
 import com.google.gson.Gson;
 
@@ -111,6 +119,10 @@ public class MessageQueueBean extends BasicBean implements Serializable {
     private String ticketType;
 
     private List<String> allTicketTypes = null;
+    @Getter
+    private HorizontalBarChartModel barModelPages;
+    @Getter
+    private HorizontalBarChartModel barModelVolumes;
 
     public MessageQueueBean() {
         this.initMessageBrokerStart();
@@ -127,7 +139,7 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             } catch (JMSException e) {
                 log.error(e);
             }
-            paginator = new DatabasePaginator(null, null, new MQResultManager(), "queue.xhtml");
+            paginator = new DatabasePaginator("time desc", null, new MQResultManager(), "queue.xhtml");
         }
     }
 
@@ -356,9 +368,9 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             sql.append("' ");
         }
 
-        if (StringUtils.isNotBlank(messageType)) {
+        if (StringUtils.isNotBlank(ticketType)) {
             sql.append("and ticketName= '");
-            sql.append(messageType);
+            sql.append(ticketType);
             sql.append("' ");
         }
 
@@ -373,17 +385,78 @@ public class MessageQueueBean extends BasicBean implements Serializable {
         List<?> rows = ProcessManager.runSQL(sql.toString());
 
         if (rows != null && !rows.isEmpty()) {
+            barModelPages = new HorizontalBarChartModel();
+            barModelVolumes = new HorizontalBarChartModel();
+            ChartData dataPages = new ChartData();
+            HorizontalBarChartDataSet hbarDataSetPages = new HorizontalBarChartDataSet();
+            hbarDataSetPages.setLabel(Helper.getTranslation("Pages"));
+            hbarDataSetPages.setBorderColor("rgb(54, 142, 224)");
+            hbarDataSetPages.setBackgroundColor("rgb(54, 142, 224)");
+            ChartData dataVolumes = new ChartData();
+            HorizontalBarChartDataSet hbarDataSetVolumes = new HorizontalBarChartDataSet();
+            hbarDataSetVolumes.setLabel(Helper.getTranslation("volumes"));
+            hbarDataSetVolumes.setBorderColor("rgb(54, 142, 224)");
+            hbarDataSetVolumes.setBackgroundColor("rgb(54, 142, 224)");
+            List<Number> pageValues = new ArrayList<>();
+            List<Number> volumeValues = new ArrayList<>();
+
+            List<String> labels = new ArrayList<>();
+
             for (Object row : rows) {
                 Object[] rowData = (Object[]) row;
                 String processes = (String) rowData[0];
                 String pages = (String) rowData[1];
-                String period = null;
+                String period = "all";
                 if (rowData.length > 2) {
                     period = (String) rowData[2];
                 }
-
-                System.out.println( period + ": " + processes + " - " + pages);
+                pageValues.add(Integer.valueOf(pages));
+                volumeValues.add(Integer.valueOf(processes));
+                labels.add(period);
             }
+
+            hbarDataSetPages.setData(pageValues);
+            hbarDataSetVolumes.setData(volumeValues);
+
+
+
+            dataPages.addChartDataSet(hbarDataSetPages);
+            dataPages.setLabels(labels);
+            barModelPages.setData(dataPages);
+
+            dataVolumes.addChartDataSet(hbarDataSetVolumes);
+            dataVolumes.setLabels(labels);
+            barModelVolumes.setData(dataVolumes);
+
+            //Options
+            BarChartOptions options = new BarChartOptions();
+            BarChartOptions options2 = new BarChartOptions();
+            CartesianScales cScales = new CartesianScales();
+            CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+            linearAxes.setOffset(true);
+            linearAxes.setBeginAtZero(true);
+            CartesianLinearTicks ticks = new CartesianLinearTicks();
+            linearAxes.setTicks(ticks);
+            cScales.addXAxesData(linearAxes);
+            options.setScales(cScales);
+            options2.setScales(cScales);
+
+
+            Title title = new Title();
+            title.setDisplay(true);
+            title.setText(Helper.getTranslation("Pages"));
+            options.setTitle(title);
+            barModelPages.setOptions(options);
+
+            Title titleVolumes = new Title();
+            titleVolumes.setDisplay(true);
+            titleVolumes.setText(Helper.getTranslation("volumes"));
+            options2.setTitle(titleVolumes);
+            barModelVolumes.setOptions(options2);
+
+        } else {
+            barModelPages = null;
+            barModelVolumes = null;
         }
 
     }
@@ -393,24 +466,17 @@ public class MessageQueueBean extends BasicBean implements Serializable {
         if (timeUnit == null) {
             return "";
         }
-
         switch (timeUnit) {
-
             case years:
                 return "year(time)";
-
             case months:
                 return "concat(year(time) , '/' , date_format(time,'%m'))";
-
             case quarters:
                 return "concat(year(time) , '/' , quarter(time))";
-
             case weeks:
                 return "concat(left(yearweek(time,3),4), '/', right(yearweek(time,3),2))";
-
             case days:
                 return "concat(year(time) , '-' , date_format(time,'%m') , '-' , date_format(time,'%d'))";
-
             default:
                 return "";
         }

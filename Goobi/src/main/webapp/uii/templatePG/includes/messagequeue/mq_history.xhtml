@@ -7,7 +7,7 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:x="http://myfaces.apache.org/tomahawk">
 
-    <h3 class="mt-4">#{msgs.history}</h3>
+    <h3 class="mt-4">#{msgs.jobs_quartzHistory}</h3>
     <h:form>
         <main class="row">
             <div class="gw-table gw-table-fixed">
@@ -44,13 +44,6 @@
                             </f:facet>
                             <h:outputText value="#{ticket.status}" />
                         </x:column>
-
-<!--                         <x:column> -->
-<!--                             <f:facet name="header"> -->
-<!--                                 <h:outputText value="#{msgs.message}" /> -->
-<!--                             </f:facet> -->
-<!--                             <h:outputText value="#{ticket.statusMessage}" /> -->
-<!--                         </x:column> -->
                         <x:column>
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.ticketType}" />
@@ -63,28 +56,18 @@
                             </f:facet>
                             <h:outputText value="#{ticket.ticketName}" />
                         </x:column>
-
-
                         <x:column>
                             <f:facet name="header">
-                                <h:outputText value="#{msgs.processid}" />
+                                <h:outputText value="#{msgs.goobiScript_processId}" />
                             </f:facet>
                             <h:outputText value="#{ticket.processid}" />
                         </x:column>
-<!--                         <x:column> -->
-<!--                             <f:facet name="header"> -->
-<!--                                 <h:outputText value="#{msgs.stepId}" /> -->
-<!--                             </f:facet> -->
-<!--                             <h:outputText value="#{ticket.stepId}" /> -->
-<!--                         </x:column> -->
                         <x:column>
                             <f:facet name="header">
-                                <h:outputText value="#{msgs.numberOfObjects}" />
+                                <h:outputText value="#{msgs.numberImages}" />
                             </f:facet>
                             <h:outputText value="#{ticket.numberOfObjects}" />
                         </x:column>
-
-
                         <x:column>
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.originalMessage}" />

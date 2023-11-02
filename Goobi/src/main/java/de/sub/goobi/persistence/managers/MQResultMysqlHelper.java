@@ -108,10 +108,10 @@ public class MQResultMysqlHelper {
 
     public static List<? extends DatabaseObject> getMessageList(String order, String filter, Integer start, Integer count) throws SQLException {
         StringBuilder sql = new StringBuilder("SELECT * FROM mq_results");
-        if (filter != null && !filter.isEmpty()) {
+        if (StringUtils.isNotBlank(filter)) {
             sql.append(" WHERE ").append(filter);
         }
-        if (order != null && !order.isEmpty()) {
+        if (StringUtils.isNotBlank(order)) {
             sql.append(" ORDER BY ").append(order);
         }
         if (start != null && count != null) {

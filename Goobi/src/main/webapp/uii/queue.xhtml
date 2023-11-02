@@ -65,7 +65,7 @@
                                 id="tab1"
                                 styleClass="tab__link"
                                 action="#{NavigationForm.Reload}"
-                                value="#{msgs.errors}">
+                                value="#{msgs.jobs_quartzHistory}">
                                 <f:setPropertyActionListener
                                     target="#{BenutzerverwaltungForm.displayMode}"
                                     value="tab1" />
@@ -113,7 +113,7 @@
 
                             <!-- Tab 2 -->
                             <div class="#{BenutzerverwaltungForm.displayMode eq 'tab1' ? 'tab-pane active' : 'tab-pane'}">
-                                <ui:include src="templatePG/includes/messagequeue/mq_errors.xhtml"></ui:include>
+                                <ui:include src="templatePG/includes/messagequeue/mq_history.xhtml"></ui:include>
                             </div>
 
                             <div class="#{BenutzerverwaltungForm.displayMode eq 'tab2' ? 'tab-pane active' : 'tab-pane'}">
