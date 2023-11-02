@@ -10,7 +10,6 @@
 
     <h3 class="mt-4">#{msgs.statistischeAuswertung}</h3>
 
-    <h:form>
         <main class="row">
             <!-- start date -->
             <div class="col-sm-3">
@@ -55,7 +54,8 @@
                         id="field02"
                         value="#{messageQueueBean.sourceTimeUnit}"
                         converter="StatisticsTimeUnitConverter"
-                        styleClass="form-control">
+                        styleClass="form-control"
+                        required="false">
                         <f:selectItems
                             value="#{messageQueueBean.allTimeUnits}"
                             var="unit"
@@ -76,7 +76,8 @@
                     <h:selectOneMenu
                         id="field04"
                         value="#{messageQueueBean.ticketType}"
-                        styleClass="form-control">
+                        styleClass="form-control"
+                        required="false">
                         <f:selectItems
                             value="#{messageQueueBean.allTicketTypes}"
                             var="unit"
@@ -102,9 +103,7 @@
                   
                                 </button>
                             </div>
-        </main>
-    </h:form>
-
-
+       
+</main>
 
 </ui:composition>

@@ -75,6 +75,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         if (!DatabaseVersion.checkIfColumnExists("mq_results", "objects")) {
             try {
                 // extend mq_results table
+                DatabaseVersion.runSql("alter table mq_results add column id INT(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY");
                 DatabaseVersion.runSql("alter table mq_results add column processid INT(11) default 0");
                 DatabaseVersion.runSql("alter table mq_results add column stepid INT(11) default 0");
                 DatabaseVersion.runSql("alter table mq_results add column scriptName VARCHAR(255)");
@@ -91,12 +92,21 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 DatabaseVersion.runSql("drop table external_mq_results");
 
                 // extract additional fields from ticket data
-                DatabaseVersion.runSql(
-                        "update mq_results mq set processid = (select JSON_VALUE(original_message, '$.processId') from mq_results r where r.ticket_id =  mq.ticket_id)");
-                DatabaseVersion.runSql(
-                        "update mq_results mq set ticketType = (select JSON_VALUE(original_message, '$.taskType') from mq_results r where r.ticket_id =  mq.ticket_id)");
-                DatabaseVersion.runSql(
-                        "update mq_results mq set ticketName = (select JSON_VALUE(original_message, '$.stepName') from mq_results r where r.ticket_id =  mq.ticket_id)");
+                sb = new StringBuilder();
+                sb.append("update mq_results mq set processid =  ");
+                sb.append("(select JSON_VALUE(original_message, '$.processId') from mq_results r where  r.id =  mq.id)");
+                DatabaseVersion.runSql(sb.toString());
+
+                sb = new StringBuilder();
+                sb.append("update mq_results mq set ticketType =  ");
+                sb.append("(select JSON_VALUE(original_message, '$.taskType') from mq_results r where  r.id =  mq.id) ");
+                DatabaseVersion.runSql(sb.toString());
+
+
+                sb = new StringBuilder();
+                sb.append("update mq_results mq set ticketName =  ");
+                sb.append("(select JSON_VALUE(original_message, '$.stepName') from mq_results r where r.id =  mq.id) ");
+                DatabaseVersion.runSql(sb.toString());
 
                 // generate entries for all finished automatic mq tasks
                 sb = new StringBuilder();
@@ -109,6 +119,15 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 sb = new StringBuilder();
                 sb.append("update mq_results set objects = ");
                 sb.append("(select sortHelperImages from prozesse where prozesse.ProzesseID = mq_results.processid)");
+                DatabaseVersion.runSql(sb.toString());
+
+                sb = new StringBuilder();
+                sb.append("update mq_results mq set ticketType =  ");
+                sb.append("(select JSON_VALUE(original_message, '$.taskName') from mq_results r where  r.id =  mq.id) where ticketType is null ");
+                DatabaseVersion.runSql(sb.toString());
+
+                sb = new StringBuilder();
+                sb.append("update mq_results set ticketName = ticketType where ticketName is null");
                 DatabaseVersion.runSql(sb.toString());
 
             } catch (SQLException e) {

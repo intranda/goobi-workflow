@@ -26,6 +26,7 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -334,18 +335,35 @@ public class MessageQueueBean extends BasicBean implements Serializable {
         }
 
         String intervall = getIntervallExpression(sourceTimeUnit);
-        StringBuilder sql = new StringBuilder("select count(objects) as volumes, sum(objects) as pages from mq_results ");
+        StringBuilder sql = new StringBuilder("select count(objects) as volumes, sum(objects) as pages ");
         if (StringUtils.isNotBlank(intervall)) {
+            sql.append(", ");
             sql.append(intervall).append(" as intervall ");
 
         }
 
-        sql.append(" where status = 'DONE' ");
-        sql.append("and time >= '2022-01-01' ");
-        sql.append("and time <= '2024-01-01' ");
-        sql.append("and ticketName= 'Export' ");
+        sql.append("from mq_results where status = 'DONE' ");
+        if (sourceDateFrom != null) {
+            sql.append("and time >= '");
+            sql.append(getTimestamp(sourceDateFrom, true));
+            sql.append("' ");
+
+        }
+
+        if (sourceDateTo != null) {
+            sql.append("and time <= '");
+            sql.append(getTimestamp(sourceDateTo, false));
+            sql.append("' ");
+        }
+
+        if (StringUtils.isNotBlank(messageType)) {
+            sql.append("and ticketName= '");
+            sql.append(messageType);
+            sql.append("' ");
+        }
+
         if (StringUtils.isNotBlank(intervall)) {
-            sql.append("group by intervall");
+            sql.append("group by intervall order by intervall");
         }
 
         // first column: number of tickets
@@ -363,6 +381,8 @@ public class MessageQueueBean extends BasicBean implements Serializable {
                 if (rowData.length > 2) {
                     period = (String) rowData[2];
                 }
+
+                System.out.println( period + ": " + processes + " - " + pages);
             }
         }
 
@@ -394,5 +414,15 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             default:
                 return "";
         }
+    }
+
+    private static String getTimestamp(Date date, boolean startDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        if (startDate) {
+            return formatter.format(date) + " 00:00:00";
+        } else {
+            return formatter.format(date) + " 23:59:59";
+        }
+
     }
 }
