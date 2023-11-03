@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>     cam a22       a4500</leader>
+  <controlfield tag="001">1662355513</controlfield>
+  <controlfield tag="003">DE-627</controlfield>
+  <controlfield tag="005">20230914132511.0</controlfield>
+  <controlfield tag="007">cr cu 024upa|p</controlfield>
+  <controlfield tag="008">190326m19339999xx |||||o     00| ||ger c</controlfield>
+  <datafield tag="035" ind1=" " ind2=" ">
+    <subfield code="a">(DE-627)1662355513</subfield>
+  </datafield>
+  <datafield tag="035" ind1=" " ind2=" ">
+    <subfield code="a">(DE-599)KXP1662355513</subfield>
+  </datafield>
+  <datafield tag="035" ind1=" " ind2=" ">
+    <subfield code="a">(OCoLC)1310264188</subfield>
+  </datafield>
+  <datafield tag="040" ind1=" " ind2=" ">
+    <subfield code="a">DE-627</subfield>
+    <subfield code="b">ger</subfield>
+    <subfield code="c">DE-627</subfield>
+    <subfield code="e">rda</subfield>
+  </datafield>
+  <datafield tag="041" ind1=" " ind2=" ">
+    <subfield code="a">ger</subfield>
+  </datafield>
+  <datafield tag="044" ind1=" " ind2=" ">
+    <subfield code="c">XA-DXDE</subfield>
+  </datafield>
+  <datafield tag="060" ind1=" " ind2="0">
+    <subfield code="a">QU 50</subfield>
+  </datafield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="a">58.34</subfield>
+    <subfield code="2">bkl</subfield>
+  </datafield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="a">58.51</subfield>
+    <subfield code="2">bkl</subfield>
+  </datafield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="a">35.42</subfield>
+    <subfield code="2">bkl</subfield>
+  </datafield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="a">35.48</subfield>
+    <subfield code="2">bkl</subfield>
+  </datafield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="a">43.12</subfield>
+    <subfield code="2">bkl</subfield>
+  </datafield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="a">43.50</subfield>
+    <subfield code="2">bkl</subfield>
+  </datafield>
+  <datafield tag="245" ind1="1" ind2="0">
+    <subfield code="a">Handbuch der Lebensmittel-Chemie</subfield>
+    <subfield code="c">herausgegeben von A. Bömer, Münster i. W.; A. Juckenack, Berlin; J. Tillmans, Frankfurt a. M.</subfield>
+  </datafield>
+  <datafield tag="246" ind1="3" ind2="0">
+    <subfield code="a">Lebensmittelchemie</subfield>
+  </datafield>
+  <datafield tag="256" ind1=" " ind2=" ">
+    <subfield code="a">Digitalisierungsvorlage: Original</subfield>
+  </datafield>
+  <datafield tag="264" ind1=" " ind2="1">
+    <subfield code="a">Berlin</subfield>
+    <subfield code="b">Verlag von Julius Springer</subfield>
+    <subfield code="c">1933 -</subfield>
+  </datafield>
+  <datafield tag="336" ind1=" " ind2=" ">
+    <subfield code="a">Text</subfield>
+    <subfield code="b">txt</subfield>
+    <subfield code="2">rdacontent</subfield>
+  </datafield>
+  <datafield tag="337" ind1=" " ind2=" ">
+    <subfield code="a">Computermedien</subfield>
+    <subfield code="b">c</subfield>
+    <subfield code="2">rdamedia</subfield>
+  </datafield>
+  <datafield tag="338" ind1=" " ind2=" ">
+    <subfield code="a">Online-Ressource</subfield>
+    <subfield code="b">cr</subfield>
+    <subfield code="2">rdacarrier</subfield>
+  </datafield>
+  <datafield tag="500" ind1=" " ind2=" ">
+    <subfield code="a">Anfangs herausgegeben von A. Bömer; A. Juckenack; J. Tillmans</subfield>
+  </datafield>
+  <datafield tag="505" ind1="8" ind2="0">
+    <subfield code="a">1. Bd. Allgemeine Bestandteile der Lebensmittel, Ernährung und Allgemeine Lebensmittelgesetzgebung -- 2. Bd. Allgemeine Untersuchungsmethoden. 1. Teil, Physikalische Methoden. 2. Teil, Chemische und biologische Methoden -- 3. Bd. Tierische Lebensmittel -- 4. Bd. Fette und Öle, Lipoide, Wachse, Harze, ätherische Öle -- 5. Bd. Getreidemehle, Honig, Zucher, Früchte, Gemüse -- 6. Bd. Alkaloidhaltige Genussmittel, Gewürze, Kochsalz -- 7. Bd. Alkoholische Genussmittel -- 8. Bd. Wasser und Luft.  1. Teil, Technologie des Wassers. 2. Teil, Untersuchung und Beurteilung des Wassers I. Luft. 3. Teil, Untersuchung und Beurteilung des Wassers II. -- 9. Bd. Essig, Bedarfsgegenstände, Geheimmittel. Ergänzungen zu Bd. 1 - 8. Generalsachverzeichnis. 1942.</subfield>
+  </datafield>
+  <datafield tag="533" ind1=" " ind2=" ">
+    <subfield code="a">Online-Ausgabe</subfield>
+    <subfield code="b">Hannover</subfield>
+    <subfield code="c">Technische Informationsbibliothek (TIB)</subfield>
+    <subfield code="d">2019</subfield>
+    <subfield code="7">|2019||||||||||</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2="0">
+    <subfield code="a">Food</subfield>
+    <subfield code="x">Analysis</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2="0">
+    <subfield code="a">Food law and legislation</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2="2">
+    <subfield code="a">Food Analysis</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2="2">
+    <subfield code="a">Biochemistry</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2="2">
+    <subfield code="a">Nutrition</subfield>
+  </datafield>
+  <datafield tag="655" ind1=" " ind2="7">
+    <subfield code="a">Führer</subfield>
+    <subfield code="0">(DE-588)4155569-7</subfield>
+    <subfield code="0">(DE-627)10551487X</subfield>
+    <subfield code="0">(DE-576)20982008X</subfield>
+    <subfield code="2">gnd-content</subfield>
+  </datafield>
+  <datafield tag="655" ind1=" " ind2="7">
+    <subfield code="a">Enzyklopädie</subfield>
+    <subfield code="0">(DE-588)4014986-9</subfield>
+    <subfield code="0">(DE-627)104675322</subfield>
+    <subfield code="0">(DE-576)208910085</subfield>
+    <subfield code="2">gnd-content</subfield>
+  </datafield>
+  <datafield tag="689" ind1="0" ind2="0">
+    <subfield code="D">s</subfield>
+    <subfield code="0">(DE-588)4034873-8</subfield>
+    <subfield code="0">(DE-627)106250469</subfield>
+    <subfield code="0">(DE-576)209009551</subfield>
+    <subfield code="a">Lebensmittelchemie</subfield>
+    <subfield code="2">gnd</subfield>
+  </datafield>
+  <datafield tag="689" ind1="0" ind2=" ">
+    <subfield code="5">(DE-627)</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Bömer, Aloys</subfield>
+    <subfield code="d">1863-1944</subfield>
+    <subfield code="e">HerausgeberIn</subfield>
+    <subfield code="0">(DE-588)119541424</subfield>
+    <subfield code="0">(DE-627)134662202</subfield>
+    <subfield code="0">(DE-576)212922203</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Juckenack, Adolf</subfield>
+    <subfield code="d">1870-1939</subfield>
+    <subfield code="e">HerausgeberIn</subfield>
+    <subfield code="0">(DE-588)11765924X</subfield>
+    <subfield code="0">(DE-627)079079334</subfield>
+    <subfield code="0">(DE-576)291569838</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Tillmans, Josef</subfield>
+    <subfield code="d">1876-1935</subfield>
+    <subfield code="e">HerausgeberIn</subfield>
+    <subfield code="0">(DE-588)127849882</subfield>
+    <subfield code="0">(DE-627)706951336</subfield>
+    <subfield code="0">(DE-576)360136761</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="776" ind1="0" ind2="8">
+    <subfield code="i">Elektronische Reproduktion von</subfield>
+    <subfield code="t">Handbuch der Lebensmittel-Chemie</subfield>
+    <subfield code="d">Berlin : Verlag von Julius Springer, 1933</subfield>
+    <subfield code="w">(DE-627)145861767</subfield>
+  </datafield>
+  <datafield tag="912" ind1=" " ind2=" ">
+    <subfield code="a">SSG-OPC-for</subfield>
+  </datafield>
+  <datafield tag="912" ind1=" " ind2=" ">
+    <subfield code="a">SSG-OPC-ggo</subfield>
+  </datafield>
+  <datafield tag="936" ind1="b" ind2="k">
+    <subfield code="a">58.34</subfield>
+    <subfield code="j">Lebensmitteltechnologie</subfield>
+    <subfield code="0">(DE-627)106420720</subfield>
+  </datafield>
+  <datafield tag="936" ind1="b" ind2="k">
+    <subfield code="a">58.51</subfield>
+    <subfield code="j">Abwassertechnik</subfield>
+    <subfield code="j">Wasseraufbereitung</subfield>
+    <subfield code="0">(DE-627)106420739</subfield>
+  </datafield>
+  <datafield tag="936" ind1="b" ind2="k">
+    <subfield code="a">35.42</subfield>
+    <subfield code="j">Präparative Anorganische Chemie</subfield>
+    <subfield code="0">(DE-627)106419226</subfield>
+  </datafield>
+  <datafield tag="936" ind1="b" ind2="k">
+    <subfield code="a">35.48</subfield>
+    <subfield code="j">Sonstige anorganische Elemente und ihre Verbindungen</subfield>
+    <subfield code="0">(DE-627)106419242</subfield>
+  </datafield>
+  <datafield tag="936" ind1="b" ind2="k">
+    <subfield code="a">43.12</subfield>
+    <subfield code="j">Umweltchemie</subfield>
+    <subfield code="0">(DE-627)106422057</subfield>
+  </datafield>
+  <datafield tag="936" ind1="b" ind2="k">
+    <subfield code="a">43.50</subfield>
+    <subfield code="j">Umweltbelastungen</subfield>
+    <subfield code="0">(DE-627)106416782</subfield>
+  </datafield>
+  <datafield tag="951" ind1=" " ind2=" ">
+    <subfield code="a">MC</subfield>
+  </datafield>
+</record>

@@ -145,7 +145,7 @@ public class ProcessService implements IRestAuthentication {
     curl -H 'Accept: application/json' -X PUT http://localhost:8080/goobi/api/process/15/startsteps
     
     XML:
-    curl -H 'Accept: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/startsteps    
+    curl -H 'Accept: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/startsteps
      */
     @PUT
     @Path("/{processid}/startsteps")
@@ -641,7 +641,7 @@ public class ProcessService implements IRestAuthentication {
         }
     }
 
-    private Process prepareProcess(String processName, Process template) {
+    public static Process prepareProcess(String processName, Process template) {
         BeanHelper helper = new BeanHelper();
         Process newProcess = new Process();
         newProcess.setTitel(processName);
@@ -854,7 +854,6 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"steptitle": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
-    
     
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><steptitle>new step name</steptitle><usergroups>Administration</usergroups></step>'
