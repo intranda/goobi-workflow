@@ -124,7 +124,7 @@ public final class ConfigDisplayRules {
                                     }
                                 }
 
-                                Item item = new Item(defaultValue, defaultValue, true, "", "");
+                                Item item = new Item(defaultValue, "", true, "", "");
                                 item.setAdditionalData(mg);
 
                                 if (allValues.containsKey(projectName)) {
