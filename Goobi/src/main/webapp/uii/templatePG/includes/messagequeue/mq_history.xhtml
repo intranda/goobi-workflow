@@ -11,13 +11,13 @@
     <h:form>
         <main class="row">
             <div class="gw-table gw-table-fixed">
-                        <div class="gw-table__search">
-                <div class="gw-table__search__length">
-                    <h:outputText value="#{msgs.treffer}: #{messageQueueBean.paginator.totalResults}" />
+                <div class="gw-table__search">
+                    <div class="gw-table__search__length">
+                        <h:outputText value="#{msgs.treffer}: #{messageQueueBean.paginator.totalResults}" />
+                    </div>
                 </div>
-            </div>
-            
-            
+
+
                 <div class="gw-table__wrapper">
 
 
@@ -25,30 +25,11 @@
                         styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                         var="ticket"
                         value="#{messageQueueBean.paginator.list}">
-<!--                         <x:column> -->
-<!--                             <f:facet name="header"> -->
-<!--                                 <h:outputText value="#{msgs.message_queue_ticket_id}" /> -->
-<!--                             </f:facet> -->
-<!--                             <h:outputText value="#{ticket.ticketId}" /> -->
-<!--                         </x:column> -->
-
                         <x:column>
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.time}" />
                             </f:facet>
                             <h:outputText value="#{ticket.time}" />
-                        </x:column>
-                        <x:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{msgs.status}" />
-                            </f:facet>
-                            <h:outputText value="#{ticket.status}" />
-                        </x:column>
-                        <x:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{msgs.ticketType}" />
-                            </f:facet>
-                            <h:outputText value="#{ticket.ticketType}" />
                         </x:column>
                         <x:column>
                             <f:facet name="header">
@@ -58,22 +39,25 @@
                         </x:column>
                         <x:column>
                             <f:facet name="header">
-                                <h:outputText value="#{msgs.goobiScript_processId}" />
+                                <h:outputText value="#{msgs.message_queue_ticket_processId}" />
                             </f:facet>
                             <h:outputText value="#{ticket.processid}" />
                         </x:column>
-                        <x:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{msgs.numberImages}" />
-                            </f:facet>
-                            <h:outputText value="#{ticket.numberOfObjects}" />
-                        </x:column>
+
                         <x:column>
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.originalMessage}" />
                             </f:facet>
                             <h:outputText value="#{ticket.originalMessage}" />
                         </x:column>
+
+                        <x:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.status}" />
+                            </f:facet>
+                            <h:outputText value="#{ticket.status}" />
+                        </x:column>
+
                     </x:dataTable>
 
                 </div>
