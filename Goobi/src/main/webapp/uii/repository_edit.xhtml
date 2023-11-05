@@ -60,54 +60,22 @@
                             focusOnLoad="true"
                             field="#{harvesterBean.repository.name}"
                             help="#{msgs.help_intranda_administration_repository_name}"
+                            required="true"/>
+
+                        <intranda:formInputDropDownAjax
+                            id="repoType"
+                            ajaxEvent="change"
+                            ajaxRender="myform:box:typeArea"
+                            label="#{msgs.intranda_administration_repository_type}"
+                            field="#{harvesterBean.repository.repositoryType}"
+                            help="#{msgs.help_intranda_administration_repository_type}"
+                            name="repoType"
+                            selectItems="#{harvesterBean.repositoryTypes}"
+                            hidePleaseSelectMessage="false"
                             required="true"
-                            fieldStyle="form-control" />
-
-
-                        <div class="row">
-                            <div class="col-12 col-md-3 ">
-
-                                <h:outputLabel
-                                    styleClass="form__label"
-                                    for="repoType"
-                                    value="#{msgs.intranda_administration_repository_type}"
-                                    title="#{msgs.intranda_administration_repository_type}">
-
-                                    <f:passThroughAttribute
-                                        name="data-bs-toggle"
-                                        value="tooltip" />
-                                    <f:passThroughAttribute
-                                        name="data-bs-placement"
-                                        value="right" />
-
-
-                                    <i class="fa fa-asterisk form__required" />
-                                </h:outputLabel>
-                            </div>
-                            <div class="col-12 col-md-9">
-                                <h:selectOneMenu
-                                    id="repoType"
-                                    styleClass="form-select"
-                                    value="#{harvesterBean.repository.repositoryType}">
-                                    <f:ajax
-                                        render="myform:box:typeArea"
-                                        execute="@this" />
-                                    <f:selectItem
-                                        itemValue=""
-                                        itemLabel="#{msgs.bitteAuswaehlen}" />
-                                    <f:selectItems
-                                        value="#{harvesterBean.repositoryTypes}"
-                                        var="var"
-                                        itemLabel="#{var}"
-                                        itemValue="#{var}" />
-                                </h:selectOneMenu>
-                                <h:message
-                                    for="repoType"
-                                    showDetail="true"
-                                    styleClass="help-inline text-danger" />
-                                <intranda:formHelp content="#{msgs.help_intranda_administration_repository_type}" />
-                            </div>
-                        </div>
+                            var="item"
+                            itemLabel="#{item}"
+                            itemValue="#{item}" />
 
                         <h:panelGroup id="typeArea">
                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'oai'}">
