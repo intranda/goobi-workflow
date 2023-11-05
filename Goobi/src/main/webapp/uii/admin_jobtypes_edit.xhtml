@@ -41,7 +41,6 @@
 						field="#{JobTypesBean.currentJobType.name}"
 						help="#{msgs.helpTitel}"
 						name="titel"
-						fieldStyle="form-control"
 						classLeft="col-12 col-md-3 label-col"/>
 
 					<intranda:formInputCheckBox
@@ -86,9 +85,9 @@
 
 				    <div class="box__actions">
 					    <a
-								class="btn btn-blank"
-								jsf:immediate="true"
-								jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
+							class="btn btn-blank"
+							jsf:immediate="true"
+							jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
 					    	<span>#{msgs.cancel}</span>
 					    </a>
 					    <button class="btn btn-success" jsf:action="#{JobTypesBean.saveCurrentJobType}">
