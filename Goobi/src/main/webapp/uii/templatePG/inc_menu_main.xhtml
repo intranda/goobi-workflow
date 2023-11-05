@@ -242,13 +242,13 @@
                                     action="quartz"
                                     rendered="#{LoginForm.hasRole('Admin_Quartz')}"
                                     icon="fa fa-spinner" />
-                                <!-- Repository -->
+                                <!-- Harvester -->
                                 <intranda:menuItem
                                     id="a37d"
                                     parentMenu="menu_administration"
-                                    label="#{msgs.intranda_administration_repositories}"
+                                    label="#{msgs.intranda_administration_harvester}"
                                     action="#{harvesterBean.filter}"
-                                    rendered="#{LoginForm.hasRole('Admin_Repository')}"
+                                    rendered="#{LoginForm.hasRole('Admin_Harvester')}"
                                     icon="fa fa-cloud-download" />
 								<!-- Plugins overview -->
 								<intranda:menuItem

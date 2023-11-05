@@ -21,7 +21,7 @@
             navId="a0" />
         <intranda:breadcrumb
             id="repositories"
-            label="#{msgs.intranda_administration_repository}"
+            label="#{msgs.intranda_administration_harvester}"
             action="#{DocketForm.paginator.returnToPreviousPage}" />
         <intranda:breadcrumb
             id="repository"
@@ -38,7 +38,7 @@
         <h:form
             id="myform"
             onkeypress="submitOnEnter(event);"
-            rendered="#{LoginForm.hasRole('Admin_Repository')}">
+            rendered="#{LoginForm.hasRole('Admin_Harvester')}">
 
             <div
                 class="row"
