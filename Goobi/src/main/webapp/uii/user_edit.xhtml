@@ -264,7 +264,6 @@
                                     </h:panelGroup>
 
                                     <intranda:formInputText
-                                        classLeft="col-12 col-md-3"
                                         id="email"
                                         label="#{msgs.email}"
                                         field="#{BenutzerverwaltungForm.myClass.email}"
@@ -273,7 +272,6 @@
                                         name="emailName" />
 
                                     <intranda:formInputText
-                                        classLeft="col-12 col-md-3"
                                         id="metadataLanguage"
                                         label="#{msgs.spracheFuerMetadaten}"
                                         field="#{BenutzerverwaltungForm.myClass.metadatenSprache}"
@@ -282,7 +280,6 @@
                                         required="false" />
 
                                     <intranda:formInputDropDown
-                                        classLeft="col-12 col-md-3"
                                         id="dashboard"
                                         label="#{msgs.dashboard}"
                                         field="#{BenutzerverwaltungForm.myClass.dashboardPlugin}"
@@ -292,7 +289,6 @@
 
                                     <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
                                         <intranda:formInputCheckBox
-                                            classLeft="col-12 col-md-3"
                                             id="superadmin"
                                             label="#{msgs.authentication_isSuperAdmin}"
                                             field="#{BenutzerverwaltungForm.myClass.superAdmin}"
@@ -301,7 +297,6 @@
                                     </ui:fragment>
 
                                     <intranda:formInputCheckBox
-                                        classLeft="col-12 col-md-3"
                                         id="isActive"
                                         label="#{msgs.istAktiv}"
                                         field="#{BenutzerverwaltungForm.myClass.active}"
@@ -309,13 +304,11 @@
                                         name="istAktiv" />
 
                                     <intranda:formInputCheckBox
-                                        classLeft="col-12 col-md-3"
                                         id="usemassdownload"
                                         label="#{msgs.massendownload}"
                                         field="#{BenutzerverwaltungForm.myClass.mitMassendownload}"
                                         help="#{msgs.helpMassendownload}"
-                                        name="massendownload"
-                                        style="border-bottom: 1px solid #DDDDDD;" />
+                                        name="massendownload" />
 
                                 </f:subview>
                             </div>

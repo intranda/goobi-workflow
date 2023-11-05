@@ -81,7 +81,6 @@
                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'oai'}">
 
                                 <intranda:formInputTextAjax
-                                    classLeft="col-12 col-md-3"
                                     id="oaiUrl"
                                     label="#{msgs.intranda_administration_repository_oaiUrl}"
                                     field="#{harvesterBean.repository.oaiUrl}"
@@ -92,7 +91,6 @@
                                     render="myform:box:typeArea" />
 
                                 <intranda:formInputText
-                                    classLeft="col-12 col-md-3"
                                     id="rootUrl"
                                     label="#{msgs.intranda_administration_repository_rootUrl}"
                                     field="#{harvesterBean.repository.parameter['url']}"
@@ -100,7 +98,6 @@
                                     required="false"
                                     name="rootUrl" />
                                 <intranda:formInputText
-                                    classLeft="col-12 col-md-3"
                                     id="set"
                                     label="#{msgs.intranda_administration_repository_metadataSet}"
                                     field="#{harvesterBean.repository.parameter['set']}"
@@ -108,7 +105,6 @@
                                     required="false"
                                     name="metadataSet" />
                                 <intranda:formInputText
-                                    classLeft="col-12 col-md-3"
                                     id="metadataPrefix"
                                     label="#{msgs.intranda_administration_repository_metadataPrefix}"
                                     field="#{harvesterBean.repository.parameter['metadataPrefix']}"
@@ -120,7 +116,6 @@
 
                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia'}">
                                 <intranda:formInputText
-                                    classLeft="col-12 col-md-3"
                                     id="iaUrl"
                                     label="#{msgs.intranda_administration_repository_iaUrl}"
                                     field="#{harvesterBean.repository.oaiUrl}"
@@ -131,7 +126,6 @@
 
                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia cli'}">
                                 <intranda:formInputText
-                                    classLeft="col-12 col-md-3"
                                     id="iafilter"
                                     label="#{msgs.filter}"
                                     field="#{harvesterBean.repository.oaiUrl}"
@@ -143,7 +137,6 @@
                         </h:panelGroup>
 
                         <intranda:formInputText
-                            classLeft="col-12 col-md-3"
                             id="Frequency"
                             label="#{msgs.intranda_administration_repository_frequency}"
                             field="#{harvesterBean.repository.frequency}"
@@ -151,7 +144,6 @@
                             required="false"
                             name="Frequency" />
                         <intranda:formInputText
-                            classLeft="col-12 col-md-3"
                             id="Delay"
                             label="#{msgs.intranda_administration_repository_delay}"
                             field="#{harvesterBean.repository.delay}"
@@ -161,7 +153,6 @@
 
 
                         <intranda:formInputText
-                            classLeft="col-12 col-md-3"
                             id="exportFolder"
                             label="#{msgs.intranda_administration_repository_exportFolder}"
                             field="#{harvesterBean.repository.exportFolderPath}"
@@ -171,7 +162,6 @@
 
 
                         <intranda:formInputText
-                            classLeft="col-12 col-md-3"
                             id="script"
                             label="#{msgs.script}"
                             field="#{harvesterBean.repository.scriptPath}"
