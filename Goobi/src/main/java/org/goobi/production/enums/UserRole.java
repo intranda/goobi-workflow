@@ -61,6 +61,7 @@ public enum UserRole {
     Statistics_Plugins,
 
     Admin_Dockets,
+    Admin_Harvester,
     Admin_Ldap,
     Admin_Menu,
     Admin_Plugins,

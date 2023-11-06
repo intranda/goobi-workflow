@@ -129,7 +129,6 @@
 								field="#{ProzesskopieForm.fileComment}"
 								help="#{msgs.helpDamageDocDefaultComment}"
 								name="defaultComment"
-								fieldStyle="form-control"
 								required="false"
 								ajaxevent="change"
 								execute="@this" />
@@ -255,7 +254,7 @@
 								jsf:action="#{ProzesskopieForm.createNewProcess}">
 								<i class="fa fa-save"></i>
 								<span>
-									<h:outputText value="Speichern" />
+									<h:outputText value="#{msgs.speichern}" />
 								</span>
 							</button>
 					

@@ -34,10 +34,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import de.sub.goobi.config.ConfigNormdata;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -78,6 +80,8 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                 "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameterToSampleCall(sb, VALUE, "This is my content.",
                 "This is used to define the value that shall be stored inside of the newly created metadata field.");
+        addParameterToSampleCall(sb, "authorityName", "", "Name of the normdatabase, e.g. viaf or gnd.");
+        addParameterToSampleCall(sb, "authorityValue", "", "Define the normdata value for this metadata field.");
         addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, IGNORE_ERRORS, "true",
@@ -187,8 +191,13 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             newvalue = replacer.replace(newvalue);
             String type = parameters.get(TYPE);
             String group = parameters.get(GROUP);
+
+            String authorityName = parameters.get("authorityName");
+            String authorityValue = parameters.get("authorityValue");
+
             // now add the new metadata and save the file
-            addMetadata(dsList, type, group, parameters.get(FIELD), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors);
+            addMetadata(dsList, type, group, parameters.get(FIELD), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors, authorityName,
+                    authorityValue);
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
@@ -219,14 +228,28 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
      * @throws MetadataTypeNotAllowedException
      */
     @SuppressWarnings("unchecked")
-    private void addMetadata(List<DocStruct> dsList, String addType, String groupName, String field, String value, Prefs prefs, boolean ignoreErrors)
+    private void addMetadata(List<DocStruct> dsList, String addType, String groupName, String field, String value, Prefs prefs, boolean ignoreErrors,
+            String authorityName, String authorityValue)
             throws MetadataTypeNotAllowedException {
+        String authorityUri = null;
+        if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
+            List<NormDatabase> dblist = ConfigNormdata.getConfiguredNormdatabases();
+            for (NormDatabase db : dblist) {
+                if (db.getAbbreviation().equalsIgnoreCase(authorityName)) {
+                    authorityUri = db.getPath();
+                }
+            }
+        }
+
         if (StringUtils.isNotBlank(addType) && GROUP.equals(addType)) {
             for (DocStruct ds : dsList) {
                 MetadataGroup mg = new MetadataGroup(prefs.getMetadataGroupTypeByName(groupName));
                 ds.addMetadataGroup(mg);
                 Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
                 mdColl.setValue(value);
+                if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
+                    mdColl.setAutorityFile(authorityName, authorityUri, authorityValue);
+                }
                 mg.addMetadata(mdColl);
             }
         } else {
@@ -257,6 +280,9 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                         for (MetadataGroup grp : ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(field))) {
                             Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
                             mdColl.setValue(tmpValue);
+                            if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
+                                mdColl.setAutorityFile(authorityName, authorityUri, authorityValue);
+                            }
                             grp.addMetadata(mdColl);
                         }
                     } catch (MetadataTypeNotAllowedException e) {
@@ -267,6 +293,9 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                 } else {
                     Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
                     mdColl.setValue(tmpValue);
+                    if (StringUtils.isNotBlank(authorityValue) && StringUtils.isNotBlank(authorityName)) {
+                        mdColl.setAutorityFile(authorityName, authorityUri, authorityValue);
+                    }
                     try {
                         ds.addMetadata(mdColl);
                     } catch (MetadataTypeNotAllowedException e) {

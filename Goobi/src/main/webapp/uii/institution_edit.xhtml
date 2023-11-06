@@ -153,20 +153,18 @@
                                 <div class="#{institutionBean.displayMode eq ''?'tab-pane active':'tab-pane'}">
 
                                     <intranda:formInputTextAjax
-                                        id="ldaptitle"
+                                        id="title"
                                         label="#{msgs.institution_shortName}"
                                         field="#{institutionBean.institution.shortName}"
                                         help="#{msgs.institution_help_shortName}"
-                                        name="titel"
-                                        fieldStyle="form-control"
+                                        name="title"
                                         render="@form" />
                                     <intranda:formInputTextAjax
-                                        id="userDN"
+                                        id="longTitle"
                                         name="longTitle"
                                         label="#{msgs.institution_longName}"
                                         field="#{institutionBean.institution.longName}"
                                         help="#{msgs.institution_help_longName}"
-                                        fieldStyle="form-control"
                                         render="@form" />
 
                                     <intranda:formInputCheckBoxAjax

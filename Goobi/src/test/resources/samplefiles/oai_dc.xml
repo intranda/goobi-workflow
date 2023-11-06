@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<OAI-PMH
+    xmlns="http://www.openarchives.org/OAI/2.0/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"
+>
+    <responseDate>2023-10-23T09:37:56Z</responseDate>
+    <request
+        verb="ListRecords"
+        metadataPrefix="oai_dc"
+    >https://oai.deutsche-digitale-bibliothek.de</request>
+    <ListRecords>
+        <record>
+            <header>
+                <identifier>22PVGYRINSP6EVXVBE4OFPY23RHUJTXN</identifier>
+                <datestamp>2021-03-05T07:39:40Z</datestamp>
+                <setSpec>8819899887887896TiCZ</setSpec>
+                <setSpec>8819899887887896TiCZ:mediatype_003</setSpec>
+                <setSpec>8819899887887896TiCZ:rights_003</setSpec>
+                <setSpec>8819899887887896TiCZ:2Q37XY5KXJNJE5MV6SWP3UKKZ6RSBLK5</setSpec>
+            </header>
+            <metadata>
+                <oai_dc:dc
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                    xmlns:dc="http://purl.org/dc/elements/1.1/"
+                    xmlns:cortex="http://www.deutsche-digitale-bibliothek.de/cortex"
+                    xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd"
+                >
+                    <dc:identifier>22PVGYRINSP6EVXVBE4OFPY23RHUJTXN</dc:identifier>
+                    <dc:title>title</dc:title>
+                    <dc:creator>creator</dc:creator>
+                    <dc:source>source</dc:source>
+                    
+                    
+                </oai_dc:dc>
+            </metadata>
+        </record>
+       
+        <resumptionToken
+            expirationDate="2023-10-23T10:38:10Z"
+            completeListSize="1"
+        ></resumptionToken>
+    </ListRecords>
+</OAI-PMH>

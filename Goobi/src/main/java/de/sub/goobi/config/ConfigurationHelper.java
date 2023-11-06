@@ -1206,6 +1206,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ExportExiftoolPath", "/usr/bin/exiftool");
     }
 
+    public String getPathToIaCli() {
+        return getLocalString("iaCli", "/usr/local/bin/ia");
+    }
+
     public boolean isUseMasterDirectory() {
         return getLocalBoolean("useOrigFolder", true);
     }
@@ -1333,4 +1337,5 @@ public class ConfigurationHelper implements Serializable {
             }
         }
     }
+
 }

@@ -1,0 +1,243 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{harvesterBean.repository.id == null?msgs.intranda_administration_create_repository:msgs.intranda_administration_edit_repository}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="repositories"
+            label="#{msgs.intranda_administration_harvester}"
+            action="#{DocketForm.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb
+            id="repository"
+            label="#{myPageTitle}"
+            action="repository_edit"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form
+            id="myform"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Harvester')}">
+
+            <div
+                class="row"
+                role="main">
+                <div class="col-12">
+
+                    <intranda:box
+                        boxType="action"
+                        boxForm="true"
+                        boxPadding="false"
+                        title="#{myPageTitle}"
+                        icon="fa-cloud-download"
+                        id="box">
+
+                        <intranda:formInputText
+                            id="title"
+                            name="titel"
+                            label="#{msgs.name}"
+                            focusOnLoad="true"
+                            field="#{harvesterBean.repository.name}"
+                            help="#{msgs.help_intranda_administration_repository_name}"
+                            required="true"/>
+
+                        <intranda:formInputDropDownAjax
+                            id="repoType"
+                            ajaxEvent="change"
+                            ajaxRender="myform:box:typeArea"
+                            label="#{msgs.intranda_administration_repository_type}"
+                            field="#{harvesterBean.repository.repositoryType}"
+                            help="#{msgs.help_intranda_administration_repository_type}"
+                            name="repoType"
+                            selectItems="#{harvesterBean.repositoryTypes}"
+                            hidePleaseSelectMessage="false"
+                            required="true"
+                            var="item"
+                            itemLabel="#{item}"
+                            itemValue="#{item}" />
+
+                        <h:panelGroup id="typeArea">
+                            <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'oai'}">
+
+                                <intranda:formInputTextAjax
+                                    id="oaiUrl"
+                                    label="#{msgs.intranda_administration_repository_oaiUrl}"
+                                    field="#{harvesterBean.repository.oaiUrl}"
+                                    help="#{msgs.help_intranda_administration_repository_oaiUrl}"
+                                    required="false"
+                                    name="oaiUrl"
+                                    execute="@this"
+                                    render="myform:box:typeArea" />
+
+                                <intranda:formInputText
+                                    id="rootUrl"
+                                    label="#{msgs.intranda_administration_repository_rootUrl}"
+                                    field="#{harvesterBean.repository.parameter['url']}"
+                                    help="#{msgs.help_intranda_administration_repository_rootUrl}"
+                                    required="false"
+                                    name="rootUrl" />
+                                <intranda:formInputText
+                                    id="set"
+                                    label="#{msgs.intranda_administration_repository_metadataSet}"
+                                    field="#{harvesterBean.repository.parameter['set']}"
+                                    help="#{msgs.help_intranda_administration_repository_metadataSet}"
+                                    required="false"
+                                    name="metadataSet" />
+                                <intranda:formInputText
+                                    id="metadataPrefix"
+                                    label="#{msgs.intranda_administration_repository_metadataPrefix}"
+                                    field="#{harvesterBean.repository.parameter['metadataPrefix']}"
+                                    help="#{msgs.help_intranda_administration_repository_metadataPrefix}"
+                                    required="false"
+                                    name="metadataPrefix" />
+                             
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia'}">
+                                <intranda:formInputText
+                                    id="iaUrl"
+                                    label="#{msgs.intranda_administration_repository_iaUrl}"
+                                    field="#{harvesterBean.repository.oaiUrl}"
+                                    help="#{msgs.help_intranda_administration_repository_iaUrl}"
+                                    required="false"
+                                    name="iaUrl" />
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia cli'}">
+                                <intranda:formInputText
+                                    id="iafilter"
+                                    label="#{msgs.filter}"
+                                    field="#{harvesterBean.repository.oaiUrl}"
+                                    help="#{msgs.help_intranda_administration_repository_ia_filter}"
+                                    required="false"
+                                    name="iafilter" />
+                            </h:panelGroup>
+
+                        </h:panelGroup>
+
+                        <intranda:formInputText
+                            id="Frequency"
+                            label="#{msgs.intranda_administration_repository_frequency}"
+                            field="#{harvesterBean.repository.frequency}"
+                            help="#{msgs.help_intranda_administration_repository_frequency}"
+                            required="false"
+                            name="Frequency" />
+                        <intranda:formInputText
+                            id="Delay"
+                            label="#{msgs.intranda_administration_repository_delay}"
+                            field="#{harvesterBean.repository.delay}"
+                            help="#{msgs.help_intranda_administration_repository_delay}"
+                            required="false"
+                            name="Delay" />
+
+
+                        <intranda:formInputText
+                            id="exportFolder"
+                            label="#{msgs.intranda_administration_repository_exportFolder}"
+                            field="#{harvesterBean.repository.exportFolderPath}"
+                            help="#{msgs.help_intranda_administration_repository_export_folder}"
+                            required="false"
+                            name="exportFolder" />
+
+
+                        <intranda:formInputText
+                            id="script"
+                            label="#{msgs.script}"
+                            field="#{harvesterBean.repository.scriptPath}"
+                            help="#{msgs.help_intranda_administration_repository_script}"
+                            required="false"
+                            name="script" />
+
+                        <intranda:formInputCheckBox
+                            id="active"
+                            label="#{msgs.intranda_administration_repository_isActive}"
+                            field="#{harvesterBean.repository.enabled}"
+                            help="#{msgs.help_intranda_administration_repository_active}"
+                            name="active" />
+
+
+                        <intranda:formInputCheckBoxAjax
+                            id="enableGoobiImport"
+                            label="#{msgs.intranda_administration_repository_enableGoobiImport}"
+                            field="#{harvesterBean.repository.goobiImport}"
+                            help="#{msgs.help_intranda_administration_repository_enableImport}"
+                            name="enableGoobiImport"
+                            ajaxEvent="change"
+                            ajaxRender="myform:box:goobiImportArea" />
+
+                        <h:panelGroup id="goobiImportArea">
+                            <h:panelGroup rendered="#{harvesterBean.repository.goobiImport}">
+
+                                <intranda:formInputDropDown
+                                    id="project"
+                                    label="#{msgs.projekt}"
+                                    field="#{harvesterBean.repository.importProjectName}"
+                                    help="#{msgs.help_intranda_administration_repository_project}"
+                                    name="project"
+                                    selectItems="#{harvesterBean.projectList}"
+                                    required="true" />
+
+                                <intranda:formInputDropDown
+                                    id="template"
+                                    label="#{msgs.intranda_administration_repository_template}"
+                                    field="#{harvesterBean.repository.processTemplateName}"
+                                    help="#{msgs.help_intranda_administration_repository_template}"
+                                    name="template"
+                                    selectItems="#{harvesterBean.processTemplateList}"
+                                    required="true" />
+                                <intranda:formInputDropDown
+                                    id="fileformat"
+                                    label="#{msgs.intranda_administration_repository_fileformat}"
+                                    field="#{harvesterBean.repository.fileformat}"
+                                    help="#{msgs.help_intranda_administration_repository_fileformat}"
+                                    name="fileformat"
+                                    selectItems="#{harvesterBean.restApiList}"
+                                    required="true" />
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+
+                        <intranda:formButtonArea
+                            id="buttons"
+                            form="#{harvesterBean}"
+                            object="#{harvesterBean.repository.id}"
+                            actionCancel="#{harvesterBean.cancel}" />
+
+                    </intranda:box>
+
+                </div>
+                <!-- /col -->
+            </div>
+            <!-- /row -->
+        </h:form>
+
+        <!-- Focus first input field on load -->
+        <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
+        <script type="text/javascript">
+                                    gwFocusOnLoad.init()
+                                </script>
+
+    </ui:define>
+
+</ui:composition>
