@@ -47,7 +47,7 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
         try {
             num = HarvesterRepositoryMysqlHelper.getRepositoryCount(filter);
         } catch (SQLException e) {
-            log.error("error while getting Docket hit size", e);
+            log.error("error while getting repository hit size", e);
             throw new DAOException(e);
         }
         return num;
@@ -64,7 +64,7 @@ public class HarvesterRepositoryManager implements IManager, Serializable {
         try {
             answer = HarvesterRepositoryMysqlHelper.getRepositories(filter);
         } catch (SQLException e) {
-            log.error("error while getting Dockets", e);
+            log.error("error while getting repositories", e);
             throw new DAOException(e);
         }
         return answer;
