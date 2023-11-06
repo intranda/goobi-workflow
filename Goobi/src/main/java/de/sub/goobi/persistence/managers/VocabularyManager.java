@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -256,6 +257,49 @@ public class VocabularyManager implements IManager, Serializable {
                     rec.setVocabularyId(vocabularyId);
                     recordMap.put(recordId, rec);
                     records.add(rec);
+                }
+                rec.getFields().add(field);
+            }
+
+            return records;
+        }
+
+    };
+
+    public final static ResultSetHandler<Map<String, VocabRecord>> vocabularyRecordMapHandler = new ResultSetHandler<Map<String, VocabRecord>>() {
+
+        @Override
+        public Map<String, VocabRecord> handle(ResultSet rs) throws SQLException {
+
+            Map<Integer, VocabRecord> recordMap = new HashMap<>();
+            Map<String, VocabRecord> records = new HashMap<>();
+
+            while (rs.next()) {
+                Integer fieldId = rs.getInt("id");
+                Integer recordId = rs.getInt("record_id");
+                Integer vocabularyId = rs.getInt("vocabulary_id");
+                Integer definitionId = rs.getInt("definition_id");
+                String label = rs.getString("label");
+                String language = rs.getString("language");
+                String value = rs.getString("value");
+
+                String idField = rs.getString("identifier");
+
+                Field field = new Field();
+                field.setId(fieldId);
+                field.setLabel(label);
+                field.setLanguage(language);
+                field.setValue(value);
+                field.setDefinitionId(definitionId);
+                VocabRecord rec = null;
+                if (recordMap.containsKey(recordId)) {
+                    rec = recordMap.get(recordId);
+                } else {
+                    rec = new VocabRecord();
+                    rec.setId(recordId);
+                    rec.setVocabularyId(vocabularyId);
+                    recordMap.put(recordId, rec);
+                    records.put(idField, rec);
                 }
                 rec.getFields().add(field);
             }
@@ -498,6 +542,15 @@ public class VocabularyManager implements IManager, Serializable {
             log.error(e);
         }
         return null;
+    }
+
+    public static Map<String, VocabRecord> getRecordMap(int vacabularyId, int definitionId) {
+        try {
+            return VocabularyMysqlHelper.getRecordMap(vacabularyId, definitionId);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return Collections.emptyMap();
     }
 
     /**

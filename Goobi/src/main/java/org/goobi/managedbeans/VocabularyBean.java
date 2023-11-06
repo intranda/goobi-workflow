@@ -35,9 +35,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -355,9 +357,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                     : definition.getLabel());
         }
         StringBuilder sw = new StringBuilder();
-        CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
-                .setHeader(headers.toArray(new String[headers.size()]))
-                .build();
+        CSVFormat csvFormat = CSVFormat.DEFAULT.builder().setHeader(headers.toArray(new String[headers.size()])).build();
         try (final CSVPrinter printer = new CSVPrinter(sw, csvFormat)) {
             for (VocabRecord vocabRecord : recordList) {
                 List<String> values = new ArrayList<>();
@@ -597,35 +597,45 @@ public class VocabularyBean extends BasicBean implements Serializable {
         }
 
         if (importType.equals(IMPORT_TYPE_MERGE)) {
+            long start = System.currentTimeMillis();
+
+
+
             List<VocabRecord> newRecords = new ArrayList<>();
             List<VocabRecord> updateRecords = new ArrayList<>();
             // get main entry row
             Integer mainEntryColumnNumber = null;
+            Integer mainEntryDefinitionId = null;
             for (MatchingField mf : headerOrder) {
                 if (mf.getAssignedField() != null && mf.getAssignedField().isMainEntry()) {
                     mainEntryColumnNumber = mf.getColumnOrderNumber();
+                    mainEntryDefinitionId = mf.getAssignedField().getId();
                 }
             }
-            for (Row row : rowsToImport) {
-                // search for existing records based on the value of the main entry
-                VocabRecord recordToUpdate = null;
-                if (mainEntryColumnNumber != null) {
+
+            if (mainEntryColumnNumber != null) {
+                Map<String, VocabRecord> existingRecords = new HashMap<>();
+                for ( VocabRecord vr : currentVocabulary.getRecords() ) {
+                    for (Field f : vr.getFields() ) {
+                        if (f.getDefinitionId().equals(mainEntryDefinitionId)) {
+                            existingRecords.put(f.getValue(), vr);
+
+                            break;
+                        }
+                    }
+                }
+
+                int rowCounter = 0;
+                for (Row row : rowsToImport) {
+                    rowCounter++;
+
+                    // search for existing records based on the value of the main entry
+
                     String uniqueIdentifierEntry = getCellValue(row.getCell(mainEntryColumnNumber));
                     if (StringUtils.isNotBlank(uniqueIdentifierEntry)) {
-                        outerloop: for (VocabRecord vr : currentVocabulary.getRecords()) {
-                            for (Field field : new ArrayList<>(vr.getFields())) {
-                                if (field.getDefinition() == null) {
-                                    vr.getFields().remove(field);
-                                    continue;
-                                }
-
-                                if (field.getDefinition().isMainEntry() && uniqueIdentifierEntry.equals(field.getValue())) {
-                                    recordToUpdate = vr;
-                                    break outerloop;
-                                }
-                            }
-                        }
+                        VocabRecord recordToUpdate = existingRecords.get(uniqueIdentifierEntry);
                         if (recordToUpdate != null) {
+                            // existing record, change it
                             log.debug("merged row with existing record");
                             updateRecords.add(recordToUpdate);
                             // update existing record
@@ -670,15 +680,20 @@ public class VocabularyBean extends BasicBean implements Serializable {
                             }
                         }
                     }
+
                 }
+                System.out.println("Handled " + rowCounter + " rows : " + (System.currentTimeMillis() - start));
             }
+
             if (!newRecords.isEmpty()) {
                 log.debug("Created {} new record(s)", newRecords.size());
                 VocabularyManager.insertNewRecords(newRecords, currentVocabulary.getId());
+                System.out.println("Saved " + newRecords.size() + " + records." + (System.currentTimeMillis() - start));
             }
             if (!updateRecords.isEmpty()) {
                 log.debug("Updated {} record(s)", updateRecords.size());
                 VocabularyManager.batchUpdateRecords(updateRecords, currentVocabulary.getId());
+                System.out.println("Update " + updateRecords.size() + " records." + (System.currentTimeMillis() - start));
             }
         }
         return FilterKein();

@@ -55,6 +55,12 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             DatabaseVersion.updateDatabase(currentVersion);
         }
 
+        // TODO move this
+        if (!DatabaseVersion.checkIfIndexExists("vocabulary_record_data", "definition_id")) {
+            DatabaseVersion.createIndexOnTable("vocabulary_record_data", "definition_id", "definition_id", null);
+            DatabaseVersion.createIndexOnTable("vocabulary_record_data", "record_id", "record_id", null);
+        }
+
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
     }

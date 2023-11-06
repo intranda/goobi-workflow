@@ -399,6 +399,24 @@ public class MySQLHelper implements Serializable {
         }
     };
 
+
+    public final static ResultSetHandler<Map<String, Integer>> resultSetToIntMapHandler = new ResultSetHandler<Map<String, Integer>>() {
+        @Override
+        public Map<String, Integer> handle(ResultSet rs) throws SQLException {
+            Map<String, Integer> result = new HashMap<>();
+            try {
+                while (rs.next()) {
+                    result.put(rs.getString(1), rs.getInt(2));
+
+                }
+            } finally {
+                rs.close();
+            }
+            return result;
+        }
+    };
+
+
     public static ResultSetHandler<List<Object[]>> resultSetToObjectListHandler = new ResultSetHandler<List<Object[]>>() {
 
         @Override

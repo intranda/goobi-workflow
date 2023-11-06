@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.StatementConfiguration;
@@ -469,9 +470,8 @@ class VocabularyMysqlHelper implements Serializable {
                 }
                 for (Field field : vocabRecord.getFields()) {
                     if (field.getId() == null) {
-                        Integer id =
-                                run.insert(connection, insertField, MySQLHelper.resultSetToIntegerHandler, vocabRecord.getId(), vocabulary.getId(),
-                                        field.getDefinition().getId(), field.getLabel(), field.getLanguage(), field.getValue());
+                        Integer id = run.insert(connection, insertField, MySQLHelper.resultSetToIntegerHandler, vocabRecord.getId(),
+                                vocabulary.getId(), field.getDefinition().getId(), field.getLabel(), field.getLanguage(), field.getValue());
                         field.setId(id);
                     } else {
                         run.update(connection, updateField, vocabRecord.getId(), vocabulary.getId(), field.getDefinition().getId(), field.getLabel(),
@@ -687,7 +687,7 @@ class VocabularyMysqlHelper implements Serializable {
             // order
             if (MySQLHelper.isJsonCapable()) {
                 String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
-                        + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
+                + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
                 String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
                 sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
                 if (StringUtils.isNotBlank(vocabulary.getOrder())) {
@@ -778,7 +778,6 @@ class VocabularyMysqlHelper implements Serializable {
                 insertRecordQuery.append(", (?, ?)");
             }
         }
-
         Connection connection = null;
         QueryRunner runner = new QueryRunner();
         try {
@@ -802,7 +801,6 @@ class VocabularyMysqlHelper implements Serializable {
                     runner.execute(connection, "unlock tables");
                 }
             }
-
             fieldsBatchInsertion(records, vocabularyID, connection, runner);
         } finally {
             if (connection != null) {
@@ -819,6 +817,7 @@ class VocabularyMysqlHelper implements Serializable {
         int totalNumberOfRecords = records.size();
         int currentBatchNo = 0;
         int numberOfRecordsPerBatch = 50;
+        long start = System.currentTimeMillis();
         while (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch)) {
             List<VocabRecord> subList;
             if (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch) + numberOfRecordsPerBatch) {
@@ -828,11 +827,10 @@ class VocabularyMysqlHelper implements Serializable {
                 subList = records.subList(currentBatchNo * numberOfRecordsPerBatch, totalNumberOfRecords);
             }
 
-            List<Object> parameter = new ArrayList<>();
-
             StringBuilder insertFieldQuery = new StringBuilder();
             insertFieldQuery.append(fieldQuery);
             boolean isFirst = true;
+            //TODO change it to prepared statement
             for (int i = 0; i < subList.size(); i++) {
                 VocabRecord rec = subList.get(i);
                 for (int j = 0; j < rec.getFields().size(); j++) {
@@ -842,17 +840,36 @@ class VocabularyMysqlHelper implements Serializable {
                     } else {
                         insertFieldQuery.append(", (?,?,?,?,?,?) ");
                     }
+
                     Field f = rec.getFields().get(j);
-                    parameter.add(rec.getId());
-                    parameter.add(vocabularyID);
-                    parameter.add(f.getDefinition().getId());
-                    parameter.add(f.getLabel());
-                    parameter.add(f.getLanguage());
-                    parameter.add(f.getValue());
+
+
+
+                    if (isFirst) {
+                        isFirst = false;
+                    } else {
+                        insertFieldQuery.append(", ");
+                    }
+                    insertFieldQuery.append("(");
+                    insertFieldQuery.append(rec.getId());
+                    insertFieldQuery.append(", ");
+                    insertFieldQuery.append(vocabularyID);
+                    insertFieldQuery.append(", ");
+                    insertFieldQuery.append(f.getDefinition().getId());
+                    insertFieldQuery.append(", '");
+                    insertFieldQuery.append(f.getLabel());
+                    insertFieldQuery.append("', '");
+                    insertFieldQuery.append(f.getLanguage());
+                    insertFieldQuery.append("', '");
+                    insertFieldQuery.append(StringEscapeUtils.escapeSql(f.getValue()));
+                    insertFieldQuery.append("')");
+
                 }
             }
-            runner.execute(connection, insertFieldQuery.toString(), parameter.toArray());
+
+            runner.execute(connection, insertFieldQuery.toString());
             currentBatchNo = currentBatchNo + 1;
+            System.out.println(currentBatchNo + ": " + (System.currentTimeMillis() - start));
         }
     }
 
@@ -963,6 +980,25 @@ class VocabularyMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
 
             new QueryRunner().update(connection, updateSql, timeNow, vocabulary.getId());
+
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static Map<String, VocabRecord> getRecordMap(int vocabularyId, int definitionId) throws SQLException {
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT r2.value as identifier, r1.* FROM vocabulary_record_data r1  ");
+        sql.append("left join vocabulary_record_data r2 on r1.record_id = r2.record_id and r2.definition_id = ?  ");
+        sql.append("WHERE r1.vocabulary_id = ? ");
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql.toString(), VocabularyManager.vocabularyRecordMapHandler, definitionId, vocabularyId);
 
         } finally {
             if (connection != null) {
