@@ -40,17 +40,14 @@
                 		id="title"
 						field="#{JobTypesBean.currentJobType.name}"
 						help="#{msgs.helpTitel}"
-						name="titel"
-						fieldStyle="form-control"
-						classLeft="col-12 col-md-3 label-col"/>
+						name="titel"/>
 
 					<intranda:formInputCheckBox
 						label="#{msgs.paused}"
 						id="paused"
 						field="#{JobTypesBean.currentJobType.paused}"
 						help="#{msgs.helpTitel}"
-						name="titel"
-						classLeft="col-12 col-md-3 label-col"/>
+						name="titel"/>
 
 					<div class="row">
 						<div class="col-12 col-md-3 label-col">
@@ -86,9 +83,9 @@
 
 				    <div class="box__actions">
 					    <a
-								class="btn btn-blank"
-								jsf:immediate="true"
-								jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
+							class="btn btn-blank"
+							jsf:immediate="true"
+							jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
 					    	<span>#{msgs.cancel}</span>
 					    </a>
 					    <button class="btn btn-success" jsf:action="#{JobTypesBean.saveCurrentJobType}">

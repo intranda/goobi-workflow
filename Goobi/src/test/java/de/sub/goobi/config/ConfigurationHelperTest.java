@@ -1187,4 +1187,10 @@ public class ConfigurationHelperTest extends AbstractTest {
         assertTrue(ConfigurationHelper.getInstance().isPdfAsDownload());
     }
 
+    @Test
+    public void testGetPathToIaCli() {
+        assertEquals("/usr/local/bin/ia", ConfigurationHelper.getInstance().getPathToIaCli());
+    }
+
+
 }

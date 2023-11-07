@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record xmlns="info:srw/schema/5/picaXML-v1.0">
+  <datafield tag="001@">
+    <subfield code="0">70</subfield>
+  </datafield>
+  <datafield tag="001A">
+    <subfield code="0">0089:26-03-19</subfield>
+  </datafield>
+  <datafield tag="001B">
+    <subfield code="0">BSZ:14-09-23</subfield>
+    <subfield code="t">13:25:11.000</subfield>
+  </datafield>
+  <datafield tag="001D">
+    <subfield code="0">0089:26-03-19</subfield>
+  </datafield>
+  <datafield tag="001U">
+    <subfield code="0">utf8</subfield>
+  </datafield>
+  <datafield tag="001X">
+    <subfield code="0">0</subfield>
+  </datafield>
+  <datafield tag="002@">
+    <subfield code="0">Ocu</subfield>
+  </datafield>
+  <datafield tag="002C">
+    <subfield code="a">Text</subfield>
+    <subfield code="b">txt</subfield>
+  </datafield>
+  <datafield tag="002D">
+    <subfield code="a">Computermedien</subfield>
+    <subfield code="b">c</subfield>
+  </datafield>
+  <datafield tag="002E">
+    <subfield code="a">Online-Ressource</subfield>
+    <subfield code="b">cr</subfield>
+  </datafield>
+  <datafield tag="003@">
+    <subfield code="0">1662355513</subfield>
+  </datafield>
+  <datafield tag="003O">
+    <subfield code="a">OCoLC</subfield>
+    <subfield code="0">1310264188</subfield>
+  </datafield>
+  <datafield tag="007G">
+    <subfield code="i">KXP</subfield>
+    <subfield code="0">1662355513</subfield>
+  </datafield>
+  <datafield tag="010@">
+    <subfield code="a">ger</subfield>
+  </datafield>
+  <datafield tag="010E">
+    <subfield code="e">rda</subfield>
+  </datafield>
+  <datafield tag="011@">
+    <subfield code="a">1933</subfield>
+    <subfield code="n">1933 -</subfield>
+  </datafield>
+  <datafield tag="011B">
+    <subfield code="a">2019</subfield>
+  </datafield>
+  <datafield tag="013D">
+    <subfield code="9">10551487X</subfield>
+    <subfield code="V">Tsv1</subfield>
+    <subfield code="3">20982008X</subfield>
+    <subfield code="7">gnd/4155569-7</subfield>
+    <subfield code="a">Führer</subfield>
+  </datafield>
+  <datafield tag="013D">
+    <subfield code="9">104675322</subfield>
+    <subfield code="V">Tsv1</subfield>
+    <subfield code="3">208910085</subfield>
+    <subfield code="7">gnd/4014986-9</subfield>
+    <subfield code="a">Enzyklopädie</subfield>
+  </datafield>
+  <datafield tag="016A">
+    <subfield code="0">crxcu 024upaxp</subfield>
+  </datafield>
+  <datafield tag="019@">
+    <subfield code="a">XA-DXDE</subfield>
+  </datafield>
+  <datafield tag="021A">
+    <subfield code="a">Handbuch der Lebensmittel-Chemie</subfield>
+    <subfield code="h">herausgegeben von A. Bömer, Münster i. W.; A. Juckenack, Berlin; J. Tillmans, Frankfurt a. M.</subfield>
+  </datafield>
+  <datafield tag="028C">
+    <subfield code="9">134662202</subfield>
+    <subfield code="V">Tpv1</subfield>
+    <subfield code="7">gnd/119541424</subfield>
+    <subfield code="3">212922203</subfield>
+    <subfield code="w">piz</subfield>
+    <subfield code="A">Bömer</subfield>
+    <subfield code="D">Aloys</subfield>
+    <subfield code="E">1863</subfield>
+    <subfield code="M">1944</subfield>
+    <subfield code="B">HerausgeberIn</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="028C">
+    <subfield code="9">079079334</subfield>
+    <subfield code="V">Tpv1</subfield>
+    <subfield code="7">gnd/11765924X</subfield>
+    <subfield code="3">291569838</subfield>
+    <subfield code="w">piz</subfield>
+    <subfield code="A">Juckenack</subfield>
+    <subfield code="D">Adolf</subfield>
+    <subfield code="E">1870</subfield>
+    <subfield code="M">1939</subfield>
+    <subfield code="B">HerausgeberIn</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="028C">
+    <subfield code="9">706951336</subfield>
+    <subfield code="V">Tpv1</subfield>
+    <subfield code="7">gnd/127849882</subfield>
+    <subfield code="3">360136761</subfield>
+    <subfield code="w">piz</subfield>
+    <subfield code="A">Tillmans</subfield>
+    <subfield code="D">Josef</subfield>
+    <subfield code="E">1876</subfield>
+    <subfield code="M">1935</subfield>
+    <subfield code="B">HerausgeberIn</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="032C">
+    <subfield code="a">Online-Ausgabe</subfield>
+  </datafield>
+  <datafield tag="033A">
+    <subfield code="p">Berlin</subfield>
+    <subfield code="n">Verlag von Julius Springer</subfield>
+  </datafield>
+  <datafield tag="033N">
+    <subfield code="p">Hannover</subfield>
+    <subfield code="n">Technische Informationsbibliothek (TIB)</subfield>
+  </datafield>
+  <datafield tag="037A">
+    <subfield code="a">Anfangs herausgegeben von A. Bömer; A. Juckenack; J. Tillmans</subfield>
+  </datafield>
+  <datafield tag="037H">
+    <subfield code="a">Digitalisierungsvorlage: Original</subfield>
+  </datafield>
+  <datafield tag="039I">
+    <subfield code="i">Elektronische Reproduktion von</subfield>
+    <subfield code="9">145861767</subfield>
+    <subfield code="R">Acu</subfield>
+    <subfield code="t">Handbuch der Lebensmittel-Chemie</subfield>
+    <subfield code="d">Berlin</subfield>
+    <subfield code="e">Verlag von Julius Springer</subfield>
+    <subfield code="f">1933</subfield>
+  </datafield>
+  <datafield tag="044A">
+    <subfield code="N">650</subfield>
+    <subfield code="S">s</subfield>
+    <subfield code="a">Food</subfield>
+    <subfield code="x">Analysis</subfield>
+  </datafield>
+  <datafield tag="044A">
+    <subfield code="N">650</subfield>
+    <subfield code="S">s</subfield>
+    <subfield code="a">Food law and legislation</subfield>
+  </datafield>
+  <datafield tag="044C">
+    <subfield code="N">650</subfield>
+    <subfield code="S">s</subfield>
+    <subfield code="a">Food Analysis</subfield>
+  </datafield>
+  <datafield tag="044C">
+    <subfield code="N">650</subfield>
+    <subfield code="S">s</subfield>
+    <subfield code="a">Biochemistry</subfield>
+  </datafield>
+  <datafield tag="044C">
+    <subfield code="N">650</subfield>
+    <subfield code="S">s</subfield>
+    <subfield code="a">Nutrition</subfield>
+  </datafield>
+  <datafield tag="044K">
+    <subfield code="9">106250469</subfield>
+    <subfield code="V">Tsv1</subfield>
+    <subfield code="7">gnd/4034873-8</subfield>
+    <subfield code="3">209009551</subfield>
+    <subfield code="a">Lebensmittelchemie</subfield>
+  </datafield>
+  <datafield tag="045C">
+    <subfield code="a">QU 50</subfield>
+  </datafield>
+  <datafield tag="045Q" occurrence="01">
+    <subfield code="9">106420720</subfield>
+    <subfield code="V">Tkv</subfield>
+    <subfield code="a">58.34</subfield>
+    <subfield code="j">Lebensmitteltechnologie</subfield>
+  </datafield>
+  <datafield tag="045Q" occurrence="01">
+    <subfield code="9">106420739</subfield>
+    <subfield code="V">Tkv</subfield>
+    <subfield code="a">58.51</subfield>
+    <subfield code="j">Abwassertechnik</subfield>
+    <subfield code="j">Wasseraufbereitung</subfield>
+  </datafield>
+  <datafield tag="045Q" occurrence="01">
+    <subfield code="9">106419226</subfield>
+    <subfield code="V">Tkv</subfield>
+    <subfield code="a">35.42</subfield>
+    <subfield code="j">Präparative Anorganische Chemie</subfield>
+  </datafield>
+  <datafield tag="045Q" occurrence="01">
+    <subfield code="9">106419242</subfield>
+    <subfield code="V">Tkv</subfield>
+    <subfield code="a">35.48</subfield>
+    <subfield code="j">Sonstige anorganische Elemente und ihre Verbindungen</subfield>
+  </datafield>
+  <datafield tag="045Q" occurrence="01">
+    <subfield code="9">106422057</subfield>
+    <subfield code="V">Tkv</subfield>
+    <subfield code="a">43.12</subfield>
+    <subfield code="j">Umweltchemie</subfield>
+  </datafield>
+  <datafield tag="045Q" occurrence="01">
+    <subfield code="9">106416782</subfield>
+    <subfield code="V">Tkv</subfield>
+    <subfield code="a">43.50</subfield>
+    <subfield code="j">Umweltbelastungen</subfield>
+  </datafield>
+  <datafield tag="045Y">
+    <subfield code="a">for</subfield>
+    <subfield code="a">ggo</subfield>
+  </datafield>
+  <datafield tag="046M">
+    <subfield code="u">1. Bd. Allgemeine Bestandteile der Lebensmittel, Ernährung und Allgemeine Lebensmittelgesetzgebung -- 2. Bd. Allgemeine Untersuchungsmethoden. 1. Teil, Physikalische Methoden. 2. Teil, Chemische und biologische Methoden -- 3. Bd. Tierische Lebensmittel -- 4. Bd. Fette und Öle, Lipoide, Wachse, Harze, ätherische Öle -- 5. Bd. Getreidemehle, Honig, Zucher, Früchte, Gemüse -- 6. Bd. Alkaloidhaltige Genussmittel, Gewürze, Kochsalz -- 7. Bd. Alkoholische Genussmittel -- 8. Bd. Wasser und Luft.  1. Teil, Technologie des Wassers. 2. Teil, Untersuchung und Beurteilung des Wassers I. Luft. 3. Teil, Untersuchung und Beurteilung des Wassers II. -- 9. Bd. Essig, Bedarfsgegenstände, Geheimmittel. Ergänzungen zu Bd. 1 - 8. Generalsachverzeichnis. 1942.</subfield>
+  </datafield>
+  <datafield tag="047C">
+    <subfield code="a">Lebensmittelchemie</subfield>
+  </datafield>
+  <datafield tag="101@">
+    <subfield code="a">70</subfield>
+    <subfield code="c">PICA</subfield>
+  </datafield>
+  <datafield tag="201A" occurrence="01">
+    <subfield code="0">26-03-19</subfield>
+  </datafield>
+  <datafield tag="201B" occurrence="01">
+    <subfield code="0">26-03-19</subfield>
+    <subfield code="t">07:58:12.000</subfield>
+  </datafield>
+  <datafield tag="201D" occurrence="01">
+    <subfield code="0">0089:26-03-19</subfield>
+  </datafield>
+  <datafield tag="201U" occurrence="01">
+    <subfield code="0">utf8</subfield>
+  </datafield>
+  <datafield tag="202D" occurrence="01">
+    <subfield code="0">26-03-19</subfield>
+    <subfield code="b">2757</subfield>
+    <subfield code="a">0089</subfield>
+  </datafield>
+  <datafield tag="203@" occurrence="01">
+    <subfield code="0">3416262352</subfield>
+  </datafield>
+  <datafield tag="208@" occurrence="01">
+    <subfield code="a">26-03-19</subfield>
+    <subfield code="b">d</subfield>
+  </datafield>
+  <datafield tag="209O" occurrence="01">
+    <subfield code="a">retrodigitib2019</subfield>
+    <subfield code="x">00</subfield>
+  </datafield>
+  <datafield tag="220B" occurrence="01">
+    <subfield code="a">Digitaler Master wird in Rosetta verzeichnet.</subfield>
+  </datafield>
+  <datafield tag="245P" occurrence="01">
+    <subfield code="a">OA</subfield>
+  </datafield>
+</record>

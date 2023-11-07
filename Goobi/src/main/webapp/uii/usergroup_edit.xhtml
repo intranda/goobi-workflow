@@ -38,8 +38,7 @@
 						boxType="action"
 						title="#{myPageTitle}"
 						icon="fa-users"
-						boxPadding="false"
-					>
+						boxPadding="false">
 
 
 					<intranda:formInputText
@@ -47,9 +46,7 @@
 						label="#{msgs.titel}"
 						field="#{BenutzergruppenForm.myBenutzergruppe.titel}"
 						help="#{msgs.helpTitel}"
-						name="titel"
-						fieldStyle="form-control"
-						/>
+						name="titel" />
 
 					<intranda:formInputDropDown
 						id="institution"
@@ -59,9 +56,7 @@
 						name="institutionName"
 						rendered="#{BenutzergruppenForm.institutionsAsSelectList.size()>1}"
 						selectItems="#{BenutzergruppenForm.institutionsAsSelectList}"
-						fieldStyle="form-control"
-						required="true"
-					/>
+						required="true" />
 
 
 					<div class="row">

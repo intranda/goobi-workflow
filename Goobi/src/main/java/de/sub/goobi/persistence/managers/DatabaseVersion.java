@@ -52,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 54;
+    public static final int EXPECTED_VERSION = 55;
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
@@ -394,6 +394,10 @@ public class DatabaseVersion {
                     log.trace("Update database to version 54.");
                     updateToVersion54();
                     tempVersion++;
+                case 54:
+                    log.trace("Update database to version 55.");
+                    updateToVersion55();
+                    tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -407,6 +411,131 @@ public class DatabaseVersion {
             updateDatabaseVersion(currentVersion, tempVersion);
         }
     }
+
+    private static void updateToVersion55() {
+
+        if (!DatabaseVersion.checkIfTableExists("goobiscript_template")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE goobiscript_template ( ");
+            sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sql.append("title VARCHAR(255), ");
+            sql.append("description VARCHAR(255), ");
+            sql.append("goobiscript text, ");
+            sql.append("PRIMARY KEY (id) ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if (!DatabaseVersion.checkIfTableExists("export_history")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE export_history ( ");
+            sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sql.append("timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, ");
+            sql.append("record_id int NOT NULL, ");
+            sql.append("record_identifier varchar(255) NOT NULL, ");
+            sql.append("record_title text, ");
+            sql.append("repository_id varchar(255) NOT NULL, ");
+            sql.append("status varchar(255) NOT NULL, ");
+            sql.append("message varchar(255) DEFAULT NULL, ");
+            sql.append("PRIMARY KEY (id) ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if (!DatabaseVersion.checkIfTableExists("job")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE job ( ");
+            sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sql.append("timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, ");
+            sql.append("status varchar(64) NOT NULL DEFAULT 'WAITING', ");
+            sql.append("repository_id int NOT NULL, ");
+            sql.append("repository_name varchar(255) NOT NULL, ");
+            sql.append("message varchar(255) DEFAULT NULL, ");
+            sql.append("PRIMARY KEY (id) ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+        if (!DatabaseVersion.checkIfTableExists("record")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE record ( ");
+            sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sql.append("repository_id int NOT NULL, ");
+            sql.append("title text, ");
+            sql.append("creator text, ");
+            sql.append("timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, ");
+            sql.append("repository_datestamp datetime NOT NULL, ");
+            sql.append("setSpec text, ");
+            sql.append("identifier text NOT NULL, ");
+            sql.append("job_id int NOT NULL, ");
+            sql.append("source text, ");
+            sql.append("exported text, ");
+            sql.append("exported_datestamp datetime DEFAULT NULL, ");
+            sql.append("subquery varchar(255) DEFAULT NULL, ");
+            sql.append("PRIMARY KEY (id), ");
+            sql.append("KEY identifier (identifier(12)), ");
+            sql.append("KEY exported_datestamp (exported_datestamp) ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if (!DatabaseVersion.checkIfTableExists("repository")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE repository ( ");
+            sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
+            sql.append("name varchar(255) NOT NULL, ");
+            sql.append("base_url text NOT NULL, ");
+            sql.append("export_folder varchar(255) DEFAULT NULL, ");
+            sql.append("script_path varchar(255) DEFAULT NULL, ");
+            sql.append("last_harvest timestamp NULL DEFAULT NULL, ");
+            sql.append("freq int NOT NULL DEFAULT '6', ");
+            sql.append("delay int NOT NULL DEFAULT '0', ");
+            sql.append("enabled tinyint(1) NOT NULL DEFAULT '1', ");
+            sql.append("type text, ");
+            sql.append("goobi_import tinyint(1) NOT NULL DEFAULT '1', ");
+            sql.append("project_name text DEFAULT NULL, ");
+            sql.append("template_name text DEFAULT NULL, ");
+            sql.append("fileformat text DEFAULT NULL, ");
+            sql.append("PRIMARY KEY (id) ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if (!DatabaseVersion.checkIfTableExists("repository_parameter")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE repository_parameter ( ");
+            sql.append("repository_id INT(11)  unsigned NOT NULL, ");
+            sql.append("name varchar(255), ");
+            sql.append("value text ");
+            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
+            try {
+                DatabaseVersion.runSql(sql.toString());
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+    }
+
 
     private static void updateToVersion54() {
         try {

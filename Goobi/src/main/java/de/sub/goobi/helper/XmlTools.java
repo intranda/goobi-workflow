@@ -1,5 +1,14 @@
 package de.sub.goobi.helper;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.nio.file.Path;
+
+import org.jdom2.Document;
+import org.jdom2.JDOMException;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,8 +36,17 @@ package de.sub.goobi.helper;
  */
 
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class XmlTools {
+
+    private XmlTools() {
+        // private constructor to overwrite implicit one
+    }
 
     public static SAXBuilder getSAXBuilder() {
         SAXBuilder builder = new SAXBuilder();
@@ -36,8 +54,49 @@ public class XmlTools {
         builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
         builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-
         return builder;
+    }
+
+    public static Document readDocumentFromFile(Path path) {
+        SAXBuilder builder = getSAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(path.toFile());
+        } catch (JDOMException | IOException e) {
+            log.error(e);
+        }
+        return doc;
+    }
+
+    public static Document readDocumentFromString(String content) {
+        SAXBuilder builder = getSAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(new StringReader(content));
+        } catch (JDOMException | IOException e) {
+            log.error(e);
+        }
+        return doc;
+    }
+
+    public static Document readDocumentFromStream(InputStream stream) {
+        SAXBuilder builder = getSAXBuilder();
+        Document doc = null;
+        try {
+            doc = builder.build(stream);
+        } catch (JDOMException | IOException e) {
+            log.error(e);
+        }
+        return doc;
+    }
+
+    public static void saveDocument(Document document, Path path) {
+        try (OutputStream out = StorageProvider.getInstance().newOutputStream(path)) {
+            XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
+            xmlOutputter.output(document, out);
+        } catch (IOException e) {
+            log.error(e);
+        }
     }
 
 }

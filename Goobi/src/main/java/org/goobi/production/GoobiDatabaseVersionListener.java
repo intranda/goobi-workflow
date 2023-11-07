@@ -55,23 +55,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             DatabaseVersion.updateDatabase(currentVersion);
         }
 
-        // TODO move this to DatabaseVersion after merge
-        if (!DatabaseVersion.checkIfTableExists("goobiscript_template")) {
-            StringBuilder sql = new StringBuilder();
-            sql.append("CREATE TABLE goobiscript_template ( ");
-            sql.append("id INT(11)  unsigned NOT NULL AUTO_INCREMENT, ");
-            sql.append("title VARCHAR(255), ");
-            sql.append("description VARCHAR(255), ");
-            sql.append("goobiscript text, ");
-            sql.append("PRIMARY KEY (id) ");
-            sql.append(") ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4; ");
-            try {
-                DatabaseVersion.runSql(sql.toString());
-            } catch (SQLException e) {
-                log.error(e);
-            }
-        }
-
         if (!DatabaseVersion.checkIfColumnExists("mq_results", "objects")) {
             try {
                 // extend mq_results table
@@ -101,7 +84,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 sb.append("update mq_results mq set ticketType =  ");
                 sb.append("(select JSON_VALUE(original_message, '$.taskType') from mq_results r where  r.id =  mq.id) ");
                 DatabaseVersion.runSql(sb.toString());
-
 
                 sb = new StringBuilder();
                 sb.append("update mq_results mq set ticketName =  ");

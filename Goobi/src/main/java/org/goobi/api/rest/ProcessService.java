@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,8 +44,11 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.rest.model.RestJournalResource;
 import org.goobi.api.rest.model.RestMetadataResource;
+import org.goobi.api.rest.model.RestProcessQueryResource;
+import org.goobi.api.rest.model.RestProcessQueryResult;
 import org.goobi.api.rest.model.RestProcessResource;
 import org.goobi.api.rest.model.RestPropertyResource;
+import org.goobi.api.rest.model.RestStepQueryResource;
 import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
@@ -58,11 +62,13 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.CloseStepHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -136,17 +142,88 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"id":15,"title":"990743934_1885","projectName":"Archive_Project",
+    curl -H 'Accept: application/json' -X PUT http://localhost:8080/goobi/api/process/15/startsteps
+    
+    XML:
+    curl -H 'Accept: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/startsteps
+     */
+    @PUT
+    @Path("/{processid}/startsteps")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Start open automatic steps of a process", description = "start open automatic steps of this process")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
+    @ApiResponse(responseCode = "409", description = "New process title already exists.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response startOpenAutomaticStepsOfTheProcess(@PathParam("processid") String processid) {
+        // id is empty or value is not numeric
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).build();
+        }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+
+        startOpenAutomaticTasks(process);
+
+        Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "open automatic steps are started using REST-API.");
+        return Response.status(200).entity(new RestProcessResource(process)).build();
+    }
+
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/query -d '{"filter" : " 'process_title' 'stepopen:file upload' 'meta:mmsId:1234' "}'
+    
+    XML:
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/query -d "<query><filter>'process_title' 'stepopen:file upload' 'meta:mmsId:1234'</filter></query>"
+     */
+    @PUT
+    @Path("/query")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Retrieve ids of processes satisfying the input condition.",
+            description = "retrieve ids of processes satisfying the input condition")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response retrieveProcessesSatisfyingCondition(RestProcessQueryResource resource) {
+        String[] splittedConditions = resource.getConditions();
+
+        StringBuilder builder = new StringBuilder();
+        for (String condition : splittedConditions) {
+            String filterCondition = FilterHelper.criteriaBuilder(condition, false, null, null, null, true, false);
+            builder.append(filterCondition);
+            builder.append(" AND ");
+        }
+        builder.append("TRUE");
+        String criteria = builder.toString();
+
+        List<Process> processes = ProcessManager.getProcesses("prozesse.Titel", criteria, null);
+
+        return Response.status(200).entity(new RestProcessQueryResult(processes)).build();
+    }
+
+    /*
+    JSON:
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"id":15,"title":"990743934_1885","projectName":"Archive_Project",
     "creationDate":1643983095000,"status":"020040040","numberOfImages":248,"numberOfMetadata":804,"numberOfDocstructs":67,"rulesetName":"ruleset.xml",
     "docketName":"Standard"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><creationDate>2022-02-04T14:58:15+01:00
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><creationDate>2022-02-04T14:58:15+01:00
     </creationDate><docketName>Standard</docketName><id>15</id><numberOfDocstructs>67</numberOfDocstructs><numberOfImages>248</numberOfImages>
     <numberOfMetadata>804 </numberOfMetadata><projectName>Archive_Project</projectName><rulesetName>ruleset.xml</rulesetName>
     <status>020040040</status><title>990743934_1885</title></process>'
      */
-    @POST
+    @PUT
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -326,15 +403,21 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template",
-    "documentType": "Monograph"}'
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template", "projectName": "Archive_Project",
+    "rulesetName": "Standard", "docketName": "Standard", "documentType": "Monograph", "propertiesMap": {"propertyName1": "propertyValue1", "propertyName2": "propertyValue2"},
+    "metadataList": [ {"name": "TitleDocMainShort", "value": "short title", "authorityValue": "authorityValue1"}, {"name": "Author", "value": "Jack Sparrow"},
+    {"name": "Creator", "authorityValue": "authorityValue3", "firstName": "Nicolas", "lastName": "Bourbaki"} ]}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template
-    </processTemplateName><documentType>Monograph</documentType></process>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template</processTemplateName>
+    <projectName>Archive_Project</projectName><rulesetName>Standard</rulesetName><docketName>Standard</docketName><documentType>Monograph</documentType>
+    <propertiesMap><propertyName1>propertyValue1</propertyName1><propertyName2>propertyValue2</propertyName2></propertiesMap>
+    <metadataList><element><authorityValue>authorityValue1</authorityValue><name>TitleDocMainShort</name><value>short title</value></element>
+    <element><name>Author</name><value>Jack Sparrow</value></element>
+    <element><authorityValue>authorityValue3</authorityValue><firstName>Nicolas</firstName><lastName>Bourbaki</lastName><name>Creator</name></element>
+    </metadataList></process>'
      */
-
-    @PUT
+    @POST
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -348,9 +431,6 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Tag(name = "process")
     public Response createProcess(RestProcessResource resource) {
-
-        //TODO optional metadata
-        //TODO optional properties
         //TODO save RestProcessResource object in import/ folder
 
         // validate required fields - template name and process title
@@ -416,11 +496,121 @@ public class ProcessService implements IRestAuthentication {
             if (StringUtils.isNotBlank(resource.getDocumentType())) {
                 createMetadataFile(resource, process);
             }
+
         } catch (DAOException | UGHException e) {
             log.error(e);
         }
+
+        // add process properties if there are any
+        List<Map<String, String>> propertiesList = resource.getPropertiesList();
+        for (Map<String, String> property : propertiesList) {
+            String key = property.get("name");
+            String value = property.get("value");
+            saveNewProcessproperty(process, key, value, null);
+        }
+
+        // add metadata if there are any
+        try {
+            // load metadata file
+            Fileformat fileformat = process.readMetadataFile();
+            DocStruct logical = fileformat.getDigitalDocument().getLogicalDocStruct();
+            if (logical.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
+                logical = logical.getAllChildren().get(process.getId());
+            }
+
+            Prefs prefs = process.getRegelsatz().getPreferences();
+
+            // add metadata items one by one
+            List<Map<String, String>> metadataList = resource.getMetadataList();
+            for (Map<String, String> metadataMap : metadataList) {
+                String metadataName = metadataMap.get("name");
+                MetadataType mdType = prefs.getMetadataTypeByName(metadataName);
+                if (mdType == null) {
+                    Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Metadata type '" + metadataName + "' is unknown in ruleset.");
+                    continue;
+                }
+
+                String metadataValue = metadataMap.get("value");
+                String authorityValue = metadataMap.get("authorityValue");
+                String firstName = metadataMap.get("firstName");
+                String lastName = metadataMap.get("lastName");
+
+                try {
+                    addNewMetadataToDocStruct(logical, mdType, metadataValue, authorityValue, firstName, lastName);
+                } catch (MetadataTypeNotAllowedException ex) {
+                    Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Metadata type '" + metadataName + "' is not allowed.");
+                }
+
+            }
+            // save metadata file
+            process.writeMetadataFile(fileformat);
+
+        } catch (IOException | SwapException | UGHException e) {
+            Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Cannot read or save metadata.");
+        } catch (Exception e) {
+            Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Unknown error occurred: " + e.getMessage());
+        }
+
+        // start open automatic steps
+        startOpenAutomaticTasks(process);
+
         Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Process created using REST-API.");
         return getProcessData(String.valueOf(process.getId()));
+    }
+
+    private Processproperty saveNewProcessproperty(Process process, String key, String value, Date creationDate) {
+        Processproperty property = new Processproperty();
+        property.setTitel(key);
+        property.setWert(value);
+        property.setProzess(process);
+        property.setType(PropertyType.STRING);
+        if (creationDate != null) {
+            property.setCreationDate(creationDate);
+        } else {
+            property.setCreationDate(new Date());
+        }
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property added using REST-API: " + property.getTitel());
+
+        PropertyManager.saveProcessProperty(property);
+
+        return property;
+    }
+
+    private void addNewMetadataToDocStruct(DocStruct dst, MetadataType mdType, String metadataValue, String authorityValue, String firstName,
+            String lastName) throws MetadataTypeNotAllowedException {
+        if (mdType.getIsPerson()) {
+            Person p = new Person(mdType);
+            // if firstName and lastName are both blank, create them using metadataValue
+            if (StringUtils.isBlank(firstName) && StringUtils.isBlank(lastName) && metadataValue != null) {
+                String[] nameParts = metadataValue.split(" ", 2);
+                firstName = nameParts[0];
+                lastName = nameParts.length > 1 ? nameParts[1] : "";
+            }
+            p.setFirstname(firstName);
+            p.setLastname(lastName);
+            p.setAuthorityValue(authorityValue);
+            dst.addPerson(p);
+        } else if (mdType.isCorporate()) {
+            Corporate c = new Corporate(mdType);
+            c.setMainName(metadataValue);
+            c.setAuthorityValue(authorityValue);
+            dst.addCorporate(c);
+        } else {
+            Metadata md = new Metadata(mdType);
+            md.setValue(metadataValue);
+            md.setAuthorityValue(authorityValue);
+            dst.addMetadata(md);
+        }
+    }
+
+    private void startOpenAutomaticTasks(Process process) {
+        // start any open automatic tasks for the process
+        for (Step s : process.getSchritteList()) {
+            if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum()) && s.isTypAutomatisch()) {
+                ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);
+                myThread.startOrPutToQueue();
+            }
+        }
     }
 
     private void createMetadataFile(RestProcessResource resource, Process newProcess)
@@ -451,7 +641,7 @@ public class ProcessService implements IRestAuthentication {
         }
     }
 
-    private Process prepareProcess(String processName, Process template) {
+    public static Process prepareProcess(String processName, Process template) {
         BeanHelper helper = new BeanHelper();
         Process newProcess = new Process();
         newProcess.setTitel(processName);
@@ -605,12 +795,12 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "steptitle": "new step name", "processId": 15}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"stepId": 67, "steptitle": "new step name", "processId": 15}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><steptitle>new step name</steptitle></step>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><processId>15</processId><stepId>67</stepId><steptitle>new step name</steptitle></step>'
      */
-    @POST
+    @PUT
     @Path("/{processid}/step")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -663,14 +853,13 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/step -d '{"steptitle": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
-    
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/step -d '{"steptitle": "new step name", "processId": 15, "order": 10,"usergroups": ["Administration"]}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><steptitle>new step name</steptitle><usergroups>Administration</usergroups></step>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/step -d '<step><order>10</order><steptitle>new step name</steptitle><usergroups>Administration</usergroups></step>'
      */
 
-    @PUT
+    @POST
     @Path("/{processid}/step")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -756,7 +945,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "query")
     public Response deleteStep(RestStepResource resource) {
 
         // get id from request
@@ -777,10 +966,75 @@ public class ProcessService implements IRestAuthentication {
     }
 
     /*
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/120/step/413/close
+     * JSON:
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/10/step/close -d '{"stepname":"file upload"}'
+    
+     * XML:
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/10/step/close -d '<step><stepname>file upload</stepname></step>'
      */
 
-    @POST
+    @PUT
+    @Path("/{processid}/step/close")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Close the first step matching the given name", description = "Close the first step matching the given name")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response closeStepGivenName(@PathParam("processid") String processid, RestStepQueryResource resource) {
+
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+
+        int processId = Integer.parseInt(processid);
+        // get process by id
+        Process process = ProcessManager.getProcessById(processId);
+
+        // get the list of all steps of this process
+        List<Step> steps = process.getSchritteList();
+
+        // find the first match and close it
+        Step stepFound = null;
+        String targetStepname = resource.getStepname();
+
+        for (Step step : steps) {
+            String title = step.getTitel();
+            if (targetStepname.equals(title)) {
+                stepFound = step;
+                break;
+            }
+        }
+
+        // step does not exist
+        if (stepFound == null) {
+            return Response.status(404).entity("Step not found").build();
+        }
+
+        switch (stepFound.getBearbeitungsstatusEnum()) {
+            case DEACTIVATED:
+            case DONE:
+            case LOCKED:
+                // wrong status
+                return Response.status(409).entity("Step is not in work.").build();
+            case ERROR:
+            case INFLIGHT:
+            case INWORK:
+            case OPEN:
+            default:
+                Helper.addMessageToProcessJournal(stepFound.getProcessId(), LogType.DEBUG, "Step closed using REST-API: " + stepFound.getTitel());
+                CloseStepHelper.closeStep(stepFound, null);
+                return Response.ok().build();
+        }
+
+    }
+
+    /*
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/120/step/413/close
+     */
+
+    @PUT
     @Path("/{processid}/step/{stepid}/close")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -864,14 +1118,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "type": "info", "message": "content"}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"id": 70, "userName": "Doe, John", "type": "info", "message": "content"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><id>70</id><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
      */
 
     @Path("/{processid}/journal")
-    @POST
+    @PUT
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Update a journal entry", description = "Update an existing journal entry for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -911,14 +1165,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "type": "info", "message": "content"}'
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/journal -d '{"userName": "Doe, John", "type": "info", "message": "content"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/journal -d '<journal><userName>Doe, John</userName><type>info</type><message>content</message></journal>'
      */
 
     @Path("/{processid}/journal")
-    @PUT
+    @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Create a new journal entry", description = "Create a new journal entry for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -1066,14 +1320,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/property -d '{"id":76,"name":"name","value":"value"}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/property -d '{"id":76,"name":"name","value":"value"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/property -d '<property><id>76</id><name>name</name><value>value</value></property>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/property -d '<property><id>76</id><name>name</name><value>value</value></property>'
      */
 
     @Path("/{processid}/property")
-    @POST
+    @PUT
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Update a property", description = "Update an existing property for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -1109,14 +1363,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/15/property -d '{"name":"name","value":"value"}'
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/15/property -d '{"name":"name","value":"value"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/15/property -d '<property><name>name</name><value>value</value></property>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/15/property -d '<property><name>name</name><value>value</value></property>'
      */
 
     @Path("/{processid}/property")
-    @PUT
+    @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Create a property", description = "Create a new property for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -1141,19 +1395,11 @@ public class ProcessService implements IRestAuthentication {
             return Response.status(404).entity("Process not found").build();
         }
 
-        Processproperty property = new Processproperty();
-        property.setTitel(resource.getName());
-        property.setWert(resource.getValue());
-        property.setProzess(process);
-        property.setType(PropertyType.STRING);
-        if (resource.getCreationDate() != null) {
-            property.setCreationDate(resource.getCreationDate());
-        } else {
-            property.setCreationDate(new Date());
-        }
-        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property added using REST-API: " + property.getTitel());
+        String propertyName = resource.getName();
+        String propertyValue = resource.getValue();
+        Date creationDate = resource.getCreationDate(); // maybe null but it doesn't matter
+        Processproperty property = saveNewProcessproperty(process, propertyName, propertyValue, creationDate);
 
-        PropertyManager.saveProcessProperty(property);
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
 
@@ -1406,16 +1652,16 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"_VolumeBoxNumber","value":"19","metadataLevel":"topstruct"}'
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"_VolumeBoxNumber","value":"19","metadataLevel":"topstruct"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>_VolumeBoxNumber</name><value>19</value></metadata>'
+    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>_VolumeBoxNumber</name><value>19</value></metadata>'
      */
 
     @Path("/{processid}/metadata")
-    @POST
+    @PUT
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Operation(summary = "Update a property", description = "Update an existing property for a given process")
+    @Operation(summary = "Update a metadata", description = "Update an existing metadata for a given process")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
@@ -1497,14 +1743,14 @@ public class ProcessService implements IRestAuthentication {
 
     /*
     JSON:
-    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"DisplayLayout","value":"1","metadataLevel":"topstruct"}'
+    curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '{"name":"DisplayLayout","value":"1","metadataLevel":"topstruct"}'
     
     XML:
-    curl -H 'Content-Type: application/xml' -X PUT http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>DisplayLayout</name><value>1</value></metadata>'
+    curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/119/metadata -d '<metadata><metadataLevel>topstruct</metadataLevel><name>DisplayLayout</name><value>1</value></metadata>'
      */
 
     @Path("/{processid}/metadata")
-    @PUT
+    @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Operation(summary = "Add metadata to a docstruct", description = "Create a new metadata field and add it to the given docstruct")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -1531,8 +1777,9 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
-        // load metadata file
+
         try {
+            // load metadata file
             Fileformat fileformat = process.readMetadataFile();
             DocStruct logical = fileformat.getDigitalDocument().getLogicalDocStruct();
             if (logical.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
@@ -1544,24 +1791,15 @@ public class ProcessService implements IRestAuthentication {
             if (type == null) {
                 return Response.status(400).entity("Metadata type is unknown in ruleset.").build();
             }
-            if (type.getIsPerson()) {
-                Person p = new Person(type);
-                p.setFirstname(resource.getFirstname());
-                p.setLastname(resource.getLastname());
-                p.setAuthorityValue(resource.getAuthorityValue());
-                logical.addPerson(p);
-            } else if (type.isCorporate()) {
-                Corporate c = new Corporate(type);
-                c.setMainName(resource.getValue());
-                c.setAuthorityValue(resource.getAuthorityValue());
-                logical.addCorporate(c);
-            } else {
-                Metadata md = new Metadata(type);
-                md.setValue(resource.getValue());
-                md.setAuthorityValue(resource.getAuthorityValue());
-                logical.addMetadata(md);
-            }
 
+            // add metadata
+            String metadataValue = resource.getValue();
+            String authorityValue = resource.getAuthorityValue();
+            String firstName = resource.getFirstname();
+            String lastName = resource.getLastname();
+            addNewMetadataToDocStruct(logical, type, metadataValue, authorityValue, firstName, lastName);
+
+            // save metadata file
             process.writeMetadataFile(fileformat);
             return Response.status(200).entity("Metadata added").build();
 
@@ -1660,9 +1898,9 @@ public class ProcessService implements IRestAuthentication {
         // process data
         AuthenticationMethodDescription md = new AuthenticationMethodDescription("GET", "Get process data", "/process/\\d+");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("POST", "Update an existing process", "/process");
+        md = new AuthenticationMethodDescription("PUT", "Update an existing process", "/process");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("PUT", "Create a new process", "/process");
+        md = new AuthenticationMethodDescription("POST", "Create a new process", "/process");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete an existing process", "/process");
         implementedMethods.add(md);
@@ -1672,9 +1910,9 @@ public class ProcessService implements IRestAuthentication {
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("GET", "Get a specific step", "/process/\\d+/step/\\d+");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("POST", "Update an existing step", "/process/\\d+/step");
+        md = new AuthenticationMethodDescription("PUT", "Update an existing step", "/process/\\d+/step");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("PUT", "Add a new step to an existing process", "/process/\\d+/step");
+        md = new AuthenticationMethodDescription("POST", "Add a new step to an existing process", "/process/\\d+/step");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete a step", "/process/\\d+/step");
         implementedMethods.add(md);
@@ -1682,9 +1920,9 @@ public class ProcessService implements IRestAuthentication {
         // journal
         md = new AuthenticationMethodDescription("GET", "Get the journal for a process", "/process/\\d+/journal");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("POST", "Update an existing journal entry for a given process", "/process/\\d+/journal");
+        md = new AuthenticationMethodDescription("PUT", "Update an existing journal entry for a given process", "/process/\\d+/journal");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("PUT", "Create a new journal entry for a given process", "/process/\\d+/journal");
+        md = new AuthenticationMethodDescription("POST", "Create a new journal entry for a given process", "/process/\\d+/journal");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete an existing journal entry", "/process/\\d+/journal");
         implementedMethods.add(md);
@@ -1694,9 +1932,9 @@ public class ProcessService implements IRestAuthentication {
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("GET", "Get a property for a given process", "/process/\\d+/property/\\d+");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("POST", "Update an existing property for a given process", "/process/\\d+/property");
+        md = new AuthenticationMethodDescription("PUT", "Update an existing property for a given process", "/process/\\d+/property");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("PUT", "Create a new property for a given process", "/process/\\d+/property");
+        md = new AuthenticationMethodDescription("POST", "Create a new property for a given process", "/process/\\d+/property");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete a property from a given process", "/process/\\d+/property");
         implementedMethods.add(md);

@@ -18,11 +18,17 @@
 
 package org.goobi.api.rest.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
+import org.goobi.production.cli.helper.StringPair;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -79,7 +85,6 @@ public class RestProcessResource {
     @Setter
     private String docketName;
 
-
     // only needed to create new processes
     @Getter
     @Setter
@@ -88,7 +93,17 @@ public class RestProcessResource {
     @Setter
     private String documentType;
 
+    @Getter
+    @Setter
+    private List<Map<String, String>> propertiesList = new ArrayList<>();
 
+    @Getter
+    @Setter
+    private List<Map<String, String>> metadataList = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private String metadataLevel = "topstruct";
 
     public RestProcessResource() {
 
@@ -107,5 +122,29 @@ public class RestProcessResource {
         batchNumber = process.getBatch() == null ? null : process.getBatch().getBatchId();
         docketName = process.getDocket() == null ? null : process.getDocket().getName();
 
+        initializePropertiesList(process.getEigenschaften());
+        initializeMetadataList(process.getMetadataList());
+    }
+
+    private void initializePropertiesList(List<Processproperty> properties) {
+        for (Processproperty property : properties) {
+            String name = property.getTitel();
+            String value = property.getWert();
+            Map<String, String> propertyMap = new HashMap<>();
+            propertyMap.put("name", name);
+            propertyMap.put("value", value);
+            propertiesList.add(propertyMap);
+        }
+    }
+
+    private void initializeMetadataList(List<StringPair> list) {
+        for (StringPair metadata : list) {
+            String name = metadata.getOne();
+            String value = metadata.getTwo();
+            Map<String, String> metadataMap = new HashMap<>();
+            metadataMap.put("name", name);
+            metadataMap.put("value", value);
+            metadataList.add(metadataMap);
+        }
     }
 }

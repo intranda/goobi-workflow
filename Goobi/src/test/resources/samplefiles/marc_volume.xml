@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>     cam a22       c4500</leader>
+  <controlfield tag="001">1662360223</controlfield>
+  <controlfield tag="003">DE-627</controlfield>
+  <controlfield tag="005">20220824101454.0</controlfield>
+  <controlfield tag="007">cr cu 024upa|p</controlfield>
+  <controlfield tag="008">190326s1933    xx |||||o     00| ||ger c</controlfield>
+  <datafield tag="024" ind1="7" ind2=" ">
+    <subfield code="a">10.14463/KXP:1662360223</subfield>
+    <subfield code="2">doi</subfield>
+  </datafield>
+  <datafield tag="035" ind1=" " ind2=" ">
+    <subfield code="a">(DE-627)1662360223</subfield>
+  </datafield>
+  <datafield tag="035" ind1=" " ind2=" ">
+    <subfield code="a">(DE-599)KXP1662360223</subfield>
+  </datafield>
+  <datafield tag="035" ind1=" " ind2=" ">
+    <subfield code="a">(OCoLC)1197617775</subfield>
+  </datafield>
+  <datafield tag="040" ind1=" " ind2=" ">
+    <subfield code="a">DE-627</subfield>
+    <subfield code="b">ger</subfield>
+    <subfield code="c">DE-627</subfield>
+    <subfield code="e">rda</subfield>
+  </datafield>
+  <datafield tag="041" ind1=" " ind2=" ">
+    <subfield code="a">ger</subfield>
+  </datafield>
+  <datafield tag="044" ind1=" " ind2=" ">
+    <subfield code="c">XA-DXDE</subfield>
+  </datafield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="a">58.34</subfield>
+    <subfield code="2">bkl</subfield>
+  </datafield>
+  <datafield tag="245" ind1="1" ind2="0">
+    <subfield code="a">Handbuch der Lebensmittel-Chemie</subfield>
+    <subfield code="n">2. Band</subfield>
+    <subfield code="p">Allgemeine Untersuchungsmethoden</subfield>
+    <subfield code="n">1. Teil</subfield>
+    <subfield code="p">Physikalische Methoden : mit 401 Abbildungen / bearbeitet von A. Bömer, P. W. Danckwortt, H. Freund,... ; Schriftleitung: A. Bömer</subfield>
+    <subfield code="c">herausgegeben von A. Bömer, Münster i. W., A. Juckenack, Berlin, J. Tillmans, Frankfurt a. M.</subfield>
+  </datafield>
+  <datafield tag="246" ind1="3" ind2="0">
+    <subfield code="a">Lebensmittelchemie</subfield>
+  </datafield>
+  <datafield tag="256" ind1=" " ind2=" ">
+    <subfield code="a">Digitalisierungsvorlage: Original</subfield>
+  </datafield>
+  <datafield tag="264" ind1=" " ind2="1">
+    <subfield code="a">Berlin</subfield>
+    <subfield code="b">Verlag von Julius Springer</subfield>
+    <subfield code="c">1933</subfield>
+  </datafield>
+  <datafield tag="300" ind1=" " ind2=" ">
+    <subfield code="a">IX, 536 Seiten</subfield>
+    <subfield code="b">Illustrationen</subfield>
+  </datafield>
+  <datafield tag="336" ind1=" " ind2=" ">
+    <subfield code="a">Text</subfield>
+    <subfield code="b">txt</subfield>
+    <subfield code="2">rdacontent</subfield>
+  </datafield>
+  <datafield tag="337" ind1=" " ind2=" ">
+    <subfield code="a">Computermedien</subfield>
+    <subfield code="b">c</subfield>
+    <subfield code="2">rdamedia</subfield>
+  </datafield>
+  <datafield tag="338" ind1=" " ind2=" ">
+    <subfield code="a">Online-Ressource</subfield>
+    <subfield code="b">cr</subfield>
+    <subfield code="2">rdacarrier</subfield>
+  </datafield>
+  <datafield tag="500" ind1=" " ind2=" ">
+    <subfield code="a">Literaturangaben</subfield>
+  </datafield>
+  <datafield tag="506" ind1="1" ind2=" ">
+    <subfield code="q">DE-89</subfield>
+    <subfield code="a">Closed Access</subfield>
+    <subfield code="e">Eprints AccessRights Vocabulary Encoding Scheme</subfield>
+    <subfield code="u">http://purl.org/eprint/accessRights/ClosedAccess</subfield>
+  </datafield>
+  <datafield tag="533" ind1=" " ind2=" ">
+    <subfield code="a">Online-Ausgabe</subfield>
+    <subfield code="b">Hannover</subfield>
+    <subfield code="c">Technische Informationsbibliothek (TIB)</subfield>
+    <subfield code="d">2019</subfield>
+    <subfield code="e">1 Online-Ressource (IX, 536 Seiten)</subfield>
+    <subfield code="7">|2019||||||||||</subfield>
+  </datafield>
+  <datafield tag="535" ind1="1" ind2=" ">
+    <subfield code="a">Technische Informationsbibliothek (TIB)</subfield>
+    <subfield code="3">a 209(2,1)</subfield>
+  </datafield>
+  <datafield tag="540" ind1=" " ind2=" ">
+    <subfield code="q">DE-89</subfield>
+    <subfield code="a">Urheberrechtsschutz 1.0</subfield>
+    <subfield code="2">rs</subfield>
+    <subfield code="u">https://rightsstatements.org/vocab/InC/1.0/</subfield>
+  </datafield>
+  <datafield tag="583" ind1="1" ind2=" ">
+    <subfield code="a">Archivierung/Langzeitarchivierung gewährleistet</subfield>
+    <subfield code="2">pdager</subfield>
+    <subfield code="5">DE-89</subfield>
+  </datafield>
+  <datafield tag="655" ind1=" " ind2="7">
+    <subfield code="a">Aufsatzsammlung</subfield>
+    <subfield code="0">(DE-588)4143413-4</subfield>
+    <subfield code="0">(DE-627)105605727</subfield>
+    <subfield code="0">(DE-576)209726091</subfield>
+    <subfield code="2">gnd-content</subfield>
+  </datafield>
+  <datafield tag="689" ind1="0" ind2="0">
+    <subfield code="D">s</subfield>
+    <subfield code="0">(DE-588)4034911-1</subfield>
+    <subfield code="0">(DE-627)104235489</subfield>
+    <subfield code="0">(DE-576)209009683</subfield>
+    <subfield code="a">Lebensmitteluntersuchung</subfield>
+    <subfield code="2">gnd</subfield>
+  </datafield>
+  <datafield tag="689" ind1="0" ind2=" ">
+    <subfield code="5">(DE-627)</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Bömer, Aloys</subfield>
+    <subfield code="d">1863-1944</subfield>
+    <subfield code="e">HerausgeberIn</subfield>
+    <subfield code="0">(DE-588)119541424</subfield>
+    <subfield code="0">(DE-627)134662202</subfield>
+    <subfield code="0">(DE-576)212922203</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Juckenack, Adolf</subfield>
+    <subfield code="d">1870-1939</subfield>
+    <subfield code="e">HerausgeberIn</subfield>
+    <subfield code="0">(DE-588)11765924X</subfield>
+    <subfield code="0">(DE-627)079079334</subfield>
+    <subfield code="0">(DE-576)291569838</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Tillmans, Josef</subfield>
+    <subfield code="d">1876-1935</subfield>
+    <subfield code="e">HerausgeberIn</subfield>
+    <subfield code="0">(DE-588)127849882</subfield>
+    <subfield code="0">(DE-627)706951336</subfield>
+    <subfield code="0">(DE-576)360136761</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Danckwortt, Peter W.</subfield>
+    <subfield code="d">1876-1962</subfield>
+    <subfield code="e">MitwirkendeR</subfield>
+    <subfield code="0">(DE-588)117622265</subfield>
+    <subfield code="0">(DE-627)07904574X</subfield>
+    <subfield code="0">(DE-576)29154004X</subfield>
+    <subfield code="4">ctb</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Freund, Hugo</subfield>
+    <subfield code="e">MitwirkendeR</subfield>
+    <subfield code="4">ctb</subfield>
+  </datafield>
+  <datafield tag="773" ind1="1" ind2="8">
+    <subfield code="w">(DE-627)1662355513</subfield>
+    <subfield code="g">2. Band, 1. Teil</subfield>
+    <subfield code="q">2,1.1933</subfield>
+    <subfield code="7">nnnm</subfield>
+  </datafield>
+  <datafield tag="776" ind1="0" ind2="8">
+    <subfield code="i">Elektronische Reproduktion von</subfield>
+    <subfield code="t">Handbuch der Lebensmittel-Chemie ; Bd. 2, Teil 1: Allgemeine Untersuchungsmethoden: Physikalische Methoden</subfield>
+    <subfield code="d">Berlin : Verlag von Julius Springer, 1933</subfield>
+    <subfield code="h">IX, 536 Seiten</subfield>
+    <subfield code="w">(DE-627)145861791</subfield>
+    <subfield code="n">Technische Informationsbibliothek (TIB) -- a 209(2,1)</subfield>
+  </datafield>
+  <datafield tag="856" ind1="4" ind2="0">
+    <subfield code="u">https://doi.org/10.14463/KXP:1662360223</subfield>
+    <subfield code="x">Digitalisierung</subfield>
+    <subfield code="x">Resolving-System</subfield>
+    <subfield code="z">lizenzpflichtig</subfield>
+    <subfield code="3">Volltext</subfield>
+  </datafield>
+  <datafield tag="936" ind1="b" ind2="k">
+    <subfield code="a">58.34</subfield>
+    <subfield code="j">Lebensmitteltechnologie</subfield>
+    <subfield code="0">(DE-627)106420720</subfield>
+  </datafield>
+  <datafield tag="951" ind1=" " ind2=" ">
+    <subfield code="a">MV</subfield>
+  </datafield>
+</record>

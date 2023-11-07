@@ -129,8 +129,7 @@
                                     name="titel"
                                     label="#{msgs.titel}"
                                     field="#{ProjekteForm.newProjectTitle}"
-                                    help="#{msgs.helpProjectTitle}"
-                                    fieldStyle="form-control" />
+                                    help="#{msgs.helpProjectTitle}"/>
 
                                 <intranda:formInputText
                                     id="projectIdentifier"
@@ -138,7 +137,6 @@
                                     label="#{msgs.project_projectIdentifier}"
                                     field="#{ProjekteForm.myProjekt.projectIdentifier}"
                                     help="#{msgs.help_project_projectIdentifier}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <intranda:formInputDropDown
@@ -158,7 +156,6 @@
                                     label="#{msgs.numberImages}"
                                     field="#{ProjekteForm.myProjekt.numberOfPages}"
                                     help="#{msgs.helpNumberImages}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- number of volumes -->
@@ -168,7 +165,6 @@
                                     label="#{msgs.numberVolumes}"
                                     field="#{ProjekteForm.myProjekt.numberOfVolumes}"
                                     help="#{msgs.helpNumberVolumes}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- startdate -->
@@ -193,7 +189,6 @@
                                 <intranda:formInputCheckBox
                                     id="inactive"
                                     label="#{msgs.projectIsArchived}"
-                                    style="border-bottom: 1px solid #DDDDDD;"
                                     field="#{ProjekteForm.myProjekt.projectIsArchived}"
                                     help="#{msgs.helpProjectIsArchived}"
                                     name="check" />
@@ -234,7 +229,6 @@
                                     label="#{msgs.dmsImportPfadXmlDatei}"
                                     field="#{ProjekteForm.myProjekt.dmsImportRootPath}"
                                     help="#{msgs.helpDmsImportPfadXmlDatei}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- Dms-Import-Images-Pfad -->
@@ -244,7 +238,6 @@
                                     label="#{msgs.dmsImportSuccessPfad}"
                                     field="#{ProjekteForm.myProjekt.dmsImportSuccessPath}"
                                     help="#{msgs.helpDmsImportSuccessPfad}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- Dms-Import-Success-Pfad -->
@@ -254,7 +247,6 @@
                                     label="#{msgs.dmsImportImagesPfad}"
                                     field="#{ProjekteForm.myProjekt.dmsImportImagesPath}"
                                     help="#{msgs.helpDmsImportImagesPfad}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- Dms-Import-Error-Pfad -->
@@ -264,7 +256,6 @@
                                     label="#{msgs.dmsImportErrorPfad}"
                                     field="#{ProjekteForm.myProjekt.dmsImportErrorPath}"
                                     help="#{msgs.helpDmsImportErrorPfad}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- nutzt DMS-Import -->
@@ -281,9 +272,7 @@
                                     name="timeoutName"
                                     label="#{msgs.timeout} (ms)"
                                     field="#{ProjekteForm.myProjekt.dmsImportTimeOut}"
-                                    help="#{msgs.helpTimeoutProject}"
-                                    fieldStyle="form-control"
-                                    style="border-bottom: 1px solid #DDDDDD;" />
+                                    help="#{msgs.helpTimeoutProject}" />
 
                             </h:panelGroup>
                             <h:panelGroup rendered="#{ProjekteForm.displayMode eq 'tab3'}">
@@ -295,7 +284,6 @@
                                     label="#{msgs.metsRightsOwner}"
                                     field="#{ProjekteForm.myProjekt.metsRightsOwner}"
                                     help="#{msgs.helpMetsRightsOwner}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsRightsOwnerLogo -->
@@ -305,7 +293,6 @@
                                     label="#{msgs.metsRightsOwnerLogo}"
                                     field="#{ProjekteForm.myProjekt.metsRightsOwnerLogo}"
                                     help="#{msgs.helpMetsRightsOwnerLogo}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsRightsOwnerSite -->
@@ -315,7 +302,6 @@
                                     label="#{msgs.metsRightsOwnerSite}"
                                     field="#{ProjekteForm.myProjekt.metsRightsOwnerSite}"
                                     help="#{msgs.helpMetsRightsOwnerSite}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsRightsOwnerMail -->
@@ -325,7 +311,6 @@
                                     label="#{msgs.metsRightsOwnerMail}"
                                     field="#{ProjekteForm.myProjekt.metsRightsOwnerMail}"
                                     help="#{msgs.helpMetsRightsOwnerMail}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsDigiprovReference -->
@@ -335,7 +320,6 @@
                                     label="#{msgs.metsDigiprovReference}"
                                     field="#{ProjekteForm.myProjekt.metsDigiprovReference}"
                                     help="#{msgs.helpMetsDigiprovReference}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsDigiprovPresentation -->
@@ -345,7 +329,6 @@
                                     label="#{msgs.metsDigiprovPresentation}"
                                     field="#{ProjekteForm.myProjekt.metsDigiprovPresentation}"
                                     help="#{msgs.helpMetsDigiprovPresentation}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsDigiprovReferenceAnchor -->
@@ -355,7 +338,6 @@
                                     label="#{msgs.metsDigiprovReferenceAnchor}"
                                     field="#{ProjekteForm.myProjekt.metsDigiprovReferenceAnchor}"
                                     help="#{msgs.helpMetsDigiprovReferenceAnchor}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsDigiprovPresentationAnchor-->
@@ -365,7 +347,6 @@
                                     label="#{msgs.metsDigiprovPresentationAnchor}"
                                     field="#{ProjekteForm.myProjekt.metsDigiprovPresentationAnchor}"
                                     help="#{msgs.helpMetsDigiprovPresentationAnchor}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsPointerPath -->
@@ -375,7 +356,6 @@
                                     label="#{msgs.metsPointerPath}"
                                     field="#{ProjekteForm.myProjekt.metsPointerPath}"
                                     help="#{msgs.helpMetsPointerPath}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsPointerPathAnchor -->
@@ -385,7 +365,6 @@
                                     label="#{msgs.metsPointerPathAnchor}"
                                     field="#{ProjekteForm.myProjekt.metsPointerPathAnchor}"
                                     help="#{msgs.helpMetsPointerPathAnchor}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsPurl -->
@@ -395,7 +374,6 @@
                                     label="#{msgs.metsPurl}"
                                     field="#{ProjekteForm.myProjekt.metsPurl}"
                                     help="#{msgs.helpMetsPurl}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsContentIDs -->
@@ -405,7 +383,6 @@
                                     label="#{msgs.metsContentIDs}"
                                     field="#{ProjekteForm.myProjekt.metsContentIDs}"
                                     help="#{msgs.helpMetsContentIDs}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsRightsSponsor -->
@@ -415,7 +392,6 @@
                                     label="#{msgs.metsRightsSponsor}"
                                     field="#{ProjekteForm.myProjekt.metsRightsSponsor}"
                                     help="#{msgs.helpMetsRightsSponsor}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsRightsSponsorLogo -->
@@ -425,7 +401,6 @@
                                     label="#{msgs.metsRightsSponsorLogo}"
                                     field="#{ProjekteForm.myProjekt.metsRightsSponsorLogo}"
                                     help="#{msgs.helpMetsRightsSponsorLogo}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- metsRightsSponsorSiteURL -->
@@ -435,7 +410,6 @@
                                     label="#{msgs.metsRightsSponsorSiteURL}"
                                     field="#{ProjekteForm.myProjekt.metsRightsSponsorSiteURL}"
                                     help="#{msgs.helpMetsRightsSponsorSiteURL}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
 
@@ -500,7 +474,6 @@
                                     label="#{msgs.metsSruURL}"
                                     field="#{ProjekteForm.myProjekt.metsSruUrl}"
                                     help="#{msgs.helpMetsSruUrl}"
-                                    fieldStyle="form-control"
                                     required="false" />
 
                                 <!-- IIIF URL -->
@@ -510,7 +483,6 @@
                                     label="#{msgs.metsIIIFURL}"
                                     field="#{ProjekteForm.myProjekt.metsIIIFUrl}"
                                     help="#{msgs.helpMetsIIIFUrl}"
-                                    fieldStyle="form-control"
                                     required="false"
                                  />
 
@@ -521,9 +493,7 @@
                                         label="#{msgs.metsDfgViewerUrl}"
                                         field="#{ProjekteForm.myProjekt.dfgViewerUrl}"
                                         help="#{msgs.helpMetsDfgViewerUrl}"
-                                        fieldStyle="form-control"
-                                        required="false" 
-                                        style="border-bottom: 1px solid #DDDDDD;"/>
+                                        required="false" />
                             </h:panelGroup>
                             <h:panelGroup id="filegroups1"
                                 rendered="#{ProjekteForm.displayMode eq 'tab4' or ProjekteForm.displayMode eq 'filegroups'}">
@@ -556,20 +526,14 @@
                                                     name="nameName"
                                                     label="#{msgs.name}"
                                                     field="#{ProjekteForm.myFilegroup.name}"
-                                                    style="padding: 6px;"
-                                                    styleRight="padding-left:10px;background:#f6f6f6;"
-                                                    help="#{msgs.helpFilegroupName}"
-                                                    fieldStyle="form-control" />
+                                                    help="#{msgs.helpFilegroupName}" />
 
                                                 <intranda:formInputText
                                                     id="url"
                                                     name="path"
                                                     label="#{msgs.path}"
                                                     field="#{ProjekteForm.myFilegroup.path}"
-                                                    style="padding: 6px;"
-                                                    styleRight="padding-left:10px;background:#f6f6f6;"
-                                                    help="#{msgs.helpFilegroupPath}"
-                                                    fieldStyle="form-control" />
+                                                    help="#{msgs.helpFilegroupPath}" />
 
                                                 <h:panelGroup id="mime_suffix">
                                                     <intranda:formInputText
@@ -578,10 +542,7 @@
                                                         name="mimetypeName"
                                                         label="#{msgs.mimetype}"
                                                         field="#{ProjekteForm.myFilegroup.mimetype}"
-                                                        style="padding: 6px;"
-                                                        styleRight="padding-left:10px;background:#f6f6f6;"
-                                                        help="#{msgs.helpFilegroupMimetype}"
-                                                        fieldStyle="form-control" />
+                                                        help="#{msgs.helpFilegroupMimetype}" />
 
                                                     <intranda:formInputText
                                                         rendered="#{not ProjekteForm.myFilegroup.useOriginalFiles}"
@@ -589,10 +550,7 @@
                                                         name="suffixName"
                                                         label="#{msgs.suffix}"
                                                         field="#{ProjekteForm.myFilegroup.suffix}"
-                                                        style="padding: 6px; border-bottom: 1px solid #ddd;"
-                                                        styleRight="padding-left:10px;background:#f6f6f6;"
-                                                        help="#{msgs.helpFilegroupSuffix}"
-                                                        fieldStyle="form-control" />
+                                                        help="#{msgs.helpFilegroupSuffix}" />
                                                 </h:panelGroup>
 
                                                 <intranda:formInputText
@@ -600,11 +558,8 @@
                                                     name="folderName"
                                                     label="#{msgs.validationAgainstFolder}"
                                                     field="#{ProjekteForm.myFilegroup.folder}"
-                                                    style="padding: 6px;"
-                                                    styleRight="padding-left:10px;background:#f6f6f6;"
                                                     required="false"
-                                                    help="#{msgs.helpFilegroupValidationAgainstFolder}"
-                                                    fieldStyle="form-control" />
+                                                    help="#{msgs.helpFilegroupValidationAgainstFolder}" />
 
                                                 <intranda:formInputCheckBoxAjax
                                                     id="useOriginalFiles"
@@ -620,11 +575,8 @@
                                                     name="ignoreMimetypesName"
                                                     label="#{msgs.projectfilegroup_ignoreMimetypes}"
                                                     field="#{ProjekteForm.myFilegroup.ignoreMimetypes}"
-                                                    style="padding: 6px;"
-                                                    styleRight="padding-left:10px;background:#f6f6f6;"
                                                     required="false"
-                                                    help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}"
-                                                    fieldStyle="form-control" />
+                                                    help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}" />
 
                                                 <div class="form-actions">
 

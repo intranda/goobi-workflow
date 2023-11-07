@@ -1,0 +1,95 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>01113 am a22003131a 4500</leader>
+  <controlfield tag="008">821016s1893    fr      sb    000   fre  </controlfield>
+  <datafield tag="035" ind1=" " ind2=" ">
+    <subfield code="a">(EUW).b20411595</subfield>
+  </datafield>
+  <datafield tag="040" ind1=" " ind2=" ">
+    <subfield code="d">OCoLC</subfield>
+  </datafield>
+  <datafield tag="041" ind1="1" ind2=" ">
+    <subfield code="a">freger</subfield>
+  </datafield>
+  <datafield tag="059" ind1=" " ind2=" ">
+    <subfield code="a">266859</subfield>
+  </datafield>
+  <datafield tag="100" ind1="1" ind2=" ">
+    <subfield code="a">Moll, Albert,</subfield>
+    <subfield code="d">1862-</subfield>
+  </datafield>
+  <datafield tag="245" ind1="1" ind2="4">
+    <subfield code="a">Les perversions de l&apos;instinct génital</subfield>
+    <subfield code="h">[electronic resource] :</subfield>
+    <subfield code="b">étude sur l&apos;inversion sexuelle : basée sur des documents officiels /</subfield>
+    <subfield code="c">par A. Moll ; avec unr préface du R.V. Krafft-Ebing ; traduit de l&apos;allemand par le Docteur Pactet et le Docteur Romme.</subfield>
+  </datafield>
+  <datafield tag="250" ind1=" " ind2=" ">
+    <subfield code="a">5. éd.</subfield>
+  </datafield>
+  <datafield tag="260" ind1=" " ind2=" ">
+    <subfield code="a">Paris :</subfield>
+    <subfield code="b">Georges Carré,</subfield>
+    <subfield code="c">1893</subfield>
+    <subfield code="e">(Saint Amand :</subfield>
+    <subfield code="f">Destenay.)</subfield>
+  </datafield>
+  <datafield tag="300" ind1=" " ind2=" ">
+    <subfield code="a">xxxvi, 326 p. ;</subfield>
+    <subfield code="c">25 cm.</subfield>
+  </datafield>
+  <datafield tag="546" ind1=" " ind2=" ">
+    <subfield code="a">Translation of: Die conträre Sexualempfindung.</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2="2">
+    <subfield code="a">Homosexuality.</subfield>
+  </datafield>
+  <datafield tag="655" ind1=" " ind2="0">
+    <subfield code="a">Electronic books.</subfield>
+  </datafield>
+  <datafield tag="696" ind1=" " ind2=" ">
+    <subfield code="a">WM645</subfield>
+    <subfield code="b">1893.</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Pactet, F.</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Romme,</subfield>
+    <subfield code="c">Dr.</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Krafft-Ebing, R. von</subfield>
+    <subfield code="q">(Richard),</subfield>
+    <subfield code="d">1840-1902.</subfield>
+  </datafield>
+  <datafield tag="752" ind1=" " ind2=" ">
+    <subfield code="a">France</subfield>
+    <subfield code="d">Paris.</subfield>
+  </datafield>
+  <datafield tag="759" ind1=" " ind2=" ">
+    <subfield code="a">dig19th.</subfield>
+  </datafield>
+  <datafield tag="759" ind1=" " ind2=" ">
+    <subfield code="a">digsexology.</subfield>
+  </datafield>
+  <datafield tag="907" ind1=" " ind2=" ">
+    <subfield code="a">.b20411595</subfield>
+  </datafield>
+  <datafield tag="907" ind1=" " ind2=" ">
+    <subfield code="a">.b20411595</subfield>
+  </datafield>
+  <datafield tag="945" ind1=" " ind2=" ">
+    <subfield code="a">M19162</subfield>
+  </datafield>
+  <datafield tag="998" ind1=" " ind2=" ">
+    <subfield code="a">digi</subfield>
+    <subfield code="b">01-12-13</subfield>
+    <subfield code="c">m</subfield>
+    <subfield code="d">v</subfield>
+    <subfield code="e">-</subfield>
+    <subfield code="f">fre</subfield>
+    <subfield code="g">fr </subfield>
+    <subfield code="h">4</subfield>
+    <subfield code="i">0</subfield>
+  </datafield>
+</record>

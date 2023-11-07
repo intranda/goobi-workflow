@@ -298,7 +298,6 @@
                         label="#{msgs.titel}"
                         field="#{ProzessverwaltungForm.mySchritt.titel}"
                         help="#{msgs.helpProcessStepTitle}"
-                        fieldStyle="form-control"
                         required="true" />
 
                     <intranda:formInputText
@@ -307,7 +306,6 @@
                         label="#{msgs.reihenfolge}"
                         field="#{ProzessverwaltungForm.mySchritt.reihenfolge}"
                         help="#{msgs.helpProcessStepOrder}"
-                        fieldStyle="form-control"
                         required="true" />
 					<intranda:formInputCheckBox
                         id="allowParallelTask"
@@ -324,10 +322,7 @@
                         help="#{msgs.helpProcessStepPriority}"
                         name="prioritaet"
                         selectItems="#{HelperForm.stepPriorityList}"
-                        fieldStyle="form-control"
                         required="true" />
-
-                    <!--                     <intranda:formInputText id="priority" name="prioritaet" label="#{msgs.prioritaet}" field="#{ProzessverwaltungForm.mySchritt.prioritaet}" help="#{msgs.helpProcessStepPriority}" fieldStyle="form-control" required="true" /> -->
 
                     <intranda:formInputCheckBox
                         id="metadata"
@@ -676,7 +671,6 @@
                         help="#{msgs.helpProcessStepStatus}"
                         name="statusname"
                         selectItems="#{HelperForm.stepStatusList}"
-                        fieldStyle="form-control"
                         required="true" />
 
                     <intranda:formInputCheckBox
@@ -693,7 +687,6 @@
                         help="#{msgs.helpProcessStepPlugin}"
                         name="stepplugin"
                         selectItems="#{ProzessverwaltungForm.possibleStepPlugins}"
-                        fieldStyle="form-control"
                         required="false" />
 
                     <intranda:formInputDropDownWithEmptyValue
@@ -703,7 +696,6 @@
                         help="#{msgs.helpProcessValidationPlugin}"
                         name="validationplugin"
                         selectItems="#{ProzessverwaltungForm.possibleValidationPlugins}"
-                        fieldStyle="form-control"
                         required="false" />
 
                     <intranda:formInputCheckBox

@@ -48,6 +48,7 @@ import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.junit.After;
 import org.junit.Before;
@@ -223,6 +224,8 @@ public class ProcessServiceTest extends AbstractTest {
 
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject());
         MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject());
+        List<StringPair> metadataList = new ArrayList<>();
+        EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(metadataList).anyTimes();
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();

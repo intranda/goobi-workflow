@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record xmlns="info:srw/schema/5/picaXML-v1.0">
+  <datafield tag="001@">
+    <subfield code="0">70</subfield>
+  </datafield>
+  <datafield tag="001A">
+    <subfield code="0">0089:26-03-19</subfield>
+  </datafield>
+  <datafield tag="001B">
+    <subfield code="0">0089:24-08-22</subfield>
+    <subfield code="t">10:14:54.000</subfield>
+  </datafield>
+  <datafield tag="001D">
+    <subfield code="0">0089:26-03-19</subfield>
+  </datafield>
+  <datafield tag="001U">
+    <subfield code="0">utf8</subfield>
+  </datafield>
+  <datafield tag="001X">
+    <subfield code="0">0</subfield>
+  </datafield>
+  <datafield tag="002@">
+    <subfield code="0">Ofu</subfield>
+  </datafield>
+  <datafield tag="002C">
+    <subfield code="a">Text</subfield>
+    <subfield code="b">txt</subfield>
+  </datafield>
+  <datafield tag="002D">
+    <subfield code="a">Computermedien</subfield>
+    <subfield code="b">c</subfield>
+  </datafield>
+  <datafield tag="002E">
+    <subfield code="a">Online-Ressource</subfield>
+    <subfield code="b">cr</subfield>
+  </datafield>
+  <datafield tag="003@">
+    <subfield code="0">1662360223</subfield>
+  </datafield>
+  <datafield tag="003O">
+    <subfield code="a">OCoLC</subfield>
+    <subfield code="0">1197617775</subfield>
+  </datafield>
+  <datafield tag="004V">
+    <subfield code="0">10.14463/KXP:1662360223</subfield>
+  </datafield>
+  <datafield tag="007G">
+    <subfield code="i">KXP</subfield>
+    <subfield code="0">1662360223</subfield>
+  </datafield>
+  <datafield tag="009A">
+    <subfield code="b">XA-DE</subfield>
+    <subfield code="c">Technische Informationsbibliothek (TIB)</subfield>
+    <subfield code="a">a 209(2,1)</subfield>
+  </datafield>
+  <datafield tag="010@">
+    <subfield code="a">ger</subfield>
+  </datafield>
+  <datafield tag="010E">
+    <subfield code="e">rda</subfield>
+  </datafield>
+  <datafield tag="011@">
+    <subfield code="a">1933</subfield>
+  </datafield>
+  <datafield tag="011B">
+    <subfield code="a">2019</subfield>
+  </datafield>
+  <datafield tag="013D">
+    <subfield code="9">105605727</subfield>
+    <subfield code="V">Tsvz</subfield>
+    <subfield code="3">209726091</subfield>
+    <subfield code="7">gnd/4143413-4</subfield>
+    <subfield code="a">Aufsatzsammlung</subfield>
+  </datafield>
+  <datafield tag="016A">
+    <subfield code="0">crxcu 024upaxp</subfield>
+  </datafield>
+  <datafield tag="017C">
+    <subfield code="u">https://doi.org/10.14463/KXP:1662360223</subfield>
+    <subfield code="x">D</subfield>
+    <subfield code="x">R</subfield>
+    <subfield code="3">Volltext</subfield>
+    <subfield code="4">ZZ</subfield>
+    <subfield code="5">34</subfield>
+  </datafield>
+  <datafield tag="017M">
+    <subfield code="b">DE-89</subfield>
+    <subfield code="a">Urheberrechtsschutz 1.0</subfield>
+    <subfield code="g">Rights Statements</subfield>
+    <subfield code="u">https://rightsstatements.org/vocab/InC/1.0/</subfield>
+  </datafield>
+  <datafield tag="017R">
+    <subfield code="b">DE-89</subfield>
+    <subfield code="a">Closed Access</subfield>
+    <subfield code="g">Eprints AccessRights Vocabulary Encoding Scheme</subfield>
+    <subfield code="u">http://purl.org/eprint/accessRights/ClosedAccess</subfield>
+  </datafield>
+  <datafield tag="019@">
+    <subfield code="a">XA-DXDE</subfield>
+  </datafield>
+  <datafield tag="021A">
+    <subfield code="a">Physikalische Methoden</subfield>
+    <subfield code="d">mit 401 Abbildungen</subfield>
+    <subfield code="h">bearbeitet von A. Bömer, P. W. Danckwortt, H. Freund,... ; Schriftleitung: A. Bömer</subfield>
+  </datafield>
+  <datafield tag="028C">
+    <subfield code="9">134662202</subfield>
+    <subfield code="V">Tpv1</subfield>
+    <subfield code="7">gnd/119541424</subfield>
+    <subfield code="3">212922203</subfield>
+    <subfield code="w">piz</subfield>
+    <subfield code="A">Bömer</subfield>
+    <subfield code="D">Aloys</subfield>
+    <subfield code="E">1863</subfield>
+    <subfield code="M">1944</subfield>
+    <subfield code="B">HerausgeberIn</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="028C">
+    <subfield code="9">079079334</subfield>
+    <subfield code="V">Tpv1</subfield>
+    <subfield code="7">gnd/11765924X</subfield>
+    <subfield code="3">291569838</subfield>
+    <subfield code="w">piz</subfield>
+    <subfield code="A">Juckenack</subfield>
+    <subfield code="D">Adolf</subfield>
+    <subfield code="E">1870</subfield>
+    <subfield code="M">1939</subfield>
+    <subfield code="B">HerausgeberIn</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="028C">
+    <subfield code="9">706951336</subfield>
+    <subfield code="V">Tpv1</subfield>
+    <subfield code="7">gnd/127849882</subfield>
+    <subfield code="3">360136761</subfield>
+    <subfield code="w">piz</subfield>
+    <subfield code="A">Tillmans</subfield>
+    <subfield code="D">Josef</subfield>
+    <subfield code="E">1876</subfield>
+    <subfield code="M">1935</subfield>
+    <subfield code="B">HerausgeberIn</subfield>
+    <subfield code="4">edt</subfield>
+  </datafield>
+  <datafield tag="028C">
+    <subfield code="9">07904574X</subfield>
+    <subfield code="V">Tpv1</subfield>
+    <subfield code="7">gnd/117622265</subfield>
+    <subfield code="3">29154004X</subfield>
+    <subfield code="w">piz</subfield>
+    <subfield code="A">Danckwortt</subfield>
+    <subfield code="D">Peter W.</subfield>
+    <subfield code="E">1876</subfield>
+    <subfield code="M">1962</subfield>
+    <subfield code="B">MitwirkendeR</subfield>
+    <subfield code="4">ctb</subfield>
+  </datafield>
+  <datafield tag="028C">
+    <subfield code="d">Hugo</subfield>
+    <subfield code="a">Freund</subfield>
+    <subfield code="B">MitwirkendeR</subfield>
+    <subfield code="4">ctb</subfield>
+  </datafield>
+  <datafield tag="032C">
+    <subfield code="a">Online-Ausgabe</subfield>
+  </datafield>
+  <datafield tag="033A">
+    <subfield code="p">Berlin</subfield>
+    <subfield code="n">Verlag von Julius Springer</subfield>
+  </datafield>
+  <datafield tag="033N">
+    <subfield code="p">Hannover</subfield>
+    <subfield code="n">Technische Informationsbibliothek (TIB)</subfield>
+  </datafield>
+  <datafield tag="033Q">
+    <subfield code="a">1 Online-Ressource (IX, 536 Seiten)</subfield>
+  </datafield>
+  <datafield tag="034D">
+    <subfield code="a">IX, 536 Seiten</subfield>
+  </datafield>
+  <datafield tag="034M">
+    <subfield code="a">Illustrationen</subfield>
+  </datafield>
+  <datafield tag="036C">
+    <subfield code="a">Handbuch der Lebensmittel-Chemie</subfield>
+    <subfield code="h">herausgegeben von A. Bömer, Münster i. W., A. Juckenack, Berlin, J. Tillmans, Frankfurt a. M.</subfield>
+  </datafield>
+  <datafield tag="036C" occurrence="01">
+    <subfield code="m">2. Band</subfield>
+    <subfield code="a">Allgemeine Untersuchungsmethoden</subfield>
+    <subfield code="l">1. Teil</subfield>
+  </datafield>
+  <datafield tag="036D">
+    <subfield code="X">2,1.1933</subfield>
+    <subfield code="9">1662355513</subfield>
+    <subfield code="R">Ocu</subfield>
+    <subfield code="a">Handbuch der Lebensmittel-Chemie</subfield>
+    <subfield code="p">Berlin</subfield>
+    <subfield code="n">Verlag von Julius Springer</subfield>
+    <subfield code="h">1933</subfield>
+    <subfield code="j">1933 -</subfield>
+    <subfield code="l">2. Band, 1. Teil</subfield>
+  </datafield>
+  <datafield tag="037A">
+    <subfield code="a">Literaturangaben</subfield>
+  </datafield>
+  <datafield tag="037H">
+    <subfield code="a">Digitalisierungsvorlage: Original</subfield>
+  </datafield>
+  <datafield tag="039I">
+    <subfield code="i">Elektronische Reproduktion von</subfield>
+    <subfield code="9">145861791</subfield>
+    <subfield code="R">Afu</subfield>
+    <subfield code="t">Handbuch der Lebensmittel-Chemie ; Bd. 2, Teil 1: Allgemeine Untersuchungsmethoden: Physikalische Methoden</subfield>
+    <subfield code="d">Berlin</subfield>
+    <subfield code="e">Verlag von Julius Springer</subfield>
+    <subfield code="f">1933</subfield>
+    <subfield code="h">IX, 536 Seiten</subfield>
+  </datafield>
+  <datafield tag="044K">
+    <subfield code="9">104235489</subfield>
+    <subfield code="V">Tsv1</subfield>
+    <subfield code="7">gnd/4034911-1</subfield>
+    <subfield code="3">209009683</subfield>
+    <subfield code="a">Lebensmitteluntersuchung</subfield>
+  </datafield>
+  <datafield tag="045Q" occurrence="01">
+    <subfield code="9">106420720</subfield>
+    <subfield code="V">Tkv</subfield>
+    <subfield code="a">58.34</subfield>
+    <subfield code="j">Lebensmitteltechnologie</subfield>
+  </datafield>
+  <datafield tag="046X">
+    <subfield code="a">aa</subfield>
+    <subfield code="5">DE-89</subfield>
+  </datafield>
+  <datafield tag="047C">
+    <subfield code="a">Lebensmittelchemie</subfield>
+  </datafield>
+</record>

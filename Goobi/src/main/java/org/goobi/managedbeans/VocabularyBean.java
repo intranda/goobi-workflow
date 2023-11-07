@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
@@ -340,23 +343,32 @@ public class VocabularyBean extends BasicBean implements Serializable {
         // create header
         Row headerRow = sheet.createRow(0);
         int columnCounter = 0;
+        List<String> headers = new ArrayList<>();
+
         for (Definition definition : definitionList) {
             headerRow.createCell(columnCounter)
             .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
                     : definition.getLabel());
             columnCounter = columnCounter + 1;
-        }
 
-        int rowCounter = 1;
-        // add records
-        for (VocabRecord vocabRecord : recordList) {
-            Row resultRow = sheet.createRow(rowCounter);
-            columnCounter = 0;
-            for (Definition definition : definitionList) {
-                resultRow.createCell(columnCounter).setCellValue(vocabRecord.getFieldValue(definition));
-                columnCounter = columnCounter + 1;
+            headers.add(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                    : definition.getLabel());
+        }
+        StringBuilder sw = new StringBuilder();
+        CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
+                .setHeader(headers.toArray(new String[headers.size()]))
+                .build();
+        try (final CSVPrinter printer = new CSVPrinter(sw, csvFormat)) {
+            for (VocabRecord vocabRecord : recordList) {
+                List<String> values = new ArrayList<>();
+                for (Definition definition : definitionList) {
+                    values.add(vocabRecord.getFieldValue(definition));
+                }
+                printer.printRecord(values.toArray());
+
             }
-            rowCounter = rowCounter + 1;
+        } catch (IOException e1) {
+            log.error(e1);
         }
 
         // write result into output stream
@@ -366,9 +378,11 @@ public class VocabularyBean extends BasicBean implements Serializable {
         OutputStream out;
         try {
             out = response.getOutputStream();
-            response.setContentType("application/vnd.ms-excel");
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + title + ".xlsx\"");
-            wb.write(out);
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + title + ".csv\"");
+
+            out.write(sw.toString().getBytes(StandardCharsets.UTF_8));
+
             out.flush();
 
             facesContext.responseComplete();
