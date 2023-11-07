@@ -33,7 +33,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;

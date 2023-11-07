@@ -30,7 +30,6 @@ import java.util.Map.Entry;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.production.cli.helper.StringPair;
 
 import com.google.gson.Gson;
@@ -121,7 +120,7 @@ class MetadataMysqlHelper implements Serializable {
             StringBuilder sb = new StringBuilder();
             Iterator<String> iter = valueList.iterator();
             while (iter.hasNext()) {
-                sb.append(StringEscapeUtils.escapeSql(iter.next()));
+                sb.append(MySQLHelper.escapeSql(iter.next()));
                 if (iter.hasNext()) {
                     sb.append("; ");
                 }
@@ -220,7 +219,7 @@ class MetadataMysqlHelper implements Serializable {
     }
 
     public static List<Integer> getAllProcessesWithMetadata(String name, String value) throws SQLException {
-        String sql = "SELECT processid FROM metadata WHERE name = ? and value LIKE '%" + StringEscapeUtils.escapeSql(value) + "%'";
+        String sql = "SELECT processid FROM metadata WHERE name = ? and value LIKE '%" + MySQLHelper.escapeSql(value) + "%'";
         Object[] param = { name };
         Connection connection = null;
         try {

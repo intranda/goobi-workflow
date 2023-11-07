@@ -36,7 +36,7 @@ import java.util.function.LongSupplier;
 
 import javax.naming.ConfigurationException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Step;
 import org.joda.time.DateTime;
 

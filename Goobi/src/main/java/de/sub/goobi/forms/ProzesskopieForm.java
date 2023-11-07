@@ -51,8 +51,8 @@ import javax.naming.NamingException;
 import javax.servlet.http.Part;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
@@ -402,7 +402,7 @@ public class ProzesskopieForm implements Serializable {
                 break;
             case "export": //NOSONAR
                 configuredFolderNames
-                .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                        .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                 break;
             case "master":
                 if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -482,8 +482,8 @@ public class ProzesskopieForm implements Serializable {
         if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
             filter.append(" AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ")
-            .append(aktuellerNutzer.getId())
-            .append(")");
+                    .append(aktuellerNutzer.getId())
+                    .append(")");
         }
         Institution inst = null;
         if (aktuellerNutzer != null && !aktuellerNutzer.isSuperAdmin()) {

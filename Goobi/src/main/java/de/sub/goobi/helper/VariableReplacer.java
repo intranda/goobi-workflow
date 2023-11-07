@@ -42,8 +42,8 @@ import java.util.regex.Pattern;
 
 import javax.naming.ConfigurationException;
 
-import org.apache.commons.lang.SystemUtils;
-import org.apache.commons.lang.text.StrTokenizer;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.text.StringTokenizer;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -174,7 +174,7 @@ public class VariableReplacer {
 
     public List<String> replaceBashScript(String inString) {
         List<String> returnList = new ArrayList<>();
-        StrTokenizer tokenizer = new StrTokenizer(inString, ' ', '\"');
+        StringTokenizer tokenizer = new StringTokenizer(inString, ' ', '\"');
 
         while (tokenizer.hasNext()) {
             String parameter = tokenizer.nextToken();

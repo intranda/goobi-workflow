@@ -51,7 +51,6 @@ import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -176,7 +175,7 @@ public class UserBean extends BasicBean implements Serializable {
             sqlQueryBuilder.append(" AND (");
             for (int index = 0; index < searchParts.length; index++) {
                 String like = MySQLHelper.escapeString(searchParts[index]);
-                like = "\'%" + StringEscapeUtils.escapeSql(like) + "%\'";
+                like = "\'%" + MySQLHelper.escapeSql(like) + "%\'";
                 String inGroup =
                         "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzergruppenmitgliedschaft, benutzergruppen WHERE benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel LIKE "
                                 + like + ")";
@@ -283,7 +282,7 @@ public class UserBean extends BasicBean implements Serializable {
 
         this.resetChangeLists();
 
-        if (this.displayMode.equals("") && creatingUser) {
+        if ("".equals(this.displayMode) && creatingUser) {
             this.displayMode = "tab2";
             return RETURN_PAGE_EDIT;
         } else {
@@ -566,7 +565,7 @@ public class UserBean extends BasicBean implements Serializable {
         // TODO
         // If result is empty -> error. Otherwise -> success
         String resultFromSaving = Speichern();
-        boolean savedSuccessfully = !resultFromSaving.equals("");
+        boolean savedSuccessfully = !"".equals(resultFromSaving);
 
         if (savedSuccessfully && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
             LdapKonfigurationSchreiben();

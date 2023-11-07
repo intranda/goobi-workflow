@@ -30,11 +30,10 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.extern.log4j.Log4j2;
 
 @AllArgsConstructor
 @Data
-@Log4j2
+
 public class PluginInstallConflict implements Serializable {
     private static final long serialVersionUID = -7844460933499082596L;
 
@@ -84,7 +83,7 @@ public class PluginInstallConflict implements Serializable {
     }
 
     public void setCurrentVersion(String content) {
-        if (this.conflictsMode.equals(EDIT_EXISTING_FILE)) {
+        if (EDIT_EXISTING_FILE.equals(this.conflictsMode)) {
             this.editedExistingVersion = content;
         } else {
             this.editedUploadedVersion = content;
@@ -92,7 +91,7 @@ public class PluginInstallConflict implements Serializable {
     }
 
     public String getCurrentVersion() {
-        if (this.conflictsMode.equals(EDIT_EXISTING_FILE)) {
+        if (EDIT_EXISTING_FILE.equals(this.conflictsMode)) {
             return this.editedExistingVersion;
         } else {
             return this.editedUploadedVersion;

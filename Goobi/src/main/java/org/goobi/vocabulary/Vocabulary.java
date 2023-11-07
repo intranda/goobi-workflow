@@ -33,7 +33,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.DatabaseObject;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

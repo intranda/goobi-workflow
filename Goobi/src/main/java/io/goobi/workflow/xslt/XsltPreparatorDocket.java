@@ -43,7 +43,7 @@ import javax.servlet.ServletOutputStream;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;

@@ -33,7 +33,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.rest.AuthorizationFilter;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;

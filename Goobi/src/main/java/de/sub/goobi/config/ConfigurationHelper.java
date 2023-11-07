@@ -44,8 +44,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mq.QueueType;
@@ -443,7 +443,7 @@ public class ConfigurationHelper implements Serializable {
      * 
      * @return The name of the dashboard plugin or null in case of no configured plugin
      */
-    @Deprecated(since = "23.05", forRemoval = true)
+    @Deprecated(since = "23.05", forRemoval = false)
     public String getDashboardPlugin() {
         return getLocalString("dashboardPlugin", null);
     }
