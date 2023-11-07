@@ -33,7 +33,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.User;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;

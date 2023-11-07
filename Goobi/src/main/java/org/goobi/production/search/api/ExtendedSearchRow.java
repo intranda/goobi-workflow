@@ -2,7 +2,7 @@ package org.goobi.production.search.api;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 

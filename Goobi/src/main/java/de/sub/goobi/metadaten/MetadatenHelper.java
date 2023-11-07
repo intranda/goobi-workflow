@@ -43,7 +43,7 @@ import java.util.Set;
 
 import javax.faces.model.SelectItem;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;

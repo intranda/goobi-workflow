@@ -42,8 +42,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -61,6 +60,7 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.metadaten.MetadatenSperrung;
+import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -252,7 +252,7 @@ public class LoginBean implements Serializable {
 
     private static User findUserByLoginName(String login) {
         try {
-            String userString = "login='" + StringEscapeUtils.escapeSql(login) + "'";
+            String userString = "login='" + MySQLHelper.escapeSql(login) + "'";
             List<User> users = UserManager.getUsers(null, userString, null, null, null);
             if (users != null && users.size() == 1 && users.get(0) != null) {
                 log.debug(LoginBean.LOGIN_LOG_PREFIX + "Found user with login name " + login + " in database.");
@@ -272,7 +272,7 @@ public class LoginBean implements Serializable {
 
     private static User findUserByMail(String email) {
         try {
-            String userString = "email='" + StringEscapeUtils.escapeSql(email) + "'";
+            String userString = "email='" + MySQLHelper.escapeSql(email) + "'";
             List<User> users = UserManager.getUsers(null, userString, null, null, null);
             if (users != null && users.size() == 1 && users.get(0) != null) {
                 log.debug(LoginBean.LOGIN_LOG_PREFIX + "Found user with email " + email + " in database.");

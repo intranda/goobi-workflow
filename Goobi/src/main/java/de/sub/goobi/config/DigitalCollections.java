@@ -26,10 +26,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -54,19 +53,15 @@ public class DigitalCollections {
         Element root = doc.getRootElement();
         /* alle Projekte durchlaufen */
         List<Element> projekte = root.getChildren();
-        for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
-            Element projekt = iter.next();
+        for (Element projekt : projekte) {
             List<Element> projektnamen = projekt.getChildren("name");
-            for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
-                Element projektname = iterator.next();
-
+            for (Element projektname : projektnamen) {
                 /*
                  * wenn der Projektname aufgeführt wird, dann alle Digitalen Collectionen in die Liste
                  */
                 if (projektname.getText().equalsIgnoreCase(process.getProjekt().getTitel())) {
                     List<Element> myCols = projekt.getChildren("DigitalCollection");
-                    for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-                        Element col = it2.next();
+                    for (Element col : myCols) {
                         result.add(col.getText());
                     }
                 }
@@ -90,19 +85,15 @@ public class DigitalCollections {
         Element root = doc.getRootElement();
         /* alle Projekte durchlaufen */
         List<Element> projekte = root.getChildren();
-        for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
-            Element projekt = iter.next();
+        for (Element projekt : projekte) {
             List<Element> projektnamen = projekt.getChildren("name");
-            for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
-                Element projektname = iterator.next();
-
+            for (Element projektname : projektnamen) {
                 /*
                  * wenn der Projektname aufgeführt wird, dann alle Digitalen Collectionen in die Liste
                  */
                 if (projektname.getText().equalsIgnoreCase(process.getProjekt().getTitel())) {
                     List<Element> myCols = projekt.getChildren("DigitalCollection");
-                    for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-                        Element col = it2.next();
+                    for (Element col : myCols) {
                         String collectionName = col.getText();
                         String defaultCollection = col.getAttributeValue("default");
                         if ("true".equalsIgnoreCase(defaultCollection)) {

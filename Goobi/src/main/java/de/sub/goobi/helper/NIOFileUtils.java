@@ -73,7 +73,7 @@ import java.util.zip.CRC32;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;

@@ -28,7 +28,6 @@ package org.goobi.managedbeans;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,7 +43,7 @@ import java.util.TreeMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
@@ -156,7 +155,6 @@ public class StepBean extends BasicBean implements Serializable {
     @Getter
     @Setter
     private String scriptPath;
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private String doneDirectoryName = "fertig/";
     @Getter
     @Setter
