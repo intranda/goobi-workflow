@@ -43,9 +43,7 @@ import org.goobi.api.display.helper.MetadataGeneration.MetadataGenerationParamet
 
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public final class ConfigDisplayRules {
 
     @Getter

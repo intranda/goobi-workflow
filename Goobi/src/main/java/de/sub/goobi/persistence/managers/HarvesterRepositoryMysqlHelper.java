@@ -32,8 +32,7 @@ import java.util.Map.Entry;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -242,7 +241,7 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
                 String subquery = rec.getSubquery() == null ? "" : " AND subquery='" + rec.getSubquery() + "'";
                 // Check whether the record has previously been harvested
                 int i = run.query(connection, sqlCheck + subquery, MySQLHelper.resultSetToIntegerHandler,
-                        StringEscapeUtils.escapeSql(rec.getIdentifier()));
+                        MySQLHelper.escapeSql(rec.getIdentifier()));
                 if (i == 0) {
                     // Add record to DB
                     StringBuilder sb = new StringBuilder();
@@ -250,10 +249,10 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
                     sb.append("(repository_id,title,creator,repository_datestamp,setSpec,identifier,job_id,source,subquery) ");
                     sb.append("VALUES ");
                     sb.append("(?,?,?,?,?,?,?,?,?) ");
-                    run.update(connection, sb.toString(), rec.getRepositoryId(), StringEscapeUtils.escapeSql(rec.getTitle()),
-                            StringEscapeUtils.escapeSql(rec.getCreator()), rec.getRepositoryTimestamp(), rec.getSetSpec(),
-                            StringEscapeUtils.escapeSql(rec.getIdentifier()), rec.getJobId(), StringEscapeUtils.escapeSql(rec.getSource()),
-                            StringEscapeUtils.escapeSql(rec.getSubquery()));
+                    run.update(connection, sb.toString(), rec.getRepositoryId(), MySQLHelper.escapeSql(rec.getTitle()),
+                            MySQLHelper.escapeSql(rec.getCreator()), rec.getRepositoryTimestamp(), rec.getSetSpec(),
+                            MySQLHelper.escapeSql(rec.getIdentifier()), rec.getJobId(), MySQLHelper.escapeSql(rec.getSource()),
+                            MySQLHelper.escapeSql(rec.getSubquery()));
                     counterNew++;
                 } else if (allowUpdates) {
                     // Update existing record and reset exported status
@@ -262,9 +261,9 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
                     sb.append(" exported=NULL, title=?, creator=?, repository_datestamp=?, ");
                     sb.append("setSpec=?, job_id=?, source=?, subquery=? ");
                     sb.append("WHERE identifier = ? ");
-                    run.update(connection, sb.toString(), StringEscapeUtils.escapeSql(rec.getTitle()), StringEscapeUtils.escapeSql(rec.getCreator()),
-                            rec.getRepositoryTimestamp(), rec.getSetSpec(), rec.getJobId(), StringEscapeUtils.escapeSql(rec.getSource()),
-                            StringEscapeUtils.escapeSql(rec.getSubquery()), rec.getIdentifier());
+                    run.update(connection, sb.toString(), MySQLHelper.escapeSql(rec.getTitle()), MySQLHelper.escapeSql(rec.getCreator()),
+                            rec.getRepositoryTimestamp(), rec.getSetSpec(), rec.getJobId(), MySQLHelper.escapeSql(rec.getSource()),
+                            MySQLHelper.escapeSql(rec.getSubquery()), rec.getIdentifier());
                 }
             }
         } finally {
@@ -418,21 +417,21 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
                         case "repositoryTimestamp":
                             key = "repository_datestamp";
                             sql.append(key);
-                            sql.append(" LIKE '%").append(StringEscapeUtils.escapeSql(value)).append("%'");
+                            sql.append(" LIKE '%").append(MySQLHelper.escapeSql(value)).append("%'");
                             break;
                         case "exportedDatestamp":
                             key = "exported_datestamp";
                             sql.append(key);
-                            sql.append(" LIKE '%").append(StringEscapeUtils.escapeSql(value)).append("%'");
+                            sql.append(" LIKE '%").append(MySQLHelper.escapeSql(value)).append("%'");
                             break;
                         case "repositoryId":
                             key = "repository_id";
                             sql.append(key);
-                            sql.append(" = '").append(StringEscapeUtils.escapeSql(value)).append("'");
+                            sql.append(" = '").append(MySQLHelper.escapeSql(value)).append("'");
                             break;
                         default:
                             sql.append(key);
-                            sql.append(" LIKE '%").append(StringEscapeUtils.escapeSql(value)).append("%'");
+                            sql.append(" LIKE '%").append(MySQLHelper.escapeSql(value)).append("%'");
                     }
                 }
             }
@@ -460,9 +459,9 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             String sql = "INSERT INTO export_history (record_id,record_identifier,record_title,repository_id,status,message) VALUES (?,?,?,?,?,?)";
-            run.update(connection, sql, hist.getRecordId(), StringEscapeUtils.escapeSql(hist.getRecordIdentifier()),
-                    StringEscapeUtils.escapeSql(hist.getRecordTitle()), hist.getRepositoryId(), hist.getStatus(),
-                    StringEscapeUtils.escapeSql(hist.getMessage()));
+            run.update(connection, sql, hist.getRecordId(), MySQLHelper.escapeSql(hist.getRecordIdentifier()),
+                    MySQLHelper.escapeSql(hist.getRecordTitle()), hist.getRepositoryId(), hist.getStatus(),
+                    MySQLHelper.escapeSql(hist.getMessage()));
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

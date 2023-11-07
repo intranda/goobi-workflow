@@ -21,8 +21,8 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Date;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -102,7 +102,7 @@ public class JournalEntry implements Serializable {
             if (sb.length() > 0) {
                 sb.append("<br/>");
             }
-            sb.append(StringEscapeUtils.escapeHtml(line));
+            sb.append(StringEscapeUtils.escapeHtml4(line));
         }
 
         return sb.toString();

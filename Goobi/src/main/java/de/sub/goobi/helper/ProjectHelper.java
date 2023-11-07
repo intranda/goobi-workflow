@@ -32,11 +32,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.beans.Project;
 import org.goobi.production.flow.statistics.StepInformation;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
+import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
@@ -60,7 +60,7 @@ public class ProjectHelper {
 
     public static synchronized List<StepInformation> getProjectWorkFlowOverview(Project project) {
 
-        String projectFilter = FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(project.getTitel()) + "\"", false, null, null,
+        String projectFilter = FilterHelper.criteriaBuilder("\"project:" + MySQLHelper.escapeSql(project.getTitel()) + "\"", false, null, null,
                 null, true, false) + " AND prozesse.istTemplate = false ";
 
         Long totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
@@ -129,7 +129,7 @@ public class ProjectHelper {
             notOnlyCommonFlow = false;
         }
 
-        String projectFilter = FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(inProj.getTitel()) + "\"", false, null, null,
+        String projectFilter = FilterHelper.criteriaBuilder("\"project:" + MySQLHelper.escapeSql(inProj.getTitel()) + "\"", false, null, null,
                 null, true, false) + " AND prozesse.istTemplate = false ";
 
         Long totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);

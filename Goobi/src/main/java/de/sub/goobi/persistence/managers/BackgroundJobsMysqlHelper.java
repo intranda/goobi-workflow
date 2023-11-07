@@ -27,8 +27,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.production.flow.jobs.BackgroundJob;
 import org.goobi.production.flow.jobs.BackgroundJobProperty;
 
@@ -173,7 +172,7 @@ class BackgroundJobsMysqlHelper implements Serializable {
         sb.append("SELECT count(1) FROM background_job ");
         if (StringUtils.isNotBlank(filter)) {
             sb.append("WHERE jobname LIKE \"%");
-            sb.append(StringEscapeUtils.escapeSql(filter));
+            sb.append(MySQLHelper.escapeSql(filter));
             sb.append("%\"");
         }
         Connection connection = null;
@@ -194,7 +193,7 @@ class BackgroundJobsMysqlHelper implements Serializable {
 
         if (StringUtils.isNotBlank(filter)) {
             sb.append("WHERE jobname LIKE \"%");
-            sb.append(StringEscapeUtils.escapeSql(filter));
+            sb.append(MySQLHelper.escapeSql(filter));
             sb.append("%\"");
         }
 
@@ -223,7 +222,7 @@ class BackgroundJobsMysqlHelper implements Serializable {
 
         if (StringUtils.isNotBlank(filter)) {
             sb.append("WHERE jobname LIKE \"%");
-            sb.append(StringEscapeUtils.escapeSql(filter));
+            sb.append(MySQLHelper.escapeSql(filter));
             sb.append("%\"");
         }
 

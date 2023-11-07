@@ -50,7 +50,7 @@ import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.easymock.EasyMock;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
@@ -90,7 +90,7 @@ import ugh.exceptions.ReadException;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, MetadataManager.class,
-    ProcessManager.class, PropertyManager.class })
+        ProcessManager.class, PropertyManager.class })
 @PowerMockIgnore({ "javax.net.ssl.*" })
 public class MetadatenTest extends AbstractTest {
 
@@ -817,7 +817,7 @@ public class MetadatenTest extends AbstractTest {
         List<SelectItem> list = fixture.getAddableMetadataTypes();
         assertEquals(list.size(), fixture.getTempMetadatumList().size());
 
-        fixture.setTempMetadatumList(new ArrayList<MetadatumImpl>());
+        fixture.setTempMetadatumList(new ArrayList<>());
         assertEquals(0, fixture.getTempMetadatumList().size());
     }
 
@@ -830,7 +830,7 @@ public class MetadatenTest extends AbstractTest {
         fixture.getAddableMetadataGroupTypes();
         assertEquals(1, fixture.getTempMetadataGroupList().size());
 
-        fixture.setTempMetadataGroupList(new ArrayList<MetadataGroupImpl>());
+        fixture.setTempMetadataGroupList(new ArrayList<>());
         assertTrue(fixture.getTempMetadataGroupList().isEmpty());
     }
 

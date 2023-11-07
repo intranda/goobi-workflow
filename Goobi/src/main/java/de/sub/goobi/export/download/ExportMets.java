@@ -72,7 +72,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
@@ -625,10 +625,7 @@ public class ExportMets {
                         return null;
                     }
                 }
-            } catch (IndexOutOfBoundsException e) {
-                log.error(e);
-                return null;
-            } catch (InvalidImagesException e) {
+            } catch (IndexOutOfBoundsException | InvalidImagesException e) {
                 log.error(e);
                 return null;
             }
@@ -715,7 +712,7 @@ public class ExportMets {
         }
         v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());
         v.setIgnoreConfiguredMimetypeAndSuffix(projectFileGroup.isUseOriginalFiles());
-        if (projectFileGroup.getName().equals("PRESENTATION")) {
+        if ("PRESENTATION".equals(projectFileGroup.getName())) {
             v.setMainGroup(true);
         }
         return v;
@@ -750,15 +747,15 @@ public class ExportMets {
 
             if (mimeType.startsWith("image")) {
                 buildImageMetadata(doc, file, object);
-            } else if (mimeType.equals("video/mpeg")) {
+            } else if ("video/mpeg".equals(mimeType)) {
                 buildMPEGMetadata(doc, file, object);
-            } else if (mimeType.equals("application/pdf")) {
+            } else if ("application/pdf".equals(mimeType)) {
                 buildPDFMetadata(doc, file, object);
-            } else if (mimeType.equals("audio/x-wav")) {
+            } else if ("audio/x-wav".equals(mimeType)) {
                 buildAudioMetadata(doc, file, object, false);
-            } else if (mimeType.startsWith("audio") || mimeType.equals("video/x-mpeg")) {
+            } else if (mimeType.startsWith("audio") || "video/x-mpeg".equals(mimeType)) {
                 buildAudioMetadata(doc, file, object, true);
-            } else if (mimeType.startsWith("video") || mimeType.equals("application/mxf")) {
+            } else if (mimeType.startsWith("video") || "application/mxf".equals(mimeType)) {
                 buildMPEGMetadata(doc, file, object);
             } else {
                 String message = "Data is of type not covered by the premis creation: " + mimeType;
@@ -1223,11 +1220,11 @@ public class ExportMets {
     private static String getShaString(MessageDigest messageDigest, String algorithmName) throws NoSuchAlgorithmException {
         BigInteger bigInt = new BigInteger(1, messageDigest.digest());
         StringBuilder sha256 = new StringBuilder(bigInt.toString(16).toLowerCase());
-        if (algorithmName.equals(SHA_1)) {
+        if (SHA_1.equals(algorithmName)) {
             while (sha256.length() < 40) {
                 sha256.insert(0, "0");
             }
-        } else if (algorithmName.equals(SHA_256)) {
+        } else if (SHA_256.equals(algorithmName)) {
             while (sha256.length() < 64) {
                 sha256.insert(0, "0");
             }

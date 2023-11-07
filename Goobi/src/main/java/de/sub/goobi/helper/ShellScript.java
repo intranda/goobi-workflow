@@ -38,7 +38,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.config.ConfigurationHelper;

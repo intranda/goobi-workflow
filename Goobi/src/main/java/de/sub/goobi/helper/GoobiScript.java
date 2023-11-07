@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.goobi.beans.Process;
 import org.goobi.goobiScript.GoobiScriptManager;
 import org.goobi.goobiScript.GoobiScriptResult;
