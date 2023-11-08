@@ -817,7 +817,6 @@ class VocabularyMysqlHelper implements Serializable {
         int totalNumberOfRecords = records.size();
         int currentBatchNo = 0;
         int numberOfRecordsPerBatch = 50;
-        long start = System.currentTimeMillis();
         while (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch)) {
             List<VocabRecord> subList;
             if (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch) + numberOfRecordsPerBatch) {
@@ -827,10 +826,11 @@ class VocabularyMysqlHelper implements Serializable {
                 subList = records.subList(currentBatchNo * numberOfRecordsPerBatch, totalNumberOfRecords);
             }
 
+            List<Object> parameter = new ArrayList<>();
+
             StringBuilder insertFieldQuery = new StringBuilder();
             insertFieldQuery.append(fieldQuery);
             boolean isFirst = true;
-            //TODO change it to prepared statement
             for (int i = 0; i < subList.size(); i++) {
                 VocabRecord rec = subList.get(i);
                 for (int j = 0; j < rec.getFields().size(); j++) {
@@ -840,38 +840,61 @@ class VocabularyMysqlHelper implements Serializable {
                     } else {
                         insertFieldQuery.append(", (?,?,?,?,?,?) ");
                     }
-
                     Field f = rec.getFields().get(j);
-
-
-
-                    if (isFirst) {
-                        isFirst = false;
-                    } else {
-                        insertFieldQuery.append(", ");
-                    }
-                    insertFieldQuery.append("(");
-                    insertFieldQuery.append(rec.getId());
-                    insertFieldQuery.append(", ");
-                    insertFieldQuery.append(vocabularyID);
-                    insertFieldQuery.append(", ");
-                    insertFieldQuery.append(f.getDefinition().getId());
-                    insertFieldQuery.append(", '");
-                    insertFieldQuery.append(f.getLabel());
-                    insertFieldQuery.append("', '");
-                    insertFieldQuery.append(f.getLanguage());
-                    insertFieldQuery.append("', '");
-                    insertFieldQuery.append(StringEscapeUtils.escapeSql(f.getValue()));
-                    insertFieldQuery.append("')");
-
+                    parameter.add(rec.getId());
+                    parameter.add(vocabularyID);
+                    parameter.add(f.getDefinition().getId());
+                    parameter.add(f.getLabel());
+                    parameter.add(f.getLanguage());
+                    parameter.add(f.getValue());
                 }
             }
-
-            runner.execute(connection, insertFieldQuery.toString());
+            runner.execute(connection, insertFieldQuery.toString(), parameter.toArray());
             currentBatchNo = currentBatchNo + 1;
-            System.out.println(currentBatchNo + ": " + (System.currentTimeMillis() - start));
         }
     }
+
+    //        private static void fieldsBatchInsertion(List<VocabRecord> records, Integer vocabularyID, Connection connection, QueryRunner runner)
+    //                throws SQLException {
+    //            //  create a single query for all fields
+    //            int totalNumberOfRecords = records.size();
+    //            int currentBatchNo = 0;
+    //            int numberOfRecordsPerBatch = 200;
+    //            connection.setAutoCommit(false);
+    //            PreparedStatement pstmt = connection.prepareStatement(
+    //                    "INSERT INTO vocabulary_record_data (record_id,vocabulary_id, definition_id, label, language, value) VALUES (?,?,?,?,?,?)");
+    //            while (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch)) {
+    //                List<VocabRecord> subList;
+    //                if (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch) + numberOfRecordsPerBatch) {
+    //                    subList = records.subList(currentBatchNo * numberOfRecordsPerBatch,
+    //                            (currentBatchNo * numberOfRecordsPerBatch) + numberOfRecordsPerBatch);
+    //                } else {
+    //                    subList = records.subList(currentBatchNo * numberOfRecordsPerBatch, totalNumberOfRecords);
+    //                }
+    //
+    //
+    //                pstmt.clearParameters();
+    //                pstmt.clearBatch();
+    //                for (int i = 0; i < subList.size(); i++) {
+    //                    VocabRecord rec = subList.get(i);
+    //                    for (int j = 0; j < rec.getFields().size(); j++) {
+    //
+    //                        Field f = rec.getFields().get(j);
+    //                        pstmt.setInt(1, rec.getId());
+    //                        pstmt.setInt(2, vocabularyID);
+    //                        pstmt.setInt(3, f.getDefinition().getId());
+    //                        pstmt.setString(4, f.getLabel());
+    //                        pstmt.setString(5, f.getLanguage());
+    //                        pstmt.setString(6, StringEscapeUtils.escapeSql(f.getValue()));
+    //                        // Add row to the batch.
+    //                        pstmt.addBatch();
+    //                    }
+    //                }
+    //                pstmt.executeBatch();
+    //                currentBatchNo = currentBatchNo + 1;
+    //            }
+    //            connection.commit();
+    //        }
 
     public static void batchUpdateRecords(List<VocabRecord> records, Integer vocabularyID) throws SQLException {
         //        1.) delete old fields

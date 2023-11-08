@@ -597,10 +597,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
         }
 
         if (importType.equals(IMPORT_TYPE_MERGE)) {
-            long start = System.currentTimeMillis();
-
-
-
             List<VocabRecord> newRecords = new ArrayList<>();
             List<VocabRecord> updateRecords = new ArrayList<>();
             // get main entry row
@@ -615,8 +611,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
             if (mainEntryColumnNumber != null) {
                 Map<String, VocabRecord> existingRecords = new HashMap<>();
-                for ( VocabRecord vr : currentVocabulary.getRecords() ) {
-                    for (Field f : vr.getFields() ) {
+                for (VocabRecord vr : currentVocabulary.getRecords()) {
+                    for (Field f : vr.getFields()) {
                         if (f.getDefinitionId().equals(mainEntryDefinitionId)) {
                             existingRecords.put(f.getValue(), vr);
 
@@ -625,19 +621,16 @@ public class VocabularyBean extends BasicBean implements Serializable {
                     }
                 }
 
-                int rowCounter = 0;
                 for (Row row : rowsToImport) {
-                    rowCounter++;
-
                     // search for existing records based on the value of the main entry
 
                     String uniqueIdentifierEntry = getCellValue(row.getCell(mainEntryColumnNumber));
                     if (StringUtils.isNotBlank(uniqueIdentifierEntry)) {
                         VocabRecord recordToUpdate = existingRecords.get(uniqueIdentifierEntry);
                         if (recordToUpdate != null) {
+                            boolean updated = false;
                             // existing record, change it
                             log.debug("merged row with existing record");
-                            updateRecords.add(recordToUpdate);
                             // update existing record
                             for (MatchingField mf : headerOrder) {
                                 if (mf.getAssignedField() != null) {
@@ -653,9 +646,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
                                         fieldToUpdate = new Field(mf.getAssignedField().getLabel(), mf.getAssignedField().getLanguage(), cellValue,
                                                 mf.getAssignedField());
                                         recordToUpdate.getFields().add(fieldToUpdate);
-                                    } else {
+                                        updated = true;
+                                    } else if (!fieldToUpdate.getValue().equals(cellValue)) {
                                         fieldToUpdate.setValue(cellValue);
+                                        updated = true;
                                     }
+                                }
+                                if (updated) {
+                                    updateRecords.add(recordToUpdate);
                                 }
                             }
                         } else {
@@ -680,20 +678,16 @@ public class VocabularyBean extends BasicBean implements Serializable {
                             }
                         }
                     }
-
                 }
-                System.out.println("Handled " + rowCounter + " rows : " + (System.currentTimeMillis() - start));
             }
 
             if (!newRecords.isEmpty()) {
                 log.debug("Created {} new record(s)", newRecords.size());
                 VocabularyManager.insertNewRecords(newRecords, currentVocabulary.getId());
-                System.out.println("Saved " + newRecords.size() + " + records." + (System.currentTimeMillis() - start));
             }
             if (!updateRecords.isEmpty()) {
                 log.debug("Updated {} record(s)", updateRecords.size());
                 VocabularyManager.batchUpdateRecords(updateRecords, currentVocabulary.getId());
-                System.out.println("Update " + updateRecords.size() + " records." + (System.currentTimeMillis() - start));
             }
         }
         return FilterKein();
@@ -866,8 +860,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public void validateFieldValue(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
         synchronized (this) {
-            // This boolean flag is set to true when the page (and the input form) is reloaded. This makes it possible to reset the validation results on
-            // the first executed validation of the current submit-trial
+            // This boolean flag is set to true when the page (and the input form) is reloaded. This makes it possible
+            // to reset the validation results on the first executed validation of the current submit-trial
             if (this.resetResultsOnNextValidation) {
                 // Only the invalid records should be set to 'valid=false' later
                 for (VocabRecord currentRecord : this.currentVocabulary.getRecords()) {
