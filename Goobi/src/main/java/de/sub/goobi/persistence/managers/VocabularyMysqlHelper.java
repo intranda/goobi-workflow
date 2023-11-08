@@ -39,8 +39,8 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.StatementConfiguration;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
@@ -524,7 +524,7 @@ class VocabularyMysqlHelper implements Serializable {
             likeStr = "ilike";
         }
 
-        searchValue = StringEscapeUtils.escapeSql(searchValue.replace("\"", "_"));
+        searchValue = MySQLHelper.escapeSql(searchValue.replace("\"", "_"));
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT distinct record_id FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE v.title = ? ");
         sb.append("AND r.value ");
@@ -545,7 +545,7 @@ class VocabularyMysqlHelper implements Serializable {
                 if (subQuery.length() > 0) {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("r.label ='" + StringEscapeUtils.escapeSql(fieldName) + "'");
+                subQuery.append("r.label ='" + MySQLHelper.escapeSql(fieldName) + "'");
             }
             sb.append(subQuery.toString());
             sb.append(")");
@@ -557,7 +557,7 @@ class VocabularyMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
             List<Integer> idList =
-                    runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, StringEscapeUtils.escapeSql(vocabularyName));
+                    runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, MySQLHelper.escapeSql(vocabularyName));
 
             if (idList.isEmpty()) {
                 return Collections.emptyList();
@@ -663,8 +663,8 @@ class VocabularyMysqlHelper implements Serializable {
             }
             subQuery.append("attr ");
             subQuery.append(likeStr);
-            subQuery.append(" '%label\":\"" + StringEscapeUtils.escapeSql(vocabulary.getMainFieldName()) + "\",\"language\":\"%\",\"value\":\"%"
-                    + StringEscapeUtils.escapeSql(vocabulary.getSearchField().replace("\"", "_")) + "%' ");
+            subQuery.append(" '%label\":\"" + MySQLHelper.escapeSql(vocabulary.getMainFieldName()) + "\",\"language\":\"%\",\"value\":\"%"
+                    + MySQLHelper.escapeSql(vocabulary.getSearchField().replace("\"", "_")) + "%' ");
         }
 
         if (subQuery.length() > 0) {
@@ -733,12 +733,12 @@ class VocabularyMysqlHelper implements Serializable {
                 if (!exactSearch) {
                     subQuery.append("%");
                 }
-                subQuery.append(StringEscapeUtils.escapeSql(sp.getTwo().replace("\"", "_")));
+                subQuery.append(MySQLHelper.escapeSql(sp.getTwo().replace("\"", "_")));
                 if (!exactSearch) {
                     subQuery.append("%");
                 }
                 subQuery.append("' AND ");
-                subQuery.append("label ='" + StringEscapeUtils.escapeSql(sp.getOne()) + "') ");
+                subQuery.append("label ='" + MySQLHelper.escapeSql(sp.getOne()) + "') ");
             }
         }
         if (subQuery.length() > 0) {

@@ -43,7 +43,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -643,7 +642,7 @@ public class GetOpac {
             }
 
             String result = this.opacClient.execute(opacRequest, HttpUtils.stringResponseHandler);
-            result = StringEscapeUtils.unescapeHtml(result);
+            result = org.apache.commons.text.StringEscapeUtils.unescapeHtml4(result);
             return result;
         } finally {
             opacRequest.releaseConnection();

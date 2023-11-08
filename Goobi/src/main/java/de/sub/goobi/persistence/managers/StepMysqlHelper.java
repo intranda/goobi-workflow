@@ -32,7 +32,7 @@ import java.util.Set;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mq.QueueType;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Institution;

@@ -40,7 +40,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -582,5 +582,14 @@ public class MySQLHelper implements Serializable {
             sortfield = " case when field.value = '' or field.value is null then 1 else 0 end, field.value ";
         }
         return sortfield;
+    }
+
+    public static String escapeSql(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        return StringUtils.replace(value, "'", "''");
+
     }
 }
