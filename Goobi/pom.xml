@@ -89,7 +89,7 @@
         
         <antlr4.version>4.13.1</antlr4.version>
         <avalon-framework.version>4.2.0</avalon-framework.version>
-        <h2.version>1.4.200</h2.version>
+        <h2.version>2.1.210</h2.version>
         <oscache.version>2.3</oscache.version>
         <shiro.version>1.12.0</shiro.version>
         <activemq.version>5.18.3</activemq.version>
