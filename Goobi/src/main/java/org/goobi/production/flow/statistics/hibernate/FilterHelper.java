@@ -31,9 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.text.StrTokenizer;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringTokenizer;
 import org.goobi.beans.User;
 import org.goobi.production.enums.UserRole;
 
@@ -259,7 +258,7 @@ public class FilterHelper {
         if (!negate) {
             sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '");
             sb.append(leftTruncationCharacter);
-            sb.append(StringEscapeUtils.escapeSql(parameters));
+            sb.append(MySQLHelper.escapeSql(parameters));
             sb.append(rightTruncationCharacter);
             sb.append("' AND schritte.Bearbeitungsstatus = ");
             sb.append(inStatus.getValue().intValue());
@@ -273,7 +272,7 @@ public class FilterHelper {
         } else {
             sb.append(" prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '");
             sb.append(leftTruncationCharacter);
-            sb.append(StringEscapeUtils.escapeSql(parameters));
+            sb.append(MySQLHelper.escapeSql(parameters));
             sb.append(rightTruncationCharacter);
             sb.append("' AND schritte.Bearbeitungsstatus = ");
             sb.append(inStatus.getValue().intValue());
@@ -451,10 +450,10 @@ public class FilterHelper {
         /* filter according to linked project */
         if (!negate) {
             return " prozesse.ProjekteID in (select ProjekteID from projekte where titel like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+                    + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         } else {
             return " prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+                    + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         }
     }
 
@@ -469,24 +468,24 @@ public class FilterHelper {
         if (!negate) {
             if (ts.length > 1) {
                 return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter
-                        + "' AND vorlageneigenschaften.Titel LIKE '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0])
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
+                        + "' AND vorlageneigenschaften.Titel LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
                         + rightTruncationCharacter + "'))";
 
             } else {
                 return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
 
             }
         } else if (ts.length > 1) {
             return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter
-                    + "' AND vorlageneigenschaften.Titel LIKE '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0])
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
+                    + "' AND vorlageneigenschaften.Titel LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
                     + rightTruncationCharacter + "'))";
 
         } else {
             return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
 
         }
     }
@@ -497,21 +496,21 @@ public class FilterHelper {
         if (!negate) {
             if (ts.length > 1) {
                 return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like ''"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND Titel like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND Titel like '"
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
 
             } else {
                 return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
             }
         } else if (ts.length > 1) {
             return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND Titel like '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND Titel like '"
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
 
         } else {
             return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
         }
     }
 
@@ -582,22 +581,22 @@ public class FilterHelper {
         if (!negate) {
             if (ts.length > 1) {
                 return "prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter
-                        + "' AND prozesseeigenschaften.Wert like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1])
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter
+                        + "' AND prozesseeigenschaften.Wert like '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1])
                         + rightTruncationCharacter + "' )";
 
             } else {
                 return "prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Wert like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
             }
         } else if (ts.length > 1) {
             return "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like  '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter
-                    + "' AND prozesseeigenschaften.Wert like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1])
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter
+                    + "' AND prozesseeigenschaften.Wert like '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1])
                     + rightTruncationCharacter + "' )";
         } else {
             return "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Wert like '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
         }
     }
 
@@ -620,7 +619,7 @@ public class FilterHelper {
                 if (StringUtils.isNotBlank(title)) {
                     sb.append("metadata.name LIKE  '");
                     sb.append(leftTruncationCharacter);
-                    sb.append(StringEscapeUtils.escapeSql(title));
+                    sb.append(MySQLHelper.escapeSql(title));
                     sb.append(rightTruncationCharacter);
                     sb.append("' AND ");
                 }
@@ -641,19 +640,19 @@ public class FilterHelper {
             }
             if (StringUtils.isNotBlank(title)) {
                 return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                        + StringEscapeUtils.escapeSql(title) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
-                        + StringEscapeUtils.escapeSql(value) + rightTruncationCharacter + "' )";
+                        + MySQLHelper.escapeSql(title) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                        + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "' )";
             } else {
                 return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                        + StringEscapeUtils.escapeSql(value) + rightTruncationCharacter + "') ";
+                        + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "') ";
             }
         } else if (StringUtils.isNotBlank(title)) {
             return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(title) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(value) + rightTruncationCharacter + "' )";
+                    + MySQLHelper.escapeSql(title) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                    + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "' )";
         } else {
             return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(value) + rightTruncationCharacter + "' )";
+                    + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "' )";
         }
     }
 
@@ -661,10 +660,10 @@ public class FilterHelper {
         String query = "";
         if (!negate) {
             query = "prozesse.ProzesseID in (select distinct objectId from journal where journal.content like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "' and entrytype = 'process')";
+                    + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "' and entrytype = 'process')";
         } else {
             query = "prozesse.ProzesseID not in (select distinct objectId from journal where journal.content like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "' and entrytype = 'process')";
+                    + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "' and entrytype = 'process')";
         }
 
         return query;
@@ -682,10 +681,10 @@ public class FilterHelper {
         String query = "";
         if (!negate) {
             query = "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         } else {
             query = "prozesse.ProjekteID not sin (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         }
 
         return query;
@@ -740,24 +739,24 @@ public class FilterHelper {
         if (!negate) {
             if (ts.length > 1) {
                 return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter
-                        + "' AND werkstueckeeigenschaften.Titel LIKE '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0])
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
+                        + "' AND werkstueckeeigenschaften.Titel LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
                         + rightTruncationCharacter + "'))";
             } else {
 
                 return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
             }
         } else if (ts.length > 1) {
             return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter
-                    + "' AND werkstueckeeigenschaften.Titel LIKE '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0])
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
+                    + "' AND werkstueckeeigenschaften.Titel LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
                     + rightTruncationCharacter + "'))";
 
         } else {
 
             return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
 
         }
     }
@@ -816,7 +815,7 @@ public class FilterHelper {
         }
 
         // preparation to filter for step dates
-        StrTokenizer dates = new StrTokenizer(inFilter, ' ', '\"');
+        StringTokenizer dates = new StringTokenizer(inFilter, ' ', '\"');
 
         int currentGroupId = 0;
         StepDateFilterGroup currentDateFilter = new StepDateFilterGroup();
@@ -879,7 +878,7 @@ public class FilterHelper {
         // to collect and return feedback about erroneous use of filter
         // expressions
 
-        StrTokenizer tokenizer = new StrTokenizer(inFilter, ' ', '\"');
+        StringTokenizer tokenizer = new StringTokenizer(inFilter, ' ', '\"');
 
         // conjunctions collecting conditions
 
@@ -1023,7 +1022,7 @@ public class FilterHelper {
 
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1))
                         + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith(FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, true);
@@ -1045,7 +1044,7 @@ public class FilterHelper {
                         filter.append(" prozesse.batchID = " + value);
                     } else {
                         filter = checkStringBuilder(filter, true);
-                        filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
+                        filter.append(" batches.batchName like '" + leftTruncationCharacter + MySQLHelper.escapeSql(substring)
                                 + rightTruncationCharacter + "'");
                     }
 
@@ -1142,7 +1141,7 @@ public class FilterHelper {
                         filter.append(" (prozesse.batchID != " + value + " OR batchID is null)");
                     } else {
                         filter = checkStringBuilder(filter, true);
-                        filter.append(" batches.batchName not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
+                        filter.append(" batches.batchName not like '" + leftTruncationCharacter + MySQLHelper.escapeSql(substring)
                                 + rightTruncationCharacter + "' OR batches.batchName IS NULL OR prozesse.batchID IS NULL ");
                     }
 
@@ -1151,7 +1150,7 @@ public class FilterHelper {
                 }
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.Titel not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
+                filter.append(" prozesse.Titel not like '" + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(1))
                         + rightTruncationCharacter + "'");
             }
 
@@ -1227,7 +1226,7 @@ public class FilterHelper {
 
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESS) || tok.toLowerCase().startsWith("|" + FilterString.PROZESS)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1))
                         + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith("|" + FilterString.BATCH) || tok.toLowerCase().startsWith("|" + FilterString.GRUPPE)) {
                 try {
@@ -1241,7 +1240,7 @@ public class FilterHelper {
                         filter.append(" prozesse.batchID = " + value);
                     } else {
                         filter = checkStringBuilder(filter, false);
-                        filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
+                        filter.append(" batches.batchName like '" + leftTruncationCharacter + MySQLHelper.escapeSql(substring)
                                 + rightTruncationCharacter + "'");
                     }
 
@@ -1250,11 +1249,11 @@ public class FilterHelper {
                 }
             } else if (tok.toLowerCase().startsWith("|")) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(1))
                         + rightTruncationCharacter + "'");
             } else {
                 filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1))
                         + rightTruncationCharacter + "'");
             }
             if (newFilterGroup && !currentDateFilter.isStepFilterPresent() && !currentDateFilter.getDateFilter().isEmpty()) {
@@ -1301,13 +1300,13 @@ public class FilterHelper {
                 stepTitle = stepTitle.substring(1);
 
                 return " schritte.SchritteID NOT IN (select schritte.SchritteID from schritte where schritte.Titel like '" + leftTruncationCharacter
-                        + StringEscapeUtils.escapeSql(stepTitle) + rightTruncationCharacter
+                        + MySQLHelper.escapeSql(stepTitle) + rightTruncationCharacter
                         + "' AND (schritte.Bearbeitungsstatus = 1 OR schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
             } else {
 
                 return " schritte.SchritteID IN (select schritte.SchritteID from schritte where schritte.Titel like '" + leftTruncationCharacter
-                        + StringEscapeUtils.escapeSql(stepTitle) + rightTruncationCharacter
+                        + MySQLHelper.escapeSql(stepTitle) + rightTruncationCharacter
                         + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
             }
@@ -1417,7 +1416,7 @@ public class FilterHelper {
     }
 
     public static Integer getStepDone(String myFilterExpression) {
-        StrTokenizer tokenizer = new StrTokenizer(myFilterExpression, ' ', '\"');
+        StringTokenizer tokenizer = new StringTokenizer(myFilterExpression, ' ', '\"');
         while (tokenizer.hasNext()) {
             String tok = tokenizer.nextToken().trim();
             if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT)

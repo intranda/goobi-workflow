@@ -31,7 +31,7 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.geonames.Toponym;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;

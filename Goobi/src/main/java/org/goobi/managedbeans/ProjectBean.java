@@ -46,8 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.Institution;
@@ -78,6 +77,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
+import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import lombok.Getter;
@@ -419,7 +419,7 @@ public class ProjectBean extends BasicBean implements Serializable {
      * @return The SQL string
      */
     private String createProjectSQLString() {
-        return "\"project:" + StringEscapeUtils.escapeSql(this.myProjekt.getTitel()) + "\"";
+        return "\"project:" + MySQLHelper.escapeSql(this.myProjekt.getTitel()) + "\"";
     }
 
     /**

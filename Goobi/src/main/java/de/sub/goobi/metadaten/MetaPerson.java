@@ -33,7 +33,7 @@ import java.util.Objects;
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.geonames.Toponym;
 import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.enums.DisplayType;

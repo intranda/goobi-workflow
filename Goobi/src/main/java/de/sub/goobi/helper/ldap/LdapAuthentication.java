@@ -56,7 +56,7 @@ import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.User;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -136,10 +136,8 @@ public class LdapAuthentication {
                     Helper.setFehlerMeldung("ldap_error_user_home_creation");
                     log.error("Could not create user home " + homePath);
                 }
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("HomeVerzeichnis existiert schon");
-                }
+            } else if (log.isDebugEnabled()) {
+                log.debug("HomeVerzeichnis existiert schon");
             }
         } else {
             Helper.setMeldung(Helper.getTranslation("ldapIsReadOnly"));

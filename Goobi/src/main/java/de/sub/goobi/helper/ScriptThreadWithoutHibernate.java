@@ -34,7 +34,7 @@ import java.util.Map.Entry;
 import javax.jms.JMSException;
 import javax.naming.ConfigurationException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mq.ExternalScriptTicket;
 import org.goobi.api.mq.GenericAutomaticStepHandler;
 import org.goobi.api.mq.QueueType;

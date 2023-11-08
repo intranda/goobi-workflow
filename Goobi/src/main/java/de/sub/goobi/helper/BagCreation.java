@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import gov.loc.repository.bagit.creator.BagCreator;
