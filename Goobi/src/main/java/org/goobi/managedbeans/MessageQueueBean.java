@@ -125,6 +125,9 @@ public class MessageQueueBean extends BasicBean implements Serializable {
     private HorizontalBarChartModel barModelVolumes;
 
     public MessageQueueBean() {
+
+        sortField = "time desc";
+
         this.initMessageBrokerStart();
 
         if (this.messageBrokerStart) {
@@ -139,7 +142,7 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             } catch (JMSException e) {
                 log.error(e);
             }
-            paginator = new DatabasePaginator("time desc", null, new MQResultManager(), "queue.xhtml");
+            paginator = new DatabasePaginator(sortField, filter, new MQResultManager(), "queue.xhtml");
         }
     }
 
@@ -418,8 +421,6 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             hbarDataSetPages.setData(pageValues);
             hbarDataSetVolumes.setData(volumeValues);
 
-
-
             dataPages.addChartDataSet(hbarDataSetPages);
             dataPages.setLabels(labels);
             barModelPages.setData(dataPages);
@@ -440,7 +441,6 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             cScales.addXAxesData(linearAxes);
             options.setScales(cScales);
             options2.setScales(cScales);
-
 
             Title title = new Title();
             title.setDisplay(true);
@@ -489,6 +489,10 @@ public class MessageQueueBean extends BasicBean implements Serializable {
         } else {
             return formatter.format(date) + " 23:59:59";
         }
+    }
 
+    public void FilterAlleStart() {
+        MQResultManager m = new MQResultManager();
+        paginator = new DatabasePaginator(sortField, filter, m, "queue.xhtml");
     }
 }

@@ -45,8 +45,10 @@ import lombok.extern.log4j.Log4j2;
 public class MQResultMysqlHelper {
 
     public static void insertMessage(MqStatusMessage message) throws SQLException {
-        String sql =
-                "INSERT INTO mq_results (ticket_id, time, status, message, original_message, objects, processid, stepid, ticketType, ticketName) VALUES (?,?,?,?,?, ?,?,?,?,?)";
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO mq_results (ticket_id, time, status, message, original_message, objects, processid, stepid ");
+        sql.append(", ticketType, ticketName) VALUES (?,?,?,?,?, ?,?,?,?,?) ");
+
         Object[] param = generateParameter(message);
         Connection connection = null;
         try {
@@ -55,7 +57,7 @@ public class MQResultMysqlHelper {
             if (log.isTraceEnabled()) {
                 log.trace(sql + ", " + Arrays.toString(param));
             }
-            run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
+            run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -97,8 +99,18 @@ public class MQResultMysqlHelper {
 
     public static int getMessagesCount(String filter) throws SQLException {
         StringBuilder sql = new StringBuilder("SELECT COUNT(1) FROM mq_results ");
+
         if (StringUtils.isNotBlank(filter)) {
-            sql.append("WHERE " + filter);
+            String filterString = MySQLHelper.escapeSql(filter);
+            sql.append(" WHERE message like '%");
+            sql.append(filterString);
+            sql.append("%' OR  original_message like '%");
+            sql.append(filterString);
+            sql.append("%' OR  ticketType like  '%");
+            sql.append(filterString);
+            sql.append("%' OR  ticketName like  '%");
+            sql.append(filterString);
+            sql.append("%' ");
         }
 
         try (Connection conn = MySQLHelper.getInstance().getConnection()) {
@@ -109,7 +121,16 @@ public class MQResultMysqlHelper {
     public static List<? extends DatabaseObject> getMessageList(String order, String filter, Integer start, Integer count) throws SQLException {
         StringBuilder sql = new StringBuilder("SELECT * FROM mq_results");
         if (StringUtils.isNotBlank(filter)) {
-            sql.append(" WHERE ").append(filter);
+            String filterString = MySQLHelper.escapeSql(filter);
+            sql.append(" WHERE message like '%");
+            sql.append(filterString);
+            sql.append("%' OR  original_message like '%");
+            sql.append(filterString);
+            sql.append("%' OR  ticketType like  '%");
+            sql.append(filterString);
+            sql.append("%' OR  ticketName like  '%");
+            sql.append(filterString);
+            sql.append("%' ");
         }
         if (StringUtils.isNotBlank(order)) {
             sql.append(" ORDER BY ").append(order);
