@@ -39,7 +39,6 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.StatementConfiguration;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.vocabulary.Definition;
@@ -846,7 +845,7 @@ class VocabularyMysqlHelper implements Serializable {
                     parameter.add(f.getDefinition().getId());
                     parameter.add(f.getLabel());
                     parameter.add(f.getLanguage());
-                    parameter.add(f.getValue());
+                    parameter.add(MySQLHelper.escapeSql(f.getValue()));
                 }
             }
             runner.execute(connection, insertFieldQuery.toString(), parameter.toArray());
@@ -885,7 +884,7 @@ class VocabularyMysqlHelper implements Serializable {
     //                        pstmt.setInt(3, f.getDefinition().getId());
     //                        pstmt.setString(4, f.getLabel());
     //                        pstmt.setString(5, f.getLanguage());
-    //                        pstmt.setString(6, StringEscapeUtils.escapeSql(f.getValue()));
+    //                        pstmt.setString(6, MySQLHelper.escapeSql(f.getValue()));
     //                        // Add row to the batch.
     //                        pstmt.addBatch();
     //                    }
