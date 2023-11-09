@@ -131,19 +131,19 @@
 										<ui:include src="templatePG/includes/process/list_grid.xhtml" />
 									</h:panelGroup>
                                     <!-- // DISPLAY AS GRID -->
-									
+
                                      <!-- DISPLAY AS TABLE -->
 									<div class="gw-table__wrapper">
 										<table
 											role="grid"
 											id="processTable"
-											class="table table-hover table-nomargin dataTable table-bordered responsive"
+											class="table table-hover table-nomargin dataTable table-bordered responsive processTable"
 											jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' or not ProzessverwaltungForm.anzeigeAnpassen['gridview']}">
 
 											<!-- ### Columnheader row ### -->
 											<thead>
 												<tr role="row">
-                                                
+
 													<!-- SELECTION COLUMN HEADER -->
 													<th
 														class="header__selection"
@@ -151,7 +151,7 @@
 														<div class="d-flex">
 
 															<h:outputText value="#{msgs.auswahl2}"/>
-                                                            
+
 															<button
 																jsf:action="#{ProzessverwaltungForm.selectionAll}"
 																jsf:id="selectall"
@@ -180,21 +180,21 @@
 														ajaxRender="processAllProcessesBox:myform"
 														reverseOrder="true"
 														sortField="prozesse.ProzesseID" />
-													
+
                                                     <!-- THUMBNAIL COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__thumbnail"
 														value="#{msgs.thumbnail}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
 														sortable="false" />
-													
+
                                                     <!-- METADATA COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__embedded-metadata"
 														value="#{msgs.metadata}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
 														sortable="false" />
-													
+
                                                     <!-- BATCH ID COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__batch-id"
@@ -204,7 +204,7 @@
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
 														ajaxRender="processAllProcessesBox:myform"
                                                         sortField="prozesse.batchID" />
-													
+
                                                     <!-- PROCESS TITLE COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__title"
@@ -215,7 +215,7 @@
 														ajaxRender="processAllProcessesBox:myform"
 														id="ajaxcolumn"
                                                         sortField="prozesse.titel" />
-													
+
                                                     <!-- CUSTOM COLUMNS HEADER -->
                                                     <c:forEach
                                                         items="#{LoginForm.listOfCustomColumns}"
@@ -233,7 +233,7 @@
                                                             value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
                                                             rendered="#{!LoginForm.isDisplaySortfield(var)}" />
                                                     </c:forEach>
-                                                    
+
                                                     <!-- CREATION DATE COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__date"
@@ -241,25 +241,25 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.vorgangsdatum}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
-														ajaxRender="processAllProcessesBox:myform" 
+														ajaxRender="processAllProcessesBox:myform"
                                                         sortField="prozesse.erstellungsdatum" />
-													
+
                                                     <!-- RULESET COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__ruleset"
 														value="#{msgs.regelsatz}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
 														sortable="false" />
-													
+
                                                     <!-- STATUS COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__progress"
 														name="fortschritt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.status}"
-														ajaxRender="processAllProcessesBox:myform" 
+														ajaxRender="processAllProcessesBox:myform"
                                                         sortField="prozesse.sortHelperStatus" />
-													
+
                                                     <!-- PROJECT COLUMN HEADER -->
 													<intranda:columnheader
 														addClass=" #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'} header__project"
@@ -268,7 +268,7 @@
 														value="#{msgs.projekt}"
 														ajaxRender="processAllProcessesBox:myform"
                                                         sortField="projekte.titel" />
-													
+
                                                     <!-- INSTITUTION COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__institution"
@@ -278,7 +278,7 @@
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['institution']}"
 														ajaxRender="processAllProcessesBox:myform"
                                                         sortField="institution.shortName" />
-													
+
                                                     <!-- LOCKINGS COLUMN HEADER -->
 													<intranda:columnheader
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
@@ -288,28 +288,28 @@
 														value="#{msgs.sperrungen}"
 														ajaxRender="processAllProcessesBox:myform"
                                                         sortable="false" />
-													
+
                                                     <!-- LAST STATUS UPDATE DATE COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__update-date"
 														value="#{msgs.lastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionDate']}"
 														sortable="false" />
-                                                        
+
 													<!-- LAST STATUS UPDATE USER COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__update-user"
 														value="#{msgs.userLastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionUser']}"
 														sortable="false" />
-													
+
                                                     <!-- LAST STATUS UPDATE TASK COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__update-task"
 														value="#{msgs.taskLastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionTask']}"
 														sortable="false" />
-                                                        
+
 													<!-- SWAPPED OUT COLUMN HEADER -->
 													<intranda:columnheader
 														addClass="header__swapped"
@@ -326,7 +326,7 @@
                                                         sortField="sortHelperImages"
 														form="#{ProzessverwaltungForm}"
 														ajaxRender="processAllProcessesBox:myform" />
-													
+
                                                     <!-- BUTTONS COLUMN HEADER -->
 													<intranda:columnheader
                                                         addClass="header__buttons"
@@ -344,32 +344,36 @@
 												<tr role="row">
 													<!-- Selection Boxes -->
 													<td
+														data-label="#{msgs.auswahl2}"
 														class=" width120"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
-														<button
-															jsf:id="selected"
-															aria-label="#{msgs.auswahl2}"
-															class="btn btn-blank">
-															<i
-																class="#{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
-															<f:setPropertyActionListener
-																target="#{item.selected}"
-																value="#{item.selected?false:true}" />
-															<f:ajax render="processAllProcessesBox:myform" />
-														</button>
+														<div class="cell">
+															<button
+																jsf:id="selected"
+																aria-label="#{msgs.auswahl2}"
+																class="btn btn-blank">
+																<i
+																	class="#{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
+																<f:setPropertyActionListener
+																	target="#{item.selected}"
+																	value="#{item.selected?false:true}" />
+																<f:ajax render="processAllProcessesBox:myform" />
+															</button>
+														</div>
 													</td>
 													<!-- Process Id -->
 													<td
+														data-label="#{msgs.id}"
 														jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
 														class="wb-normal">
 														<h:outputText value="#{item.id}" />
 													</td>
 													<!-- thumbnail -->
 													<td
+														data-label="#{msgs.thumbnail}"
 														jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 														<canvas
 															class="thumb-canvas"
-															style="width: 150px;"
 															data-image_small="#{item.getRepresentativeImage(250)}"
 															data-image_large="#{item.getRepresentativeImage(750)}"
 															id="thumbnail-#{item.id}">
@@ -378,6 +382,7 @@
 
 													<!-- Embedded Metadata -->
 													<td
+														data-label="#{msgs.metadataList}"
 														jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 														<table class="metadata-nested-table no-borders">
 															<ui:repeat
@@ -409,6 +414,7 @@
 
 													<!-- Batch id -->
 													<td
+														data-label="#{msgs.batch}"
 														class="gw-hyphens-none"
 														jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 														<h:outputText
@@ -420,7 +426,9 @@
 													</td>
 
 													<!-- Alle Schritte Auflisten -->
-													<td>
+													<td
+														data-label="#{msgs.ProzessverwaltungForm}"
+														class="prozessVerwaltung">
 														<ui:include
 															src="templatePG/includes/ajaxPlusMinusButton.xhtml">
 															<ui:param
@@ -607,13 +615,15 @@
 													<c:forEach
 														items="#{LoginForm.listOfCustomColumns}"
 														var="var">
-														<td>
+														<td
+															data-label="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}">
 															<h:outputText value="#{item.getReplacedVariable(var)}" />
 														</td>
 													</c:forEach>
 
 													<!-- PROCESS DATE -->
 													<td
+														data-label="#{msgs.vorgangsdatum}"
 														jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}">
 														<h:outputText value="#{item.erstellungsdatumAsString}">
 															<!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="date" dateStyle="medium"/> -->
@@ -622,12 +632,14 @@
 
 													<!-- RULESET -->
 													<td
+														data-label="#{msgs.regelsatz}"
 														jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}">
 														<h:outputText value="#{item.regelsatz.titel}" />
 													</td>
 
 													<!-- STATUS -->
-													<td>
+													<td
+														data-label="#{msgs.status}">
 
 														<div class="progress__container">
 															<h:panelGroup
@@ -746,7 +758,8 @@
 													<!-- // STATUS -->
 
 													<!-- PROJECT -->
-													<td>
+													<td
+														data-label="#{msgs.projekt}">
 														<h:outputText
 															value="#{item.projekt.titel}"
 															styleClass=" #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'}" />
@@ -754,6 +767,7 @@
 
 													<!-- INSTITUTION -->
 													<td
+														data-label="#{msgs.institution}"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['institution']}">
 														<h:outputText
 															value="#{item.projekt.institution.shortName}" />
@@ -761,6 +775,7 @@
 
 													<!-- LOCKINGS -->
 													<td
+														data-label="#{msgs.sperrungen}"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}">
 														<h:outputText
 															value="#{item.benutzerGesperrt.nachVorname}"
@@ -769,24 +784,28 @@
 
 													<!-- LAST CHANGE DATE -->
 													<td
+														data-label="#{msgs.lastStatusUpdate}"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionDate']}">
 														<h:outputText value="#{item.lastStatusChangeDate}" />
 													</td>
 
 													<!-- LAST CHANGE USER -->
 													<td
+														data-label="#{msgs.userLastStatusUpdate}"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionUser']}">
 														<h:outputText value="#{item.lastStatusChangeUser}" />
 													</td>
 
 													<!-- LAST CHANGE TASK -->
 													<td
+														data-label="#{msgs.taskLastStatusUpdate}"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionTask']}">
 														<h:outputText value="#{item.lastStatusChangeTask}" />
 													</td>
 
 													<!-- SWAPPING -->
 													<td
+														data-label="#{msgs.ausgelagert}"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}">
 														<i
 															class="fa #{item.swappedOutGui?'fa-check-square-o':'fa-square-o'}" />
@@ -794,12 +813,14 @@
 
 													<!-- NUMBER OF IMAGES -->
 													<td
+														data-label="#{msgs.NumberOfImages}"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}">
 														<h:outputText value="#{item.sortHelperImages}" />
 													</td>
 
 													<!-- BUTTONS -->
-													<td>
+													<td
+														data-label="#{msgs.auswahl}">
 
 														<div class="gw-table__actions__container">
 
@@ -936,16 +957,16 @@
 															</h:commandLink>
 
 															<!--  METADATA MODAL FOR TEMPORARY SAVED DATA  -->
-                                                            <button 
+                                                            <button
                                                                 jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and item.temporaryMetadataFiles}"
-                                                                type="button" 
-                                                                class="btn btn-blank" 
+                                                                type="button"
+                                                                class="btn btn-blank"
                                                                 title="#{msgs.metadatenBearbeiten}"
-                                                                data-bs-toggle="modal" 
+                                                                data-bs-toggle="modal"
                                                                 data-bs-target="#myModal-#{item.id}">
                                                               <i class="fa fa-book " />
                                                             </button>
-                                                        	
+
                                                             <!-- MODAL TO BE SHOWN EVENTUALLY -->
                                                             <div
 																class="modal fade"
@@ -957,7 +978,7 @@
 																	class="modal-dialog"
 																	role="document">
 																	<div class="modal-content">
-																		
+
                                                                         <!-- MODAL HEADER -->
                                                                         <div class="modal-header bg-primary-400 text-white">
                                                                             <h4
@@ -973,14 +994,14 @@
                                                                                 aria-label="Close"></button>
                                                                         </div>
                                                                         <!-- // MODAL HEADER -->
-                                                                        
+
 																		 <!-- MODAL BODY -->
                                                                          <div class="modal-body">
 																			<h:outputText
 																				value="#{msgs.metseditorTemporaryDataExplanation}" />
 																		</div>
 																		 <!-- // MODAL BODY -->
-                                                                         
+
                                                                          <!-- MODAL FOOTER -->
                                                                          <div class="modal-footer">
 
@@ -1073,12 +1094,12 @@
 																			</h:commandLink>
 																		</div>
                                                                         <!-- // MODAL FOOTER -->
-                                                                        
+
 																	</div>
 																</div>
 															</div>
                                                             <!-- // MODAL TO BE SHOWN EVENTUALLY -->
-                                                            
+
 															<!-- DMS-EXPORT - ENABLED -->
 															<div
 																jsf:rel="tooltip"
@@ -1139,7 +1160,7 @@
 					                                              (ProzesskopieForm.isUserInProcessProject(item) ? msgs.eineKopieDieserProzessvorlageAnlegen : msgs.nutzerNichtFuerProjektZugeordnet)
 					                                              )
 					                                              }"
-																jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and 
+																jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and
                                                                 ProzesskopieForm.availableProjects.size() eq 1 and ProzesskopieForm.availableProjects.get(0).getTitel() == item.projekt.titel}">
 																<f:passThroughAttribute
 																	name="data-toggle"
@@ -1151,7 +1172,7 @@
 
 															<!-- CREATE PROCESS - MULTIPLE PROJECTS -->
 															<h:panelGroup
-																rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and 
+																rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and
                                                                 (ProzesskopieForm.availableProjects.size() gt 1 or (ProzesskopieForm.availableProjects.size() == 1 and ProzesskopieForm.availableProjects.get(0).getTitel() != item.projekt.titel ) )}">
 																<div
 																	data-bs-toggle="tooltip"
@@ -1221,7 +1242,7 @@
 		                                                        )
 		                                                        }"
 																onclick="preventDoubleSubmit(this);"
-																jsf:rendered="#{(ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and 
+																jsf:rendered="#{(ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and
                                                                 ProzesskopieForm.availableProjects.size() eq 1 and ProzesskopieForm.availableProjects.get(0).getTitel() == item.projekt.titel)}">
 																<f:passThroughAttribute
 																	name="data-toggle"
@@ -1330,7 +1351,7 @@
 										</div>
 									</div>
                                     <!-- // BUTTON AND PAGINATOR -->
-                                    
+
 								</h:form>
 
 							</div>
@@ -1373,12 +1394,12 @@
 			        removeGoobiScriptCodeMirror();
 			        initGoobiScriptCodeMirror();
 			    }
-	
+
 	            function removeGoobiScriptCodeMirror() {
 	                var codeEditors = document.querySelectorAll('.CodeMirror');
 	                codeEditors.forEach(function(editor) { editor.remove() })
 	            }
-	
+
 	            function initGoobiScriptCodeMirror() {
 	            	var goobiScriptTextArea = document.getElementById("goobiScriptfield");
 	            	if(goobiScriptTextArea) {
@@ -1391,7 +1412,7 @@
 					    });
 	            	}
 	            }
-	
+
 	            jsf.ajax.addOnEvent( function( data ) {
 	                var ajaxstatus = data.status;
 	                switch ( ajaxstatus ) {
@@ -1403,7 +1424,7 @@
 	                        break;
 	                }
 	            });
-            
+
 			</script>
 			<!-- // JAVASCRIPT -->
 

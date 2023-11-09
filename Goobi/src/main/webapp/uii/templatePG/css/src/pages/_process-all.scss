@@ -2,7 +2,7 @@
   // Custom column widths
   .header {
     &__selection {
-      --width-table-col: 55px;
+      --width-table-col: min-content;
     }
     &__id {
       --width-table-col: 25px;
@@ -12,6 +12,7 @@
     }
     &__embedded-metadata {
       --width-table-col: 200px;
+      min-width: var(--width-table-col);
     }
     &__batch-id {
       --width-table-col: 35px;
@@ -20,7 +21,7 @@
       --width-table-col: 160px;
     }
     &__custom-column {
-      --width-table-col: 240px;
+      --width-table-col: min-content;
     }
     &__date {
       --width-table-col: 60px;
@@ -60,6 +61,19 @@
     }
   }
 
+  .processTable {
+    th {
+      width: min-content;
+    }
+    canvas {
+      max-width: 150px;
+      width: 100%;
+    }
+    .prozessVerwaltung {
+      word-break: break-all;
+    }
+  }
+
   .metadata-nested-table {
     tr {
       display: flex;
@@ -81,5 +95,49 @@
   .list-of-goobi-scripts .badge {
     cursor: pointer;
     border: 0;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .processTable {
+    thead {
+      display: block;
+      height: 0;
+      visibility: hidden;
+      width: 0;
+    }
+    > tbody {
+      > [role="row"] {
+        border-bottom: 0;
+        display: flex;
+        flex-direction: column;
+        &:nth-child(even) {
+          background: #eee;
+        }
+        > td {
+          border: 0;
+          border-bottom: 1px solid black;
+          column-gap: 1rem;
+          display: flex;
+          justify-content: space-between;
+          min-height: 1rem;
+          width: 100%;
+          &:before {
+            content: attr(data-label);
+            font-weight: 700;
+          }
+          &:last-of-type {
+            border: 0;
+          }
+          &.prozessVerwaltung {
+            display: flex;
+            flex-direction: column;
+          }
+        }
+      }
+    }
+    .progress__container {
+      flex-grow: 2;
+    }
   }
 }

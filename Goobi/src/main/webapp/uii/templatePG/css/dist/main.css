@@ -1740,7 +1740,7 @@ a:focus, a:hover, a:active {
 .table-fixed th,
 .gw-table-fixed th,
 .gw-table-fixed-no-th td {
-  width: var(--width-table-col);
+  min-width: var(--width-table-col);
 }
 
 .gw-table-fixed th button,
@@ -1758,9 +1758,7 @@ a:focus, a:hover, a:active {
 .gw-table-fixed__actions,
 .table-fixed .table-fixed__actions {
   --width-table-col: 120px;
-  width: var(--width-table-col);
   min-width: var(--width-table-col);
-  max-width: var(--width-table-col);
 }
 
 .gw-table__wrapper,
@@ -1782,6 +1780,20 @@ a:focus, a:hover, a:active {
  * ====================================== */
 .column-header-sort {
   width: 100%;
+}
+
+.tableColumnMaxWidthLong {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tableColumnMaxWidthLonger {
+  max-width: 350px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 input:hover,
@@ -2665,7 +2677,7 @@ body .ui-messages > div {
 }
 
 #processAll .header__selection {
-  --width-table-col: 55px;
+  --width-table-col: max-content;
 }
 #processAll .header__id {
   --width-table-col: 25px;
@@ -2683,7 +2695,7 @@ body .ui-messages > div {
   --width-table-col: 160px;
 }
 #processAll .header__custom-column {
-  --width-table-col: 240px;
+  --width-table-col: max-content;
 }
 #processAll .header__date {
   --width-table-col: 60px;
@@ -2721,6 +2733,13 @@ body .ui-messages > div {
 #processAll .header__buttons {
   width: 80px;
 }
+#processAll .processTable th {
+  width: min-content;
+}
+#processAll .processTable canvas {
+  max-width: 150px;
+  width: 100%;
+}
 #processAll .metadata-nested-table tr {
   display: flex;
 }
@@ -2739,6 +2758,44 @@ body .ui-messages > div {
   border: 0;
 }
 
+@media screen and (max-width: 900px) {
+  .processTable thead {
+    display: block;
+    height: 0;
+    visibility: hidden;
+    width: 0;
+  }
+  .processTable > tbody > [role=row] {
+    display: flex;
+    flex-direction: column;
+  }
+  .processTable > tbody > [role=row]:nth-of-type(even) {
+    background: #eee;
+  }
+  .processTable > tbody > [role=row] > td {
+    border: 0;
+    border-bottom: 1px solid black;
+    column-gap: 1rem;
+    display: flex;
+    justify-content: space-between;
+    min-height: 1rem;
+    width: 100%;
+  }
+  .processTable > tbody > [role=row] > td:before {
+    content: attr(data-label);
+    font-weight: 700;
+  }
+  .processTable > tbody > [role=row] > td:last-of-type {
+    border: 0;
+  }
+  .processTable > tbody > [role=row] > td.prozessVerwaltung {
+    display: flex;
+    flex-direction: column;
+  }
+  .processTable .progress__container {
+    flex-grow: 2;
+  }
+}
 /* ========================================
  * process_new2.xhmtl
  * => very specific styles (high specificity)

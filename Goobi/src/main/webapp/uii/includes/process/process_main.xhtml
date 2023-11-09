@@ -359,7 +359,7 @@
                                 <h:panelGrid
                                     columns="2"
                                     styleClass="table table-hover table-bordered"
-                                    columnClasses="visible, tableColumnMaxWidthLong">
+                                    columnClasses="visible,tableColumnMaxWidthLong">
 
                                     <h:outputText value="#{msgs.prozessTitel}:" />
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.titel}" />
@@ -377,10 +377,10 @@
 
                                     <h:outputText value="#{msgs.docket}:" />
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.docket.name}" />
-									
+
  									<h:outputText value="#{msgs.exportValidation}:" />
  									<h:outputText value="#{ProzessverwaltungForm.myProzess.exportValidator.label != null ? ProzessverwaltungForm.myProzess.exportValidator.label : msgs.noValidation}" />
- 									
+
                                     <h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
                                     <i class="fa #{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}"></i>
 
@@ -679,5 +679,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-
