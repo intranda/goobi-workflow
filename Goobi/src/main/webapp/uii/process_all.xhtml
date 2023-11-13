@@ -49,7 +49,7 @@
 		<style>
 .CodeMirror {
 	border: 1px solid #ddd;
-	heigth: 50px;
+	height: 50px;
 }
 </style>
 
@@ -146,7 +146,7 @@
 
 													<!-- SELECTION COLUMN HEADER -->
 													<th
-														class="header__selection"
+														class="header__selection header__col-flex"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 														<div class="d-flex">
 
@@ -172,7 +172,7 @@
 
 													<!-- PROCESS ID COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__id"
+														addClass="header__id header__col-s"
 														name="id"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.id}"
@@ -183,21 +183,21 @@
 
                                                     <!-- THUMBNAIL COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__thumbnail"
+														addClass="header__thumbnail header__col-xl"
 														value="#{msgs.thumbnail}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
 														sortable="false" />
 
                                                     <!-- METADATA COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__embedded-metadata"
+														addClass="header__embedded-metadata header__col-max"
 														value="#{msgs.metadata}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
 														sortable="false" />
 
                                                     <!-- BATCH ID COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__batch-id"
+														addClass="header__batch-id header__col-m"
 														name="batch"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.batch}"
@@ -207,7 +207,7 @@
 
                                                     <!-- PROCESS TITLE COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__title"
+														addClass="header__title header__col-max"
 														name="titel"
 														form="#{ProzessverwaltungForm}"
 														value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}"
@@ -221,14 +221,14 @@
                                                         items="#{LoginForm.listOfCustomColumns}"
                                                         var="var">
                                                         <intranda:columnheader
-                                                            addClass="header__custom-column"
+                                                            addClass="header__custom-column header__col-flex"
                                                             form="#{ProzessverwaltungForm}"
                                                             ajaxRender="processAllProcessesBox:myform"
                                                             value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
                                                             sortField="#{var}"
                                                             rendered="#{LoginForm.isDisplaySortfield(var)}" />
                                                         <intranda:columnheader
-                                                            addClass="header__custom-column"
+                                                            addClass="header__custom-column header__col-flex"
                                                             sortable="false"
                                                             value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
                                                             rendered="#{!LoginForm.isDisplaySortfield(var)}" />
@@ -236,7 +236,7 @@
 
                                                     <!-- CREATION DATE COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__date"
+														addClass="header__date header__col-l"
 														name="vorgangsdatum"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.vorgangsdatum}"
@@ -246,14 +246,14 @@
 
                                                     <!-- RULESET COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__ruleset"
+														addClass="header__ruleset header__col-l"
 														value="#{msgs.regelsatz}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
 														sortable="false" />
 
                                                     <!-- STATUS COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__progress"
+														addClass="header__progress header__col-xxl"
 														name="fortschritt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.status}"
@@ -262,7 +262,7 @@
 
                                                     <!-- PROJECT COLUMN HEADER -->
 													<intranda:columnheader
-														addClass=" #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'} header__project"
+														addClass=" #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'} header__project header__col-l"
 														name="projekt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.projekt}"
@@ -271,7 +271,7 @@
 
                                                     <!-- INSTITUTION COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__institution"
+														addClass="header__institution header__col-flex"
 														name="institution"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.institution}"
@@ -282,7 +282,7 @@
                                                     <!-- LOCKINGS COLUMN HEADER -->
 													<intranda:columnheader
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
-														addClass="header__lockings"
+														addClass="header__lockings header__col-s"
 														name="sperrungen"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.sperrungen}"
@@ -291,28 +291,28 @@
 
                                                     <!-- LAST STATUS UPDATE DATE COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__update-date"
+														addClass="header__update-date header__col-l"
 														value="#{msgs.lastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionDate']}"
 														sortable="false" />
 
 													<!-- LAST STATUS UPDATE USER COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__update-user"
+														addClass="header__update-user header__col-l"
 														value="#{msgs.userLastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionUser']}"
 														sortable="false" />
 
                                                     <!-- LAST STATUS UPDATE TASK COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__update-task"
+														addClass="header__update-task header__col-l"
 														value="#{msgs.taskLastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionTask']}"
 														sortable="false" />
 
 													<!-- SWAPPED OUT COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__swapped"
+														addClass="header__swapped header__col-l"
 														value="#{msgs.ausgelagert}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
 														sortable="false" />
@@ -321,7 +321,7 @@
 													<intranda:columnheader
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
 														value="#{msgs.NumberOfImages}"
-														addClass="header__number-of-imgs"
+														addClass="header__number-of-imgs header__col-xl"
 														name="numberOfImages"
                                                         sortField="sortHelperImages"
 														form="#{ProzessverwaltungForm}"
@@ -329,7 +329,7 @@
 
                                                     <!-- BUTTONS COLUMN HEADER -->
 													<intranda:columnheader
-                                                        addClass="header__buttons"
+                                                        addClass="header__buttons header__col-xl"
 														value="#{msgs.auswahl}"
 														sortable="false" />
 												</tr>
@@ -646,10 +646,12 @@
 																rendered="#{item.fortschritt3 gt 0}"
 																data-toggle="tooltip"
 																styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-done'):('progress-bar-success'))}"
-																style="width: #{item.fortschritt3}%;line-height:15px;"
 																pt:role="figure"
 																pt:aria-label="#{item.fortschritt3}% #{msgs.statusAbgeschlossen}">
 																<h:outputText value="&#160;" />
+																<f:passThroughAttribute
+																	name="style"
+																	value ="--progress: #{item.fortschritt3}%" />
 																<f:passThroughAttribute
 																	name="data-bs-trigger"
 																	value="hover" />
@@ -674,10 +676,12 @@
 																rendered="#{item.fortschritt2 gt 0}"
 																data-toggle="tooltip"
 																styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-open'):('progress-bar-warning'))}"
-																style="width: #{item.fortschritt2}%;line-height:15px;"
 																pt:role="figure"
 																pt:aria-label="#{item.fortschritt2}% #{msgs.statusOffen} / #{msgs.statusInBearbeitung}">
 																<h:outputText value="&#160;" />
+																<f:passThroughAttribute
+																	name="style"
+																	value ="--progress: #{item.fortschritt2}%" />
 																<f:passThroughAttribute
 																	name="data-bs-trigger"
 																	value="hover" />
@@ -702,10 +706,12 @@
 																rendered="#{item.fortschrittError gt 0}"
 																data-toggle="tooltip"
 																styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} "
-																style="width: #{item.fortschrittError}%;line-height:15px;"
 																pt:role="figure"
 																pt:aria-label="#{item.fortschrittError}% #{msgs.statusError}">
 																<h:outputText value="&#160;" />
+																<f:passThroughAttribute
+																	name="style"
+																	value ="--progress: #{item.fortschrittError}%" />
 																<f:passThroughAttribute
 																	name="data-bs-trigger"
 																	value="hover" />
@@ -730,10 +736,12 @@
 																rendered="#{item.fortschritt1 gt 0}"
 																data-toggle="tooltip"
 																styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} "
-																style="width: #{item.fortschritt1}%;line-height:15px;"
 																pt:role="figure"
 																pt:aria-label="#{item.fortschritt1}% #{msgs.statusGesperrt}">
 																<h:outputText value="&#160;" />
+																<f:passThroughAttribute
+																	name="style"
+																	value ="--progress: #{item.fortschritt1}%" />
 																<f:passThroughAttribute
 																	name="data-bs-trigger"
 																	value="hover" />

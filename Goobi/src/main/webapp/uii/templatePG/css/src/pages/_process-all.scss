@@ -1,76 +1,59 @@
 #processAll {
   // Custom column widths
+  th {
+    --width-table-col: 300px;
+  }
+  --col-s: 50px;
+  --col-m: 80px;
+  --col-l: 110px;
+  --col-xl: 150px;
+  --col-xxl: 220px;
+  --col-max: 300px;
+  --col-flex: max-content;
   .header {
-    &__selection {
-      --width-table-col: min-content;
+    &__col-s {
+      max-width: var(--col-s);
     }
-    &__id {
-      --width-table-col: 25px;
+    &__col-m {
+      max-width: var(--col-m);
     }
-    &__thumbnail {
-      --width-table-col: 90px;
+    &__col-l {
+      max-width: var(--col-l);
     }
-    &__embedded-metadata {
-      --width-table-col: 200px;
-      min-width: var(--width-table-col);
+    &__col-xl {
+      max-width: var(--col-xl);
     }
-    &__batch-id {
-      --width-table-col: 35px;
+    &__col-xxl {
+      max-width: var(--col-xxl);
     }
-    &__title {
-      --width-table-col: 160px;
+    &__col-max {
+      max-width: var(--col-max);
     }
-    &__custom-column {
-      --width-table-col: min-content;
-    }
-    &__date {
-      --width-table-col: 60px;
-    }
-    &__ruleset {
-      --width-table-col: 60px;
-    }
-    &__progress {
-      --width-table-col: 70px;
-    }
-    &__project {
-      --width-table-col: 80px;
-    }
-    &__institution {
-      --width-table-col: 80px;
-    }
-    &__lockings {
-      --width-table-col: 60px;
-    }
-    &__update-date {
-      --width-table-col: 60px;
-    }
-    &__update-user {
-      --width-table-col: 60px;
-    }
-    &__update-task {
-      --width-table-col: 60px;
-    }
-    &__swapped {
-      --width-table-col: 40px;
-    }
-    &__number-of-imgs {
-      --width-table-col: 55px;
-    }
-    &__buttons {
-      width: 80px;
+    &__col-flex {
+      max-width: var(--col-flex);
+      -webkit-max-logical-width: var(--col-l);
     }
   }
 
   .processTable {
-    th {
-      width: min-content;
-    }
     canvas {
       max-width: 150px;
       width: 100%;
     }
     .prozessVerwaltung {
       word-break: break-all;
+      // this is a workaround to force a table layout that fits the container
+      table {
+        table-layout: fixed;
+        width: 100%;
+        word-break: normal;
+        th {
+          width: 40%;
+        }
+        th:nth-child(2) {
+          width: 100%;
+        }
+      }
     }
   }
 
@@ -89,7 +72,7 @@
   .boxTitleDetails {
     th:first-child,
     th:last-child {
-      --width-table-col: 80px;
+      --width-table-col: 60px;
     }
   }
   .list-of-goobi-scripts .badge {

@@ -99,6 +99,7 @@
 
   th span {
     font-weight: bold;
+    padding: 0 0 0 0.5rem;
   }
 
   td {
@@ -261,12 +262,6 @@
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
-  & > * {
-    flex: 1 1 content;
-  }
-  & button {
-    width: 100%;
-  }
 }
 
 .dataTables__paginator {
