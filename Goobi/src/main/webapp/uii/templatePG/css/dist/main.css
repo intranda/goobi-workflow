@@ -1296,7 +1296,7 @@ a:focus, a:hover, a:active {
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: var(--box-padding-title);
   border-bottom: 0.15rem solid var(--clr-neutral-300);
   background-color: var(--clr-neutral-300);
@@ -1349,6 +1349,10 @@ a:focus, a:hover, a:active {
   margin: 3px 0 3px 0;
   display: flex;
   align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .box__title h2 .fa {
   margin: 0 10px 0 5px;
@@ -1523,12 +1527,25 @@ a:focus, a:hover, a:active {
   --width-table-col: 100px;
 }
 
+.table-width {
+  hyphens: auto;
+  overflow-wrap: break-word;
+  width: 100%;
+}
+.table-width td {
+  overflow-x: auto;
+}
+.table-width th {
+  max-width: var(--width-table-col);
+}
+
 /* ========================================
  * BS OVERRIDES
  * ====================================== */
 .table {
   margin-bottom: 0;
   border-color: var(--clr-neutral-300);
+  max-width: 100%;
 }
 
 .table > :not(caption) > * > * {
@@ -1552,12 +1569,22 @@ a:focus, a:hover, a:active {
 .gw-table .box__content--padded tr {
   border-color: var(--clr-neutral-300);
 }
+.gw-table td[title] {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
 .gw-table thead {
   background-color: var(--clr-neutral-200);
 }
 .gw-table thead button {
   background-color: transparent;
   border: 0;
+}
+.gw-table__vscroll {
+  max-height: 225px;
+  overflow-y: scroll;
 }
 .gw-table .table-bordered-custom {
   border-width: 0;
@@ -1720,6 +1747,16 @@ a:focus, a:hover, a:active {
   gap: 4px;
   flex-wrap: wrap;
 }
+.gw-table__actions__container > *,
+.gw-table-fixed__actions__btns > *,
+.table-fixed__actions__btns > * {
+  flex: 1 1 content;
+}
+.gw-table__actions__container button,
+.gw-table-fixed__actions__btns button,
+.table-fixed__actions__btns button {
+  width: 100%;
+}
 
 .dataTables__paginator {
   display: flex;
@@ -1740,7 +1777,7 @@ a:focus, a:hover, a:active {
 .table-fixed th,
 .gw-table-fixed th,
 .gw-table-fixed-no-th td {
-  min-width: var(--width-table-col);
+  width: var(--width-table-col);
 }
 
 .gw-table-fixed th button,
@@ -1759,6 +1796,7 @@ a:focus, a:hover, a:active {
 .table-fixed .table-fixed__actions {
   --width-table-col: 120px;
   min-width: var(--width-table-col);
+  max-width: var(--width-table-col);
 }
 
 .gw-table__wrapper,
@@ -1780,20 +1818,6 @@ a:focus, a:hover, a:active {
  * ====================================== */
 .column-header-sort {
   width: 100%;
-}
-
-.tableColumnMaxWidthLong {
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tableColumnMaxWidthLonger {
-  max-width: 350px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 input:hover,
@@ -1924,6 +1948,10 @@ body .ui-inputfield:hover {
   max-width: 240px;
   justify-content: center;
   margin-top: 0.7rem;
+}
+
+.progress-bar {
+  width: var(--progress);
 }
 
 /* These styles are taken from intranda.css
@@ -2677,7 +2705,7 @@ body .ui-messages > div {
 }
 
 #processAll .header__selection {
-  --width-table-col: max-content;
+  --width-table-col: min-content;
 }
 #processAll .header__id {
   --width-table-col: 25px;
@@ -2687,6 +2715,7 @@ body .ui-messages > div {
 }
 #processAll .header__embedded-metadata {
   --width-table-col: 200px;
+  min-width: var(--width-table-col);
 }
 #processAll .header__batch-id {
   --width-table-col: 35px;
@@ -2695,7 +2724,7 @@ body .ui-messages > div {
   --width-table-col: 160px;
 }
 #processAll .header__custom-column {
-  --width-table-col: max-content;
+  --width-table-col: min-content;
 }
 #processAll .header__date {
   --width-table-col: 60px;
@@ -2740,6 +2769,9 @@ body .ui-messages > div {
   max-width: 150px;
   width: 100%;
 }
+#processAll .processTable .prozessVerwaltung {
+  word-break: break-all;
+}
 #processAll .metadata-nested-table tr {
   display: flex;
 }
@@ -2758,7 +2790,7 @@ body .ui-messages > div {
   border: 0;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1100px) {
   .processTable thead {
     display: block;
     height: 0;
@@ -2766,10 +2798,11 @@ body .ui-messages > div {
     width: 0;
   }
   .processTable > tbody > [role=row] {
+    border-bottom: 0;
     display: flex;
     flex-direction: column;
   }
-  .processTable > tbody > [role=row]:nth-of-type(even) {
+  .processTable > tbody > [role=row]:nth-child(even) {
     background: #eee;
   }
   .processTable > tbody > [role=row] > td {
@@ -2863,6 +2896,10 @@ body .ui-messages > div {
 
 .process_propertyAction {
   width: 90px;
+}
+
+.monthly-processes {
+  height: 300px;
 }
 
 /*# sourceMappingURL=main.css.map */
