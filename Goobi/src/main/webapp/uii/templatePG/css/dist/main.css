@@ -1604,6 +1604,7 @@ a:focus, a:hover, a:active {
 }
 .gw-table th span {
   font-weight: bold;
+  padding: 0 0 0 0.5rem;
 }
 .gw-table td .btn-group .btn:not(:first-of-type) {
   margin-right: 0rem;
@@ -1746,16 +1747,6 @@ a:focus, a:hover, a:active {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
-}
-.gw-table__actions__container > *,
-.gw-table-fixed__actions__btns > *,
-.table-fixed__actions__btns > * {
-  flex: 1 1 content;
-}
-.gw-table__actions__container button,
-.gw-table-fixed__actions__btns button,
-.table-fixed__actions__btns button {
-  width: 100%;
 }
 
 .dataTables__paginator {
@@ -2704,66 +2695,39 @@ body .ui-messages > div {
   width: unset;
 }
 
-#processAll .header__selection {
-  --width-table-col: min-content;
+#processAll {
+  --col-s: 50px;
+  --col-m: 80px;
+  --col-l: 110px;
+  --col-xl: 150px;
+  --col-xxl: 220px;
+  --col-max: 300px;
+  --col-flex: max-content;
 }
-#processAll .header__id {
-  --width-table-col: 25px;
+#processAll th {
+  --width-table-col: 300px;
 }
-#processAll .header__thumbnail {
-  --width-table-col: 90px;
+#processAll .header__col-s {
+  max-width: var(--col-s);
 }
-#processAll .header__embedded-metadata {
-  --width-table-col: 200px;
-  min-width: var(--width-table-col);
+#processAll .header__col-m {
+  max-width: var(--col-m);
 }
-#processAll .header__batch-id {
-  --width-table-col: 35px;
+#processAll .header__col-l {
+  max-width: var(--col-l);
 }
-#processAll .header__title {
-  --width-table-col: 160px;
+#processAll .header__col-xl {
+  max-width: var(--col-xl);
 }
-#processAll .header__custom-column {
-  --width-table-col: min-content;
+#processAll .header__col-xxl {
+  max-width: var(--col-xxl);
 }
-#processAll .header__date {
-  --width-table-col: 60px;
+#processAll .header__col-max {
+  max-width: var(--col-max);
 }
-#processAll .header__ruleset {
-  --width-table-col: 60px;
-}
-#processAll .header__progress {
-  --width-table-col: 70px;
-}
-#processAll .header__project {
-  --width-table-col: 80px;
-}
-#processAll .header__institution {
-  --width-table-col: 80px;
-}
-#processAll .header__lockings {
-  --width-table-col: 60px;
-}
-#processAll .header__update-date {
-  --width-table-col: 60px;
-}
-#processAll .header__update-user {
-  --width-table-col: 60px;
-}
-#processAll .header__update-task {
-  --width-table-col: 60px;
-}
-#processAll .header__swapped {
-  --width-table-col: 40px;
-}
-#processAll .header__number-of-imgs {
-  --width-table-col: 55px;
-}
-#processAll .header__buttons {
-  width: 80px;
-}
-#processAll .processTable th {
-  width: min-content;
+#processAll .header__col-flex {
+  max-width: var(--col-flex);
+  -webkit-max-logical-width: var(--col-l);
 }
 #processAll .processTable canvas {
   max-width: 150px;
@@ -2771,6 +2735,17 @@ body .ui-messages > div {
 }
 #processAll .processTable .prozessVerwaltung {
   word-break: break-all;
+}
+#processAll .processTable .prozessVerwaltung table {
+  table-layout: fixed;
+  width: 100%;
+  word-break: normal;
+}
+#processAll .processTable .prozessVerwaltung table th {
+  width: 40%;
+}
+#processAll .processTable .prozessVerwaltung table th:nth-child(2) {
+  width: 100%;
 }
 #processAll .metadata-nested-table tr {
   display: flex;
@@ -2783,7 +2758,7 @@ body .ui-messages > div {
 }
 #processAll .boxTitleDetails th:first-child,
 #processAll .boxTitleDetails th:last-child {
-  --width-table-col: 80px;
+  --width-table-col: 60px;
 }
 #processAll .list-of-goobi-scripts .badge {
   cursor: pointer;
