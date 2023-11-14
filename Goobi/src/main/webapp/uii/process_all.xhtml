@@ -146,7 +146,7 @@
 
 													<!-- SELECTION COLUMN HEADER -->
 													<th
-														class="header__selection header__col-flex"
+														class="header__selection header__col-l"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 														<div class="d-flex">
 
@@ -221,14 +221,14 @@
                                                         items="#{LoginForm.listOfCustomColumns}"
                                                         var="var">
                                                         <intranda:columnheader
-                                                            addClass="header__custom-column header__col-flex"
+                                                            addClass="header__custom-column header__col-m"
                                                             form="#{ProzessverwaltungForm}"
                                                             ajaxRender="processAllProcessesBox:myform"
                                                             value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
                                                             sortField="#{var}"
                                                             rendered="#{LoginForm.isDisplaySortfield(var)}" />
                                                         <intranda:columnheader
-                                                            addClass="header__custom-column header__col-flex"
+                                                            addClass="header__custom-column header__col-m"
                                                             sortable="false"
                                                             value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
                                                             rendered="#{!LoginForm.isDisplaySortfield(var)}" />
@@ -271,7 +271,7 @@
 
                                                     <!-- INSTITUTION COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__institution header__col-flex"
+														addClass="header__institution header__col-l"
 														name="institution"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.institution}"
@@ -321,7 +321,7 @@
 													<intranda:columnheader
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
 														value="#{msgs.NumberOfImages}"
-														addClass="header__number-of-imgs header__col-xl"
+														addClass="header__number-of-imgs header__col-l"
 														name="numberOfImages"
                                                         sortField="sortHelperImages"
 														form="#{ProzessverwaltungForm}"

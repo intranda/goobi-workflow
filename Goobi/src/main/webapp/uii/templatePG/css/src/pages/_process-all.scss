@@ -9,13 +9,12 @@
   --col-xl: 150px;
   --col-xxl: 220px;
   --col-max: 300px;
-  --col-flex: max-content;
   .header {
     &__col-s {
-      max-width: var(--col-s);
+      width: var(--col-s);
     }
     &__col-m {
-      max-width: var(--col-m);
+      width: var(--col-m);
     }
     &__col-l {
       max-width: var(--col-l);
@@ -28,10 +27,6 @@
     }
     &__col-max {
       max-width: var(--col-max);
-    }
-    &__col-flex {
-      max-width: var(--col-flex);
-      -webkit-max-logical-width: var(--col-l);
     }
   }
 
