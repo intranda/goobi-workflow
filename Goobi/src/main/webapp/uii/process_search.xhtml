@@ -35,7 +35,7 @@
 				<div class="col-sm-12">
 					<h:form
 						id="searchform"
-						onkeypress="submitOnEnter(event);">
+						onkeypress="submitOnEnter(event, 'search-button');">
 
 						<!-- SEARCH BOX -->
 						<intranda:box
@@ -45,14 +45,14 @@
 							icon="fa-search"
 							title="#{msgs.nachEinemBandSuchen}">
 
-		
+
 							<!-- LIST OF SEARCH ROWS -->
 							<x:dataList
 								value="#{SearchForm.rowList}"
 								var="row"
 								id="rowList">
-								
-								
+
+
 								<div class="row">
 									<div class="col-12 col-md-3">
 										<label class="form__label w-100">
@@ -339,7 +339,7 @@
 												value="#{row}" />
 										</button>
 									<!-- // PLUS AND MINUS BUTTONS -->
-									
+
 									</div>
 								</div>
 							</x:dataList>
@@ -381,7 +381,7 @@
 								</a>
 
 								<button
-									class="btn btn-primary-400"
+									class="btn btn-primary-400 search-button"
 									jsf:id="absenden"
 									type="submit"
 									jsf:action="#{SearchForm.createFilter}">
@@ -395,8 +395,8 @@
 
 						</intranda:box>
 						<!-- // SEARCH BOX -->
-						
-						
+
+
 					</h:form>
 
 				</div>
