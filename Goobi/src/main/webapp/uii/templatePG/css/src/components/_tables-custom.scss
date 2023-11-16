@@ -327,3 +327,33 @@
 .column-header-sort{
 	width: 100%;
 }
+
+/* ========================================
+ * Resizable tables
+ * ====================================== */
+
+.table-resizable {
+  table-layout: auto;
+  width: 100%;
+  .resize-col {
+      position: relative;
+    }
+  .resize-handle {
+    cursor: ew-resize;
+    height: var(--handle-height);
+    position: absolute;
+    right: 0;
+    top: 0;
+    user-select: none;
+    width: 4px;
+    &.active,
+    &:hover {
+      border: 2px solid var(--clr-primary-400);
+    }
+  }
+}
+
+// body style to display cursor as resize regardless of position
+.table-resizing {
+  cursor: ew-resize;
+}

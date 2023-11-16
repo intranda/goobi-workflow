@@ -83,7 +83,7 @@
 							icon="fa-tasks"
 							title="#{myPageTitle}">
 
-							<div class="gw-table gw-table-fixed">
+							<div class="gw-table">
 
                                 <!-- SEARCH AREA -->
 								<h:form id="searchform">
@@ -137,7 +137,7 @@
 										<table
 											role="grid"
 											id="processTable"
-											class="table table-hover table-nomargin dataTable table-bordered responsive processTable"
+											class="table table-hover table-nomargin dataTable table-bordered table-resizable responsive processTable"
 											jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' or not ProzessverwaltungForm.anzeigeAnpassen['gridview']}">
 
 											<!-- ### Columnheader row ### -->
@@ -146,6 +146,7 @@
 
 													<!-- SELECTION COLUMN HEADER -->
 													<th
+														id="selection"
 														class="header__selection header__col-l"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 														<div class="d-flex">
@@ -172,6 +173,7 @@
 
 													<!-- PROCESS ID COLUMN HEADER -->
 													<intranda:columnheader
+														id="id"
 														addClass="header__id header__col-s"
 														name="id"
 														form="#{ProzessverwaltungForm}"
@@ -183,6 +185,7 @@
 
                                                     <!-- THUMBNAIL COLUMN HEADER -->
 													<intranda:columnheader
+														id="thumbnail"
 														addClass="header__thumbnail header__col-xl"
 														value="#{msgs.thumbnail}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
@@ -190,6 +193,7 @@
 
                                                     <!-- METADATA COLUMN HEADER -->
 													<intranda:columnheader
+														id="embedded-metadata"
 														addClass="header__embedded-metadata header__col-max"
 														value="#{msgs.metadata}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
@@ -197,6 +201,7 @@
 
                                                     <!-- BATCH ID COLUMN HEADER -->
 													<intranda:columnheader
+														id="batch-id"
 														addClass="header__batch-id header__col-m"
 														name="batch"
 														form="#{ProzessverwaltungForm}"
@@ -236,6 +241,7 @@
 
                                                     <!-- CREATION DATE COLUMN HEADER -->
 													<intranda:columnheader
+														id="date"
 														addClass="header__date header__col-l"
 														name="vorgangsdatum"
 														form="#{ProzessverwaltungForm}"
@@ -253,6 +259,7 @@
 
                                                     <!-- STATUS COLUMN HEADER -->
 													<intranda:columnheader
+														id="progress"
 														addClass="header__progress header__col-xxl"
 														name="fortschritt"
 														form="#{ProzessverwaltungForm}"
@@ -262,6 +269,7 @@
 
                                                     <!-- PROJECT COLUMN HEADER -->
 													<intranda:columnheader
+														id="project"
 														addClass=" #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'} header__project header__col-l"
 														name="projekt"
 														form="#{ProzessverwaltungForm}"
@@ -271,6 +279,7 @@
 
                                                     <!-- INSTITUTION COLUMN HEADER -->
 													<intranda:columnheader
+														id="institution"
 														addClass="header__institution header__col-l"
 														name="institution"
 														form="#{ProzessverwaltungForm}"
@@ -281,6 +290,7 @@
 
                                                     <!-- LOCKINGS COLUMN HEADER -->
 													<intranda:columnheader
+														id="lockings"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
 														addClass="header__lockings header__col-s"
 														name="sperrungen"
@@ -291,6 +301,7 @@
 
                                                     <!-- LAST STATUS UPDATE DATE COLUMN HEADER -->
 													<intranda:columnheader
+														id="update-date"
 														addClass="header__update-date header__col-l"
 														value="#{msgs.lastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionDate']}"
@@ -298,6 +309,7 @@
 
 													<!-- LAST STATUS UPDATE USER COLUMN HEADER -->
 													<intranda:columnheader
+														id="update-user"
 														addClass="header__update-user header__col-l"
 														value="#{msgs.userLastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionUser']}"
@@ -305,6 +317,7 @@
 
                                                     <!-- LAST STATUS UPDATE TASK COLUMN HEADER -->
 													<intranda:columnheader
+														id="update-task"
 														addClass="header__update-task header__col-l"
 														value="#{msgs.taskLastStatusUpdate}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionTask']}"
@@ -312,6 +325,7 @@
 
 													<!-- SWAPPED OUT COLUMN HEADER -->
 													<intranda:columnheader
+														id="swapped"
 														addClass="header__swapped header__col-l"
 														value="#{msgs.ausgelagert}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
@@ -319,6 +333,7 @@
 
 													<!-- NUMBER OF IMAGES COLUMN HEADER -->
 													<intranda:columnheader
+														id="number-of-imgs"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
 														value="#{msgs.NumberOfImages}"
 														addClass="header__number-of-imgs header__col-l"
@@ -329,6 +344,7 @@
 
                                                     <!-- BUTTONS COLUMN HEADER -->
 													<intranda:columnheader
+														id="buttons"
                                                         addClass="header__buttons header__col-xl"
 														value="#{msgs.auswahl}"
 														sortable="false" />
@@ -1432,6 +1448,8 @@
 	                        break;
 	                }
 	            });
+
+
 
 			</script>
 			<!-- // JAVASCRIPT -->
