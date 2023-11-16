@@ -17,16 +17,17 @@
       width: var(--col-m);
     }
     &__col-l {
-      max-width: var(--col-l);
+      width: var(--col-l);
+      padding: 0 10px;
     }
     &__col-xl {
-      max-width: var(--col-xl);
+      width: var(--col-xl);
     }
     &__col-xxl {
-      max-width: var(--col-xxl);
+      width: var(--col-xxl);
     }
     &__col-max {
-      max-width: var(--col-max);
+      width: var(--col-max);
     }
   }
 
@@ -49,6 +50,9 @@
           width: 100%;
         }
       }
+    }
+    [data-label = "origpath"] {
+      word-break: break-all;
     }
   }
 
