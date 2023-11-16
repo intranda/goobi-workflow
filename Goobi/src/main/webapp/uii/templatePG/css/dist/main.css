@@ -1811,6 +1811,33 @@ a:focus, a:hover, a:active {
   width: 100%;
 }
 
+/* ========================================
+ * Resizable tables
+ * ====================================== */
+.table-resizable {
+  table-layout: auto;
+  width: 100%;
+}
+.table-resizable .resize-col {
+  position: relative;
+}
+.table-resizable .resize-handle {
+  cursor: ew-resize;
+  height: var(--handle-height);
+  position: absolute;
+  right: 0;
+  top: 0;
+  user-select: none;
+  width: 4px;
+}
+.table-resizable .resize-handle.active, .table-resizable .resize-handle:hover {
+  border: 2px solid var(--clr-primary-400);
+}
+
+.table-resizing {
+  cursor: ew-resize;
+}
+
 input:hover,
 select:hover,
 textarea:hover {
@@ -2702,32 +2729,28 @@ body .ui-messages > div {
   --col-xl: 150px;
   --col-xxl: 220px;
   --col-max: 300px;
-  --col-flex: max-content;
 }
 #processAll th {
   --width-table-col: 300px;
 }
 #processAll .header__col-s {
-  max-width: var(--col-s);
+  width: var(--col-s);
 }
 #processAll .header__col-m {
-  max-width: var(--col-m);
+  width: var(--col-m);
 }
 #processAll .header__col-l {
-  max-width: var(--col-l);
+  width: var(--col-l);
+  padding: 0 10px;
 }
 #processAll .header__col-xl {
-  max-width: var(--col-xl);
+  width: var(--col-xl);
 }
 #processAll .header__col-xxl {
-  max-width: var(--col-xxl);
+  width: var(--col-xxl);
 }
 #processAll .header__col-max {
-  max-width: var(--col-max);
-}
-#processAll .header__col-flex {
-  max-width: var(--col-flex);
-  -webkit-max-logical-width: var(--col-l);
+  width: var(--col-max);
 }
 #processAll .processTable canvas {
   max-width: 150px;
@@ -2746,6 +2769,9 @@ body .ui-messages > div {
 }
 #processAll .processTable .prozessVerwaltung table th:nth-child(2) {
   width: 100%;
+}
+#processAll .processTable [data-label=origpath] {
+  word-break: break-all;
 }
 #processAll .metadata-nested-table tr {
   display: flex;
