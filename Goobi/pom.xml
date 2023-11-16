@@ -76,7 +76,7 @@
 
         <!-- intranda internal -->
         <ics.version>3.9.1</ics.version>
-        <normdataimporter.version>1.10.5-SNAPSHOT</normdataimporter.version>
+        <normdataimporter.version>1.10.5</normdataimporter.version>
 
         <ugh-core.version>5.0.18</ugh-core.version>
         <ugh-marc.version>5.0.17</ugh-marc.version>
