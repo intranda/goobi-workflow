@@ -75,9 +75,9 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
-        String exportFulltextParameter = parameters.get("exportOcr");
+        String exportFullTextParameter = parameters.get("exportOcr");
         String exportImagesParameter = parameters.get("exportImages");
-        boolean exportFulltext = exportFulltextParameter.equalsIgnoreCase("true");
+        boolean exportFullText = exportFullTextParameter.equalsIgnoreCase("true");
         boolean exportImages = exportImagesParameter.equalsIgnoreCase("true");
 
         // execute all jobs that are still in waiting state
@@ -101,26 +101,18 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
             IExportPlugin export = getExportPlugin(pluginName);
 
             // 2. set up this export plugin
-            String logextension = "without ocr results";
-            if (exportFulltext) {
-                logextension = "including ocr results";
-            }
+            export.setExportImages(exportImages);
+            export.setExportFulltext(exportFullText);
 
-            export.setExportFulltext(exportFulltext);
-            if (!exportImages) {
-                logextension = "without images and " + logextension;
-                export.setExportImages(false);
-            } else {
-                logextension = "including images and " + logextension;
-                export.setExportImages(true);
-            }
+            String logExtension = exportImages ? "including images and " : "without images and ";
+            logExtension += exportFullText ? "including ocr results" : "without ocr results";
 
             // 3. kick this export plugin to run
             boolean success = export.startExport(p);
-            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Export " + logextension + " using GoobiScript.", username);
-            log.info("Export " + logextension + " using GoobiScript for process with ID " + p.getId());
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Export " + logExtension + " using GoobiScript.", username);
+            log.info("Export " + logExtension + " using GoobiScript for process with ID " + p.getId());
 
-            // set status to result of command
+            // 4. set status to result of command
             if (!success) {
                 gsr.setResultMessage("Errors occurred: " + export.getProblems().toString());
                 gsr.setResultType(GoobiScriptResultType.ERROR);
