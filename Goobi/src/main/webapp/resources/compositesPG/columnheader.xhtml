@@ -21,6 +21,7 @@
 		<composite:attribute name="customActionBean" type="java.lang.Object"/>
 		<composite:attribute name="customAction" type="java.lang.String"/>
         <composite:attribute name="sortField" type="java.lang.String"/>
+		<composite:attribute name="sortMethod" default="#{cc.attrs.form.FilterAlleStart}" method-signature="java.lang.String action()" />
 	</composite:interface>
 
 	<composite:implementation>
@@ -30,7 +31,7 @@
 		<th scope="col" role="columnheader" id="#{cc.attrs.id}" style="#{cc.attrs.style}" class="#{cc.attrs.addClass}" jsf:rendered="#{cc.attrs.sortable}"
 			aria-sort="#{cc.attrs.form.sortField== descendingLabel ? 'descending' : cc.attrs.form.sortField== ascendingLabel ? 'ascending' :'none'}">
 			<button class="column-header-sort" jsf:rendered="#{not cc.attrs.addAction}"
-				jsf:action="#{cc.attrs.form.FilterAlleStart}"
+				jsf:action="#{cc.attrs.sortMethod}"
 				aria-label="#{msgs.defaultSortField} #{cc.attrs.value} #{cc.attrs.form.sortField== descendingLabel ? msgs.defaultSortFieldDesc : cc.attrs.form.sortField== ascendingLabel ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
 				<h:outputText value="#{cc.attrs.value}" />
 				<span
@@ -47,5 +48,3 @@
 	</composite:implementation>
 
 </ui:composition>
-
-
