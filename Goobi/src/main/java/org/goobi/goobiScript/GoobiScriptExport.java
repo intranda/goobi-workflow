@@ -96,20 +96,9 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
 
             // process has step marked as export
             // 1. get a proper export plugin
-            IExportPlugin export = null;
             String pluginName = ProcessManager.getExportPluginName(p.getId());
-            if (StringUtils.isNotEmpty(pluginName)) {
-                try {
-                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-                } catch (Exception e) {
-                    log.error("Can't load export plugin, use default export", e);
-                    export = new ExportDms();
-                }
-            }
-
-            if (export == null) {
-                export = new ExportDms();
-            }
+            log.debug("export plugin name = " + pluginName);
+            IExportPlugin export = getExportPlugin(pluginName);
 
             // 2. set up this export plugin
             String logextension = "without ocr results";
@@ -151,5 +140,23 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
         }
         gsr.updateTimestamp();
 
+    }
+
+    private IExportPlugin getExportPlugin(String pluginName) {
+        IExportPlugin export = null;
+        if (StringUtils.isNotEmpty(pluginName)) {
+            try {
+                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+
+            } catch (Exception e) {
+                log.error("Can't load export plugin, use default export", e);
+            }
+        }
+
+        if (export == null) {
+            export = new ExportDms();
+        }
+
+        return export;
     }
 }
