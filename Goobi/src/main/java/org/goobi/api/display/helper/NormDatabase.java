@@ -19,7 +19,6 @@
 
 package org.goobi.api.display.helper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.sub.goobi.config.ConfigNormdata;
@@ -33,8 +32,6 @@ public class NormDatabase {
     @Getter
     private String abbreviation;
 
-    private static List<NormDatabase> allNormdatabases = new ArrayList<>();
-
     public NormDatabase(String path, String abbreviation) {
         this.path = path;
         this.abbreviation = abbreviation;
@@ -44,13 +41,8 @@ public class NormDatabase {
         return ConfigNormdata.getConfiguredNormdatabases();
     }
 
-    public static void setAllNormdatabases(List<NormDatabase> allNormdatabases) {
-        NormDatabase.allNormdatabases = allNormdatabases;
-    }
-
-    //
     public static NormDatabase getByAbbreviation(String abbreviation) {
-        for (NormDatabase ndb : allNormdatabases) {
+        for (NormDatabase ndb : getAllDatabases()) {
             if (ndb.getAbbreviation().equals(abbreviation)) {
                 return ndb;
             }
