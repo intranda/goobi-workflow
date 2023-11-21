@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
+import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
@@ -56,6 +57,11 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
                 "This GoobiScript allows to export Goobi processes using the default export mechanism. It either uses the default export or alternativly an export plugin that was configured in one of the workflow steps.");
         addParameterToSampleCall(sb, "exportImages", "false", "Decide if the images shall get exported additionally to the metdata (`true`).");
         addParameterToSampleCall(sb, "exportOcr", "false", "Decide if the OCR results shall get exported additionally as well (`true`).");
+        // allow choice among multiple export plugins 
+        addParameterToSampleCall(sb, "pluginName", "",
+                "Decide which export plugin shall be used by giving the name of this export plugin. It has the highest priority if it is configured. [OPTIONAL]");
+        addParameterToSampleCall(sb, "stepName", "",
+                "Decide which export plugin shall be used by giving the name of the export step. If it is configured then it will try to find this export step first, and only when there is no such step, will the standard choice be used instead. [OPTIONAL]");
         return sb.toString();
     }
 
@@ -80,6 +86,9 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
         boolean exportFullText = exportFullTextParameter.equalsIgnoreCase("true");
         boolean exportImages = exportImagesParameter.equalsIgnoreCase("true");
 
+        String pluginNameConfigured = parameters.get("pluginName");
+        String stepNameConfigured = parameters.get("stepName");
+
         // execute all jobs that are still in waiting state
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         try {
@@ -96,8 +105,8 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
 
             // process has step marked as export
             // 1. get a proper export plugin
-            String pluginName = ProcessManager.getExportPluginName(p.getId());
-            log.debug("export plugin name = " + pluginName);
+            String pluginName = getExportPluginName(pluginNameConfigured, stepNameConfigured, p);
+            log.info("The export plugin '" + pluginName + "' will be used.");
             IExportPlugin export = getExportPlugin(pluginName);
 
             // 2. set up this export plugin
@@ -132,6 +141,25 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
         }
         gsr.updateTimestamp();
 
+    }
+
+    private String getExportPluginName(String pluginNameConfigured, String stepNameConfigured, Process process) {
+        if (StringUtils.isNotBlank(pluginNameConfigured)) {
+            return pluginNameConfigured;
+        }
+
+        if (StringUtils.isNotBlank(stepNameConfigured)) {
+            List<Step> steps = process.getSchritte();
+            for (Step step : steps) {
+                boolean isExportStep = step.isTypExportDMS() || step.isTypExportRus();
+                if (isExportStep && stepNameConfigured.equals(step.getTitel())) {
+                    return step.getStepPlugin();
+                }
+            }
+        }
+
+        // otherwise use the default value
+        return ProcessManager.getExportPluginName(process.getId());
     }
 
     private IExportPlugin getExportPlugin(String pluginName) {
