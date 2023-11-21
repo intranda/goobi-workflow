@@ -22,11 +22,12 @@
 		<composite:attribute name="customAction" type="java.lang.String"/>
         <composite:attribute name="sortField" type="java.lang.String"/>
 		<composite:attribute name="sortMethod" default="#{cc.attrs.form.FilterAlleStart}" method-signature="java.lang.String action()" />
+		<composite:attribute name="formSortField" default="#{cc.attrs.form.sortField}" />
 	</composite:interface>
 
 	<composite:implementation>
-		<ui:param name="descendingLabel" value="#{cc.attrs.sortField} desc" />
-		<ui:param name="ascendingLabel" value="#{cc.attrs.sortField} asc" />
+		<ui:param name="descendingLabel" value="#{cc.attrs.sortField} Desc" />
+		<ui:param name="ascendingLabel" value="#{cc.attrs.sortField}" />
 
 		<th scope="col" role="columnheader" id="#{cc.attrs.id}" style="#{cc.attrs.style}" class="#{cc.attrs.addClass}" jsf:rendered="#{cc.attrs.sortable}"
 			aria-sort="#{cc.attrs.form.sortField== descendingLabel ? 'descending' : cc.attrs.form.sortField== ascendingLabel ? 'ascending' :'none'}">
@@ -36,9 +37,14 @@
 				<h:outputText value="#{cc.attrs.value}" />
 				<span
 					class="pull-right table-sort-icon fa #{cc.attrs.form.sortField== descendingLabel ?'fa-sort-desc':cc.attrs.form.sortField== ascendingLabel ?'fa-sort-asc':'fa-sort'}"></span>
-				<f:setPropertyActionListener
-					target="#{cc.attrs.form.sortField}"
-					value="#{cc.attrs.reverseOrder and cc.attrs.form.sortField eq descendingLabel? ascendingLabel : (not cc.attrs.reverseOrder and cc.attrs.form.sortField ne ascendingLabel ? ascendingLabel : descendingLabel)}" />
+					<f:setPropertyActionListener
+						rendered="#{cc.attrs.formSortField}"
+						target="#{cc.attrs.formSortField}"
+						value="#{cc.attrs.reverseOrder and cc.attrs.form.sortField eq descendingLabel? ascendingLabel : (not cc.attrs.reverseOrder and cc.attrs.form.sortField ne ascendingLabel ? ascendingLabel : descendingLabel)}" />
+					<f:setPropertyActionListener
+						rendered="#{!cc.attrs.formSortField}"
+						target="#{cc.attrs.form.sortField}"
+						value="#{cc.attrs.reverseOrder and cc.attrs.form.sortField eq descendingLabel? ascendingLabel : (not cc.attrs.reverseOrder and cc.attrs.form.sortField ne ascendingLabel ? ascendingLabel : descendingLabel)}" />
 				<f:ajax render="#{cc.attrs.ajaxRender}" />
 			</button>
 		</th>
