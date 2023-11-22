@@ -335,7 +335,7 @@ th {
   --col-l: 110px;
   --col-xl: 150px;
   --col-xxl: 220px;
-  --col-max: 300px;
+  --col-xxxl: 300px;
   &.header {
     &__col-s {
       width: var(--col-s);
@@ -353,8 +353,8 @@ th {
     &__col-xxl {
       width: var(--col-xxl);
     }
-    &__col-max {
-      width: var(--col-max);
+    &__col-xxxl {
+      width: var(--col-xxxl);
     }
     &__col-min-s {
       min-width: var(--col-s);
@@ -370,6 +370,9 @@ th {
     }
     &__col-min-xxl {
       min-width: var(--col-xxl);
+    }
+    &__col-min-xxxl {
+      min-width: var(--col-xxxl);
     }
   }
 }
