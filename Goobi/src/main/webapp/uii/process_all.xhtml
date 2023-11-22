@@ -260,7 +260,7 @@
                                                     <!-- STATUS COLUMN HEADER -->
 													<intranda:columnheader
 														id="progress"
-														addClass="header__progress header__col-xxl"
+														addClass="header__progress header__col-xxl header__col-min-xxl"
 														name="fortschritt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.status}"
@@ -345,7 +345,7 @@
                                                     <!-- BUTTONS COLUMN HEADER -->
 													<intranda:columnheader
 														id="buttons"
-                                                        addClass="header__buttons header__col-xl"
+                                                        addClass="header__buttons header__col-xl #{ProzessverwaltungForm.modusAnzeige=='vorlagen' ? 'header__col-min-xxl' : 'header__col-min-xl'}"
 														value="#{msgs.auswahl}"
 														sortable="false" />
 												</tr>

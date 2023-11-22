@@ -3,33 +3,6 @@
   th {
     --width-table-col: 300px;
   }
-  --col-s: 50px;
-  --col-m: 80px;
-  --col-l: 110px;
-  --col-xl: 150px;
-  --col-xxl: 220px;
-  --col-max: 300px;
-  .header {
-    &__col-s {
-      width: var(--col-s);
-    }
-    &__col-m {
-      width: var(--col-m);
-    }
-    &__col-l {
-      width: var(--col-l);
-      padding: 0 10px;
-    }
-    &__col-xl {
-      width: var(--col-xl);
-    }
-    &__col-xxl {
-      width: var(--col-xxl);
-    }
-    &__col-max {
-      width: var(--col-max);
-    }
-  }
 
   .processTable {
     canvas {
