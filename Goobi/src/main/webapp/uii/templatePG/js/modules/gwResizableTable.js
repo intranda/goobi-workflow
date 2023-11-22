@@ -127,17 +127,11 @@ const createHandle = function createHandle(height) {
 const setListeners = function setListeners(tableWidth, handle) {
     let pageX;
     let col;
-    let nextCol;
     let colWidth;
-    let nextColWidth;
     handle.addEventListener('mousedown', (e) => {
         col = e.target.parentElement;
-        nextCol = col.nextElementSibling;
         pageX = e.pageX;
         colWidth = col.offsetWidth;
-        if (nextCol) {
-            nextColWidth = nextCol.offsetWidth;
-        }
     });
 
     document.addEventListener('mousemove', (e) => {
@@ -157,10 +151,6 @@ const setListeners = function setListeners(tableWidth, handle) {
             // only apply resize if the size actually changed and new width != 0
             if (newWidth !== col.style.width && parseInt(newWidth, 10) > 0) {
                 col.style.width = newWidth;
-                if (nextCol) {
-                    nextColWidth = constrainWidth(nextCol, (nextColWidth - diffX));
-                    nextCol.style.width = `${((nextColWidth / tableWidth) * 100).toFixed(2)}%`;
-                }
             }
         }
     });
@@ -173,9 +163,7 @@ const setListeners = function setListeners(tableWidth, handle) {
         document.getElementsByTagName('body')[0].classList.remove('table-resizing');
         pageX = undefined;
         col = undefined;
-        nextCol = undefined;
         colWidth = undefined;
-        nextColWidth = undefined;
     });
 };
 
