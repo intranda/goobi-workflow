@@ -1818,7 +1818,7 @@ th {
   --col-l: 110px;
   --col-xl: 150px;
   --col-xxl: 220px;
-  --col-max: 300px;
+  --col-xxxl: 300px;
 }
 th.header__col-s {
   width: var(--col-s);
@@ -1836,8 +1836,8 @@ th.header__col-xl {
 th.header__col-xxl {
   width: var(--col-xxl);
 }
-th.header__col-max {
-  width: var(--col-max);
+th.header__col-xxxl {
+  width: var(--col-xxxl);
 }
 th.header__col-min-s {
   min-width: var(--col-s);
@@ -1853,6 +1853,9 @@ th.header__col-min-xl {
 }
 th.header__col-min-xxl {
   min-width: var(--col-xxl);
+}
+th.header__col-min-xxxl {
+  min-width: var(--col-xxxl);
 }
 
 /* ========================================
