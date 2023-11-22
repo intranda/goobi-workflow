@@ -220,10 +220,28 @@ const initialize = function initializeResizeTable(table) {
 /**
  * Initialize resizable tables if there are any.
  */
-const tables = document.getElementsByClassName('table-resizable');
-if (tables) {
-    [...tables].forEach((table) => {
-        loadColWidths(table);
-        initialize(table);
-    });
-}
+const setup = function setupResizableTables() {
+    const tables = document.getElementsByClassName('table-resizable');
+    if (tables) {
+        [...tables].forEach((table) => {
+            loadColWidths(table);
+            initialize(table);
+        });
+    }
+};
+
+const gwResizableTable = (() => {
+    function init() {
+        setup();
+    }
+    function reload(data) {
+        if (data.status === 'success') {
+            setup();
+        }
+    }
+
+    return {
+        init,
+        reload,
+    };
+})();

@@ -374,8 +374,6 @@
          // ]]>
         </script>
 
-        <script src="templatePG/js/modules/gwResizableTable.js" />
-
         <!--Show and hide help messages-->
         <!--toggle_help is the legacy name for this function, it is used in most views, use gwToggleHelp.init in new markup-->
         <script src="templatePG/js/modules/gwToggleHelp.js?v=#{HelperForm.buildVersion}" />
@@ -397,8 +395,10 @@
         </script>
 
         <!--Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)-->
-        <script src="templatePG/js/modules/gwHandleTooltip.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="templatePG/js/modules/gwHandleTooltip.js"></script>
 
+        <script src="templatePG/js/modules/gwResizableTable.js" />
+        <script>gwResizableTable.init();</script>
 
     </f:view>
 </h:body>
