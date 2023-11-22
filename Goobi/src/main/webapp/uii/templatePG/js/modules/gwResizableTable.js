@@ -54,7 +54,7 @@ const getRelWidth = function getRelativeWidth(col) {
     const table = col.closest('.table-resizable');
     const tableWidth = table.offsetWidth;
     const relWidth = (col.offsetWidth / tableWidth) * 100;
-    return relWidth.toFixed(2);
+    return parseInt(relWidth, 10);
 };
 
 /**
@@ -120,6 +120,36 @@ const createHandle = function createHandle(height) {
 };
 
 /**
+ * Cascade any resizing to the left so that dragging can affect all columns.
+ * @param {HTMLTableCellElement} col Active column of the resizable table
+ * @param {number} tableWidth Total width of the table
+ * @param {number} diffX Difference to be added to column width in pixel
+ */
+const cascade = function cascadeColumnWidths(col, tableWidth, diffX) {
+    const findPreviousSiblings = (element) => {
+        const previousSiblings = [];
+        let el = element.previousElementSibling;
+        while (el) {
+            previousSiblings.push(el);
+            el = el.previousElementSibling;
+        }
+        return previousSiblings;
+    };
+    const previousSiblings = findPreviousSiblings(col);
+
+    previousSiblings.forEach((e) => {
+        const colWidth = e.offsetWidth;
+        let newWidth = colWidth + diffX;
+        if (newWidth > 0) {
+            newWidth = newWidth > 30 ? newWidth : 30;
+            newWidth = constrainWidth(e, newWidth);
+            newWidth = parseInt((newWidth / tableWidth) * 100, 10) / previousSiblings.length;
+            e.style.width = `${newWidth}%`;
+        }
+    });
+};
+
+/**
  * Attaches the necessary events to the resize handle.
  * @param {number} tableWidth The width of the table
  * @param {HTMLDivElement} handle The resize handle
@@ -146,10 +176,11 @@ const setListeners = function setListeners(tableWidth, handle) {
 
             newWidth = colWidth + diffX;
             newWidth = constrainWidth(col, newWidth);
-            newWidth = `${((newWidth / tableWidth) * 100).toFixed(2)}%`;
+            newWidth = `${parseInt((newWidth / tableWidth) * 100, 10).toFixed(2)}%`;
 
             // only apply resize if the size actually changed and new width != 0
             if (newWidth !== col.style.width && parseInt(newWidth, 10) > 0) {
+                cascade(col, tableWidth, diffX);
                 col.style.width = newWidth;
             }
         }
