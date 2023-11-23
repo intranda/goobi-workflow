@@ -54,7 +54,7 @@ const getRelWidth = function getRelativeWidth(col) {
     const table = col.closest('.table-resizable');
     const tableWidth = table.offsetWidth;
     const relWidth = (col.offsetWidth / tableWidth) * 100;
-    return parseInt(relWidth, 10);
+    return relWidth.toFixed(2);
 };
 
 /**
@@ -120,36 +120,6 @@ const createHandle = function createHandle(height) {
 };
 
 /**
- * Cascade any resizing to the left so that dragging can affect all columns.
- * @param {HTMLTableCellElement} col Active column of the resizable table
- * @param {number} tableWidth Total width of the table
- * @param {number} diffX Difference to be added to column width in pixel
- */
-const cascade = function cascadeColumnWidths(col, tableWidth, diffX) {
-    const findPreviousSiblings = (element) => {
-        const previousSiblings = [];
-        let el = element.previousElementSibling;
-        while (el) {
-            previousSiblings.push(el);
-            el = el.previousElementSibling;
-        }
-        return previousSiblings;
-    };
-    const previousSiblings = findPreviousSiblings(col);
-
-    previousSiblings.forEach((e) => {
-        const colWidth = e.offsetWidth;
-        let newWidth = colWidth + diffX;
-        if (newWidth > 0) {
-            newWidth = newWidth > 30 ? newWidth : 30;
-            newWidth = constrainWidth(e, newWidth);
-            newWidth = parseInt((newWidth / tableWidth) * 100, 10) / previousSiblings.length;
-            e.style.width = `${newWidth}%`;
-        }
-    });
-};
-
-/**
  * Attaches the necessary events to the resize handle.
  * @param {number} tableWidth The width of the table
  * @param {HTMLDivElement} handle The resize handle
@@ -158,6 +128,8 @@ const setListeners = function setListeners(tableWidth, handle) {
     let pageX;
     let col;
     let colWidth;
+    let nextCol;
+    let nextColWidth;
     handle.addEventListener('mousedown', (e) => {
         col = e.target.parentElement;
         pageX = e.pageX;
@@ -167,6 +139,10 @@ const setListeners = function setListeners(tableWidth, handle) {
     document.addEventListener('mousemove', (e) => {
         if (col) {
             const diffX = e.pageX - pageX;
+            if (diffX === 0) {
+                return;
+            }
+            nextCol = col.nextElementSibling;
             let newWidth;
 
             handle.classList.add('active');
@@ -174,15 +150,25 @@ const setListeners = function setListeners(tableWidth, handle) {
             // make the cursor style global so that it stays as resize handle regardless of position
             document.getElementsByTagName('body')[0].classList.add('table-resizing');
 
-            newWidth = colWidth + diffX;
-            newWidth = constrainWidth(col, newWidth);
-            newWidth = `${parseInt((newWidth / tableWidth) * 100, 10).toFixed(2)}%`;
+            nextColWidth = nextCol.offsetWidth;
+            let nextColNewWidth;
 
-            // only apply resize if the size actually changed and new width != 0
-            if (newWidth !== col.style.width && parseInt(newWidth, 10) > 0) {
-                cascade(col, tableWidth, diffX);
-                col.style.width = newWidth;
+            if (diffX > 0) {
+                nextColNewWidth = nextColWidth - diffX;
+                nextColNewWidth = constrainWidth(nextCol, nextColNewWidth);
+
+                newWidth = colWidth + (nextColWidth - nextColNewWidth);
+                newWidth = constrainWidth(col, newWidth);
+            } else if (diffX < 0) {
+                newWidth = colWidth + diffX;
+                newWidth = constrainWidth(col, newWidth);
+
+                nextColNewWidth = nextColWidth + (colWidth - newWidth);
+                nextColNewWidth = constrainWidth(nextCol, nextColNewWidth);
             }
+
+            col.style.width = `${((newWidth / tableWidth) * 100).toFixed(2)}%`;
+            nextCol.style.width = `${((nextColNewWidth / tableWidth) * 100).toFixed(2)}%`;
         }
     });
 
@@ -195,6 +181,8 @@ const setListeners = function setListeners(tableWidth, handle) {
         pageX = undefined;
         col = undefined;
         colWidth = undefined;
+        nextCol = undefined;
+        nextColWidth = undefined;
     });
 };
 
