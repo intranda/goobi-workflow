@@ -23,10 +23,24 @@ const constrainWidth = function constrainWidth(col, newWidth) {
     const maxWidth = getComputedStyle(col).getPropertyValue('max-width');
 
     if (minWidth !== 'none') {
-        constrainedWidth = Math.max(parseInt(minWidth, 10), newWidth);
+        if (minWidth.endsWith('%')) {
+            constrainedWidth = Math.max(parseFloat(minWidth), newWidth);
+        } else if (minWidth.endsWith('px')) {
+            const table = col.closest('.table-resizable');
+            const tableWidth = table.offsetWidth;
+            const relMinWidth = (minWidth / tableWidth) * 100;
+            constrainedWidth = Math.max(relMinWidth.toFixed(2), newWidth);
+        }
     }
     if (maxWidth !== 'none') {
-        constrainedWidth = Math.min(parseInt(maxWidth, 10), newWidth);
+        if (maxWidth.endsWith('%')) {
+            constrainedWidth = Math.min(parseFloat(maxWidth), newWidth);
+        } else if (maxWidth.endsWith('px')) {
+            const table = col.closest('.table-resizable');
+            const tableWidth = table.offsetWidth;
+            const relMaxWidth = (maxWidth / tableWidth) * 100;
+            constrainedWidth = Math.max(relMaxWidth.toFixed(2), newWidth);
+        }
     }
 
     return constrainedWidth;
@@ -128,8 +142,11 @@ const setListeners = function setListeners(tableWidth, handle) {
     let pageX;
     let col;
     let colWidth;
+    let newWidth;
     let nextCol;
     let nextColWidth;
+    let nextColNewWidth;
+    let diffX;
     handle.addEventListener('mousedown', (e) => {
         col = e.target.parentElement;
         pageX = e.pageX;
@@ -138,12 +155,11 @@ const setListeners = function setListeners(tableWidth, handle) {
 
     document.addEventListener('mousemove', (e) => {
         if (col) {
-            const diffX = e.pageX - pageX;
+            diffX = e.pageX - pageX;
             if (diffX === 0) {
                 return;
             }
             nextCol = col.nextElementSibling;
-            let newWidth;
 
             handle.classList.add('active');
             resizeHandles(col);
@@ -151,7 +167,6 @@ const setListeners = function setListeners(tableWidth, handle) {
             document.getElementsByTagName('body')[0].classList.add('table-resizing');
 
             nextColWidth = nextCol.offsetWidth;
-            let nextColNewWidth;
 
             if (diffX > 0) {
                 nextColNewWidth = nextColWidth - diffX;
@@ -181,8 +196,11 @@ const setListeners = function setListeners(tableWidth, handle) {
         pageX = undefined;
         col = undefined;
         colWidth = undefined;
+        newWidth = undefined;
         nextCol = undefined;
         nextColWidth = undefined;
+        nextColNewWidth = undefined;
+        diffX = undefined;
     });
 };
 
