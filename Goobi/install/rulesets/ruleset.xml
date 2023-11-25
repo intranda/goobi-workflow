@@ -239,6 +239,7 @@
     <Name>Printer</Name>
     <language name="de">Drucker</language>
     <language name="en">Printer</language>
+    <language name="es">Impresor</language>
   </MetadataType>
   <MetadataType normdata="true" type="person">
     <Name>PublisherPerson</Name>
@@ -806,12 +807,6 @@
     <language name="de">Motivbeschreibung</language>
     <language name="en">Motif description</language>
     <language name="es">Motif description zzz</language>
-  </MetadataType>
-  <MetadataType type="person">
-    <Name>Printer</Name>
-    <language name="de">Drucker</language>
-    <language name="en">Printer</language>
-    <language name="es">Impresor</language>
   </MetadataType>
   <MetadataType>
     <Name>PrintingLocation</Name>
