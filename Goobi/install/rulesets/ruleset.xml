@@ -6344,7 +6344,7 @@
       </Metadata>
       <Metadata>
         <InternalName>_urn</InternalName>
-        <WriteXPath>./mods:mods#mods:identifier[@type='urn']</WriteXPath>
+        <WriteXPath>./mods:mods/#mods:identifier[@type='urn']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>Sponsorship</InternalName>
