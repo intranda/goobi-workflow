@@ -118,6 +118,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     protected static final String ELEMENT_CONFIGURATION = "configuration";
     protected static final String ELEMENT_CONTENT = "content";
     protected static final String ELEMENT_CREATION_DATE = "creationDate";
+    protected static final String ELEMENT_CREATION_DATE_YEAR = "creationDateYear";
+    protected static final String ELEMENT_CREATION_DATE_MONTH = "creationDateMonth";
+    protected static final String ELEMENT_CREATION_DATE_DAY = "creationDateDay";
     protected static final String ELEMENT_DASHBOARD_PLUGIN = "dashboardPlugin";
     protected static final String ELEMENT_DIGITAL_DOCUMENT = "digitalDocument";
     protected static final String ELEMENT_DIGITAL_DOCUMENTS = "digitalDocuments";
@@ -307,6 +310,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     private static Namespace xmlns = Namespace.getNamespace(FILE_LOG);
 
     private SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private SimpleDateFormat dateConverterYear = new SimpleDateFormat("yyyy");
+    private SimpleDateFormat dateConverterMonth = new SimpleDateFormat("MM");
+    private SimpleDateFormat dateConverterDay = new SimpleDateFormat("dd");
 
     /**
      * This method exports the production metadata as xml to a given directory
@@ -406,6 +412,18 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Element date = new Element(ELEMENT_CREATION_DATE, namespace);
         date.setText(String.valueOf(process.getErstellungsdatum()));
         elements.add(date);
+
+        Element creationDateYear = new Element(ELEMENT_CREATION_DATE_YEAR, xmlns);
+        creationDateYear.setText(dateConverterYear.format(process.getErstellungsdatum()));
+        elements.add(creationDateYear);
+
+        Element creationDateMonth = new Element(ELEMENT_CREATION_DATE_MONTH, xmlns);
+        creationDateMonth.setText(dateConverterMonth.format(process.getErstellungsdatum()));
+        elements.add(creationDateMonth);
+
+        Element creationDateDay = new Element(ELEMENT_CREATION_DATE_DAY, xmlns);
+        creationDateDay.setText(dateConverterDay.format(process.getErstellungsdatum()));
+        elements.add(creationDateDay);
 
         Element pdfdate = new Element(ELEMENT_PDF_GENERATION_DATE, namespace);
         pdfdate.setText(String.valueOf(new Date()));
