@@ -116,7 +116,7 @@
         <javassist.version>3.29.2-GA</javassist.version>
         <java-jwt.version>3.19.1</java-jwt.version>
         <jaxb-impl.version>2.3.9</jaxb-impl.version>
-        <jackson.version>2.15.3</jackson.version>
+        <jackson.version>2.16.0</jackson.version>
         <jersey.version>2.41</jersey.version>
         <jhove.version>1.20.1</jhove.version>
         <jna.version>5.11.0</jna.version>
