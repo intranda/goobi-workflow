@@ -147,7 +147,7 @@ public class MQResultMysqlHelper {
         List<String> values = new ArrayList<>();
         values.add(""); // to select all ticket types
 
-        String sql = "select distinct ticketName from mq_results order by ticketName";
+        String sql = "select distinct ticketName from mq_results where ticketName is not null order by ticketName";
         try (Connection conn = MySQLHelper.getInstance().getConnection()) {
             values.addAll(new QueryRunner().query(conn, sql, MySQLHelper.resultSetToStringListHandler));
         }
