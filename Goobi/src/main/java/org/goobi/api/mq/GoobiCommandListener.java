@@ -90,13 +90,8 @@ public class GoobiCommandListener {
                     }
                     CommandTicket t = gson.fromJson(strMessage, CommandTicket.class);
 
-                    handleCommandTicket(t);
+                    handleCommandTicket(t, message.getJMSMessageID(), strMessage);
                     message.acknowledge();
-
-                    MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.DONE, "",
-                            strMessage, t.getObjects(), t.getTicketType(), t.getProcessId(),
-                            t.getStepId(), t.getStepName());
-                    MQResultManager.insertResult(statusMessage);
 
                 } catch (Exception e) {
                     log.error(e);
@@ -110,7 +105,7 @@ public class GoobiCommandListener {
         thread.start();
     }
 
-    private void handleCommandTicket(CommandTicket t) {
+    private void handleCommandTicket(CommandTicket t, String messageId, String originalMessage) {
         String command = t.getCommand();
         String token = t.getJwt();
         Integer stepId = t.getStepId();
@@ -138,6 +133,10 @@ public class GoobiCommandListener {
                             StepManager.setStepPaused(stepId, true);
                         }
                     }
+                    MqStatusMessage statusMessage = new MqStatusMessage(messageId, new Date(), MessageStatus.DONE, "", originalMessage,
+                            t.getObjects(), step.getTitel(), t.getProcessId(), step.getId(), step.getTitel());
+                    MQResultManager.insertResult(statusMessage);
+
                 } catch (ConfigurationException | DAOException e) {
                     log.error(e);
                 }
