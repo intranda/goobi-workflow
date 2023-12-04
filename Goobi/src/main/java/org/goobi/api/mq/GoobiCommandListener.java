@@ -134,7 +134,7 @@ public class GoobiCommandListener {
                         }
                     }
                     MqStatusMessage statusMessage = new MqStatusMessage(messageId, new Date(), MessageStatus.DONE, "", originalMessage,
-                            t.getObjects(), step.getTitel(), t.getProcessId(), step.getId(), step.getTitel());
+                            t.getNumberOfObjects(), step.getTitel(), t.getProcessId(), step.getId(), step.getTitel());
                     MQResultManager.insertResult(statusMessage);
 
                 } catch (ConfigurationException | DAOException e) {
