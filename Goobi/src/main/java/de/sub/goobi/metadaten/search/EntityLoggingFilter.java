@@ -123,19 +123,5 @@ public class EntityLoggingFilter implements ClientRequestFilter, ClientResponseF
 
             return sb;
         }
-
-        @Override
-        public void write(final int i) throws IOException {
-            if (baos.size() <= maxEntitySize) {
-                baos.write(i);
-            }
-            out.write(i);
-        }
-
-        @Override
-        public void write(byte[] b, int off, int len) throws IOException {
-            baos.write(b, off, len);
-        }
-
     }
 }
