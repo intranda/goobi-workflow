@@ -76,18 +76,16 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
                 // extract additional fields from ticket data
                 sb = new StringBuilder();
-                sb.append("update mq_results mq set processid = (select * from ");
-                sb.append("(select JSON_VALUE(original_message, '$.processId') from mq_results r where  r.id =  mq.id) x)");
+                sb.append("update mq_results mq set processid = (select JSON_VALUE(original_message, '$.processId')) ");
                 DatabaseVersion.runSql(sb.toString());
 
                 sb = new StringBuilder();
-                sb.append("update mq_results mq set ticketType = (select * from ");
-                sb.append("(select JSON_VALUE(original_message, '$.taskType') from mq_results r where  r.id =  mq.id) x) ");
+                sb.append("update mq_results mq set ticketType = (select JSON_VALUE(original_message, '$.processId'))");
                 DatabaseVersion.runSql(sb.toString());
 
                 sb = new StringBuilder();
-                sb.append("update mq_results mq set ticketName = (select * from ");
-                sb.append("(select JSON_VALUE(original_message, '$.stepName') from mq_results r where r.id =  mq.id) x) ");
+                sb.append("update mq_results mq set ticketName = (select JSON_VALUE(original_message, '$.stepName'))");
+
                 DatabaseVersion.runSql(sb.toString());
 
                 // generate entries for all finished automatic mq tasks
@@ -104,8 +102,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 DatabaseVersion.runSql(sb.toString());
 
                 sb = new StringBuilder();
-                sb.append("update mq_results mq set ticketType = (select * from ");
-                sb.append("(select JSON_VALUE(original_message, '$.taskName') from mq_results r where  r.id =  mq.id)x) where ticketType is null ");
+                sb.append("update mq_results set ticketType = (select JSON_VALUE(original_message, '$.taskName')) where ticketType is null ");
                 DatabaseVersion.runSql(sb.toString());
 
                 sb = new StringBuilder();
