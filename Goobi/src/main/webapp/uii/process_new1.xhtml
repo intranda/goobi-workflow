@@ -47,7 +47,7 @@
         <div
             jsf:rendered="#{ProzesskopieForm.showExistingProcessButton}"
             class="alert alert-danger mb-3 pt-2 pb-2">
-            
+
             <h:outputText value="#{msgs.existingProcessTitleInUse}" />
 
     		<button
@@ -60,19 +60,19 @@
 				jsf:action="#{ProzesskopieForm.showTablesOfExistingProcess}">
 				<h:outputText value="#{msgs.existingProcessShowDetails}" />
 			</button>
-            
+
         </div>
-        
+
 		<!-- // BUTTON TO SHOW THE INFO TABLES -->
-    
+
         <!-- MODAL BOX FOR EXISTING PROCESS TABLES -->
-		<h:panelGroup layout="block" 
+		<h:panelGroup layout="block"
 			class="modal fade"
 			id="existingProcessTablesModal"
 			tabindex="-1"
 			role="dialog"
 			aria-labelledby="existingProcessTablesModalLabel">
-			
+
 			<div
 				class="modal-dialog"
 				role="document">
@@ -88,11 +88,11 @@
 						</button>
 					</div>
 					<!-- // MODAL HEADER -->
-					
+
 					<!-- MODAL BODY -->
 					<div class="modal-body">
 						<!-- INFO TABLES OF THE EXISTING PROCESS -->
-						    
+
 		                    <!-- DETAILS OF THE EXISTING PROCESS -->
 							<intranda:box
 								boxScope="general"
@@ -102,7 +102,7 @@
 								boxPadding="false"
                                 boxSmall="true"
                                 boxClass="mb-3">
-					
+
 								<div
 			                        class="gw-table-fixed"
 			                        tabindex="0"
@@ -111,39 +111,39 @@
 										columns="2"
 										styleClass="table table-hover table-bordered"
 										columnClasses="visible, tableColumnMaxWidthLong">
-		
+
 										<h:outputText value="#{msgs.prozessTitel}:" />
 										<h:outputText value="#{ProzesskopieForm.existingProcess.titel}" />
-		
+
 										<h:outputText value="#{msgs.projekt}:" />
 										<h:outputText value="#{ProzesskopieForm.existingProcess.projekt.titel}" />
-		
+
 										<h:outputText value="#{msgs.erstellungsdatum}:" />
 										<h:outputText value="#{ProzesskopieForm.existingProcess.erstellungsdatum}" />
-		
+
 										<h:outputText value="#{msgs.regelsatz}:" />
 										<h:outputText value="#{ProzesskopieForm.existingProcess.regelsatz.titel}"
 																title="#{ProzesskopieForm.existingProcess.regelsatz.datei}" />
-		
+
 										<h:outputText value="#{msgs.docket}:" />
 										<h:outputText value="#{ProzesskopieForm.existingProcess.docket.name}" />
-		
+
 										<h:outputText value="#{msgs.exportValidation}:" />
 										<h:outputText value="#{ProzesskopieForm.existingProcess.exportValidator.label != null ? ProzesskopieForm.existingProcess.exportValidator.label : msgs.noValidation}" />
-		
+
 										<h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
 										<i class="fa #{ProzesskopieForm.existingProcess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}"></i>
-		
+
 										<h:outputText value="#{msgs.istTemplate}:" />
 										<i class="fa #{ProzesskopieForm.existingProcess.istTemplate?'fa-check-square-o':'fa-square-o'}"></i>
 										<h:outputText value="#{msgs.pauseAutomaticExecution}:" />
 										<i class="fa #{ProzesskopieForm.existingProcess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}"></i>
-		
+
 										<h:outputText value="#{msgs.id}:"
 																styleClass="font-light" />
 										<h:outputText value="#{ProzesskopieForm.existingProcess.id}"
 																styleClass="font-light" />
-		
+
 										<h:outputText value="#{msgs.batch}:"
 																styleClass="font-light" />
 										<h:outputText value=""
@@ -155,14 +155,14 @@
 										<h:outputText value="#{ProzesskopieForm.existingProcess.batch.batchId} (#{ProzesskopieForm.existingProcess.batch.batchName})"
 																rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName !=null}"
 																styleClass="font-light" />
-									
+
 									</h:panelGrid>
 								</div>
-								
+
 							</intranda:box>
-							
+
 							<!-- // DETAILS OF THE EXISTING PROCESS -->
-							
+
 							<!-- STEPS OF THE EXISTING PROCESS -->
 							<intranda:box
 								boxScope="general"
@@ -172,7 +172,7 @@
                                 title="#{msgs.existingProcessSteps}"
                                 icon="fa-list"
                                 boxClass="mb-3">
-								
+
                                 <div
 			                        class="gw-table gw-table-fixed"
 			                        tabindex="0"
@@ -182,7 +182,7 @@
 											var="item"
 											value="#{ProzesskopieForm.existingProcess.schritte}"
 											styleClass="table table-hover table-bordered">
-											
+
 											<h:column>
 												<f:facet name="header">#{msgs.nr}</f:facet>
 												<h:outputText value="#{item.reihenfolge}"/>
@@ -193,82 +193,82 @@
 											</h:column>
 											<h:column>
 												<f:facet name="header">#{msgs.status}</f:facet>
-												
+
 												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'LOCKED'}"
 													title="#{msgs.statusGesperrt}"
-													rel="tooltip" 
+													rel="tooltip"
 													data-toggle="tooltip"
 													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-												
+
 												<!-- OPEN -->
 												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'OPEN'}"
 													title="#{msgs.statusOffen}"
 													rel="tooltip"
 													data-toggle="tooltip"
 													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-												
+
 												<!-- DONE AND ANONYMIZED -->
 												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}"
 													title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
 													rel="tooltip"
 													data-toggle="tooltip"
 													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-													
+
 												<!-- INWORK AND ANONYMIZED -->
 												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}"
 													title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
 													rel="tooltip"
 													data-toggle="tooltip"
 													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-			
+
 												<!-- DONE AND NOT ANONYMIZED -->
 												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}"
 													title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
 													rel="tooltip"
 													data-toggle="tooltip"
 													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-													
+
 												<!-- INWORK AND NOT ANONYMIZED -->
 												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}"
 													title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
 													rel="tooltip"
 													data-toggle="tooltip"
 													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-													
+
 												<!-- ERROR -->
 												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'ERROR'}"
 													title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
 													rel="tooltip"
 													data-toggle="tooltip"
 													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-												
+
 												<!-- DEACTIVATED -->
 												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}"
 													title="#{msgs.statusDeactivated}"
 													rel="tooltip"
 													data-toggle="tooltip"
 													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-												
+
 												<!-- INFLIGHT -->
 												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INFLIGHT'}"
 													title="#{msgs.statusInFlight}"
 													rel="tooltip"
 													data-toggle="tooltip"
 													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-												
+
 												<div class="ms-3 d-inline-block align-middle" jsf:rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}">
 													<h:outputText value="#{item.bearbeitungsstatusEnum.title}" />
 												</div>
-												
+
 											</h:column>
-										
+
 										</h:dataTable>
                                     </div>
 								</div>
-								
+
 							</intranda:box>
 							<!-- // STEPS OF THE EXISTING PROCESS -->
-		
+
 							<!-- JOURNAL ENTRIES OF THE EXISTING PROCESS -->
 							<intranda:box
 								boxScope="general"
@@ -277,7 +277,7 @@
                                 icon="fa-list-ol"
 								boxPadding="false"
                                 boxSmall="true">
-					
+
 			                    <div
 			                        class="gw-table-fixed"
 			                        tabindex="0"
@@ -289,10 +289,10 @@
 			                                    var="entry"
 			                                    value="#{ProzesskopieForm.existingProcess.journal}"
 			                                    varStatus="row">
-			                                    <!-- 
+			                                    <!--
 			                                    <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
 			                                    -->
-			                                    <h:panelGroup>                  
+			                                    <h:panelGroup>
 			                                        <tr class="first-row">
 			                                            <td>
 			                                                <h:outputText
@@ -332,33 +332,33 @@
 			                    </div>
 							</intranda:box>
 							<!-- // JOURNAL ENTRIES OF THE EXISTING PROCESS -->
-							
-						
+
+
 						<!-- // INFO TABLES OF THE EXISTING PROCESS -->
 					</div>
 					<!-- MODAL BODY -->
-                    
+
 					<!-- MODAL FOOTER -->
 					<div class="modal-footer">
-                    
+
                     <button
-                        type="button" 
+                        type="button"
                         class="btn btn-blank"
                         data-bs-dismiss="modal"
                         aria-hidden="true">#{msgs.close}</button>
 					</div>
 					<!-- // MODAL FOOTER -->
-					
+
 				</div>
 				<!-- // MODAL CONTENT -->
 			</div>
-			
+
 
 		</h:panelGroup>
 		 <!-- // MODAL BOX FOR EXISTING PROCESS TABLES -->
-	
 
-	
+
+
 		<h:form
 			id="pageform0"
 			styleClass="form-horizontal form-bordered"
@@ -845,7 +845,7 @@
 		</h:form>
 
 		<script type="text/javascript">
-				
+
 		        function getKeyCode(e) {
 		                 var keycode;
 		                keycode = e.keyCode ? e.keyCode : e.charCode;
@@ -859,7 +859,7 @@
 		                if (keycode == 36) {
 		                        return false;
 		                } else if ((keycode == 13) &amp;&amp; (commandId == 'OpacRequest') ){
-		                        element = document.getElementById('performOpacQuery');
+		                        element = document.querySelector('[id$=performOpacQuery]');
 		                        if (element) {
 		                                element.click();
 		                                return false;
@@ -877,7 +877,7 @@
 		                }
 		                return true;
 		        }
-		 
+
 			</script>
 	</ui:define>
 

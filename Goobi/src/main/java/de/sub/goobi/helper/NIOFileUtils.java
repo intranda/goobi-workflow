@@ -852,7 +852,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 case "fbx":
                 case "gltf":
                 case "glb":
-                    mimeType = "object/" + fileExtension;
+                    mimeType = "model/" + fileExtension;
                     break;
                 case "epub":
                     mimeType = "application/epub+zip";

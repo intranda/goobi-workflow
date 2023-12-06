@@ -30,10 +30,10 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
-import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.User;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
@@ -46,7 +46,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 @Named("DashboardForm")
-@ViewScoped
+@WindowScoped
 @Log4j2
 public class DashboardBean implements Serializable {
 
