@@ -12,41 +12,6 @@
  */
 
 /**
- * Ensures that an element's width does not exceed min-width or max-width, if these are defined.
- * @param {HTMLTableCellElement} col A column of the resizable table
- * @param {number} newWidth The new width for the column
- * @returns {number}
- */
-const constrainWidth = function constrainWidth(col, newWidth) {
-    let constrainedWidth;
-    const minWidth = getComputedStyle(col).getPropertyValue('min-width');
-    const maxWidth = getComputedStyle(col).getPropertyValue('max-width');
-
-    if (minWidth !== 'none') {
-        if (minWidth.endsWith('%')) {
-            constrainedWidth = Math.max(parseFloat(minWidth), newWidth);
-        } else if (minWidth.endsWith('px')) {
-            const table = col.closest('.table-resizable');
-            const tableWidth = table.offsetWidth;
-            const relMinWidth = (minWidth / tableWidth) * 100;
-            constrainedWidth = Math.max(relMinWidth.toFixed(2), newWidth);
-        }
-    }
-    if (maxWidth !== 'none') {
-        if (maxWidth.endsWith('%')) {
-            constrainedWidth = Math.min(parseFloat(maxWidth), newWidth);
-        } else if (maxWidth.endsWith('px')) {
-            const table = col.closest('.table-resizable');
-            const tableWidth = table.offsetWidth;
-            const relMaxWidth = (maxWidth / tableWidth) * 100;
-            constrainedWidth = Math.max(relMaxWidth.toFixed(2), newWidth);
-        }
-    }
-
-    return constrainedWidth;
-};
-
-/**
  * Adapts the height of the resize handle so it stays the same as the height of the relevant table.
  * @param {HTMLDivElement} handle The resize handle
  */
@@ -170,16 +135,16 @@ const setListeners = function setListeners(tableWidth, handle) {
 
             if (diffX > 0) {
                 nextColNewWidth = nextColWidth - diffX;
-                nextColNewWidth = constrainWidth(nextCol, nextColNewWidth);
+                nextColNewWidth = nextColNewWidth;
 
                 newWidth = colWidth + (nextColWidth - nextColNewWidth);
-                newWidth = constrainWidth(col, newWidth);
+                newWidth = newWidth;
             } else if (diffX < 0) {
                 newWidth = colWidth + diffX;
-                newWidth = constrainWidth(col, newWidth);
+                newWidth = newWidth;
 
                 nextColNewWidth = nextColWidth + (colWidth - newWidth);
-                nextColNewWidth = constrainWidth(nextCol, nextColNewWidth);
+                nextColNewWidth = nextColNewWidth;
             }
 
             col.style.width = `${((newWidth / tableWidth) * 100).toFixed(2)}%`;
