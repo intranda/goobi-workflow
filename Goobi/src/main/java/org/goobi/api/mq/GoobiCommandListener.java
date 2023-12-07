@@ -37,6 +37,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.naming.ConfigurationException;
 
+import org.goobi.api.mq.MqStatusMessage.MessageStatus;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Step;
@@ -49,8 +50,8 @@ import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.ExternalMQManager;
 import de.sub.goobi.persistence.managers.JournalManager;
+import de.sub.goobi.persistence.managers.MQResultManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
@@ -89,8 +90,9 @@ public class GoobiCommandListener {
                     }
                     CommandTicket t = gson.fromJson(strMessage, CommandTicket.class);
 
-                    handleCommandTicket(t);
+                    handleCommandTicket(t, message.getJMSMessageID(), strMessage);
                     message.acknowledge();
+
                 } catch (Exception e) {
                     log.error(e);
                 }
@@ -103,7 +105,7 @@ public class GoobiCommandListener {
         thread.start();
     }
 
-    private void handleCommandTicket(CommandTicket t) {
+    private void handleCommandTicket(CommandTicket t, String messageId, String originalMessage) {
         String command = t.getCommand();
         String token = t.getJwt();
         Integer stepId = t.getStepId();
@@ -125,16 +127,16 @@ public class GoobiCommandListener {
                             step.setBearbeitungsende(step.getBearbeitungszeitpunkt());
                             StepManager.saveStep(step);
                         } else if ("done".equals(newStatus)) {
-                            // Write to DB with date.
-                            for (String scriptName : t.getScriptNames()) {
-                                ExternalMQManager.insertResult(new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName));
-                            }
                             new HelperSchritte().CloseStepObjectAutomatic(step);
                         } else if ("paused".equals(newStatus)) {
                             // Step was paused when the workernode tried to run it. Persist this to schritte table
                             StepManager.setStepPaused(stepId, true);
                         }
                     }
+                    MqStatusMessage statusMessage = new MqStatusMessage(messageId, new Date(), MessageStatus.DONE, "", originalMessage,
+                            t.getNumberOfObjects(), step.getTitel(), t.getProcessId(), step.getId(), step.getTitel());
+                    MQResultManager.insertResult(statusMessage);
+
                 } catch (ConfigurationException | DAOException e) {
                     log.error(e);
                 }
@@ -145,9 +147,8 @@ public class GoobiCommandListener {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // add to process log
 
-                        JournalEntry entry =
-                                new JournalEntry(processId, new Date(), t.getIssuer(), LogType.getByTitle(t.getLogType()), t.getContent(),
-                                        EntryType.PROCESS);
+                        JournalEntry entry = new JournalEntry(processId, new Date(), t.getIssuer(), LogType.getByTitle(t.getLogType()),
+                                t.getContent(), EntryType.PROCESS);
 
                         JournalManager.saveJournalEntry(entry);
                     }

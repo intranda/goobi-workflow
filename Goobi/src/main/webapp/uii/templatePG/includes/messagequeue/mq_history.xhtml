@@ -1,0 +1,117 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:x="http://myfaces.apache.org/tomahawk">
+
+    <h3 class="mt-4">#{msgs.jobs_quartzHistory}</h3>
+
+    <main class="row">
+        <div class="gw-table gw-table-fixed">
+            <div class="gw-table__search">
+                <div class="gw-table__search__length">
+                    <h:outputText value="#{msgs.treffer}: #{messageQueueBean.paginator.totalResults}" />
+                </div>
+
+                <div class="gw-table__filters">
+                    <div class="gw-table__filters__search-bar">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fa fa-search"></i>
+                            </span>
+                            <h:inputText
+                                id="searchfield"
+                                styleClass="form-control searchfield"
+                                value="#{messageQueueBean.filter}">
+                            </h:inputText>
+                            <button
+                                jsf:id="FilterAlle2"
+                                jsf:forceId="true"
+                                class="btn btn-blank"
+                                style="text-align: center; line-height: 100%; padding: 0px 10px"
+                                jsf:action="#{messageQueueBean.FilterAlleStart}">#{msgs.search}</button>
+                        </div>
+                        <x:commandButton
+                            type="submit"
+                            id="FilterAlle"
+                            forceId="true"
+                            style="display:none"
+                            action="#{messageQueueBean.FilterAlleStart}" />
+                    </div>
+                </div>
+            </div>
+
+            <table
+                role="grid"
+                class="table table-hover table-nomargin dataTable table-bordered responsive">
+                <thead>
+                    <tr role="row">
+                        <intranda:columnheader
+                            name="name"
+                            form="#{messageQueueBean}"
+                            value="#{msgs.time}"
+                            ajaxRender="myform"
+                            sortField="time" />
+                        <intranda:columnheader
+                            name="name"
+                            form="#{messageQueueBean}"
+                            value="#{msgs.ticketName}"
+                            ajaxRender="myform"
+                            sortField="ticketName" />
+                        <intranda:columnheader
+                            name="name"
+                            form="#{messageQueueBean}"
+                            value="#{msgs.message_queue_ticket_processId}"
+                            ajaxRender="myform"
+                            sortField="processid" />
+                        <intranda:columnheader
+                            name="name"
+                            form="#{messageQueueBean}"
+                            value="#{msgs.originalMessage}"
+                            ajaxRender="myform"
+                            sortField="original_message" />
+                        <intranda:columnheader
+                            name="name"
+                            form="#{messageQueueBean}"
+                            value="#{msgs.status}"
+                            ajaxRender="myform"
+                            sortField="status" />
+                    </tr>
+                </thead>
+
+                <ui:repeat
+                    var="ticket"
+                    value="#{messageQueueBean.paginator.list}"
+                    varStatus="status">
+                    <tr role="row">
+                        <td>
+                            <h:outputText value="#{ticket.time}" />
+                        </td>
+                        <td>
+                            <h:outputText value="#{ticket.ticketName}" />
+                        </td>
+                        <td>
+                            <h:outputText value="#{ticket.processid}" />
+                        </td>
+                        <td>
+                            <h:outputText value="#{ticket.originalMessage}" />
+                        </td>
+                        <td>
+                            <h:outputText value="#{ticket.status}" />
+                        </td>
+                    </tr>
+                </ui:repeat>
+            </table>
+        </div>
+
+        <div class="box__actions">
+            <intranda:tablePaginator
+                id="paginator"
+                paginator="#{messageQueueBean.paginator}" />
+        </div>
+    </main>
+</ui:composition>

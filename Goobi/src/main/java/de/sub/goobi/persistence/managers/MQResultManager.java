@@ -28,6 +28,7 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.goobi.api.mq.MqStatusMessage;
@@ -65,7 +66,6 @@ public class MQResultManager implements IManager, Serializable {
 
     @Override
     public List<Integer> getIdList(String order, String filter, Institution institutiom) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -75,6 +75,15 @@ public class MQResultManager implements IManager, Serializable {
         } catch (SQLException e) {
             log.error(e);
         }
+    }
+
+    public static List<String> getAllTicketNames() {
+        try {
+            return MQResultMysqlHelper.getAllTicketNames();
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return Collections.emptyList();
     }
 
 }
