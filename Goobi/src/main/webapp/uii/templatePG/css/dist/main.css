@@ -1857,6 +1857,24 @@ th.header__col-min-xxl {
 th.header__col-min-xxxl {
   min-width: var(--col-xxxl);
 }
+th.header__col-max-s {
+  max-width: var(--col-s);
+}
+th.header__col-max-m {
+  max-width: var(--col-m);
+}
+th.header__col-max-l {
+  max-width: var(--col-l);
+}
+th.header__col-max-xl {
+  max-width: var(--col-xl);
+}
+th.header__col-max-xxl {
+  max-width: var(--col-xxl);
+}
+th.header__col-max-xxxl {
+  max-width: var(--col-xxxl);
+}
 
 /* ========================================
  * Resizable tables
@@ -2010,6 +2028,7 @@ body .ui-inputfield:hover {
 
 .progress__container {
   display: flex;
+  height: 15px;
   justify-content: center;
   margin-top: 0.7rem;
 }
