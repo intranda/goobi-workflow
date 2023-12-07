@@ -42,10 +42,8 @@
 			</button>
 		</th>
 
-		<th scope="col" role="columnheader" style="#{cc.attrs.style}" class="#{cc.attrs.addClass}" jsf:rendered="#{not cc.attrs.sortable}"><h:outputText value="#{cc.attrs.value}" /></th>
+		<th scope="col" role="columnheader" id="#{cc.attrs.id}" style="#{cc.attrs.style}" class="#{cc.attrs.addClass}" jsf:rendered="#{not cc.attrs.sortable}"><h:outputText value="#{cc.attrs.value}" /></th>
 
 	</composite:implementation>
 
 </ui:composition>
-
-

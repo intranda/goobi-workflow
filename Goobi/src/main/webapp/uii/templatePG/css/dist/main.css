@@ -1296,7 +1296,7 @@ a:focus, a:hover, a:active {
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: var(--box-padding-title);
   border-bottom: 0.15rem solid var(--clr-neutral-300);
   background-color: var(--clr-neutral-300);
@@ -1349,6 +1349,10 @@ a:focus, a:hover, a:active {
   margin: 3px 0 3px 0;
   display: flex;
   align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .box__title h2 .fa {
   margin: 0 10px 0 5px;
@@ -1523,12 +1527,25 @@ a:focus, a:hover, a:active {
   --width-table-col: 100px;
 }
 
+.table-width {
+  hyphens: auto;
+  overflow-wrap: break-word;
+  width: 100%;
+}
+.table-width td {
+  overflow-x: auto;
+}
+.table-width th {
+  max-width: var(--width-table-col);
+}
+
 /* ========================================
  * BS OVERRIDES
  * ====================================== */
 .table {
   margin-bottom: 0;
   border-color: var(--clr-neutral-300);
+  max-width: 100%;
 }
 
 .table > :not(caption) > * > * {
@@ -1552,12 +1569,22 @@ a:focus, a:hover, a:active {
 .gw-table .box__content--padded tr {
   border-color: var(--clr-neutral-300);
 }
+.gw-table td[title] {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
 .gw-table thead {
   background-color: var(--clr-neutral-200);
 }
 .gw-table thead button {
   background-color: transparent;
   border: 0;
+}
+.gw-table__vscroll {
+  max-height: 225px;
+  overflow-y: scroll;
 }
 .gw-table .table-bordered-custom {
   border-width: 0;
@@ -1577,6 +1604,7 @@ a:focus, a:hover, a:active {
 }
 .gw-table th span {
   font-weight: bold;
+  padding: 0 0 0 0.5rem;
 }
 .gw-table td .btn-group .btn:not(:first-of-type) {
   margin-right: 0rem;
@@ -1758,7 +1786,6 @@ a:focus, a:hover, a:active {
 .gw-table-fixed__actions,
 .table-fixed .table-fixed__actions {
   --width-table-col: 120px;
-  width: var(--width-table-col);
   min-width: var(--width-table-col);
   max-width: var(--width-table-col);
 }
@@ -1782,6 +1809,98 @@ a:focus, a:hover, a:active {
  * ====================================== */
 .column-header-sort {
   width: 100%;
+}
+
+th {
+  vertical-align: middle;
+  --col-s: 50px;
+  --col-m: 80px;
+  --col-l: 110px;
+  --col-xl: 150px;
+  --col-xxl: 220px;
+  --col-xxxl: 300px;
+}
+th.header__col-s {
+  width: var(--col-s);
+}
+th.header__col-m {
+  width: var(--col-m);
+}
+th.header__col-l {
+  width: var(--col-l);
+  padding: 0 10px;
+}
+th.header__col-xl {
+  width: var(--col-xl);
+}
+th.header__col-xxl {
+  width: var(--col-xxl);
+}
+th.header__col-xxxl {
+  width: var(--col-xxxl);
+}
+th.header__col-min-s {
+  min-width: var(--col-s);
+}
+th.header__col-min-m {
+  min-width: var(--col-m);
+}
+th.header__col-min-l {
+  min-width: var(--col-l);
+}
+th.header__col-min-xl {
+  min-width: var(--col-xl);
+}
+th.header__col-min-xxl {
+  min-width: var(--col-xxl);
+}
+th.header__col-min-xxxl {
+  min-width: var(--col-xxxl);
+}
+th.header__col-max-s {
+  max-width: var(--col-s);
+}
+th.header__col-max-m {
+  max-width: var(--col-m);
+}
+th.header__col-max-l {
+  max-width: var(--col-l);
+}
+th.header__col-max-xl {
+  max-width: var(--col-xl);
+}
+th.header__col-max-xxl {
+  max-width: var(--col-xxl);
+}
+th.header__col-max-xxxl {
+  max-width: var(--col-xxxl);
+}
+
+/* ========================================
+ * Resizable tables
+ * ====================================== */
+.table-resizable {
+  table-layout: auto;
+  width: 100%;
+}
+.table-resizable .resize-col {
+  position: relative;
+}
+.table-resizable .resize-handle {
+  cursor: ew-resize;
+  height: var(--handle-height);
+  position: absolute;
+  right: 0;
+  top: 0;
+  user-select: none;
+  width: 4px;
+}
+.table-resizable .resize-handle.active, .table-resizable .resize-handle:hover {
+  border: 2px solid var(--clr-primary-400);
+}
+
+.table-resizing {
+  cursor: ew-resize;
 }
 
 input:hover,
@@ -1909,9 +2028,13 @@ body .ui-inputfield:hover {
 
 .progress__container {
   display: flex;
-  max-width: 240px;
+  height: 15px;
   justify-content: center;
   margin-top: 0.7rem;
+}
+
+.progress-bar {
+  width: var(--progress);
 }
 
 /* These styles are taken from intranda.css
@@ -2664,62 +2787,29 @@ body .ui-messages > div {
   width: unset;
 }
 
-#processAll .header__selection {
-  --width-table-col: 55px;
+#processAll th {
+  --width-table-col: 300px;
 }
-#processAll .header__id {
-  --width-table-col: 25px;
+#processAll .processTable canvas {
+  max-width: 150px;
+  width: 100%;
 }
-#processAll .header__thumbnail {
-  --width-table-col: 90px;
+#processAll .processTable .prozessVerwaltung {
+  word-break: break-all;
 }
-#processAll .header__embedded-metadata {
-  --width-table-col: 200px;
+#processAll .processTable .prozessVerwaltung table {
+  table-layout: fixed;
+  width: 100%;
+  word-break: normal;
 }
-#processAll .header__batch-id {
-  --width-table-col: 35px;
+#processAll .processTable .prozessVerwaltung table th {
+  width: 40%;
 }
-#processAll .header__title {
-  --width-table-col: 160px;
+#processAll .processTable .prozessVerwaltung table th:nth-child(2) {
+  width: 100%;
 }
-#processAll .header__custom-column {
-  --width-table-col: 240px;
-}
-#processAll .header__date {
-  --width-table-col: 60px;
-}
-#processAll .header__ruleset {
-  --width-table-col: 60px;
-}
-#processAll .header__progress {
-  --width-table-col: 70px;
-}
-#processAll .header__project {
-  --width-table-col: 80px;
-}
-#processAll .header__institution {
-  --width-table-col: 80px;
-}
-#processAll .header__lockings {
-  --width-table-col: 60px;
-}
-#processAll .header__update-date {
-  --width-table-col: 60px;
-}
-#processAll .header__update-user {
-  --width-table-col: 60px;
-}
-#processAll .header__update-task {
-  --width-table-col: 60px;
-}
-#processAll .header__swapped {
-  --width-table-col: 40px;
-}
-#processAll .header__number-of-imgs {
-  --width-table-col: 55px;
-}
-#processAll .header__buttons {
-  width: 80px;
+#processAll .processTable [data-label=origpath] {
+  word-break: break-all;
 }
 #processAll .metadata-nested-table tr {
   display: flex;
@@ -2732,13 +2822,58 @@ body .ui-messages > div {
 }
 #processAll .boxTitleDetails th:first-child,
 #processAll .boxTitleDetails th:last-child {
-  --width-table-col: 80px;
+  --width-table-col: 60px;
 }
 #processAll .list-of-goobi-scripts .badge {
   cursor: pointer;
   border: 0;
 }
 
+@media screen and (max-width: 768px) {
+  .processTable .progress__container {
+    max-width: 240px;
+  }
+  .processTable thead {
+    display: block;
+    height: 0;
+    visibility: hidden;
+    width: 0;
+  }
+  .processTable > tbody > * + * {
+    margin: 1.5rem 0 0;
+  }
+  .processTable > tbody > [role=row] {
+    display: flex;
+    flex-direction: column;
+  }
+  .processTable > tbody > [role=row]:nth-child(even) {
+    background: #eee;
+  }
+  .processTable > tbody > [role=row] > td {
+    border: 0;
+    border-bottom: 1px solid var(--clr-neutral-300);
+    column-gap: 1rem;
+    display: flex;
+    justify-content: space-between;
+    min-height: 1rem;
+    width: 100%;
+  }
+  .processTable > tbody > [role=row] > td:before {
+    content: attr(data-label);
+    font-weight: 700;
+    margin: auto 0;
+  }
+  .processTable > tbody > [role=row] > td:last-of-type {
+    border: 0;
+  }
+  .processTable > tbody > [role=row] > td.prozessVerwaltung {
+    display: flex;
+    flex-direction: column;
+  }
+  .processTable .progress__container {
+    flex-grow: 2;
+  }
+}
 /* ========================================
  * process_new2.xhmtl
  * => very specific styles (high specificity)
@@ -2806,6 +2941,10 @@ body .ui-messages > div {
 
 .process_propertyAction {
   width: 90px;
+}
+
+.monthly-processes {
+  height: 300px;
 }
 
 /*# sourceMappingURL=main.css.map */
