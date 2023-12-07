@@ -2010,7 +2010,6 @@ body .ui-inputfield:hover {
 
 .progress__container {
   display: flex;
-  max-width: 240px;
   justify-content: center;
   margin-top: 0.7rem;
 }
@@ -2811,7 +2810,10 @@ body .ui-messages > div {
   border: 0;
 }
 
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 768px) {
+  .processTable .progress__container {
+    max-width: 240px;
+  }
   .processTable thead {
     display: block;
     height: 0;
@@ -2840,6 +2842,7 @@ body .ui-messages > div {
   .processTable > tbody > [role=row] > td:before {
     content: attr(data-label);
     font-weight: 700;
+    margin: auto 0;
   }
   .processTable > tbody > [role=row] > td:last-of-type {
     border: 0;
