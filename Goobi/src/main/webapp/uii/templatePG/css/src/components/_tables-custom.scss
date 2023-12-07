@@ -374,6 +374,24 @@ th {
     &__col-min-xxxl {
       min-width: var(--col-xxxl);
     }
+    &__col-max-s {
+      max-width: var(--col-s);
+    }
+    &__col-max-m {
+      max-width: var(--col-m);
+    }
+    &__col-max-l {
+      max-width: var(--col-l);
+    }
+    &__col-max-xl {
+      max-width: var(--col-xl);
+    }
+    &__col-max-xxl {
+      max-width: var(--col-xxl);
+    }
+    &__col-max-xxxl {
+      max-width: var(--col-xxxl);
+    }
   }
 }
 
