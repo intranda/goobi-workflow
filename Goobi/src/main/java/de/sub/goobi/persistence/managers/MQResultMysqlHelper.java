@@ -100,18 +100,7 @@ public class MQResultMysqlHelper {
     public static int getMessagesCount(String filter) throws SQLException {
         StringBuilder sql = new StringBuilder("SELECT COUNT(1) FROM mq_results ");
 
-        if (StringUtils.isNotBlank(filter)) {
-            String filterString = MySQLHelper.escapeSql(filter);
-            sql.append(" WHERE message like '%");
-            sql.append(filterString);
-            sql.append("%' OR  original_message like '%");
-            sql.append(filterString);
-            sql.append("%' OR  ticketType like  '%");
-            sql.append(filterString);
-            sql.append("%' OR  ticketName like  '%");
-            sql.append(filterString);
-            sql.append("%' ");
-        }
+        appendFilter(filter, sql);
 
         try (Connection conn = MySQLHelper.getInstance().getConnection()) {
             return new QueryRunner().query(conn, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
@@ -120,6 +109,19 @@ public class MQResultMysqlHelper {
 
     public static List<? extends DatabaseObject> getMessageList(String order, String filter, Integer start, Integer count) throws SQLException {
         StringBuilder sql = new StringBuilder("SELECT * FROM mq_results");
+        appendFilter(filter, sql);
+        if (StringUtils.isNotBlank(order)) {
+            sql.append(" ORDER BY ").append(order);
+        }
+        if (start != null && count != null) {
+            sql.append(" LIMIT ").append(start).append(", ").append(count);
+        }
+        try (Connection conn = MySQLHelper.getInstance().getConnection()) {
+            return new QueryRunner().query(conn, sql.toString(), rsToStatusMessageListHandler);
+        }
+    }
+
+    private static void appendFilter(String filter, StringBuilder sql) {
         if (StringUtils.isNotBlank(filter)) {
             String filterString = MySQLHelper.escapeSql(filter);
             sql.append(" WHERE message like '%");
@@ -131,15 +133,6 @@ public class MQResultMysqlHelper {
             sql.append("%' OR  ticketName like  '%");
             sql.append(filterString);
             sql.append("%' ");
-        }
-        if (StringUtils.isNotBlank(order)) {
-            sql.append(" ORDER BY ").append(order);
-        }
-        if (start != null && count != null) {
-            sql.append(" LIMIT ").append(start).append(", ").append(count);
-        }
-        try (Connection conn = MySQLHelper.getInstance().getConnection()) {
-            return new QueryRunner().query(conn, sql.toString(), rsToStatusMessageListHandler);
         }
     }
 
