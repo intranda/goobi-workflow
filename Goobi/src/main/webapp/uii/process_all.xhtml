@@ -151,8 +151,6 @@
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 														<div class="d-flex">
 
-															<h:outputText value="#{msgs.auswahl2}"/>
-
 															<button
 																jsf:action="#{ProzessverwaltungForm.selectionAll}"
 																jsf:id="selectall"
@@ -260,7 +258,7 @@
                                                     <!-- STATUS COLUMN HEADER -->
 													<intranda:columnheader
 														id="progress"
-														addClass="header__progress header__col-xxl header__col-min-xxl"
+														addClass="header__progress header__col-xl header__col-min-l"
 														name="fortschritt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.status}"
