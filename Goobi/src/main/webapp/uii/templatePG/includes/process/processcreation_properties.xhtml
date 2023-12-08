@@ -26,28 +26,13 @@
             <h:panelGroup rendered="#{((property.type.name == 'text') or (property.type.name == 'link') or (property.type.name == 'null'))}">
 
                 <div class="row">
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition != 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="value"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}" />
-                    </ui:fragment>
-
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="value"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}">
-
-                            <i
-                                class="ms-2 text-primary fa fa-asterisk"
-                                aria-hidden="true"
-                                title="#{msgs.requiredField}"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="right"></i>
-                        </h:outputLabel>
-                    </ui:fragment>
-
+                    <div class="col-12 col-md-3">
+                        <intranda:formLabel 
+                            label="#{property.name}" 
+                            labelFor="value" 
+                            labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
+                    </div>
+                
                     <div class="col-12 col-md-9">
                         <x:inputText
                             id="value"
@@ -68,30 +53,13 @@
             <!-- TEXTAREA -->
             <h:panelGroup rendered="#{(property.type.name == 'textarea')}">                
                 <div class="row">
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition != 'WRITEREQUIRED'}">
-                        <div class="col-12 col-md-3">
-                            <h:outputLabel
-                                for="textareaValue"
-                                styleClass="form__label"
-                                value="#{property.name}" />
-                        </div>
-                    </ui:fragment>
-
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="textareaValue"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}">
-
-                            <i
-                                class="ms-2 text-primary fa fa-asterisk"
-                                aria-hidden="true"
-                                title="#{msgs.requiredField}"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="right"></i>
-                        </h:outputLabel>
-                    </ui:fragment>
-
+                    <div class="col-12 col-md-3">
+                        <intranda:formLabel 
+                            label="#{property.name}" 
+                            labelFor="textareaValue" 
+                            labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
+                    </div>
+                    
                     <div class="col-12 col-md-9">
                         <x:inputTextarea
                             id="textareaValue"
@@ -114,27 +82,12 @@
             <!-- NUMBER -->
             <h:panelGroup rendered="#{property.type.name == 'integer' or property.type.name == 'number'}">
                 <div class="row">
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition != 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="number"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}" />
-                    </ui:fragment>
-
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="number"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}">
-
-                            <i
-                                class="ms-2 text-primary fa fa-asterisk"
-                                aria-hidden="true"
-                                title="#{msgs.requiredField}"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="right"></i>
-                        </h:outputLabel>
-                    </ui:fragment>
+                    <div class="col-12 col-md-3">
+                        <intranda:formLabel 
+                            label="#{property.name}" 
+                            labelFor="number" 
+                            labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
+                    </div>
                     <div class="col-12 col-md-9">
                         <x:inputText
                             id="number"
@@ -157,27 +110,12 @@
             <!--  SELECT ONE -->
             <h:panelGroup rendered="#{(property.type.name == 'list')}">
                 <div class="row">
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition != 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="select"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}" />
-                    </ui:fragment>
-
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="select"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}">
-
-                            <i
-                                class="ms-2 text-primary fa fa-asterisk"
-                                aria-hidden="true"
-                                title="#{msgs.requiredField}"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="right"></i>
-                        </h:outputLabel>
-                    </ui:fragment>
+                    <div class="col-12 col-md-3">
+                        <intranda:formLabel 
+                            label="#{property.name}" 
+                            labelFor="select" 
+                            labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
+                    </div>
                     <div class="col-12 col-md-9">
                         <h:selectOneMenu
                             id="select"
@@ -203,26 +141,10 @@
             <h:panelGroup rendered="#{(property.type.name == 'listmultiselect')}">
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <ui:fragment rendered="#{property.showProcessGroupAccessCondition != 'WRITEREQUIRED'}">
-                            <h:outputLabel
-                                for="selectmany"
-                                styleClass="form__label"
-                                value="#{property.name}" />
-                        </ui:fragment>
-
-                        <ui:fragment rendered="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}">
-                            <h:outputLabel
-                                for="selectmany"
-                                styleClass="form__label"
-                                value="#{property.name}">
-                                <i
-                                    class="ms-2 text-primary fa fa-asterisk"
-                                    aria-hidden="true"
-                                    title="#{msgs.requiredField}"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="right"></i>
-                            </h:outputLabel>
-                        </ui:fragment>
+                        <intranda:formLabel 
+                            label="#{property.name}" 
+                            labelFor="selectmany" 
+                            labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                     </div>
                     <div class="col-12 col-md-9">
                         <h:selectManyListbox
@@ -250,27 +172,12 @@
             <!-- BOOLEAN  -->
             <h:panelGroup rendered="#{(property.type.name == 'boolean')}">
                 <div class="row">
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition != 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="boolean"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}" />
-                    </ui:fragment>
-
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="boolean"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}">
-
-                            <i
-                                class="ms-2 text-primary fa fa-asterisk"
-                                aria-hidden="true"
-                                title="#{msgs.requiredField}"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="right"></i>
-                        </h:outputLabel>
-                    </ui:fragment>
+                    <div class="col-12 col-md-3">
+                        <intranda:formLabel 
+                            label="#{property.name}" 
+                            labelFor="boolean" 
+                            labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
+                    </div>
                     <div class="col-12 col-md-9">
                         <h:selectBooleanCheckbox
                             id="boolean"
@@ -290,27 +197,12 @@
             <!--  DATE   -->
             <h:panelGroup rendered="#{(property.type.name == 'date')}">
                 <div class="row">
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition != 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="date"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}" />
-                    </ui:fragment>
-
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="date"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}">
-
-                            <i
-                                class="ms-2 text-primary fa fa-asterisk"
-                                aria-hidden="true"
-                                title="#{msgs.requiredField}"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="right"></i>
-                        </h:outputLabel>
-                    </ui:fragment>
+                    <div class="col-12 col-md-3">
+                        <intranda:formLabel 
+                            label="#{property.name}" 
+                            labelFor="date" 
+                            labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
+                    </div>
                     <div class="col-12 col-md-9">
                         <p:calendar
                             id="date"
@@ -328,27 +220,12 @@
             <!--  HTML   -->
             <h:panelGroup rendered="#{(property.type.name == 'html')}">
                 <div class="row">
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition != 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="valuearea"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}" />
-                    </ui:fragment>
-
-                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}">
-                        <h:outputLabel
-                            for="value"
-                            styleClass="col-12 col-md-3 form__label"
-                            value="#{property.name}">
-
-                            <i
-                                class="ms-2 text-primary fa fa-asterisk"
-                                aria-hidden="true"
-                                title="#{msgs.requiredField}"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="right"></i>
-                        </h:outputLabel>
-                    </ui:fragment>
+                    <div class="col-12 col-md-3">
+                        <intranda:formLabel 
+                            label="#{property.name}" 
+                            labelFor="valuearea" 
+                            labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
+                    </div>
                     <div class="col-12 col-md-9">
                         <x:inputTextarea
                             id="valueArea"
