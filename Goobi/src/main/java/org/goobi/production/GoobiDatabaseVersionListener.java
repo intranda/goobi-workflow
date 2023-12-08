@@ -55,6 +55,77 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             DatabaseVersion.updateDatabase(currentVersion);
         }
 
+
+        if (!DatabaseVersion.checkIfColumnExists("mq_results", "objects")) {
+            try {
+                // extend mq_results table
+                DatabaseVersion.runSql("alter table mq_results add column id INT(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY");
+                DatabaseVersion.runSql("alter table mq_results add column processid INT(11) default 0");
+                DatabaseVersion.runSql("alter table mq_results add column stepid INT(11) default 0");
+                DatabaseVersion.runSql("alter table mq_results add column scriptName VARCHAR(255)");
+                DatabaseVersion.runSql("alter table mq_results add column objects INT(11) default 0");
+                DatabaseVersion.runSql("alter table mq_results add column ticketType VARCHAR(255)");
+                DatabaseVersion.runSql("alter table mq_results add column ticketName VARCHAR(255)");
+
+                // move external_mq_results to mq_results
+                StringBuilder sb = new StringBuilder();
+                sb.append("insert into mq_results (processid, stepid, time, scriptName, status, ticketType, ticketName) ");
+                sb.append("select ProzesseID, SchritteID, time, scriptName, 'ERROR_DLQ', 'external_step', scriptName from ( ");
+                sb.append("select * from external_mq_results)x ");
+                DatabaseVersion.runSql(sb.toString());
+                DatabaseVersion.runSql("drop table external_mq_results");
+
+                // extract additional fields from ticket data
+                sb = new StringBuilder();
+                sb.append("update mq_results mq set processid = (select JSON_VALUE(original_message, '$.processId')) ");
+                DatabaseVersion.runSql(sb.toString());
+
+                sb = new StringBuilder();
+                sb.append("update mq_results mq set ticketType = (select JSON_VALUE(original_message, '$.processId'))");
+                DatabaseVersion.runSql(sb.toString());
+
+                sb = new StringBuilder();
+                sb.append("update mq_results mq set ticketName = (select JSON_VALUE(original_message, '$.stepName'))");
+
+                DatabaseVersion.runSql(sb.toString());
+
+                // generate entries for all finished automatic mq tasks
+                sb = new StringBuilder();
+                sb.append("insert into mq_results (processid, stepid, time, scriptName, status, ticketType, ticketName) ");
+                sb.append("select ProzesseID, SchritteID, BearbeitungsEnde, scriptName1, 'DONE', 'generic_automatic_step', ");
+                sb.append("titel from schritte where typAutomatisch = true and messageQueue != 'NO_QUEUE' and Bearbeitungsstatus = 3; ");
+                DatabaseVersion.runSql(sb.toString());
+
+                // get number of objects for each ticket
+                sb = new StringBuilder();
+                sb.append("update mq_results set objects = ");
+                sb.append("(select sortHelperImages from prozesse where prozesse.ProzesseID = mq_results.processid)");
+                DatabaseVersion.runSql(sb.toString());
+
+                sb = new StringBuilder();
+                sb.append("update mq_results set ticketType = (select JSON_VALUE(original_message, '$.taskName')) where ticketType is null ");
+                DatabaseVersion.runSql(sb.toString());
+
+                sb = new StringBuilder();
+                sb.append("update mq_results set ticketName = ticketType where ticketName is null");
+                DatabaseVersion.runSql(sb.toString());
+
+
+                sb = new StringBuilder();
+                sb.append("update mq_results set ticketName = scriptName where ticketName is null");
+                DatabaseVersion.runSql(sb.toString());
+
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if (!DatabaseVersion.checkIfIndexExists("vocabulary_record_data", "definition_id")) {
+            DatabaseVersion.createIndexOnTable("vocabulary_record_data", "definition_id", "definition_id", null);
+            DatabaseVersion.createIndexOnTable("vocabulary_record_data", "record_id", "record_id", null);
+
+        }
+
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
     }

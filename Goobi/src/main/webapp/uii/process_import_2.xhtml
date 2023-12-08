@@ -126,6 +126,18 @@
 									name="inputText"
 									required="#{property.required}" />
 							</h:panelGroup>
+							
+							<h:panelGroup
+								rendered="#{property.type.name == 'textarea'}">
+								<intranda:formInputTextArea
+									id="textarea"
+									rows="7"
+									label="#{property.name}"
+									field="#{property.value}"
+									help="#{msgs.helpProperty}"
+									name="inputTextArea"
+									required="#{property.required}" />
+							</h:panelGroup>
 
 							<h:panelGroup rendered="#{(property.type.name == 'list')}">
 								<intranda:formInputDropDown2

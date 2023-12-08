@@ -339,6 +339,33 @@
                                 </div>
                             </h:panelGroup>
                             <!-- // VALUE AS TEXT -->
+                            
+                            <!-- VALUE AS TEXTAREA -->
+                            <h:panelGroup
+                                styleClass="row"
+                                rendered="#{myprocess_item.type.name == 'textarea'}">
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{myprocess_item.name}"
+                                        labelFor="textareaValue"
+                                        labelRequired="false" />
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <h:inputTextarea
+                                        id="textareaValue"
+                                        rows="7"
+                                        forceId="true"
+                                        styleClass="form-control form__input"
+                                        value="#{myprocess_item.value}"
+                                        required="false"
+                                        readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
+                                    </h:inputTextarea>
+                                    <intranda:formHelp
+                                        content="#{msgs.helpPropertyValue}"
+                                        msgFor="textareaValue" />
+                                </div>
+                            </h:panelGroup>
+                            <!-- // VALUE AS TEXTAREA -->
 
                             <!-- VALUE AS NUMBER -->
                             <h:panelGroup

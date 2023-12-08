@@ -4,7 +4,7 @@
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in the submodules -->
-    <version>23.10.2</version>
+    <version>23.11-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 
@@ -56,7 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>23.10.2</publicVersion>
+        <publicVersion>23.11-SNAPSHOT</publicVersion>
         <!-- Use Java 11 for compiling -->
         <maven.compiler.release>11</maven.compiler.release>
 
@@ -77,6 +77,7 @@
         <!-- intranda internal -->
         <ics.version>3.9.1</ics.version>
         <normdataimporter.version>1.10.5</normdataimporter.version>
+
         <ugh-core.version>5.0.19</ugh-core.version>
         <ugh-marc.version>5.0.17</ugh-marc.version>
         <ugh-lido.version>5.0.17</ugh-lido.version>
@@ -115,7 +116,7 @@
         <javassist.version>3.29.2-GA</javassist.version>
         <java-jwt.version>3.19.1</java-jwt.version>
         <jaxb-impl.version>2.3.9</jaxb-impl.version>
-        <jackson.version>2.15.3</jackson.version>
+        <jackson.version>2.16.0</jackson.version>
         <jersey.version>2.41</jersey.version>
         <jhove.version>1.20.1</jhove.version>
         <jna.version>5.11.0</jna.version>
@@ -1308,7 +1309,7 @@
         <dependency>
             <groupId>de.intranda.goobi</groupId>
             <artifactId>pdf-extraction</artifactId>
-            <version>2.6.1</version>
+            <version>2.7.4</version>
             <exclusions>
                 <exclusion>
                     <artifactId>bcprov-jdk14</artifactId>

@@ -2,6 +2,7 @@ package org.goobi.api.mq;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Date;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -44,11 +45,13 @@ import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQPrefetchPolicy;
 import org.apache.activemq.RedeliveryPolicy;
+import org.goobi.api.mq.MqStatusMessage.MessageStatus;
 import org.goobi.production.enums.PluginReturnValue;
 import org.reflections.Reflections;
 
 import com.google.gson.Gson;
 
+import de.sub.goobi.persistence.managers.MQResultManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -101,25 +104,34 @@ public class GoobiDefaultQueueListener {
     void waitForMessage(Session sess, MessageConsumer consumer) {
 
         try {
+            String origMessage = null;
             Message message = consumer.receive();
             Optional<TaskTicket> optTicket = Optional.empty();
             if (message instanceof TextMessage) {
                 TextMessage tm = (TextMessage) message;
                 optTicket = Optional.of(gson.fromJson(tm.getText(), TaskTicket.class));
+                origMessage = tm.getText();
             }
             if (message instanceof BytesMessage) {
                 BytesMessage bm = (BytesMessage) message;
                 byte[] bytes = new byte[(int) bm.getBodyLength()];
                 bm.readBytes(bytes);
                 optTicket = Optional.of(gson.fromJson(new String(bytes), TaskTicket.class));
+                origMessage = new String(bytes);
             }
             if (optTicket.isPresent()) {
+
                 log.debug("Handling ticket {}", optTicket.get());
                 try {
                     PluginReturnValue result = handleTicket(optTicket.get());
                     if (result == PluginReturnValue.FINISH) {
                         //acknowledge message, it is done
                         message.acknowledge();
+
+                        MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.DONE, "",
+                                origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
+                                optTicket.get().getStepId(), optTicket.get().getStepName());
+                        MQResultManager.insertResult(statusMessage);
                     } else {
                         //error or wait => put back to queue and retry by redeliveryPolicy
                         sess.recover();
@@ -127,6 +139,10 @@ public class GoobiDefaultQueueListener {
                 } catch (Throwable t) {
                     log.error("Error handling ticket " + message.getJMSMessageID() + ": ", t);
                     sess.recover();
+                    MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.ERROR, t.getMessage(),
+                            origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
+                            optTicket.get().getStepId(), optTicket.get().getStepName());
+                    MQResultManager.insertResult(statusMessage);
                 }
             }
         } catch (JMSException e) {

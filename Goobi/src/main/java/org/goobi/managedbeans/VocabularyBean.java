@@ -31,12 +31,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -47,6 +50,8 @@ import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
@@ -340,23 +345,30 @@ public class VocabularyBean extends BasicBean implements Serializable {
         // create header
         Row headerRow = sheet.createRow(0);
         int columnCounter = 0;
+        List<String> headers = new ArrayList<>();
+
         for (Definition definition : definitionList) {
             headerRow.createCell(columnCounter)
             .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
                     : definition.getLabel());
             columnCounter = columnCounter + 1;
-        }
 
-        int rowCounter = 1;
-        // add records
-        for (VocabRecord vocabRecord : recordList) {
-            Row resultRow = sheet.createRow(rowCounter);
-            columnCounter = 0;
-            for (Definition definition : definitionList) {
-                resultRow.createCell(columnCounter).setCellValue(vocabRecord.getFieldValue(definition));
-                columnCounter = columnCounter + 1;
+            headers.add(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                    : definition.getLabel());
+        }
+        StringBuilder sw = new StringBuilder();
+        CSVFormat csvFormat = CSVFormat.DEFAULT.builder().setHeader(headers.toArray(new String[headers.size()])).build();
+        try (final CSVPrinter printer = new CSVPrinter(sw, csvFormat)) {
+            for (VocabRecord vocabRecord : recordList) {
+                List<String> values = new ArrayList<>();
+                for (Definition definition : definitionList) {
+                    values.add(vocabRecord.getFieldValue(definition));
+                }
+                printer.printRecord(values.toArray());
+
             }
-            rowCounter = rowCounter + 1;
+        } catch (IOException e1) {
+            log.error(e1);
         }
 
         // write result into output stream
@@ -366,9 +378,11 @@ public class VocabularyBean extends BasicBean implements Serializable {
         OutputStream out;
         try {
             out = response.getOutputStream();
-            response.setContentType("application/vnd.ms-excel");
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + title + ".xlsx\"");
-            wb.write(out);
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + title + ".csv\"");
+
+            out.write(sw.toString().getBytes(StandardCharsets.UTF_8));
+
             out.flush();
 
             facesContext.responseComplete();
@@ -587,33 +601,36 @@ public class VocabularyBean extends BasicBean implements Serializable {
             List<VocabRecord> updateRecords = new ArrayList<>();
             // get main entry row
             Integer mainEntryColumnNumber = null;
+            Integer mainEntryDefinitionId = null;
             for (MatchingField mf : headerOrder) {
                 if (mf.getAssignedField() != null && mf.getAssignedField().isMainEntry()) {
                     mainEntryColumnNumber = mf.getColumnOrderNumber();
+                    mainEntryDefinitionId = mf.getAssignedField().getId();
                 }
             }
-            for (Row row : rowsToImport) {
-                // search for existing records based on the value of the main entry
-                VocabRecord recordToUpdate = null;
-                if (mainEntryColumnNumber != null) {
+
+            if (mainEntryColumnNumber != null) {
+                Map<String, VocabRecord> existingRecords = new HashMap<>();
+                for (VocabRecord vr : currentVocabulary.getRecords()) {
+                    for (Field f : vr.getFields()) {
+                        if (f.getDefinitionId().equals(mainEntryDefinitionId)) {
+                            existingRecords.put(f.getValue(), vr);
+
+                            break;
+                        }
+                    }
+                }
+
+                for (Row row : rowsToImport) {
+                    // search for existing records based on the value of the main entry
+
                     String uniqueIdentifierEntry = getCellValue(row.getCell(mainEntryColumnNumber));
                     if (StringUtils.isNotBlank(uniqueIdentifierEntry)) {
-                        outerloop: for (VocabRecord vr : currentVocabulary.getRecords()) {
-                            for (Field field : new ArrayList<>(vr.getFields())) {
-                                if (field.getDefinition() == null) {
-                                    vr.getFields().remove(field);
-                                    continue;
-                                }
-
-                                if (field.getDefinition().isMainEntry() && uniqueIdentifierEntry.equals(field.getValue())) {
-                                    recordToUpdate = vr;
-                                    break outerloop;
-                                }
-                            }
-                        }
+                        VocabRecord recordToUpdate = existingRecords.get(uniqueIdentifierEntry);
                         if (recordToUpdate != null) {
+                            boolean updated = false;
+                            // existing record, change it
                             log.debug("merged row with existing record");
-                            updateRecords.add(recordToUpdate);
                             // update existing record
                             for (MatchingField mf : headerOrder) {
                                 if (mf.getAssignedField() != null) {
@@ -629,9 +646,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
                                         fieldToUpdate = new Field(mf.getAssignedField().getLabel(), mf.getAssignedField().getLanguage(), cellValue,
                                                 mf.getAssignedField());
                                         recordToUpdate.getFields().add(fieldToUpdate);
-                                    } else {
+                                        updated = true;
+                                    } else if (!fieldToUpdate.getValue().equals(cellValue)) {
                                         fieldToUpdate.setValue(cellValue);
+                                        updated = true;
                                     }
+                                }
+                                if (updated) {
+                                    updateRecords.add(recordToUpdate);
                                 }
                             }
                         } else {
@@ -658,6 +680,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                     }
                 }
             }
+
             if (!newRecords.isEmpty()) {
                 log.debug("Created {} new record(s)", newRecords.size());
                 VocabularyManager.insertNewRecords(newRecords, currentVocabulary.getId());
@@ -837,8 +860,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public void validateFieldValue(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
         synchronized (this) {
-            // This boolean flag is set to true when the page (and the input form) is reloaded. This makes it possible to reset the validation results on
-            // the first executed validation of the current submit-trial
+            // This boolean flag is set to true when the page (and the input form) is reloaded. This makes it possible
+            // to reset the validation results on the first executed validation of the current submit-trial
             if (this.resetResultsOnNextValidation) {
                 // Only the invalid records should be set to 'valid=false' later
                 for (VocabRecord currentRecord : this.currentVocabulary.getRecords()) {

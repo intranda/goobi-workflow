@@ -302,8 +302,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         try {
             TaskTicket ticket = new TaskTicket(AutomaticThumbnailHandler.HANDLERNAME);
             ticket.setStepId(this.id);
-            ticket.setProcessId(this.getProcessId());
+            ticket.setProcessId(this.getProzess().getId());
             ticket.setStepName(this.titel);
+            ticket.setNumberOfObjects(getProzess().getSortHelperImages());
             if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
                 AutomaticThumbnailHandler handler = new AutomaticThumbnailHandler();
                 handler.call(ticket);
@@ -527,11 +528,11 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
      * @return Rückgabe des Schritttitels sowie (sofern vorhanden) den Benutzer mit vollständigem Namen
      */
     public String getTitelMitBenutzername() {
-        String rueckgabe = this.titel;
+        StringBuilder rueckgabe = new StringBuilder().append(this.titel);
         if (this.bearbeitungsbenutzer != null && this.bearbeitungsbenutzer.getId() != null && this.bearbeitungsbenutzer.getId().intValue() != 0) {
-            rueckgabe += " (" + this.bearbeitungsbenutzer.getNachVorname() + ")";
+            rueckgabe.append(" (").append(this.bearbeitungsbenutzer.getNachVorname()).append(")");
         }
-        return rueckgabe;
+        return rueckgabe.toString();
     }
 
     public String getBearbeitungsstatusAsString() {
@@ -612,23 +613,23 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public String getListOfPaths() {
-        String answer = "";
+        StringBuilder answer = new StringBuilder();
         if (this.scriptname1 != null) {
-            answer += this.scriptname1;
+            answer.append(this.scriptname1);
         }
         if (this.scriptname2 != null) {
-            answer = answer + "; " + this.scriptname2;
+            answer.append("; ").append(this.scriptname2);
         }
         if (this.scriptname3 != null) {
-            answer = answer + "; " + this.scriptname3;
+            answer.append("; ").append(this.scriptname3);
         }
         if (this.scriptname4 != null) {
-            answer = answer + "; " + this.scriptname4;
+            answer.append("; ").append(this.scriptname4);
         }
         if (this.scriptname5 != null) {
-            answer = answer + "; " + this.scriptname5;
+            answer.append("; ").append(this.scriptname5);
         }
-        return answer;
+        return answer.toString();
 
     }
 
