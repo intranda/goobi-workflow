@@ -99,7 +99,7 @@ public class BagCreation {
 
     public void createBag() {
         StandardSupportedAlgorithms algorithm = StandardSupportedAlgorithms.SHA256;
-        boolean includeHiddenFiles = false;
+        boolean includeHiddenFiles = true;
         Collection<SupportedAlgorithm> algos = new ArrayList<>();
         algos.add(algorithm);
 

@@ -25,7 +25,7 @@
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="true"/>
 			<f:ajax
 				render="#{ajaxRender}"
-				onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init({scope: document.querySelector('#{tooltips}')});}"/>
+				onevent="(data) => {gwHandleTooltip.init(data); gwResizableTable.reload(data); gwInitTooltips.init();}"/>
 		</button>
 
 		<button
@@ -44,11 +44,9 @@
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="false"/>
 			<f:ajax
 				render="#{ajaxRender}"
-				onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init({scope: document.querySelector('#{tooltips}')});}"/>
+				onevent="(data) => {gwHandleTooltip.init(data); gwResizableTable.reload(data); gwInitTooltips.init();}"/>
 		</button>
 
 	</composite:implementation>
 
 </ui:composition>
-
-

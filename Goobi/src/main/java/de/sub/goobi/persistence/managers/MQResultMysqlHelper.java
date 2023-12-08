@@ -35,6 +35,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mq.MqStatusMessage;
 import org.goobi.beans.DatabaseObject;
 
@@ -44,7 +45,10 @@ import lombok.extern.log4j.Log4j2;
 public class MQResultMysqlHelper {
 
     public static void insertMessage(MqStatusMessage message) throws SQLException {
-        String sql = "INSERT INTO mq_results (ticket_id, time, status, message, original_message) VALUES (?,?,?,?,?)";
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO mq_results (ticket_id, time, status, message, original_message, objects, processid, stepid ");
+        sql.append(", ticketType, ticketName) VALUES (?,?,?,?,?, ?,?,?,?,?) ");
+
         Object[] param = generateParameter(message);
         Connection connection = null;
         try {
@@ -53,7 +57,7 @@ public class MQResultMysqlHelper {
             if (log.isTraceEnabled()) {
                 log.trace(sql + ", " + Arrays.toString(param));
             }
-            run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
+            run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -79,40 +83,69 @@ public class MQResultMysqlHelper {
         MqStatusMessage.MessageStatus status = MqStatusMessage.MessageStatus.valueOf(rs.getString("status"));
         String message = rs.getString("message");
         String origMessage = rs.getString("original_message");
-        return new MqStatusMessage(ticketId, time, status, message, origMessage);
+        int numberOfObjects = rs.getInt("objects");
+        String ticketType = rs.getString("ticketType");
+        int processid = rs.getInt("processid");
+        int stepid = rs.getInt("stepid");
+        String ticketName = rs.getString("ticketName");
+        return new MqStatusMessage(ticketId, time, status, message, origMessage, numberOfObjects, ticketType, processid, stepid, ticketName);
     }
 
     private static Object[] generateParameter(MqStatusMessage message) {
-        return new Object[] {
-                message.getTicketId(),
-                message.getTime(),
-                message.getStatus().getName(),
-                message.getMessage(),
-                message.getOriginalMessage()
-        };
+        return new Object[] { message.getTicketId(), message.getTime(), message.getStatus().getName(), message.getStatusMessage(),
+                message.getOriginalMessage(), message.getNumberOfObjects(), message.getProcessid(), message.getStepId(), message.getTicketType(),
+                message.getTicketName() };
     }
 
     public static int getMessagesCount(String filter) throws SQLException {
-        String sql = "SELECT COUNT(1) FROM mq_results WHERE " + filter;
+        StringBuilder sql = new StringBuilder("SELECT COUNT(1) FROM mq_results ");
+
+        appendFilter(filter, sql);
+
         try (Connection conn = MySQLHelper.getInstance().getConnection()) {
-            return new QueryRunner().query(conn, sql, MySQLHelper.resultSetToIntegerHandler);
+            return new QueryRunner().query(conn, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         }
     }
 
     public static List<? extends DatabaseObject> getMessageList(String order, String filter, Integer start, Integer count) throws SQLException {
-        String sql = "SELECT * FROM mq_results";
-        if (filter != null && !filter.isEmpty()) {
-            sql += " WHERE " + filter;
-        }
-        if (order != null && !order.isEmpty()) {
-            sql += " ORDER BY " + order;
+        StringBuilder sql = new StringBuilder("SELECT * FROM mq_results");
+        appendFilter(filter, sql);
+        if (StringUtils.isNotBlank(order)) {
+            sql.append(" ORDER BY ").append(order);
         }
         if (start != null && count != null) {
-            sql += " LIMIT " + start + ", " + count;
+            sql.append(" LIMIT ").append(start).append(", ").append(count);
         }
         try (Connection conn = MySQLHelper.getInstance().getConnection()) {
-            return new QueryRunner().query(conn, sql, rsToStatusMessageListHandler);
+            return new QueryRunner().query(conn, sql.toString(), rsToStatusMessageListHandler);
         }
+    }
+
+    private static void appendFilter(String filter, StringBuilder sql) {
+        if (StringUtils.isNotBlank(filter)) {
+            String filterString = MySQLHelper.escapeSql(filter);
+            sql.append(" WHERE message like '%");
+            sql.append(filterString);
+            sql.append("%' OR  original_message like '%");
+            sql.append(filterString);
+            sql.append("%' OR  ticketType like  '%");
+            sql.append(filterString);
+            sql.append("%' OR  ticketName like  '%");
+            sql.append(filterString);
+            sql.append("%' ");
+        }
+    }
+
+    public static List<String> getAllTicketNames() throws SQLException {
+        List<String> values = new ArrayList<>();
+        values.add(""); // to select all ticket types
+
+        String sql = "select distinct ticketName from mq_results where ticketName is not null order by ticketName";
+        try (Connection conn = MySQLHelper.getInstance().getConnection()) {
+            values.addAll(new QueryRunner().query(conn, sql, MySQLHelper.resultSetToStringListHandler));
+        }
+
+        return values;
     }
 
 }

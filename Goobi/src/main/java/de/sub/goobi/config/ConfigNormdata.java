@@ -1,23 +1,24 @@
-package de.sub.goobi.config;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
+
+package de.sub.goobi.config;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,12 @@ public class ConfigNormdata {
     private ConfigNormdata() {
     }
 
+    /**
+     * Retrieves a list of configured normdatabases from the 'goobi_normdata.xml' configuration file. If the configuration file is not present or no
+     * normdatabases are configured, a default normdatabase is added.
+     * 
+     * @return A list of NormDatabase objects representing the configured normdatabases.
+     */
     public static List<NormDatabase> getConfiguredNormdatabases() {
         List<NormDatabase> answer = new ArrayList<>();
         XMLConfiguration config = getNormdataConfiguration();
@@ -50,6 +57,11 @@ public class ConfigNormdata {
         return answer;
     }
 
+    /**
+     * Loads and returns the XML configuration for normdata from the 'goobi_normdata.xml' file.
+     * 
+     * @return The XMLConfiguration object representing the normdata configuration.
+     */
     private static XMLConfiguration getNormdataConfiguration() {
         String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_normdata.xml";
         XMLConfiguration config = new XMLConfiguration();
