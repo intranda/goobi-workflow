@@ -26,7 +26,6 @@ label,
 .form__help,
 .help-block {
   flex: 1 1 100%;
-  margin-top: 4px;
 
   span {
     color: var(--clr-neutral-600);
@@ -36,6 +35,7 @@ label,
   .help-block // help text
   {
     margin-left: 1px;
+    margin-top: 4px;
   }
 }
 
