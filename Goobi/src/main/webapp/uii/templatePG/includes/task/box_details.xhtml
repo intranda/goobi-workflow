@@ -49,7 +49,7 @@
                     <h:panelGrid
                         columnClasses="border-right"
                         columns="2"
-                        class="table table-hover">
+                        class="table table-hover table-width">
 
                         <!-- PROCESS -->
                         <h:outputText value="#{msgs.prozess}:" />
@@ -162,17 +162,17 @@
                                         rel="tooltip"
                                         data-toggle="tooltip"
                                         class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" />
-                                    <!-- // STATUS --> 
-                                    
-                                    <!-- TYPE --> 
+                                    <!-- // STATUS -->
+
+                                    <!-- TYPE -->
                                     <i class="fa #{step.typAutomatisch ? 'fa-cogs' : 'fa-user-o'} font-light ms-3 me-3"
                                         title="#{step.typAutomatisch ? msgs.automatischerSchritt : msgs.normalerSchritt}" />
-                                    <!-- // TYPE --> 
-                                    
+                                    <!-- // TYPE -->
+
                                     <!-- TITLE -->
                                     <h:outputText
                                         value="#{step.titel}"
-                                        styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" /> 
+                                        styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" />
                                     <!-- TITLE -->
 
                                     <div

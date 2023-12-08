@@ -1,62 +1,31 @@
 #processAll {
   // Custom column widths
-  .header {
-    &__selection {
-      --width-table-col: 55px;
+  th {
+    --width-table-col: 300px;
+  }
+
+  .processTable {
+    canvas {
+      max-width: 150px;
+      width: 100%;
     }
-    &__id {
-      --width-table-col: 25px;
+    .prozessVerwaltung {
+      word-break: break-all;
+      // this is a workaround to force a table layout that fits the container
+      table {
+        table-layout: fixed;
+        width: 100%;
+        word-break: normal;
+        th {
+          width: 40%;
+        }
+        th:nth-child(2) {
+          width: 100%;
+        }
+      }
     }
-    &__thumbnail {
-      --width-table-col: 90px;
-    }
-    &__embedded-metadata {
-      --width-table-col: 200px;
-    }
-    &__batch-id {
-      --width-table-col: 35px;
-    }
-    &__title {
-      --width-table-col: 160px;
-    }
-    &__custom-column {
-      --width-table-col: 240px;
-    }
-    &__date {
-      --width-table-col: 60px;
-    }
-    &__ruleset {
-      --width-table-col: 60px;
-    }
-    &__progress {
-      --width-table-col: 70px;
-    }
-    &__project {
-      --width-table-col: 80px;
-    }
-    &__institution {
-      --width-table-col: 80px;
-    }
-    &__lockings {
-      --width-table-col: 60px;
-    }
-    &__update-date {
-      --width-table-col: 60px;
-    }
-    &__update-user {
-      --width-table-col: 60px;
-    }
-    &__update-task {
-      --width-table-col: 60px;
-    }
-    &__swapped {
-      --width-table-col: 40px;
-    }
-    &__number-of-imgs {
-      --width-table-col: 55px;
-    }
-    &__buttons {
-      width: 80px;
+    [data-label = "origpath"] {
+      word-break: break-all;
     }
   }
 
@@ -75,11 +44,61 @@
   .boxTitleDetails {
     th:first-child,
     th:last-child {
-      --width-table-col: 80px;
+      --width-table-col: 60px;
     }
   }
   .list-of-goobi-scripts .badge {
     cursor: pointer;
     border: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .processTable {
+    .progress__container {
+      max-width: 240px;
+    }
+    thead {
+      display: block;
+      height: 0;
+      visibility: hidden;
+      width: 0;
+    }
+    > tbody {
+      > * + * {
+        margin: 1.5rem 0 0;
+      }
+      > [role="row"] {
+        display: flex;
+        flex-direction: column;
+        &:nth-child(even) {
+          background: #eee;
+        }
+        > td {
+          border: 0;
+          border-bottom: 1px solid var(--clr-neutral-300);
+          column-gap: 1rem;
+          display: flex;
+          justify-content: space-between;
+          min-height: 1rem;
+          width: 100%;
+          &:before {
+            content: attr(data-label);
+            font-weight: 700;
+            margin: auto 0;
+          }
+          &:last-of-type {
+            border: 0;
+          }
+          &.prozessVerwaltung {
+            display: flex;
+            flex-direction: column;
+          }
+        }
+      }
+    }
+    .progress__container {
+      flex-grow: 2;
+    }
   }
 }

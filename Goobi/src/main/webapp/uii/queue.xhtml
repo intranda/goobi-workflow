@@ -1,113 +1,135 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-  xmlns:jsf="http://xmlns.jcp.org/jsf">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-	<ui:param name="myPageTitle"
-		value="#{msgs.menu_administration_currentQueue}" />
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.menu_administration_currentQueue}" />
 
-	<ui:define name="breadcrumb">
-		<intranda:breadcrumb id="index"
-			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-			action="index" navId="a0" />
-		<intranda:breadcrumb id="admin"
-			label="#{msgs.menu_administration_currentQueue}" action="queue.xhtml"
-			noSeparator="#{true}" />
-	</ui:define>
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="admin"
+            label="#{msgs.menu_administration_currentQueue}"
+            action="queue.xhtml"
+            noSeparator="#{true}" />
+    </ui:define>
 
-	<ui:define name="info">
-	</ui:define>
+    <ui:define name="info">
+    </ui:define>
 
-	<ui:define name="content">
-    
-
-    <h:form
-      id="myform"
-			prependId="false"
-      enctype="multipart/form-data">
-
-		<intranda:box
-			boxType="primary"
-			boxPadding="true"
-			boxTitle="false">
+    <ui:define name="content">
 
 
-			<!-- TITLE BAR -->
-			<intranda:boxTitle
-				title="#{msgs.menu_administration_currentQueue}"
-				icon="fa-spinner">
-				<ul class="tabs" >
-					<li class="tab tab--0 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
-						<h:commandLink
-							id="tab0"
-							styleClass="tab__link"
-							action="#{NavigationForm.Reload}"
-							value="#{msgs.waiting}">
-							<f:setPropertyActionListener
-								target="#{BenutzerverwaltungForm.displayMode}"
-								value="" />
-							<f:ajax
-								render="@form"
-								execute="@form" />
-						</h:commandLink>
-					</li>
-					<li class="tab tab--1 #{BenutzerverwaltungForm.displayMode eq 'tab1'?'active':''}">
-						<h:commandLink
-							id="tab1"
-							styleClass="tab__link"
-							action="#{NavigationForm.Reload}"
-							value="#{msgs.errors}">
-							<f:setPropertyActionListener
-								target="#{BenutzerverwaltungForm.displayMode}"
-								value="tab1" />
-							<f:ajax
-								render="@form"
-								execute="@form" />
-						</h:commandLink>
-					</li>
-				</ul>
-			</intranda:boxTitle>
+        <h:form
+            id="myform"
+            prependId="false"
+            enctype="multipart/form-data">
 
-			<!-- BOX BODY -->
-			<div class="box__body">
-
-				<ui:fragment rendered="#{not messageQueueBean.messageBrokerStart}">
-					<div class="alert alert-info">
-						<h:outputText value="#{msgs.message_queue_queues_switched_off}" />
-					</div>
-				</ui:fragment>
-
-				<ui:fragment rendered="#{messageQueueBean.messageBrokerStart}">
+            <intranda:box
+                boxType="primary"
+                boxPadding="true"
+                boxTitle="false">
 
 
-				<h:panelGroup layout="block" styleClass="tab-content" id="tabContent">
+                <!-- TITLE BAR -->
+                <intranda:boxTitle
+                    title="#{msgs.menu_administration_currentQueue}"
+                    icon="fa-spinner">
+                    <ul class="tabs">
+                        <li class="tab tab--0 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}"><h:commandLink
+                                id="tab0"
+                                styleClass="tab__link"
+                                action="#{NavigationForm.Reload}"
+                                value="#{msgs.waiting}">
+                                <f:setPropertyActionListener
+                                    target="#{BenutzerverwaltungForm.displayMode}"
+                                    value="" />
+                                <f:ajax
+                                    render="@form"
+                                    execute="@form" />
+                            </h:commandLink></li>
+                        <li class="tab tab--1 #{BenutzerverwaltungForm.displayMode eq 'tab1'?'active':''}"><h:commandLink
+                                id="tab1"
+                                styleClass="tab__link"
+                                action="#{NavigationForm.Reload}"
+                                value="#{msgs.jobs_quartzHistory}">
+                                <f:setPropertyActionListener
+                                    target="#{BenutzerverwaltungForm.displayMode}"
+                                    value="tab1" />
+                                <f:ajax
+                                    render="@form"
+                                    execute="@form" />
+                            </h:commandLink></li>
 
-					<!-- Tab 1 -->
-					<div class="#{BenutzerverwaltungForm.displayMode eq '' ? 'tab-pane active' : 'tab-pane'}">
-						<ui:include src="templatePG/includes/messagequeue/mq_waiting.xhtml"></ui:include>
-					</div>
+                        <li class="tab tab--1 #{BenutzerverwaltungForm.displayMode eq 'tab2'?'active':''}"><h:commandLink
+                                id="tab2"
+                                styleClass="tab__link"
+                                action="#{NavigationForm.Reload}"
+                                value="#{msgs.statistischeAuswertung}">
+                                <f:setPropertyActionListener
+                                    target="#{BenutzerverwaltungForm.displayMode}"
+                                    value="tab2" />
+                                <f:ajax
+                                    render="@form"
+                                    execute="@form" />
+                            </h:commandLink></li>
+                    </ul>
+                </intranda:boxTitle>
 
-					<!-- Tab 2 -->
-					<div class="#{BenutzerverwaltungForm.displayMode eq 'tab1' ? 'tab-pane active' : 'tab-pane'}">
-						<ui:include src="templatePG/includes/messagequeue/mq_errors.xhtml"></ui:include>
-					</div>
-				</h:panelGroup>
+                <!-- BOX BODY -->
+                <div class="box__body">
 
-			</ui:fragment>
+                    <ui:fragment rendered="#{not messageQueueBean.messageBrokerStart}">
+                        <div class="alert alert-info">
+                            <h:outputText value="#{msgs.message_queue_queues_switched_off}" />
+                        </div>
+                    </ui:fragment>
 
-		</div>
+                    <ui:fragment rendered="#{messageQueueBean.messageBrokerStart}">
 
-		</intranda:box>
 
-		</h:form>
+                        <h:panelGroup
+                            layout="block"
+                            styleClass="tab-content"
+                            id="tabContent">
 
-	</ui:define>
+                            <!-- Tab 1 -->
+                            <div class="#{BenutzerverwaltungForm.displayMode eq '' ? 'tab-pane active' : 'tab-pane'}">
+                                <ui:include src="templatePG/includes/messagequeue/mq_waiting.xhtml"></ui:include>
+                            </div>
+
+                            <!-- Tab 2 -->
+                            <div class="#{BenutzerverwaltungForm.displayMode eq 'tab1' ? 'tab-pane active' : 'tab-pane'}">
+                                <ui:include src="templatePG/includes/messagequeue/mq_history.xhtml"></ui:include>
+                            </div>
+
+                            <div class="#{BenutzerverwaltungForm.displayMode eq 'tab2' ? 'tab-pane active' : 'tab-pane'}">
+                                <ui:include src="templatePG/includes/messagequeue/mq_statistics.xhtml"></ui:include>
+                            </div>
+                        </h:panelGroup>
+
+                    </ui:fragment>
+
+                </div>
+
+            </intranda:box>
+
+        </h:form>
+
+    </ui:define>
 
 </ui:composition>
 

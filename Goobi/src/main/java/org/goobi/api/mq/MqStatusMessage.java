@@ -60,11 +60,16 @@ public class MqStatusMessage implements DatabaseObject {
     private String ticketId;
     private Date time;
     private MessageStatus status;
-    private String message;
+    private String statusMessage;
     private String originalMessage;
+    private int numberOfObjects;
+    private String ticketType;
+    private int processid;
+    private int stepId;
+    private String ticketName;
 
     @Override
     public void lazyLoad() {
-        // TODO Auto-generated method stub
+        // do nothing
     }
 }

@@ -26,8 +26,10 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -49,11 +51,22 @@ import org.apache.activemq.command.ActiveMQTextMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mq.TaskTicket;
+import org.goobi.production.flow.statistics.enums.TimeUnit;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.axes.cartesian.CartesianScales;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearTicks;
+import org.primefaces.model.charts.bar.BarChartOptions;
+import org.primefaces.model.charts.hbar.HorizontalBarChartDataSet;
+import org.primefaces.model.charts.hbar.HorizontalBarChartModel;
+import org.primefaces.model.charts.optionconfig.title.Title;
 
 import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MQResultManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -92,7 +105,29 @@ public class MessageQueueBean extends BasicBean implements Serializable {
     @Setter
     private String queueType;
 
+    @Getter
+    @Setter
+    private Date sourceDateFrom;
+    @Getter
+    @Setter
+    private Date sourceDateTo = new Date();
+    @Getter
+    @Setter
+    private TimeUnit sourceTimeUnit;
+    @Getter
+    @Setter
+    private String ticketType;
+
+    private List<String> allTicketTypes = null;
+    @Getter
+    private HorizontalBarChartModel barModelPages;
+    @Getter
+    private HorizontalBarChartModel barModelVolumes;
+
     public MessageQueueBean() {
+
+        sortField = "time desc";
+
         this.initMessageBrokerStart();
 
         if (this.messageBrokerStart) {
@@ -107,7 +142,7 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             } catch (JMSException e) {
                 log.error(e);
             }
-            paginator = new DatabasePaginator(null, null, new MQResultManager(), "queue.xhtml");
+            paginator = new DatabasePaginator(sortField, filter, new MQResultManager(), "queue.xhtml");
         }
     }
 
@@ -294,4 +329,170 @@ public class MessageQueueBean extends BasicBean implements Serializable {
         }
     }
 
+    public List<TimeUnit> getAllTimeUnits() {
+        return Arrays.asList(TimeUnit.values());
+    }
+
+    public List<String> getAllTicketTypes() {
+        if (allTicketTypes == null) {
+            allTicketTypes = MQResultManager.getAllTicketNames();
+        }
+
+        return allTicketTypes;
+    }
+
+    public void calculateStatistics() {
+        // if start and end are selected, end must be >= than start
+        if (sourceDateFrom != null && sourceDateTo != null && sourceDateFrom.after(sourceDateTo)) {
+            // start date is after end date, abort
+            Helper.setFehlerMeldung("");
+            return;
+        }
+
+        String intervall = getIntervallExpression(sourceTimeUnit);
+        StringBuilder sql = new StringBuilder("select count(objects) as volumes, sum(objects) as pages ");
+        if (StringUtils.isNotBlank(intervall)) {
+            sql.append(", ");
+            sql.append(intervall).append(" as intervall ");
+
+        }
+
+        sql.append("from mq_results where status = 'DONE' ");
+        if (sourceDateFrom != null) {
+            sql.append("and time >= '");
+            sql.append(getTimestamp(sourceDateFrom, true));
+            sql.append("' ");
+
+        }
+
+        if (sourceDateTo != null) {
+            sql.append("and time <= '");
+            sql.append(getTimestamp(sourceDateTo, false));
+            sql.append("' ");
+        }
+
+        if (StringUtils.isNotBlank(ticketType)) {
+            sql.append("and ticketName= '");
+            sql.append(ticketType);
+            sql.append("' ");
+        }
+
+        if (StringUtils.isNotBlank(intervall)) {
+            sql.append("group by intervall order by intervall");
+        }
+
+        // first column: number of tickets
+        // second column: number of objects
+        // third column (if available): time period
+
+        List<?> rows = ProcessManager.runSQL(sql.toString());
+
+        if (rows != null && !rows.isEmpty()) {
+            barModelPages = new HorizontalBarChartModel();
+            barModelVolumes = new HorizontalBarChartModel();
+            ChartData dataPages = new ChartData();
+            HorizontalBarChartDataSet hbarDataSetPages = new HorizontalBarChartDataSet();
+            hbarDataSetPages.setLabel(Helper.getTranslation("Pages"));
+            hbarDataSetPages.setBorderColor("rgb(54, 142, 224)");
+            hbarDataSetPages.setBackgroundColor("rgb(54, 142, 224)");
+            ChartData dataVolumes = new ChartData();
+            HorizontalBarChartDataSet hbarDataSetVolumes = new HorizontalBarChartDataSet();
+            hbarDataSetVolumes.setLabel(Helper.getTranslation("volumes"));
+            hbarDataSetVolumes.setBorderColor("rgb(54, 142, 224)");
+            hbarDataSetVolumes.setBackgroundColor("rgb(54, 142, 224)");
+            List<Number> pageValues = new ArrayList<>();
+            List<Number> volumeValues = new ArrayList<>();
+
+            List<String> labels = new ArrayList<>();
+
+            for (Object row : rows) {
+                Object[] rowData = (Object[]) row;
+                String processes = (String) rowData[0];
+                String pages = (String) rowData[1];
+                String period = "all";
+                if (rowData.length > 2) {
+                    period = (String) rowData[2];
+                }
+                pageValues.add(Integer.valueOf(pages));
+                volumeValues.add(Integer.valueOf(processes));
+                labels.add(period);
+            }
+
+            hbarDataSetPages.setData(pageValues);
+            hbarDataSetVolumes.setData(volumeValues);
+
+            dataPages.addChartDataSet(hbarDataSetPages);
+            dataPages.setLabels(labels);
+            barModelPages.setData(dataPages);
+
+            dataVolumes.addChartDataSet(hbarDataSetVolumes);
+            dataVolumes.setLabels(labels);
+            barModelVolumes.setData(dataVolumes);
+
+            //Options
+            BarChartOptions options = new BarChartOptions();
+            BarChartOptions options2 = new BarChartOptions();
+            CartesianScales cScales = new CartesianScales();
+            CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+            linearAxes.setOffset(true);
+            linearAxes.setBeginAtZero(true);
+            CartesianLinearTicks ticks = new CartesianLinearTicks();
+            linearAxes.setTicks(ticks);
+            cScales.addXAxesData(linearAxes);
+            options.setScales(cScales);
+            options2.setScales(cScales);
+
+            Title title = new Title();
+            title.setDisplay(true);
+            title.setText(Helper.getTranslation("Pages"));
+            options.setTitle(title);
+            barModelPages.setOptions(options);
+
+            Title titleVolumes = new Title();
+            titleVolumes.setDisplay(true);
+            titleVolumes.setText(Helper.getTranslation("volumes"));
+            options2.setTitle(titleVolumes);
+            barModelVolumes.setOptions(options2);
+
+        } else {
+            barModelPages = null;
+            barModelVolumes = null;
+        }
+
+    }
+
+    private static String getIntervallExpression(TimeUnit timeUnit) {
+
+        if (timeUnit == null) {
+            return "";
+        }
+        switch (timeUnit) {
+            case years:
+                return "year(time)";
+            case months:
+                return "concat(year(time) , '/' , date_format(time,'%m'))";
+            case quarters:
+                return "concat(year(time) , '/' , quarter(time))";
+            case weeks:
+                return "concat(left(yearweek(time,3),4), '/', right(yearweek(time,3),2))";
+            case days:
+                return "concat(year(time) , '-' , date_format(time,'%m') , '-' , date_format(time,'%d'))";
+            default:
+                return "";
+        }
+    }
+
+    private static String getTimestamp(Date date, boolean startDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        if (startDate) {
+            return formatter.format(date) + " 00:00:00";
+        } else {
+            return formatter.format(date) + " 23:59:59";
+        }
+    }
+
+    public void FilterAlleStart() {
+        MQResultManager m = new MQResultManager();
+        paginator = new DatabasePaginator(sortField, filter, m, "queue.xhtml");
+    }
 }
