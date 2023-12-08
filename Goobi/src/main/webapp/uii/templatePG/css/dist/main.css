@@ -1929,7 +1929,6 @@ label,
 .form__help,
 .help-block {
   flex: 1 1 100%;
-  margin-top: 4px;
 }
 .form__help span,
 .help-block span {
@@ -1940,6 +1939,7 @@ label,
 .help-block .text-danger,
 .help-block .help-block {
   margin-left: 1px;
+  margin-top: 4px;
 }
 
 .form-text {
