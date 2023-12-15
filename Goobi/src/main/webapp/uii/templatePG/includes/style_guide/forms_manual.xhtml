@@ -28,7 +28,7 @@
 
 				<!-- LABEL -->
 				<div class="col-12 col-md-3">
-					<intranda:formLabel label="#{msgs.standort}" 
+					<intranda:formLabel label="#{msgs.standort}"
 					labelFor="manualFieldA"  labelRequired="true"/>
 				</div>
 				<!-- // LABEL -->
@@ -63,7 +63,7 @@
 
 				<!-- LABEL -->
 				<div class="col-12 col-md-3">
-					<intranda:formLabel label="#{msgs.defaultSortField}" 
+					<intranda:formLabel label="#{msgs.defaultSortField}"
 						labelFor="manualFieldB"  labelRequired="true"/>
 				</div>
 				<!-- // LABEL -->
@@ -101,7 +101,7 @@
 
 				<!-- LABEL -->
 				<div class="col-12 col-md-3">
-					<intranda:formLabel label="#{msgs.vorname}" 
+					<intranda:formLabel label="#{msgs.vorname}"
 						labelFor="manualFieldC"  labelRequired="true"/>
 				</div>
 				<!-- // LABEL -->
@@ -160,7 +160,7 @@
 			<!-- SELECT ONE ROW -->
 			<div class="row">
 				<div class="col-12 col-md-3">
-					<intranda:formLabel label="#{msgs.defaultSortOrder}" 
+					<intranda:formLabel label="#{msgs.defaultSortOrder}"
 						labelFor="processDefaultSortOrder"  labelRequired="false"/>
 				</div>
 
@@ -204,7 +204,7 @@
 					jsf:id="absenden"
 					type="submit"
 					jsf:action="{BenutzerverwaltungForm.Speichern}">
-					<i class="fa fa-save"></i>
+					<span class="fa fa-save" />
 					<span>
 						<h:outputText value="#{msgs.speichern}" />
 					</span>
@@ -216,7 +216,7 @@
 					class="btn btn-hot trigger-delete"
 					onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
 					jsf:action="{BenutzerverwaltungForm.Loeschen}">
-					<i class="fa fa-trash-o"></i>
+					<span class="fa fa-trash-o" />
 					<span>
 						<h:outputText value="#{msgs.loeschen}" />
 					</span>
@@ -262,7 +262,7 @@
 
 		&lt;!-- LABEL --&gt;
 		&lt;div class=&quot;col-12 col-md-3&quot;&gt;
-			&lt;intranda:formLabel label=&quot;#{msgs.standort}&quot; 
+			&lt;intranda:formLabel label=&quot;#{msgs.standort}&quot;
 			labelFor=&quot;manualFieldA&quot;  labelRequired=&quot;true&quot;/&gt;
 		&lt;/div&gt;
 		&lt;!-- // LABEL --&gt;
@@ -297,7 +297,7 @@
 
 		&lt;!-- LABEL --&gt;
 		&lt;div class=&quot;col-12 col-md-3&quot;&gt;
-			&lt;intranda:formLabel label=&quot;#{msgs.defaultSortField}&quot; 
+			&lt;intranda:formLabel label=&quot;#{msgs.defaultSortField}&quot;
 				labelFor=&quot;manualFieldB&quot;  labelRequired=&quot;true&quot;/&gt;
 		&lt;/div&gt;
 		&lt;!-- // LABEL --&gt;
@@ -335,7 +335,7 @@
 
 		&lt;!-- LABEL --&gt;
 		&lt;div class=&quot;col-12 col-md-3&quot;&gt;
-			&lt;intranda:formLabel label=&quot;#{msgs.vorname}&quot; 
+			&lt;intranda:formLabel label=&quot;#{msgs.vorname}&quot;
 				labelFor=&quot;manualFieldC&quot;  labelRequired=&quot;true&quot;/&gt;
 		&lt;/div&gt;
 		&lt;!-- // LABEL --&gt;
@@ -394,7 +394,7 @@
 	&lt;!-- SELECT ONE ROW --&gt;
 	&lt;div class=&quot;row&quot;&gt;
 		&lt;div class=&quot;col-12 col-md-3&quot;&gt;
-			&lt;intranda:formLabel label=&quot;#{msgs.defaultSortOrder}&quot; 
+			&lt;intranda:formLabel label=&quot;#{msgs.defaultSortOrder}&quot;
 				labelFor=&quot;processDefaultSortOrder&quot;  labelRequired=&quot;false&quot;/&gt;
 		&lt;/div&gt;
 
@@ -472,4 +472,3 @@
 
 	</composite:implementation>
 </ui:composition>
-

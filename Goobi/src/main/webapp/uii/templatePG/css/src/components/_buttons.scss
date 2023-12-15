@@ -73,7 +73,9 @@ span.badge {
   margin: 2px 2px;
 
   i ~ span,
-  span ~ i {
+  span ~ i,
+  .fa ~ span,
+  span ~ .fa {
     margin-inline-start: 4px;
   }
 

@@ -22,12 +22,12 @@
 					class="btn btn-blank"
           aria-label="#{msgs.firstPage}"
 					jsf:action="#{cc.attrs.paginator.cmdMoveFirst}" jsf:id="navfirst">
-					<i class="fa fa-angle-double-left"></i>
+					<span class="fa fa-angle-double-left" />
 					<f:ajax render="@form" />
 				</button>
 				<button class="btn btn-primary-400"
 					jsf:action="#{cc.attrs.paginator.cmdMovePrevious}" jsf:id="navprev">
-					<i class="fa fa-angle-left"></i>
+					<span class="fa fa-angle-left" />
 					<h:outputText value=" #{msgs.pagePrevious}"/>
 					<f:ajax render="@form" />
 				</button>
@@ -56,14 +56,14 @@
 				<button class="btn btn-primary-400"
 					jsf:action="#{cc.attrs.paginator.cmdMoveNext}" jsf:id="navnext">
 					<h:outputText value="#{msgs.pageNext} "/>
-							<i class="fa fa-angle-right"></i>
+							<span class="fa fa-angle-right" />
 					<f:ajax render="@form" />
 				</button>
 				<button
 					class="btn btn-blank"
 					aria-label="#{msgs.lastPage}"
 					jsf:action="#{cc.attrs.paginator.cmdMoveLast}" jsf:id="navlast">
-					<i class="fa fa-angle-double-right"></i>
+					<span class="fa fa-angle-double-right" />
 					<f:ajax render="@form" />
 				</button>
 			</div>
@@ -72,5 +72,3 @@
 	</composite:implementation>
 
 </ui:composition>
-
-

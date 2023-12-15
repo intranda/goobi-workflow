@@ -93,7 +93,7 @@
 												jsf:action="#{ProzessverwaltungForm.generateFilterWithIdentfiers}"
 												data-bs-toggle="tooltip"
 												title="#{msgs.process_generateFilterQueryForHits}">
-												<i class="fa fa-filter" />
+												<span class="fa fa-filter" />
 												<span>
 													<h:outputText
 														value="#{msgs.treffer}: #{ProzessverwaltungForm.paginator.totalResults}" />
@@ -155,14 +155,14 @@
 																jsf:id="selectall"
 																title="#{msgs.alleAuswaehlen}"
 																class="btn p-2">
-																<i class="fa fa-check-square-o font-black" />
+																<span class="fa fa-check-square-o font-black" />
 															</button>
 															<button
 																jsf:action="#{ProzessverwaltungForm.selectionNone}"
 																jsf:id="selectnone"
 																title="#{msgs.auswahlEntfernen}"
 																class="btn p-2">
-																<i class="fa fa-square-o font-black" />
+																<span class="fa fa-square-o font-black" />
 															</button>
 
 														</div>
@@ -856,7 +856,7 @@
 																title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
 																data-bs-toggle="tooltip"
 																class="btn btn-blank">
-																<i class="fa fa-pencil" />
+																<span class="fa fa-pencil" />
 																<f:passThroughAttribute
 																	name="data-toggle"
 																	value="tooltip" />
@@ -878,7 +878,7 @@
 																data-bs-toggle="tooltip"
 																title="#{msgs.duplicate}"
 																onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-																<i class="fa fa-clipboard" />
+																<span class="fa fa-clipboard" />
 																<f:passThroughAttribute
 																	name="data-toggle"
 																	value="tooltip" />
@@ -897,7 +897,7 @@
 																data-bs-toggle="tooltip"
 																onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
 																rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
-																<i class="fa fa-book" />
+																<span class="fa fa-book" />
 																<f:passThroughAttribute
 																	name="data-toggle"
 																	value="tooltip" />
@@ -926,7 +926,7 @@
 																pt:aria-label="#{msgs.metadatenBearbeiten}"
 																onclick="preventDoubleSubmit(this);  sessionStorage.removeItem('columnWidths');"
 																rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
-																<i class="fa fa-book" />
+																<span class="fa fa-book" />
 																<f:passThroughAttribute
 																	name="data-toggle"
 																	value="tooltip" />
@@ -985,7 +985,7 @@
                                                                 title="#{msgs.metadatenBearbeiten}"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#myModal-#{item.id}">
-                                                              <i class="fa fa-book " />
+                                                              <span class="fa fa-book " />
                                                             </button>
 
                                                             <!-- MODAL TO BE SHOWN EVENTUALLY -->
@@ -1034,7 +1034,7 @@
 																				title="#{msgs.discard}"
 																				rel="tooltip"
 																				styleClass="btn btn-hot">
-																				<i class="fa fa-trash-o"></i>
+																				<span class="fa fa-trash-o" />
 																				<span>
                                                                                     <h:outputText value="#{msgs.discard}" />
                                                                                 </span>
@@ -1078,7 +1078,7 @@
 																				data-bs-toggle="tooltip"
 																				rel="tooltip"
 																				styleClass="btn btn-success">
-																				<i class="fa fa-floppy-o"></i>
+																				<span class="fa fa-floppy-o" />
 																				<span>
                                                                                     <h:outputText value="#{msgs.overwrite}" />
                                                                                 </span>
@@ -1137,7 +1137,7 @@
 																	class="btn btn-blank"
 																	jsf:disabled="#{!item.containsExportStep}"
 																	jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
-																	<i class="fa fa-globe" />
+																	<span class="fa fa-globe" />
 																	<f:passThroughAttribute
 																		name="data-toggle"
 																		value="tooltip" />
@@ -1358,7 +1358,7 @@
 											class="btn btn-primary-400 me-auto"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and LoginForm.hasRole('Workflow_ProcessTemplates_Create') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}"
 											jsf:id="new2">
-											<i class="fa fa-plus"></i>
+											<span class="fa fa-plus" />
 											<span>
 												<h:outputText value="#{msgs.eineNeueProzessvorlageAnlegen}" />
 											</span>

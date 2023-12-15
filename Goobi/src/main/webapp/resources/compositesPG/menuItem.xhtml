@@ -25,7 +25,7 @@
 				id="link"
 				action="#{cc.attrs.action}"
 				styleClass="dropdown-item">
-				<i class="#{cc.attrs.icon}"></i>
+				<span class="#{cc.attrs.icon}" />
 				<span class="#{cc.attrs.fontclass}">#{cc.attrs.label}</span>
 				<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="#{cc.attrs.id}" />
 				<c:if test="#{not empty cc.attrs.filter}">
@@ -44,5 +44,3 @@
 		</li>
 	</composite:implementation>
 </ui:composition>
-
-

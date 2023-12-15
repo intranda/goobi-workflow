@@ -42,7 +42,7 @@
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 										class="btn d-flex align-items-center btn--title-action"
 										jsf:rel="tooltip">
-										<i class="fa fa-pencil"></i>
+										<span class="fa fa-pencil" />
 										<x:updateActionListener
 											property="#{ProzessverwaltungForm.modusBearbeiten}"
 											value="prozess" />
@@ -60,7 +60,7 @@
 										class="btn d-flex align-items-center btn--title-action"
 										title="#{msgs.reload}"
 										jsf:rel="tooltip">
-										<i class="fa fa-refresh"></i>
+										<span class="fa fa-refresh" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -76,7 +76,7 @@
 										title="#{msgs.metadatenBearbeiten}"
 										rel="tooltip"
 										rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and !ProzessverwaltungForm.myProzess.istTemplate}">
-										<i class="fa fa-book"></i>
+										<span class="fa fa-book" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -105,7 +105,7 @@
 										pt:aria-label="#{msgs.metadatenBearbeiten}"
 										rel="tooltip"
 										rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
-										<i class="fa fa-book "></i>
+										<span class="fa fa-book " />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -165,7 +165,7 @@
 														title="#{msgs.cancel}"
 														data-toggle="tooltip"
 														data-dismiss="modal">
-														<i class="fa fa-times"></i>
+														<span class="fa fa-times" />
 													</a>
 													<h4
 														class="modal-title"
@@ -186,7 +186,7 @@
 														title="#{msgs.discard}"
 														jsf:rel="tooltip"
 														class="btn btn-lightred pull-left">
-														<i class="fa fa-trash-o margin-right-10"></i>
+														<span class="fa fa-trash-o margin-right-10" />
 														<h:outputText value="#{msgs.discard}" />
 														<f:passThroughAttribute
 															name="data-toggle"
@@ -227,7 +227,7 @@
 														title="#{msgs.overwrite}"
 														jsf:rel="tooltip"
 														class="btn btn-green">
-														<i class="fa fa-floppy-o margin-right-10"></i>
+														<span class="fa fa-floppy-o margin-right-10" />
 														<h:outputText value="#{msgs.overwrite}" />
 														<f:passThroughAttribute
 															name="data-toggle"
@@ -284,7 +284,7 @@
 											title="#{msgs.exportDMS}"
 											jsf:rel="tooltip"
 											jsf:disabled="#{!ProzessverwaltungForm.myProzess.containsExportStep}">
-											<i class="fa fa-globe"></i>
+											<span class="fa fa-globe" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -319,7 +319,7 @@
 										aria-label="#{msgs.exportDatabaseInformation}"
 										jsf:rel="tooltip"
 										jsf:rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
-										<i class="fa fa-file-archive-o"></i>
+										<span class="fa fa-file-archive-o" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -336,7 +336,7 @@
 										aria-label="#{msgs.reImportDatabaseInformation}"
 										jsf:rel="tooltip"
 										jsf:rendered="#{ProzessverwaltungForm.renderReimport}">
-										<i class="fa fa-cloud-download"></i>
+										<span class="fa fa-cloud-download" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -582,7 +582,7 @@
 								class="btn btn-success submitOnEnter"
 								jsf:id="save"
 								jsf:action="#{ProzessverwaltungForm.Speichern}">
-								<i class="fa fa-save"></i>
+								<span class="fa fa-save" />
 								<span>
 									<h:outputText value="#{msgs.speichern}" />
 								</span>
@@ -601,7 +601,7 @@
 									class="btn btn-hot"
 									data-bs-toggle="modal"
 									data-bs-target="#deleteContentModal">
-									<i class="fa fa-trash-o"></i>
+									<span class="fa fa-trash-o" />
 									<span>
 										<h:outputText value="#{msgs.contentLoeschen}" />
 									</span>
@@ -613,7 +613,7 @@
 									class="btn btn-hot"
 									data-bs-toggle="modal"
 									data-bs-target="#deleteModal">
-									<i class="fa fa-trash-o"></i>
+									<span class="fa fa-trash-o" />
 									<span>
 										<h:outputText value="#{msgs.loeschen}" />
 									</span>
@@ -651,7 +651,7 @@
 												<button
 													class="btn btn-hot"
 													jsf:action="#{ProzessverwaltungForm.ContentLoeschen}">
-													<i class="fa fa-trash-o"></i>
+													<span class="fa fa-trash-o" />
 													<span>
 														<h:outputText value="#{msgs.loeschen}" />
 													</span>
@@ -697,7 +697,7 @@
 													class="btn btn-hot"
 													jsf:id="confirmDelete"
 													jsf:action="#{ProzessverwaltungForm.Loeschen}">
-													<i class="fa fa-trash-o"></i>
+													<span class="fa fa-trash-o" />
 													<span>
                                                         <h:outputText value="#{msgs.loeschen}" />
                                                     </span>

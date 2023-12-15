@@ -9,9 +9,9 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:ds="http://deltaspike.apache.org/jsf">
-    
+
     <!-- BOOTSTRAP 5 TODO -->
-    
+
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -134,7 +134,7 @@
                                 <div class="page-header">
                                     <h:panelGroup id="globalWarningMessage">
                                         <h:panelGroup rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
-                                            <i class="fa fa-exclamation-triangle margin-right-10" />
+                                            <span class="fa fa-exclamation-triangle margin-right-10" />
                                             <h:outputText value="#{SessionForm.logoutMessage}" />
                                         </h:panelGroup>
                                     </h:panelGroup>
@@ -163,7 +163,7 @@
                                                 <o:commandScript name="updateGoobiScriptIndicator" render="goobiScriptResults2" />
 	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'}">
 		                                            <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
-		                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
+		                                                    <span class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}" />
 		                                                    <div class="details">
 		                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
 		                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
@@ -217,7 +217,7 @@
 
 	                                <!--                                 <div class="close-bread" style="float: right;"> -->
 	                                <!--                                     <a href="#"> -->
-	                                <!--                                         <i class="fa fa-remove"></i> -->
+	                                <!--                                         <span class="fa fa-remove" /> -->
 	                                <!--                                     </a> -->
 	                                <!--                                 </div> -->
 	                            </div>

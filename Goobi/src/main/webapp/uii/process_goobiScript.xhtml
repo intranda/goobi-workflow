@@ -88,7 +88,7 @@
                                             jsf:id="resettop"
                                             class="btn btn-blank trigger-delete me-2"
                                             jsf:action="#{SessionForm.gsm.goobiScriptResultsReset}">
-                                            <i class="fa fa-trash-o"></i>
+                                            <span class="fa fa-trash-o" />
                                             <span>
                                                 <h:outputText value="#{msgs.goobiScript_resetList}" />
                                             </span>
@@ -108,7 +108,7 @@
                                                 type="button"
                                                 class="btn btn-blank dropdown-toggle"
                                                 data-bs-toggle="dropdown">
-                                                <i class="fa fa-table" />
+                                                <span class="fa fa-table" />
                                             </button>
 
                                             <ul class="dropdown-menu">
@@ -319,7 +319,7 @@
                                                     </button>
                                                 </f:facet>
                                                 <span class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':item.resultType eq 'RUNNING'?'badge-intranda-blue':'badge-intranda-red'}">
-                                                    <i class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':item.resultType eq 'RUNNING'?'fa-play':'fa-exclamation-triangle'} margin-right-5"></i>
+                                                    <span class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':item.resultType eq 'RUNNING'?'fa-play':'fa-exclamation-triangle'} margin-right-5" />
                                                     #{msgs['goobiScript_status_'.concat(item.resultType)]}
                                                 </span>
                                             </h:column>
@@ -357,7 +357,7 @@
                                         jsf:id="list_error"
                                         class="btn btn-blank me-2"
                                         jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('ERROR')}">
-                                        <i class="fa fa-exclamation-triangle"></i>
+                                        <span class="fa fa-exclamation-triangle" />
                                         <span>
                                             <h:outputText value="#{msgs.goobiScript_filterErrorProcesses}" />
                                         </span>
@@ -368,7 +368,7 @@
                                         jsf:id="list_waiting"
                                         class="btn btn-blank me-2"
                                         jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('WAITING')}">
-                                        <i class="fa fa-clock-o"></i>
+                                        <span class="fa fa-clock-o" />
                                         <span>
                                             <h:outputText value="#{msgs.goobiScript_filterWaitingProcesses}" />
                                         </span>
@@ -379,7 +379,7 @@
                                         jsf:id="list_ok"
                                         class="btn btn-blank me-2"
                                         jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('OK')}">
-                                        <i class="fa fa-check"></i>
+                                        <span class="fa fa-check" />
                                         <span>
                                             <h:outputText value="#{msgs.goobiScript_filterOkProcesses}" />
                                         </span>
@@ -390,7 +390,7 @@
                                         jsf:id="excel_download"
                                         class="btn btn-primary-400 me-2"
                                         jsf:action="#{SessionForm.gsm.goobiScriptResultsExcel}">
-                                        <i class="fa fa-file-excel-o"></i>
+                                        <span class="fa fa-file-excel-o" />
                                         <span>
                                             <h:outputText value="#{msgs.goobiScript_downloadExcel}" />
                                         </span>
@@ -401,7 +401,7 @@
                                         jsf:id="resetbottom"
                                         class="btn btn-blank trigger-delete"
                                         jsf:action="#{SessionForm.gsm.goobiScriptResultsReset}">
-                                        <i class="fa fa-trash-o"></i>
+                                        <span class="fa fa-trash-o" />
                                         <span>
                                             <h:outputText value="#{msgs.goobiScript_resetList}" />
                                         </span>

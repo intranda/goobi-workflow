@@ -351,7 +351,7 @@
                             <div class="col-auto mr-auto">
 
                 				<button jsf:id="fastPagination" class="btn" type="button">
-                					<i class="fa #{Metadaten.enableFastPagination == false?'fa fa-square-o':'fa fa-check-square-o'}" />
+                					<span class="fa #{Metadaten.enableFastPagination == false?'fa fa-square-o':'fa fa-check-square-o'}" />
 					                <h:outputText value="#{msgs.mets_easyPagination}"
 					                	styleClass="structdata__easyPagination" />
 					                <f:setPropertyActionListener value="#{not Metadaten.enableFastPagination}"

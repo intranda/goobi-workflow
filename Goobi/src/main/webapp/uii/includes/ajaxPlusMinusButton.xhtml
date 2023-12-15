@@ -9,7 +9,7 @@
 
 		<button type="button" class="button-link font-black collapse-custom" jsf:rendered="#{!item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="displayDetails"
 		aria-haspopup="true" aria-expanded="false">
-			<i class="fa fa-angle-right margin-right-5"></i>
+			<span class="fa fa-angle-right margin-right-5" />
 			<h:outputText value="#{item.titelLokalisiert}" />
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="true"/>
 			<f:ajax render=":myform" />
@@ -17,7 +17,7 @@
 
 		<button type="button" class="button-link font-black collapse-custom" jsf:rendered="#{item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="hideDetails"
 		aria-haspopup="true" aria-expanded="true">
-			<i class="fa fa-angle-down margin-right-5"></i>
+			<span class="fa fa-angle-down margin-right-5" />
 			<h:outputText value="#{item.titelLokalisiert}" />
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="false"/>
 			<f:ajax render=":myform" />
@@ -26,5 +26,3 @@
 	</composite:implementation>
 
 </ui:composition>
-
-

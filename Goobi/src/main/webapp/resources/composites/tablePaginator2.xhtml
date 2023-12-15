@@ -19,12 +19,12 @@
 
 				<button class="btn margin-sides-10 font-size-s"
 					jsf:action="#{cc.attrs.paginator.cmdMoveFirst}" jsf:id="navfirst2">
-					<i class="fa fa-angle-double-left"></i>
+					<span class="fa fa-angle-double-left" />
 					<f:ajax render="@form" />
 				</button>
 				<button class="btn btn-primary font-size-s"
 					jsf:action="#{cc.attrs.paginator.cmdMovePrevious}" jsf:id="navprev2">
-					<i class="fa fa-angle-left"></i>
+					<span class="fa fa-angle-left" />
 							#{msgs.pagePrevious}
 					<f:ajax render="@form" />
 				</button>
@@ -34,7 +34,7 @@
 					<x:outputText id="txtMoveTo12" forceId="true"
 						value="#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}"
 						onclick="document.getElementById('txtMoveTo22').style.display='inline';
-			       document.getElementById('txtMoveTo12').style.display='none'; 
+			       document.getElementById('txtMoveTo12').style.display='none';
 			       document.getElementById('txtMoveTo22').focus();
 			       document.getElementById('txtMoveTo22').select();" />
 
@@ -52,12 +52,12 @@
 				<button class="btn btn-primary font-size-s"
 					jsf:action="#{cc.attrs.paginator.cmdMoveNext}" jsf:id="navnext2">
 							#{msgs.pageNext}
-							<i class="fa fa-angle-right"></i>
+							<span class="fa fa-angle-right" />
 					<f:ajax render="@form" />
 				</button>
 				<button class="btn margin-sides-10 font-size-s"
 					jsf:action="#{cc.attrs.paginator.cmdMoveLast}" jsf:id="navlast2">
-					<i class="fa fa-angle-double-right"></i>
+					<span class="fa fa-angle-double-right" />
 					<f:ajax render="@form" />
 				</button>
 			</div>
@@ -66,5 +66,3 @@
 	</composite:implementation>
 
 </ui:composition>
-
-

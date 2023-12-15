@@ -45,7 +45,7 @@
 										title="#{msgs.uebernehmen}"
 										jsf:rel="tooltip"
 										jsf:action="#{ProzessverwaltungForm.BenutzergruppeHinzufuegen}">
-										<i class="fa fa-plus"></i>
+										<span class="fa fa-plus" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -115,7 +115,7 @@
 										jsf:rel="tooltip"
 										jsf:action="#{ProzessverwaltungForm.BenutzerHinzufuegen}"
 										jsf:id="addUser">
-										<i class="fa fa-plus"></i>
+										<span class="fa fa-plus" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -180,7 +180,7 @@
 									<tr role="row">
 										<td>
 											<span class="badge badge-light-blue ms-3 me-3 gw-width3">
-												<i class="fa fa-users" />
+												<span class="fa fa-users" />
 											</span>
 											<h:outputText value="#{item.titel}" />
 										</td>
@@ -192,7 +192,7 @@
 												aria-label="#{msgs.berechtigungLoeschen}"
 												jsf:rel="tooltip"
 												jsf:action="#{ProzessverwaltungForm.BenutzergruppeLoeschen}">
-												<i class="fa fa-trash-o"></i>
+												<span class="fa fa-trash-o" />
 												<f:passThroughAttribute
 													name="data-toggle"
 													value="tooltip" />
@@ -214,7 +214,7 @@
 									<tr role="row">
 										<td>
 											<span class="badge badge-light-blue ms-3 me-3 gw-width3">
-												<i class="fa fa-user" />
+												<span class="fa fa-user" />
 											</span>
 											<h:outputText value="#{item.nachname}, #{item.vorname}" />
 										</td>
@@ -225,7 +225,7 @@
 												title="#{msgs.berechtigungLoeschen}"
 												jsf:rel="tooltip"
 												jsf:action="#{ProzessverwaltungForm.BenutzerLoeschen}">
-												<i class="fa fa-trash-o"></i>
+												<span class="fa fa-trash-o" />
 												<f:passThroughAttribute
 													name="data-toggle"
 													value="tooltip" />
@@ -253,7 +253,7 @@
 								jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
 								jsf:immediate="true"
 								jsf:rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
-								<i class="fa fa-users"></i>
+								<span class="fa fa-users" />
 								<span>
 									<h:outputText value="#{msgs.benutzergruppenHinzufuegen}" />
 								</span>
@@ -269,7 +269,7 @@
 								jsf:action="#{BenutzerverwaltungForm.FilterKeinMitZurueck}"
 								jsf:immediate="true"
 								jsf:rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
-								<i class="fa fa-user"></i>
+								<span class="fa fa-user" />
 								<span>
 									<h:outputText value="#{msgs.benutzerHinzufuegen}" />
 								</span>
@@ -288,5 +288,3 @@
 		</div>
 	</composite:implementation>
 </ui:composition>
-
-

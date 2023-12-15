@@ -1,8 +1,8 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -16,7 +16,7 @@
 	<main>
         <div class="login-logout">
             <div class="login-logout-body">
-                
+
                 <!-- HEADLILNE -->
                 <h1>
                     <h:outputLink value="index.xhtml">
@@ -26,7 +26,7 @@
                     </h:outputLink>
                 </h1>
                 <!-- // HEADLILNE -->
-                
+
                 <!-- BOX -->
                 <div class="login-logout-box mt-3 mb-3 p-5">
                     <div class="row w-100">
@@ -38,15 +38,15 @@
         					<h:form styleClass="form-validate mt-4" id="loginForm" prependId="false">
         						<h:panelGroup id="globalWarningMessage">
         							<h:panelGroup rendered="#{SessionForm.logoutMessage!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
-        								<i class="fa fa-exclamation-triangle" />
+        								<span class="fa fa-exclamation-triangle" />
         								<h:outputText value="#{SessionForm.logoutMessage}" />
         							</h:panelGroup>
         						</h:panelGroup>
-        
+
         						<h:messages escape="false" globalOnly="false" errorClass="alert alert-danger" infoClass="alert alert-info"
         							warnClass="alert" showDetail="true" showSummary="true" tooltip="true"
         							styleClass="messages" />
-        
+
         							<script type="text/javascript">
         								window.onload = function() {
         									document.getElementById('login').focus();
@@ -66,10 +66,10 @@
     								</div>
         							<div class="submit mt-4">
         								<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
-        									<button 
+        									<button
         										jsf:id="openIdLogin"
-        										jsf:action="#{LoginForm.openIDLogin}" 
-        										class="float-left btn font-size-s" 
+        										jsf:action="#{LoginForm.openIDLogin}"
+        										class="float-left btn font-size-s"
         										style="background: #fff; outline: 1px solid #368ee0;">
         										OpenID connect
         									</button>
@@ -80,7 +80,7 @@
         									<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
         								</button>
         							</div>
-        	
+
         					</h:form>
                             <o:socket channel="adminMessageChannel">
                                 <f:ajax event="update" render="loginForm openIdForm" />
@@ -94,9 +94,9 @@
         							</h2>
                                     <p class="mt-5">
                                         <h:outputText value="If this doesn't work, click this button:"/>
-                                        <button 
+                                        <button
                                             jsf:id="openIdLink"
-                                            jsf:action="#{LoginForm.openIDLogin}" 
+                                            jsf:action="#{LoginForm.openIDLogin}"
                                             class="btn btn-primary-400 ms-5">
                                             <h:outputText value="OpenID connect"/>
                                         </button>
@@ -114,10 +114,10 @@
         				</ui:fragment>
                         <ui:fragment rendered="#{LoginForm.useHeaderLogin}">
                             <h:form id="headerSsoForm">
-                                <button 
+                                <button
                                     jsf:id="headerSsoLink"
-                                    jsf:action="#{LoginForm.headerSsoLogin}" 
-                                    class="btn" 
+                                    jsf:action="#{LoginForm.headerSsoLogin}"
+                                    class="btn"
                                     style="display:none;">
                                 </button>
                                 <script>
@@ -132,7 +132,7 @@
                     </div>
                 </div>
                 <!-- // BOX -->
-                
+
                 <!-- LINK AND VERSION -->
                 <h:outputLink value="https://goobi.io/">
                    Goobi workflow - developed by intranda
@@ -141,12 +141,9 @@
                     styleClass="float-end"
                     value="#{msgs.version} #{HelperForm.version}" />
                 <!-- // LINK AND VERSION -->
-                
+
             </div>
-        </div>       
+        </div>
     </main>
 	</composite:implementation>
 </ui:composition>
-
-
-

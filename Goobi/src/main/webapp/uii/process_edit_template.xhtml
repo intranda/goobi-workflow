@@ -43,7 +43,7 @@
 	</ui:define>
 
 	<ui:define name="content">
-		
+
 		<h:form
 			id="myform"
 			onkeypress="submitOnEnter(event);"
@@ -71,7 +71,7 @@
 								jsf:rel="tooltip"
 								jsf:action="#{ProzessverwaltungForm.reload}"
 								title="#{msgs.reload}">
-								<i class="fa fa-refresh"></i>
+								<span class="fa fa-refresh" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -82,7 +82,7 @@
 								jsf:rel="tooltip"
 								jsf:action="#{NavigationForm.Reload}"
 								title="#{msgs.bearbeiten}">
-								<i class="fa fa-pencil"></i>
+								<span class="fa fa-pencil" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -96,7 +96,7 @@
 								jsf:rel="tooltip"
 								jsf:action="#{ProzessverwaltungForm.VorlageLoeschen}"
 								title="#{msgs.loeschen}">
-								<i class="fa fa-trash-o"></i>
+								<span class="fa fa-trash-o" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -159,7 +159,7 @@
 							jsf:id="saveTemplateDetails"
 							type="submit"
 							jsf:action="#{ProzessverwaltungForm.VorlageUebernehmen}">
-							<i class="fa fa-save"></i>
+							<span class="fa fa-save" />
 							<span>
 								<h:outputText value="#{msgs.speichern}" />
 							</span>
@@ -197,7 +197,7 @@
 								jsf:rel="tooltip"
 								jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftNeu}"
 								title="#{msgs.eigenschaftHinzufuegen}">
-								<i class="fa fa-plus"></i>
+								<span class="fa fa-plus" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -250,7 +250,7 @@
 													jsf:rel="tooltip"
 													jsf:action="process_edit_template"
 													title="#{msgs.bearbeiten}">
-													<i class="fa fa-pencil"></i>
+													<span class="fa fa-pencil" />
 													<x:updateActionListener
 														property="#{ProzessverwaltungForm.myVorlageEigenschaft}"
 														value="#{item}" />
@@ -320,7 +320,7 @@
 							jsf:id="saveProperty"
 							type="submit"
 							jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftUebernehmen}">
-							<i class="fa fa-save"></i>
+							<span class="fa fa-save" />
 							<span>
 								<h:outputText value="#{msgs.speichern}" />
 							</span>
@@ -336,7 +336,7 @@
 							onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
 							jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}"
 							jsf:rendered="#{ProzessverwaltungForm.myVorlageEigenschaft.id != null}">
-							<i class="fa fa-trash-o"></i>
+							<span class="fa fa-trash-o" />
 							<span>
 								<h:outputText value="#{msgs.loeschen}" />
 							</span>
@@ -350,7 +350,7 @@
 			<!-- // BOX WITH PROPERTIES TO EDIT -->
 
 		</h:form>
-		
+
 	</ui:define>
 
 </ui:composition>

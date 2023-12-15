@@ -965,7 +965,7 @@
 				html += '<th></th>';
 
 			if (!minDate || minDate.isBefore(calendar.firstDay)) {
-				html += '<th class="prev available"><i class="fa fa-arrow-left icon-arrow-left glyphicon glyphicon-arrow-left"></i></th>';
+				html += '<th class="prev available"><span class="fa fa-arrow-left icon-arrow-left glyphicon glyphicon-arrow-left" /></th>';
 			} else {
 				html += '<th></th>';
 			}
@@ -978,7 +978,7 @@
 
 			html += '<th colspan="5" class="month">' + dateHtml + '</th>';
 			if (!maxDate || maxDate.isAfter(calendar.lastDay)) {
-				html += '<th class="next available"><i class="fa fa-arrow-right icon-arrow-right glyphicon glyphicon-arrow-right"></i></th>';
+				html += '<th class="next available"><span class="fa fa-arrow-right icon-arrow-right glyphicon glyphicon-arrow-right" /></th>';
 			} else {
 				html += '<th></th>';
 			}

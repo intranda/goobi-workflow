@@ -267,7 +267,7 @@
                                     <ui:fragment rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
                                         <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
                                         <script>
-                                                                                                                                                                    
+
                                                                                                                                                                 </script>
                                         <button
                                             jsf:id="selectedModalRender"
@@ -372,7 +372,7 @@
                                                 class="btn btn-blank ms-2 me-2"
                                                 aria-label="#{msgs.addFilter}"
                                                 jsf:action="#{ProzessverwaltungForm.addField}">
-                                                <i class="fa fa-plus" />
+                                                <span class="fa fa-plus" />
                                                 <f:ajax
                                                     render="@form"
                                                     execute="@form" />
@@ -383,7 +383,7 @@
                                                 aria-label="#{msgs.removeFilter}"
                                                 jsf:action="#{ProzessverwaltungForm.deleteField}"
                                                 jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
-                                                <i class="fa fa-minus" />
+                                                <span class="fa fa-minus" />
                                                 <x:updateActionListener
                                                     property="#{ProzessverwaltungForm.currentField}"
                                                     value="#{field}" />
@@ -663,7 +663,7 @@
                                                     class="btn text-white"
                                                     title="#{msgs.cancel}"
                                                     data-bs-dismiss="modal">
-                                                    <i class="fa fa-times"></i>
+                                                    <span class="fa fa-times" />
                                                 </button>
                                             </div>
                                             <div class="modal-body">
@@ -703,7 +703,7 @@
                                                     jsf:rel="tooltip"
                                                     class="btn btn-hot"
                                                     onclick="preventDoubleSubmit(this);">
-                                                    <i class="fa fa-cogs"></i>
+                                                    <span class="fa fa-cogs" />
                                                     <span>
                                                         <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
                                                     </span>
@@ -727,5 +727,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

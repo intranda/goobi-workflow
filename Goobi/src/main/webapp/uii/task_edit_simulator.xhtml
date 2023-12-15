@@ -44,7 +44,7 @@
     </ui:define>
 
     <ui:define name="content">
-        
+
         <c:if test="#{LoginForm.hasRole('Task_List')}">
 
             <div class="row">
@@ -55,7 +55,7 @@
                         boxType="outline"
                         boxPadding="false"
                         icon="fa-list"
-                        title="#{ProzessverwaltungForm.myProzess.titel}">                            
+                        title="#{ProzessverwaltungForm.myProzess.titel}">
                         <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
                             <div class="row text-center d-flex align-items-center font-light">
                                 <h2>PLACEHOLDER</h2>
@@ -63,15 +63,15 @@
                         </div>
                     </intranda:box>
                     <!-- // SIMULATED BOX FOR PROCESS DETAILS -->
-                 
+
                     <div class="m-4"/>
-                    
+
                     <!-- SIMULATED BOX FOR JOURNAL -->
                     <intranda:box
                         boxType="outline"
                         boxPadding="false"
                         icon="fa-comment"
-                        title="#{msgs.processLog}">   
+                        title="#{msgs.processLog}">
                         <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
                             <div class="row text-center d-flex align-items-center font-light">
                                 <h2>PLACEHOLDER</h2>
@@ -79,7 +79,7 @@
                         </div>
                     </intranda:box>
                     <!-- // SIMULATED BOX FOR JOURNAL -->
-               
+
                 </div>
 
                 <div class="col-sm-6">
@@ -91,13 +91,13 @@
                     <!-- // AREA FOR PART GUI PLUGIN -->
 
                     <div class="m-3"/>
-                    
+
                     <!-- SIMULATED BOX FOR ACTION -->
                     <intranda:box
                         boxType="outline"
                         boxPadding="false"
                         icon="fa-cog"
-                        title="#{msgs.moeglicheAktionen}">   
+                        title="#{msgs.moeglicheAktionen}">
                         <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
                             <div class="row text-center d-flex align-items-center font-light">
                                 <h2>PLACEHOLDER</h2>
@@ -105,21 +105,21 @@
                         </div>
                     </intranda:box>
                     <!-- // SIMULATED BOX FOR ACTION -->
-                    
-                    <!-- BUTTON TO LEAVE -->                        
+
+                    <!-- BUTTON TO LEAVE -->
                     <h:form styleClass="mt-4">
                         <button
                             class="btn btn-primary-400 float-end"
                             jsf:id="absenden"
                             jsf:action="#{AktuelleSchritteForm.myPlugin.cancel}">
-                            <i class="fa fa-check"></i>
+                            <span class="fa fa-check" />
                             <span>
                                 <h:outputText value="#{msgs.pluginLeave}" />
                             </span>
                         </button>
                     </h:form>
-                    <!-- // BUTTON TO LEAVE -->   
-                    
+                    <!-- // BUTTON TO LEAVE -->
+
                 </div>
             </div>
 

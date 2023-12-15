@@ -17,8 +17,8 @@
 		<div class="box__title">
 			<h2>
 				<!-- Do not render icon if cc.attrs.icon is undefined -->
-				<i class="fa #{cc.attrs.icon} "
-					jsf:rendered="#{cc.attrs.icon !='undefined'}"></i>
+				<span class="fa #{cc.attrs.icon} "
+					jsf:rendered="#{cc.attrs.icon !='undefined'}" />
 				<h:outputText value="#{cc.attrs.title}" />
 			</h2>
 			<composite:insertChildren />
