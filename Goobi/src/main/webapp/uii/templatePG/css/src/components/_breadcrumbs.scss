@@ -4,12 +4,12 @@
 
 .breadcrumbs {
   background-color: var(--clr-neutral-200, #f4f4f4);
-  ul {
+  ol {
     list-style: none;
     padding-left: 0;
     line-height: 2.1rem;
   }
-  ul,
+  ol,
   li {
     display: flex;
     align-items: center;
