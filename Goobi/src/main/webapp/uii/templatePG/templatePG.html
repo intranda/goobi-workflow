@@ -132,7 +132,9 @@
         </h:panelGroup>
 
         <c:if test="#{LoginForm.myBenutzer!=null}">
+          <header role="banner" aria-label="page-header">
             <ui:include src="inc_menu.xhtml" />
+          </header>
 
             <div class="container-fluid" id="content" style="padding-bottom:20px">
                 <div id="main" style="margin-right: 0px;">
@@ -154,7 +156,7 @@
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
 
                             <!-- HEADER -->
-                            <header class="header">
+                            <header class="header" aria-label="content-header">
 
                               <!-- GLOBAL WARNING MESSAGE -->
                               <div class="header__top">
@@ -238,22 +240,22 @@
                                   </ul>
                                 </div>
 
+                                <!-- BREADCRUMB -->
+                                <nav class="navigation-breadcrumb" aria-label="Breadcrumb">
+                                  <h:form style="margin:0px;" id="breadcrumb">
+                                      <div class="breadcrumbs">
+                                          <ol>
+                                              <ui:insert name="breadcrumb" />
+                                          </ol>
+                                      </div>
+                                  </h:form>
+                                </nav>
+                                <!-- // BREADCRUMB -->
+
                               </header>
                               <!-- // HEADER -->
 
                         </h:form>
-
-                        <!-- BREADCRUMB -->
-                        <nav class="navigation-breadcrumb" aria-label="Breadcrumb">
-	                        <h:form style="margin:0px;" id="breadcrumb">
-	                            <div class="breadcrumbs">
-	                                <ol>
-	                                    <ui:insert name="breadcrumb" />
-	                                </ol>
-	                            </div>
-	                        </h:form>
-						            </nav>
-                        <!-- // BREADCRUMB -->
 
                         <!-- MESSAGES -->
                         <div role="complementary">
