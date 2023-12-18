@@ -161,8 +161,6 @@ const setListeners = function setListeners(tableWidth, handle) {
             newWidth = colWidth + diffX;
             newWidth = constrainWidth(col, newWidth);
 
-            console.log(`${totalWidth} === ${newWidth} + ${nextColNewWidth}: ${totalWidth === (newWidth + nextColNewWidth)}`)
-
             if (totalWidth === (newWidth + nextColNewWidth)) {
                 newWidth = (newWidth / tableWidth) * 100;
                 nextColNewWidth = (nextColNewWidth / tableWidth) * 100;
