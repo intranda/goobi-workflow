@@ -227,7 +227,7 @@ const gwResizableTable = (() => {
     function init() {
         setup();
     }
-    function reload(data) {
+    function reload(data = 'none') {
         if (data.status === 'success') {
             setup();
         }
