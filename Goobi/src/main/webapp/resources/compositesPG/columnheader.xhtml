@@ -31,6 +31,7 @@
 			aria-sort="#{cc.attrs.form.sortField== descendingLabel ? 'descending' : cc.attrs.form.sortField== ascendingLabel ? 'ascending' :'none'}">
 			<button class="column-header-sort" jsf:rendered="#{not cc.attrs.addAction}"
 				jsf:action="#{cc.attrs.form.FilterAlleStart}"
+				onclick="gwResizableTable.reload()"
 				aria-label="#{msgs.defaultSortField} #{cc.attrs.value} #{cc.attrs.form.sortField== descendingLabel ? msgs.defaultSortFieldDesc : cc.attrs.form.sortField== ascendingLabel ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
 				<h:outputText value="#{cc.attrs.value}" />
 				<span

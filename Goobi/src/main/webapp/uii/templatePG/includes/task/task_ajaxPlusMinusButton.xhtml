@@ -17,7 +17,7 @@
 			aria-expanded="false"
 			data-goobi="handle-tooltip"
 		>
-			<i class="fa fa-angle-right" />
+			<span class="fa fa-angle-right" />
 			<h:panelGroup rendered="#{item.typAutomatisch}">
 				<i class="fa fa-cogs" title="#{msgs.automatischerSchritt}" />
 			</h:panelGroup>
@@ -32,7 +32,8 @@
 				render="#{ajaxRender}"
 				onevent="(data) => {
 					gwHandleTooltip.init(data, {restore: false});
-					gwInitTooltips.init(document.querySelector('#tasks'))
+					gwInitTooltips.init(document.querySelector('#tasks'));
+					gwResizableTable.reload(data);
 				}"
 			/>
 		</button>
@@ -48,7 +49,7 @@
 			aria-expanded="true"
 			data-goobi="handle-tooltip"
 		>
-			<i class="fa fa-angle-down"></i>
+			<span class="fa fa-angle-down" />
 
 			<h:panelGroup rendered="#{item.typAutomatisch}">
         <i class="fa fa-cogs" title="#{msgs.automatischerSchritt}"/>
@@ -64,7 +65,8 @@
 				render="#{ajaxRender}"
 				onevent="(data) => {
 					gwHandleTooltip.init(data, {restore: false});
-					gwInitTooltips.init(document.querySelector('#tasks'))
+					gwInitTooltips.init(document.querySelector('#tasks'));
+					gwResizableTable.reload(data);
 				}"
 				/>
 		</button>
@@ -72,5 +74,3 @@
 	</composite:implementation>
 
 </ui:composition>
-
-
