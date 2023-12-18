@@ -174,6 +174,7 @@ const setListeners = function setListeners(tableWidth, handle) {
     document.addEventListener('mouseup', () => {
         if (col) {
             handle.classList.remove('active');
+            resizeHandles(col);
             saveColWidths(col);
         }
         document.getElementsByTagName('body')[0].classList.remove('table-resizing');
