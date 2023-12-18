@@ -156,13 +156,13 @@
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
 
                             <!-- HEADER -->
-                            <header class="header" aria-label="content-header">
+                            <header class="header">
 
                               <!-- GLOBAL WARNING MESSAGE -->
                               <div class="header__top">
                                 <h:panelGroup layout="block" id="globalWarningMessage" styleClass="mt-4">
                                     <h:panelGroup layout="block" rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger" style="line-height:40px;font-size:24px;">
-                                      <span class="fa fa-exclamation-triangle" />
+                                      <i class="fa fa-exclamation-triangle"></i>
                                       <span>
                                         <h:outputText value="#{SessionForm.logoutMessage}" />
                                       </span>
@@ -194,7 +194,7 @@
                                     <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
 	                                  <li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script">
                                       <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
-                                        <span class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}" />
+                                        <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
                                         <div class="details">
                                           <span class="big">#{msgs.goobiScript_isActive}</span>
                                           <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
@@ -207,7 +207,7 @@
                                     <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
                                       <li class='bg-neutral-400 stats__current-users'>
                                         <button jsf:action="currentUsers" jsf:id="currentUsers">
-                                          <span class="fa fa-users" />
+                                          <i class="fa fa-users"></i>
                                           <div class="details">
                                             <span>#{msgs.aktiveBenutzer}</span>
                                             <span>#{SessionForm.numberOfSessions}</span>
@@ -220,7 +220,7 @@
 
                                     <!-- DATE -->
                                     <li class="bg-neutral-400 stats__date">
-                                      <span class="fa fa-calendar" />
+                                      <i class="fa fa-calendar"></i>
                                       <div class="details">
                                         <span class="big">
                                         <h:outputText value="#{SessionForm.currentTime}" />
@@ -240,22 +240,22 @@
                                   </ul>
                                 </div>
 
-                                <!-- BREADCRUMB -->
-                                <nav class="navigation-breadcrumb" aria-label="Breadcrumb">
-                                  <h:form style="margin:0px;" id="breadcrumb">
-                                      <div class="breadcrumbs">
-                                          <ol>
-                                              <ui:insert name="breadcrumb" />
-                                          </ol>
-                                      </div>
-                                  </h:form>
-                                </nav>
-                                <!-- // BREADCRUMB -->
-
                               </header>
                               <!-- // HEADER -->
 
                         </h:form>
+
+                        <!-- BREADCRUMB -->
+                        <nav class="navigation-breadcrumb" aria-label="Breadcrumb">
+	                        <h:form style="margin:0px;" id="breadcrumb">
+	                            <div class="breadcrumbs">
+	                                <ol>
+	                                    <ui:insert name="breadcrumb" />
+	                                </ol>
+	                            </div>
+	                        </h:form>
+						            </nav>
+                        <!-- // BREADCRUMB -->
 
                         <!-- MESSAGES -->
                         <div role="complementary">
