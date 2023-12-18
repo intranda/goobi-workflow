@@ -112,10 +112,9 @@ const setRelWidth = function setRelativeWidth(col) {
  * @param {number} height The height of the table
  * @returns {HTMLDivElement}
  */
-const createHandle = function createHandle(height) {
+const createHandle = function createHandle() {
     const div = document.createElement('div');
     div.classList.add('resize-handle');
-    div.style.setProperty('--handle-height', `${height}px`);
     return div;
 };
 
@@ -174,7 +173,6 @@ const setListeners = function setListeners(tableWidth, handle) {
     document.addEventListener('mouseup', () => {
         if (col) {
             handle.classList.remove('active');
-            resizeHandles(col);
             saveColWidths(col);
         }
         document.getElementsByTagName('body')[0].classList.remove('table-resizing');
@@ -201,7 +199,8 @@ const initialize = function initializeResizeTable(table) {
     [...cols].forEach((col) => {
         const column = col;
         const tableWidth = table.offsetWidth;
-        const handle = createHandle(table.offsetHeight);
+        const handle = createHandle();
+        resizeHandles(col);
         setRelWidth(col);
         column.appendChild(handle);
         column.classList.add('resize-col');
