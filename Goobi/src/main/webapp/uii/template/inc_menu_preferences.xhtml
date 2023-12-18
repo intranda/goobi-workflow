@@ -122,12 +122,14 @@
 						<c:if test="#{empty LoginForm.myBenutzer.imageUrl}">
 							<img
 								alt=""
-								src="template/img/intranda.png" />
+								src="template/img/intranda.png"
+								aria-hidden="true" />
 						</c:if>
 						<c:if test="#{not empty LoginForm.myBenutzer.imageUrl}">
 							<img
 								alt=""
-								src="#{LoginForm.myBenutzer.imageUrl}" />
+								src="#{LoginForm.myBenutzer.imageUrl}"
+								aria-hidden="true" />
 						</c:if>
 					</button>
 
