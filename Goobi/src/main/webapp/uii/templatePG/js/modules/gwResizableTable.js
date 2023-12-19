@@ -138,6 +138,35 @@ const setListeners = function setListeners(tableWidth, handle) {
         col = e.target.parentElement;
         resizeHandles(col);
     });
+
+    handle.addEventListener('click', (e) => {
+        if (e.detail === 2) {
+            col = e.target.parentElement;
+            colWidth = col.offsetWidth;
+            nextCol = col.nextElementSibling;
+            nextColWidth = nextCol.offsetWidth;
+            totalWidth = colWidth + nextColWidth;
+
+            newWidth = constrainWidth(col, 60);
+            nextColNewWidth = totalWidth - newWidth;
+            if (totalWidth === (newWidth + nextColNewWidth)) {
+                newWidth = (newWidth / tableWidth) * 100;
+                nextColNewWidth = (nextColNewWidth / tableWidth) * 100;
+
+                col.style.width = `${newWidth.toFixed(2)}%`;
+                nextCol.style.width = `${nextColNewWidth.toFixed(2)}%`;
+            }
+
+            col = undefined;
+            colWidth = undefined;
+            newWidth = undefined;
+            nextCol = undefined;
+            nextColWidth = undefined;
+            nextColNewWidth = undefined;
+            totalWidth = undefined;
+        }
+    });
+
     handle.addEventListener('mousedown', (e) => {
         col = e.target.parentElement;
         pageX = e.pageX;
