@@ -133,6 +133,11 @@ const setListeners = function setListeners(tableWidth, handle) {
     let nextColNewWidth;
     let diffX;
     let totalWidth;
+
+    handle.addEventListener('mouseover', () => {
+        col = e.target.parentElement;
+        resizeHandles(col);
+    });
     handle.addEventListener('mousedown', (e) => {
         col = e.target.parentElement;
         pageX = e.pageX;
