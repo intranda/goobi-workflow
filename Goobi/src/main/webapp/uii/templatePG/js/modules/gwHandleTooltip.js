@@ -1,10 +1,10 @@
 /**
- * @description Destroy tooltips on ajax call and initialize a new one if ajax call is done.  
- * 
+ * @description Destroy tooltips on ajax call and initialize a new one if ajax call is done.
+ *
  */
 var gwHandleTooltip = ( function() {
     'use strict';
-    
+
     var _debug = false;
     var _defaultSelector = '[data-goobi="handle-tooltip"]'
 
@@ -33,7 +33,7 @@ var gwHandleTooltip = ( function() {
         const tooltipTriggers = document.querySelectorAll(selector)
 
         // fire up new tooltip instances (new instances are enabled by default)
-        tooltipTriggers.forEach(trigger => new bootstrap.Tooltip(trigger))
+        tooltipTriggers.forEach(trigger => hoverableTooltip(trigger))
 
         if (_debug) console.log(tooltipTriggers)
       }
@@ -41,6 +41,6 @@ var gwHandleTooltip = ( function() {
 
 
     return {
-      init 
+      init
     }
 } )();
