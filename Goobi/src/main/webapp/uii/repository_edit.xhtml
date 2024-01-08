@@ -60,7 +60,7 @@
                             focusOnLoad="true"
                             field="#{harvesterBean.repository.name}"
                             help="#{msgs.help_intranda_administration_repository_name}"
-                            required="true"/>
+                            required="true" />
 
                         <intranda:formInputDropDownAjax
                             id="repoType"
@@ -111,7 +111,34 @@
                                     help="#{msgs.help_intranda_administration_repository_metadataPrefix}"
                                     required="false"
                                     name="metadataPrefix" />
-                             
+
+
+
+
+                                <intranda:formInputCheckBox
+                                    id="testmode"
+                                    label="#{msgs.intranda_administration_repository_testmode}"
+                                    field="#{harvesterBean.repository.testMode}"
+                                    help="#{msgs.help_intranda_administration_repository_testmode}"
+                                    name="testmode" />
+
+
+                                <intranda:formInputText
+                                    id="startDate"
+                                    label="#{msgs.intranda_administration_repository_startDate}"
+                                    field="#{harvesterBean.repository.startDate}"
+                                    help="#{msgs.help_intranda_administration_repository_startDate}"
+                                    required="false"
+                                    name="startDate" />
+
+                                <intranda:formInputText
+                                    id="endDate"
+                                    label="#{msgs.intranda_administration_repository_endDate}"
+                                    field="#{harvesterBean.repository.endDate}"
+                                    help="#{msgs.help_intranda_administration_repository_endDate}"
+                                    required="false"
+                                    name="endDate" />
+
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'ia'}">
