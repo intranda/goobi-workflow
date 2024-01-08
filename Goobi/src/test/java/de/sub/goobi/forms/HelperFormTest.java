@@ -130,7 +130,7 @@ public class HelperFormTest extends AbstractTest {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
         String fixture = helperForm.getVersion();
-        assertTrue(fixture.startsWith("23."));
+        assertTrue(fixture.startsWith("24."));
     }
 
     @Test
