@@ -120,7 +120,7 @@
                                     label="#{msgs.intranda_administration_repository_testmode}"
                                     field="#{harvesterBean.repository.testMode}"
                                     help="#{msgs.help_intranda_administration_repository_testmode}"
-                                    name="testmode" />
+                                    name="testmode" execute="@form" render="@this"/>
 
 
                                 <intranda:formInputText
@@ -129,15 +129,15 @@
                                     field="#{harvesterBean.repository.startDate}"
                                     help="#{msgs.help_intranda_administration_repository_startDate}"
                                     required="false"
-                                    name="startDate" />
+                                    name="startDate" execute="@form" render="@this"/>
 
                                 <intranda:formInputText
                                     id="endDate"
                                     label="#{msgs.intranda_administration_repository_endDate}"
                                     field="#{harvesterBean.repository.endDate}"
-                                    help="#{msgs.help_intranda_administration_repository_endDate}"
+                                    help="#{msgs.help_intranda_administration_repository_startDate}"
                                     required="false"
-                                    name="endDate" />
+                                    name="endDate" execute="@form" render="@this"/>
 
                             </h:panelGroup>
 

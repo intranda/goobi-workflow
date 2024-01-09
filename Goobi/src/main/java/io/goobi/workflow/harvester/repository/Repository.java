@@ -313,13 +313,21 @@ public class Repository implements Serializable, DatabaseObject {
         if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
             oai.append("&from=" + startDate);
             oai.append("&until=" + endDate);
-        } else if (lastHarvest != null) {
-            MutableDateTime timestamp = formatterISO8601DateTimeMS.parseMutableDateTime(lastHarvest.toString());
-            oai.append("&from=" + formatterISO8601DateTimeFullWithTimeZone.withZoneUTC().print(timestamp));
-        }
-        if (getDelay() > 0) {
+        } else {
+            if (lastHarvest == null) {
+                // first harvest
+                oai.append("&from=1970-01-01T00:00:00Z");
+            } else {
+                MutableDateTime from = formatterISO8601DateTimeMS.parseMutableDateTime(lastHarvest.toString());
+                if (getDelay() > 0) {
+                    from.addDays(-getDelay());
+                }
+                oai.append("&from=" + formatterISO8601DateTimeFullWithTimeZone.withZoneUTC().print(from));
+            }
             MutableDateTime now = new MutableDateTime();
-            now.addDays(-getDelay());
+            if (getDelay() > 0) {
+                now.addDays(-getDelay());
+            }
             String untilDateTime = formatterISO8601DateTimeFullWithTimeZone.print(now);
             oai.append("&until=" + untilDateTime);
         }
