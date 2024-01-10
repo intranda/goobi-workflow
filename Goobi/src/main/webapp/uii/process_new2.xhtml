@@ -51,8 +51,8 @@
 		<script
 			type="text/javascript"
 			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/reactiveX/rx.lite.min.js?v=#{HelperForm.buildVersion}"></script>
-		
-		<!-- 
+
+		<!--
 		<script
 			src="template/js/imageView/imageView.image.js?v=#{HelperForm.buildVersion}"></script>
 		<script
@@ -72,10 +72,10 @@
 			prependId="false"
             styleClass="form-horizontal form-bordered"
             >
-            
+
 			<main class="row">
 				<div class="col-12">
-                
+
 					<intranda:box
 						id="uploadBox"
 						boxType="action"
@@ -94,7 +94,7 @@
 							<!-- TARGET FOLDER -->
 							<div class="row">
 								<div class="col-12 col-md-3">
-									<intranda:formLabel label="#{msgs.damageDocFolderSelection}" 
+									<intranda:formLabel label="#{msgs.damageDocFolderSelection}"
 										labelFor="folderSelection" labelRequired="true"/>
 								</div>
 
@@ -138,7 +138,7 @@
 							<!-- FILE UPLOAD -->
 							<div class="row">
 								<div class="col-12 col-md-3">
-									<intranda:formLabel label="#{msgs.damageDocFileUpload}" 
+									<intranda:formLabel label="#{msgs.damageDocFileUpload}"
 										labelFor="uploadArea" labelRequired="false"/>
 								</div>
 
@@ -162,10 +162,10 @@
 
 									<intranda:formHelp content="#{msgs.helpDamageDocFileUpload}" msgFor="uploadArea" />
 								</div>
-								
+
 							</div>
 							<!-- // FILE UPLOAD -->
-							
+
 						</h:panelGroup>
 						<!-- // FILE UPLOAD AREA -->
 
@@ -208,7 +208,7 @@
 												class="btn btn-blank ms-2 mb-1"
 												jsf:action="#{ProzesskopieForm.uploadedFiles.remove(image)}"
 												title="#{msgs.damageDocDeleteFile}">
-												<i class="fa fa-trash " />
+												<span class="fa fa-trash " />
 												<f:passThroughAttribute
 													name="data-toggle"
 													value="tooltip" />
@@ -236,7 +236,7 @@
 
 						<!-- BUTTONS -->
 						<div class="box__actions">
-					
+
 							<!-- Cancel -->
 							<a
 								jsf:id="cancel"
@@ -245,33 +245,33 @@
 								jsf:action="process_all">
 								<h:outputText value="#{msgs.abbrechen}" />
 							</a>
-					
+
 							<!-- Save => should be the first btn in the form (subit on enter) -->
 							<button
 								class="btn btn-success"
 								jsf:id="absenden"
 								type="submit"
 								jsf:action="#{ProzesskopieForm.createNewProcess}">
-								<i class="fa fa-save"></i>
+								<span class="fa fa-save" />
 								<span>
 									<h:outputText value="#{msgs.speichern}" />
 								</span>
 							</button>
-					
+
 							<!-- back -->
 							<button
 								jsf:id="deleteUser"
 								class="btn btn-blank trigger-delete"
 								jsf:action="#{ProzesskopieForm.openFirstPage}">
-								<i class="fa fa-arrow-circle-o-left"></i>
+								<span class="fa fa-arrow-circle-o-left" />
 								<span>
 									<h:outputText value="#{msgs.zurueck}" />
 								</span>
 							</button>
-					
+
 						</div>
 						<!-- // BUTTONS -->
-	
+
 
 					</intranda:box>
 				</div>

@@ -62,7 +62,7 @@
 											   jsf:action="#{JobTypesBean.removeStepFromCurrentJobType(stepTitle)}">
 											   <f:ajax render="@form" execute="@form"/>
 												 <span>#{stepTitle}</span>
-											   <i class="fa fa-minus margin-left-5"></i>
+											   <span class="fa fa-minus margin-left-5" />
 										   </button>
 									</ui:repeat>
 								</div>
@@ -73,7 +73,7 @@
 											   jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
 											   <f:ajax render="@form" execute="@form"/>
 												 <span>#{stepTitle}</span>
-											   <i class="fa fa-plus margin-left-5"></i>
+											   <span class="fa fa-plus margin-left-5" />
 										   </button>
 									</ui:repeat>
 								</div>
@@ -89,7 +89,7 @@
 					    	<span>#{msgs.cancel}</span>
 					    </a>
 					    <button class="btn btn-success" jsf:action="#{JobTypesBean.saveCurrentJobType}">
-					    	<i class="fa fa-save"></i>
+					    	<span class="fa fa-save" />
 					    	<span>#{msgs.save}</span>
 					    </button>
 							<button
@@ -97,7 +97,7 @@
 								onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
 								jsf:action="#{JobTypesBean.deleteCurrentJobType}"
 								jsf:rendered="#{not JobTypesBean.currentJobTypeNew}">
-								<i class="fa fa-trash"></i>
+								<span class="fa fa-trash" />
 								<span>#{msgs.loeschen}</span>
 							</button>
 				    </div>

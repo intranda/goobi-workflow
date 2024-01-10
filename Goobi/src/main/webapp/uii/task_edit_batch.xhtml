@@ -69,22 +69,22 @@
                             help="#{msgs.helpUserDashboard}"
                             name="dashboardName"
                             selectItems="#{AktuelleSchritteForm.batchHelper.processNameList}" />
-                                  
+
                         <div class="box__actions">
                             <button
                                 class="btn btn-primary-400"
                                 jsf:id="absenden"
                                 type="submit"
                                 jsf:action="#{NavigationForm.Reload}">
-                                <i class="fa fa-refresh"></i>
+                                <span class="fa fa-refresh" />
                                 <span>
                                     <h:outputText value="#{msgs.uebernehmen}" />
-                                </span>                                    
+                                </span>
                                 <f:setPropertyActionListener
                                     target="#{NavigationForm.uiStatus.taskActionBox_view}"
                                     value="" />
                             </button>
-                        </div>	
+                        </div>
                     </intranda:box>
                 </h:form>
                 <!-- // SWITCH BETWEEN BATCH STEPS -->
@@ -120,7 +120,7 @@
                             name="isBatchStep"
                             value="true" />
                     </ui:include>
-                
+
                 </h:panelGroup>
                 <!-- // PROPERTIES -->
 
@@ -135,7 +135,7 @@
                             value="true" />
                 </ui:include>
                 <!-- // ACTION BOX -->
-                    
+
             </div>
 
         </div>

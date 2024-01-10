@@ -17,7 +17,7 @@
             <div class="box thin-margin lightgrey box-bordered">
                 <div class="box-title">
                     <h3>
-                        <i class="fa fa-list"></i>
+                        <span class="fa fa-list" />
                         #{AktuelleSchritteForm.batchHelper.currentStep.prozess.titel}
                     </h3>
                     <div class="actions">
@@ -25,7 +25,7 @@
                             jsf:id="expandBatch"
                             class="btn btn-mini font-light"
                             jsf:action="#{NavigationForm.Reload}">
-                            <i class="fa #{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'fa-compress':'fa-expand'}" />
+                            <span class="fa #{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'fa-compress':'fa-expand'}" />
                             <f:setPropertyActionListener
                                 target="#{NavigationForm.uiStatus.task_viewWorkflow}"
                                 value="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'part':'full'}" />
@@ -68,28 +68,28 @@
 
                                 <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet == 1}">
                                     <span class="badge badge-intranda-orange">
-                                        <i class="fa fa-lightbulb-o"></i>
+                                        <span class="fa fa-lightbulb-o" />
                                         #{msgs.badgePriority1}
                                     </span>
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet == 2}">
                                     <span class="badge badge-intranda-orange">
-                                        <i class="fa fa-lightbulb-o" />
+                                        <span class="fa fa-lightbulb-o" />
                                         #{msgs.badgePriority2}
                                     </span>
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
                                     <span class="badge badge-intranda-orange">
-                                        <i class="fa fa-lightbulb-o"></i>
+                                        <span class="fa fa-lightbulb-o" />
                                         #{msgs.badgePriority3}
                                     </span>
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet gt 9}">
                                     <span class="badge badge-intranda-red">
-                                        <i class="fa fa-bullhorn"></i>
+                                        <span class="fa fa-bullhorn" />
                                         #{msgs.badgeCorrection}
                                     </span>
                                 </h:panelGroup>
@@ -172,28 +172,28 @@
 
                                                     <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet == 1}">
                                                         <span class="badge badge-intranda-orange">
-                                                            <i class="fa fa-lightbulb-o"></i>
+                                                            <span class="fa fa-lightbulb-o" />
                                                             #{msgs.badgePriority1}
                                                         </span>
                                                     </h:panelGroup>
 
                                                     <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet == 2}">
                                                         <span class="badge badge-intranda-orange">
-                                                            <i class="fa fa-lightbulb-o" />
+                                                            <span class="fa fa-lightbulb-o" />
                                                             #{msgs.badgePriority2}
                                                         </span>
                                                     </h:panelGroup>
 
                                                     <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
                                                         <span class="badge badge-intranda-orange">
-                                                            <i class="fa fa-lightbulb-o"></i>
+                                                            <span class="fa fa-lightbulb-o" />
                                                             #{msgs.badgePriority3}
                                                         </span>
                                                     </h:panelGroup>
 
                                                     <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet gt 9}">
                                                         <span class="badge badge-intranda-red">
-                                                            <i class="fa fa-bullhorn"></i>
+                                                            <span class="fa fa-bullhorn" />
                                                             #{msgs.badgeCorrection}
                                                         </span>
                                                     </h:panelGroup>
@@ -286,5 +286,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

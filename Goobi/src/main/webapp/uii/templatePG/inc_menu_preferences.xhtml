@@ -31,7 +31,7 @@
                     data-bs-placement="bottom"
                     data-goobi="handle-tooltip">
 
-                    <i class="fa #{not NavigationForm.showHelp ? 'fa-question' : 'fa-question-circle'}"></i>
+                    <span class="fa #{not NavigationForm.showHelp ? 'fa-question' : 'fa-question-circle'}" />
                     <f:setPropertyActionListener
                         target="#{NavigationForm.showHelp}"
                         value="#{not NavigationForm.showHelp}" />
@@ -55,15 +55,15 @@
                         href="#"
                         role="button"
                         data-bs-toggle="dropdown"
-                        aria-expanded="false"> 
-                        
-                        <!-- Language icon --> 
+                        aria-expanded="false">
+
+                        <!-- Language icon -->
                         <ui:include src="inc_language_icon.xhtml">
                             <ui:param
                                 name="iconClass"
                                 value="language-select__icon" />
-                        </ui:include> 
-                        
+                        </ui:include>
+
                         <span class="language-select__locale">#{SpracheForm.locale}</span>
                     </a>
                     <ul class="dropdown-menu">
@@ -110,11 +110,13 @@
                             <img
                                 class="user__account-menu__avatar-default"
                                 alt=""
-                                src="templatePG/img/intranda.svg" />
+                                src="templatePG/img/intranda.svg"
+                                aria-hidden="true" />
                         </c:if> <c:if test="#{not empty LoginForm.myBenutzer.imageUrl}">
                             <img
                                 alt=""
-                                src="#{LoginForm.myBenutzer.imageUrl}" />
+                                src="#{LoginForm.myBenutzer.imageUrl}"
+                                aria-hidden="true" />
                         </c:if>
                     </a>
 

@@ -61,7 +61,7 @@
                             class="btn gw-table__filters__option searchfieldbuttongroup hidden-xs"
                             jsf:action="#{NavigationForm.Reload}"
                           >
-                            <i class="fa #{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'fa-check-square-o':'fa-square-o'}"></i>
+                            <span class="fa #{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'fa-check-square-o':'fa-square-o'}" />
                             <span>
                             <h:outputText value="#{msgs.vocabularyManager_showFieldDefinitions}" />
                             </span>
@@ -120,7 +120,7 @@
                                     jsf:rel="tooltip"
                                     jsf:action="#{vocabularyBean.editRecords}"
                                     title="#{msgs.vocabularyManager_editRecords}">
-                                    <i class="fa fa-pencil"></i>
+                                    <span class="fa fa-pencil" />
                                     <f:passThroughAttribute
                                         name="data-toggle"
                                         value="tooltip" />
@@ -140,7 +140,7 @@
                                     jsf:action="#{vocabularyBean.editVocabulary}"
                                     jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
                                     title="#{msgs.vocabularyManager_editVocabulary}">
-                                    <i class="fa fa-cog"></i>
+                                    <span class="fa fa-cog" />
                                     <f:passThroughAttribute
                                         name="data-toggle"
                                         value="tooltip" />
@@ -158,7 +158,7 @@
                                     action="#{vocabularyBean.uploadToServerRecords}"
                                     rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management') and vocabularyBean.useAuthorityServer()}"
                                     title="#{msgs.vocabularyManager_uploadToServerRecords}">
-                                    <i class="fa fa-database"></i>
+                                    <span class="fa fa-database" />
                                     <f:setPropertyActionListener
                                         target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
                                 </h:commandLink>
@@ -176,7 +176,7 @@
                               jsf:id="new"
                               class="btn btn-primary-400 me-auto"
                               jsf:action="#{vocabularyBean.newVocabulary}">
-                              <i class="fa fa-plus"></i>
+                              <span class="fa fa-plus" />
                               <span>
                                 <h:outputText value="#{msgs.vocabularyManager_addNewVocabulary}" />
                               </span>

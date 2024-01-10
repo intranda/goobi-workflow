@@ -24,7 +24,7 @@
             <div
                 class="modal-dialog"
                 role="document">
-				
+
                 <h:panelGroup
                     id="easydbModalContent"
                     layout="block"
@@ -165,7 +165,7 @@
                                                     <h:commandLink
                                                         styleClass="btn btn--icon btn--icon-blue"
                                                         action="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.previous}">
-                                                        <i class="fa fa-angle-left"></i>
+                                                        <span class="fa fa-angle-left" />
                                                         <f:ajax render="easydbList" />
                                                     </h:commandLink>
                                                 </li>
@@ -179,7 +179,7 @@
                                                         styleClass="btn btn--icon btn--icon-blue"
                                                         id="navigate_right"
                                                         action="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.next}">
-                                                        <i class="fa fa-angle-right"></i>
+                                                        <span class="fa fa-angle-right" />
                                                         <f:ajax render="easydbList" />
                                                     </h:commandLink>
                                                 </li>

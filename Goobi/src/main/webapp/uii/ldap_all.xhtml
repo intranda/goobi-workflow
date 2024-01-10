@@ -86,7 +86,7 @@
 											jsf:rel="tooltip"
 											jsf:action="ldap_edit"
 											title="#{msgs.bearbeiten}">
-											<i class="fa fa-pencil"></i>
+											<span class="fa fa-pencil" />
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
 											<f:setPropertyActionListener target="#{LdapGruppenForm.myLdapGruppe}" value="#{item}" />
@@ -101,7 +101,7 @@
 									<!-- Neu-Schaltknopf -->
 									<button jsf:id="new" class="btn btn-primary-400 me-auto" jsf:action="#{LdapGruppenForm.Neu}"
 										jsf:immediate="true">
-										<i class="fa fa-plus"></i>
+										<span class="fa fa-plus" />
 										<span>
 											<h:outputText value="#{msgs.authentication_createNew}" />
 										</span>

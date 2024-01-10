@@ -23,7 +23,7 @@
 		<div class="dataTables_filter -search-bar">
 			<div class="input-group input-group">
 				<span class="input-group-addon">
-					<i class="fa fa-search"></i>
+					<span class="fa fa-search" />
 				</span>
 				<h:inputText id="searchField" pt:aria-label="search" styleClass="form-control searchfield" value="#{Form.filter}" onkeypress="return submitEnter('searchform:sub1:FilterAlle2',event)">
 					<f:passThroughAttribute name="placeholder" value="#{label}" />
@@ -59,7 +59,7 @@
                         <div class="dropdown" style="display: inline-block">
 						<button class="btn dropdown-toggle searchfieldbuttongroup" aria-label="#{msgs.dropdownMenu}" data-toggle="dropdown" id="filterDropdown"
 						aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)">
-							<i class="fa fa-filter margin-right-5" />
+							<span class="fa fa-filter margin-right-5" />
 							<span class="caret"></span>
 						</button>
 						<!-- Filter Liste -->
@@ -79,18 +79,18 @@
 
 				<!-- remove filter from list -->
                 <button jsf:id="deleteFilter" data-toggle="tooltip" aria-label="#{msgs.loeschen}" class="btn searchfieldbuttongroup" jsf:action="#{Form.removeFilterFromUser}" title="#{msgs.removeFilter}">
-                    <i class="fa fa-trash-o"></i>
+                    <span class="fa fa-trash-o" />
                 </button>
                 <!--Filter zur User-Liste hinzufuegen -->
                 <button jsf:id="saveFilter" data-toggle="tooltip" aria-label="#{msgs.save}" class="btn searchfieldbuttongroup" jsf:action="#{Form.addFilterToUser}" title="#{msgs.addFilter}">
-                    <i class="fa fa-save"></i>
+                    <span class="fa fa-save" />
                 </button>
 
 
-  
-                
+
+
             </div>
         </div>
-            
+
 	</composite:implementation>
 </ui:composition>

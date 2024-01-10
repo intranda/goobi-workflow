@@ -21,7 +21,7 @@
                 <div class="box box-color orange box-bordered">
                     <div class="box-title">
                         <h3>
-                            <i class="fa fa-users"></i>
+                            <span class="fa fa-users" />
                             <h:outputText value="#{msgs.benutzergruppen}" />
                         </h3>
                     </div>
@@ -43,7 +43,7 @@
                                         title="#{msgs.uebernehmen}"
                                         jsf:rel="tooltip"
                                         jsf:action="#{ProzessverwaltungForm.BenutzergruppeHinzufuegen}">
-                                        <i class="fa fa-plus"></i>
+                                        <span class="fa fa-plus" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -91,7 +91,7 @@
                 <div class="box box-color orange box-bordered">
                     <div class="box-title">
                         <h3>
-                            <i class="fa fa-user"></i>
+                            <span class="fa fa-user" />
                             <h:outputText value="#{msgs.benutzer}" />
                         </h3>
                     </div>
@@ -113,7 +113,7 @@
                                         jsf:rel="tooltip"
                                         jsf:action="#{ProzessverwaltungForm.BenutzerHinzufuegen}"
                                         jsf:id="addUser">
-                                        <i class="fa fa-plus"></i>
+                                        <span class="fa fa-plus" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -162,7 +162,7 @@
                 <div class="box box-color box-bordered">
                     <div class="box-title">
                         <h3>
-                            <i class="fa fa-table"></i>
+                            <span class="fa fa-table" />
                             <h:outputText value="#{msgs.assignedPersons}" />
                         </h3>
                     </div>
@@ -177,7 +177,7 @@
                                 rendered="#{ProzessverwaltungForm.mySchritt.benutzergruppen.size() gt 0}">
 
                                 <x:column style="width:30px;">
-                                    <i class="fa fa-users" />
+                                    <span class="fa fa-users" />
                                 </x:column>
 
                                 <h:column>
@@ -195,7 +195,7 @@
                                         aria-label="#{msgs.berechtigungLoeschen}"
                                         jsf:rel="tooltip"
                                         jsf:action="#{ProzessverwaltungForm.BenutzergruppeLoeschen}">
-                                        <i class="fa fa-trash-o"></i>
+                                        <span class="fa fa-trash-o" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -215,7 +215,7 @@
                                 rendered="#{ProzessverwaltungForm.mySchritt.benutzer.size() gt 0}">
 
                                 <x:column style="width:30px;">
-                                    <i class="fa fa-user" />
+                                    <span class="fa fa-user" />
                                 </x:column>
 
                                 <h:column>
@@ -232,7 +232,7 @@
                                         title="#{msgs.berechtigungLoeschen}"
                                         jsf:rel="tooltip"
                                         jsf:action="#{ProzessverwaltungForm.BenutzerLoeschen}">
-                                        <i class="fa fa-trash-o"></i>
+                                        <span class="fa fa-trash-o" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -254,7 +254,7 @@
                                     jsf:action="#{BenutzerverwaltungForm.FilterKeinMitZurueck}"
                                     jsf:immediate="true"
                                     jsf:rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
-                                    <i class="fa fa-user margin-right-5"></i>
+                                    <span class="fa fa-user margin-right-5" />
                                     <h:outputText value="#{msgs.benutzerHinzufuegen}" />
                                     <f:setPropertyActionListener
                                         target="#{ProzessverwaltungForm.userDisplayMode}"
@@ -269,7 +269,7 @@
                                     jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                                     jsf:immediate="true"
                                     jsf:rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
-                                    <i class="fa fa-users margin-right-5"></i>
+                                    <span class="fa fa-users margin-right-5" />
                                     <h:outputText value="#{msgs.benutzergruppenHinzufuegen}" />
                                     <f:setPropertyActionListener
                                         target="#{ProzessverwaltungForm.userDisplayMode}"
@@ -289,5 +289,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

@@ -36,7 +36,7 @@
 				id="save"
 				type="submit"
 				jsf:action="#{cc.attrs.form.Speichern}">
-				<i class="fa fa-save"></i>
+				<span class="fa fa-save" />
 				<span>#{msgs.speichern}</span>
 			</button>
 
@@ -54,7 +54,7 @@
 							type="button"
 							class="btn btn-hot"
 							jsf:disabled="#{true}">
-							<i class="fa fa-trash-o" />
+							<span class="fa fa-trash-o" />
 							<span>
 								<h:outputText value="#{msgs.loeschen}" />
 							</span>
@@ -70,7 +70,7 @@
 						type="button"
 						data-bs-toggle="modal"
 						data-bs-target="#deleteModal">
-						<i class="fa fa-trash-o" />
+						<span class="fa fa-trash-o" />
 						<span>
 							<h:outputText value="#{msgs.loeschen}" />
 						</span>
@@ -98,7 +98,7 @@
 								</div>
 								<div class="modal-footer">
 									<button
-										type="button" 
+										type="button"
 										class="btn btn-blank"
 										data-bs-dismiss="modal"
 										aria-hidden="true">#{msgs.abbrechen}</button>
@@ -106,7 +106,7 @@
 										jsf:id="confirmDelete"
 										class="btn btn-hot"
 										jsf:action="#{cc.attrs.form.Loeschen}">
-										<i class="fa fa-trash-o" />
+										<span class="fa fa-trash-o" />
 										<span>
 											<h:outputText value="#{msgs.loeschen}" />
 										</span>
@@ -123,5 +123,3 @@
 	</composite:implementation>
 
 </ui:composition>
-
-

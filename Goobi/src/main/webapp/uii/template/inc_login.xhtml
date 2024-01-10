@@ -1,8 +1,8 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -28,7 +28,7 @@
 					<h:form styleClass="form-validate" id="loginForm" prependId="false">
 						<h:panelGroup id="globalWarningMessage">
 							<h:panelGroup rendered="#{SessionForm.logoutMessage!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
-								<i class="fa fa-exclamation-triangle margin-right-10" />
+								<span class="fa fa-exclamation-triangle margin-right-10" />
 								<h:outputText value="#{SessionForm.logoutMessage}" />
 							</h:panelGroup>
 						</h:panelGroup>
@@ -61,10 +61,10 @@
 							</div>
 							<div class="submit">
 								<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
-									<button 
+									<button
 										jsf:id="openIdLogin"
-										jsf:action="#{LoginForm.openIDLogin}" 
-										class="float-left btn font-size-s" 
+										jsf:action="#{LoginForm.openIDLogin}"
+										class="float-left btn font-size-s"
 										style="background: #fff; outline: 1px solid #368ee0;">
 										OpenID connect
 									</button>
@@ -76,7 +76,7 @@
 								</button>
 							</div>
 						</h:panelGroup>
-	
+
 					</h:form>
                     <o:socket channel="adminMessageChannel">
                         <f:ajax event="update" render="loginForm openIdForm" />
@@ -89,10 +89,10 @@
 								<h:outputText value="Redirecting to SSO provider..." />
 							</h2>
 							<p>If this doesn't work, click this button:</p>
-							<button 
+							<button
 								jsf:id="openIdLink"
-								jsf:action="#{LoginForm.openIDLogin}" 
-								class="float-left btn font-size-s" 
+								jsf:action="#{LoginForm.openIDLogin}"
+								class="float-left btn font-size-s"
 								style="background: #fff; outline: 1px solid #368ee0; margin-bottom: 20px;">
 								OpenID connect
 							</button>
@@ -109,10 +109,10 @@
 				</ui:fragment>
                 <ui:fragment rendered="#{LoginForm.useHeaderLogin}">
                     <h:form id="headerSsoForm">
-                        <button 
+                        <button
                             jsf:id="headerSsoLink"
-                            jsf:action="#{LoginForm.headerSsoLogin}" 
-                            class="float-left btn font-size-s" 
+                            jsf:action="#{LoginForm.headerSsoLogin}"
+                            class="float-left btn font-size-s"
                             style="display:none;">
                         </button>
                         <script>
@@ -126,15 +126,12 @@
                 </ui:fragment>
 			</div>
 			<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
-			
+
             <h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
 
 		</div>
     </main>
 	</composite:implementation>
-	
+
 
 </ui:composition>
-
-
-

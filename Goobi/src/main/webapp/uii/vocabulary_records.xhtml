@@ -74,7 +74,7 @@
                         <div class="input-group input-group">
 
                           <span class="input-group-text">
-                              <i class="fa fa-search"></i>
+                              <span class="fa fa-search" />
                           </span>
                           <h:inputText
                             id="searchField"
@@ -199,14 +199,14 @@
                         pt:aria-label="#{msgs.firstPage}"
                         action="#{vocabularyBean.currentVocabulary.cmdMoveFirst}"
                         id="navfirst">
-                        <i class="fa fa-angle-double-left"></i>
+                        <span class="fa fa-angle-double-left" />
                         <f:ajax render="recordList pagination-area" />
                     </h:commandLink>
                     <h:commandLink
                         styleClass="btn btn-primary-400"
                         action="#{vocabularyBean.currentVocabulary.cmdMovePrevious}"
                         id="navprev">
-                        <i class="fa fa-angle-left"></i>
+                        <span class="fa fa-angle-left" />
                         <h:outputText value=" #{msgs.pagePrevious}" />
                         <f:ajax render="recordList pagination-area" />
                     </h:commandLink>
@@ -244,7 +244,7 @@
                         action="#{vocabularyBean.currentVocabulary.cmdMoveNext}"
                         id="navnext">
                         <h:outputText value="#{msgs.pageNext} " />
-                        <i class="fa fa-angle-right"></i>
+                        <span class="fa fa-angle-right" />
                         <f:ajax render="recordList pagination-area" />
                     </h:commandLink>
                     <h:commandLink
@@ -252,7 +252,7 @@
                         pt:aria-label="#{msgs.lastPage}"
                         action="#{vocabularyBean.currentVocabulary.cmdMoveLast}"
                         id="navlast">
-                        <i class="fa fa-angle-double-right"></i>
+                        <span class="fa fa-angle-double-right" />
                         <f:ajax render="recordList pagination-area" />
                     </h:commandLink>
                   </div>
@@ -372,7 +372,7 @@
                                               <div class="modal-footer">
                                                 <button type="button" class="btn btn-blank" data-bs-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
                                                 <button jsf:id="confirmDelete" class="btn btn-hot" jsf:action="#{vocabularyBean.deleteRecord}">
-                                                  <i class="fa fa-trash-o" />
+                                                  <span class="fa fa-trash-o" />
                                                   <span>
                                                     <h:outputText value="#{msgs.vocabularyManager_deleteRecord}" />
                                                   </span>
@@ -390,7 +390,7 @@
                                     jsf:id="absenden"
                                     type="submit"
                                     jsf:action="#{vocabularyBean.saveRecordEdition}">
-                                    <i class="fa fa-save"/>
+                                    <span class="fa fa-save" />
                                     <span>
                                       <h:outputText value="#{msgs.speichern}" />
                                     </span>

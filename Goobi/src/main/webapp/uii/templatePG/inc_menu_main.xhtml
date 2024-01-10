@@ -27,7 +27,7 @@
 							id="start"
 							styleClass="nav-link">
 							<span>
-								<i class="#{cc.attrs.icon}"></i>
+								<span class="#{cc.attrs.icon}" />
 								#{DashboardForm.plugin == null ? msgs.startseite:msgs.dashboard}
 							</span>
 							<f:setPropertyActionListener
@@ -47,7 +47,7 @@
 								id="steps"
 								styleClass="nav-link">
 								<span>
-									<i class="#{cc.attrs.icon}"></i>
+									<span class="#{cc.attrs.icon}" />
 									#{msgs.aktuelleSchritte}
 								</span>
 								<f:setPropertyActionListener
@@ -123,7 +123,7 @@
 													styleClass="dropdown-item"
 													>
 													<span>
-														<i class="fa fa-plug"></i>
+														<span class="fa fa-plug" />
 														<span>#{msgs[plugin]}</span>
 													</span>
 													<f:setPropertyActionListener
@@ -233,7 +233,7 @@
 									action="admin_jobtypes_all"
 									rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
 									icon="fa fa-gears" />
-                                    
+
                                 <!-- Quartz -->
                                 <intranda:menuItem
                                     id="a37c"
@@ -298,7 +298,7 @@
 													id="plugin"
 													styleClass="dropdown-item">
 													<span>
-														<i class="fa fa-plug box-icon-fix-menu"></i>
+														<span class="fa fa-plug box-icon-fix-menu" />
 														<span>#{msgs[plugin]}</span>
 													</span>
 													<f:setPropertyActionListener
@@ -342,7 +342,7 @@
 													styleClass="dropdown-item"
 													>
 													<span>
-														<i class="fa fa-pie-chart"></i>
+														<span class="fa fa-pie-chart" />
 														<span class="margin-left-10">#{msgs[statistics]}</span>
 													</span>
 													<f:setPropertyActionListener

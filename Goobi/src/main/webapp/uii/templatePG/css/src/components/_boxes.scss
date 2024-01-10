@@ -38,7 +38,8 @@
     color: #fff;
     border: 0.01rem solid #fff;
 
-    i {
+    i,
+    .fa {
       color: currentColor;
     }
 
@@ -48,7 +49,8 @@
 
     &:hover {
       background-color: #fff;
-      i {
+      i,
+      .fa {
         color: var(--bs-body-color);
       }
     }
@@ -58,7 +60,8 @@
     color: var(--clr-neutral-600);
     border: 0.1rem solid var(--clr-neutral-300);
 
-    i {
+    i,
+    .fa {
       color: currentColor;
     }
 
@@ -68,7 +71,8 @@
 
     &:hover {
       background-color: var(--clr-neutral-600);
-      i {
+      i,
+      .fa {
         color: #fff;
       }
     }

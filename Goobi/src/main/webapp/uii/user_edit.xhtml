@@ -161,7 +161,7 @@
                                                 <f:passThroughAttribute
                                                     name="data-bs-placement"
                                                     value="right" />
-                                                <i class="fa fa-asterisk" />
+                                                <span class="fa fa-asterisk" />
                                             </h:outputLabel>
                                         </div>
                                         <div class="col-12 col-md-9">
@@ -200,7 +200,7 @@
                                                     value="right" />
 
 
-                                                <i class="fa fa-asterisk form__required" />
+                                                <span class="fa fa-asterisk form__required" />
                                             </h:outputLabel>
                                         </div>
                                         <div class="col-12 col-md-9">
@@ -364,7 +364,7 @@
                                                                         title="#{msgs.uebernehmen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
-                                                                        <i class="fa fa-plus"></i>
+                                                                        <span class="fa fa-plus" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -458,7 +458,7 @@
                                                                         title="#{msgs.ausGruppeLoeschen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.AusGruppeLoeschen}">
-                                                                        <i class="fa fa-trash-o"></i>
+                                                                        <span class="fa fa-trash-o" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -484,7 +484,7 @@
                                                         class="btn btn-neutral-600 me-auto"
                                                         jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                                                         jsf:immediate="true">
-                                                        <i class="fa fa-plus"></i> <span> <h:outputText
+                                                        <span class="fa fa-plus" /> <span> <h:outputText
                                                                 value="#{msgs.benutzergruppenHinzufuegen}" />
                                                         </span>
                                                         <f:setPropertyActionListener
@@ -560,7 +560,7 @@
                                                                         title="#{msgs.uebernehmen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
-                                                                        <i class="fa fa-plus"></i>
+                                                                        <span class="fa fa-plus" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -648,7 +648,7 @@
                                                                         title="#{msgs.ausProjektLoeschen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.AusProjektLoeschen}">
-                                                                        <i class="fa fa-trash-o"></i>
+                                                                        <span class="fa fa-trash-o" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -672,7 +672,7 @@
                                                         class="btn btn-neutral-600 me-auto"
                                                         jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
                                                         jsf:immediate="true">
-                                                        <i class="fa fa-plus me-auto"></i> <span> <h:outputText
+                                                        <span class="fa fa-plus me-auto" /> <span> <h:outputText
                                                                 value="#{msgs.projektHinzufuegen}" />
                                                         </span>
                                                         <f:setPropertyActionListener
@@ -717,7 +717,7 @@
                                         jsf:id="absenden2"
                                         type="submit"
                                         jsf:action="#{BenutzerverwaltungForm.createUser}">
-                                        <i class="fa fa-save margin-right-5"></i> <span> <h:outputText
+                                        <span class="fa fa-save margin-right-5" /> <span> <h:outputText
                                                 value="#{msgs.speichern}" />
                                         </span>
                                     </button>
@@ -742,7 +742,7 @@
                                         jsf:id="absenden"
                                         type="submit"
                                         jsf:action="#{BenutzerverwaltungForm.Speichern}">
-                                        <i class="fa fa-save"></i> <span> <h:outputText value="#{msgs.speichern}" />
+                                        <span class="fa fa-save" /> <span> <h:outputText value="#{msgs.speichern}" />
                                         </span>
                                     </button>
 
@@ -752,7 +752,7 @@
                                         class="btn btn-hot trigger-delete"
                                         onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
                                         jsf:action="#{BenutzerverwaltungForm.Loeschen}">
-                                        <i class="fa fa-trash-o"></i> <span> <h:outputText
+                                        <span class="fa fa-trash-o" /> <span> <h:outputText
                                                 value="#{msgs.loeschen}" />
                                         </span>
                                     </button>

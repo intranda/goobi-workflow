@@ -133,7 +133,7 @@ function checkLeftNav() {
             $("#main").css("margin-left", 0);
         }
         // if ($(".toggle-mobile").length == 0) {
-        //     $("#navigation .user").before('<a href="#" class="toggle-mobile"><i class="fa fa-bars"></i></a>');
+        //     $("#navigation .user").before('<a href="#" class="toggle-mobile"><span class="fa fa-bars" /></a>');
         // }
 
         // if ($(".mobile-nav").length == 0) {
@@ -274,10 +274,10 @@ function resizeContent() {
     var contentAreaHeight = $( '#contentArea' ).outerHeight();
     var metseditorImageContainerHeight = $( '#metseditorImage' ).outerHeight();
     var newImageHeight = windowHeight - imageNavigattionHeight - formularOrdnerHeight;
-    
+
     $( '#contentArea' ).css( 'height', windowHeight );
     $( '#metseditorImage' ).css( 'height', windowHeight );
-    if( $( '#metseditorImage #mainImage').height() == 0) {        
+    if( $( '#metseditorImage #mainImage').height() == 0) {
         $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
     }
 //        metseditorImageImage.css( 'height', newImageHeight );
@@ -352,12 +352,12 @@ $(document).ready(function () {
 
         		//$("td, th").attr("tabindex", "0");
         		//$("td, th").has( "a" ).removeAttr("tabindex", "0");
-                
+
                 $(".focusable").attr("tabindex", "0");
                 $(".focusableChild input").attr("href", "#")
                 $(".notFocusable").attr("tabindex", "-1");
-        		
-        		
+
+
                 /*if ( sessionStorage.getItem( 'wf_imageSize' ) !== null ) {
                     $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'wf_imageSize' ) + '%' );
                 }
@@ -368,12 +368,12 @@ $(document).ready(function () {
                 /*
                 $( '[data-change="zoom-in"]' ).off().on( 'click', function() {
                     var imgContainerWidth = $( '#metseditorImageContainer' ).outerWidth();
-                    
+
                     decreaseImageSize( imgContainerWidth );
                 } );
                 $( '[data-change="zoom-out"]' ).off().on( 'click', function() {
                     var imgContainerWidth = $( '#metseditorImageContainer' ).outerWidth();
-                    
+
                     enlargeImageSize( imgContainerWidth );
                 } );
                 */
@@ -389,15 +389,15 @@ $(document).ready(function () {
     $( '[data-toggle="struct-list"]' ).on( 'click', function() {
         $( '#left' ).toggleClass( 'in' );
     } );
-    
+
     // toggle box content
 //    if ( $( '.box .box-title.box-toggle h3 .fa-angle-down' ).length > 0 ) {
 //        $( 'body' ).on( 'click', '.box .box-title.box-toggle h3', function() {
 //            $( this ).toggleClass( 'in' ).parent().next().slideToggle('fast');
 //        } );
 //    }
-    
-    
+
+
     if ( $( '.box .box-title.box-toggle h3 .fa' ).length > 0 ) {
         $( 'body' ).on( 'click', '.box .box-title.box-toggle h3', function() {
             console.log("click");
@@ -419,12 +419,12 @@ $(document).ready(function () {
     /*
     $( '[data-change="zoom-in"]' ).on( 'click', function() {
         var imgContainerWidth = $( '#metseditorImageContainer' ).outerWidth();
-        
+
         decreaseImageSize( imgContainerWidth );
     } );
     $( '[data-change="zoom-out"]' ).on( 'click', function() {
         var imgContainerWidth = $( '#metseditorImageContainer' ).outerWidth();
-        
+
         enlargeImageSize( imgContainerWidth );
     } );
     */
@@ -570,7 +570,7 @@ $(document).ready(function () {
         e.preventDefault();
         var $el = $(this);
         var $parent = $el.parent();
-        $el.after('<span><i class="fa fa-spinner fa-spin"></i>Updating...</span>');
+        $el.after('<span><span class="fa fa-spinner fa-spin" />Updating...</span>');
         setTimeout(function () {
             $parent.find("span").remove();
             $parent.prev().slideUp(200, function () {
@@ -594,7 +594,7 @@ $(document).ready(function () {
         e.preventDefault();
         $(".breadcrumbs").fadeOut();
     });
-    
+
     // add attribute to last a
     var lasta =   $('.breadcrumbs ul li a:last-child').attr( "aria-current", "page" );
 
@@ -815,7 +815,7 @@ $(document).ready(function () {
             var elementToAdd = "";
             ($bookmark.is(":checked")) ? elementToAdd += "<li class='bookmarked'>" : elementToAdd += "<li>";
 
-            elementToAdd += '<div class="check"><input type="checkbox" class="icheck-me" data-skin="square" data-color="blue"></div><span class="task"><i class="fa fa-' + $icon.select2("val") + '"></i><span>' + $name.val() + '</span></span><span class="task-actions"><a href="#" class="task-delete" rel="tooltip" title="Delete that task"><i class="fa fa-times"></i></a><a href="#" class="task-bookmark" rel="tooltip" title="Mark as important"><i class="fa fa-bookmark-o"></i></a></span></li>';
+            elementToAdd += '<div class="check"><input type="checkbox" class="icheck-me" data-skin="square" data-color="blue"></div><span class="task"><i class="fa fa-' + $icon.select2("val") + '"></i><span>' + $name.val() + '</span></span><span class="task-actions"><a href="#" class="task-delete" rel="tooltip" title="Delete that task"><span class="fa fa-times" /></a><a href="#" class="task-bookmark" rel="tooltip" title="Mark as important"><span class="fa fa-bookmark-o" /></a></span></li>';
 
             if ($tasklist.find(".bookmarked").length > 0) {
                 if ($bookmark.is(":checked")) {
@@ -1066,7 +1066,7 @@ $(document).ready(function () {
     if ($("body").attr("data-layout-sidebar") == "fixed") {
         sidebarFixed();
     }
-    
+
     var event = document.createEvent("HTMLEvents");
     event.initEvent("globalDone", true, true);
     event.eventName = "globalDone";

@@ -17,7 +17,7 @@
 <!--     alto-editor.riot for the editor UI -->
 <!--     altoEditorUtils.js for the Goobi workflow integration (saving, checking if the editor is dirty, showing messages etc) -->
 <!--     autocomplete.xhtml composite component with autocomplete.riot for the autocomplete in the bottom -->
-    
+
 <!--     The backing bean is Metadaten.java  -->
     <composite:implementation>
         <style>
@@ -89,11 +89,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="image-navigation">
-                                        <button 
+                                        <button
                                             jsf:action="#{Metadaten.imageLeftmost}"
                                             jsf:id="imageFirstAltoEdit"
-                                            aria-label="#{msgs.firstImage}"    
-                                            class="btn btn--icon btn--icon-gray" 
+                                            aria-label="#{msgs.firstImage}"
+                                            class="btn btn--icon btn--icon-gray"
                                             title="#{Metadaten.pagesRTL?msgs.lastImage:msgs.firstImage}"
                                             data-renderimage="true"
                                             type="button"
@@ -101,11 +101,11 @@
                                             <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
                                             <i class="fa fa-angle-double-left" aria-hidden="true"></i>
                                         </button>
-                                        <button 
+                                        <button
                                             jsf:action="#{Metadaten.imageLeft2}"
                                             jsf:id="prevImage2AltoEdit"
                                             aria-label="#{msgs.previousImage}"
-                                            class="btn btn--icon btn--icon-gray" 
+                                            class="btn btn--icon btn--icon-gray"
                                             title="#{msgs.mets_navigateTwoImagesLeft}"
                                             data-renderimage="true"
                                             type="button">
@@ -115,10 +115,10 @@
                                         <button
                                             jsf:action="#{Metadaten.imageLeft}"
                                             jsf:id="prevImageAltoEdit"
-                                            type="button" 
-                                            class="btn btn--icon-blue" 
+                                            type="button"
+                                            class="btn btn--icon-blue"
                                             data-renderimage="true">
-                                            <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/> 
+                                            <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
                                             <i class="fa fa-angle-left" aria-hidden="true"></i>
                                             #{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}
                                         </button>
@@ -127,8 +127,8 @@
                                                 #{msgs.mets_currentImage} #{Metadaten.imageIndex +1} #{msgs.von} #{Metadaten.sizeOfImageList}
                                             </span>
                                             <span style="display:none;" id="altoEditorAutocomplete">
-                                                <intranda:autocomplete 
-                                                	name="pageAutocomplete" 
+                                                <intranda:autocomplete
+                                                	name="pageAutocomplete"
                                                 	field="#{Metadaten.bildNummerGeheZuCompleteString}"
                                                 	renderimage="true"
                                                 	placeholder="bla"
@@ -138,20 +138,20 @@
                             						render="openseadragonform altoEditAutocomplete" />
                                             </span>
                                         </h:panelGroup>
-                                        <button 
+                                        <button
                                             jsf:action="#{Metadaten.imageRight}"
-                                            jsf:id="nextImageAltoEdit"    
-                                            type="button" 
+                                            jsf:id="nextImageAltoEdit"
+                                            type="button"
                                             class="btn btn--icon-blue"
                                             data-renderimage="true">
                                             #{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}
                                             <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
                                             <i class="fa fa-angle-right" aria-hidden="true"></i>
                                         </button>
-                                        <button 
+                                        <button
                                             jsf:action="#{Metadaten.imageRight2}"
                                             jsf:id="nextImage2AltoEdit"
-                                            aria-label="#{msgs.nextImage}"    
+                                            aria-label="#{msgs.nextImage}"
                                             class="btn btn--icon btn--icon-gray"
                                             title="#{msgs.mets_navigateTwoImagesRight}"
                                             data-renderimage="true"
@@ -159,15 +159,15 @@
                                             <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
                                             <i class="fa fa-angle-right" aria-hidden="true"></i>
                                         </button>
-                    
+
                                     <!-- IMAGE LAST -->
-                                        <button 
+                                        <button
                                             jsf:action="#{Metadaten.imageRightmost}"
                                             jsf:id="imageLastAltoEdit"
                                             onclick="document.querySelector('#imageLast').click()"
-                                            aria-label="#{msgs.lastImage}"    
+                                            aria-label="#{msgs.lastImage}"
                                             class="btn btn--icon btn--icon-gray"
-                                            title="#{Metadaten.pagesRTL?msgs.firstImage:msgs.lastImage}" 
+                                            title="#{Metadaten.pagesRTL?msgs.firstImage:msgs.lastImage}"
                                             data-renderimage="true"
                                             type="button">
                                             <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
@@ -182,7 +182,7 @@
                                             <h:messages errorClass="alto-message-error" infoClass="alto-message-info" for="altoChanges" />
                                         </h:panelGroup>
                                         <button type="button" class="btn btn--icon-green" onclick="saveAltoResults()">
-                                            <i class="fa fa-floppy-o"></i>
+                                            <span class="fa fa-floppy-o" />
                                             #{msgs.saveAltoPage}
                                         </button>
                                     </div>

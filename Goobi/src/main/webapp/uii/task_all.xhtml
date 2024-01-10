@@ -73,14 +73,14 @@
 											<!-- +++++++++++++++++++ Columnheader row ++++++++++++++++++++++++ -->
 											<thead>
 												<tr role="row">
-													
+
 													<!-- ProzessID -->
 													<intranda:columnheader
 														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}"
 														id="my_tasks_process" name="id"
 														form="#{AktuelleSchritteForm}" value="#{msgs.id}"
 														ajaxRender="processAllBox:myform" reverseOrder="true"
-                                                        sortField="prioritaet desc, prozesse.ProzesseID" 
+                                                        sortField="prioritaet desc, prozesse.ProzesseID"
                                                         addClass="gw-table-fixed__sizeXXXXS"/>
 
 													<!-- Task -->
@@ -88,11 +88,11 @@
 														form="#{AktuelleSchritteForm}"
 														value="#{msgs.arbeitsschritt}"
 														ajaxRender="processAllBox:myform"
-                                                        sortField="prioritaet desc, schritte.titel" 
+                                                        sortField="prioritaet desc, schritte.titel"
                                                         addClass="gw-table-fixed__sizeM"/>
 
 													<!-- Process -->
-													<intranda:columnheader 
+													<intranda:columnheader
 														id="sortProcessTitle" name="prozes"
 														form="#{AktuelleSchritteForm}"
 														value="#{msgs.prozessTitel}"
@@ -125,7 +125,7 @@
 														form="#{AktuelleSchritteForm}"
 														value="#{msgs.vorgangsdatum}"
 														ajaxRender="processAllBox:myform"
-                                                        sortField="prioritaet desc, prozesse.erstellungsdatum" 
+                                                        sortField="prioritaet desc, prozesse.erstellungsdatum"
                                                         addClass="gw-table-fixed__sizeXXS"/>
 
 													<!-- Project -->
@@ -157,7 +157,7 @@
 														rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}"
 														id="sortBatch" name="batch" form="#{AktuelleSchritteForm}"
 														value="#{msgs.batch}" ajaxRender="processAllBox:myform"
-                                                        sortField="prozesse.batchID" 
+                                                        sortField="prozesse.batchID"
                                                         addClass="gw-table-fixed__sizeXXS"/>
 
 													<!-- number of images -->
@@ -174,7 +174,7 @@
                                                         form="#{AktuelleSchritteForm}"
                                                         value="#{msgs.prioritaet}"
                                                         ajaxRender="processAllBox:myform"
-                                                        sortField="prioritaet desc, schritte.prioritaet" 
+                                                        sortField="prioritaet desc, schritte.prioritaet"
                                                         addClass="gw-table-fixed__sizeXXS"/>
 
 													<!-- Action -->
@@ -182,9 +182,9 @@
                                                         form="#{AktuelleSchritteForm}"
                                                         value="#{msgs.auswahl}"
                                                         ajaxRender="processAllBox:myform"
-                                                        sortField="prioritaet desc, schritte.bearbeitungsstatus" 
+                                                        sortField="prioritaet desc, schritte.bearbeitungsstatus"
                                                         addClass="gw-table-fixed__sizeXXXS"/>
-                                                        
+
 												</tr>
 											</thead>
 
@@ -194,21 +194,21 @@
 												varStatus="status">
 
 												<tr>
-													
+
 													<!-- ID -->
 													<td
 														jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}">
 														<h:outputText value="#{item.prozess.id}" />
 													</td>
 													<!-- // ID -->
-													
-													
+
+
 													<!-- TITLE -->
 													<td>
 														<ui:include
 															src="templatePG/includes/task/task_ajaxPlusMinusButton.xhtml">
 															<ui:param name="ajaxRender" value="processAllBox:myform" />
-														</ui:include> 
+														</ui:include>
 														<h:panelGroup
 															id="auflistungIntern" rendered="#{item.panelAusgeklappt}">
 
@@ -223,7 +223,7 @@
 																		<!-- TITLE -->
 																		<h:outputText value="#{msgs.titel}:" />
 																		<h:outputText value="#{item.titel}" />
-																		
+
 																		<!-- TAST BEGINN -->
 																		<h:outputText value="#{msgs.bearbeitungsbeginn}:"
 																			rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
@@ -232,7 +232,7 @@
 																			rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
 																			<!--  <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
 																		</h:outputText>
-																		
+
 																		<!-- UPDATE DATE -->
 																		<h:outputText value="#{msgs.zuletztBearbeitet}:"
 																			rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
@@ -241,7 +241,7 @@
 																			rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
 																			<!--  <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
 																		</h:outputText>
-																		
+
 																		<!-- UPDATE BY -->
 																		<h:outputText
 																			value="#{msgs.letzteAktualisierungDurch}:"
@@ -253,7 +253,7 @@
 																		<!-- UPDATE TYPE -->
 																		<h:outputText value="#{msgs.aktualisierungstyp}:" />
 																		<h:outputText value="#{item.editTypeEnum.title}" />
-																		
+
 																		<!-- TYPE -->
 																		<h:outputText value="#{msgs.typ}:" />
 																		<h:panelGroup>
@@ -317,8 +317,8 @@
 														</h:panelGroup>
 													</td>
 													<!--//  TITLE -->
-													
-													
+
+
 													<!-- PROCESS -->
 													<td>
 														<div class="d-flex gap-2 align-items-center">
@@ -328,7 +328,7 @@
 																aria-label="#{msgs.prozessBearbeiten}"
 																title="#{msgs.prozessBearbeiten}"
 																jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
-																<i class="fa fa-tasks" />
+																<span class="fa fa-tasks" />
 																<f:passThroughAttribute name="data-toggle"
 																	value="tooltip" />
 																<f:setPropertyActionListener
@@ -355,23 +355,23 @@
 																value="#{item.prozess.getReplacedVariable(var)}" /></td>
 													</c:forEach>
 													<!-- // CUSTOM COLUMNS -->
-													
-													
+
+
 													<!-- PROCESS DATE -->
 													<td
 														jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}">
 														<h:outputText value="#{item.prozess.erstellungsdatum}" />
 													</td>
 													<!-- //PROCESS DATE -->
-													
-													
+
+
 													<!-- PROJECT -->
 													<td>
 														<h:outputText value="#{item.prozess.projekt.titel}" />
 													</td>
 													<!-- // PROJECT -->
-													
-													
+
+
 													<!-- INSTITUTION -->
 													<td
 														jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['institution']}">
@@ -379,8 +379,8 @@
 															value="#{item.prozess.projekt.institution.shortName}" />
 													</td>
 													<!-- // INSTITUTION -->
-													
-													
+
+
 													<!-- LOCKINGS -->
 													<td
 														jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}">
@@ -415,24 +415,24 @@
 														<h:panelGroup rendered="#{item.prioritaet == 0}"
 															class="badge badge-intranda-ultralight">
 															<h:outputText value="#{msgs.normalePrioritaet}" />
-														</h:panelGroup> 
+														</h:panelGroup>
 														<h:panelGroup rendered="#{item.prioritaet == 1}"
 															class="badge badge-intranda-orange">
-															<i class="fa fa-lightbulb-o"></i>
+															<span class="fa fa-lightbulb-o" />
 															 #{msgs.badgePriority1}
-														 </h:panelGroup> 
+														 </h:panelGroup>
 														 <h:panelGroup rendered="#{item.prioritaet == 2}"
 															class="badge badge-intranda-orange">
-															<i class="fa fa-lightbulb-o" />
+															<span class="fa fa-lightbulb-o" />
 															 #{msgs.badgePriority2}
-														 </h:panelGroup> 
+														 </h:panelGroup>
 														 <h:panelGroup
 															rendered="#{item.prioritaet gt 2 and item.prioritaet lt 10}"
 															class="badge badge-intranda-orange">
-															<i class="fa fa-lightbulb-o"></i>
+															<span class="fa fa-lightbulb-o" />
 														 	#{msgs.badgePriority3}
-														 </h:panelGroup> 
-														 <!-- Popup --> 
+														 </h:panelGroup>
+														 <!-- Popup -->
 														<x:popup id="popup"
 															closePopupOnExitingElement="true"
 															closePopupOnExitingPopup="true" displayAtDistanceX="-320"
@@ -446,7 +446,7 @@
 																  boxSmall="true"
 																  title="#{msgs.badgeCorrection}"
 																  icon="fa-bullhorn"
-																  boxScope="bg-white"> 
+																  boxScope="bg-white">
 																	<x:dataTable var="intern" style="width:400px;"
 																		rendered="#{item.eigenschaftenSize!=0}"
 																		value="#{item.eigenschaftenList}"
@@ -464,16 +464,16 @@
 																</intranda:box>
 															</f:facet>
 															<h:panelGroup class="badge badge-intranda-red">
-																<i class="fa fa-bullhorn"></i>
+																<span class="fa fa-bullhorn" />
 																 #{msgs.badgeCorrection}
 															 </h:panelGroup>
 														</x:popup>
 													</td>
 													<!-- // STATUS -->
-													
+
 													<!-- ACTION -->
 													<td>
-														
+
 														<!-- ACCEPT TASK -->
 														<button jsf:id="take"
 															aria-label="#{msgs.bearbeitungDiesesSchrittsUebernehmen}"
@@ -481,7 +481,7 @@
 															jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}"
 															jsf:rendered="#{(item.bearbeitungsstatusEnum == 'OPEN' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and !item.batchSize)}"
 															title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
-															<i class="fa fa-check"></i>
+															<span class="fa fa-check" />
 															<f:passThroughAttribute name="data-toggle"
 																value="tooltip" />
 															<f:setPropertyActionListener
@@ -497,7 +497,7 @@
 															jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}"
 															jsf:rendered="#{(item.bearbeitungsstatusEnum == 'ERROR' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and !item.batchSize)}"
 															title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
-															<i class="fa fa-check"></i>
+															<span class="fa fa-check" />
 															<f:passThroughAttribute name="data-toggle"
 																value="tooltip" />
 															<f:setPropertyActionListener
@@ -506,8 +506,8 @@
 															<f:setPropertyActionListener
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
-														</button> 
-														
+														</button>
+
 														<!-- KEEP ON WORKING ON TASK -->
 														<button jsf:action="#{AktuelleSchritteForm.EditStep}"
 															jsf:id="view1"
@@ -515,7 +515,7 @@
 															class="btn btn-action" jsf:rel="tooltip"
 															jsf:rendered="#{(item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and !item.batchStep) or (item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and !item.batchSize)}"
 															title="#{msgs.inBearbeitungDurch}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname:''}">
-															<i class="fa fa-cog"></i>
+															<span class="fa fa-cog" />
 															<f:passThroughAttribute name="data-toggle"
 																value="tooltip" />
 															<f:setPropertyActionListener
@@ -524,8 +524,8 @@
 															<f:setPropertyActionListener
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
-														</button> 
-														
+														</button>
+
 														<!-- PEEK INTO TASK OF ANOTHER ONE -->
 														<button jsf:action="#{AktuelleSchritteForm.EditStep}"
 															jsf:id="view2"
@@ -542,8 +542,8 @@
 															<f:setPropertyActionListener
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
-														</button> 
-														
+														</button>
+
 														<!-- ACCEPT TASK IN BATCH -->
 														<button jsf:id="batch" class="btn btn-primary"
 															jsf:rel="tooltip"
@@ -561,8 +561,8 @@
 															<f:setPropertyActionListener
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
-														</button> 
-														
+														</button>
+
 														<!-- ACCEPT TASK IN ERROR STATUS IN BATCH -->
 														<button jsf:id="batch-error" class="btn btn-hot"
 															jsf:rel="tooltip"
@@ -580,7 +580,7 @@
 															<f:setPropertyActionListener
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
-														</button> 
+														</button>
 
 														<!-- KEEP ON WORKING ON TASK IN BATCH -->
 														<button jsf:id="batchInWork" class="btn btn-action"
@@ -588,7 +588,7 @@
 															jsf:action="#{AktuelleSchritteForm.BatchesEdit}"
 															jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and item.batchSize}"
 															title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-															<i class="fa fa-cogs"></i>
+															<span class="fa fa-cogs" />
 															<f:passThroughAttribute name="data-toggle"
 																value="tooltip" />
 															<f:setPropertyActionListener
@@ -597,8 +597,8 @@
 															<f:setPropertyActionListener
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
-														</button> 
-														
+														</button>
+
 														<!-- PEEK INTO TASK IN BATCH OF ANOTHER ONE -->
 														<button jsf:id="batchInWorkOther" class="btn btn-blank"
 															jsf:rel="tooltip"
@@ -614,7 +614,7 @@
 															<f:setPropertyActionListener
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
-														</button> 
+														</button>
 													</td>
 													<!-- // ACTION -->
 
@@ -637,14 +637,14 @@
 
 					</div>
 				</div>
-				
+
 				<!-- ACTION BOX -->
 				<div class="row mt-4" jsf:rendered="#{LoginForm.myBenutzer.mitMassendownload  and AktuelleSchritteForm.paginator.totalResults > 0 }">
 					<div class="col-12">
 						<intranda:box id="boxTaskAllActions" boxType="action"
 							icon="fa-wrench" title="#{msgs.moeglicheAktionen}">
 							<h:form id="actionForm2" prependId="false">
-								
+
 								<!-- NUMBER OF IMAGES -->
 								<h:panelGroup styleClass="pull-right">
 									<h:outputText value="#{msgs.anzahlDerImagesAllerTreffer}:" />
@@ -654,10 +654,10 @@
 									<button jsf:id="calc"
 										jsf:action="#{AktuelleSchritteForm.calcHomeImages}"
 										class="btn btn-blank">
-										<i class="fa fa-refresh" />
+										<span class="fa fa-refresh" />
 									</button>
 								</h:panelGroup>
-								
+
 								<!-- UPLOAD FROM DONE FOLDER -->
 								<button jsf:id="uploadAll"
 									jsf:action="#{AktuelleSchritteForm.uploadFromHomeAlle}"
@@ -669,7 +669,7 @@
 										<h:outputText value="#{msgs.verzeichnisFertigHochladen}" />
 									</span>
 								</button>
-								
+
 								<!-- DOWNLOAD PAGE HITS INTO USERS HOME -->
 								<button jsf:id="downloadPage"
 									jsf:action="#{AktuelleSchritteForm.downloadToHomePage}"
@@ -694,13 +694,13 @@
 									</span>
 								</button>
 							</h:form>
-	
+
 						</intranda:box>
-	
+
 					</div>
-				</div>						
+				</div>
 				<!-- // ACTION BOX -->
-				
+
 			</c:if>
 		</main>
 	</ui:define>

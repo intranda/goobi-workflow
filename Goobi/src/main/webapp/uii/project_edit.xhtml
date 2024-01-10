@@ -598,7 +598,7 @@
                                                         class="btn btn-success"
                                                         jsf:action="#{ProjekteForm.filegroupSave}"
                                                         title="#{msgs.uebernehmen}">
-                                                        <i class="fa fa-save"></i> <span> <h:outputText
+                                                        <span class="fa fa-save" /> <span> <h:outputText
                                                                 value="#{msgs.save}" />
                                                         </span>
                                                         <f:setPropertyActionListener
@@ -648,7 +648,7 @@
                                                                         title="#{msgs.filegroupBearbeiten}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{ProjekteForm.filegroupEdit}">
-                                                                        <i class="fa fa-edit"></i>
+                                                                        <span class="fa fa-edit" />
                                                                         <f:setPropertyActionListener
                                                                             target="#{ProjekteForm.myFilegroup}"
                                                                             value="#{item}" />
@@ -665,7 +665,7 @@
                                                                         title="#{msgs.filegroupLoeschen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{ProjekteForm.filegroupDelete}">
-                                                                        <i class="fa fa-trash-o"></i>
+                                                                        <span class="fa fa-trash-o" />
                                                                         <f:setPropertyActionListener
                                                                             target="#{ProjekteForm.myFilegroup}"
                                                                             value="#{item}" />
@@ -689,7 +689,7 @@
                                                             class="me-auto btn btn-neutral-600"
                                                             jsf:action="#{ProjekteForm.filegroupAdd}"
                                                             jsf:immediate="true">
-                                                            <i class="fa fa-plus"></i> <span> <h:outputText
+                                                            <span class="fa fa-plus" /> <span> <h:outputText
                                                                     value="#{msgs.filegroupHinzufuegen}" />
                                                             </span>
                                                             <f:setPropertyActionListener
@@ -709,7 +709,7 @@
                                         </h:panelGroup>
 
                                     </div>
-                                
+
                             </h:panelGroup>
                         </div>
 

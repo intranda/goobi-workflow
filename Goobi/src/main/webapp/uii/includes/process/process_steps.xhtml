@@ -29,7 +29,7 @@
 <script type="text/javascript">
         	function switchExpanded(id){
         		console.log("called by: "+id);
-				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				var x = document.getElementById(id).getAttribute("aria-expanded");
 				console.log(x)
 				if (x == "true"){
 					x = "false"
@@ -46,7 +46,7 @@
                 <div class="box box-color box-bordered">
                     <div class="box-title">
                         <h3>
-                            <i class="fa fa-list"></i>
+                            <span class="fa fa-list" />
                             <h:outputText value="#{msgs.arbeitsschritte}" />
                         </h3>
 
@@ -64,7 +64,7 @@
                                         aria-haspopup="true"
                                         aria-expanded="false"
                                         onclick="switchExpanded(this.id)"
-                                        data-toggle="dropdown"> <i class="fa fa-exchange margin-right-5" /> <span class="caret"></span>
+                                        data-toggle="dropdown"> <span class="fa fa-exchange margin-right-5" /> <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu pull-right">
                                         <ui:repeat
@@ -124,7 +124,7 @@
                                         aria-label="#{msgs.process_countTaskOrderNumberDown}"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                                         class="margin-left-10 button-link">
-                                        <i class="fa fa-minus-circle font-light" />
+                                        <span class="fa fa-minus-circle font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -141,7 +141,7 @@
                                         aria-label="#{msgs.process_countTaskOrderNumberUp}"
                                         class="button-link margin-left-2"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                                        <i class="fa fa-plus-circle font-light" />
+                                        <span class="fa fa-plus-circle font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -158,7 +158,7 @@
                                         aria-label="#{msgs.process_moveTaskUp}"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                                         class="button-link margin-left-10">
-                                        <i class="fa fa-chevron-up font-light" />
+                                        <span class="fa fa-chevron-up font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -175,7 +175,7 @@
                                         aria-label="#{msgs.process_moveTaskDown}"
                                         class="button-link"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                                        <i class="fa fa-chevron-down font-light" />
+                                        <span class="fa fa-chevron-down font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -199,10 +199,10 @@
                                             jsf:id="expandbutton1"
                                             class="font-black button-link">
                                             <h:panelGroup rendered="#{!item.panelAusgeklappt}">
-                                                <i class="fa fa-angle-right margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+                                                <span class="fa fa-angle-right margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{item.panelAusgeklappt}">
-                                                <i class="fa fa-angle-down margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+                                                <span class="fa fa-angle-down margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
                                             </h:panelGroup>
                                             <x:updateActionListener
                                                 value="#{item.panelAusgeklappt?false:true}"
@@ -232,7 +232,7 @@
                                             <div class="box box-small box-color box-bordered">
                                                 <div class="box-title">
                                                     <h3>
-                                                        <i class="fa fa-table"></i>
+                                                        <span class="fa fa-table" />
                                                         #{msgs.eigenschaften}
                                                     </h3>
                                                 </div>
@@ -253,28 +253,28 @@
 
                                                             <h:panelGroup rendered="#{item.prioritaet == 1}">
                                                                 <span class="badge badge-intranda-orange">
-                                                                    <i class="fa fa-lightbulb-o"></i>
+                                                                    <span class="fa fa-lightbulb-o" />
                                                                     #{msgs.badgePriority1}
                                                                 </span>
                                                             </h:panelGroup>
 
                                                             <h:panelGroup rendered="#{item.prioritaet == 2}">
                                                                 <span class="badge badge-intranda-orange">
-                                                                    <i class="fa fa-lightbulb-o"></i>
+                                                                    <span class="fa fa-lightbulb-o" />
                                                                     #{msgs.badgePriority2}
                                                                 </span>
                                                             </h:panelGroup>
 
                                                             <h:panelGroup rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
                                                                 <span class="badge badge-intranda-orange">
-                                                                    <i class="fa fa-lightbulb-o"></i>
+                                                                    <span class="fa fa-lightbulb-o" />
                                                                     #{msgs.badgePriority3}
                                                                 </span>
                                                             </h:panelGroup>
 
                                                             <h:panelGroup rendered="#{item.prioritaet gt 9}">
                                                                 <span class="badge badge-intranda-red">
-                                                                    <i class="fa fa-bullhorn"></i>
+                                                                    <span class="fa fa-bullhorn" />
                                                                     #{msgs.badgeCorrection}
                                                                 </span>
                                                             </h:panelGroup>
@@ -306,7 +306,7 @@
                                                         <h:outputText value="#{msgs.aktualisierungstyp}:" />
                                                         <h:outputText value="#{item.editTypeEnum.title}" />
 
-                                                        <h:outputText 
+                                                        <h:outputText
                                                         	value="#{msgs.typ}:"
                                                         	rendered="#{item.typeSpecified}" />
                                                         <h:panelGroup rendered="#{item.typeSpecified}" >
@@ -567,7 +567,7 @@
                                         title="#{msgs.statusRunterSetzen}"
                                         aria-label="#{msgs.statusRunterSetzen}"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                                        <i class="fa fa-chevron-left font-light margin-left-5"></i>
+                                        <span class="fa fa-chevron-left font-light margin-left-5" />
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.mySchrittReload}"
                                             value="#{item}" />
@@ -587,7 +587,7 @@
                                         title="#{msgs.statusHoeherSetzen}"
                                         aria-label="#{msgs.statusHoeherSetzen}"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                                        <i class="fa fa-chevron-right font-light margin-left-5"></i>
+                                        <span class="fa fa-chevron-right font-light margin-left-5" />
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.mySchrittReload}"
                                             value="#{item}" />
@@ -611,7 +611,7 @@
                                         jsf:action="process_edit_step"
                                         title="#{msgs.detailsDesSchritts}"
                                         class="btn button-schaltknopf margin-right-5">
-                                        <i class="fa fa-pencil"></i>
+                                        <span class="fa fa-pencil" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -685,7 +685,7 @@
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.mySchritt}"
                                             value="#{item}" />
-                                            
+
                                         <span class="btn fa fa-globe margin-right-5"></span>
                                     </button>
 
@@ -701,7 +701,7 @@
                                     jsf:action="#{ProzessverwaltungForm.SchrittNeu}"
                                     title="#{msgs.schrittHinzufuegen}"
                                     jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and (ProzessverwaltungForm.myProzess.titel != '')}">
-                                    <i class="fa fa-plus margin-right-5"></i>
+                                    <span class="fa fa-plus margin-right-5" />
                                     <h:outputText value="#{msgs.schrittHinzufuegen}" />
                                 </button>
                             </div>

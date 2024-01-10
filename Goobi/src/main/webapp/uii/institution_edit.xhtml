@@ -357,7 +357,7 @@
                                     jsf:id="absenden"
                                     type="submit"
                                     jsf:action="#{institutionBean.Speichern}">
-                                    <i class="fa fa-save"></i>
+                                    <span class="fa fa-save" />
                                     <span>
                                         <h:outputText value="#{msgs.speichern}" />
                                     </span>
@@ -370,7 +370,7 @@
                                         class="btn btn-hot trigger-delete"
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteModal">
-                                        <i class="fa fa-trash-o" />
+                                        <span class="fa fa-trash-o" />
                                         <span>
                                             <h:outputText value="#{msgs.loeschen}" />
                                         </span>
@@ -386,14 +386,14 @@
                                             class="modal-dialog"
                                             role="document">
                                             <div class="modal-content">
-                                                
+
                                                 <div class="modal-header bg-primary text-white">
                                                     <h4 class="modal-title" id="myModalLabel">
                                                         <h:outputText value="#{msgs.loeschen}" />
                                                     </h4>
                                                     <button type="button" class="btn text-white"
                                                         title="#{msgs.cancel}" data-bs-dismiss="modal">
-                                                        <i class="fa fa-times"></i>
+                                                        <span class="fa fa-times" />
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
@@ -408,7 +408,7 @@
                                                         jsf:id="confirmDelete"
                                                         class="btn btn-danger"
                                                         jsf:action="#{institutionBean.Loeschen}">
-                                                        <i class="fa fa-trash-o margin-right-5" />
+                                                        <span class="fa fa-trash-o margin-right-5" />
                                                         <span>
                                                         <h:outputText value="#{msgs.loeschen}" />
                                                         </span>
@@ -438,7 +438,7 @@
                     </ui:include>
                 </div>
                  <!-- // JOURNAL -->
-                
+
             </div>
         </h:form>
 

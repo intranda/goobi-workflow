@@ -24,7 +24,7 @@
                     <div class="box thin-margin box-bordered">
                         <div class="box-title">
                             <h3>
-                                <i class="fa fa-list"></i>
+                                <span class="fa fa-list" />
                                 <h:outputText value="#{msgs.werkstuecke}" />
                             </h3>
 
@@ -37,7 +37,7 @@
                                     class="btn btn-mini"
                                     jsf:rel="tooltip"
                                     jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                                    <i class="fa fa-pencil"></i>
+                                    <span class="fa fa-pencil" />
                                     <f:passThroughAttribute
                                         name="data-toggle"
                                         value="tooltip" />
@@ -73,7 +73,7 @@
                                         class="btn btn-lightgrey font-size-s margin-top-5"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                                         title="#{msgs.werkstueckHinzufuegen}">
-                                        <i class="fa fa-plus margin-right-5"></i>
+                                        <span class="fa fa-plus margin-right-5" />
                                         <h:outputText value="#{msgs.werkstueckHinzufuegen}" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
@@ -92,5 +92,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

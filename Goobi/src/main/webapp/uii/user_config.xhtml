@@ -712,7 +712,7 @@
                                                 <f:setPropertyActionListener
                                                     target="#{LoginForm.myBenutzer.token}"
                                                     value="#{token}" />
-                                                <i class="fa fa-trash-o" />
+                                                <span class="fa fa-trash-o" />
                                             </button>
                                         </div>
 
@@ -722,7 +722,7 @@
                                                 var="method"
                                                 value="#{token.methods}">
                                                 <div jsf:rendered="#{method.selected}" style="width: 100%">
-                                                    <h:outputText 
+                                                    <h:outputText
                                                         style="margin-left: 10px; display:block"
                                                         value="#{method.description} (#{method.methodType} request to #{method.url})" />
                                                 </div>
@@ -763,7 +763,7 @@
                                                 <f:setPropertyActionListener
                                                     target="#{LoginForm.myBenutzer.token}"
                                                     value="#{LoginForm.myBenutzer.token}" />
-                                                <i class="fa fa-trash-o" />
+                                                <span class="fa fa-trash-o" />
                                             </button>
                                         </div>
 
@@ -788,7 +788,7 @@
                                             field="#{method.selected}"
                                             help="#{method.methodType} request to #{method.url}"
                                             name="Name_#{myVarStatus.index}" />
-                                    
+
                                     </ui:repeat>
 
                                 </ui:fragment>
@@ -801,7 +801,7 @@
                                         class="btn btn-primary-400 me-auto"
                                         jsf:action="#{LoginForm.myBenutzer.createNewToken}"
                                         jsf:immediate="true">
-                                        <i class="fa fa-plus"></i>
+                                        <span class="fa fa-plus" />
                                         <span>#{msgs.user_config_newApiToken}</span>
 
                                     </button>
@@ -822,7 +822,7 @@
                                 class="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
                                 jsf:id="absenden"
                                 jsf:action="#{LoginForm.BenutzerkonfigurationSpeichern}">
-                                <i class="fa fa-save"></i>
+                                <span class="fa fa-save" />
                                 <span>
                                     <h:outputText value="#{msgs.speichern}" />
                                 </span>

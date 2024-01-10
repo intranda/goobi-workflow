@@ -20,7 +20,7 @@
 			<!-- Save -->
 			<button class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most" jsf:id="absenden"
 				type="submit" jsf:action="#{cc.attrs.form.Speichern}">
-				<i class="fa fa-save margin-right-5"></i>
+				<span class="fa fa-save margin-right-5" />
 				<h:outputText value="#{msgs.speichern}" />
 			</button>
 
@@ -40,7 +40,7 @@
 							type="button"
 							class="btn btn-danger"
 							jsf:disabled="#{true}">
-							<i class="fa fa-trash-o margin-right-5" />
+							<span class="fa fa-trash-o margin-right-5" />
 							<h:outputText value="#{msgs.loeschen}" />
 						</button>
 						<f:passThroughAttribute
@@ -67,7 +67,7 @@
 								<div class="modal-footer">
 									<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
 									<button jsf:id="confirmDelete" class="btn btn-danger" jsf:action="#{cc.attrs.form.Loeschen}">
-										<i class="fa fa-trash-o margin-right-5" />
+										<span class="fa fa-trash-o margin-right-5" />
 										<h:outputText value="#{msgs.loeschen}" />
 									</button>
 								</div>
@@ -82,5 +82,3 @@
 	</composite:implementation>
 
 </ui:composition>
-
-
