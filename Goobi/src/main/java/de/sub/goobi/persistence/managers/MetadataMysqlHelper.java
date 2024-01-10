@@ -152,8 +152,8 @@ class MetadataMysqlHelper implements Serializable {
 
     public static List<String> getDistinctMetadataNames() throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append(
-                "select distinct name from metadata where name like 'index.%' union select distinct name from metadata where name not like 'index.%'");
+        sql.append("select distinct name from metadata where name like 'index.%' ");
+        sql.append("union select distinct name from metadata where name not like 'index.%'");
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

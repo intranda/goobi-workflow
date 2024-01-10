@@ -24,7 +24,7 @@
             <div
                 class="modal-dialog"
                 role="document">
-				<c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'easydb'}">
+				
                 <h:panelGroup
                     id="easydbModalContent"
                     layout="block"
@@ -55,12 +55,13 @@
                             <!-- easydb SEARCH INPUT -->
                             <div class="col-10">
                                 <!-- TODO: display object type, search type and search fields -->
-                                <x:inputText
-                                    id="easydbSearch"
-                                    styleClass="form-control"
-                                    onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"
-                                    value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchValue}" />
-
+                                <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'easydb'}">
+                                    <x:inputText
+                                        id="easydbSearch"
+                                        styleClass="form-control"
+                                        onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"
+                                        value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchValue}" />
+                                </c:if>
                                 <h:message
                                     for="easydbSearch"
                                     showDetail="true"
@@ -194,7 +195,6 @@
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>
-                </c:if>
             </div>
         </div>
     </composite:implementation>

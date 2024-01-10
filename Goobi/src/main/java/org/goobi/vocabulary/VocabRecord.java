@@ -102,7 +102,7 @@ public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
 
     @Override
     public int compareTo(VocabRecord o) {
-        return getTitle().compareTo(o.getTitle());
+        return getTitle().compareToIgnoreCase(o.getTitle());
     }
 
 }

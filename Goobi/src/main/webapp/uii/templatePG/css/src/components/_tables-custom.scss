@@ -8,6 +8,19 @@
   --width-table-col: 100px;
 }
 
+// workaround for overflowing tables that can't use fixed width
+.table-width {
+  hyphens: auto;
+  overflow-wrap: break-word;
+  width: 100%;
+  & td {
+    overflow-x: auto;
+  }
+  & th {
+    max-width: var(--width-table-col);
+  }
+}
+
 /* ========================================
  * BS OVERRIDES
  * ====================================== */
@@ -16,6 +29,7 @@
 .table {
   margin-bottom: 0;
   border-color: var(--clr-neutral-300);
+  max-width: 100%;
 }
 
 .table > :not(caption) > * > * {
@@ -42,6 +56,14 @@
   .box__content--padded tr {
     border-color: var(--clr-neutral-300);
   }
+  td {
+    &[title] {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
+    }
+  }
 
   thead {
     background-color: var(--clr-neutral-200);
@@ -49,6 +71,10 @@
       background-color: transparent;
       border: 0;
     }
+  }
+  &__vscroll {
+    max-height: 225px;
+    overflow-y: scroll;
   }
 
   .table-bordered-custom {
@@ -73,6 +99,7 @@
 
   th span {
     font-weight: bold;
+    padding: 0 0 0 0.5rem;
   }
 
   td {
@@ -261,7 +288,8 @@
 }
 
 .gw-table-fixed th button,
-.table-fixed th button {
+.table-fixed th button,
+.table-resizable th button {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -275,7 +303,6 @@
 .gw-table-fixed__actions,
 .table-fixed .table-fixed__actions {
   --width-table-col: 120px;
-  width: var(--width-table-col);
   min-width: var(--width-table-col);
   max-width: var(--width-table-col);
 }
@@ -299,5 +326,104 @@
  * Sorting column header
  * ====================================== */
 .column-header-sort{
-	width: 100%; 
+	width: 100%;
+}
+
+th {
+  vertical-align: middle;
+  --col-s: 50px;
+  --col-m: 80px;
+  --col-l: 110px;
+  --col-xl: 150px;
+  --col-xxl: 220px;
+  --col-xxxl: 300px;
+  &.header {
+    &__col-s {
+      width: var(--col-s);
+    }
+    &__col-m {
+      width: var(--col-m);
+    }
+    &__col-l {
+      width: var(--col-l);
+      padding: 0 10px;
+    }
+    &__col-xl {
+      width: var(--col-xl);
+    }
+    &__col-xxl {
+      width: var(--col-xxl);
+    }
+    &__col-xxxl {
+      width: var(--col-xxxl);
+    }
+    &__col-min-s {
+      min-width: var(--col-s);
+    }
+    &__col-min-m {
+      min-width: var(--col-m);
+    }
+    &__col-min-l {
+      min-width: var(--col-l);
+    }
+    &__col-min-xl {
+      min-width: var(--col-xl);
+    }
+    &__col-min-xxl {
+      min-width: var(--col-xxl);
+    }
+    &__col-min-xxxl {
+      min-width: var(--col-xxxl);
+    }
+    &__col-max-s {
+      max-width: var(--col-s);
+    }
+    &__col-max-m {
+      max-width: var(--col-m);
+    }
+    &__col-max-l {
+      max-width: var(--col-l);
+    }
+    &__col-max-xl {
+      max-width: var(--col-xl);
+    }
+    &__col-max-xxl {
+      max-width: var(--col-xxl);
+    }
+    &__col-max-xxxl {
+      max-width: var(--col-xxxl);
+    }
+  }
+}
+
+
+/* ========================================
+ * Resizable tables
+ * ====================================== */
+
+.table-resizable {
+  table-layout: auto;
+  margin-bottom: 1px;
+  width: 100%;
+  .resize-col {
+      position: relative;
+    }
+  .resize-handle {
+    cursor: ew-resize;
+    height: var(--handle-height);
+    position: absolute;
+    right: 0;
+    top: 0;
+    user-select: none;
+    width: 4px;
+    &.active,
+    &:hover {
+      border: 2px solid var(--clr-primary-400);
+    }
+  }
+}
+
+// body style to display cursor as resize regardless of position
+.table-resizing {
+  cursor: ew-resize;
 }

@@ -1,9 +1,14 @@
 .progress__container {
   display: flex;
-  max-width: 240px;
+  height: 15px;
   justify-content: center;
   margin-top: 0.7rem;
 }
+
+.progress-bar {
+  width: var(--progress);
+}
+
 /* These styles are taken from intranda.css
  */
 

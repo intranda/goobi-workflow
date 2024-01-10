@@ -31,3 +31,6 @@
 @use "pages/process-all";
 @use "pages/process-new";
 @use "pages/process-edit";
+
+// plugins
+@use "plugins/dashboard";

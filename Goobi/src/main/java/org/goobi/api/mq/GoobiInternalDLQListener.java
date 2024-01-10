@@ -41,6 +41,8 @@ import org.apache.activemq.ActiveMQPrefetchPolicy;
 import org.apache.activemq.RedeliveryPolicy;
 import org.goobi.api.mq.MqStatusMessage.MessageStatus;
 
+import com.google.gson.Gson;
+
 import de.sub.goobi.persistence.managers.MQResultManager;
 import lombok.extern.log4j.Log4j2;
 
@@ -50,6 +52,7 @@ public class GoobiInternalDLQListener {
     private Thread thread;
     private ActiveMQConnection conn;
     private volatile boolean shouldStop = false;
+    private Gson gson = new Gson();
 
     public void register(String username, String password, QueueType queue) throws JMSException {
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory("vm://localhost");
@@ -106,8 +109,10 @@ public class GoobiInternalDLQListener {
                     bm.readBytes(bytes);
                     origMessage = new String(bytes);
                 }
-                MqStatusMessage statusMessage =
-                        new MqStatusMessage(id, new Date(), MessageStatus.ERROR_DLQ, "Message failed after retries.", origMessage);
+
+                TaskTicket t = gson.fromJson(origMessage, TaskTicket.class);
+                MqStatusMessage statusMessage = new MqStatusMessage(id, new Date(), MessageStatus.ERROR_DLQ, "Message failed after retries.",
+                        origMessage, 0, t.getTaskType(), t.getProcessId(), t.getStepId(), t.getStepName());
                 MQResultManager.insertResult(statusMessage);
             }
         } catch (JMSException e) {

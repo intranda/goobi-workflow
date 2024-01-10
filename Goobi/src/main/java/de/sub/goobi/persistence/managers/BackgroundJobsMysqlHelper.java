@@ -241,13 +241,11 @@ class BackgroundJobsMysqlHelper implements Serializable {
     public static void clearHistoryOlderThan30Days() throws SQLException {
         LocalDateTime now = LocalDateTime.now();
         String clearBackgroundJobs = "DELETE FROM background_job WHERE lastAltered < ? ";
-        String clearMessageHistory = "DELETE FROM mq_results WHERE time < ? ";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             run.execute(connection, clearBackgroundJobs, Timestamp.valueOf(now.minusDays(30)));
-            run.execute(connection, clearMessageHistory, Timestamp.valueOf(now.minusDays(30)));
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

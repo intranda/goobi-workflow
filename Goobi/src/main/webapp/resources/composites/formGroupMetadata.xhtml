@@ -172,7 +172,7 @@
                                         <h:selectOneMenu
                                             id="selectNoDante"
                                             styleClass="focusable"
-                                            pt:aria-label="#{msgs.erscheinungsort}"
+                                            pt:aria-label="#{msgs.mets_authority_database}"
                                             disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
                                             value="#{cc.attrs.metadata.normDatabase}"
                                             readonly="#{Metadaten.nurLesenModus}">
@@ -192,7 +192,7 @@
                                     style="padding-left: 0px;">
                                     <h:inputText
                                         id="inputTextNoDante"
-                                        pt:aria-label="#{msgs.erscheinungsort}"
+                                        pt:aria-label="#{msgs.mets_authority_database}"
                                         styleClass="form-control"
                                         disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
                                         value="#{cc.attrs.metadata.normdataValue}"

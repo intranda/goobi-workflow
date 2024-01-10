@@ -506,6 +506,35 @@
                                         </div>
                                     </div>
                                 </h:panelGroup>
+                                
+                                <!-- textarea -->
+                                <h:panelGroup
+                                    rendered="#{(myprocess_item.type.name == 'textarea')}">
+
+                                    <div class="row">
+                                        <div class="col-12 col-md-3">
+                                            <h:outputLabel
+                                                for="textareaValue"
+                                                styleClass="control-label"
+                                                value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <x:inputTextarea
+                                                id="textareaValue"
+                                                rows="7"
+                                                forceId="true"
+                                                styleClass="form-control"
+                                                value="#{myprocess_item.value}"
+                                                readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                            </x:inputTextarea>
+                                            <h:message
+                                                for="textareaValue"
+                                                showDetail="true"
+                                                styleClass="help-inline text-danger" />
+                                            <intranda:formHelp content="#{msgs.helpPropertyValue}" />
+                                        </div>
+                                    </div>
+                                </h:panelGroup>
 
                                 <!-- numbers only -->
                                 <h:panelGroup
