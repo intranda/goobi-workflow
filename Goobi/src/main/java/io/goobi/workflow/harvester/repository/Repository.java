@@ -121,6 +121,13 @@ public class Repository implements Serializable, DatabaseObject {
     private String processTemplateName;
     private String fileformat;
 
+    // harvest only first page, if set to true. Don't follow resumptionToken
+    private boolean testMode = false;
+
+    // if set, use this as values for from and until. Otherwise use lastHarvest timestamp
+    private String startDate;
+    private String endDate;
+
     private static final Namespace oaiNamespace = Namespace.getNamespace("oai", "http://www.openarchives.org/OAI/2.0/");
 
     private static DateTimeFormatter formatterISO8601DateTimeMS = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -303,16 +310,28 @@ public class Repository implements Serializable, DatabaseObject {
         if (StringUtils.isNotBlank(set)) {
             oai.append("&set=" + set);
         }
-        if (lastHarvest != null) {
-            MutableDateTime timestamp = formatterISO8601DateTimeMS.parseMutableDateTime(lastHarvest.toString());
-            oai.append("&from=" + formatterISO8601DateTimeFullWithTimeZone.withZoneUTC().print(timestamp));
-        }
-        if (getDelay() > 0) {
+        if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
+            oai.append("&from=" + startDate);
+            oai.append("&until=" + endDate);
+        } else {
+            if (lastHarvest == null) {
+                // first harvest
+                oai.append("&from=1970-01-01T00:00:00Z");
+            } else {
+                MutableDateTime from = formatterISO8601DateTimeMS.parseMutableDateTime(lastHarvest.toString());
+                if (getDelay() > 0) {
+                    from.addDays(-getDelay());
+                }
+                oai.append("&from=" + formatterISO8601DateTimeFullWithTimeZone.withZoneUTC().print(from));
+            }
             MutableDateTime now = new MutableDateTime();
-            now.addDays(-getDelay());
+            if (getDelay() > 0) {
+                now.addDays(-getDelay());
+            }
             String untilDateTime = formatterISO8601DateTimeFullWithTimeZone.print(now);
             oai.append("&until=" + untilDateTime);
         }
+
         HarvesterRepositoryManager.updateLastHarvestingTime(jobId, new Timestamp(new Date().getTime()));
         return getOaiRecords(oai.toString(), jobId);
     }
@@ -348,7 +367,7 @@ public class Repository implements Serializable, DatabaseObject {
                     return 0;
                 }
                 Element resumptionToken = listRecords.getChild("resumptionToken", oaiNamespace);
-                if (resumptionToken == null) {
+                if (resumptionToken == null || testMode) {
                     tokenId = null;
                 } else {
                     tokenId = resumptionToken.getText();

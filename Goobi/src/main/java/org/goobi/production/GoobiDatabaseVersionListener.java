@@ -126,6 +126,17 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
         }
 
+        if (!DatabaseVersion.checkIfColumnExists("repository", "testmode")) {
+            try {
+                DatabaseVersion.runSql("alter table repository add column testmode tinyint(1);");
+                DatabaseVersion.runSql("alter table repository add column start_date varchar(255) DEFAULT NULL;");
+                DatabaseVersion.runSql("alter table repository add column end_date varchar(255) DEFAULT NULL;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+
+        }
+
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
     }
