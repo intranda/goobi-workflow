@@ -19,28 +19,14 @@
  */
 const constrainWidth = function constrainWidth(col, newWidth) {
     let constrainedWidth;
-    const minWidth = getComputedStyle(col).getPropertyValue('min-width');
     const maxWidth = getComputedStyle(col).getPropertyValue('max-width');
+    let minWidth = getComputedStyle(col).getPropertyValue('min-width');
 
-    if (minWidth !== 'none') {
-        if (minWidth.endsWith('%')) {
-            constrainedWidth = Math.max(parseFloat(minWidth), newWidth);
-        } else if (minWidth.endsWith('px')) {
-            const table = col.closest('.table-resizable');
-            const tableWidth = table.offsetWidth;
-            const relMinWidth = (parseFloat(minWidth) / tableWidth) * 100;
-            constrainedWidth = Math.max(relMinWidth.toFixed(2), newWidth);
-        }
-    }
+    minWidth = minWidth === "0px" ? "60px" : minWidth;
+    constrainedWidth = Math.max(parseInt(minWidth, 10), newWidth)
+
     if (maxWidth !== 'none') {
-        if (maxWidth.endsWith('%')) {
-            constrainedWidth = Math.min(parseFloat(maxWidth), newWidth);
-        } else if (maxWidth.endsWith('px')) {
-            const table = col.closest('.table-resizable');
-            const tableWidth = table.offsetWidth;
-            const relMaxWidth = (parseFloat(maxWidth) / tableWidth) * 100;
-            constrainedWidth = Math.min(relMaxWidth.toFixed(2), newWidth);
-        }
+        constrainedWidth = Math.min(parseInt(maxWidth, 10), newWidth)
     }
 
     return constrainedWidth;
@@ -126,10 +112,9 @@ const setRelWidth = function setRelativeWidth(col) {
  * @param {number} height The height of the table
  * @returns {HTMLDivElement}
  */
-const createHandle = function createHandle(height) {
+const createHandle = function createHandle() {
     const div = document.createElement('div');
     div.classList.add('resize-handle');
-    div.style.setProperty('--handle-height', `${height}px`);
     return div;
 };
 
@@ -147,10 +132,48 @@ const setListeners = function setListeners(tableWidth, handle) {
     let nextColWidth;
     let nextColNewWidth;
     let diffX;
+    let totalWidth;
+
+    handle.addEventListener('mouseover', () => {
+        col = e.target.parentElement;
+        resizeHandles(col);
+    });
+
+    handle.addEventListener('click', (e) => {
+        if (e.detail === 2) {
+            col = e.target.parentElement;
+            colWidth = col.offsetWidth;
+            nextCol = col.nextElementSibling;
+            nextColWidth = nextCol.offsetWidth;
+            totalWidth = colWidth + nextColWidth;
+
+            newWidth = constrainWidth(col, 60);
+            nextColNewWidth = totalWidth - newWidth;
+            if (totalWidth === (newWidth + nextColNewWidth)) {
+                newWidth = (newWidth / tableWidth) * 100;
+                nextColNewWidth = (nextColNewWidth / tableWidth) * 100;
+
+                col.style.width = `${newWidth.toFixed(2)}%`;
+                nextCol.style.width = `${nextColNewWidth.toFixed(2)}%`;
+            }
+
+            col = undefined;
+            colWidth = undefined;
+            newWidth = undefined;
+            nextCol = undefined;
+            nextColWidth = undefined;
+            nextColNewWidth = undefined;
+            totalWidth = undefined;
+        }
+    });
+
     handle.addEventListener('mousedown', (e) => {
         col = e.target.parentElement;
         pageX = e.pageX;
         colWidth = col.offsetWidth;
+        nextCol = col.nextElementSibling;
+        nextColWidth = nextCol.offsetWidth;
+        totalWidth = colWidth + nextColWidth;
     });
 
     document.addEventListener('mousemove', (e) => {
@@ -159,31 +182,25 @@ const setListeners = function setListeners(tableWidth, handle) {
             if (diffX === 0) {
                 return;
             }
-            nextCol = col.nextElementSibling;
 
             handle.classList.add('active');
             resizeHandles(col);
             // make the cursor style global so that it stays as resize handle regardless of position
             document.getElementsByTagName('body')[0].classList.add('table-resizing');
 
-            nextColWidth = nextCol.offsetWidth;
+            nextColNewWidth = nextColWidth - diffX;
+            nextColNewWidth = constrainWidth(nextCol, nextColNewWidth);
 
-            if (diffX > 0) {
-                nextColNewWidth = ((nextColWidth - diffX) / tableWidth) * 100;
-                nextColNewWidth = constrainWidth(nextCol, nextColNewWidth);
+            newWidth = colWidth + diffX;
+            newWidth = constrainWidth(col, newWidth);
 
-                newWidth = ((colWidth + (nextColWidth - nextColNewWidth)) / tableWidth) * 100;
-                newWidth = constrainWidth(col, newWidth);
-            } else if (diffX < 0) {
-                newWidth = ((colWidth + diffX) / tableWidth) * 100;
-                newWidth = constrainWidth(col, newWidth);
+            if (totalWidth === (newWidth + nextColNewWidth)) {
+                newWidth = (newWidth / tableWidth) * 100;
+                nextColNewWidth = (nextColNewWidth / tableWidth) * 100;
 
-                nextColNewWidth = ((nextColWidth + (colWidth - newWidth)) / tableWidth) * 100;
-                nextColNewWidth = constrainWidth(nextCol, nextColNewWidth);
+                col.style.width = `${newWidth.toFixed(2)}%`;
+                nextCol.style.width = `${nextColNewWidth.toFixed(2)}%`;
             }
-
-            col.style.width = `${newWidth.toFixed(2)}%`;
-            nextCol.style.width = `${nextColNewWidth.toFixed(2)}%`;
         }
     });
 
@@ -201,6 +218,7 @@ const setListeners = function setListeners(tableWidth, handle) {
         nextColWidth = undefined;
         nextColNewWidth = undefined;
         diffX = undefined;
+        totalWidth = undefined;
     });
 };
 
@@ -215,7 +233,8 @@ const initialize = function initializeResizeTable(table) {
     [...cols].forEach((col) => {
         const column = col;
         const tableWidth = table.offsetWidth;
-        const handle = createHandle(table.offsetHeight);
+        const handle = createHandle();
+        resizeHandles(col);
         setRelWidth(col);
         column.appendChild(handle);
         column.classList.add('resize-col');
@@ -240,7 +259,7 @@ const gwResizableTable = (() => {
     function init() {
         setup();
     }
-    function reload(data) {
+    function reload(data = 'none') {
         if (data.status === 'success') {
             setup();
         }

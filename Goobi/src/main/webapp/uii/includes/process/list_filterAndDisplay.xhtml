@@ -16,7 +16,7 @@
 		<script type="text/javascript">
         	function switchExpanded(id){
         		console.log("called by: "+id);
-				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				var x = document.getElementById(id).getAttribute("aria-expanded");
 				console.log(x)
 				if (x == "true"){
 					x = "false"
@@ -34,7 +34,7 @@
                 title="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']?msgs.process_displayAsTable:msgs.process_displayAsGrid}"
                 pt:aria-label="#{msgs.process_displayAsGrid}"
                 jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'}">
-                <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['gridview']?'fa-align-justify':'fa-th-large'}"></i>
+                <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['gridview']?'fa-align-justify':'fa-th-large'}" />
                 <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['gridview']}" />
@@ -58,8 +58,8 @@
                         data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        onclick="switchExpanded(this.id)"> 
-                        <i class="fa fa-columns margin-right-5" /> <span class="caret"></span>
+                        onclick="switchExpanded(this.id)">
+                        <span class="fa fa-columns margin-right-5" /> <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
@@ -80,7 +80,7 @@
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showProcessId"
                                 class="dropdown-item">
-                                <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.id}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
@@ -92,7 +92,7 @@
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showProcessThumbnail"
                                 class="dropdown-item">
-                                <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.thumbnail}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}"
@@ -131,7 +131,7 @@
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showBatch"
                                 class="dropdown-item">
-                                <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.batch}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}"
@@ -143,7 +143,7 @@
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showProcessDate"
                                 class="dropdown-item">
-                                <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.vorgangsdatum}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
@@ -155,7 +155,7 @@
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showProcessLockings"
                                 class="dropdown-item">
-                                <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.sperrungen}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
@@ -167,28 +167,28 @@
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showSwapping"
                                 class="dropdown-item">
-                                <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.ausgelagerung}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" />
                             </button>
                         </li>
-                        
+
                         <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
-                            <!-- show number of images --> 
+                            <!-- show number of images -->
                             <button
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showNumberOfImages"
                                 class="dropdown-item">
-                                <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.NumberOfImages}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}" />
                             </button>
                         </li>
-                        
+
                     </ul>
                 </div>
                 </div>
@@ -208,7 +208,7 @@
                         data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        onclick="switchExpanded(this.id)"> <i class="fa fa-wrench margin-right-5" /> <span class="caret"></span>
+                        onclick="switchExpanded(this.id)"> <span class="fa fa-wrench margin-right-5" /> <span class="caret"></span>
                     </button>
 
                     <!-- show or hide depending on filter -->
@@ -219,7 +219,7 @@
                                     jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                     jsf:id="showCorrectionTasks"
                                     class="dropdown-item">
-                                    <i class="fa #{ProzessverwaltungForm.showClosedProcesses?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                    <span class="fa #{ProzessverwaltungForm.showClosedProcesses?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                     <h:outputText value="#{msgs.showClosedProcesses}" />
                                     <x:updateActionListener
                                         property="#{ProzessverwaltungForm.showClosedProcesses}"
@@ -233,7 +233,7 @@
                                     jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                     jsf:id="showAutomaticTasks"
                                     class="dropdown-item">
-                                    <i class="fa #{ProzessverwaltungForm.showArchivedProjects?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                    <span class="fa #{ProzessverwaltungForm.showArchivedProjects?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                     <h:outputText value="#{msgs.showArchivedProjects}" />
                                     <x:updateActionListener
                                         property="#{ProzessverwaltungForm.showArchivedProjects}"
@@ -249,8 +249,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-
-
-
-

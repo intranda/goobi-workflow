@@ -77,6 +77,9 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
                         rs.getString("script_path"), rs.getTimestamp("last_harvest"), rs.getInt("freq"), rs.getInt("delay"), rs.getBoolean("enabled"),
                         rs.getBoolean("goobi_import"), rs.getString("project_name"), rs.getString("template_name"), rs.getString("fileformat"));
                 r.setRepositoryType(rs.getString("type"));
+                r.setTestMode(rs.getBoolean("testmode"));
+                r.setStartDate(rs.getString("start_date"));
+                r.setEndDate(rs.getString("end_date"));
 
                 String query = "SELECT name, value FROM repository_parameter WHERE repository_id = ?";
                 Connection connection = null;
@@ -141,23 +144,26 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
                 StringBuilder sql = new StringBuilder();
                 sql.append("INSERT INTO repository ");
                 sql.append("(name, base_url, export_folder, script_path, last_harvest, freq, delay, enabled, type, ");
-                sql.append("goobi_import, project_name, template_name, fileformat) ");
-                sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                sql.append("goobi_import, project_name, template_name, fileformat, testmode, start_date, end_date) ");
+                sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
                 Integer id = runner.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, repository.getName(),
                         repository.getUrl(), repository.getExportFolderPath(), repository.getScriptPath(), repository.getLastHarvest(),
                         repository.getFrequency(), repository.getDelay(), repository.isEnabled(), repository.getRepositoryType(),
                         repository.isGoobiImport(), repository.getImportProjectName(), repository.getProcessTemplateName(),
-                        repository.getFileformat());
+                        repository.getFileformat(), repository.isTestMode(), repository.getStartDate(), repository.getEndDate());
                 repository.setId(id);
             } else {
                 StringBuilder sql = new StringBuilder();
                 sql.append("UPDATE repository SET name = ?, base_url = ?, export_folder = ?, script_path = ?, last_harvest = ?, ");
                 sql.append("freq = ?, delay = ?, enabled = ?, type = ?, goobi_import = ?, project_name = ?, ");
-                sql.append("template_name = ?, fileformat = ? WHERE id = ? ");
+                sql.append("template_name = ?, fileformat = ?, testmode = ?, start_date = ?, end_date = ? WHERE id = ? ");
                 runner.update(connection, sql.toString(), repository.getName(), repository.getUrl(), repository.getExportFolderPath(),
                         repository.getScriptPath(), repository.getLastHarvest(), repository.getFrequency(), repository.getDelay(),
                         repository.isEnabled(), repository.getRepositoryType(), repository.isGoobiImport(), repository.getImportProjectName(),
-                        repository.getProcessTemplateName(), repository.getFileformat(), repository.getId());
+                        repository.getProcessTemplateName(), repository.getFileformat(), repository.isTestMode(), repository.getStartDate(),
+                        repository.getEndDate(), repository.getId());
+
             }
             if (!repository.getParameter().isEmpty()) {
                 String deletion = "delete from repository_parameter where repository_id = ?";
@@ -240,8 +246,7 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
             for (Record rec : recordList) {
                 String subquery = rec.getSubquery() == null ? "" : " AND subquery='" + rec.getSubquery() + "'";
                 // Check whether the record has previously been harvested
-                int i = run.query(connection, sqlCheck + subquery, MySQLHelper.resultSetToIntegerHandler,
-                        MySQLHelper.escapeSql(rec.getIdentifier()));
+                int i = run.query(connection, sqlCheck + subquery, MySQLHelper.resultSetToIntegerHandler, MySQLHelper.escapeSql(rec.getIdentifier()));
                 if (i == 0) {
                     // Add record to DB
                     StringBuilder sb = new StringBuilder();
@@ -460,8 +465,7 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             String sql = "INSERT INTO export_history (record_id,record_identifier,record_title,repository_id,status,message) VALUES (?,?,?,?,?,?)";
             run.update(connection, sql, hist.getRecordId(), MySQLHelper.escapeSql(hist.getRecordIdentifier()),
-                    MySQLHelper.escapeSql(hist.getRecordTitle()), hist.getRepositoryId(), hist.getStatus(),
-                    MySQLHelper.escapeSql(hist.getMessage()));
+                    MySQLHelper.escapeSql(hist.getRecordTitle()), hist.getRepositoryId(), hist.getStatus(), MySQLHelper.escapeSql(hist.getMessage()));
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

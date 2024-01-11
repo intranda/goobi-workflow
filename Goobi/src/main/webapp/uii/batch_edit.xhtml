@@ -109,7 +109,7 @@
                                     class="btn btn-success"
                                     jsf:id="absenden"
                                     jsf:action="#{BatchForm.batchHelper.saveBatchDetails}">
-                                    <i class="fa fa-save"></i>
+                                    <span class="fa fa-save" />
                                     <span>
                                         <h:outputText value="#{msgs.speichern}" />
                                     </span>
@@ -281,10 +281,10 @@
                                                         </h:outputLink>
                                                         <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
                                                             <h:panelGroup rendered="#{proc.readValue eq 'true'}">
-                                                                <i class="fa fa-check-square-o fa-lg"></i>
+                                                                <span class="fa fa-check-square-o fa-lg" />
                                                             </h:panelGroup>
                                                             <h:panelGroup rendered="#{proc.readValue ne 'true'}">
-                                                                <i class="fa fa-square-o fa-lg"></i>
+                                                                <span class="fa fa-square-o fa-lg" />
                                                             </h:panelGroup>
                                                         </h:panelGroup>
                                                     </td>
@@ -364,10 +364,10 @@
                                                         </h:outputLink>
                                                         <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
                                                             <h:panelGroup rendered="#{process_item.readValue eq 'true'}">
-                                                                <i class="fa fa-check-square-o fa-lg"></i>
+                                                                <span class="fa fa-check-square-o fa-lg" />
                                                             </h:panelGroup>
                                                             <h:panelGroup rendered="#{process_item.readValue ne 'true'}">
-                                                                <i class="fa fa-square-o fa-lg"></i>
+                                                                <span class="fa fa-square-o fa-lg" />
                                                             </h:panelGroup>
                                                         </h:panelGroup>
                                                     </td>
@@ -500,6 +500,35 @@
                                             </x:inputText>
                                             <h:message
                                                 for="value"
+                                                showDetail="true"
+                                                styleClass="help-inline text-danger" />
+                                            <intranda:formHelp content="#{msgs.helpPropertyValue}" />
+                                        </div>
+                                    </div>
+                                </h:panelGroup>
+
+                                <!-- textarea -->
+                                <h:panelGroup
+                                    rendered="#{(myprocess_item.type.name == 'textarea')}">
+
+                                    <div class="row">
+                                        <div class="col-12 col-md-3">
+                                            <h:outputLabel
+                                                for="textareaValue"
+                                                styleClass="control-label"
+                                                value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <x:inputTextarea
+                                                id="textareaValue"
+                                                rows="7"
+                                                forceId="true"
+                                                styleClass="form-control"
+                                                value="#{myprocess_item.value}"
+                                                readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                            </x:inputTextarea>
+                                            <h:message
+                                                for="textareaValue"
                                                 showDetail="true"
                                                 styleClass="help-inline text-danger" />
                                             <intranda:formHelp content="#{msgs.helpPropertyValue}" />
@@ -690,7 +719,7 @@
                                         jsf:id="saveAll"
                                         class="btn btn-success submitOnEnter"
                                         jsf:action="#{BatchForm.batchHelper.saveCurrentPropertyForAll}">
-                                        <i class="fa fa-save"></i>
+                                        <span class="fa fa-save" />
                                         <span>
                                             <h:outputText value="#{msgs.applyToAllProcesses}" />
                                         </span>
@@ -703,7 +732,7 @@
                                         jsf:id="saveCurrent"
                                         class="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block"
                                         jsf:action="#{BatchForm.batchHelper.saveCurrentProperty}">
-                                        <i class="fa fa-save"></i>
+                                        <span class="fa fa-save" />
                                         <span>
                                             <h:outputText value="#{msgs.applyToThisProcess}" />
                                         </span>

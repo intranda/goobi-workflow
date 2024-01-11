@@ -92,7 +92,7 @@
 										<x:updateActionListener
 											property="#{ProzessverwaltungForm.modusBearbeiten}"
 											value="eigenschaft" />
-										<i class="fa fa-plus"></i>
+										<span class="fa fa-plus" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -105,7 +105,7 @@
 							<table
 								class="table table-hover table-bordered"
 								id="propertyTable">
-								
+
 								<!-- LIST OF CONTAINERS -->
 								<x:dataList
 									var="container"
@@ -113,7 +113,7 @@
 									id="container"
 									rowCountVar="rowCount"
 									rowIndexVar="rowIndex">
-									
+
 									<!-- LIST OF PROPERTIES IN CONTAINER 0 -->
 									<x:dataList
 										var="proc"
@@ -158,10 +158,10 @@
 													</h:outputLink>
 													<h:panelGroup rendered="#{proc.type.name == 'boolean'}">
 														<h:panelGroup rendered="#{proc.readValue eq 'true'}">
-															<i class="fa fa-check-square-o fa-lg"></i>
+															<span class="fa fa-check-square-o fa-lg" />
 														</h:panelGroup>
 														<h:panelGroup rendered="#{proc.readValue ne 'true'}">
-															<i class="fa fa-square-o fa-lg"></i>
+															<span class="fa fa-square-o fa-lg" />
 														</h:panelGroup>
 													</h:panelGroup>
 												</td>
@@ -175,7 +175,7 @@
 															jsf:id="editProperty"
 															aria-label="#{msgs.bearbeiten}"
 															jsf:rendered="#{proc.type.name != 'metadata'}">
-															<i class="fa fa-pencil"></i>
+															<span class="fa fa-pencil" />
 															<f:passThroughAttribute
 																name="data-toggle"
 																value="tooltip" />
@@ -214,7 +214,7 @@
 										</h:panelGroup>
 									</x:dataList>
 									<!-- // LIST OF PROPERTIES IN CONTAINER 0 -->
-									
+
 									<!-- BLANK TABLE ROW -->
 									<h:panelGroup
 										rendered="#{rowIndex lt rowCount and rowIndex != 0}">
@@ -274,11 +274,11 @@
 														rendered="#{process_item.type.name == 'boolean'}">
 														<h:panelGroup
 															rendered="#{process_item.readValue eq 'true'}">
-															<i class="fa fa-check-square-o fa-lg"></i>
+															<span class="fa fa-check-square-o fa-lg" />
 														</h:panelGroup>
 														<h:panelGroup
 															rendered="#{process_item.readValue ne 'true'}">
-															<i class="fa fa-square-o fa-lg"></i>
+															<span class="fa fa-square-o fa-lg" />
 														</h:panelGroup>
 													</h:panelGroup>
 												</td>
@@ -315,7 +315,7 @@
 															jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}"
 															jsf:action="#{ProzessverwaltungForm.duplicateContainer}"
 															title="#{msgs.duplicate}">
-															<i class="fa fa-clipboard"></i>
+															<span class="fa fa-clipboard" />
 															<f:passThroughAttribute
 																name="data-toggle"
 																value="tooltip" />
@@ -329,8 +329,8 @@
 											</tr>
 										</h:panelGroup>
 									</x:dataList>
-									<!-- // LIST OF PROPERTIES IN CONTAINER NOT 0 -->	
-									
+									<!-- // LIST OF PROPERTIES IN CONTAINER NOT 0 -->
+
 								</x:dataList>
 							</table>
 							<!-- // TABLE OF EXISTING PROPERTIES -->
@@ -360,11 +360,11 @@
 							boxPadding="false"
 							title="#{msgs.eigenschaft}"
 							icon="fa-edit">
-						
+
 							<x:dataList
 								var="myprocess_item"
 								value="#{ProzessverwaltungForm.containerProperties}">
-								
+
 								<!-- NEW AS TEXT -->
 								<h:panelGroup>
 									<h:panelGroup rendered="#{myprocess_item.isNew}">
@@ -378,14 +378,14 @@
 									</h:panelGroup>
 								</h:panelGroup>
 								<!-- // NEW AS TEXT -->
-	
+
 								<!-- VALUE AS TEXT -->
 								<h:panelGroup styleClass="row"
 									rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{myprocess_item.name}" 
+										<intranda:formLabel label="#{myprocess_item.name}"
 										labelFor="value" labelRequired="false"/>
-									</div>						
+									</div>
 									<div class="col-12 col-md-9">
 										<h:inputText
 											id="value"
@@ -399,14 +399,36 @@
 									</div>
 								</h:panelGroup>
 								<!-- // VALUE AS TEXT -->
-	
+
+								<!-- VALUE AS TEXTAREA -->
+								<h:panelGroup styleClass="row"
+									rendered="#{(myprocess_item.type.name == 'textarea')}">
+									<div class="col-12 col-md-3">
+										<intranda:formLabel label="#{myprocess_item.name}"
+										labelFor="textareaValue" labelRequired="false"/>
+									</div>
+									<div class="col-12 col-md-9">
+										<h:inputTextarea
+											id="textareaValue"
+											rows="7"
+											forceId="true"
+											styleClass="form-control form__input"
+											value="#{myprocess_item.value}"
+											required="true"
+											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+										</h:inputTextarea>
+										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="textareaValue" />
+									</div>
+								</h:panelGroup>
+								<!-- // VALUE AS TEXTAREA -->
+
 								<!-- VALUE AS NUMBER -->
 								<h:panelGroup styleClass="row"
 									rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{myprocess_item.name}" 
+										<intranda:formLabel label="#{myprocess_item.name}"
 										labelFor="number" labelRequired="false"/>
-									</div>						
+									</div>
 									<div class="col-12 col-md-9">
 										<x:inputText
 											id="number"
@@ -420,14 +442,14 @@
 									</div>
 								</h:panelGroup>
 								<!-- // VALUE AS NUMBER -->
-	
+
 								<!-- VALUE AS DROPDOQWN -->
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'list')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{myprocess_item.name}" 
+										<intranda:formLabel label="#{myprocess_item.name}"
 										labelFor="select" labelRequired="false"/>
-									</div>						
+									</div>
 									<div class="col-12 col-md-9">
 										<h:selectOneMenu
 											id="select"
@@ -444,14 +466,14 @@
 									</div>
 								</h:panelGroup>
 								<!-- // VALUE AS DROPDOQWN -->
-								
+
 								<!-- VALUE AS MULTI SELECT -->
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{myprocess_item.name}" 
+										<intranda:formLabel label="#{myprocess_item.name}"
 										labelFor="selectmany"  labelRequired="false"/>
-									</div>						
+									</div>
 									<div class="col-12 col-md-9">
 										<h:selectManyListbox
 											id="selectmany"
@@ -469,14 +491,14 @@
 									</div>
 								</h:panelGroup>
 								<!-- VALUE AS MULTI SELECT -->
-	
+
 								<!-- VALUE AS BOOLEAN -->
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'boolean')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{myprocess_item.name}" 
+										<intranda:formLabel label="#{myprocess_item.name}"
 										labelFor="boolean"  labelRequired="false"/>
-									</div>						
+									</div>
 									<div class="col-12 col-md-9">
 										<h:selectBooleanCheckbox
 											id="boolean"
@@ -487,32 +509,32 @@
 									</div>
 								</h:panelGroup>
 								<!-- // VALUE AS BOOLEAN -->
-	
+
 								<!-- VALUE AS DATE -->
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'date')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{myprocess_item.name}" 
+										<intranda:formLabel label="#{myprocess_item.name}"
 										labelFor="date"  labelRequired="false"/>
-									</div>						
+									</div>
 									<div class="col-12 col-md-9">
 										<p:calendar
 											id="date"
 											value="#{myprocess_item.dateValue}"
-											locale="#{SpracheForm.locale}" 
+											locale="#{SpracheForm.locale}"
 											readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"/>
 										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="date" />
 									</div>
 								</h:panelGroup>
 								<!-- // VALUE AS DATE -->
-								
+
 								<!-- VALUE AS HTML -->
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'html')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{myprocess_item.name}" 
+										<intranda:formLabel label="#{myprocess_item.name}"
 										labelFor="html" labelRequired="false"/>
-									</div>						
+									</div>
 									<div class="col-12 col-md-9">
 										<x:inputTextarea
 											id="html"
@@ -524,11 +546,11 @@
 									</div>
 								</h:panelGroup>
 								<!-- // VALUE AS HTML -->
-								
+
 							</x:dataList>
-									
+
 							<div class="box__actions">
-								
+
 								<!-- Cancel -->
 								<button
 									jsf:id="cancel"
@@ -542,13 +564,13 @@
 										property="#{ProzessverwaltungForm.modusBearbeiten}"
 										value="" />
 								</button>
-	
+
 								<!-- Save -->
 								<button
 									jsf:id="save"
 									class="btn btn-success submitOnEnter"
 									jsf:action="#{ProzessverwaltungForm.saveCurrentProperty}">
-									<i class="fa fa-save"></i>
+									<span class="fa fa-save" />
 									<x:updateActionListener
 										property="#{ProzessverwaltungForm.modusBearbeiten}"
 										value="" />
@@ -556,7 +578,7 @@
 										<h:outputText value="#{msgs.speichern}" />
 									</span>
 								</button>
-	
+
 								<!-- Delete -->
 								<button
 									jsf:id="delete"
@@ -566,14 +588,14 @@
 									<x:updateActionListener
 										property="#{ProzessverwaltungForm.modusBearbeiten}"
 										value="" />
-									<i class="fa fa-trash-o" />
+									<span class="fa fa-trash-o" />
 									<span>
 										<h:outputText value="#{msgs.loeschen}" />
 									</span>
 								</button>
-	
+
 							</div>
-							
+
 						</intranda:box>
 					</div>
 				</div>
@@ -584,5 +606,3 @@
 
 	</composite:implementation>
 </ui:composition>
-
-

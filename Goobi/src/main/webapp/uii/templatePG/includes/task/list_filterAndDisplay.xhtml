@@ -43,7 +43,7 @@
 						aria-haspopup="true"
 						aria-expanded="false"
 					>
-						<i class="fa fa-columns" />
+						<span class="fa fa-columns" />
 					</button>
 
 					<ul class="dropdown-menu">
@@ -53,7 +53,7 @@
 								jsf:id="processId"
 								jsf:action="#{NavigationForm.Reload}"
 								class="dropdown-item">
-								<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+								<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 								<span>
 									<h:outputText value="#{msgs.id}" />
 								</span>
@@ -68,7 +68,7 @@
 							jsf:id="batchId"
 							jsf:action="#{NavigationForm.Reload}"
 							class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<span>
 								<h:outputText value="#{msgs.batch}" />
 							</span>
@@ -78,7 +78,7 @@
 					<!-- <li>
 						#### modules ######
 						<button jsf:id="modules" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['modules']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['modules']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.module}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['modules']}" />
 						</button>
@@ -86,7 +86,7 @@
 					<li>
 						<!-- process date -->
 						<button jsf:id="processDate" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<span>
 								<h:outputText value="#{msgs.vorgangsdatum}" />
 							</span>
@@ -96,7 +96,7 @@
 					<li>
 						<!-- lockings -->
 						<button jsf:id="lockings" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<span>
 								<h:outputText value="#{msgs.sperrungen}" />
 							</span>
@@ -109,7 +109,7 @@
 							jsf:action="#{NavigationForm.Reload}"
 							jsf:id="showNumberOfImages"
 							class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<span>
 								<h:outputText value="#{msgs.NumberOfImages}" />
 							</span>
@@ -126,7 +126,7 @@
 		<div class="btn-group" data-bs-toggle="tooltip" title="#{msgs.anzeigeAnpassen}">
       <div class="dropdown">
 				<button id="anzeigeAnpassenDropdown" type="button" aria-haspopup="true" aria-expanded="false" aria-label="#{msgs.anzeigeAnpassen}" class="btn btn-blank dropdown-toggle" data-bs-toggle="dropdown">
-					<i class="fa fa-wrench" />
+					<span class="fa fa-wrench" />
 				</button>
 
 				<!-- show or hide depending on filter -->
@@ -134,7 +134,7 @@
 					<li>
 						<!-- automatic tasks -->
 						<button jsf:id="showAutomaticTasks" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.showAutomaticTasks?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.showAutomaticTasks?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<span>
 							<h:outputText value="#{msgs.showAutomaticTasks}" />
 							</span>
@@ -144,7 +144,7 @@
 					<li>
 						<!-- correction tasks -->
 						<button jsf:id="hideCorrectionTasks" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.hideCorrectionTasks?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.hideCorrectionTasks?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<span>
 							<h:outputText value="#{msgs.hideCorrectionTasks}" />
 							</span>
@@ -154,7 +154,7 @@
 					<li>
 						<!-- own tasks -->
 						<button jsf:id="onlyOwnSteps" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.nurEigeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.nurEigeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<span>
 							<h:outputText value="#{msgs.nurEigeneAufgabenAnzeigen}" />
 							</span>
@@ -165,7 +165,7 @@
 					<li>
 						<!-- open tasks -->
 						<button jsf:id="onlyOpenSteps" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.nurOffeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.nurOffeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<span>
 							<h:outputText value="#{msgs.nurOffeneAufgabenAnzeigen}" />
 							</span>
@@ -176,7 +176,7 @@
 					<li>
 						<!-- hide tasks from other users -->
 						<button jsf:id="hideStepsFromOtherUsers" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
-							<i class="fa #{not AktuelleSchritteForm.hideStepsFromOtherUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{not AktuelleSchritteForm.hideStepsFromOtherUsers?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<span>
 							<h:outputText value="#{msgs.showTasksFromOtherUsers}" />
 							</span>

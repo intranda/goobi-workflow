@@ -28,7 +28,7 @@
     <meta name="version" content="#{HelperForm.version}" />
     <meta name="build date" content="#{HelperForm.buildDate}" />
     <meta name="git-revision" content="#{HelperForm.buildVersion}" />
-    <title><h:outputText value="#{HelperForm.applicationHeaderTitle}" /></title>
+    <title><h:outputText value="#{myPageTitle} - #{HelperForm.applicationHeaderTitle}" /></title>
 
 
     <!-- ========================================
@@ -132,7 +132,9 @@
         </h:panelGroup>
 
         <c:if test="#{LoginForm.myBenutzer!=null}">
+          <header role="banner" aria-label="page-header">
             <ui:include src="inc_menu.xhtml" />
+          </header>
 
             <div class="container-fluid" id="content" style="padding-bottom:20px">
                 <div id="main" style="margin-right: 0px;">
@@ -244,28 +246,28 @@
                         </h:form>
 
                         <!-- BREADCRUMB -->
-                        <nav class="navigation-breadcrumb" aria-label="navigationBreadcrumb">
+                        <nav class="navigation-breadcrumb" aria-label="Breadcrumb">
 	                        <h:form style="margin:0px;" id="breadcrumb">
 	                            <div class="breadcrumbs">
-	                                <ul>
+	                                <ol>
 	                                    <ui:insert name="breadcrumb" />
-	                                </ul>
+	                                </ol>
 	                            </div>
 	                        </h:form>
-						</nav>
+						            </nav>
                         <!-- // BREADCRUMB -->
 
                         <!-- MESSAGES -->
-						<div role="complementary">
-							<h:panelGroup id="globalMessage" style="display: inline">
-                        		<h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
-			             	</h:panelGroup>
-			            </div>
+                        <div role="complementary">
+                          <h:panelGroup id="globalMessage" style="display: inline">
+                            <h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
+                          </h:panelGroup>
+                        </div>
                         <!-- // MESSAGES -->
 
                         <!-- CONTENT -->
                         <div jsf:id="main-content" tabindex="-1">
-                            <ui:insert name="content" />
+                          <ui:insert name="content" />
                         </div>
                         <!-- // CONTENT -->
 

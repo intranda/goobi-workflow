@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
@@ -24,24 +24,24 @@
                    <!-- tabs -->
 					<ul class="tabs tabs-inline tabs-top">
 						<li class="active">
-							<a data-toggle="tab" href="#firsttab"><i class="fa fa-cog margin-right-5"></i> #{msgs.executeTask}</a>
+							<a data-toggle="tab" href="#firsttab"><span class="fa fa-cog margin-right-5" /> #{msgs.executeTask}</a>
 						</li>
                         <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.sizeOfPreviousStepsForProblemReporting != 0}">
     						<li class="">
-    							<a data-toggle="tab" href="#secondtab"><i class="fa fa-bullhorn margin-right-5"></i>
+    							<a data-toggle="tab" href="#secondtab"><span class="fa fa-bullhorn margin-right-5" />
     								#{msgs.reportError}</a>
     						</li>
-                        </h:panelGroup>    
+                        </h:panelGroup>
 						<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.prioritaet>9 and  AktuelleSchritteForm.batchHelper.sizeOfNextStepsForProblemSolution != 0}">
 							<li class="">
-								<a data-toggle="tab" href="#thirdtab"><i class="fa fa-check-circle margin-right-5"></i> #{msgs.reportSolution}</a>
+								<a data-toggle="tab" href="#thirdtab"><span class="fa fa-check-circle margin-right-5" /> #{msgs.reportSolution}</a>
 							</li>
 						</h:panelGroup>
 					</ul>
 					<!-- // tabs -->
-                    
-                    
-                    
+
+
+
                     <div class="tab-content nopadding tab-content-inline tab-content-bottom">
                         <div id="firsttab" class="tab-pane active">
 
@@ -56,7 +56,7 @@
 <!-- 										<h:panelGroup rendered="#{Import.importFehler !='' and Import.importFehler ne null}"> -->
 <!-- 											<h:outputText value="#{Import.importFehler}" styleClass="alert alert-danger alert-dismissable margin-bottom-10" escape="false" /> -->
 <!-- 										</h:panelGroup> -->
-										
+
 <!-- 											<x:inputFileUpload id="fileupload" accept="image/*" value="#{Import.upDatei}" storage="file" -->
 <!-- 												required="false" styleClass="margin-bottom-regular" /> -->
 <!-- 											<h:commandLink id="button1" action="#{Import.Start}"> -->
@@ -65,7 +65,7 @@
 <!-- 												<f:setPropertyActionListener target="#{Import.mySchritt}" -->
 <!-- 													value="#{AktuelleSchritteForm.batchHelper.currentStep}" /> -->
 <!-- 											</h:commandLink> -->
-										
+
 <!-- 									</li> -->
 <!-- 									++++++++++++++++     // Import      ++++++++++++++++ -->
 <!-- 								</ul> -->
@@ -87,7 +87,7 @@
 											</button>
 										</li>
 									</h:panelGroup>
-									
+
 									<!-- Plugin - NONE -->
 									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}">
 										<li class="action-li">
@@ -97,7 +97,7 @@
 											</button>
 										</li>
 									</h:panelGroup>
-									
+
 									<!-- Modul-Schaltknopf -->
 									<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typModulName != null and AktuelleSchritteForm.batchHelper.currentStep.typModulName != ''}">
 										<li class="action-li">
@@ -110,7 +110,7 @@
 											</button>
 										</li>
 									</h:panelGroup>
-									
+
                                 <!-- Script 1 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad != ''}">
 									<li class="action-li">
@@ -124,7 +124,7 @@
 		                                </button>
 										</li>
 									</h:panelGroup>
-									
+
 								<!-- Script 2 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad2 != ''}">
 									<li class="action-li">
@@ -137,7 +137,7 @@
 		                                </button>
 									</li>
 								</h:panelGroup>
-									
+
 								<!-- Script 3 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad3 != ''}">
 									<li class="action-li">
@@ -150,7 +150,7 @@
 		                                </button>
 									</li>
 								</h:panelGroup>
-									
+
 								<!-- Script 4 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad4 != ''}">
 									<li class="action-li">
@@ -163,7 +163,7 @@
 		                                </button>
 									</li>
 								</h:panelGroup>
-									
+
 								<!-- Script 5 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad5 != ''}">
 									<li class="action-li">
@@ -182,7 +182,7 @@
 									<li class="action-li">
 		                                <!-- TODO: delete this warning once the root cause of the timeout problem is solved  -->
 		                                <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10" value="#{msgs.timeoutWarningDMS}" />
-		
+
 		                                <!-- Upload-Schaltknopf -->
 		                                <button jsf:action="#{AktuelleSchritteForm.batchHelper.exportDMS}" title="#{msgs.importDms}" jsf:id="export" class="expandbutton" onclick="preventDoubleSubmit(this);">
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
@@ -190,7 +190,7 @@
 		                                </button>
 									</li>
 								</h:panelGroup>
-									
+
                                 <!-- Metadaten-Schaltknopf -->
                                 <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typMetadaten}">
 									<li class="action-li">
@@ -222,7 +222,7 @@
 		                                </h:commandLink>
 									</li>
 								</h:panelGroup>
-									
+
                                 <!-- Bearbeitung abbrechen-Schaltknopf -->
                                 <li class="action-li">
 	                                <button jsf:id="cancel" class="expandbutton"
@@ -232,7 +232,7 @@
 	                                    <h:outputText value="#{msgs.cancelBatchEdition}" />
 	                                </button>
 								</li>
-								
+
                                 <!-- Abschliessen-Schaltknopf -->
                                  <h:panelGroup rendered="#{AktuelleSchritteForm.enableFinalizeButton}">
                                     <li class="action-li">
@@ -269,7 +269,7 @@
                                             value="#{AktuelleSchritteForm.batchHelper.problemMessage}" />
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-actions">
 									<h:commandButton id="reportForAll" type="submit" action="#{AktuelleSchritteForm.batchHelper.ReportProblemForAll}"
                                         value="#{msgs.korrekturmeldungSendenForAll}" title="#{msgs.korrekturmeldungSendenForAll}"
@@ -307,7 +307,7 @@
                                                 value="#{AktuelleSchritteForm.batchHelper.solutionMessage}" />
 										</div>
                                 	 </div>
-                                	 
+
                                 	<div class="form-actions">
                                             <h:commandButton id="solveAll" type="submit" action="#{AktuelleSchritteForm.batchHelper.SolveProblemForAll}"
                                                 value="#{msgs.meldungUeberProblemloesungSendenForAll}"
@@ -335,5 +335,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

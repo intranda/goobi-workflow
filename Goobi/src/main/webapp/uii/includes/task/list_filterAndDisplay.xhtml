@@ -12,7 +12,7 @@
 		<script type="text/javascript">
         	function switchExpanded(id){
         		console.log("called by: "+id);
-				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				var x = document.getElementById(id).getAttribute("aria-expanded");
 				console.log(x)
 				if (x == "true"){
 					x = "false"
@@ -26,72 +26,72 @@
 			<div id="filterTableColumns" class="btn-group" data-toggle="tooltip" title="#{msgs.selectTableColumns}">
 				<!-- show columns -->
 				<div class="dropdown">
-                <button id="columnDropdown" type="button" aria-label="#{msgs.selectTableColumns}" class="btn dropdown-toggle searchfieldbuttongroup focusable" 
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)"> 
+                <button id="columnDropdown" type="button" aria-label="#{msgs.selectTableColumns}" class="btn dropdown-toggle searchfieldbuttongroup focusable"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)">
                     <span class="fa fa-columns margin-right-5" /> <span class="caret"></span>
                 </button>
 				<ul class="dropdown-menu">
 					<li>
-						<!-- ID --> 
+						<!-- ID -->
 						<button jsf:id="processId" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.id}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['processId']}" />
 						</button>
 					</li>
 					<li>
-						<!-- Batch ID --> 
+						<!-- Batch ID -->
 						<button jsf:id="batchId" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.batch}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['batchId']}" />
 						</button>
 					</li>
 					<!-- <li>
-						#### modules ###### 
+						#### modules ######
 						<button jsf:id="modules" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['modules']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['modules']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.module}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['modules']}" />
 						</button>
 					</li> -->
 					<li>
-						<!-- process date --> 
+						<!-- process date -->
 						<button jsf:id="processDate" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.vorgangsdatum}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['processDate']}" />
 						</button>
 					</li>
 					<li>
-						<!-- lockings --> 
+						<!-- lockings -->
 						<button jsf:id="lockings" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.sperrungen}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['lockings']}" />
 						</button>
 					</li>
                         <li>
-                            <!-- show number of images --> 
+                            <!-- show number of images -->
                             <button
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showNumberOfImages"
                                 class="dropdown-item">
-                                <i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.NumberOfImages}" />
                                 <x:updateActionListener
                                     property="#{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}"
                                     value="#{not AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}" />
                             </button>
-                        </li>                    
-                    
+                        </li>
+
 				</ul>
                 </div>
 			</div>
 
 			<div class="btn-group" data-toggle="tooltip" title="#{msgs.anzeigeAnpassen}">
                 <div class="dropdown">
-				<button id="anzeigeAnpassenDropdown" type="button" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)" aria-label="#{msgs.anzeigeAnpassen}" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
+				<button id="anzeigeAnpassenDropdown" type="button" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)" aria-label="#{msgs.anzeigeAnpassen}" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown">
                     <span class="fa fa-wrench margin-right-5" />
 					<span class="caret"></span>
 				</button>
@@ -99,48 +99,48 @@
 				<!-- show or hide depending on filter -->
 				<ul class="dropdown-menu">
 					<li>
-						<!-- automatic tasks --> 
+						<!-- automatic tasks -->
 						<button jsf:id="showAutomaticTasks" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.showAutomaticTasks?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.showAutomaticTasks?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.showAutomaticTasks}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.showAutomaticTasks}" value="#{not AktuelleSchritteForm.showAutomaticTasks}" />
 						</button>
 					</li>
 					<li>
-						<!-- correction tasks --> 
+						<!-- correction tasks -->
 						<button jsf:id="hideCorrectionTasks" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.hideCorrectionTasks?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.hideCorrectionTasks?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.hideCorrectionTasks}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.hideCorrectionTasks}" value="#{not AktuelleSchritteForm.hideCorrectionTasks}" />
 						</button>
 					</li>
 					<li>
-						<!-- own tasks --> 
+						<!-- own tasks -->
 						<button jsf:id="onlyOwnSteps" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.nurEigeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.nurEigeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.nurEigeneAufgabenAnzeigen}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.nurEigeneSchritte}" value="#{not AktuelleSchritteForm.nurEigeneSchritte}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.nurOffeneSchritte}" value="#{false}" />
 						</button>
 					</li>
 					<li>
-						<!-- open tasks --> 
+						<!-- open tasks -->
 						<button jsf:id="onlyOpenSteps" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
-							<i class="fa #{AktuelleSchritteForm.nurOffeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{AktuelleSchritteForm.nurOffeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.nurOffeneAufgabenAnzeigen}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.nurOffeneSchritte}" value="#{not AktuelleSchritteForm.nurOffeneSchritte}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.nurEigeneSchritte}" value="#{false}" />
 						</button>
 					</li>
 					<li>
-						<!-- hide tasks from other users --> 
+						<!-- hide tasks from other users -->
 						<button jsf:id="hideStepsFromOtherUsers" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
-							<i class="fa #{not AktuelleSchritteForm.hideStepsFromOtherUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+							<span class="fa #{not AktuelleSchritteForm.hideStepsFromOtherUsers?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.showTasksFromOtherUsers}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.hideStepsFromOtherUsers}" value="#{not AktuelleSchritteForm.hideStepsFromOtherUsers}" />
 						</button>
 					</li>
-					
+
 				</ul>
                 </div>
 			</div>

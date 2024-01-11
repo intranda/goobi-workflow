@@ -26,7 +26,7 @@
             rendered="#{ProzessverwaltungForm.sizeOfDisplayableMetadata != 0}">
             <div class="box-title">
                 <h3>
-                    <i class="fa fa-list"></i>
+                    <span class="fa fa-list" />
                     <h:outputText value="#{msgs.descriptiveMetadata}" />
                 </h3>
             </div>
@@ -67,7 +67,7 @@
                 <div class="box thin-margin box-bordered">
                     <div class="box-title">
                         <h3>
-                            <i class="fa fa-list"></i>
+                            <span class="fa fa-list" />
                             <h:outputText value="#{msgs.eigenschaften}" />
                         </h3>
                     </div>
@@ -104,7 +104,7 @@
                                         			<h:outputText
                                                         value="#{proc.readValue}"
                                                         rendered="#{proc.type.name == 'html'}"
-                                                        escape="false" /> 
+                                                        escape="false" />
                                                     <h:outputText
                                                         value="#{proc.readValue}"
                                                         rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html' and proc.type.name != 'listmultiselect'}" />
@@ -120,10 +120,10 @@
                                                             value="tooltip" />
                                                     </h:outputLink> <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
                                                         <h:panelGroup rendered="#{proc.readValue eq 'true'}">
-                                                            <i class="fa fa-check-square-o fa-lg"></i>
+                                                            <span class="fa fa-check-square-o fa-lg" />
                                                         </h:panelGroup>
                                                         <h:panelGroup rendered="#{proc.readValue ne 'true'}">
-                                                            <i class="fa fa-square-o fa-lg"></i>
+                                                            <span class="fa fa-square-o fa-lg" />
                                                         </h:panelGroup>
                                                     </h:panelGroup></td>
                                                 <c:if test="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
@@ -212,10 +212,10 @@
                                                             value="tooltip" />
                                                     </h:outputLink> <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
                                                         <h:panelGroup rendered="#{process_item.readValue eq 'true'}">
-                                                            <i class="fa fa-check-square-o fa-lg"></i>
+                                                            <span class="fa fa-check-square-o fa-lg" />
                                                         </h:panelGroup>
                                                         <h:panelGroup rendered="#{process_item.readValue ne 'true'}">
-                                                            <i class="fa fa-square-o fa-lg"></i>
+                                                            <span class="fa fa-square-o fa-lg" />
                                                         </h:panelGroup>
                                                     </h:panelGroup></td>
                                                 <h:panelGroup
@@ -277,7 +277,7 @@
                                     <x:updateActionListener
                                         property="#{ProzessverwaltungForm.modusBearbeiten}"
                                         value="eigenschaft" />
-                                    <i class="fa fa-plus margin-right-5"></i>
+                                    <span class="fa fa-plus margin-right-5" />
                                     <h:outputText value="#{msgs.eigenschaftHinzufuegen}" />
                                     <f:passThroughAttribute
                                         name="data-toggle"
@@ -312,7 +312,7 @@
                         <div class="box box-color box-bordered orange">
                             <div class="box-title">
                                 <h3>
-                                    <i class="fa fa-list"></i>
+                                    <span class="fa fa-list" />
                                     <h:outputText value="#{msgs.eigenschaft}" />
                                 </h3>
                             </div>
@@ -522,7 +522,7 @@
                                             jsf:id="save"
                                             class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
                                             jsf:action="#{ProzessverwaltungForm.saveCurrentProperty}">
-                                            <i class="fa fa-save margin-right-5"></i>
+                                            <span class="fa fa-save margin-right-5" />
                                             <x:updateActionListener
                                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                 value="" />
@@ -548,7 +548,7 @@
                                             <x:updateActionListener
                                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                 value="" />
-                                            <i class="fa fa-trash-o margin-right-5" />
+                                            <span class="fa fa-trash-o margin-right-5" />
                                             <h:outputText value="#{msgs.loeschen}" />
                                         </button>
 
@@ -570,5 +570,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

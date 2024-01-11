@@ -42,27 +42,27 @@
 
     			<!-- Datentabelle -->
     			<x:dataTable id="dockets" styleClass="table table-hover table-bordered" var="item" value="#{goobiScriptTemplateBean.paginator.list}">
-    
+
     				<h:column>
     					<f:facet name="header">
     					<h:outputText value="#{msgs.name}" />
     						</f:facet>
     					<h:outputText value="#{item.title}" />
     				</h:column>
-    
+
     				<h:column>
     					<f:facet name="header">
     						<h:outputText value="#{msgs.description}" />
     					</f:facet>
     					<h:outputText value="#{item.description}" />
     				</h:column>
-    
+
     				<x:column headerClass="gw-table-fixed__actions">
-    
+
     					<f:facet name="header">
     						<h:outputText value="#{msgs.auswahl}" />
     					</f:facet>
-    
+
     					<!-- Bearbeiten-Schaltknopf -->
     					<div class="gw-table-fixed__actions__btns">
     						<button
@@ -71,23 +71,23 @@
     							jsf:rel="tooltip"
     							jsf:action="template_edit"
     							title="#{msgs.bearbeiten}">
-    							<i class="fa fa-pencil"></i>
+    							<span class="fa fa-pencil" />
     							<f:passThroughAttribute name="data-toggle" value="tooltip" />
     							<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
     							<f:setPropertyActionListener target="#{goobiScriptTemplateBean.template}" value="#{item}" />
     						</button>
     					</div>
     				</x:column>
-    
+
     			</x:dataTable>
-    
+
     			</div> <!-- /gw-table__wrapper -->
 			</div> <!-- /gw-table -->
 
 			<div class="box__actions">
 				<!-- Neu-Schaltknopf -->
 				<button jsf:id="new" class="btn btn-primary-400 me-auto" jsf:action="#{goobiScriptTemplateBean.Neu}" jsf:immediate="true">
-					<i class="fa fa-plus"></i>
+					<span class="fa fa-plus" />
 					<span>
 					   <h:outputText value="#{msgs.createNewTemplate}" />
 					</span>

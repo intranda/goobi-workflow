@@ -84,7 +84,7 @@
 							<h:outputText value="#{msgs.existingProcessDetails}" />
 						</h4>
 						<button type="button" class="btn text-white" title="#{msgs.close}" data-bs-dismiss="modal">
-							<i class="fa fa-times"></i>
+							<span class="fa fa-times" />
 						</button>
 					</div>
 					<!-- // MODAL HEADER -->
@@ -132,12 +132,12 @@
 										<h:outputText value="#{ProzesskopieForm.existingProcess.exportValidator.label != null ? ProzesskopieForm.existingProcess.exportValidator.label : msgs.noValidation}" />
 
 										<h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
-										<i class="fa #{ProzesskopieForm.existingProcess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}"></i>
+										<span class="fa #{ProzesskopieForm.existingProcess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}" />
 
 										<h:outputText value="#{msgs.istTemplate}:" />
-										<i class="fa #{ProzesskopieForm.existingProcess.istTemplate?'fa-check-square-o':'fa-square-o'}"></i>
+										<span class="fa #{ProzesskopieForm.existingProcess.istTemplate?'fa-check-square-o':'fa-square-o'}" />
 										<h:outputText value="#{msgs.pauseAutomaticExecution}:" />
-										<i class="fa #{ProzesskopieForm.existingProcess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}"></i>
+										<span class="fa #{ProzesskopieForm.existingProcess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}" />
 
 										<h:outputText value="#{msgs.id}:"
 																styleClass="font-light" />
@@ -316,7 +316,7 @@
 			                                                        class="log_file ms-2"
 			                                                        jsf:action="#{ProzesskopieForm.existingProcess.downloadFile(entry)}"
 			                                                        title="#{msgs.downloadFile}">
-			                                                        <i class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
+			                                                        <span class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
 			                                                        <span>
 			                                                            <h:outputText value="#{entry.basename}" />
 			                                                        </span>
@@ -383,7 +383,7 @@
                                     title="#{msgs.expandImportMetadata}"
                                     class="btn d-flex align-items-center btn--title-action"
                                     jsf:action="#{NavigationForm.Reload}">
-                                    <i class="fa #{NavigationForm.uiStatus.new_process_box1 eq 'full'?'fa-compress':'fa-expand'}" />
+                                    <span class="fa #{NavigationForm.uiStatus.new_process_box1 eq 'full'?'fa-compress':'fa-expand'}" />
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.uiStatus.new_process_box1}"
                                         value="#{NavigationForm.uiStatus.new_process_box1 eq 'full'?'part':'full'}" />
@@ -631,16 +631,11 @@
 
                             </ui:fragment>
                         </ui:repeat>
-                        <!-- ADDITIONAL PROPERTIES -->
-
-
-
-                        <!-- // ADDITIONAL PROPERTIES -->
                     </intranda:box>
-
                 </div>
-
             </div>
+
+            <!-- ADDITIONAL PROPERTIES -->
             <div class="row mt-3" jsf:rendered="#{!ProzesskopieForm.configuredProperties.isEmpty()}">
                 <div class="col-sm-12">
 
@@ -650,7 +645,7 @@
                         boxForm="true"
                         icon="fa-list"
                         title="#{msgs.eigenschaften}">
-                        <ui:include src="includes/process/processcreation_properties.xhtml">
+                        <ui:include src="templatePG/includes/process/processcreation_properties.xhtml">
                             <ui:param
                                 name="properties"
                                 value="#{ProzesskopieForm.configuredProperties}" />
@@ -658,6 +653,8 @@
                     </intranda:box>
                 </div>
             </div>
+            <!-- // ADDITIONAL PROPERTIES -->
+
             <div class="row mt-3">
 				<div class="col-sm-12">
 
@@ -809,7 +806,7 @@
 								<span>
 									<h:outputText value="#{msgs.weiter}" />
 								</span>
-								<i class="fa fa-arrow-circle-o-right margin-left-5"></i>
+								<span class="fa fa-arrow-circle-o-right margin-left-5" />
 							</h:commandLink>
 
 							<button
@@ -817,7 +814,7 @@
 								jsf:id="absenden"
 								jsf:action="#{ProzesskopieForm.createNewProcess}"
 								jsf:rendered="#{!ProzesskopieForm.enableFileUpload}">
-								<i class="fa fa-save margin-right-5"></i>
+								<span class="fa fa-save margin-right-5" />
 								<span>
 									<h:outputText value="#{msgs.speichern}" />
 								</span>

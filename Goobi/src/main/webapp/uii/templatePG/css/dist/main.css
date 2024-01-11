@@ -1079,7 +1079,8 @@ a:focus, a:hover, a:active {
   background-color: var(--clr-primary-400);
   color: var(--clr-white);
 }
-.navbar .dropdown-menu .dropdown-item i {
+.navbar .dropdown-menu .dropdown-item i,
+.navbar .dropdown-menu .dropdown-item .fa {
   margin-inline-end: 8px;
 }
 
@@ -1185,7 +1186,7 @@ a:focus, a:hover, a:active {
   justify-content: space-between;
   flex-wrap: wrap;
 }
-.header__bottom span {
+.header__bottom span:not(.fa) {
   width: 100%;
 }
 .header__bottom h1 {
@@ -1229,7 +1230,8 @@ a:focus, a:hover, a:active {
 .header__bottom .stats .details span {
   text-align: start;
 }
-.header__bottom .stats i {
+.header__bottom .stats i,
+.header__bottom .stats .fa {
   font-size: 2.8rem;
 }
 @media (max-width: 767px) {
@@ -1256,12 +1258,12 @@ a:focus, a:hover, a:active {
 .breadcrumbs {
   background-color: var(--clr-neutral-200, #f4f4f4);
 }
-.breadcrumbs ul {
+.breadcrumbs ol {
   list-style: none;
   padding-left: 0;
   line-height: 2.1rem;
 }
-.breadcrumbs ul,
+.breadcrumbs ol,
 .breadcrumbs li {
   display: flex;
   align-items: center;
@@ -1314,7 +1316,8 @@ a:focus, a:hover, a:active {
   color: #fff;
   border: 0.01rem solid #fff;
 }
-.box__title .btn--title-action i {
+.box__title .btn--title-action i,
+.box__title .btn--title-action .fa {
   color: currentColor;
 }
 .box__title .btn--title-action:not(:last-child) {
@@ -1323,14 +1326,16 @@ a:focus, a:hover, a:active {
 .box__title .btn--title-action:hover {
   background-color: #fff;
 }
-.box__title .btn--title-action:hover i {
+.box__title .btn--title-action:hover i,
+.box__title .btn--title-action:hover .fa {
   color: var(--bs-body-color);
 }
 .box__title .btn--title-action-neutral {
   color: var(--clr-neutral-600);
   border: 0.1rem solid var(--clr-neutral-300);
 }
-.box__title .btn--title-action-neutral i {
+.box__title .btn--title-action-neutral i,
+.box__title .btn--title-action-neutral .fa {
   color: currentColor;
 }
 .box__title .btn--title-action-neutral:not(:last-child) {
@@ -1339,7 +1344,8 @@ a:focus, a:hover, a:active {
 .box__title .btn--title-action-neutral:hover {
   background-color: var(--clr-neutral-600);
 }
-.box__title .btn--title-action-neutral:hover i {
+.box__title .btn--title-action-neutral:hover i,
+.box__title .btn--title-action-neutral:hover .fa {
   color: #fff;
 }
 .box__title h2 {
@@ -1772,7 +1778,8 @@ a:focus, a:hover, a:active {
 }
 
 .gw-table-fixed th button,
-.table-fixed th button {
+.table-fixed th button,
+.table-resizable th button {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1881,6 +1888,7 @@ th.header__col-max-xxxl {
  * ====================================== */
 .table-resizable {
   table-layout: auto;
+  margin-bottom: 1px;
   width: 100%;
 }
 .table-resizable .resize-col {
@@ -2116,39 +2124,53 @@ grau: #dddddd
 }
 
 /*--------------- Easy Readability ---------------- */
-.easy-read-status-done {
-  background: black none repeat scroll 0 0;
-  border: 1px solid black;
+.colors.small13 > [class*=easy-read-status-] {
+  height: initial;
+  width: initial;
 }
 
-.easy-read-status-open {
-  background: #ddd none repeat scroll 0 0;
+[class*=easy-read-status-] {
+  padding-left: 15px;
+  position: relative;
+}
+[class*=easy-read-status-]::before {
+  background: var(--easy-read-color, transparent) none repeat scroll 0 0;
   border: 1px solid black;
+  content: "";
+  height: 13px;
+  left: 0px;
+  position: absolute;
+  top: 2px;
+  width: 13px;
 }
 
-.easy-read-status-inwork,
-.easy-read-status-inflight {
-  background: #bbb none repeat scroll 0 0;
-  border: 1px solid black;
+.easy-read-status-done::before {
+  --easy-read-color: black;
 }
 
-.easy-read-status-locked {
-  background: white none repeat scroll 0 0;
-  border: 1px solid black;
+.easy-read-status-open::before {
+  --easy-read-color: #ddd;
 }
 
-.easy-read-status-error {
-  background: #eee none repeat scroll 0 0;
+.easy-read-status-inwork::before,
+.easy-read-status-inflight::before {
+  --easy-read-color: #bbb;
+}
+
+.easy-read-status-locked::before {
+  --easy-read-color: white;
+}
+
+.easy-read-status-error::before {
+  --easy-read-color: #eee;
   background-image: linear-gradient(45deg, black 25%, transparent 25%, transparent 50%, black 50%, black 75%, transparent 75%, transparent);
   background-size: 7px 7px;
-  border: 1px solid black;
 }
 
-.easy-read-status-deactivated {
-  background: #eee none repeat scroll 0 0;
+.easy-read-status-deactivated::before {
+  --easy-read-color: #eee;
   background-image: linear-gradient(0deg, #ccc 25%, transparent 25%, transparent 50%, #ccc 50%, #ccc 75%, transparent 75%, transparent);
   background-size: 14px 14px;
-  border: 1px solid black;
 }
 
 .easy-read-progressbar-status-locked {
@@ -2194,7 +2216,7 @@ grau: #dddddd
   text-decoration: none;
   background-color: transparent;
   border: 0;
-  /* 
+  /*
   padding: 0;
   */
 }
@@ -2226,7 +2248,9 @@ button,
   border-radius: var(--border-radius, 2px);
 }
 button i ~ *,
-.btn i ~ * {
+button .fa ~ *,
+.btn i ~ *,
+.btn .fa ~ * {
   margin-inline-start: 0.4rem;
 }
 
@@ -2249,8 +2273,12 @@ span.badge {
 }
 button.badge i ~ span,
 button.badge span ~ i,
+button.badge .fa ~ span,
+button.badge span ~ .fa,
 span.badge i ~ span,
-span.badge span ~ i {
+span.badge span ~ i,
+span.badge .fa ~ span,
+span.badge span ~ .fa {
   margin-inline-start: 4px;
 }
 button.badge:not(:last-child),

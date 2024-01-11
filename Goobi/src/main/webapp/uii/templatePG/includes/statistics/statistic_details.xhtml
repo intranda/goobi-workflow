@@ -102,7 +102,7 @@
 					title="#{msgs.calculateStatistics}"
 					class="btn btn-neutral-600"
 					jsf:action="#{Manager.calculate}" >
-					<i class="fa fa-cog" />
+					<span class="fa fa-cog" />
 					<span>
 						<h:outputText value="#{msgs.calculateStatistics}" />
 					</span>
@@ -147,7 +147,7 @@
 						title="#{msgs.download_excel}"
 						jsf:rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}"
 						>
-						<i class="fa fa-floppy-o" />
+						<span class="fa fa-floppy-o" />
 						<span>
 							<h:outputText value="#{msgs.download_excel}" />
 						</span>
@@ -161,7 +161,7 @@
 						title="#{msgs.download_csv}"
 						jsf:rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}"
 						>
-						<i class="fa fa-floppy-o" />
+						<span class="fa fa-floppy-o" />
 						<span>
 							<h:outputText value="#{msgs.download_csv}" />
 						</span>
@@ -179,5 +179,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

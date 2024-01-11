@@ -53,7 +53,7 @@
 							class="btn d-flex align-items-center btn--title-action"
 							title="#{msgs.reload}"
 							jsf:rel="tooltip">
-							<i class="fa fa-refresh"></i>
+							<span class="fa fa-refresh" />
 							<f:passThroughAttribute
 								name="data-toggle"
 								value="tooltip" />
@@ -66,7 +66,7 @@
 							jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 							class="btn d-flex align-items-center btn--title-action"
 							jsf:rel="tooltip">
-							<i class="fa fa-pencil"></i>
+							<span class="fa fa-pencil" />
 							<f:passThroughAttribute
 								name="data-toggle"
 								value="tooltip" />
@@ -82,7 +82,7 @@
 				<h:panelGrid
 					columns="2"
 					styleClass="table table-hover table-bordered">
-					
+
 					<!-- TITLE -->
 					<h:outputText value="#{msgs.titel}:" />
 					<span
@@ -113,7 +113,7 @@
 						<h:panelGroup
 							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 1}">
 							<span class="badge badge-intranda-orange">
-								<i class="fa fa-lightbulb-o"></i>
+								<span class="fa fa-lightbulb-o" />
 								#{msgs.badgePriority1}
 							</span>
 						</h:panelGroup>
@@ -121,7 +121,7 @@
 						<h:panelGroup
 							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 2}">
 							<span class="badge badge-intranda-orange">
-								<i class="fa fa-lightbulb-o" />
+								<span class="fa fa-lightbulb-o" />
 								#{msgs.badgePriority2}
 							</span>
 						</h:panelGroup>
@@ -129,7 +129,7 @@
 						<h:panelGroup
 							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 2 and ProzessverwaltungForm.mySchritt.prioritaet lt 10}">
 							<span class="badge badge-intranda-orange">
-								<i class="fa fa-lightbulb-o"></i>
+								<span class="fa fa-lightbulb-o" />
 								#{msgs.badgePriority3}
 							</span>
 						</h:panelGroup>
@@ -137,7 +137,7 @@
 						<h:panelGroup
 							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 9}">
 							<span class="badge badge-intranda-red">
-								<i class="fa fa-bullhorn"></i>
+								<span class="fa fa-bullhorn" />
 								#{msgs.badgeCorrection}
 							</span>
 						</h:panelGroup>
@@ -294,7 +294,7 @@
 						</h:panelGroup>
 					</h:panelGroup>
 					<!-- // SCRIPTS -->
-					
+
 					<!-- STATUS -->
 					<h:outputText value="#{msgs.status}:" />
 					<h:panelGroup>
@@ -303,15 +303,15 @@
 							data-toggle="tooltip"
 							class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color)}"/>
 						<div class="ms-2 d-inline-block align-middle">
-						<h:outputText 
+						<h:outputText
 							value="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
 						</div>
 					</h:panelGroup>
 					<!-- // STATUS -->
-					
+
 				</h:panelGrid>
 				<!-- // BOX CONTENT -->
-				
+
 			</intranda:box>
 
 		</h:panelGroup>
@@ -347,8 +347,8 @@
 					field="#{ProzessverwaltungForm.mySchritt.reihenfolge}"
 					help="#{msgs.helpProcessStepOrder}"
 					required="true" />
-					
-				<!-- ALLOW PARALLEL -->	
+
+				<!-- ALLOW PARALLEL -->
 				<intranda:formInputCheckBox
 					id="allowParallelTask"
 					label="#{msgs.allowParallelTask}"
@@ -434,12 +434,12 @@
 
 				<!-- AUTOMATIC -->
 				<div class="row">
-			
+
 					<div class="col-12 col-md-3">
-						<intranda:formLabel label="#{msgs.automatischerSchritt}" 
+						<intranda:formLabel label="#{msgs.automatischerSchritt}"
 								labelFor="automatic" labelRequired="false"/>
 					</div>
-					
+
 					<div class="col-12 col-md-9">
 						<x:selectBooleanCheckbox
 							forceId="true"
@@ -476,10 +476,10 @@
 				<!-- THUMBS -->
 				<div class="row">
 					<div class="col-12 col-md-3">
-						<intranda:formLabel label="#{msgs.typeThumbnailStep}" 
+						<intranda:formLabel label="#{msgs.typeThumbnailStep}"
 								labelFor="autoThumbnail" labelRequired="false"/>
 					</div>
-					
+
 					<div class="col-12 col-md-9">
 						<x:selectBooleanCheckbox
 							forceId="true"
@@ -488,7 +488,7 @@
 							onclick="showThumbsSettings()"
 							value="#{ProzessverwaltungForm.mySchritt.typAutomaticThumbnail}" />
 						<intranda:formHelp content="#{msgs.helpProcessStepAutomaticThumbnail}" msgFor="autoThumbnail" />
-						
+
 						<div id="thumbsSettings" class="ps-5 w-100">
 							<h:inputTextarea
 								id="ThumbSettings"
@@ -505,10 +505,10 @@
 				<!-- SCRIPTS -->
 				<div class="row">
 					<div class="col-12 col-md-3">
-						<intranda:formLabel label="#{msgs.ScriptSchritt}" 
+						<intranda:formLabel label="#{msgs.ScriptSchritt}"
 								labelFor="chkautomatisch" labelRequired="false"/>
 					</div>
-					
+
 					<div class="col-12 col-md-9">
 
 						<x:selectBooleanCheckbox
@@ -519,7 +519,7 @@
 							value="#{ProzessverwaltungForm.mySchritt.typScriptStep}" />
 						<intranda:formHelp content="#{msgs.helpProcessScripts}" msgFor="chkautomatisch" />
 
-						
+
 						<div id="scripttable" class="ps-5">
 							<div class="row border border-0">
 								<div class="col-3 min-vh-0">
@@ -613,12 +613,12 @@
 										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad5}" />
 								</div>
 							</div>
-							
-						
-						
-								
-						
-							
+
+
+
+
+
+
 
 						</div>
 						<x:message
@@ -635,12 +635,12 @@
 					class="row"
 					style=""
 					id="httpControls">
-					
+
 					<div class="col-12 col-md-3">
-						<intranda:formLabel label="#{msgs.HttpSchritt}" 
+						<intranda:formLabel label="#{msgs.HttpSchritt}"
 								labelFor="chkhttp" labelRequired="false"/>
 					</div>
-					
+
 					<div class="col-12 col-md-9">
 						<h:selectBooleanCheckbox
 							styleClass="form-check-input"
@@ -656,7 +656,7 @@
 						<ui:fragment rendered="#{ProzessverwaltungForm.mySchritt.httpStep}">
 							<div class="col-sm-12 mt-3 ms-5">
 								<div class="checkbox">
-									<label> 
+									<label>
 									<h:selectBooleanCheckbox
 											styleClass="form-check-input"
 											id="chkhttpclosestep"
@@ -802,7 +802,7 @@
 						jsf:id="save"
 						type="submit"
 						jsf:action="#{ProzessverwaltungForm.SchrittUebernehmen}">
-						<i class="fa fa-save"></i>
+						<span class="fa fa-save" />
 						<span>
 							<h:outputText value="#{msgs.speichern}" />
 						</span>
@@ -819,7 +819,7 @@
 						onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
 						jsf:action="#{ProzessverwaltungForm.SchrittLoeschen}"
 						jsf:rendered="#{ProzessverwaltungForm.mySchritt.id != null}">
-						<i class="fa fa-trash-o"></i>
+						<span class="fa fa-trash-o" />
 						<span>
 							<h:outputText value="#{msgs.loeschen}" />
 						</span>
@@ -923,7 +923,7 @@
 					}
 				}
 			}
-			
+
 			function showThumbsSettings(){
 				var element = document.getElementById("autoThumbnail");
 				if(element != null){
@@ -934,9 +934,9 @@
 					}
 				}
 			}
-			
+
 			var yamlCodeMirror;
-			
+
 			function initThumbCodeMirror(){
 				var yamlTextArea = document.querySelector('[id$=ThumbSettings]');
 				if(yamlTextArea) {
@@ -945,7 +945,7 @@
    						mode: 'yaml'
    					});
 					yamlCodeMirror.on('change', editor => {
-						yamlTextArea.innerHTML = editor.getValue();   
+						yamlTextArea.innerHTML = editor.getValue();
    				    });
                	}
 			}
@@ -953,5 +953,3 @@
 	</composite:implementation>
 
 </ui:composition>
-
-

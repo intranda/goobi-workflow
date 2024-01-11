@@ -51,7 +51,7 @@
 								jsf:action="#{ProzessverwaltungForm.SchrittNeu}"
 								title="#{msgs.schrittHinzufuegen}"
 								jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and (ProzessverwaltungForm.myProzess.titel != '')}">
-								<i class="fa fa-plus"></i>
+								<span class="fa fa-plus" />
 							</button>
 							<!-- // NEW STEP -->
 
@@ -70,7 +70,7 @@
 										type="button"
 										class="btn d-flex align-items-center btn--title-action dropdown-toggle"
 										data-bs-toggle="dropdown">
-										<i class="fa fa-exchange btn-dropDownInBoxHeader"/>
+										<span class="fa fa-exchange btn-dropDownInBoxHeader" />
 									</button>
 									<ul class="dropdown-menu">
 									<ui:repeat
@@ -112,7 +112,7 @@
 								id="steps"
 								var="item"
 								value="#{ProzessverwaltungForm.myProzess.schritteList}">
-		
+
 								<!-- ORDER -->
 								<x:column
 									id="ordercolumn" headerstyleClass="gw-table-fixed__sizeXXS">
@@ -131,7 +131,7 @@
 											aria-label="#{msgs.process_countTaskOrderNumberDown}"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 											class="btn ms-3 p-0 mb-1">
-											<i class="fa fa-minus-circle font-light" />
+											<span class="fa fa-minus-circle font-light" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -148,7 +148,7 @@
 											aria-label="#{msgs.process_countTaskOrderNumberUp}"
 											class="btn p-0 mb-1"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-											<i class="fa fa-plus-circle font-light" />
+											<span class="fa fa-plus-circle font-light" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -165,7 +165,7 @@
 											aria-label="#{msgs.process_moveTaskUp}"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 											class="btn ms-3 p-0 mb-1">
-											<i class="fa fa-chevron-up font-light" />
+											<span class="fa fa-chevron-up font-light" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -182,7 +182,7 @@
 											aria-label="#{msgs.process_moveTaskDown}"
 											class="btn p-0 mb-1"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-											<i class="fa fa-chevron-down font-light" />
+											<span class="fa fa-chevron-down font-light" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -194,15 +194,15 @@
 									</div>
 								</x:column>
 								<!-- // ORDER -->
-		
+
 								<!-- +++++++++++++++++  alle Eigenschaften auflisten - mit CSS ++++++++++++++++++++++++ -->
 								<h:column>
 									<f:facet name="header">
 										<h:outputText value="#{msgs.titel}" />
 									</f:facet>
-		
+
 									<h:panelGroup id="possibleActions1">
-		
+
 										<button
 											jsf:id="expandbutton1"
 											class="btn text-start">
@@ -234,23 +234,23 @@
 												value="#{item.titelLokalisiert}"
 												styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
 										</button>
-		
+
 										<h:panelGroup
 											styleClass="d-block mt-3"
 											rendered="#{item.panelAusgeklappt}">
-		
+
 											<intranda:box
 												boxType="neutral"
 												boxSmall="true"
 												boxPadding="false"
 												icon="fa-table"
 												title="#{msgs.eigenschaften}">
-												
+
 												<h:panelGrid
 													columns="2"
 													class="table table-hover table-bordered #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"
                                                     columnClasses="gw-width7, gw-width9">
-	
+
 													<h:outputText value="#{msgs.titel}:" />
 													<h:outputText value="#{item.titelLokalisiert}" />
 													<h:outputText value="#{msgs.prioritaet}:" />
@@ -259,37 +259,37 @@
 															<span class="badge badge-intranda-light">
 																#{msgs.badgePriority0} </span>
 														</h:panelGroup>
-	
+
 														<h:panelGroup rendered="#{item.prioritaet == 1}">
 															<span class="badge badge-intranda-orange">
-																<i class="fa fa-lightbulb-o"></i>
+																<span class="fa fa-lightbulb-o" />
 																#{msgs.badgePriority1}
 															</span>
 														</h:panelGroup>
-	
+
 														<h:panelGroup rendered="#{item.prioritaet == 2}">
 															<span class="badge badge-intranda-orange">
-																<i class="fa fa-lightbulb-o"></i>
+																<span class="fa fa-lightbulb-o" />
 																#{msgs.badgePriority2}
 															</span>
 														</h:panelGroup>
-	
+
 														<h:panelGroup
 															rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
 															<span class="badge badge-intranda-orange">
-																<i class="fa fa-lightbulb-o"></i>
+																<span class="fa fa-lightbulb-o" />
 																#{msgs.badgePriority3}
 															</span>
 														</h:panelGroup>
-	
+
 														<h:panelGroup rendered="#{item.prioritaet gt 9}">
 															<span class="badge badge-intranda-red">
-																<i class="fa fa-bullhorn"></i>
+																<span class="fa fa-bullhorn" />
 																#{msgs.badgeCorrection}
 															</span>
 														</h:panelGroup>
 													</h:panelGroup>
-	
+
 													<h:outputText
 														value="#{msgs.bearbeitungsbeginn}:"
 														rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
@@ -297,7 +297,7 @@
 														value="#{item.bearbeitungsbeginnAsFormattedString}"
 														rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
 													</h:outputText>
-	
+
 													<h:outputText
 														value="#{msgs.zuletztBearbeitet}:"
 														rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
@@ -305,17 +305,17 @@
 														value="#{item.bearbeitungszeitpunktAsFormattedString}"
 														rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
 													</h:outputText>
-	
+
 													<h:outputText
 														value="#{msgs.letzteAktualisierungDurch}:"
 														rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
 													<h:outputText
 														value="#{item.bearbeitungsbenutzer.nachVorname}"
 														rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
-	
+
 													<h:outputText value="#{msgs.aktualisierungstyp}:" />
 													<h:outputText value="#{item.editTypeEnum.title}" />
-	
+
 													<h:outputText
 														value="#{msgs.typ}:"
 														rendered="#{item.typeSpecified}" />
@@ -404,15 +404,15 @@
 															styleClass="d-block"
 															value="#{msgs['queue_'.concat(item.messageQueue.name)]}"
 															rendered="#{item.messageQueue ne 'NONE'}" />
-	
+
 													</h:panelGroup>
-	
+
 													<h:outputText
 														value="#{msgs.typScriptStep}:"
 														rendered="#{item.typScriptStep and not empty item.allScriptPaths}" />
 													<h:panelGroup
 														rendered="#{item.typScriptStep and not empty item.allScriptPaths}">
-	
+
 														<h:panelGroup
 															styleClass="d-block"
 															rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}">
@@ -421,7 +421,7 @@
 																styleClass="font-light "
 																value=" #{item.typAutomatischScriptpfad}" />
 														</h:panelGroup>
-	
+
 														<h:panelGroup
 															styleClass="d-block"
 															rendered="#{item.typAutomatischScriptpfad2 != null and item.typAutomatischScriptpfad2 != ''}">
@@ -430,7 +430,7 @@
 																styleClass="font-light "
 																value=" #{item.typAutomatischScriptpfad2}" />
 														</h:panelGroup>
-	
+
 														<h:panelGroup
 															styleClass="d-block"
 															rendered="#{item.typAutomatischScriptpfad3 != null and item.typAutomatischScriptpfad3 != ''}">
@@ -439,7 +439,7 @@
 																styleClass="font-light "
 																value=" #{item.typAutomatischScriptpfad3}" />
 														</h:panelGroup>
-	
+
 														<h:panelGroup
 															styleClass="d-block"
 															rendered="#{item.typAutomatischScriptpfad4 != null and item.typAutomatischScriptpfad4 != ''}">
@@ -448,7 +448,7 @@
 																styleClass="font-light "
 																value=" #{item.typAutomatischScriptpfad4}" />
 														</h:panelGroup>
-	
+
 														<h:panelGroup
 															styleClass="d-block"
 															rendered="#{item.typAutomatischScriptpfad5 != null and item.typAutomatischScriptpfad5 != ''}">
@@ -457,16 +457,16 @@
 																styleClass="font-light "
 																value=" #{item.typAutomatischScriptpfad5}" />
 														</h:panelGroup>
-	
+
 													</h:panelGroup>
-	
+
 													<h:outputText
 														value="#{msgs.module}:"
 														rendered="#{item.typModulName != null and item.typModulName != ''}" />
 													<h:outputText
 														value="#{item.typModulName}"
 														rendered="#{item.typModulName != null and item.typModulName != ''}" />
-	
+
 													<h:outputText
 														value="#{msgs.usergroup_assignedRoles}:"
 														rendered="#{not empty item.benutzergruppen}" />
@@ -483,40 +483,40 @@
 														</x:dataList>
 													</h:panelGroup>
 												</h:panelGrid>
-		
+
 											</intranda:box>
-										
+
 										</h:panelGroup>
 									</h:panelGroup>
 								</h:column>
 								<!-- +++++++++++++++++  // alle Eigenschaften auflisten mit CSS ++++++++++++++++++++++++ -->
-		
+
 								<x:column headerstyleClass="gw-table-fixed__sizeXXS">
 									<f:facet name="header">
 										<h:outputText value="#{msgs.status}" />
 									</f:facet>
-		
+
 									<!-- LOCKED -->
 									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'LOCKED'}"
 										title="#{msgs.statusGesperrt}"
-										rel="tooltip" 
+										rel="tooltip"
 										data-toggle="tooltip"
 										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-									
+
 									<!-- OPEN -->
 									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'OPEN'}"
 										title="#{msgs.statusOffen}"
 										rel="tooltip"
 										data-toggle="tooltip"
 										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-									
+
 									<!-- DONE AND ANONYMIZED -->
 									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}"
 										title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
 										rel="tooltip"
 										data-toggle="tooltip"
 										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-										
+
 									<!-- INWORK AND ANONYMIZED -->
 									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}"
 										title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
@@ -530,39 +530,39 @@
 										rel="tooltip"
 										data-toggle="tooltip"
 										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-										
+
 									<!-- INWORK AND NOT ANONYMIZED -->
 									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}"
 										title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
 										rel="tooltip"
 										data-toggle="tooltip"
 										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-										
+
 									<!-- ERROR -->
 									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'ERROR'}"
 										title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
 										rel="tooltip"
 										data-toggle="tooltip"
 										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-									
+
 									<!-- DEACTIVATED -->
 									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}"
 										title="#{msgs.statusDeactivated}"
 										rel="tooltip"
 										data-toggle="tooltip"
 										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-									
+
 									<!-- INFLIGHT -->
 									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INFLIGHT'}"
 										title="#{msgs.statusInFlight}"
 										rel="tooltip"
 										data-toggle="tooltip"
 										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
-									
+
 									<div class="ms-3 d-inline-block align-middle" jsf:rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}">
 										<h:outputText value="#{item.bearbeitungsstatusEnum.title}" />
 									</div>
-									
+
 									<!-- Bearbeitungsstatus hoch und runter -->
 									<button
 										type="button"
@@ -573,7 +573,7 @@
 										title="#{msgs.statusRunterSetzen}"
 										aria-label="#{msgs.statusRunterSetzen}"
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-										<i class="fa fa-chevron-left font-light"></i>
+										<span class="fa fa-chevron-left font-light" />
 										<x:updateActionListener
 											property="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
@@ -582,7 +582,7 @@
 											value="tooltip" />
 										<f:ajax render="@form" />
 									</button>
-		
+
 									<!-- Bearbeitungsstatus hoch und runter -->
 									<button
 										type="button"
@@ -593,7 +593,7 @@
 										title="#{msgs.statusHoeherSetzen}"
 										aria-label="#{msgs.statusHoeherSetzen}"
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-										<i class="fa fa-chevron-right font-light"></i>
+										<span class="fa fa-chevron-right font-light" />
 										<x:updateActionListener
 											property="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
@@ -602,10 +602,10 @@
 											value="tooltip" />
 										<f:ajax render="@form" />
 									</button>
-		
-		
+
+
 								</x:column>
-		
+
 								<x:column headerstyleClass="gw-table-fixed__sizeXXS"
 									rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
 									<f:facet name="header">
@@ -618,7 +618,7 @@
 										jsf:action="process_edit_step"
 										title="#{msgs.detailsDesSchritts}"
 										class="btn btn-blank me-2">
-										<i class="fa fa-pencil"></i>
+										<span class="fa fa-pencil" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -629,7 +629,7 @@
 											property="#{ProzessverwaltungForm.modusBearbeiten}"
 											value="" />
 									</button>
-		
+
 									<button
 										jsf:id="runPlugin"
 										title="#{msgs.executePlugin}"
@@ -638,7 +638,7 @@
 										jsf:action="#{ProzessverwaltungForm.startPlugin}"
 										onclick="preventDoubleSubmit(this);"
 										class="btn btn-blank me-2">
-										<i class="fa fa-puzzle-piece"></i>
+										<span class="fa fa-puzzle-piece" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -649,7 +649,7 @@
 											property="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
 									</button>
-		
+
 									<button
 										jsf:id="executeScript"
 										title="#{msgs.executeScripts}"
@@ -661,9 +661,9 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<i class="fa fa-cog"></i>
+										<span class="fa fa-cog" />
 									</button>
-		
+
 									<button
 										jsf:id="executeHttp"
 										title="#{msgs.executeHttpCalls}"
@@ -674,10 +674,10 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<i class="fa fa-cog"></i>
+										<span class="fa fa-cog" />
 									</button>
-		
-		
+
+
 									<button
 										jsf:id="exportProcess"
 										title="#{msgs.exportDMS}"
@@ -692,11 +692,11 @@
 										<x:updateActionListener
 											property="#{ProzessverwaltungForm.mySchritt}"
 											value="#{item}" />
-										<i class="fa fa-globe"></i>
+										<span class="fa fa-globe" />
 									</button>
-		
+
 								</x:column>
-		
+
 							</x:dataTable>
 						</div>
 					</div>

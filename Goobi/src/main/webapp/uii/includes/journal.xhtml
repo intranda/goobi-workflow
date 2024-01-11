@@ -31,7 +31,7 @@
         <div class="box thin-margin box-bordered">
             <div class="box-title">
                 <h3>
-                    <i class="fa #{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-comment' : NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal'] == '' ? 'fa-list-ol' : 'fa-folder-o'}" />
+                    <span class="fa #{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-comment' : NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal'] == '' ? 'fa-list-ol' : 'fa-folder-o'}" />
                     <h:outputText
                         value="#{msgs.processLog}"
                         rendered="#{NavigationForm.uiStatus['toggleJournal'] == null or NavigationForm.uiStatus['toggleJournal'] == ''}" />
@@ -50,7 +50,7 @@
                         title="#{msgs.resizeBox}"
                         aria-label="#{msgs.resizeBox}"
                         jsf:rendered="#{showBigButton}">
-                        <i class="fa #{NavigationForm.uiStatus['journalBig']?'fa-compress':'fa-expand'}" />
+                        <span class="fa #{NavigationForm.uiStatus['journalBig']?'fa-compress':'fa-expand'}" />
                         <f:setPropertyActionListener
                             target="#{NavigationForm.uiStatus['journalBig']}"
                             value="#{not NavigationForm.uiStatus['journalBig']}" />
@@ -63,7 +63,7 @@
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         class="btn btn-mini pull-right margin-right-10">
-                        <i class="fa #{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? 'fa-list-ol ' : 'fa-folder-open-o'}" />
+                        <span class="fa #{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? 'fa-list-ol ' : 'fa-folder-open-o'}" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal']=='imageComments' ? 'fileUpload' : '' }"
                             target="#{NavigationForm.uiStatus['toggleJournal']}" />
@@ -77,7 +77,7 @@
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
                         class="btn btn-mini pull-right margin-right-10">
-                        <i class="fa #{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-list-ol' : 'fa-comment'}" />
+                        <span class="fa #{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-list-ol' : 'fa-comment'}" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal']=='fileUpload' ? 'imageComments' : '' }"
                             target="#{NavigationForm.uiStatus['toggleJournal']}" />
@@ -108,7 +108,7 @@
                                     aria-expanded="false"
                                     onclick="switchExpanded(this.id)"
                                     data-toggle="dropdown">
-                                    <i class="fa fa-columns margin-right-5" />
+                                    <span class="fa fa-columns margin-right-5" />
                                     <span class="caret"></span>
                                 </button>
 
@@ -118,7 +118,7 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showDebugMessages"
                                             class="dropdown-item">
-                                            <i class="fa #{NavigationForm.uiStatus['process_log_level_debug']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_debug']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showDebugMessages}" />
                                             <x:updateActionListener
                                                 property="#{NavigationForm.uiStatus['process_log_level_debug']}"
@@ -130,7 +130,7 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showFileMessages"
                                             class="dropdown-item">
-                                            <i class="fa #{NavigationForm.uiStatus['process_log_level_file']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_file']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showFileMessages}" />
                                             <x:updateActionListener
                                                 property="#{NavigationForm.uiStatus['process_log_level_file']}"
@@ -142,7 +142,7 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showInfoMessages"
                                             class="dropdown-item">
-                                            <i class="fa #{NavigationForm.uiStatus['process_log_level_info']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_info']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showInfoMessages}" />
                                             <x:updateActionListener
                                                 property="#{NavigationForm.uiStatus['process_log_level_info']}"
@@ -155,7 +155,7 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showUserMessages"
                                             class="dropdown-item">
-                                            <i class="fa #{NavigationForm.uiStatus['process_log_level_user']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_user']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showUserMessages}" />
                                             <x:updateActionListener
                                                 property="#{NavigationForm.uiStatus['process_log_level_user']}"
@@ -167,7 +167,7 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showWarnMessages"
                                             class="dropdown-item">
-                                            <i class="fa #{NavigationForm.uiStatus['process_log_level_warn']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_warn']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showWarnMessages}" />
                                             <x:updateActionListener
                                                 property="#{NavigationForm.uiStatus['process_log_level_warn']}"
@@ -180,7 +180,7 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showErrorMessages"
                                             class="dropdown-item">
-                                            <i class="fa #{NavigationForm.uiStatus['process_log_level_error']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_error']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showErrorMessages}" />
                                             <x:updateActionListener
                                                 property="#{NavigationForm.uiStatus['process_log_level_error']}"
@@ -233,7 +233,7 @@
                                                         class="log_file"
                                                         jsf:action="#{bean.downloadFile(entry)}"
                                                         title="#{msgs.downloadFile}">
-                                                        <i class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
+                                                        <span class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
                                                         <h:outputText value="#{entry.basename}" />
                                                     </button>
 
@@ -244,7 +244,7 @@
                                                         class="log_file_delete btn-mini pull-right margin-right-10"
                                                         jsf:action="#{bean.deleteFile(entry)}"
                                                         title="#{msgs.deleteFile}">
-                                                        <i class="fa fa-trash-o" />
+                                                        <span class="fa fa-trash-o" />
                                                     </button>
                                                 </h:panelGroup>
                                             </td>
@@ -347,7 +347,7 @@
                                                 style="color: #333;"
                                                 jsf:action="#{bean.deleteFile(entry)}"
                                                 title="#{msgs.deleteFile}">
-                                                <i class="fa fa-trash-o" />
+                                                <span class="fa fa-trash-o" />
                                             </button>
                                             <!-- download button -->
                                             <button
@@ -356,7 +356,7 @@
                                                 style="color: #333;"
                                                 jsf:action="#{bean.downloadFile(entry)}"
                                                 title="#{msgs.downloadFile}">
-                                                <i class="fa fa-download" />
+                                                <span class="fa fa-download" />
                                             </button>
                                         </td>
                                     </tr>
@@ -378,5 +378,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

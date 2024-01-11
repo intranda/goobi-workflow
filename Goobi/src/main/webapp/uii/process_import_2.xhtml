@@ -127,6 +127,18 @@
 									required="#{property.required}" />
 							</h:panelGroup>
 
+							<h:panelGroup
+								rendered="#{property.type.name == 'textarea'}">
+								<intranda:formInputTextArea
+									id="textarea"
+									rows="7"
+									label="#{property.name}"
+									field="#{property.value}"
+									help="#{msgs.helpProperty}"
+									name="inputTextArea"
+									required="#{property.required}" />
+							</h:panelGroup>
+
 							<h:panelGroup rendered="#{(property.type.name == 'list')}">
 								<intranda:formInputDropDown2
 									id="selectMenu"
@@ -177,7 +189,7 @@
 								jsf:action="process_all">
 								<h:outputText value="#{msgs.abbrechen}" />
 							</a>
-							
+
 							<!-- Save -->
 							<button
 								class="btn btn-success"
@@ -185,10 +197,10 @@
 								type="submit"
 								jsf:action="#{MassImportForm.convertData}"
 								onclick="goobiWorkflowJS.progress.displayProgressBar()">
-								<i class="fa fa-save"></i>
+								<span class="fa fa-save" />
 								<span>#{msgs.speichern}</span>
 							</button>
-							
+
 							<!-- Back -->
 							<button
 								class="btn btn-primary-400 trigger-delete"
@@ -196,7 +208,7 @@
 								type="submit"
 								jsf:immediate="true"
 								jsf:action="process_import_1">
-								<i class="fa fa-arrow-circle-o-left"></i>
+								<span class="fa fa-arrow-circle-o-left" />
 								<span>#{msgs.zurueck}</span>
 							</button>
 
@@ -208,9 +220,3 @@
 
 	</ui:define>
 </ui:composition>
-
-
-
-
-
-

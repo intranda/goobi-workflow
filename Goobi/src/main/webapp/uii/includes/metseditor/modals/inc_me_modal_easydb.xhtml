@@ -24,7 +24,7 @@
             <div
                 class="modal-dialog"
                 role="document">
-				
+
                 <h:panelGroup
                     id="easydbModalContent"
                     layout="block"
@@ -55,12 +55,13 @@
                             <!-- easydb SEARCH INPUT -->
                             <div class="col-10">
                                 <!-- TODO: display object type, search type and search fields -->
-                                <x:inputText
-                                    id="easydbSearch"
-                                    styleClass="form-control"
-                                    onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"
-                                    value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchValue}" />
-
+                                <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'easydb'}">
+                                    <x:inputText
+                                        id="easydbSearch"
+                                        styleClass="form-control"
+                                        onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"
+                                        value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchValue}" />
+                                </c:if>
                                 <h:message
                                     for="easydbSearch"
                                     showDetail="true"
@@ -164,7 +165,7 @@
                                                     <h:commandLink
                                                         styleClass="btn btn--icon btn--icon-blue"
                                                         action="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.previous}">
-                                                        <i class="fa fa-angle-left"></i>
+                                                        <span class="fa fa-angle-left" />
                                                         <f:ajax render="easydbList" />
                                                     </h:commandLink>
                                                 </li>
@@ -178,7 +179,7 @@
                                                         styleClass="btn btn--icon btn--icon-blue"
                                                         id="navigate_right"
                                                         action="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.next}">
-                                                        <i class="fa fa-angle-right"></i>
+                                                        <span class="fa fa-angle-right" />
                                                         <f:ajax render="easydbList" />
                                                     </h:commandLink>
                                                 </li>

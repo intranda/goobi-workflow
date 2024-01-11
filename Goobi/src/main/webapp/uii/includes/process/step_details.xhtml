@@ -16,20 +16,20 @@
 		<link rel="stylesheet" href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}"/>
         <script type="text/javascript" src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}"/>
     	<script src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}"/>
-    	
+
     	<style>
 	        .CodeMirror{
 				border: 1px solid #ddd;
-				height:100px;	
-			}    
+				height:100px;
+			}
 	    </style>
-    	
+
         <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
 
             <div class="box box-color box-bordered">
                 <div class="box-title">
                     <h2 class="tableColumnMaxWidthExtraLong">
-                        <i class="fa fa-table"></i>
+                        <span class="fa fa-table" />
                         <h:outputText value="#{msgs.schrittDetails}" />
                         <h:outputText
                             value=" - #{ProzessverwaltungForm.myProzess.titel}"
@@ -45,7 +45,7 @@
                             class="btn btn-mini"
                             title="#{msgs.reload}"
                             jsf:rel="tooltip">
-                            <i class="fa fa-refresh"></i>
+                            <span class="fa fa-refresh" />
                             <f:passThroughAttribute
                                 name="data-toggle"
                                 value="tooltip" />
@@ -59,7 +59,7 @@
                             jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                             class="btn btn-mini"
                             jsf:rel="tooltip">
-                            <i class="fa fa-pencil"></i>
+                            <span class="fa fa-pencil" />
                             <f:passThroughAttribute
                                 name="data-toggle"
                                 value="tooltip" />
@@ -93,23 +93,23 @@
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 1}">
-                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o"></i> #{msgs.badgePriority1}
+                                <span class="badge badge-intranda-orange"> <span class="fa fa-lightbulb-o" /> #{msgs.badgePriority1}
                                 </span>
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 2}">
-                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o" /> #{msgs.badgePriority2}
+                                <span class="badge badge-intranda-orange"> <span class="fa fa-lightbulb-o" /> #{msgs.badgePriority2}
                                 </span>
                             </h:panelGroup>
 
                             <h:panelGroup
                                 rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 2 and ProzessverwaltungForm.mySchritt.prioritaet lt 10}">
-                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o"></i> #{msgs.badgePriority3}
+                                <span class="badge badge-intranda-orange"> <span class="fa fa-lightbulb-o" /> #{msgs.badgePriority3}
                                 </span>
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 9}">
-                                <span class="badge badge-intranda-red"> <i class="fa fa-bullhorn"></i> #{msgs.badgeCorrection}
+                                <span class="badge badge-intranda-red"> <span class="fa fa-bullhorn" /> #{msgs.badgeCorrection}
                                 </span>
                             </h:panelGroup>
                         </h:panelGroup>
@@ -282,7 +282,7 @@
             <div class="box box-color orange box-bordered">
                 <div class="box-title">
                     <h2 class="tableColumnMaxWidthExtraLong">
-                        <i class="fa fa-table"></i>
+                        <span class="fa fa-table" />
                         <h:outputText value="#{msgs.details}" />
                         <h:outputText
                             value="  - #{ProzessverwaltungForm.myProzess.titel}"
@@ -419,12 +419,12 @@
                                 </h:selectOneMenu> <h:message
                                     for="messageQueue"
                                     showDetail="true"
-                                    styleClass="help-inline font-danger" /> 
+                                    styleClass="help-inline font-danger" />
                                 <intranda:formHelp content="#{msgs.helpMessageQueueSelection}" />
                             </span>
                         </div>
                     </div>
-                    
+
                     <!-- help is still wrong -->
                     <div class="form-group" style="">
                     	<h:outputLabel
@@ -443,7 +443,7 @@
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
                             <intranda:formHelp content="#{msgs.helpProcessStepAutomaticThumbnail}" />
-		                    
+
 		                    <span id="thumbsSettings">
 		                    	<h:inputTextarea
 			                        id="ThumbSettings"
@@ -726,13 +726,13 @@
                             class="btn btn-success pull-right font-size-s margin-bottom-most"
                             jsf:id="absenden"
                             jsf:action="#{ProzessverwaltungForm.SchrittUebernehmen}">
-                            <i class="fa fa-save margin-right-5"></i>
+                            <span class="fa fa-save margin-right-5" />
                             <h:outputText value="#{msgs.speichern}" />
                             <x:updateActionListener
                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                 value="" />
                         </button>
- 
+
 
                         <!-- Cancel -->
                         <button
@@ -752,7 +752,7 @@
                             class="btn btn-danger font-size-s"
                             onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
                             jsf:rendered="#{ProzessverwaltungForm.mySchritt.id != null}">
-                            <i class="fa fa-trash-o margin-right-5"></i>
+                            <span class="fa fa-trash-o margin-right-5" />
                             <h:outputText value="#{msgs.loeschen}" />
                         </button>
 
@@ -854,7 +854,7 @@
 											}
 										}
 									}
-									
+
 									function showThumbsSettings(){
 										var element = document.getElementById("autoThumbnail");
 										if(element != null){
@@ -865,9 +865,9 @@
 											}
 										}
 									}
-									
+
 									var yamlCodeMirror;
-									
+
 									function initThumbCodeMirror(){
 										var yamlTextArea = document.getElementById("myform:ThumbSettings")
 										if(yamlTextArea) {
@@ -876,7 +876,7 @@
 					    						mode: 'yaml'
 					    					});
 											yamlCodeMirror.on('change', editor => {
-					    						document.getElementById("myform:ThumbSettings").innerHTML = editor.getValue();   
+					    						document.getElementById("myform:ThumbSettings").innerHTML = editor.getValue();
 					    				    });
 					                	}
 									}
@@ -884,5 +884,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

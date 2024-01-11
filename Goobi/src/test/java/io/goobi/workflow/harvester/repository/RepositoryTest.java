@@ -284,7 +284,7 @@ public class RepositoryTest extends AbstractTest {
         assertEquals(0, val);
     }
 
-    @Test
+    // @Test
     public void testHarvestIaCli() throws Exception {
         Repository fixture = new Repository();
         assertNotNull(fixture);

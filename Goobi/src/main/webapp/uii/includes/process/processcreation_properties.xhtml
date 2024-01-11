@@ -65,6 +65,52 @@
                 </div>
             </h:panelGroup>
 
+            <!-- TEXTAREA -->
+            <h:panelGroup rendered="#{(property.type.name == 'textarea')}">                
+                <div class="row">
+                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition != 'WRITEREQUIRED'}">
+                        <div class="col-12 col-md-3">
+                            <h:outputLabel
+                                for="textareaValue"
+                                styleClass="form__label"
+                                value="#{property.name}" />
+                        </div>
+                    </ui:fragment>
+
+                    <ui:fragment rendered="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}">
+                        <h:outputLabel
+                            for="textareaValue"
+                            styleClass="col-12 col-md-3 form__label"
+                            value="#{property.name}">
+
+                            <i
+                                class="ms-2 text-primary fa fa-asterisk"
+                                aria-hidden="true"
+                                title="#{msgs.requiredField}"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="right"></i>
+                        </h:outputLabel>
+                    </ui:fragment>
+
+                    <div class="col-12 col-md-9">
+                        <x:inputTextarea
+                            id="textareaValue"
+                            forceId="true"
+                            rows="7"
+                            styleClass="form-control"
+                            value="#{property.value}"
+                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
+                        </x:inputTextarea>
+                        <h:message
+                            for="textareaValue"
+                            showDetail="true"
+                            styleClass="help-inline font-danger" />
+                        <intranda:formHelp content="#{msgs.helpPropertyValue}" />
+                    </div>
+                </div>
+
+            </h:panelGroup>
+
             <!-- NUMBER -->
             <h:panelGroup rendered="#{property.type.name == 'integer' or property.type.name == 'number'}">
                 <div class="row">

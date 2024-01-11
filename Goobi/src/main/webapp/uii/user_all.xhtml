@@ -120,7 +120,7 @@
 														name="location"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.standort}"
-														ajaxRender="allUsers:myform" 
+														ajaxRender="allUsers:myform"
                                                         sortField="benutzer.standort" />
 												<intranda:columnheader
 														name="group"
@@ -134,7 +134,7 @@
 														value="#{msgs.projekte}"
 														ajaxRender="allUsers:myform"
                                                         sortField="projects" />
-                                                        
+
 												<intranda:columnheader
 														name="institution"
 														form="#{BenutzerverwaltungForm}"
@@ -202,7 +202,7 @@
 															<button jsf:id="edit" class="btn btn-blank"
 																jsf:rel="tooltip" jsf:action="user_edit"
 																title="#{msgs.bearbeiten}">
-																<i class="fa fa-pencil"></i>
+																<span class="fa fa-pencil" />
 																<f:passThroughAttribute name="data-toggle"
 																	value="tooltip" />
 																<f:passThroughAttribute name="aria-label"
@@ -213,7 +213,7 @@
 																<f:setPropertyActionListener
 																	target="#{BenutzerverwaltungForm.displayMode}" value="" />
                                                                 <f:setPropertyActionListener target="#{NavigationForm.uiStatus['toggleJournal']}" value=""/>
-                                                                
+
 															</button>
 
 															<!-- Benutzerprofil laden-Schaltknopf -->
@@ -222,7 +222,7 @@
 																class="btn btn-blank"
 																jsf:action="#{LoginForm.EinloggenAls}"
 																title="#{msgs.benutzerprofilLaden}">
-																<i class="fa fa-user-secret"></i>
+																<span class="fa fa-user-secret" />
 																<f:passThroughAttribute name="aria-label"
 																	value="#{msgs.benutzerprofilLaden}" />
 																<f:passThroughAttribute name="data-toggle"
@@ -238,7 +238,7 @@
 																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
 																jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
 																jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
-																<i class="fa fa-key"></i>
+																<span class="fa fa-key" />
 																<f:passThroughAttribute name="data-toggle"
 																	value="tooltip" />
 																<f:setPropertyActionListener
@@ -261,7 +261,7 @@
 									<button jsf:id="newUser" class="btn btn-primary-400 me-auto"
 										jsf:action="#{BenutzerverwaltungForm.Neu}"
 										jsf:immediate="true">
-										<i class="fa fa-plus"></i>
+										<span class="fa fa-plus" />
 										<span>#{msgs.neuenBenutzerAnlegen}</span>
 										<f:setPropertyActionListener
 											target="#{BenutzerverwaltungForm.displayMode}" value="" />

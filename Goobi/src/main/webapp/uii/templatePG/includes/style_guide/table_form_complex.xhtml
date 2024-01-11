@@ -34,7 +34,7 @@
 
 				<!-- SEARCH -->
 				<div class="gw-table__search">
-					
+
 					<!-- HITS -->
 					<div class="gw-table__search__length">
 						<h:outputText value="#{msgs.treffer}: 1234" />
@@ -43,7 +43,7 @@
 
 					<!-- FILTER AREA -->
 					<div class="gw-table__filters">
-						
+
 						<!-- LIMIT CONTENT -->
 						<h:form id="isActiveUsers">
 							<button
@@ -69,11 +69,11 @@
 							<h:form
 								id="searchform"
 								styleClass="search-form">
-								
+
 								<!-- FILTER INPUT -->
 								<div class="input-group">
 									<span class="input-group-text">
-										<i class="fa fa-search"></i>
+										<span class="fa fa-search" />
 									</span>
 									<h:inputText
 										id="searchfield"
@@ -105,14 +105,14 @@
 									style="display:none"
 									action="#{BenutzerverwaltungForm.FilterAlleStart}" />
 								<!-- // SUBMIT -->
-								
+
 							</h:form>
 						</div>
 						<!-- // FILTER -->
-						
+
 					</div>
 					<!-- // FILTER AREA -->
-					
+
 				</div>
 				<!-- // SEARCH -->
 
@@ -159,7 +159,7 @@
 									</tr>
 								</thead>
 								<!-- // COLUMNHEADER -->
-								
+
 								<!-- CONTENT ROWS -->
 								<ui:repeat
 									var="item"
@@ -179,19 +179,19 @@
 													jsf:rel="tooltip"
 													jsf:action="user_edit"
 													title="#{msgs.benutzerBearbeiten}">
-													<i class="fa fa-pencil"></i>
+													<span class="fa fa-pencil" />
 												</button>
 											</div>
 										</td>
 									</tr>
 								</ui:repeat>
 								<!-- // CONTENT ROWS -->
-								
+
 							</table>
 						</div>
 					</div>
 					<!-- // TABLE -->
-					
+
 					<!-- ACTION BELOW TABLE -->
 					<div class="box__actions">
 
@@ -201,23 +201,23 @@
 							class="btn btn-primary-400 me-auto"
 							jsf:action="#{BenutzerverwaltungForm.Neu}"
 							jsf:immediate="true">
-							<i class="fa fa-plus"></i>
+							<span class="fa fa-plus" />
 							<span>#{msgs.neuenBenutzerAnlegen}</span>
 						</button>
 						<!-- // BUTTON NEW -->
-						
+
 						<!-- PAGINATOR -->
 						<div class="dataTables__paginator">
 
 							<button
 								type="button"
 								class="btn btn-blank">
-								<i class="fa fa-angle-double-left"></i>
+								<span class="fa fa-angle-double-left" />
 							</button>
 							<button
 								type="button"
 								class="btn btn-primary-400">
-								<i class="fa fa-angle-left"></i>
+								<span class="fa fa-angle-left" />
 								<h:outputText value=" #{msgs.pagePrevious}" />
 							</button>
 
@@ -248,27 +248,27 @@
 								class="btn btn-primary-400"
 								jsf:id="navnext">
 								<h:outputText value="#{msgs.pageNext} " />
-								<i class="fa fa-angle-right"></i>
+								<span class="fa fa-angle-right" />
 							</button>
 							<button
 								type="button"
 								class="btn btn-blank"
 								aria-label="#{msgs.lastPage}"
 								jsf:id="#{idPref}navlast">
-								<i class="fa fa-angle-double-right"></i>
+								<span class="fa fa-angle-double-right" />
 							</button>
 						</div>
 						<!-- // PAGINATOR -->
-						
+
 					</div>
 					<!-- //ACTION BELOW TABLE -->
-					
+
 				</h:form>
 				<!-- // FORM -->
-				
+
 			</div>
 			<!-- // TABLE WRAPPER -->
-			
+
 		</intranda:box>
 
 		<!-- CODE -->
@@ -304,7 +304,7 @@
 
 		&lt;!-- SEARCH --&gt;
 		&lt;div class=&quot;gw-table__search&quot;&gt;
-			
+
 			&lt;!-- HITS --&gt;
 			&lt;div class=&quot;gw-table__search__length&quot;&gt;
 				&lt;h:outputText value=&quot;#{msgs.treffer}: 1234&quot; /&gt;
@@ -313,7 +313,7 @@
 
 			&lt;!-- FILTER AREA --&gt;
 			&lt;div class=&quot;gw-table__filters&quot;&gt;
-				
+
 				&lt;!-- LIMIT CONTENT --&gt;
 				&lt;h:form id=&quot;isActiveUsers&quot;&gt;
 					&lt;button
@@ -339,7 +339,7 @@
 					&lt;h:form
 						id=&quot;searchform&quot;
 						styleClass=&quot;search-form&quot;&gt;
-						
+
 						&lt;!-- FILTER INPUT --&gt;
 						&lt;div class=&quot;input-group&quot;&gt;
 							&lt;span class=&quot;input-group-text&quot;&gt;
@@ -375,14 +375,14 @@
 							style=&quot;display:none&quot;
 							action=&quot;{BenutzerverwaltungForm.FilterAlleStart}&quot; /&gt;
 						&lt;!-- // SUBMIT --&gt;
-						
+
 					&lt;/h:form&gt;
 				&lt;/div&gt;
 				&lt;!-- // FILTER --&gt;
-				
+
 			&lt;/div&gt;
 			&lt;!-- // FILTER AREA --&gt;
-			
+
 		&lt;/div&gt;
 		&lt;!-- // SEARCH --&gt;
 
@@ -426,7 +426,7 @@
 							&lt;/tr&gt;
 						&lt;/thead&gt;
 						&lt;!-- // COLUMNHEADER --&gt;
-						
+
 						&lt;!-- CONTENT ROWS --&gt;
 						&lt;ui:repeat
 							var=&quot;item&quot;
@@ -453,12 +453,12 @@
 							&lt;/tr&gt;
 						&lt;/ui:repeat&gt;
 						&lt;!-- // CONTENT ROWS --&gt;
-						
+
 					&lt;/table&gt;
 				&lt;/div&gt;
 			&lt;/div&gt;
 			&lt;!-- // TABLE --&gt;
-			
+
 			&lt;!-- ACTION BELOW TABLE --&gt;
 			&lt;div class=&quot;box__actions&quot;&gt;
 
@@ -472,7 +472,7 @@
 					&lt;span&gt;#{msgs.neuenBenutzerAnlegen}&lt;/span&gt;
 				&lt;/button&gt;
 				&lt;!-- // BUTTON NEW --&gt;
-				
+
 				&lt;!-- PAGINATOR --&gt;
 				&lt;div class=&quot;dataTables__paginator&quot;&gt;
 
@@ -526,16 +526,16 @@
 					&lt;/button&gt;
 				&lt;/div&gt;
 				&lt;!-- // PAGINATOR --&gt;
-				
+
 			&lt;/div&gt;
 			&lt;!-- //ACTION BELOW TABLE --&gt;
-			
+
 		&lt;/h:form&gt;
 		&lt;!-- // FORM --&gt;
-		
+
 	&lt;/div&gt;
 	&lt;!-- // TABLE WRAPPER --&gt;
-	
+
 &lt;/intranda:box&gt;
 						</code>
 					</pre>
@@ -547,4 +547,3 @@
 
 	</composite:implementation>
 </ui:composition>
-

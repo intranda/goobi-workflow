@@ -13,7 +13,7 @@
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
                             <h3>
-                                <i class="fa fa-wrench"></i>
+                                <span class="fa fa-wrench" />
                                 <h:outputText value="#{msgs.moeglicheAktionen}" />
                             </h3>
                         </div>
@@ -373,7 +373,7 @@
 		                                    <div class="modal-header">
 
 		                                        <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
-		                                            <i class="fa fa-times"></i>
+		                                            <span class="fa fa-times" />
 		                                        </a>
 		                                        <h4 class="modal-title" id="myModalLabel">
 		                                            <h:outputText value="GoobiScript" />
@@ -402,7 +402,7 @@
 		                                            <h:outputText value="#{msgs.cancel} " />
 		                                        </button>
 		                                        <button jsf:action="#{ProzessverwaltungForm.runGoobiScript}" jsf:id="goobiScriptConfirmButton" title="#{msgs.goobiScriptAusfuehren}" jsf:rel="tooltip" class="btn btn-red" onclick="preventDoubleSubmit(this);">
-		                                            <i class="fa fa-cogs margin-right-10"></i>
+		                                            <span class="fa fa-cogs margin-right-10" />
 		                                            <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
 		                                        </button>
 
@@ -423,5 +423,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

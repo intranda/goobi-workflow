@@ -73,16 +73,16 @@
                                         </h:outputLink>
                                         <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
                                             <h:panelGroup rendered="#{proc.readValue eq 'true'}">
-                                                <i class="fa fa-check-square-o fa-lg"></i>
+                                                <span class="fa fa-check-square-o fa-lg" />
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{proc.readValue ne 'true'}">
-                                                <i class="fa fa-square-o fa-lg"></i>
+                                                <span class="fa fa-square-o fa-lg" />
                                             </h:panelGroup>
                                         </h:panelGroup>
                                     </td>
 
                                     <td>
-                                        
+
                                         <!-- EDIT BUTTON FOR REGULAR TASK -->
                                         <button
                                             jsf:id="editProperty"
@@ -90,7 +90,7 @@
                                             title="#{msgs.bearbeiten}"
                                             class="btn btn-blank"
                                             jsf:rendered="#{!isBatchStep and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
-                                            <i class="fa fa-pencil"></i>
+                                            <span class="fa fa-pencil" />
                                             <f:setPropertyActionListener
                                                 target="#{propertyOwner.processProperty}"
                                                 value="#{proc}" />
@@ -101,7 +101,7 @@
                                                 target="#{bean.modusBearbeiten}"
                                                 value="eigenschaft" />
                                         </button>
-                                        
+
                                         <!-- EDIT BUTTON FOR BATCH TASK -->
                                         <button
                                             jsf:id="editPropertyBatch"
@@ -109,7 +109,7 @@
                                             title="#{msgs.bearbeiten}"
                                             class="btn btn-blank"
                                             jsf:rendered="#{isBatchStep and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
-                                            <i class="fa fa-pencil"></i>
+                                            <span class="fa fa-pencil" />
                                             <f:setPropertyActionListener
                                                 target="#{propertyOwner.processProperty}"
                                                 value="#{proc}" />
@@ -128,7 +128,7 @@
                                             title="#{msgs.duplicate}"
                                             class="btn btn-blank ms-2"
                                             jsf:rendered="#{proc.duplicationAllowed and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
-                                            <i class="fa fa-plus"></i>
+                                            <span class="fa fa-plus" />
                                             <x:updateActionListener
                                                 property="#{propertyOwner.processProperty}"
                                                 value="#{proc}" />
@@ -194,10 +194,10 @@
                                         </h:outputLink>
                                         <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
                                             <h:panelGroup rendered="#{process_item.readValue eq 'true'}">
-                                                <i class="fa fa-check-square-o fa-lg"></i>
+                                                <span class="fa fa-check-square-o fa-lg" />
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{process_item.readValue ne 'true'}">
-                                                <i class="fa fa-square-o fa-lg"></i>
+                                                <span class="fa fa-square-o fa-lg" />
                                             </h:panelGroup>
                                         </h:panelGroup>
                                     </td>
@@ -213,7 +213,7 @@
                                                     title="#{msgs.bearbeiten}"
                                                     class="btn btn-blank"
                                                     jsf:rendered="#{!isBatchStep and propertyOwner.containerAccess[container] and process_item.type.name != 'metadata'}">
-                                                    <i class="fa fa-pencil"></i>
+                                                    <span class="fa fa-pencil" />
                                                     <f:setPropertyActionListener
                                                         target="#{propertyOwner.container}"
                                                         value="#{container}" />
@@ -221,7 +221,7 @@
                                                         target="#{bean.modusBearbeiten}"
                                                         value="eigenschaft" />
                                                 </button>
-                                                
+
                                                 <!-- EDIT BUTTON FOR BATCH TASK -->
                                                 <button
                                                     jsf:id="editContainerBatch"
@@ -229,7 +229,7 @@
                                                     title="#{msgs.bearbeiten}"
                                                     class="btn btn-blank"
                                                     jsf:rendered="#{isBatchStep and propertyOwner.containerAccess[container] and process_item.type.name != 'metadata'}">
-                                                    <i class="fa fa-pencil"></i>
+                                                    <span class="fa fa-pencil" />
                                                     <f:setPropertyActionListener
                                                         target="#{propertyOwner.container}"
                                                         value="#{container}" />
@@ -245,7 +245,7 @@
                                                     title="#{msgs.duplicate}"
                                                     jsf:rendered="#{process_item.duplicationAllowed and process_item.type.name != 'metadata'}"
                                                     class="btn btn-blank ms-2">
-                                                    <i class="fa fa-plus"></i>
+                                                    <span class="fa fa-plus" />
                                                     <x:updateActionListener
                                                         property="#{propertyOwner.container}"
                                                         value="#{container}" />
@@ -339,6 +339,33 @@
                                 </div>
                             </h:panelGroup>
                             <!-- // VALUE AS TEXT -->
+
+                            <!-- VALUE AS TEXTAREA -->
+                            <h:panelGroup
+                                styleClass="row"
+                                rendered="#{myprocess_item.type.name == 'textarea'}">
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{myprocess_item.name}"
+                                        labelFor="textareaValue"
+                                        labelRequired="false" />
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <h:inputTextarea
+                                        id="textareaValue"
+                                        rows="7"
+                                        forceId="true"
+                                        styleClass="form-control form__input"
+                                        value="#{myprocess_item.value}"
+                                        required="false"
+                                        readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
+                                    </h:inputTextarea>
+                                    <intranda:formHelp
+                                        content="#{msgs.helpPropertyValue}"
+                                        msgFor="textareaValue" />
+                                </div>
+                            </h:panelGroup>
+                            <!-- // VALUE AS TEXTAREA -->
 
                             <!-- VALUE AS NUMBER -->
                             <h:panelGroup
@@ -521,7 +548,7 @@
                                 jsf:rendered="#{!isBatchStep}"
                                 class="btn btn-success submitOnEnter"
                                 jsf:action="#{propertyOwner.saveCurrentProperty}">
-                                <i class="fa fa-save"></i>
+                                <span class="fa fa-save" />
                                 <span>
                                     <h:outputText value="#{msgs.speichern}" />
                                 </span>
@@ -536,7 +563,7 @@
                                 jsf:rendered="#{isBatchStep}"
                                 class="btn btn-success submitOnEnter"
                                 jsf:action="#{propertyOwner.saveCurrentPropertyForAll}">
-                                <i class="fa fa-save"></i>
+                                <span class="fa fa-save" />
                                 <span>
                                     <h:outputText value="#{msgs.applyToAllProcesses}" />
                                 </span>
@@ -551,7 +578,7 @@
                                 jsf:rendered="#{isBatchStep}"
                                 class="btn btn-success submitOnEnter"
                                 jsf:action="#{propertyOwner.saveCurrentProperty}">
-                                <i class="fa fa-save"></i>
+                                <span class="fa fa-save" />
                                 <span>
                                     <h:outputText value="#{msgs.applyToThisProcess}" />
                                 </span>

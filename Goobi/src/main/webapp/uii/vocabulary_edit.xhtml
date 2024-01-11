@@ -64,7 +64,7 @@
 									jsf:rel="tooltip"
 									jsf:action="#{vocabularyBean.downloadRecords}"
 									title="#{msgs.vocabularyManager_downloadRecords}">
-									<i class="fa fa-download"></i>
+									<span class="fa fa-download" />
 									<f:passThroughAttribute
 										name="data-toggle"
 										value="tooltip" />
@@ -80,7 +80,7 @@
 									jsf:rel="tooltip"
 									jsf:action="#{vocabularyBean.uploadRecords}"
 									title="#{msgs.vocabularyManager_uploadRecords}">
-									<i class="fa fa-upload"></i>
+									<span class="fa fa-upload" />
 									<f:passThroughAttribute
 										name="data-toggle"
 										value="tooltip" />
@@ -318,7 +318,7 @@
 														<f:setPropertyActionListener
 															target="#{vocabularyBean.currentDefinition}"
 															value="#{definition}" />
-														<i class="fa fa-trash-o font-bold"></i>
+														<span class="fa fa-trash-o font-bold" />
 													</button>
 												</div>
 
@@ -370,7 +370,7 @@
 									jsf:id="absenden"
 									type="submit"
 									jsf:action="#{vocabularyBean.saveVocabulary}">
-									<i class="fa fa-save"></i>
+									<span class="fa fa-save" />
 									<span>
 										<h:outputText value="#{msgs.speichern}" />
 									</span>
@@ -382,7 +382,7 @@
 									class="btn btn-hot trigger-delete"
 									onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
 									jsf:rendered="#{vocabularyBean.currentVocabulary.id != null}">
-									<i class="fa fa-trash-o"></i>
+									<span class="fa fa-trash-o" />
 									<span>
 										<h:outputText value="#{msgs.loeschen}" />
 									</span>

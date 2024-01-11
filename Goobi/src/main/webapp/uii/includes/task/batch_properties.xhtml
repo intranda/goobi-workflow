@@ -11,12 +11,12 @@
 
             <h:form rendered="#{AktuelleSchritteForm.modusBearbeiten!='eigenschaft' and (AktuelleSchritteForm.batchHelper.propertyListSize>0 or AktuelleSchritteForm.batchHelper.sizeOfDisplayableMetadata>0)}">
                 <div class="dataTables_wrapper">
-                
+
                 <table class="table table-hover table-bordered">
-                   
+
                     <x:dataList var="container" value="#{AktuelleSchritteForm.batchHelper.containerList}" rowCountVar="rowCount" rowIndexVar="rowIndex" id="allProperties">
                         <x:dataList var="proc" value="#{AktuelleSchritteForm.batchHelper.containerlessProperties}" rowCountVar="propCount" rowIndexVar="propInd" id="containerlessProperties">
-							
+
 							<h:panelGroup rendered="#{container == 0}">
 								<tr>
 									<td><h:outputText value="#{proc.name}" /></td>
@@ -32,30 +32,30 @@
 		                                </h:outputLink>
 		                                <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
 		                                	<h:panelGroup rendered="#{proc.readValue eq 'true'}">
-		                                		<i class="fa fa-check-square-o fa-lg"></i>
+		                                		<span class="fa fa-check-square-o fa-lg" />
 		                                	</h:panelGroup>
 		                                	<h:panelGroup rendered="#{proc.readValue ne 'true'}">
-		                                		<i class="fa fa-square-o fa-lg"></i>
+		                                		<span class="fa fa-square-o fa-lg" />
 		                                	</h:panelGroup>
 		                                </h:panelGroup>
 									</td>
-									
+
 									<td>
 										<button jsf:id="editBatchProperty" jsf:action="task_batch_edit" title="#{msgs.bearbeiten}" class="btn btn-small"
 			                                jsf:rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
-			                                <i class="fa fa-pencil"></i>
+			                                <span class="fa fa-pencil" />
 			                                <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
 	                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
 	                                        <x:updateActionListener property="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
 			                            </button>
-			                            
+
 			                             <button jsf:id="duplicateBatchProperty" jsf:action="#{AktuelleSchritteForm.batchHelper.duplicateProperty}" title="#{msgs.duplicate}" class="btn btn-small margin-left-5"
 	                                            jsf:rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
-	                                          <i class="fa fa-plus"></i>
+	                                          <span class="fa fa-plus" />
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
 	                                     </button>
-			                            
+
 			                        </td>
 								</tr>
 							</h:panelGroup>
@@ -84,43 +84,43 @@
 		                                </h:outputLink>
 		                                <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
 		                                	<h:panelGroup rendered="#{process_item.readValue eq 'true'}">
-		                                		<i class="fa fa-check-square-o fa-lg"></i>
+		                                		<span class="fa fa-check-square-o fa-lg" />
 		                                	</h:panelGroup>
 		                                	<h:panelGroup rendered="#{process_item.readValue ne 'true'}">
-		                                		<i class="fa fa-square-o fa-lg"></i>
+		                                		<span class="fa fa-square-o fa-lg" />
 		                                	</h:panelGroup>
 		                                </h:panelGroup>
 									</td>
-		                       		
+
                                    	<h:panelGroup rendered="#{propInd ==0}">
                                         <td rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}">
 	                                        <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 			                                    <button jsf:id="editContainer" jsf:action="task_batch_edit" title="#{msgs.bearbeiten}" class="btn btn-small" jsf:rendered="#{AktuelleSchritteForm.batchHelper.containerAccess[container] and process_item.type.name != 'metadata'}">
-			                                        <i class="fa fa-pencil"></i>
+			                                        <span class="fa fa-pencil" />
 			                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
                                                         value="#{container}" />
                                                     <x:updateActionListener property="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
 			                                    </button>
-			                                
+
 			                                	<button jsf:id="duplicateContainer" jsf:action="#{AktuelleSchritteForm.batchHelper.duplicateContainer}" title="#{msgs.duplicate}"
                                                     jsf:rendered="#{process_item.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and process_item.type.name != 'metadata'}" class="btn btn-small margin-left-5">
-                                                     <i class="fa fa-plus"></i>
+                                                     <span class="fa fa-plus" />
                                                     <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
                                                         value="#{container}" />
                                                 </button>
-				                                
+
 			                                </h:panelGroup>
 	                                	</td>
                                      </h:panelGroup>
-			                            
-                                        
+
+
                                 </tr>
                             </h:panelGroup>
- 
+
                         </x:dataList>
                     </x:dataList>
-                    
-                    
+
+
                      <c:forEach items="#{AktuelleSchritteForm.batchHelper.displayableMetadataMap}" var="metadata">
                         <tr>
                            <td><h:outputText value="#{msgs[metadata.key]}"/> </td>
@@ -136,21 +136,21 @@
                 </table>
                 </div>
             </h:form>
-            
+
              <h:form styleClass="form-horizontal form-bordered"
                 rendered="#{AktuelleSchritteForm.modusBearbeiten=='eigenschaft' and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 
              	<x:dataList var="myprocess_item" value="#{AktuelleSchritteForm.batchHelper.containerProperties}">
  					<div class="row">
                    		<div class="col-sm-12">
-                        
+
 	                        <h:panelGroup
 	                            rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
-	
+
 	                            <div class="form-group border-bottom-light">
 	                                <h:outputLabel for="value" styleClass="control-label col-sm-3" value="#{myprocess_item.name}" />
 	                                <div class="col-sm-9">
-	                                    <x:inputText id="value" forceId="true" styleClass="form-control" value="#{myprocess_item.value}" 
+	                                    <x:inputText id="value" forceId="true" styleClass="form-control" value="#{myprocess_item.value}"
 	                                        readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
 	                                    </x:inputText>
 	                                    <h:message for="value" showDetail="true" styleClass="help-inline font-danger" />
@@ -158,7 +158,7 @@
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
-	
+
 	                        <!-- numbers only -->
 	                        <h:panelGroup rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
 	                            <div class="form-group border-bottom-light">
@@ -173,8 +173,8 @@
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
-	
-	
+
+
 	                        <!--  SelectOneMenu -->
 	                        <h:panelGroup rendered="#{(myprocess_item.type.name == 'list')}">
 	                            <div class="form-group border-bottom-light">
@@ -190,7 +190,7 @@
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
-	
+
 	                        <!--  SelectManyMenu -->
 	                        <h:panelGroup rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
 	                            <div class="form-group border-bottom-light">
@@ -206,8 +206,8 @@
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
-	
-	
+
+
 	                        <!-- Boolean  -->
 	                        <h:panelGroup rendered="#{(myprocess_item.type.name == 'boolean')}">
 	                            <div class="form-group border-bottom-light">
@@ -216,21 +216,21 @@
 	                                    <h:selectBooleanCheckbox id="boolean" value="#{myprocess_item.booleanValue}"
 	                                        rendered="#{myprocess_item.currentStepAccessCondition != 'READ'}">
 	                                    </h:selectBooleanCheckbox>
-	                                    
+
 	                                    <h:panelGroup rendered="#{myprocess_item.currentStepAccessCondition == 'READ' and myprocess_item.booleanValue eq 'true'}">
-	                                		<i class="fa fa-check-square-o fa-lg"></i>
+	                                		<span class="fa fa-check-square-o fa-lg" />
 	                                	</h:panelGroup>
 	                                	<h:panelGroup rendered="#{myprocess_item.currentStepAccessCondition == 'READ' and myprocess_item.booleanValue ne 'true'}">
-	                                		<i class="fa fa-square-o fa-lg"></i>
+	                                		<span class="fa fa-square-o fa-lg" />
 	                                	</h:panelGroup>
-                                	
+
                                 	    <h:message for="boolean" showDetail="true" styleClass="help-inline font-danger" />
 	                                     <intranda:formHelp content="#{msgs.helpPropertyValue}" />
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
-	
-	
+
+
 	                        <!--  Date   -->
 	                        <h:panelGroup rendered="#{(myprocess_item.type.name == 'date')}">
 	                            <div class="form-group border-bottom-light">
@@ -242,7 +242,7 @@
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
-                            
+
                                                                 <!--  HTML   -->
                              <h:panelGroup rendered="#{(myprocess_item.type.name == 'html')}">
                                 <div class="form-group">
@@ -255,34 +255,32 @@
                                 </div>
                              </h:panelGroup>
                         </div>
-                        </div>    
+                        </div>
                 </x:dataList>
-                
+
                  <div class="form-actions">
 
 	                <!-- Save -->
 					<button jsf:id="applyToAllProcesses" class="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block" jsf:action="#{AktuelleSchritteForm.batchHelper.saveCurrentPropertyForAll}">
-	                    <i class="fa fa-save margin-right-5"></i>
+	                    <span class="fa fa-save margin-right-5" />
 	                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
 	                    <h:outputText value="#{msgs.applyToAllProcesses}" />
 	                </button>
 
 	                <button jsf:id="applyToThisProcess" class="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block" jsf:action="#{AktuelleSchritteForm.batchHelper.saveCurrentProperty}">
-	                    <i class="fa fa-save margin-right-5"></i>
+	                    <span class="fa fa-save margin-right-5" />
 	                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
 	                    <h:outputText value="#{msgs.applyToThisProcess}" />
 	                </button>
-	
+
 	                <button jsf:id="cancelEdition" class="btn pull-right font-size-s margin-bottom-more margin-left-5" jsf:immediate="true" jsf:action="#{NavigationForm.Reload}">
 	                    <h:outputText value="#{msgs.abbrechen}" />
 	                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
 	                </button>
-	            </div>         
-            
+	            </div>
+
         </h:form>
 
     </composite:implementation>
 
 </ui:composition>
-
-

@@ -107,7 +107,7 @@
                                                             jsf:rel="tooltip"
                                                             title="#{msgs.jobs_run_once_now}"
                                                             class="btn btn-blank float-end">
-                                                            <i class="fa fa-repeat" />
+                                                            <span class="fa fa-repeat" />
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />
@@ -124,7 +124,7 @@
                                                             jsf:rel="tooltip"
                                                             class="btn btn-blank me-2 float-end"
                                                             title="#{msgs.jobs_pause_job}">
-                                                            <i class="fa fa-pause" />
+                                                            <span class="fa fa-pause" />
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />
@@ -141,7 +141,7 @@
                                                             jsf:rel="tooltip"
                                                             class="btn btn-blank me-2 float-end"
                                                             title="#{msgs.jobs_run_job}">
-                                                            <i class="fa fa-play" />
+                                                            <span class="fa fa-play" />
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />
@@ -179,7 +179,7 @@
                                         jsf:action="#{jobBean.pauseAllJobs}"
                                         jsf:rendered="#{!jobBean.paused}"
                                         class="btn btn-blank float-end">
-                                        <i class="fa fa-pause"></i>
+                                        <span class="fa fa-pause" />
                                         <span>#{msgs.jobs_pause_all}</span>
                                     </button>
                                     <!-- // BUTTON PAUSE -->
@@ -190,7 +190,7 @@
                                         jsf:action="#{jobBean.resumeAllJobs}"
                                         jsf:rendered="#{jobBean.paused}"
                                         class="btn btn-primary-400 float-end">
-                                        <i class="fa fa-play"></i>
+                                        <span class="fa fa-play" />
                                         <span>#{msgs.jobs_resume_all}</span>
                                     </button>
                                     <!-- // BUTTON RESUME -->
@@ -239,7 +239,7 @@
                                             <!-- FILTER INPUT -->
                                             <div class="input-group">
                                                 <span class="input-group-text">
-                                                    <i class="fa fa-search"></i>
+                                                    <span class="fa fa-search" />
                                                 </span>
                                                 <h:inputText
                                                     id="searchfield"
@@ -358,14 +358,14 @@
                                             </ui:repeat>
                                         </table>
                                     </div>
-                                
+
                                     <div class="box__actions">
                                         <intranda:tablePaginator id="jobhistory" paginator="#{jobBean.paginator}" />
                                     </div>
-                                
+
                                 </div>
-                                
-                                
+
+
                             </h:form>
 
                         </div>

@@ -95,7 +95,7 @@
                                                 jsf:rel="tooltip"
                                                 jsf:action="repository_edit"
                                                 title="#{msgs.bearbeiten}">
-                                                <i class="fa fa-pencil"></i>
+                                                <span class="fa fa-pencil" />
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
@@ -112,7 +112,7 @@
                                                 jsf:rel="tooltip"
                                                 title="#{msgs.jobs_run_once_now}"
                                                 class="btn btn-blank float-end">
-                                                <i class="fa fa-repeat" />
+                                                <span class="fa fa-repeat" />
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
@@ -139,7 +139,7 @@
                                 class="btn btn-primary-400 me-auto"
                                 jsf:action="#{harvesterBean.createNewRepository}"
                                 jsf:immediate="true">
-                                <i class="fa fa-plus"></i>
+                                <span class="fa fa-plus" />
                                 <span>
                                     <h:outputText value="#{msgs.intranda_administration_create_repository}" />
                                 </span>

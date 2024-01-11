@@ -27,6 +27,7 @@ import lombok.Getter;
 
 public enum Type {
     TEXT("text"),
+    TEXTAREA("textarea"),
     LIST("list"),
     LISTMULTISELECT("listmultiselect"),
     BOOLEAN("boolean"),
@@ -67,6 +68,9 @@ public enum Type {
         }
         if (inName.equalsIgnoreCase("HTML")) {
             return HTML;
+        }
+        if (inName.equalsIgnoreCase("TEXTAREA")) {
+            return TEXTAREA;
         }
 
         return TEXT;

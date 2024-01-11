@@ -41,7 +41,7 @@
 									class="btn d-flex align-items-center btn--title-action-neutral"
 									jsf:rel="tooltip"
 									jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-									<i class="fa fa-pencil"></i>
+									<span class="fa fa-pencil" />
 									<f:passThroughAttribute
 										name="data-toggle"
 										value="tooltip" />
@@ -55,12 +55,12 @@
 									class="btn d-flex align-items-center btn--title-action-neutral"
 									jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 									title="#{msgs.werkstueckHinzufuegen}">
-									<i class="fa fa-plus margin-right-5"></i>
+									<span class="fa fa-plus margin-right-5" />
 									<f:passThroughAttribute
 										name="data-toggle"
 										value="tooltip" />
 								</button>
-								
+
 							</div>
 						</intranda:boxTitle>
 
@@ -88,5 +88,3 @@
 
 	</composite:implementation>
 </ui:composition>
-
-
