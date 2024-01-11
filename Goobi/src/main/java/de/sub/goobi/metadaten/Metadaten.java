@@ -1603,7 +1603,6 @@ public class Metadaten implements Serializable {
         this.modusStrukturelementVerschieben = false;
         this.modusCopyDocstructFromOtherProcess = false;
 
-        readMetadataEditorExtensions();
 
         this.currentTifFolder = null;
         readAllTifFolders();
@@ -1615,6 +1614,7 @@ public class Metadaten implements Serializable {
             return null;
         }
         this.document = this.gdzfile.getDigitalDocument();
+        readMetadataEditorExtensions();
 
         this.document.addAllContentFiles();
         this.metahelper = new MetadatenHelper(this.myPrefs, this.document);
@@ -1811,7 +1811,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
