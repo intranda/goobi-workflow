@@ -138,12 +138,12 @@ public class VariableReplacer {
     private static final String REGEX_METAS = PREFIX + "metas\\.([\\w.-]*)" + SUFFIX;
 
     // $(folder.xyz) or {folder.xyz} are both ok
-    private static final String REGEX_FOLDER = PREFIX + "folder\\.([^)]+)" + SUFFIX;
+    private static final String REGEX_FOLDER = PREFIX + "folder\\.([^)]}]+?)" + SUFFIX;
 
-    private static final String REGEX_PRODUCT = PREFIX + "product\\.([^)}]+)" + SUFFIX;
-    private static final String REGEX_TEMPLATE = PREFIX + "template\\.([^)}]+)" + SUFFIX;
-    private static final String REGEX_PROCESS = PREFIX + "process\\.([^)}]+)" + SUFFIX;
-    private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+)" + SUFFIX;
+    private static final String REGEX_PRODUCT = PREFIX + "product\\.([^)}]+?)" + SUFFIX;
+    private static final String REGEX_TEMPLATE = PREFIX + "template\\.([^)}]+?)" + SUFFIX;
+    private static final String REGEX_PROCESS = PREFIX + "process\\.([^)}]+?)" + SUFFIX;
+    private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+?)" + SUFFIX;
 
     @Getter
     @Setter
