@@ -14,18 +14,12 @@
     <Console name="stdout">
       <PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %location%n        %msg%n" />
       <ThresholdFilter level="${logLevel}" />
-      <RegexFilter regex=".*org.omnifaces.cdi.push.SocketEndpoint.onClose.*" onMatch="DENY" onMismatch="ACCEPT"/>
-      <RegexFilter regex="org.apache.catalina.connector.ClientAbortException.*" onMatch="DENY" onMismatch="ACCEPT"/>
     </Console>
 
     <RollingFile name="goobi" fileName="${baseDir}/goobi.log" filePattern="${baseDir}/goobi.log.%d{yyyy-MM-dd}.gz">
       <PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %location%n        %msg%n" />
       <ThresholdFilter level="DEBUG" />
       <CronTriggeringPolicy schedule="0 0 0 * * ?" />
-      <RegexFilter regex=".*org.omnifaces.cdi.push.SocketEndpoint.onClose.*" onMatch="DENY" onMismatch="ACCEPT"/>
-      <RegexFilter regex="org.apache.catalina.connector.ClientAbortException.*" onMatch="DENY" onMismatch="ACCEPT"/>
-      
-      
       <DefaultRolloverStrategy>
         <Delete basePath="${baseDir}">
           <IfFileName glob="goobi.log.*.gz" />
