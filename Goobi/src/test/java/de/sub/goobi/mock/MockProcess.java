@@ -70,6 +70,7 @@ public class MockProcess {
         Project project = new Project();
         project.setTitel("project");
         project.setId(666);
+        project.setProjectIdentifier("identifier");
         testProcess.setProjekt(project);
         project.setFileFormatInternal("Mets");
         project.setFileFormatDmsExport("Mets");
