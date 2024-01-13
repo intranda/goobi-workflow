@@ -65,5 +65,11 @@
                 <ignoreVersion type="regex">6.*</ignoreVersion>
             </ignoreVersions>
         </rule>
+        <rule groupId="org.apache.activemq" artifactId="activemq-*">
+            <ignoreVersions>
+                <ignoreVersion type="regex">6.*</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+
     </rules>
 </ruleset>
