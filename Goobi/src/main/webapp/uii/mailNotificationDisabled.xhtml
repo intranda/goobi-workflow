@@ -33,7 +33,7 @@
                             rendered="#{SessionForm.logoutMessage!=''}"
                             styleClass="alert alert-danger block"
                             style="line-height:40px;font-size:24px;">
-                            <i class="fa fa-exclamation-triangle margin-right-10" />
+                            <span class="fa fa-exclamation-triangle margin-right-10" />
                             <h:outputText value="#{SessionForm.logoutMessage}" />
                         </h:panelGroup>
                         <div class="pull-left">
@@ -49,7 +49,7 @@
                             <ul class="stats">
 
                                 <li class='background-color-A'>
-                                    <i class="fa fa-calendar"></i>
+                                    <span class="fa fa-calendar" />
                                     <div class="details">
                                         <span class="big">
                                             <h:outputText value="#{SessionForm.currentTime}" />

@@ -4,6 +4,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:x="http://myfaces.apache.org/tomahawk">
 
 	<composite:interface>
@@ -15,19 +16,19 @@
 
 	<composite:implementation>
 		<li>
-			<h:commandLink id="link">
+			<h:commandLink
+				id="link"
+				pt:aria-current="#{empty cc.attrs.noSeparator ? 'false' : 'page'}">
 				<span>#{cc.attrs.label}</span>
 				<c:if test="#{not empty cc.attrs.navId}">
 					<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="#{cc.attrs.navId}"/>
 				</c:if>
 			</h:commandLink>
 			<h:panelGroup rendered="#{empty cc.attrs.noSeparator}">
-				<i class="fa fa-angle-right"></i>
+				<span class="fa fa-angle-right" />
 			</h:panelGroup>
 		</li>
 
 	</composite:implementation>
 
 </ui:composition>
-
-

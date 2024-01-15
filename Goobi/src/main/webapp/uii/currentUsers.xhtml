@@ -27,13 +27,13 @@
 						title="#{myPageTitle}"
 						icon="fa-users"
 						boxType="primary">
-					
+
 						<div class="gw-table gw-table-fixed">
-							
+
 							<div class="gw-table__search">
 		                    	<div class="gw-table__search__length">
 		                        	<h:panelGroup rendered="#{SessionForm.sessionListErrorTime != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
-										<i class="fa fa-exclamation-triangle margin-right-10" />
+										<span class="fa fa-exclamation-triangle margin-right-10" />
 										<h:outputText value="#{msgs.sessionListError}" />
 										<h:outputText value="#{SessionForm.sessionListErrorTime}"></h:outputText>
 									</h:panelGroup>
@@ -42,12 +42,12 @@
 		                        <div class="gw-table__filters">
 		                        	<h:outputText value="#{msgs.aktuelleZeit}: #{SessionForm.currentTime}"/>
 		                        </div>
-		                   	</div> 
-		                	
-                        	
+		                   	</div>
+
+
 							<!-- Datentabelle -->
 							<div class="gw-table-fixed__wrapper">
-					
+
 								<!-- Table of current sessions -->
 								<x:dataTable id="userTable" styleClass="table table-hover table-bordered" var="item" value="#{SessionForm.sessions}">
 
@@ -91,7 +91,7 @@
 
 								</x:dataTable>
 							</div>
-							
+
 							<h:commandScript name="reloadTable" render="@form" />
 						</div>
 					</intranda:box>
@@ -101,7 +101,7 @@
 							<script type="text/javascript">
 								setInterval(function() {
 									reloadTable();
-								}, 10000); 
+								}, 10000);
 							</script>
 	</ui:define>
 

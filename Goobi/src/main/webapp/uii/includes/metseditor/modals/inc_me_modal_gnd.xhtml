@@ -84,9 +84,9 @@
                                     value="#{Metadaten.gndSearchValue}" />
                             </div>
                             <div class="col-2 text-right">
-                                    <button 
+                                    <button
                                         jsf:id="gndSearchAction"
-                                        class="btn btn--white btn--loader" 
+                                        class="btn btn--white btn--loader"
                                         jsf:action="#{Metadaten.search}">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                         #{msgs.search}
@@ -97,10 +97,10 @@
                                        <f:ajax
                                         execute="@form"
                                         render="gndSearchlist" />
-                                    </button>                            
+                                    </button>
                             </div>
                         </div>
-                      
+
 
                         <h:panelGroup id="gndSearchlist">
                             <div class="modal__gnd-list scrollable">
@@ -160,7 +160,7 @@
                                                 <f:setPropertyActionListener
                                                     value=""
                                                     target="#{Metadaten.gndSearchValue}" />
-                                                <i class="fa fa-check" />
+                                                <span class="fa fa-check" />
                                             </button>
                                         </div>
                                     </div>

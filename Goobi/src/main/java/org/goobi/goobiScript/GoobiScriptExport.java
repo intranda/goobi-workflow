@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
+import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
@@ -56,6 +57,11 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
                 "This GoobiScript allows to export Goobi processes using the default export mechanism. It either uses the default export or alternativly an export plugin that was configured in one of the workflow steps.");
         addParameterToSampleCall(sb, "exportImages", "false", "Decide if the images shall get exported additionally to the metdata (`true`).");
         addParameterToSampleCall(sb, "exportOcr", "false", "Decide if the OCR results shall get exported additionally as well (`true`).");
+        // allow choice among multiple export plugins 
+        addParameterToSampleCall(sb, "pluginName", "",
+                "Decide which export plugin shall be used by giving the name of this export plugin. It has the highest priority if it is configured. [OPTIONAL]");
+        addParameterToSampleCall(sb, "stepName", "",
+                "Decide which export plugin shall be used by giving the name of the export step. If it is configured then it will try to find this export step first, and only when there is no such step, will the standard choice be used instead. [OPTIONAL]");
         return sb.toString();
     }
 
@@ -75,10 +81,13 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
-        String exportFulltextParameter = parameters.get("exportOcr");
+        String exportFullTextParameter = parameters.get("exportOcr");
         String exportImagesParameter = parameters.get("exportImages");
-        boolean exportFulltext = exportFulltextParameter.equalsIgnoreCase("true");
+        boolean exportFullText = exportFullTextParameter.equalsIgnoreCase("true");
         boolean exportImages = exportImagesParameter.equalsIgnoreCase("true");
+
+        String pluginNameConfigured = parameters.get("pluginName");
+        String stepNameConfigured = parameters.get("stepName");
 
         // execute all jobs that are still in waiting state
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
@@ -92,48 +101,38 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
                 gsr.setResultMessage(Helper.getString(Helper.getSessionLocale(), "noExportTaskError"));
                 gsr.setResultType(GoobiScriptResultType.ERROR);
                 return;
-            } else {
-                IExportPlugin export = null;
-                String pluginName = ProcessManager.getExportPluginName(p.getId());
-                if (StringUtils.isNotEmpty(pluginName)) {
-                    try {
-                        export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-                    } catch (Exception e) {
-                        log.error("Can't load export plugin, use default export", e);
-                        export = new ExportDms();
-                    }
-                }
-                String logextension = "without ocr results";
-                if (exportFulltext) {
-                    logextension = "including ocr results";
-                }
-                if (export == null) {
-                    export = new ExportDms();
-                }
-                export.setExportFulltext(exportFulltext);
-                if (!exportImages) {
-                    logextension = "without images and " + logextension;
-                    export.setExportImages(false);
-                } else {
-                    logextension = "including images and " + logextension;
-                    export.setExportImages(true);
-                }
-
-                boolean success = export.startExport(p);
-                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Export " + logextension + " using GoobiScript.", username);
-                log.info("Export " + logextension + " using GoobiScript for process with ID " + p.getId());
-
-                // set status to result of command
-                if (!success) {
-                    gsr.setResultMessage("Errors occurred: " + export.getProblems().toString());
-                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                } else {
-                    gsr.setResultMessage("Export done successfully");
-                    gsr.setResultType(GoobiScriptResultType.OK);
-                }
             }
+
+            // process has step marked as export
+            // 1. get a proper export plugin
+            String pluginName = getExportPluginName(pluginNameConfigured, stepNameConfigured, p);
+            log.info("The export plugin '" + pluginName + "' will be used.");
+            IExportPlugin export = getExportPlugin(pluginName);
+
+            // 2. set up this export plugin
+            export.setExportImages(exportImages);
+            export.setExportFulltext(exportFullText);
+
+            String logExtension = exportImages ? "including images and " : "without images and ";
+            logExtension += exportFullText ? "including ocr results" : "without ocr results";
+
+            // 3. kick this export plugin to run
+            boolean success = export.startExport(p);
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Export " + logExtension + " using GoobiScript.", username);
+            log.info("Export " + logExtension + " using GoobiScript for process with ID " + p.getId());
+
+            // 4. set status to result of command
+            if (!success) {
+                gsr.setResultMessage("Errors occurred: " + export.getProblems().toString());
+                gsr.setResultType(GoobiScriptResultType.ERROR);
+            } else {
+                gsr.setResultMessage("Export done successfully");
+                gsr.setResultType(GoobiScriptResultType.OK);
+            }
+
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+
         } catch (NoSuchMethodError | Exception e) {
             gsr.setResultMessage(e.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
@@ -142,5 +141,42 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
         }
         gsr.updateTimestamp();
 
+    }
+
+    private String getExportPluginName(String pluginNameConfigured, String stepNameConfigured, Process process) {
+        if (StringUtils.isNotBlank(pluginNameConfigured)) {
+            return pluginNameConfigured;
+        }
+
+        if (StringUtils.isNotBlank(stepNameConfigured)) {
+            List<Step> steps = process.getSchritte();
+            for (Step step : steps) {
+                boolean isExportStep = step.isTypExportDMS() || step.isTypExportRus();
+                if (isExportStep && stepNameConfigured.equals(step.getTitel())) {
+                    return step.getStepPlugin();
+                }
+            }
+        }
+
+        // otherwise use the default value
+        return ProcessManager.getExportPluginName(process.getId());
+    }
+
+    private IExportPlugin getExportPlugin(String pluginName) {
+        IExportPlugin export = null;
+        if (StringUtils.isNotEmpty(pluginName)) {
+            try {
+                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+
+            } catch (Exception e) {
+                log.error("Can't load export plugin, use default export", e);
+            }
+        }
+
+        if (export == null) {
+            export = new ExportDms();
+        }
+
+        return export;
     }
 }

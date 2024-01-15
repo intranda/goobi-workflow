@@ -17,7 +17,7 @@
 		<script type="text/javascript">
         	function switchExpanded(id){
         		console.log("called by: "+id);
-				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				var x = document.getElementById(id).getAttribute("aria-expanded");
 				console.log(x)
 				if (x == "true"){
 					x = "false"
@@ -146,7 +146,7 @@
 													action="#{NavigationForm.setPlugin(plugin)}"
 													id="plugin">
 													<span>
-														<i class="fa fa-plug box-icon-fix-menu"></i>
+														<span class="fa fa-plug box-icon-fix-menu" />
 														<span class="margin-left-10">#{msgs[plugin]}</span>
 													</span>
 													<f:setPropertyActionListener
@@ -279,7 +279,7 @@
                                     rendered="#{LoginForm.hasRole('Admin_Quartz')}"
                                     icon="fa fa-spinner"
                                     fontclass="margin-left-10" />
-                                    
+
 								<!-- Plugins overview -->
 								<intranda:menuItem
 									id="a42"
@@ -330,7 +330,7 @@
 													action="#{AdministrationForm.setPlugin(plugin)}"
 													id="plugin">
 													<span>
-														<i class="fa fa-plug box-icon-fix-menu"></i>
+														<span class="fa fa-plug box-icon-fix-menu" />
 														<span class="margin-left-10">#{msgs[plugin]}</span>
 													</span>
 													<f:setPropertyActionListener
@@ -384,7 +384,7 @@
 													action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}"
 													id="statistics">
 													<span>
-														<i class="fa fa-pie-chart box-icon-fix-menu"></i>
+														<span class="fa fa-pie-chart box-icon-fix-menu" />
 														<span class="margin-left-10">#{msgs[statistics]}</span>
 													</span>
 													<f:setPropertyActionListener

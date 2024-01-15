@@ -109,29 +109,45 @@ grau: #dddddd
 
 /*--------------- Easy Readability ---------------- */
 
-.easy-read-status-done {
-  background: black none repeat scroll 0 0;
-  border: 1px solid black;
+.colors.small13 > [class*="easy-read-status-"] {
+  height: initial;
+  width: initial;
 }
 
-.easy-read-status-open {
-  background: #ddd none repeat scroll 0 0;
-  border: 1px solid black;
+[class*="easy-read-status-"] {
+  padding-left: 15px;
+  position: relative;
+  &::before {
+    background: var(--easy-read-color, transparent) none repeat scroll 0 0;
+    border: 1px solid black;
+    content: '';
+    height: 13px;
+    left: 0px;
+    position: absolute;
+    top: 2px;
+    width: 13px;
+  }
 }
 
-.easy-read-status-inwork,
-.easy-read-status-inflight {
-  background: #bbb none repeat scroll 0 0;
-  border: 1px solid black;
+.easy-read-status-done::before {
+  --easy-read-color: black;
 }
 
-.easy-read-status-locked {
-  background: white none repeat scroll 0 0;
-  border: 1px solid black;
+.easy-read-status-open::before {
+  --easy-read-color: #ddd;
 }
 
-.easy-read-status-error {
-  background: #eee none repeat scroll 0 0;
+.easy-read-status-inwork::before,
+.easy-read-status-inflight::before {
+  --easy-read-color: #bbb;
+}
+
+.easy-read-status-locked::before {
+  --easy-read-color: white;
+}
+
+.easy-read-status-error::before {
+  --easy-read-color: #eee;
   background-image: linear-gradient(
     45deg,
     black 25%,
@@ -143,11 +159,10 @@ grau: #dddddd
     transparent
   );
   background-size: 7px 7px;
-  border: 1px solid black;
 }
 
-.easy-read-status-deactivated {
-  background: #eee none repeat scroll 0 0;
+.easy-read-status-deactivated::before {
+  --easy-read-color: #eee;
   background-image: linear-gradient(
     0deg,
     #ccc 25%,
@@ -159,7 +174,6 @@ grau: #dddddd
     transparent
   );
   background-size: 14px 14px;
-  border: 1px solid black;
 }
 
 .easy-read-progressbar-status-locked {

@@ -58,7 +58,7 @@
                                     title="#{msgs.bearbeiten}"
                                     jsf:rel="tooltip"
                                     jsf:action="#{JobTypesBean.editJobType(jobType)}">
-                                    <i class="fa fa-pencil"></i>
+                                    <span class="fa fa-pencil" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
                                 </button>
@@ -67,7 +67,7 @@
                                     jsf:rel="tooltip"
                                     data-bs-toggle="tooltip"
                                     jsf:action="#{JobTypesBean.toggleJobType(jobType)}">
-                                    <i class="fa #{jobType.paused ? 'fa-play' : 'fa-pause'}"></i>
+                                    <span class="fa #{jobType.paused ? 'fa-play' : 'fa-pause'}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:passThroughAttribute name="aria-label" value="#{jobType.paused ? msgs.unPauseJobType : msgs.pauseJobType}" />
                                 </button>
@@ -79,7 +79,7 @@
             </div>
             <div class="box__actions">
                 <button class="btn btn-primary me-auto" jsf:action="#{JobTypesBean.addNewJobType}">
-                    <i class="fa fa-plus"></i>
+                    <span class="fa fa-plus" />
                     <span>#{msgs.createNewJobType}</span>
                 </button>
             </div>

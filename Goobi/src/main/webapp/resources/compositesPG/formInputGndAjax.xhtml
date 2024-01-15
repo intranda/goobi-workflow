@@ -130,7 +130,7 @@
                             class="btn text-white"
                             title="#{msgs.abbrechen}"
                             data-bs-dismiss="modal">
-                            <i class="fa fa-times"></i>
+                            <span class="fa fa-times" />
                         </button>
                     </div>
                     <div class="modal-body">
@@ -185,7 +185,7 @@
                             </div>
                         </div>
                         <hr/>
-                        
+
                         <h:panelGroup
                             id="gndSearchlist"
                             layout="block"
@@ -246,7 +246,7 @@
                                             <f:setPropertyActionListener
                                                 value=""
                                                 target="#{cc.attrs.field.searchValue}" />
-                                            <i class="fa fa-check" />
+                                            <span class="fa fa-check" />
                                             <f:ajax
                                                 execute="@this"
                                                 render="#{cc.attrs.render}" />
@@ -264,5 +264,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

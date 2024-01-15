@@ -49,7 +49,6 @@
 		<style>
 .CodeMirror {
 	border: 1px solid #ddd;
-	height: 50px;
 }
 </style>
 
@@ -94,7 +93,7 @@
 												jsf:action="#{ProzessverwaltungForm.generateFilterWithIdentfiers}"
 												data-bs-toggle="tooltip"
 												title="#{msgs.process_generateFilterQueryForHits}">
-												<i class="fa fa-filter" />
+												<span class="fa fa-filter" />
 												<span>
 													<h:outputText
 														value="#{msgs.treffer}: #{ProzessverwaltungForm.paginator.totalResults}" />
@@ -156,14 +155,14 @@
 																jsf:id="selectall"
 																title="#{msgs.alleAuswaehlen}"
 																class="btn p-2">
-																<i class="fa fa-check-square-o font-black" />
+																<span class="fa fa-check-square-o font-black" />
 															</button>
 															<button
 																jsf:action="#{ProzessverwaltungForm.selectionNone}"
 																jsf:id="selectnone"
 																title="#{msgs.auswahlEntfernen}"
 																class="btn p-2">
-																<i class="fa fa-square-o font-black" />
+																<span class="fa fa-square-o font-black" />
 															</button>
 
 														</div>
@@ -210,7 +209,7 @@
 
                                                     <!-- PROCESS TITLE COLUMN HEADER -->
 													<intranda:columnheader
-														addClass="header__title header__col-xxxl header__col-min-xxxl"
+														addClass="header__title header__col-xxxl"
 														name="titel"
 														form="#{ProzessverwaltungForm}"
 														value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}"
@@ -258,7 +257,7 @@
                                                     <!-- STATUS COLUMN HEADER -->
 													<intranda:columnheader
 														id="progress"
-														addClass="header__progress header__col-xl header__col-min-l header__col-max-xxl"
+														addClass="header__progress header__col-xl"
 														name="fortschritt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.status}"
@@ -365,7 +364,8 @@
 															<button
 																jsf:id="selected"
 																aria-label="#{msgs.auswahl2}"
-																class="btn btn-blank">
+																class="btn btn-blank"
+																onclick="gwResizableTable.reload()">
 																<i
 																	class="#{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
 																<f:setPropertyActionListener
@@ -658,7 +658,6 @@
 														<div class="progress__container">
 															<h:panelGroup
 																rendered="#{item.fortschritt3 gt 0}"
-																data-toggle="tooltip"
 																styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-done'):('progress-bar-success'))}"
 																pt:role="figure"
 																pt:aria-label="#{item.fortschritt3}% #{msgs.statusAbgeschlossen}">
@@ -666,9 +665,6 @@
 																<f:passThroughAttribute
 																	name="style"
 																	value ="--progress: #{item.fortschritt3}%" />
-																<f:passThroughAttribute
-																	name="data-bs-trigger"
-																	value="hover" />
 																<f:passThroughAttribute
 																	name="data-bs-container"
 																	value="body" />
@@ -688,7 +684,6 @@
 
 															<h:panelGroup
 																rendered="#{item.fortschritt2 gt 0}"
-																data-toggle="tooltip"
 																styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-open'):('progress-bar-warning'))}"
 																pt:role="figure"
 																pt:aria-label="#{item.fortschritt2}% #{msgs.statusOffen} / #{msgs.statusInBearbeitung}">
@@ -696,9 +691,6 @@
 																<f:passThroughAttribute
 																	name="style"
 																	value ="--progress: #{item.fortschritt2}%" />
-																<f:passThroughAttribute
-																	name="data-bs-trigger"
-																	value="hover" />
 																<f:passThroughAttribute
 																	name="data-bs-container"
 																	value="body" />
@@ -718,7 +710,6 @@
 
 															<h:panelGroup
 																rendered="#{item.fortschrittError gt 0}"
-																data-toggle="tooltip"
 																styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} "
 																pt:role="figure"
 																pt:aria-label="#{item.fortschrittError}% #{msgs.statusError}">
@@ -726,9 +717,6 @@
 																<f:passThroughAttribute
 																	name="style"
 																	value ="--progress: #{item.fortschrittError}%" />
-																<f:passThroughAttribute
-																	name="data-bs-trigger"
-																	value="hover" />
 																<f:passThroughAttribute
 																	name="data-bs-container"
 																	value="body" />
@@ -748,7 +736,6 @@
 
 															<h:panelGroup
 																rendered="#{item.fortschritt1 gt 0}"
-																data-toggle="tooltip"
 																styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} "
 																pt:role="figure"
 																pt:aria-label="#{item.fortschritt1}% #{msgs.statusGesperrt}">
@@ -756,9 +743,6 @@
 																<f:passThroughAttribute
 																	name="style"
 																	value ="--progress: #{item.fortschritt1}%" />
-																<f:passThroughAttribute
-																	name="data-bs-trigger"
-																	value="hover" />
 																<f:passThroughAttribute
 																	name="data-bs-container"
 																	value="body" />
@@ -857,10 +841,7 @@
 																title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
 																data-bs-toggle="tooltip"
 																class="btn btn-blank">
-																<i class="fa fa-pencil" />
-																<f:passThroughAttribute
-																	name="data-toggle"
-																	value="tooltip" />
+																<span class="fa fa-pencil" />
 																<x:updateActionListener
 																	property="#{ProzessverwaltungForm.myProzess}"
 																	value="#{item}" />
@@ -879,10 +860,7 @@
 																data-bs-toggle="tooltip"
 																title="#{msgs.duplicate}"
 																onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-																<i class="fa fa-clipboard" />
-																<f:passThroughAttribute
-																	name="data-toggle"
-																	value="tooltip" />
+																<span class="fa fa-clipboard" />
 																<x:updateActionListener
 																	property="#{ProzessverwaltungForm.myProzess}"
 																	value="#{item}" />
@@ -895,13 +873,10 @@
 																id="action14"
 																rel="tooltip"
 																title="#{msgs.metadatenBearbeiten}"
-																data-bs-toggle="tooltip"
+																pt:data-bs-toggle="tooltip"
 																onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
 																rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
-																<i class="fa fa-book" />
-																<f:passThroughAttribute
-																	name="data-toggle"
-																	value="tooltip" />
+																<span class="fa fa-book" />
 																<f:param
 																	name="nurLesen"
 																	value="true" />
@@ -923,14 +898,11 @@
 																id="action15"
 																rel="tooltip"
 																title="#{msgs.metadatenBearbeiten}"
-																data-bs-toggle="tooltip"
+																pt:data-bs-toggle="tooltip"
 																pt:aria-label="#{msgs.metadatenBearbeiten}"
 																onclick="preventDoubleSubmit(this);  sessionStorage.removeItem('columnWidths');"
 																rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
-																<i class="fa fa-book" />
-																<f:passThroughAttribute
-																	name="data-toggle"
-																	value="tooltip" />
+																<span class="fa fa-book" />
 																<f:param
 																	name="ProzesseID"
 																	value="#{item.id}" />
@@ -986,7 +958,7 @@
                                                                 title="#{msgs.metadatenBearbeiten}"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#myModal-#{item.id}">
-                                                              <i class="fa fa-book " />
+                                                              <span class="fa fa-book " />
                                                             </button>
 
                                                             <!-- MODAL TO BE SHOWN EVENTUALLY -->
@@ -1035,13 +1007,10 @@
 																				title="#{msgs.discard}"
 																				rel="tooltip"
 																				styleClass="btn btn-hot">
-																				<i class="fa fa-trash-o"></i>
+																				<span class="fa fa-trash-o" />
 																				<span>
                                                                                     <h:outputText value="#{msgs.discard}" />
                                                                                 </span>
-																				<f:passThroughAttribute
-																					name="data-toggle"
-																					value="tooltip" />
 																				<f:param
 																					name="ProzesseID"
 																					value="#{item.id}" />
@@ -1079,13 +1048,10 @@
 																				data-bs-toggle="tooltip"
 																				rel="tooltip"
 																				styleClass="btn btn-success">
-																				<i class="fa fa-floppy-o"></i>
+																				<span class="fa fa-floppy-o" />
 																				<span>
                                                                                     <h:outputText value="#{msgs.overwrite}" />
                                                                                 </span>
-																				<f:passThroughAttribute
-																					name="data-toggle"
-																					value="tooltip" />
 																				<f:param
 																					name="ProzesseID"
 																					value="#{item.id}" />
@@ -1123,11 +1089,7 @@
                                                             <!-- // MODAL TO BE SHOWN EVENTUALLY -->
 
 															<!-- DMS-EXPORT - ENABLED -->
-															<div
-																jsf:rel="tooltip"
-																title="#{!item.containsExportStep ? msgs.noExportTask : ''}"
-																data-bs-toggle="tooltip">
-																<button
+															<button
 																	jsf:action="#{ProzessverwaltungForm.exportDMS}"
 																	jsf:id="action21"
 																	aria-label="#{!item.containsExportStep ? msgs.noExportTask : msgs.importDms}"
@@ -1138,36 +1100,33 @@
 																	class="btn btn-blank"
 																	jsf:disabled="#{!item.containsExportStep}"
 																	jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
-																	<i class="fa fa-globe" />
-																	<f:passThroughAttribute
-																		name="data-toggle"
-																		value="tooltip" />
+																	<span class="fa fa-globe" />
 																	<x:updateActionListener
 																		property="#{ProzessverwaltungForm.myProzess}"
 																		value="#{item}" />
 																</button>
-																<f:passThroughAttribute
-																	name="data-toggle"
-																	value="tooltip" />
-															</div>
 
 															<!-- DMS-EXPORT - DISABLED -->
-															<button
-																jsf:action="#{ProzessverwaltungForm.exportDMS}"
-																jsf:disabled="true"
+															<div
 																jsf:rel="tooltip"
-																title="#{msgs.importDms}"
-																data-bs-toggle="tooltip"
 																jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}"
-																class="btn btn-blank">
-																<i class="font-light fa fa-globe" />
-																<f:passThroughAttribute
-																	name="data-toggle"
-																	value="tooltip" />
-																<x:updateActionListener
-																	property="#{ProzessverwaltungForm.myProzess}"
-																	value="#{item}" />
-															</button>
+																title="#{!item.containsExportStep ? msgs.noExportTask : ''}"
+																data-bs-toggle="tooltip"
+																tabindex="0">
+																<button
+																	jsf:action="#{ProzessverwaltungForm.exportDMS}"
+																	jsf:disabled="true"
+																	jsf:rel="tooltip"
+																	title="#{msgs.importDms}"
+																	data-bs-toggle="tooltip"
+																	jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}"
+																	class="btn btn-blank">
+																	<i class="font-light fa fa-globe" />
+																	<x:updateActionListener
+																		property="#{ProzessverwaltungForm.myProzess}"
+																		value="#{item}" />
+																</button>
+															</div>
 
 															<!-- CREATE PROCESS - ONE PROJECT -->
 															<button
@@ -1184,9 +1143,6 @@
 					                                              }"
 																jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and
                                                                 ProzesskopieForm.availableProjects.size() eq 1 and ProzesskopieForm.availableProjects.get(0).getTitel() == item.projekt.titel}">
-																<f:passThroughAttribute
-																	name="data-toggle"
-																	value="tooltip" />
 																<x:updateActionListener
 																	property="#{ProzesskopieForm.prozessVorlage}"
 																	value="#{item}" />
@@ -1209,11 +1165,9 @@
 																			jsf:id="copyProcessTempalte"
 																			class="btn fa fa-file-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
 																			aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
+																			data-bs-toggle="tooltip"
 																			jsf:action="#{ProzesskopieForm.prepare}"
 																			jsf:rel="tooltip">
-																			<f:passThroughAttribute
-																				name="data-toggle"
-																				value="tooltip" />
 																			<x:updateActionListener
 																				property="#{ProzesskopieForm.prozessVorlage}"
 																				value="#{item}" />
@@ -1266,9 +1220,6 @@
 																onclick="preventDoubleSubmit(this);"
 																jsf:rendered="#{(ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and
                                                                 ProzesskopieForm.availableProjects.size() eq 1 and ProzesskopieForm.availableProjects.get(0).getTitel() == item.projekt.titel)}">
-																<f:passThroughAttribute
-																	name="data-toggle"
-																	value="tooltip" />
 																<x:updateActionListener
 																	property="#{MassImportForm.template}"
 																	value="#{item}" />
@@ -1292,11 +1243,9 @@
 																			jsf:id="massImportPrepare"
 																			class="btn fa fa-files-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
 																			aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
+																			data-bs-toggle="tooltip"
 																			jsf:action="#{MassImportForm.prepare}"
 																			jsf:rel="tooltip">
-																			<f:passThroughAttribute
-																				name="data-toggle"
-																				value="tooltip" />
 																			<x:updateActionListener
 																				property="#{MassImportForm.template}"
 																				value="#{item}" />
@@ -1359,7 +1308,7 @@
 											class="btn btn-primary-400 me-auto"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and LoginForm.hasRole('Workflow_ProcessTemplates_Create') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}"
 											jsf:id="new2">
-											<i class="fa fa-plus"></i>
+											<span class="fa fa-plus" />
 											<span>
 												<h:outputText value="#{msgs.eineNeueProzessvorlageAnlegen}" />
 											</span>

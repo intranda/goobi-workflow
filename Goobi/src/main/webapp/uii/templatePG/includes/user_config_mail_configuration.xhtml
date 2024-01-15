@@ -11,7 +11,7 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
-	
+
     <composite:interface>
     </composite:interface>
 
@@ -34,39 +34,39 @@
             value="#{LoginForm.myBenutzer.emailConfiguration}"
             var="proj"
             varStatus="status">
-      		
+
       		<button
-       			type="button" 
+       			type="button"
                 class="btn"
                 jsf:rendered="#{NavigationForm.uiStatus[proj.projectName] ne 'down'}"
                 title="#{item.titel}"
                 jsf:id="displayDetails">
-                
-                <i class="fa fa-caret-right"></i>
+
+                <span class="fa fa-caret-right" />
 				<span><h:outputText value="#{proj.projectName}" /></span>
-                
+
                 <f:setPropertyActionListener
                     target="#{NavigationForm.uiStatus[proj.projectName]}"
                     value="down" />
                 <f:ajax render="@form" />
             </button>
-            
+
             <button
-       			type="button" 
+       			type="button"
                 class="btn"
                 jsf:rendered="#{NavigationForm.uiStatus[proj.projectName] eq 'down'}"
                 title="#{item.titel}"
                 jsf:id="hideDetails">
-                
-                <i class="fa fa-caret-down"></i>
+
+                <span class="fa fa-caret-down" />
 				<span><h:outputText value="#{proj.projectName}" /></span>
-                
+
                 <f:setPropertyActionListener
                     target="#{NavigationForm.uiStatus[proj.projectName]}"
                     value="none" />
                 <f:ajax render="@form" />
             </button>
-      
+
             <h:panelGroup
                 rendered="#{NavigationForm.uiStatus[proj.projectName] eq 'down'}"
                 layout="block">
@@ -91,7 +91,7 @@
                         </f:facet>
                         <button jsf:id="stepOpen" jsf:class="btn btn-blank">
                             <f:ajax render="@this" />
-                            <i class=" fa #{step.open?'fa-check-square-o' : 'fa-square-o'}" />
+                            <span class=" fa #{step.open?'fa-check-square-o' : 'fa-square-o'}" />
                             <f:setPropertyActionListener
                                 value="#{!step.open}"
                                 target="#{step.open}" />
@@ -102,7 +102,7 @@
                                 jsf:id="activateAll"
                                 class="btn btn-blank"
                                 title="#{msgs.alleAuswaehlen}">
-                                <i class="fa fa-check-square-o "></i>
+                                <span class="fa fa-check-square-o " />
                                 <f:ajax render="@form" />
                             </button>
                             <button
@@ -110,7 +110,7 @@
                                 jsf:id="deactivateAll"
                                 class="btn btn-blank ms-2"
                                 title="#{msgs.auswahlEntfernen}">
-                                <i class="fa fa-square-o "></i>
+                                <span class="fa fa-square-o " />
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
@@ -121,7 +121,7 @@
                         </f:facet>
                         <button jsf:disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}" jsf:id="stepInWork" class="btn btn-blank">
                             <f:ajax render="@this" />
-                            <i class=" fa #{step.inWork?'fa-check-square-o' : 'fa-square-o'}" />
+                            <span class=" fa #{step.inWork?'fa-check-square-o' : 'fa-square-o'}" />
                             <f:setPropertyActionListener
                                 value="#{!step.inWork}"
                                 target="#{step.inWork}" />
@@ -133,7 +133,7 @@
                                 class="btn btn-blank"
                                 jsf:id="selectAll"
                                 title="#{msgs.alleAuswaehlen}">
-                                <i class="fa fa-check-square-o"></i>
+                                <span class="fa fa-check-square-o" />
                                 <f:ajax render="@form" />
                             </button>
                             <button
@@ -142,7 +142,7 @@
                                 class="btn btn-blank ms-2"
                                 jsf:id="deselectAll"
                                 title="#{msgs.auswahlEntfernen}">
-                                <i class="fa fa-square-o"></i>
+                                <span class="fa fa-square-o" />
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
@@ -153,7 +153,7 @@
                         </f:facet>
                         <button jsf:disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}" class="btn btn-blank" jsf:id="stepDone">
                             <f:ajax render="@this" />
-                            <i class=" fa #{step.done?'fa-check-square-o' : 'fa-square-o'}" />
+                            <span class=" fa #{step.done?'fa-check-square-o' : 'fa-square-o'}" />
                             <f:setPropertyActionListener
                                 value="#{!step.done}"
                                 target="#{step.done}" />
@@ -166,7 +166,7 @@
                                 class="btn btn-blank"
                                 jsf:id="selectAll2"
                                 title="#{msgs.alleAuswaehlen}">
-                                <i class="fa fa-check-square-o "></i>
+                                <span class="fa fa-check-square-o " />
                                 <f:ajax render="@form" />
                             </button>
                             <button
@@ -175,7 +175,7 @@
                                 class="btn btn-blank ms-2"
                                 jsf:id="deselectAll2"
                                 title="#{msgs.auswahlEntfernen}">
-                                <i class="fa fa-square-o "></i>
+                                <span class="fa fa-square-o " />
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
@@ -186,19 +186,19 @@
                         </f:facet>
                         <button jsf:id="stepError" class="btn btn-blank">
                             <f:ajax render="@this" />
-                            <i class=" fa #{step.error?'fa-check-square-o' : 'fa-square-o'}" />
+                            <span class=" fa #{step.error?'fa-check-square-o' : 'fa-square-o'}" />
                             <f:setPropertyActionListener
                                 value="#{!step.error}"
                                 target="#{step.error}" />
                         </button>
 
                         <f:facet name="footer">
-                            <button 
+                            <button
                                 jsf:action="#{proj.activateAllErrorSteps}"
                                 jsf:id="selectAll3"
                                 class="btn btn-blank"
                                 title="#{msgs.alleAuswaehlen}">
-                                <i class="fa fa-check-square-o "></i>
+                                <span class="fa fa-check-square-o " />
                                 <f:ajax render="@form" />
                             </button>
                             <button
@@ -206,7 +206,7 @@
                                 jsf:id="deselectAll3"
                                 class="btn btn-blank ms-2"
                                 title="#{msgs.auswahlEntfernen}">
-                                <i class="fa fa-square-o "></i>
+                                <span class="fa fa-square-o " />
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
@@ -221,5 +221,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

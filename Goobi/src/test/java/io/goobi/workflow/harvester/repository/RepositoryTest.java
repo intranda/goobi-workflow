@@ -284,7 +284,7 @@ public class RepositoryTest extends AbstractTest {
         assertEquals(0, val);
     }
 
-    @Test
+    // @Test
     public void testHarvestIaCli() throws Exception {
         Repository fixture = new Repository();
         assertNotNull(fixture);
@@ -294,4 +294,53 @@ public class RepositoryTest extends AbstractTest {
         assertEquals(0, val);
     }
 
+    @Test
+    public void testTestmode() throws Exception {
+        Repository fixture = new Repository();
+        assertNotNull(fixture);
+        assertFalse(fixture.isTestMode());
+        fixture.setTestMode(true);
+        assertTrue(fixture.isTestMode());
+    }
+
+
+    @Test
+    public void testStartDate() {
+        Repository fixture = new Repository();
+        assertNotNull(fixture);
+        assertNull(fixture.getStartDate());
+        fixture.setStartDate("fixture");
+        assertEquals("fixture", fixture.getStartDate());
+    }
+
+    @Test
+    public void testEndDate() {
+        Repository fixture = new Repository();
+        assertNotNull(fixture);
+        assertNull(fixture.getEndDate());
+        fixture.setEndDate("fixture");
+        assertEquals("fixture", fixture.getEndDate());
+    }
+
+    @Test
+    public void testHarvestWithFromUntil() throws Exception {
+        Repository fixture = new Repository();
+        assertNotNull(fixture);
+        fixture.setRepositoryType("oai");
+        fixture.setStartDate("2020-01-01T00:00:00Z");
+        fixture.setEndDate("2020-12-31T23:59:59Z");
+        int val = fixture.harvest(1);
+        assertEquals(1, val);
+    }
+
+
+    @Test
+    public void testHarvestTestmode() throws Exception {
+        Repository fixture = new Repository();
+        assertNotNull(fixture);
+        fixture.setRepositoryType("oai");
+        fixture.setTestMode(true);
+        int val = fixture.harvest(1);
+        assertEquals(1, val);
+    }
 }

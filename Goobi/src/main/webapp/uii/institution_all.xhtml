@@ -243,7 +243,7 @@
                                                 jsf:rel="tooltip"
                                                 jsf:action="institution_edit"
                                                 title="#{msgs.bearbeiten}">
-                                                <i class="fa fa-pencil"></i>
+                                                <span class="fa fa-pencil" />
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
@@ -266,7 +266,7 @@
                                         class="btn btn-primary-400 me-auto"
                                         jsf:action="#{institutionBean.createNewInstitution}"
                                         jsf:immediate="true">
-                                        <i class="fa fa-plus"></i>
+                                        <span class="fa fa-plus" />
                                         <span>
                                             <h:outputText value="#{msgs.institution_createNew}" />
                                         </span>

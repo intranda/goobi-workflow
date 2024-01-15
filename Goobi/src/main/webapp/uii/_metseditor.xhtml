@@ -50,7 +50,7 @@
                                 class="btn btn-blue pull-right"
                                 title="#{msgs.cancel}"
                                 data-dismiss="modal">
-                                <i class="fa fa-times"></i>
+                                <span class="fa fa-times" />
                             </a>
 
                             <h4
@@ -69,7 +69,7 @@
                                 class="btn btn-lightred pull-left"
                                 jsf:action="#{Metadaten.discard}"
                                 title="#{msgs.discard}">
-                                <i class="fa fa-trash-o margin-right-5"></i>
+                                <span class="fa fa-trash-o margin-right-5" />
                                 <h:outputText value="#{msgs.discard}" />
                             </button>
 
@@ -79,7 +79,7 @@
                                 jsf:action="#{Metadaten.XMLschreiben}"
                                 onclick="goobiWorkflowJS.progress.displayProgressBar()"
                                 title="#{msgs.overwrite}">
-                                <i class="fa fa-floppy-o margin-right-5"></i>
+                                <span class="fa fa-floppy-o margin-right-5" />
                                 <h:outputText value="#{msgs.overwrite}" />
                             </button>
                         </div>
@@ -144,7 +144,7 @@
                     rendered="#{SessionForm.logoutMessage!=''}"
                     styleClass="alert alert-danger block margin-top-regular"
                     style="line-height:40px;font-size:24px;">
-                    <i class="fa fa-exclamation-triangle margin-right-10 " />
+                    <span class="fa fa-exclamation-triangle margin-right-10 " />
                     <h:outputText value="#{SessionForm.logoutMessage}" />
                 </h:panelGroup>
 
@@ -187,16 +187,16 @@
             	var resizeHandle = $( '#left .ui-resizable-handle' );
             	var treeformHeight = $( '#treeform' ).outerHeight();
 				resizeHandle.css( 'height', treeformHeight );
-				
+
         	}
-        
+
 			function isIE() {
 				var agent = navigator.userAgent.toLowerCase();
 				var name = 'MSIE';
 				if (agent.indexOf(name.toLowerCase()) > -1) {
 					return true;
 				}
-	
+
 				return false;
 			}
 
@@ -208,64 +208,64 @@
 				element.className = "documentSelected";
 				return true;
 			}
-            
-            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function() {            	
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function() {
             	var myButton = document.getElementById("imageNext");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+left', function() {            	
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+left', function() {
             	var myButton = document.getElementById("imageBack");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+up', function() {            	
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+up', function() {
             	var myButton = document.getElementById("imageNext20");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+down', function() {            	
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+down', function() {
             	var myButton = document.getElementById("imageBack20");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+home', function() {            	
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+home', function() {
             	var myButton = document.getElementById("imageFirst");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+end', function() {            	
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+end', function() {
             	var myButton = document.getElementById("imageLast");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+return', function() {  
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+return', function() {
             	var myButton = document.getElementById("menu-form:saveMetsFileButtonAjax");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+v', function() {  
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+v', function() {
             	var myButton = document.getElementById("menu-form:startValidationButton");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+space', function() {  
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+space', function() {
 				var hiddenImageNo =$("#hiddenImageNo").val();
 				if (hiddenImageNo == null){
 					hiddenImageNo =$("#hiddenImageNoThumb").val();
@@ -282,69 +282,69 @@
 					    checkbox.blur();
 					}
 				}
-			});            
-            
-            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function() {            	
+			});
+
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function() {
             	var myButton = document.getElementById("imageNext");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+left', function() {            	
+
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+left', function() {
             	var myButton = document.getElementById("imageBack");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+up', function() {            	
+
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+up', function() {
             	var myButton = document.getElementById("imageNext20");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+down', function() {            	
+
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+down', function() {
             	var myButton = document.getElementById("imageBack20");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+home', function() {            	
+
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+home', function() {
             	var myButton = document.getElementById("imageFirst");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+end', function() {            	
+
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+end', function() {
             	var myButton = document.getElementById("imageLast");
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+return', function() {  
-    			
+
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+return', function() {
+
             	var myButton = document.getElementById("menu-form:saveMetsFileButtonAjax");
             	console.log(myButton);
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+v', function() {  
-    			
+
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+v', function() {
+
             	var myButton = document.getElementById("menu-form:startValidationButton");
             	console.log(myButton);
             	if (myButton!=null) {
             		myButton.click();
-            	} 
+            	}
             });
-            
-            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+space', function() {  
+
+            $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+space', function() {
 				var hiddenImageNo =$("#hiddenImageNo").val();
 				for (i = 0; i &lt; document.getElementsByName("myCheckboxes").length; i++) {
 					if (i == hiddenImageNo ) {
@@ -356,10 +356,10 @@
 					    }
 					}
 				}
-			});            
-            
+			});
+
             var readOnlyMode = '#{Metadaten.nurLesenModus}';
-            var autoSave = function() {            
+            var autoSave = function() {
                 var interval = parseInt('#{LoginForm.myBenutzer.metsEditorTime}');
 //             	 TODO check if mets editor was opened read only
             	if (interval > 0) {
@@ -371,7 +371,7 @@
                 	}, interval*1000*60);
             	}
             };
-            
+
             if (readOnlyMode === 'false') {
                 autoSave();
             }
@@ -418,7 +418,7 @@
                                 class="btn btn-blue pull-right"
                                 title="#{msgs.cancel}"
                                 data-dismiss="modal">
-                                <i class="fa fa-times"></i>
+                                <span class="fa fa-times" />
                             </a>
 
                             <h4
@@ -473,7 +473,7 @@
                                     class="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
                                     jsf:action="#{Metadaten.search}"
                                     title="#{msgs.search}">
-                                    <i class="fa fa-search margin-right-5"></i>
+                                    <span class="fa fa-search margin-right-5" />
                                     <h:outputText value="#{msgs.search}" />
                                     <f:ajax
                                         execute="@form"
@@ -561,7 +561,7 @@
                                                 <f:setPropertyActionListener
                                                     value=""
                                                     target="#{Metadaten.rowIndex}" />
-                                                <i class="fa fa-check" />
+                                                <span class="fa fa-check" />
                                             </button>
                                         </h:panelGroup>
                                     </div>
@@ -643,7 +643,7 @@
                                 class="btn btn-blue pull-right"
                                 title="#{msgs.cancel}"
                                 data-dismiss="modal">
-                                <i class="fa fa-times"></i>
+                                <span class="fa fa-times" />
                             </a>
 
                             <h4
@@ -810,7 +810,7 @@
                                     jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}"
                                     jsf:id="search"
                                     title="#{msgs.search}">
-                                    <i class="fa fa-search margin-right-5"></i>
+                                    <span class="fa fa-search margin-right-5" />
                                     <h:outputText value="#{msgs.search}" />
                                     <f:ajax
                                         execute="@form"
@@ -902,7 +902,7 @@
                                 class="btn btn-blue pull-right"
                                 title="#{msgs.cancel}"
                                 data-dismiss="modal">
-                                <i class="fa fa-times"></i>
+                                <span class="fa fa-times" />
                             </a>
 
                             <h4
@@ -942,7 +942,7 @@
                                     class="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
                                     jsf:action="#{Metadaten.search}"
                                     title="#{msgs.search}">
-                                    <i class="fa fa-search margin-right-5"></i>
+                                    <span class="fa fa-search margin-right-5" />
                                     <h:outputText value="#{msgs.search}" />
                                     <f:ajax
                                         execute="@form"
@@ -1095,7 +1095,7 @@
                                                 <f:setPropertyActionListener
                                                     value=""
                                                     target="#{Metadaten.geonamesSearchValue}" />
-                                                <i class="fa fa-check" />
+                                                <span class="fa fa-check" />
                                             </button>
                                         </div>
                                     </div>
@@ -1131,7 +1131,7 @@
                                 class="btn btn-blue pull-right"
                                 title="#{msgs.cancel}"
                                 data-dismiss="modal">
-                                <i class="fa fa-times"></i>
+                                <span class="fa fa-times" />
                             </a>
 
                             <h4
@@ -1166,7 +1166,7 @@
                                         jsf:action="#{Metadaten.search}"
                                         jsf:id="search2"
                                         title="#{msgs.search}">
-                                        <i class="fa fa-search margin-right-5"></i>
+                                        <span class="fa fa-search margin-right-5" />
                                         <h:outputText value="#{msgs.search}" />
                                         <f:ajax
                                             execute="@form"
@@ -1268,7 +1268,7 @@
                                                 <f:setPropertyActionListener
                                                     value=""
                                                     target="#{Metadaten.gndSearchValue}" />
-                                                <i class="fa fa-check" />
+                                                <span class="fa fa-check" />
                                             </button>
                                         </h:panelGroup>
                                     </div>
@@ -1285,28 +1285,28 @@
             </div>
 
             <script type="text/javascript">
-            
+
             	 $( 'body' ).on( 'click', 'a[id*="geonamesIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#rowType' ).val( currType );
 	              } );
-	              
+
 	              $( 'body' ).on( 'click', 'a[id*="gndIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#rowType' ).val( currType );
 	              } );
-	              
+
 	              $( 'body' ).on( 'click', 'a[id*="gndPersonIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#rowType' ).val( currType );
 	              } );
-	              
+
 	              $( 'body' ).on( 'click', 'a[id*="danteIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
@@ -1314,12 +1314,12 @@
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#groupIndex' ).val( currGroup );
 	                  $( '#rowType' ).val( currType );
-	                  
+
 	                  $('#resultList').empty();
 	                  $('#danteInput').val('');
 	                  $('#updatePluginButton').click();
 	              } );
-	              
+
 	              $( 'body' ).on( 'click', 'a[id*="processIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );

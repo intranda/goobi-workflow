@@ -9,11 +9,11 @@
 		<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.myAnzahlList != null}">
 			<div class="row">
 	        	<div class="col-sm-4">
-	        
+
 			        <div class="box box-small box-color lightgrey box-bordered">
 						<div class="box-title">
 							<h3>
-								<i class="fa fa-tint"></i> #{msgs.zusammenfassung}
+								<span class="fa fa-tint" /> #{msgs.zusammenfassung}
 							</h3>
 						</div>
 						<div class="box-content nopadding">
@@ -51,7 +51,7 @@
 							</table>
 						</div>
 					</div>
-									
+
 	        	</div>
 	        </div>
             <div class="row">
@@ -60,14 +60,14 @@
                     <div class="box box-color lightgrey box-bordered">
 						<div class="box-title">
 						    <h3>
-						        <i class="fa fa-table"></i>
+						        <span class="fa fa-table" />
 						        <h:outputText value="#{msgs.anzahlDerArtikelUndImages}" />
 						    </h3>
 				       </div>
                     <div class="box-content nopadding">
-                  
+
 			            <x:dataTable styleClass="table table-hover table-nomargin" var="item" value="#{ProzessverwaltungForm.myAnzahlList}">
-		
+
 							<!-- Title -->
 			                <x:column styleClass="tableColumnMaxWidthLong">
 								<f:facet name="header">
@@ -75,7 +75,7 @@
 								</f:facet>
 								<span title="#{item.title}" data-toggle="tooltip">#{item.title}</span>
 							</x:column>
-							
+
 							<!-- Images -->
 							<x:column>
 								<f:facet name="header">
@@ -91,7 +91,7 @@
 									<div class="progress-bar progress-bar-success" style="width:#{item.relImages * 1}%" title="#{item.images} #{msgs.images}" data-toggle="tooltip" aria-label="#{item.relImages * 1}% #{item.images} #{msgs.images}"></div>
 	                            </div>
 							</x:column>
-							
+
 							<!-- Docstructs -->
 							<x:column>
 								<f:facet name="header">
@@ -107,7 +107,7 @@
 	                                <div class="progress-bar progress-bar-warning" style="width:#{item.relDocstructs * 1}%" title="#{item.docstructs} #{msgs.docstructs}" data-toggle="tooltip" aria-label="#{item.relDocstructs * 1}% #{item.docstructs} #{msgs.docstructs}"></div>
 	                            </div>
 							</x:column>
-		
+
 							<!-- Metadata -->
 							<x:column>
 								<f:facet name="header">
@@ -123,17 +123,15 @@
 	                               <div class="progress-bar progress-bar-danger" style="width: #{item.relMetadata * 1}%" title="#{item.relMetadata} #{msgs.metadata}" data-toggle="tooltip" aria-label="#{item.relMetadata * 1}% #{item.relMetadata} #{msgs.metadata}"></div>
 	                            </div>
 							</x:column>
-										                
+
 			            </x:dataTable>
 			        </div>
 	            </div>
 	        </div>
 	    </div>
-	    
+
 	</h:panelGroup>
-        
+
     </composite:implementation>
 
 </ui:composition>
-
-

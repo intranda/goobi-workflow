@@ -102,9 +102,9 @@
 
             <!-- LABEL -->
             <div class="#{cc.attrs.classLeft}" tabindex="-1">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}"
                     labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
-                <composite:insertChildren />                        
+                <composite:insertChildren />
             </div>
             <!-- // LABEL -->
 
@@ -189,7 +189,7 @@
                             class="btn text-white"
                             title="#{msgs.abbrechen}"
                             data-bs-dismiss="modal">
-                            <i class="fa fa-times"></i>
+                            <span class="fa fa-times" />
                         </button>
                     </div>
                     <div class="modal-body">
@@ -459,7 +459,7 @@
                                                         <f:setPropertyActionListener
                                                             value="#{record.getFieldValues('024','7',' ','a').get(0)}"
                                                             target="#{cc.attrs.field.viafSearch.currentCluster}" />
-                                                        <i class="fa fa-check" />
+                                                        <span class="fa fa-check" />
                                                     </button>
 
                                                     <a

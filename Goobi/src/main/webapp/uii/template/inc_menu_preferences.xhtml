@@ -39,7 +39,7 @@
 						title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
 						jsf:rel="tooltip"
 						data-placement="bottom">
-						<i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
+						<span class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}" />
 						<f:passThroughAttribute
 							name="data-toggle"
 							value="tooltip" />
@@ -50,7 +50,7 @@
 							onevent="toggle_help" />
 					</button>
 				</li>
-				
+
 				<!-- Icon to select language -->
 				<li class="dropdown language-select">
 					<div
@@ -122,12 +122,14 @@
 						<c:if test="#{empty LoginForm.myBenutzer.imageUrl}">
 							<img
 								alt=""
-								src="template/img/intranda.png" />
+								src="template/img/intranda.png"
+								aria-hidden="true" />
 						</c:if>
 						<c:if test="#{not empty LoginForm.myBenutzer.imageUrl}">
 							<img
 								alt=""
-								src="#{LoginForm.myBenutzer.imageUrl}" />
+								src="#{LoginForm.myBenutzer.imageUrl}"
+								aria-hidden="true" />
 						</c:if>
 					</button>
 
@@ -176,7 +178,7 @@
 				<a
 					href="#"
 					class="toggle-mobile">
-					<i class="fa fa-bars"></i>
+					<span class="fa fa-bars" />
 				</a>
 			</c:if>
 		</div>

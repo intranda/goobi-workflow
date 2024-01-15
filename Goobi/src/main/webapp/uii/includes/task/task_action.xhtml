@@ -47,14 +47,14 @@
                     <ul class="tabs tabs-inline tabs-top">
                         <li class="active">
                             <a data-toggle="tab" href="#firsttab">
-                                <i class="fa fa-cog margin-right-5"></i>
+                                <span class="fa fa-cog margin-right-5" />
                                 #{msgs.executeTask}
                             </a>
                         </li>
                         <h:panelGroup rendered="#{AktuelleSchritteForm.sizeOfPreviousStepsForProblemReporting != 0}">
                             <li class="">
                                 <a data-toggle="tab" href="#secondtab">
-                                    <i class="fa fa-bullhorn margin-right-5"></i>
+                                    <span class="fa fa-bullhorn margin-right-5" />
                                     #{msgs.reportError}
                                 </a>
                             </li>
@@ -62,7 +62,7 @@
                         <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.prioritaet>9 and AktuelleSchritteForm.sizeOfNextStepsForProblemSolution != 0}">
                             <li class="">
                                 <a data-toggle="tab" href="#thirdtab">
-                                    <i class="fa fa-check-circle margin-right-5"></i>
+                                    <span class="fa fa-check-circle margin-right-5" />
                                     #{msgs.reportSolution}
                                 </a>
                             </li>
@@ -247,7 +247,7 @@
                                                     <div class="modal-content">
                                                         <div class="modal-header">
 															<a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
-	                                                            <i class="fa fa-times"></i>
+	                                                            <span class="fa fa-times" />
 	                                                        </a>
                                                             <h4 class="modal-title" id="myModalLabel">
                                                                 <h:outputText value="#{msgs.metseditorOpen}" />
@@ -259,7 +259,7 @@
                                                         <div class="modal-footer">
 
                                                             <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip" styleClass="btn btn-lightred pull-left">
-                                                                <i class="fa fa-trash-o margin-right-5"></i>
+                                                                <span class="fa fa-trash-o margin-right-5" />
                                                                 <h:outputText value="#{msgs.discard}" />
                                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
                                                                 <f:param name="ProzesseID" value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
@@ -274,7 +274,7 @@
                                                             </h:commandLink>
 
 
-                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-green">                                                                <i class="fa fa-floppy-o margin-right-5"></i>
+                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-green">                                                                <span class="fa fa-floppy-o margin-right-5" />
                                                                 <h:outputText value="#{msgs.overwrite}" />
                                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
                                                                 <f:param name="ProzesseID" value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
@@ -403,5 +403,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

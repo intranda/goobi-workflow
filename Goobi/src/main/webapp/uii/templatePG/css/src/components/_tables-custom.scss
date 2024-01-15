@@ -288,7 +288,8 @@
 }
 
 .gw-table-fixed th button,
-.table-fixed th button {
+.table-fixed th button,
+.table-resizable th button {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -402,6 +403,7 @@ th {
 
 .table-resizable {
   table-layout: auto;
+  margin-bottom: 1px;
   width: 100%;
   .resize-col {
       position: relative;

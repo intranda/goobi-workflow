@@ -1603,8 +1603,6 @@ public class Metadaten implements Serializable {
         this.modusStrukturelementVerschieben = false;
         this.modusCopyDocstructFromOtherProcess = false;
 
-        readMetadataEditorExtensions();
-
         this.currentTifFolder = null;
         readAllTifFolders();
         /*
@@ -1688,6 +1686,8 @@ public class Metadaten implements Serializable {
             // inserted to make Paginierung the starting view
             this.modusAnsicht = "Metadaten";
         }
+
+        readMetadataEditorExtensions();
         return REDIRECT_TO_METSEDITOR;
     }
 

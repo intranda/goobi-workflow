@@ -27,7 +27,7 @@
 
 						<!-- ++++++++++++++++     Action      ++++++++++++++++ -->
 
-						<h:form 
+						<h:form
 							rendered="#{ProzessverwaltungForm.statisticsManager.statisticMode.restrictedDate}">
 
 							<div class="row">
@@ -152,12 +152,12 @@
 									</h:selectBooleanCheckbox>
 									<h:outputLabel for="loops" styleClass="form-check-label" value="#{msgs.includeLoops}" />
 								</h:panelGroup>
-								
+
 								<button jsf:id="myStatisticButton" type="submit"
 									title="#{msgs.calculateStatistics}"
 									jsf:action="#{ProzessverwaltungForm.statisticsManager.calculate}"
 									class="btn btn-primary">
-									<i class="fa fa-cog"></i>
+									<span class="fa fa-cog" />
 									<span>
 										<h:outputText value="#{msgs.calculateStatistics}" />
 									</span>
@@ -200,18 +200,18 @@
 								</h:panelGroup>
 
 
-								<h:panelGroup 
+								<h:panelGroup
 									rendered="#{element.dataTable.showableInTable and ProzessverwaltungForm.statisticsManager.targetResultOutput== 'table'}">
 									<h4 class="mt-5">
 										<h:outputText value="#{element.title}" />
 									</h4>
 									<h:outputText value="#{element.htmlTableRenderer.rendering}"
 										escape="false" />
-										
+
 									<button jsf:id="createExcel"
 										jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
 										title="#{msgs.download_excel}" class="btn btn-blank">
-										<i class="fa fa-floppy-o"></i>									
+										<span class="fa fa-floppy-o" />
 										<span>
 											<h:outputText value="#{msgs.download_excel}" />
 										</span>
@@ -223,7 +223,7 @@
 									<button jsf:id="createCsv"
 										jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
 										title="#{msgs.download_csv}" class="btn btn-blank">
-										<i class="fa fa-floppy-o"></i>									
+										<span class="fa fa-floppy-o" />
 										<span>
 											<h:outputText value="#{msgs.download_csv}" />
 										</span>
@@ -233,7 +233,7 @@
 									</button>
 								</h:panelGroup>
 
-								<h:panelGroup 
+								<h:panelGroup
 									rendered="#{ProzessverwaltungForm.statisticsManager.targetResultOutput=='chartAndTable'}">
 
 									<h:panelGroup
@@ -243,14 +243,14 @@
 										</h4>
 									</h:panelGroup>
 									<h:panelGroup>
-										
+
 										<h:panelGroup rendered="#{element.dataTable.showableInChart}">
 											<img
 												src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}"
 												aria-label="#{msgs.chart}" title="#{element.title}"
 												data-toggle="tooltip" />
 										</h:panelGroup>
-										
+
 										<div class="gw-table gw-table-fixed">
 										  <div class="gw-table__wrapper">
 											<h:outputText value="#{element.htmlTableRenderer.rendering}"
@@ -263,7 +263,7 @@
 											title="#{msgs.download_excel}"
 											jsf:rendered="#{element.dataTable.showableInTable}"
 											class="btn btn-blank">
-											<i class="fa fa-floppy-o"></i>									
+											<span class="fa fa-floppy-o" />
 											<span>
 												<h:outputText value="#{msgs.download_excel}" />
 											</span>
@@ -276,7 +276,7 @@
 											jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
 											title="#{msgs.download_csv}"
 											jsf:rendered="#{element.dataTable.showableInTable}">
-											<i class="fa fa-floppy-o"></i>									
+											<span class="fa fa-floppy-o" />
 											<span>
 												<h:outputText value="#{msgs.download_csv}" />
 											</span>

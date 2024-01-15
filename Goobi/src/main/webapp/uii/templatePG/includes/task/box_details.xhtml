@@ -77,25 +77,25 @@
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{currentStep.prioritaet == 1}">
-                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o"></i>
+                                <span class="badge badge-intranda-orange"> <span class="fa fa-lightbulb-o" />
                                     #{msgs.badgePriority1}
                                 </span>
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{currentStep.prioritaet == 2}">
-                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o" />
+                                <span class="badge badge-intranda-orange"> <span class="fa fa-lightbulb-o" />
                                     #{msgs.badgePriority2}
                                 </span>
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{currentStep.prioritaet gt 2 and currentStep.prioritaet lt 10}">
-                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o"></i>
+                                <span class="badge badge-intranda-orange"> <span class="fa fa-lightbulb-o" />
                                     #{msgs.badgePriority3}
                                 </span>
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{currentStep.prioritaet gt 9}">
-                                <span class="badge badge-intranda-red"> <i class="fa fa-bullhorn"></i>
+                                <span class="badge badge-intranda-red"> <span class="fa fa-bullhorn" />
                                     #{msgs.badgeCorrection}
                                 </span>
                             </h:panelGroup>

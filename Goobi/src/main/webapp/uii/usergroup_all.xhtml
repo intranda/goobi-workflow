@@ -36,7 +36,7 @@
 						boxPadding="true">
 
 							<div class="gw-table gw-table-fixed">
-								
+
                                 <!-- HITS -->
                                 <div class="gw-table__search">
     								<div class="gw-table__search__length">
@@ -50,13 +50,13 @@
 								<div class="gw-table__wrapper">
     								<x:dataTable id="usergrouptable" styleClass="table table-hover table-bordered"
     									var="item" value="#{BenutzergruppenForm.paginator.list}">
-    
+
     									<!-- NAME COLUMN -->
                                         <x:column>
     										<f:facet name="header">
     											<h:outputText value="#{msgs.name}" />
     										</f:facet>
-    
+
                                             <ui:include
                                                 src="templatePG/includes/ajaxPlusMinusButton.xhtml">
                                                 <ui:param
@@ -66,11 +66,11 @@
                                                     name="tooltips"
                                                     value="#usergroupAll" />
                                             </ui:include>
-    
+
                                             <!-- EXPANDED DETAILS OF THE GROUP -->
     										<h:panelGroup rendered="#{item.panelAusgeklappt}">
     											<div class="row">
-    												
+
                                                     <!-- BOX WITH USERS -->
                                                     <div class="col-12 col-md-6">
     													<intranda:box
@@ -78,7 +78,7 @@
     														boxPadding="false"
     														boxSmall="true"
     														title="#{msgs.benutzer}">
-    
+
     														<x:dataTable var="step" value="#{item.benutzer}"
     															styleClass="table table-hover table-bordered ">
     															<h:column>
@@ -88,7 +88,7 @@
     													</intranda:box>
     												</div>
                                                     <!-- // BOX WITH USERS -->
-                                                    
+
                                                     <!-- BOX WITH RIGHTS -->
     												<div class="col-12 col-md-6">
     													<intranda:box
@@ -111,43 +111,43 @@
     													</intranda:box>
     												</div>
                                                     <!-- // BOX WITH RIGHTS -->
-                                                    
-    											</div> 
+
+    											</div>
     										</h:panelGroup>
                                             <!-- // EXPANDED DETAILS OF THE GROUP -->
-    
+
     									</x:column>
                                         <!-- // NAME COLUMN -->
-                                        
-                                        <!-- INSTITUTION COLUMN -->                                    
+
+                                        <!-- INSTITUTION COLUMN -->
     									<x:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
     											<f:facet name="header">
     													<h:outputText value="#{msgs.institution}" />
     											</f:facet>
     											<h:outputText value="#{item.institution.shortName}" />
     									</x:column>
-                                        <!-- // INSTITUTION COLUMN -->                                    
-    
-                                        <!-- ACTION COLUMN -->                                    
+                                        <!-- // INSTITUTION COLUMN -->
+
+                                        <!-- ACTION COLUMN -->
     									<x:column headerClass="gw-table-fixed__actions">
     										<f:facet name="header">
     											<h:outputText value="#{msgs.auswahl}" />
     										</f:facet>
-    
+
     										<div class="gw-table__actions__container">
-    											
+
                                                 <!-- EDIT BUTTON -->
     											<button jsf:id="edit" class="btn btn-blank" jsf:rel="tooltip"
     												jsf:action="usergroup_edit"
     												title="#{msgs.bearbeiten}">
-    												<i class="fa fa-pencil"></i>
+    												<span class="fa fa-pencil" />
     												<f:passThroughAttribute name="data-toggle" value="tooltip" />
     												<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
     												<f:setPropertyActionListener
     													target="#{BenutzergruppenForm.myBenutzergruppe}"
     													value="#{item}" />
     											</button>
-    
+
     											<!-- DUPLICATE BUTTON -->
     											<button
     												jsf:action="#{BenutzergruppenForm.cloneUsergroup}"
@@ -155,26 +155,26 @@
     												jsf:rel="tooltip"
     												title="#{msgs.duplicate}"
     												onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-    												<i class="fa fa-clipboard" />
+    												<span class="fa fa-clipboard" />
     												<f:passThroughAttribute name="data-toggle" value="tooltip" />
     												<f:passThroughAttribute name="aria-label" value="#{msgs.duplicate}" />
     												<x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
     											</button>
     										</div>
-    
+
     									</x:column>
-                                        <!-- // ACTION COLUMN -->                                    
-    
+                                        <!-- // ACTION COLUMN -->
+
     								</x:dataTable>
 								</div>
 
                                 <!-- ACTION AREA -->
 								<div class="form-actions">
-									
+
                                     <!-- NEW BUTTON -->
 									<button jsf:id="newUserGroup" class="btn btn-primary-400 me-auto"
 										jsf:action="#{BenutzergruppenForm.Neu}" jsf:immediate="true">
-										<i class="fa fa-plus"></i>
+										<span class="fa fa-plus" />
 										<span>#{msgs.neueBenutzergruppeAnlegen}</span>
 									</button>
 

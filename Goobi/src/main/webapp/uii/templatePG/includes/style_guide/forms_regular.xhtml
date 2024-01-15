@@ -78,7 +78,7 @@
 					jsf:id="absenden"
 					type="submit"
 					jsf:action="#{BenutzerverwaltungForm.Speichern}">
-					<i class="fa fa-save"></i>
+					<span class="fa fa-save" />
 					<span>
 						<h:outputText value="#{msgs.speichern}" />
 					</span>
@@ -90,7 +90,7 @@
 					class="btn btn-hot trigger-delete"
 					onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
 					jsf:action="#{BenutzerverwaltungForm.Loeschen}">
-					<i class="fa fa-trash-o"></i>
+					<span class="fa fa-trash-o" />
 					<span>
 						<h:outputText value="#{msgs.loeschen}" />
 					</span>
@@ -214,4 +214,3 @@
 
 	</composite:implementation>
 </ui:composition>
-

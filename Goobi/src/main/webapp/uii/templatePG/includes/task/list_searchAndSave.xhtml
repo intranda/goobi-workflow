@@ -21,7 +21,7 @@
 			jsf:action="#{Form.removeFilterFromUser}"
 			title="#{msgs.removeFilter}"
 		>
-			<i class="fa fa-trash-o"></i>
+			<span class="fa fa-trash-o" />
 		</button>
 
 		<!--Filter zur User-Liste hinzufuegen -->
@@ -33,7 +33,7 @@
 			jsf:action="#{Form.addFilterToUser}"
 			title="#{msgs.addFilter}"
 		>
-			<i class="fa fa-save"></i>
+			<span class="fa fa-save" />
 		</button>
 
 		<h:panelGroup rendered="#{Form.user.filters.size() gt 0}">
@@ -48,7 +48,7 @@
 						aria-haspopup="true"
 						aria-expanded="false"
 					>
-						<i class="fa fa-filter" />
+						<span class="fa fa-filter" />
 						<span class="caret"></span>
 					</button>
 					<!-- Filter Liste -->
@@ -87,7 +87,7 @@
 		<div class="gw-table__filters__search-bar">
 			<div class="input-group">
 				<span class="input-group-text">
-					<i class="fa fa-search"></i>
+					<span class="fa fa-search" />
 				</span>
 				<h:inputText
 					id="searchField"

@@ -24,7 +24,7 @@
 		<h:form
 			id="actionBoxForm"
 			rendered="#{currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
-					  
+
 			<intranda:box
 				boxType="action"
 				boxForm="true"
@@ -116,14 +116,14 @@
 								title="#{msgs.oderSperrungAufheben}">
 								<h:outputText value="#{msgs.oderSperrungAufheben}" />
 							</button>
-			
+
 						</h:panelGroup>
 						<!-- // STEP is LOCKED, NO ACTION ALLOWED -->
-						
+
 
 						<!-- STEP NOT LOCKED, ACTION ALLOWED -->
 						<h:panelGroup rendered="#{currentStep.prozess.benutzerGesperrt == null}">
-									  
+
 							<!-- PLUGIN - FULL -->
 							<!-- visible only for Plugins without any gui or with full gui -->
 							<button
@@ -142,7 +142,7 @@
 									property="#{NavigationForm.uiStatus.pluginSimulation}"
 									value="#{false}" />
 							</button>
-	
+
 							<!-- PLUGIN - NONE -->
 							<button
 								jsf:id="runPluginNoGUI"
@@ -156,7 +156,7 @@
 										value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
 								</span>
 							</button>
-	
+
 							<!-- MODULE -->
 							<button
 								jsf:id="executeModule"
@@ -171,7 +171,7 @@
 										value="#{msgs.modulStarten} (#{currentStep.typModulName})" />
 								</span>
 							</button>
-	
+
 							<!-- SCRIPT 1 -->
 							<button
 								jsf:id="executeScript"
@@ -190,7 +190,7 @@
 								</span>
 							</button>
 							<!-- // SCRIPT 1 -->
-	
+
 							<!-- SCRIPT 2 -->
 							<button
 								jsf:id="executeScript2"
@@ -209,7 +209,7 @@
 								</span>
 							</button>
 							<!-- // SCRIPT 2 -->
-	
+
 							<!-- SCRIPT 3 -->
 							<button
 								jsf:id="executeScript3"
@@ -228,7 +228,7 @@
 								</span>
 							</button>
 							<!-- // SCRIPT 3 -->
-	
+
 							<!-- SCRIPT 4 -->
 							<button
 								jsf:id="executeScript4"
@@ -246,7 +246,7 @@
 										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname4}" />
 								</span>
 							</button>
-	
+
 							<!-- SCRIPT 5 -->
 							<button
 								jsf:id="executeScript5"
@@ -265,7 +265,7 @@
 								</span>
 							</button>
 							<!-- // SCRIPT 5 -->
-	
+
 							<!-- EXPORT -->
 							<h:panelGroup
 								rendered="#{currentStep.typExportDMS}">
@@ -286,12 +286,12 @@
 								</button>
 							</h:panelGroup>
 							<!-- // EXPORT -->
-	
+
 							<!-- METADATA -->
 							<h:panelGroup
 								rendered="#{currentStep.typMetadaten}">
-								
-								
+
+
 								<h:commandLink
 									id="metadata"
 									action="#{Metadaten.XMLlesen}"
@@ -351,7 +351,7 @@
 										value="#{null}"
 										target="#{NavigationForm.uiStatus.mets_toc5}" />
 								</h:commandLink>
-	
+
 								<h:panelGroup
 									rendered="#{currentStep.prozess.temporaryMetadataFiles}">
 									<a
@@ -372,7 +372,7 @@
 									tabindex="-1"
 									role="dialog"
 									aria-labelledby="myModalLabel">
-									
+
 									<div
 										class="modal-dialog"
 										role="document">
@@ -383,7 +383,7 @@
 												</h4>
 												<button type="button" class="btn text-white"
 													title="#{msgs.cancel}" data-bs-dismiss="modal">
-													<i class="fa fa-times"></i>
+													<span class="fa fa-times" />
 												</button>
 											</div>
 											<div class="modal-body">
@@ -398,7 +398,7 @@
 													title="#{msgs.discard}"
 													rel="tooltip"
 													styleClass="btn btn-hot">
-													<i class="fa fa-trash-o"></i>
+													<span class="fa fa-trash-o" />
 													<span>
 														<h:outputText value="#{msgs.discard}" />
 													</span>
@@ -433,8 +433,8 @@
 														value="#{null}"
 														target="#{NavigationForm.uiStatus.mets_toc5}" />
 												</h:commandLink>
-	
-	
+
+
 												<h:commandLink
 													onclick="sessionStorage.removeItem('columnWidths');"
 													action="#{Metadaten.XMLlesen}"
@@ -442,7 +442,7 @@
 													title="#{msgs.overwrite}"
 													rel="tooltip"
 													styleClass="btn btn-success">
-													<i class="fa fa-floppy-o"></i>
+													<span class="fa fa-floppy-o" />
 													<span>
 														<h:outputText value="#{msgs.overwrite}" />
 													</span>
@@ -483,7 +483,7 @@
 								</div>
 							</h:panelGroup>
 							<!-- // METADATA -->
-	
+
 							<!-- DOCKET -->
 							<button
 								jsf:rendered="#{currentStep.generateDocket}"
@@ -497,7 +497,7 @@
 									<h:outputText value="#{msgs.process_generateDocket}" />
 								</span>
 							</button>
-	
+
                             <!-- CANCEL SINGLE TASK -->
                             <button
                                 jsf:id="cancel"
@@ -511,7 +511,7 @@
                                     <h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
                                 </span>
                             </button>
-                            
+
                             <!-- CANCEL ALL TASKS OF BATCH -->
 							<button
 								jsf:id="cancelBatch"
@@ -525,7 +525,7 @@
 									<h:outputText value="#{msgs.cancelBatchEdition}" />
 								</span>
 							</button>
-	
+
 							<!-- FINISH SINGLE TASK -->
                             <button
                                 jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton and !isBatchStep}"
@@ -539,7 +539,7 @@
                                     <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
                                 </span>
                             </button>
-                            
+
                             <!-- FINISH ALL TASKS OF BATCH -->
 							<button
 								jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton and isBatchStep}"
@@ -555,7 +555,7 @@
 							</button>
 						</h:panelGroup>
 						<!-- STEP NOT LOCKED, ACTION ALLOWED -->
-						
+
 					</h:panelGroup>
 					<!-- // TAB 1 - ACTION -->
 
@@ -665,7 +665,7 @@
                                 title="#{msgs.korrekturmeldungSenden}"
                                 styleClass="btn btn-primary">
                             </h:commandButton>
-                            
+
                             <!-- REPORT BUTTON BATCH ALL -->
                             <h:commandButton
                                 id="submiterrorBatch1"
@@ -676,7 +676,7 @@
                                 title="#{msgs.korrekturmeldungSendenForAll}"
                                 styleClass="btn btn-primary">
                             </h:commandButton>
-                            
+
                             <!-- REPORT BUTTON BATCH SINGLE -->
                             <h:commandButton
 								id="submiterrorBatch2"
@@ -713,16 +713,16 @@
                                         itemLabel="#{step2.titelMitBenutzername}"
                                         itemValue="#{step2.id}" />
                                 </h:selectOneMenu>
-                                
+
                                 <h:selectOneMenu
 									id="selectSolveStepBatch"
                                     rendered="#{isBatchStep}"
 									styleClass="form-control"
 									value="#{AktuelleSchritteForm.batchHelper.mySolutionStep}">
-									<f:selectItems 
-                                        value="#{AktuelleSchritteForm.batchHelper.nextStepsForProblemSolution}" 
+									<f:selectItems
+                                        value="#{AktuelleSchritteForm.batchHelper.nextStepsForProblemSolution}"
                                         var="step2"
-                                        itemLabel="#{step2.titelMitBenutzername}" 
+                                        itemLabel="#{step2.titelMitBenutzername}"
                                         itemValue="#{step2.id}" />
 								</h:selectOneMenu>
 							</div>
@@ -786,7 +786,7 @@
 						</div>
 
 						<div class="form-actions">
-							
+
                             <!-- SOLVE BUTTON REGULAR -->
                             <h:commandButton
                                 id="solveProblem"
@@ -808,7 +808,7 @@
                                 title="#{msgs.meldungUeberProblemloesungSendenForAll}"
                                 styleClass="btn btn-primary">
                             </h:commandButton>
-                            
+
                             <!-- SOLVE BUTTON BATCH SINGLE -->
                             <h:commandButton
 								id="solveProblemBatch2"
