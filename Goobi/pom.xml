@@ -61,6 +61,8 @@
         <maven.compiler.release>11</maven.compiler.release>
 
         <!-- Sonar -->
+        <sonar.scanner.force-deprecated-java-version>true</sonar.scanner.force-deprecated-java-version>
+
         <sonar.projectKey>intranda_goobi-workflow</sonar.projectKey>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.organization>intranda</sonar.organization>
