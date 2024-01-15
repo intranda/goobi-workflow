@@ -1,8 +1,8 @@
-/** @description Show and hide inline help. 
+/** @description Show and hide inline help.
  */
-var gwToggleHelp = ( function() {
+export default gwToggleHelp = ( function() {
     'use strict';
-    
+
     let _debug = false;
 
     function init(data) {

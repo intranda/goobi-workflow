@@ -15,8 +15,6 @@
 
     <composite:implementation>
 
-        <script src="templatePG/js/modules/gwNavigation.js?v=#{HelperForm.buildVersion}"></script>
-
 
         <div class="user">
             <div class="nav icon-nav">
@@ -38,7 +36,7 @@
                     <f:ajax
                         render="@this"
                         execute="@form"
-                        onevent="function(data) { toggle_help(data); gwHandleTooltip.init(data);}" />
+                        onevent="function(data) { gwToggleHelp.init(data); gwHandleTooltip.init(data);}" />
                 </button>
 
                 <!-- Language dropdown -->
