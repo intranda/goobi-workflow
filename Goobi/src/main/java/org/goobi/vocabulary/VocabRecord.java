@@ -62,7 +62,9 @@ public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
     public String getTitle() {
         for (Field field : fields) {
             if (field.getDefinition() != null && field.getDefinition().isMainEntry()) {
-                return field.getValue();
+                if (field.getValue() != null) {
+                    return field.getValue();
+                }
             }
         }
         return "";
