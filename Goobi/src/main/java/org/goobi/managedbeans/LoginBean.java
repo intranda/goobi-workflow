@@ -294,10 +294,20 @@ public class LoginBean implements Serializable {
         if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
             return RETURN_PAGE;
         }
+
+        User currentUser = this.myBenutzer;
+
         this.myBenutzer = null;
         Integer loginID = Integer.valueOf(Helper.getRequestParameter("ID"));
         try {
             this.myBenutzer = UserManager.getUserById(loginID);
+
+            // Creating journal entry
+            currentUser.setContent("Log in as user: " + this.myBenutzer.getNachVorname());
+            currentUser.addJournalEntry();
+            this.myBenutzer.setContent("User \"" + currentUser.getNachVorname() + "\" logged into this account");
+            this.myBenutzer.addJournalEntry();
+
             /* in der Session den Login speichern */
             HttpSession session = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
             Helper.getSessionBean().updateSessionUserName(session, this.myBenutzer);
