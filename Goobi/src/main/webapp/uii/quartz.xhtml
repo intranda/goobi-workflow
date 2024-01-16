@@ -166,7 +166,11 @@
                                                             rendered="#{entry.paused}" />
                                                     </td>
                                                     <td>
-                                                        <h:outputText value="#{entry.humanReadableCronTime}" />
+                                                        <h:outputText value="#{entry.humanReadableCronTime}"
+                                                            rendered="#{!entry.paused}" />
+                                                        <h:outputText
+                                                            value="-"
+                                                            rendered="#{entry.paused}" />
                                                     </td>
                                                 </tr>
                                             </ui:repeat>
