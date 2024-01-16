@@ -59,7 +59,6 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -145,9 +144,7 @@ public class VariableReplacer {
     private static final String REGEX_PROCESS = PREFIX + "process\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+?)" + SUFFIX;
 
-    @Getter
-    @Setter
-    private String SEPARATOR = ",";
+    private String separator = ",";
 
     private DigitalDocument dd;
     private Prefs prefs;
@@ -239,81 +236,190 @@ public class VariableReplacer {
         // replace paths and files
         inString = simpleReplace(inString, process);
         try {
-            String processpath = process.getProcessDataDirectory().replace("\\", "/");
-            String tifpath = process.getImagesTifDirectory(false).replace("\\", "/");
-            String imagepath = process.getImagesDirectory().replace("\\", "/");
-            String origpath = process.getImagesOrigDirectory(false).replace("\\", "/");
-            String ocrBasisPath = process.getOcrDirectory().replace("\\", "/");
-            String ocrPlaintextPath = process.getOcrTxtDirectory().replace("\\", "/");
-            String sourcePath = process.getSourceDirectory().replace("\\", "/");
-            String importPath = process.getImportDirectory().replace("\\", "/");
             String metaFile = process.getMetadataFilePath().replace("\\", "/");
 
-            /* da die Tiffwriter-Scripte einen Pfad ohne endenen Slash haben wollen, wird diese rausgenommen */
-            if (tifpath.endsWith(FileSystems.getDefault().getSeparator())) {
-                tifpath = tifpath.substring(0, tifpath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
-            }
-            if (imagepath.endsWith(FileSystems.getDefault().getSeparator())) {
-                imagepath = imagepath.substring(0, imagepath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
-            }
-            if (origpath.endsWith(FileSystems.getDefault().getSeparator())) {
-                origpath = origpath.substring(0, origpath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
-            }
-            if (processpath.endsWith(FileSystems.getDefault().getSeparator())) {
-                processpath = processpath.substring(0, processpath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
-            }
-            if (importPath.endsWith(FileSystems.getDefault().getSeparator())) {
-                importPath = importPath.substring(0, importPath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
-            }
-            if (sourcePath.endsWith(FileSystems.getDefault().getSeparator())) {
-                sourcePath = sourcePath.substring(0, sourcePath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
-            }
-            if (ocrBasisPath.endsWith(FileSystems.getDefault().getSeparator())) {
-                ocrBasisPath = ocrBasisPath.substring(0, ocrBasisPath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
-            }
-            if (ocrPlaintextPath.endsWith(FileSystems.getDefault().getSeparator())) {
-                ocrPlaintextPath = ocrPlaintextPath.substring(0, ocrPlaintextPath.length() - FileSystems.getDefault().getSeparator().length())
-                        .replace("\\", "/");
-            }
+            String tifpath = null;
+            String imagepath = null;
+            String origpath = null;
+            String processpath = getProcessPath();
+            String importPath = getImportPath();
+            String sourcePath = getSourcePath();
+            String ocrBasisPath = getOcrBasePath();
+            String ocrPlaintextPath = getOcrPlainTextPath();
             String defaultFileProtocol = "file://";
             String windowsFileProtocol = "file:/";
-            if (SystemUtils.IS_OS_WINDOWS) {
-                inString = pTifUrl.matcher(inString).replaceAll(windowsFileProtocol + tifpath);
-            } else {
-                inString = pTifUrl.matcher(inString).replaceAll(defaultFileProtocol + tifpath);
+            Matcher matcher = pTifUrl.matcher(inString);
+            if (matcher.matches()) {
+                if (tifpath == null) {
+                    tifpath = getTifPath();
+                }
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    inString = matcher.replaceAll(windowsFileProtocol + tifpath);
+                } else {
+                    inString = matcher.replaceAll(defaultFileProtocol + tifpath);
+                }
             }
-            if (SystemUtils.IS_OS_WINDOWS) {
-                inString = pOrigurl.matcher(inString).replaceAll(windowsFileProtocol + origpath);
-            } else {
-                inString = pOrigurl.matcher(inString).replaceAll(defaultFileProtocol + origpath);
-            }
-            if (SystemUtils.IS_OS_WINDOWS) {
-                inString = pImageUrl.matcher(inString).replaceAll(windowsFileProtocol + imagepath);
-            } else {
-                inString = pImageUrl.matcher(inString).replaceAll(defaultFileProtocol + imagepath);
+            matcher = pOrigurl.matcher(inString);
+            if (matcher.matches()) {
+                if (origpath == null) {
+                    origpath = getMasterPath();
+                }
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    inString = matcher.replaceAll(windowsFileProtocol + origpath);
+                } else {
+                    inString = matcher.replaceAll(defaultFileProtocol + origpath);
+                }
             }
 
-            inString = pS3TifPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(tifpath));
-            inString = pS3OrigPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(origpath));
-            inString = pS3ImagePath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(imagepath));
-            inString = pS3Processpath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(processpath));
-            inString = pS3ImportPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(importPath));
-            inString = pS3SourcePath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(sourcePath));
-            inString = pS3OcrBasisPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(ocrBasisPath));
-            inString = pS3OcrPlainTextPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(ocrPlaintextPath));
+            matcher = pImageUrl.matcher(inString);
+            if (matcher.matches()) {
+                if (imagepath == null) {
+                    imagepath = getImagePath();
+                }
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    inString = matcher.replaceAll(windowsFileProtocol + imagepath);
+                } else {
+                    inString = matcher.replaceAll(defaultFileProtocol + imagepath);
+                }
+            }
 
+            matcher = pS3TifPath.matcher(inString);
+            if (matcher.matches()) {
+                if (tifpath == null) {
+                    tifpath = getTifPath();
+                }
+                inString = matcher.replaceAll(S3FileUtils.string2Prefix(tifpath));
+            }
+
+            matcher = pS3OrigPath.matcher(inString);
+            if (matcher.matches()) {
+                if (origpath == null) {
+                    origpath = getMasterPath();
+                }
+                inString = matcher.replaceAll(S3FileUtils.string2Prefix(origpath));
+            }
+
+            matcher = pS3ImagePath.matcher(inString);
+            if (matcher.matches()) {
+                if (imagepath == null) {
+                    imagepath = getImagePath();
+                }
+                inString = matcher.replaceAll(S3FileUtils.string2Prefix(imagepath));
+            }
+
+            matcher = pS3Processpath.matcher(inString);
+            if (matcher.matches()) {
+                if (processpath == null) {
+                    processpath = getProcessPath();
+                }
+                inString = matcher.replaceAll(S3FileUtils.string2Prefix(processpath));
+            }
+
+            matcher = pS3ImportPath.matcher(inString);
+            if (matcher.matches()) {
+                if (importPath == null) {
+                    importPath = getImportPath();
+                }
+                inString = matcher.replaceAll(S3FileUtils.string2Prefix(importPath));
+            }
+
+            matcher = pS3SourcePath.matcher(inString);
+            if (matcher.matches()) {
+                if (sourcePath == null) {
+                    sourcePath = getSourcePath();
+                }
+                inString = matcher.replaceAll(S3FileUtils.string2Prefix(sourcePath));
+            }
+
+            matcher = pS3OcrBasisPath.matcher(inString);
+            if (matcher.matches()) {
+                if (ocrBasisPath == null) {
+                    ocrBasisPath = getOcrBasePath();
+                }
+                inString = matcher.replaceAll(S3FileUtils.string2Prefix(ocrBasisPath));
+            }
+
+            matcher = pS3OcrPlainTextPath.matcher(inString);
+            if (matcher.matches()) {
+                if (ocrPlaintextPath == null) {
+                    ocrPlaintextPath = getOcrPlainTextPath();
+                }
+                inString = matcher.replaceAll(S3FileUtils.string2Prefix(ocrPlaintextPath));
+            }
             inString = pMetaFile.matcher(inString).replaceAll(metaFile);
-            inString = pTifPath.matcher(inString).replaceAll(tifpath);
-            inString = pOrigPath.matcher(inString).replaceAll(origpath);
-            inString = pImagePath.matcher(inString).replaceAll(imagepath);
-            inString = pProcessPath.matcher(inString).replaceAll(processpath);
-            inString = pImportPath.matcher(inString).replaceAll(importPath);
-            inString = pSourcePath.matcher(inString).replaceAll(sourcePath);
-            inString = pOcrBasisPath.matcher(inString).replaceAll(ocrBasisPath);
-            inString = pOcrPlaintextPath.matcher(inString).replaceAll(ocrPlaintextPath);
 
-            inString = piiifMediaFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "media")));
-            inString = piiifMasterFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "master")));
+            matcher = pTifPath.matcher(inString);
+            if (matcher.matches()) {
+                if (tifpath == null) {
+                    tifpath = getTifPath();
+                }
+                inString = matcher.replaceAll(tifpath);
+            }
+
+            matcher = pOrigPath.matcher(inString);
+            if (matcher.matches()) {
+                if (origpath == null) {
+                    origpath = getMasterPath();
+                }
+                inString = matcher.replaceAll(origpath);
+            }
+
+            matcher = pImagePath.matcher(inString);
+            if (matcher.matches()) {
+                if (imagepath == null) {
+                    imagepath = getImagePath();
+                }
+                inString = matcher.replaceAll(imagepath);
+            }
+
+            matcher = pProcessPath.matcher(inString);
+            if (matcher.matches()) {
+                if (processpath == null) {
+                    processpath = getProcessPath();
+                }
+                inString = matcher.replaceAll(processpath);
+            }
+
+            matcher = pImportPath.matcher(inString);
+            if (matcher.matches()) {
+                if (importPath == null) {
+                    importPath = getImportPath();
+                }
+                inString = matcher.replaceAll(importPath);
+            }
+
+            matcher = pSourcePath.matcher(inString);
+            if (matcher.matches()) {
+                if (sourcePath == null) {
+                    sourcePath = getSourcePath();
+                }
+                inString = matcher.replaceAll(sourcePath);
+            }
+
+            matcher = pOcrBasisPath.matcher(inString);
+            if (matcher.matches()) {
+                if (ocrBasisPath == null) {
+                    ocrBasisPath = getOcrBasePath();
+                }
+                inString = matcher.replaceAll(ocrBasisPath);
+            }
+
+            matcher = pOcrPlaintextPath.matcher(inString);
+            if (matcher.matches()) {
+                if (ocrPlaintextPath == null) {
+                    ocrPlaintextPath = getOcrPlainTextPath();
+                }
+                inString = matcher.replaceAll(ocrPlaintextPath);
+            }
+
+            matcher = piiifMediaFolder.matcher(inString);
+            if (matcher.matches()) {
+                inString = matcher.replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "media")));
+            }
+            matcher = piiifMasterFolder.matcher(inString);
+            if (matcher.matches()) {
+                inString = matcher.replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "master")));
+            }
 
         } catch (IOException | SwapException | DAOException e) {
             log.error(e);
@@ -400,6 +506,71 @@ public class VariableReplacer {
         }
 
         return inString;
+    }
+
+    private String getProcessPath() throws IOException, SwapException {
+        String processpath = process.getProcessDataDirectory().replace("\\", "/");
+        if (processpath.endsWith(FileSystems.getDefault().getSeparator())) {
+            processpath = processpath.substring(0, processpath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
+        }
+        return processpath;
+    }
+
+    private String getSourcePath() throws IOException, SwapException {
+        String sourcePath = process.getSourceDirectory().replace("\\", "/");
+        if (sourcePath.endsWith(FileSystems.getDefault().getSeparator())) {
+            sourcePath = sourcePath.substring(0, sourcePath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
+        }
+        return sourcePath;
+    }
+
+    private String getOcrBasePath() throws SwapException, IOException {
+        String ocrBasisPath = process.getOcrDirectory().replace("\\", "/");
+        if (ocrBasisPath.endsWith(FileSystems.getDefault().getSeparator())) {
+            ocrBasisPath = ocrBasisPath.substring(0, ocrBasisPath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
+        }
+        return ocrBasisPath;
+    }
+
+    private String getOcrPlainTextPath() throws SwapException, IOException {
+        String ocrPlaintextPath = process.getOcrTxtDirectory().replace("\\", "/");
+        if (ocrPlaintextPath.endsWith(FileSystems.getDefault().getSeparator())) {
+            ocrPlaintextPath = ocrPlaintextPath.substring(0, ocrPlaintextPath.length() - FileSystems.getDefault().getSeparator().length())
+                    .replace("\\", "/");
+        }
+        return ocrPlaintextPath;
+    }
+
+    private String getImportPath() throws SwapException, IOException {
+        String importPath = process.getImportDirectory().replace("\\", "/");
+        if (importPath.endsWith(FileSystems.getDefault().getSeparator())) {
+            importPath = importPath.substring(0, importPath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
+        }
+        return importPath;
+    }
+
+    private String getMasterPath() throws IOException, SwapException, DAOException {
+        String origpath = process.getImagesOrigDirectory(false).replace("\\", "/");
+        if (origpath.endsWith(FileSystems.getDefault().getSeparator())) {
+            origpath = origpath.substring(0, origpath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
+        }
+        return origpath;
+    }
+
+    private String getImagePath() throws IOException, SwapException {
+        String imagepath = process.getImagesDirectory().replace("\\", "/");
+        if (imagepath.endsWith(FileSystems.getDefault().getSeparator())) {
+            imagepath = imagepath.substring(0, imagepath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
+        }
+        return imagepath;
+    }
+
+    private String getTifPath() throws IOException, SwapException {
+        String tifpath = process.getImagesTifDirectory(false).replace("\\", "/");
+        if (tifpath.endsWith(FileSystems.getDefault().getSeparator())) {
+            tifpath = tifpath.substring(0, tifpath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
+        }
+        return tifpath;
     }
 
     /**
@@ -515,7 +686,7 @@ public class VariableReplacer {
         if (metadataList != null) {
             for (Metadata md : metadataList) {
                 if (bld.length() != 0) {
-                    bld.append(SEPARATOR);
+                    bld.append(separator);
                 }
                 // if it is a person, get the complete name, otherwise the value only
                 if (md.getType().getIsPerson()) {
