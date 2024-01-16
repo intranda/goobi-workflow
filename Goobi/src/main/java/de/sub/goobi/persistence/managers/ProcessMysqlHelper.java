@@ -24,10 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -484,7 +481,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Integer> getIDList(String filter) throws SQLException {
+    public static List<Integer> getIDList(Optional<String> order, String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id ");
@@ -492,6 +489,12 @@ class ProcessMysqlHelper implements Serializable {
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+        }
+        if (order.isPresent()) {
+            String sortfield = MySQLHelper.prepareSortField(order.get(), sql);
+            if (StringUtils.isNotBlank(sortfield)) {
+                sql.append(" ORDER BY " + sortfield);
+            }
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
