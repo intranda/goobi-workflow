@@ -22,10 +22,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.Batch;
@@ -191,7 +188,7 @@ public class ProcessManager implements IManager, Serializable {
     public static List<Integer> getIdsForFilter(String filter) {
 
         try {
-            return ProcessMysqlHelper.getIDList(filter);
+            return ProcessMysqlHelper.getIDList(Optional.empty(), filter);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -308,7 +305,7 @@ public class ProcessManager implements IManager, Serializable {
     public List<Integer> getIdList(String order, String filter, Institution institution) {
         List<Integer> idList = new LinkedList<>();
         try {
-            idList = ProcessMysqlHelper.getIDList(filter);
+            idList = ProcessMysqlHelper.getIDList(Optional.of(order), filter);
         } catch (SQLException e) {
             log.error("error while getting id list", e);
         }
