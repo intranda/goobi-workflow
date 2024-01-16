@@ -107,7 +107,7 @@
                                                             jsf:rel="tooltip"
                                                             title="#{msgs.jobs_run_once_now}"
                                                             class="btn btn-blank float-end">
-                                                            <span class="fa fa-repeat" />
+                                                            <span class="fa fa-step-forward" />
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />
@@ -158,7 +158,12 @@
                                                         <h:outputText value="#{entry.previousFireTimeAsString}" />
                                                     </td>
                                                     <td>
-                                                        <h:outputText value="#{entry.nextFireTimeAsString}" />
+                                                        <h:outputText
+                                                            value="#{entry.nextFireTimeAsString}"
+                                                            rendered="#{!entry.paused}" />
+                                                        <h:outputText
+                                                            value="-"
+                                                            rendered="#{entry.paused}" />
                                                     </td>
                                                     <td>
                                                         <h:outputText value="#{entry.humanReadableCronTime}" />
