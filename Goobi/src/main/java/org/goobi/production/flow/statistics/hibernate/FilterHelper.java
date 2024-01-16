@@ -249,16 +249,22 @@ public class FilterHelper {
             sb.append(leftTruncationCharacter);
             sb.append(MySQLHelper.escapeSql(parameters));
             sb.append(rightTruncationCharacter);
-            sb.append("' AND schritte.Bearbeitungsstatus = ");
-            sb.append(inStatus.getValue().intValue());
+            sb.append("'");
+            if (inStatus != null) {
+                sb.append("AND schritte.Bearbeitungsstatus = ");
+                sb.append(inStatus.getValue().intValue());
+            }
             appendDateFilter(dateFilter, sb);
         } else {
             sb.append(" prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '");
             sb.append(leftTruncationCharacter);
             sb.append(MySQLHelper.escapeSql(parameters));
             sb.append(rightTruncationCharacter);
-            sb.append("' AND schritte.Bearbeitungsstatus = ");
-            sb.append(inStatus.getValue().intValue());
+            sb.append("'");
+            if (inStatus != null) {
+                sb.append("AND schritte.Bearbeitungsstatus = ");
+                sb.append(inStatus.getValue().intValue());
+            }
             appendDateFilter(dateFilter, sb);
         }
         return sb.toString();
@@ -907,6 +913,9 @@ public class FilterHelper {
                 if (flagSteps) {
                     filter = checkStringBuilder(filter, true);
                     filter.append(createHistoricFilter(tok));
+                } else if (flagProcesses) {
+                    filter = checkStringBuilder(filter, true);
+                    filter.append(createStepFilters(tok, null, false, currentDateFilter.getDateFilter()));
                 }
             } else if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
