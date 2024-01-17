@@ -374,7 +374,7 @@
 											label="#{msgs.titel}"
 											field="#{myprocess_item.name}"
 											help="#{msgs.helpPropertyTitle}"
-											required="true" />
+											required="false" />
 									</h:panelGroup>
 								</h:panelGroup>
 								<!-- // NEW AS TEXT -->
@@ -392,7 +392,7 @@
 											forceId="true"
 											styleClass="form-control form__input"
 											value="#{myprocess_item.value}"
-											required="true"
+											required="false"
 											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
 										</h:inputText>
 										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="value" />
@@ -414,7 +414,7 @@
 											forceId="true"
 											styleClass="form-control form__input"
 											value="#{myprocess_item.value}"
-											required="true"
+											required="false"
 											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
 										</h:inputTextarea>
 										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="textareaValue" />
@@ -435,6 +435,7 @@
 											forceId="true"
 											styleClass="form-control form__input"
 											value="#{myprocess_item.value}"
+											required="false"
 											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
 											<f:validateLongRange minimum="0" />
 										</x:inputText>
@@ -454,6 +455,7 @@
 										<h:selectOneMenu
 											id="select"
 											styleClass="form-select"
+											required="false"
 											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 											value="#{myprocess_item.value}">
 											<f:selectItems
@@ -480,6 +482,7 @@
 											value="#{myprocess_item.valueList}"
 											size="5"
 											styleClass="form-control"
+											required="false"
 											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
 											<f:selectItems
 												value="#{myprocess_item.possibleValues}"
