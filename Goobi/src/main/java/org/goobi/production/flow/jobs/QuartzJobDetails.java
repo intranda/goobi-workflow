@@ -28,6 +28,7 @@ package org.goobi.production.flow.jobs;
 
 import java.util.Date;
 
+import it.burning.cron.CronExpressionParser;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobKey;
 
@@ -56,7 +57,9 @@ public class QuartzJobDetails implements Comparable<QuartzJobDetails> {
         if (StringUtils.isBlank(cronExpression)) {
             return "";
         }
-        return CronExpressionDescriptor.getDescription(cronExpression);
+        CronExpressionParser.Options localizedParserOptions = new CronExpressionParser.Options();
+        localizedParserOptions.setLocale(Helper.getSessionLocale());
+        return CronExpressionDescriptor.getDescription(cronExpression, localizedParserOptions);
     }
 
     @Override
@@ -65,11 +68,11 @@ public class QuartzJobDetails implements Comparable<QuartzJobDetails> {
     }
 
     public String getPreviousFireTimeAsString() {
-        return Helper.getDateAsFormattedString(previousFireTime);
+        return Helper.getDateAsLocalizedFormattedString(previousFireTime);
     }
 
     public String getNextFireTimeAsString() {
-        return Helper.getDateAsFormattedString(nextFireTime);
+        return Helper.getDateAsLocalizedFormattedString(nextFireTime);
     }
 
 }

@@ -416,6 +416,14 @@ public class Helper implements Serializable, ServletContextListener {
         return DateFormat.getDateInstance().format(inDate) + " " + DateFormat.getTimeInstance(DateFormat.MEDIUM).format(inDate);
     }
 
+    public static String getDateAsLocalizedFormattedString(Date inDate) {
+        if (inDate == null) {
+            return "-";
+        }
+        return DateFormat.getDateInstance(DateFormat.DEFAULT, Helper.getSessionLocale()).format(inDate)
+                + " " + DateFormat.getTimeInstance(DateFormat.MEDIUM, Helper.getSessionLocale()).format(inDate);
+    }
+
     public static String getLocalDateTimeAsFormattedString(LocalDateTime inDate) {
         if (inDate == null) {
             return "-";
