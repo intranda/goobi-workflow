@@ -241,11 +241,11 @@ public class VariableReplacer {
             String tifpath = null;
             String imagepath = null;
             String origpath = null;
-            String processpath = getProcessPath();
-            String importPath = getImportPath();
-            String sourcePath = getSourcePath();
-            String ocrBasisPath = getOcrBasePath();
-            String ocrPlaintextPath = getOcrPlainTextPath();
+            String processpath = null;
+            String importPath = null;
+            String sourcePath = null;
+            String ocrBasisPath = null;
+            String ocrPlaintextPath = null;
             String defaultFileProtocol = "file://";
             String windowsFileProtocol = "file:/";
             Matcher matcher = pTifUrl.matcher(inString);
