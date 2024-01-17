@@ -63,7 +63,7 @@
                             jsf:action="#{BatchForm.filterBatches}"
                             class="btn btn-primary-400 submitOnEnter"
                             title="#{msgs.filter}">
-                            <span class="fa fa-search margin-right-5" />
+                            <span class="fa fa-search" />
                             <span>
                                 <h:outputText value="#{msgs.filter}" />
                             </span>
@@ -145,15 +145,16 @@
                             id="processfilter"
                             pt:aria-label="#{msgs.filterProcesses}"
                             value="#{BatchForm.processfilter}"
-                            styleClass="form-control focusable" />
+                            styleClass="form-control focusable"
+                            onkeypress="submitOnEnter(event, 'filterProcesses');" />
                     </div>
                     <div class="col-sm-3">
                         <button
                             jsf:id="filterProcesses"
                             jsf:action="#{BatchForm.filterProcesses}"
-                            class="btn btn-primary font-size-s"
+                            class="btn btn-primary filterProcesses"
                             title="#{msgs.filter}">
-                            <span class="fa fa-search margin-right-5" />
+                            <span class="fa fa-search" />
                             <span>
                                 <h:outputText value="#{msgs.filter}" />
                             </span>
