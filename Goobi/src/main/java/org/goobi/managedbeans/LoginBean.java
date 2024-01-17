@@ -303,9 +303,9 @@ public class LoginBean implements Serializable {
             this.myBenutzer = UserManager.getUserById(loginID);
 
             // Creating journal entry
-            currentUser.setContent("Log in as user: " + this.myBenutzer.getNachVorname());
+            currentUser.setContent("Log in as user '" + this.myBenutzer.getNachVorname() + "'.");
             currentUser.addJournalEntry();
-            this.myBenutzer.setContent("User \"" + currentUser.getNachVorname() + "\" logged into this account");
+            this.myBenutzer.setContent("User '" + currentUser.getNachVorname() + "' logged into this account.");
             this.myBenutzer.addJournalEntry();
 
             /* in der Session den Login speichern */
