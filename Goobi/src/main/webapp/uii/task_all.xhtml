@@ -342,7 +342,9 @@
 																	value="" />
 															</button>
 															<!-- PROCESS TITLE -->
-															<h:outputText value="#{item.prozess.titel}"/>
+															<h:outputText
+																styleClass="text-break"
+																value="#{item.prozess.titel}"/>
 														</div>
 													</td>
 													<!-- // PROCESS -->
@@ -463,7 +465,7 @@
 																	</x:dataTable>
 																</intranda:box>
 															</f:facet>
-															<h:panelGroup class="badge badge-intranda-red">
+															<h:panelGroup class="badge badge-intranda-red mw-100 text-wrap">
 																<span class="fa fa-bullhorn" />
 																 #{msgs.badgeCorrection}
 															 </h:panelGroup>
