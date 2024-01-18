@@ -175,7 +175,7 @@
 							<!-- SCRIPT 1 -->
 							<button
 								jsf:id="executeScript"
-								jsf:rendered="#{currentStep.typAutomatischScriptpfad != null and currentStep.typAutomatischScriptpfad != ''}"
+								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad != null and currentStep.typAutomatischScriptpfad != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link btn-link-task d-block"
 								title="#{currentStep.scriptname1}"
@@ -194,7 +194,7 @@
 							<!-- SCRIPT 2 -->
 							<button
 								jsf:id="executeScript2"
-								jsf:rendered="#{currentStep.typAutomatischScriptpfad2 != null and currentStep.typAutomatischScriptpfad2 != ''}"
+								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad2 != null and currentStep.typAutomatischScriptpfad2 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link btn-link-task d-block"
 								title="#{currentStep.scriptname2}"
@@ -213,7 +213,7 @@
 							<!-- SCRIPT 3 -->
 							<button
 								jsf:id="executeScript3"
-								jsf:rendered="#{currentStep.typAutomatischScriptpfad3 != null and currentStep.typAutomatischScriptpfad3 != ''}"
+								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad3 != null and currentStep.typAutomatischScriptpfad3 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link btn-link-task d-block"
 								title="#{currentStep.scriptname3}"
@@ -232,7 +232,7 @@
 							<!-- SCRIPT 4 -->
 							<button
 								jsf:id="executeScript4"
-								jsf:rendered="#{currentStep.typAutomatischScriptpfad4 != null and currentStep.typAutomatischScriptpfad4 != ''}"
+								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad4 != null and currentStep.typAutomatischScriptpfad4 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link btn-link-task d-block"
 								title="#{currentStep.scriptname4}"
@@ -250,7 +250,7 @@
 							<!-- SCRIPT 5 -->
 							<button
 								jsf:id="executeScript5"
-								jsf:rendered="#{currentStep.typAutomatischScriptpfad5 != null and currentStep.typAutomatischScriptpfad5 != ''}"
+								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad5 != null and currentStep.typAutomatischScriptpfad5 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link btn-link-task d-block"
 								title="#{currentStep.scriptname5}"
