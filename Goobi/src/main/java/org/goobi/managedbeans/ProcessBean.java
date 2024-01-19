@@ -367,6 +367,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("thumbnail", user.isDisplayThumbColumn());
             this.anzeigeAnpassen.put("metadatadetails", user.isDisplayMetadataColumn());
             this.anzeigeAnpassen.put("gridview", user.isDisplayGridView());
+            this.anzeigeAnpassen.put("numberOfImages", user.isDisplayNumberOfImages());
 
             showClosedProcesses = user.isDisplayFinishedProcesses();
             showArchivedProjects = user.isDisplayDeactivatedProjects();
@@ -391,6 +392,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("processDate", false);
             anzeigeAnpassen.put("institution", false);
             this.anzeigeAnpassen.put("processRuleset", false);
+            this.anzeigeAnpassen.put("numberOfImages", false);
         }
         doneDirectoryName = ConfigurationHelper.getInstance().getDoneDirectoryName(); // NOSONAR
 

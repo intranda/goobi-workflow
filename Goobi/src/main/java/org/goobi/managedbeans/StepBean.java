@@ -210,6 +210,7 @@ public class StepBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("batchId", login.getMyBenutzer().isDisplayBatchColumn());
             this.anzeigeAnpassen.put("processDate", login.getMyBenutzer().isDisplayProcessDateColumn());
             this.anzeigeAnpassen.put("modules", login.getMyBenutzer().isDisplayModulesColumn());
+            this.anzeigeAnpassen.put("numberOfImages", login.getMyBenutzer().isDisplayNumberOfImages());
             nurOffeneSchritte = login.getMyBenutzer().isDisplayOnlyOpenTasks();
             nurEigeneSchritte = login.getMyBenutzer().isDisplayOnlySelectedTasks();
             showAutomaticTasks = login.getMyBenutzer().isDisplayAutomaticTasks();
@@ -227,6 +228,7 @@ public class StepBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("modules", false);
             this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
+            this.anzeigeAnpassen.put("numberOfImages", false);
         }
         this.doneDirectoryName = ConfigurationHelper.getInstance().getDoneDirectoryName();
     }

@@ -172,6 +172,9 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     @Getter
     @Setter
     private boolean displayRulesetColumn = false;
+    @Getter
+    @Setter
+    private boolean displayNumberOfImages = false;
 
     @Getter
     @Setter

@@ -137,6 +137,14 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
         }
 
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayNumberOfImagesColumn")) {
+            try {
+                DatabaseVersion.runSql("ALTER TABLE benutzer ADD COLUMN displayNumberOfImagesColumn tinyint(1);");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
     }
