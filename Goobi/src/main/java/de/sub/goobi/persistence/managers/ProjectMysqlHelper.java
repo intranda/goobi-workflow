@@ -43,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 class ProjectMysqlHelper implements Serializable {
     private static final long serialVersionUID = -495492266831804752L;
 
-    public static List<Project> getProjects(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
+    public synchronized static List<Project> getProjects(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -80,7 +80,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Project> getProjectsForUser(User user, boolean activeProjectsOnly) throws SQLException {
+    public synchronized static List<Project> getProjectsForUser(User user, boolean activeProjectsOnly) throws SQLException {
         String activeOnly = "";
         if (activeProjectsOnly) {
             activeOnly = "projectisarchived = false AND ";
@@ -89,7 +89,7 @@ class ProjectMysqlHelper implements Serializable {
                 null, null);
     }
 
-    public static int getProjectCount(String filter, Institution institution) throws SQLException {
+    public synchronized static int getProjectCount(String filter, Institution institution) throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -122,7 +122,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static Project getProjectById(int id) throws SQLException {
+    public synchronized static Project getProjectById(int id) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM projekte WHERE ProjekteID = " + id);
@@ -139,7 +139,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Project> getAllProjects() throws SQLException {
+    public synchronized static List<Project> getAllProjects() throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM projekte order by titel");
@@ -156,7 +156,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static void saveProject(Project ro) throws SQLException {
+    public synchronized static void saveProject(Project ro) throws SQLException {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -251,7 +251,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static void deleteProject(Project ro) throws SQLException {
+    public synchronized static void deleteProject(Project ro) throws SQLException {
         JournalManager.deleteAllJournalEntries(ro.getId(), EntryType.PROJECT);
 
         if (ro.getId() != null) {
@@ -272,7 +272,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static List<ProjectFileGroup> getFilegroupsForProjectId(int projectId) throws SQLException {
+    public synchronized static List<ProjectFileGroup> getFilegroupsForProjectId(int projectId) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
 
@@ -292,7 +292,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static void saveProjectFileGroups(List<ProjectFileGroup> filegroupList) throws SQLException {
+    public synchronized static void saveProjectFileGroups(List<ProjectFileGroup> filegroupList) throws SQLException {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -335,7 +335,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static void saveProjectFileGroup(ProjectFileGroup pfg) throws SQLException {
+    public synchronized static void saveProjectFileGroup(ProjectFileGroup pfg) throws SQLException {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -370,7 +370,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static void deleteProjectFileGroup(ProjectFileGroup pfg) throws SQLException {
+    public synchronized static void deleteProjectFileGroup(ProjectFileGroup pfg) throws SQLException {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -384,7 +384,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    public static int getNumberOfProcessesForProject(Integer projectId) throws SQLException {
+    public synchronized static int getNumberOfProcessesForProject(Integer projectId) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
 
@@ -437,7 +437,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     };
 
-    public static int countProjectTitle(String title, Institution institution) throws SQLException {
+    public synchronized static int countProjectTitle(String title, Institution institution) throws SQLException {
         String sql = "SELECT count(1) from projekte WHERE titel = ?";
 
         if (institution != null) {
@@ -454,7 +454,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    static List<String> getAllProjectTitles(boolean limitToActiveProjects) throws SQLException {
+    static synchronized List<String> getAllProjectTitles(boolean limitToActiveProjects) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT titel FROM projekte ");
         if (limitToActiveProjects) {
@@ -473,7 +473,7 @@ class ProjectMysqlHelper implements Serializable {
         }
     }
 
-    static Project getProjectByName(String name) throws SQLException {
+    static synchronized Project getProjectByName(String name) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM projekte WHERE Titel = ?");
