@@ -385,10 +385,9 @@ public class SendMail {
         }
     }
 
-
     /**
-     * Creates a mail and sends it together with the attachment to the recipient. Uses the configured {@link MailConfiguration}
-     * for communication with the mail server.
+     * Creates a mail and sends it together with the attachment to the recipient. Uses the configured {@link MailConfiguration} for communication with
+     * the mail server.
      * 
      * @param messageSubject The email subject text
      * @param messageBody The email body text
@@ -397,7 +396,6 @@ public class SendMail {
      */
 
     public void sendMailWithAttachment(String messageSubject, String messageBody, String recipient, Path attachment) {
-
 
         if (!config.isEnableMail()) {
             return;
@@ -436,9 +434,10 @@ public class SendMail {
      * @param messageBody the message body
      * @param recipient destination email address
      * @param blindCopy defines, if the mail is send as TO or as BCC
+     * @param attachment Path to the attached file
      */
 
-    public void sendMailToUser(String messageSubject, String messageBody, List<String> recipients, boolean blindCopy) {
+    public void sendMailToUser(String messageSubject, String messageBody, List<String> recipients, boolean blindCopy, Path attachment) {
 
         if (!config.isEnableMail()) {
             return;
@@ -465,7 +464,7 @@ public class SendMail {
             }
 
             // create and send mail
-            this.addContentToMessage(msg, messageSubject, messageBody, null);
+            this.addContentToMessage(msg, messageSubject, messageBody, attachment);
             this.sendMail(session, msg);
 
         } catch (MessagingException e) {
@@ -536,7 +535,7 @@ public class SendMail {
         multipart.addBodyPart(this.createUTF8MimeBodyPart(messageBody));
 
         // attachment
-        if (attachment != null) {
+        if (attachment != null && StorageProvider.getInstance().isFileExists(attachment)) {
             try {
                 MimeBodyPart attachmentPart = new MimeBodyPart();
                 attachmentPart.attachFile(attachment.toFile());
@@ -545,8 +544,6 @@ public class SendMail {
                 log.error(e);
             }
         }
-
-
 
         message.setContent(multipart);
 
