@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
@@ -260,7 +261,7 @@ public class SendMail {
                 String cancelStepUrl = config.getApiUrl() + "/step/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + URLEncoder.encode(step.getTitel(), StandardCharsets.UTF_8.toString()) + "/" + deactivateStepToken;
                 String cancelProjectUrl = config.getApiUrl() + "/project/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString())
-                        + "/" + StringEscapeUtils.escapeHtml4(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
+                + "/" + StringEscapeUtils.escapeHtml4(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
                 String cancelAllUrl = config.getApiUrl() + "/all/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + deactivateAllToken;
 
@@ -376,7 +377,51 @@ public class SendMail {
             message.setRecipient(Message.RecipientType.TO, address);
 
             // Adding the subject, content, sent date, and sender address to message
-            this.addContentToMessage(message, messageSubject, messageBody);
+            this.addContentToMessage(message, messageSubject, messageBody, null);
+            this.sendMail(session, message);
+
+        } catch (MessagingException exception) {
+            log.error(exception);
+        }
+    }
+
+
+    /**
+     * Creates a mail and sends it together with the attachment to the recipient. Uses the configured {@link MailConfiguration}
+     * for communication with the mail server.
+     * 
+     * @param messageSubject The email subject text
+     * @param messageBody The email body text
+     * @param recipient The email address of the recipient
+     * @param attachment Path to the attached file
+     */
+
+    public void sendMailWithAttachment(String messageSubject, String messageBody, String recipient, Path attachment) {
+
+
+        if (!config.isEnableMail()) {
+            return;
+        }
+
+        // if attachment is null or does not exist, send regular mail without attachment
+        if (attachment == null || !StorageProvider.getInstance().isFileExists(attachment)) {
+            sendMailToUser(messageSubject, messageBody, recipient);
+            return;
+        }
+
+        // Creating the SMTP settings
+        Properties properties = createMailProperties();
+
+        try {
+            Session session = Session.getDefaultInstance(properties, null);
+            Message message = new MimeMessage(session);
+
+            // Adding the recipient address
+            Address address = new InternetAddress(recipient);
+            message.setRecipient(Message.RecipientType.TO, address);
+
+            // Adding the subject, content, sent date, and sender address to message
+            this.addContentToMessage(message, messageSubject, messageBody, attachment);
             this.sendMail(session, message);
 
         } catch (MessagingException exception) {
@@ -420,7 +465,7 @@ public class SendMail {
             }
 
             // create and send mail
-            this.addContentToMessage(msg, messageSubject, messageBody);
+            this.addContentToMessage(msg, messageSubject, messageBody, null);
             this.sendMail(session, msg);
 
         } catch (MessagingException e) {
@@ -465,7 +510,7 @@ public class SendMail {
      * @throws NoSuchProviderException If the configured mail provider is invalid
      * @throws MessagingException If the mail is invalid
      */
-    private void sendMail(Session session, Message message) throws NoSuchProviderException, MessagingException {
+    private void sendMail(Session session, Message message) throws MessagingException {
         Transport transport = session.getTransport();
         transport.connect(config.getSmtpUser(), config.getSmtpPassword());
         transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO));
@@ -481,7 +526,7 @@ public class SendMail {
      * @param messageBody The content string for the mail
      * @throws MessagingException If the message parameters could not be added
      */
-    private void addContentToMessage(Message message, String messageSubject, String messageBody) throws MessagingException {
+    private void addContentToMessage(Message message, String messageSubject, String messageBody, Path attachment) throws MessagingException {
 
         // Subject
         message.setSubject(messageSubject);
@@ -489,6 +534,20 @@ public class SendMail {
         // Body
         MimeMultipart multipart = new MimeMultipart();
         multipart.addBodyPart(this.createUTF8MimeBodyPart(messageBody));
+
+        // attachment
+        if (attachment != null) {
+            try {
+                MimeBodyPart attachmentPart = new MimeBodyPart();
+                attachmentPart.attachFile(attachment.toFile());
+                multipart.addBodyPart(attachmentPart);
+            } catch (IOException | MessagingException e) {
+                log.error(e);
+            }
+        }
+
+
+
         message.setContent(multipart);
 
         // From
