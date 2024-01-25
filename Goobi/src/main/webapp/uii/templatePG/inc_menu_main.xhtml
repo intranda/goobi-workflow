@@ -22,13 +22,13 @@
 				<ul id="main-menu-set-class" class="navbar-nav">
 					<!-- Dropdown-Menü: "Startseite" / "Home page" -->
 					<li class="nav-item #{NavigationForm.parentMenu == 'menu_start' ? 'active' : ''}">
-						<h:commandLink
+						<h:commandLink rendered="#{DashboardForm.plugin == null}"
 							action="index"
 							id="start"
 							styleClass="nav-link">
 							<span>
 								<span class="#{cc.attrs.icon}" />
-								#{DashboardForm.plugin == null ? msgs.startseite:msgs.dashboard}
+								#{msgs.startseite}
 							</span>
 							<f:setPropertyActionListener
 								target="#{NavigationForm.aktuell}"
@@ -37,6 +37,22 @@
 								target="#{NavigationForm.parentMenu}"
 								value="menu_start" />
 						</h:commandLink>
+                        
+                         <h:commandLink rendered="#{DashboardForm.plugin != null}"
+                            action="index"
+                            id="dashboard"
+                            styleClass="nav-link" actionListener="#{DashboardForm.plugin.updateDashboard}">
+                            <span>
+                                <span class="#{cc.attrs.icon}" />
+                                #{msgs.dashboard}
+                            </span>
+                            <f:setPropertyActionListener
+                                target="#{NavigationForm.aktuell}"
+                                value="a0" />
+                            <f:setPropertyActionListener
+                                target="#{NavigationForm.parentMenu}"
+                                value="menu_start" />
+                        </h:commandLink>
 					</li>
 
 					<!-- Dropdown-Menü: "Meine Aufgaben" / "My tasks" -->
