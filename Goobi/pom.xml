@@ -462,6 +462,10 @@
                     <groupId>xalan</groupId>
                     <artifactId>xalan</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -934,11 +938,6 @@
             <version>1.2.5</version>
         </dependency>
         <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>de.schlichtherle</groupId>
             <artifactId>truezip</artifactId>
             <version>6.8.4</version>
@@ -1235,11 +1234,6 @@
             <groupId>de.intranda.other</groupId>
             <artifactId>tomahawk</artifactId>
             <version>1.1.14</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.other</groupId>
-            <artifactId>xmlParserAPIs</artifactId>
-            <version>x</version>
         </dependency>
         <dependency>
             <groupId>de.intranda.other</groupId>
