@@ -168,7 +168,7 @@
                                     pt:aria-label="#{msgs.suchbegriff}"
                                     styleClass="form-control"
                                     value="#{cc.attrs.field.searchValue}" 
-                                    onkeypress="searchGnd(event)"
+                                    onkeypress="if(event.key == 'Enter') {event.preventDefault();$(this).parent().next().children('.btn').click();}"
                                     />
                             </div>
                             <div class="col-12 col-md-2">
@@ -262,15 +262,6 @@
                 </h:panelGroup>
             </div>
         </h:panelGroup>
-
-		<script>
-			function searchGnd(e) {
-				if(e.key != 'Enter') return
-				e.preventDefault()
-				var submit = document.querySelector('[id$="gndSearchButton"]');
-				submit.click()
-			}
-		</script>
         
     </composite:implementation>
 
