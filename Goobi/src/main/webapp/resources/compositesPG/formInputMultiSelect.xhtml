@@ -72,7 +72,7 @@
             <x:dataList
                 value="#{cc.attrs.field.allSelectedValues}"
                 var="selection">
-                <h:commandLink action="#{cc.attrs.field.removeSelectedValue(selection)}" title="#{msgs.removeSelectedItem}"  data-toggle="tooltip" >
+                <h:commandLink action="#{cc.attrs.field.removeSelectedValue(selection)}" title="#{msgs.removeSelectedItem}" pt:data-toggle="tooltip">
                     <span class="badge badge-intranda-light mt-3">
                         <h:outputText value="#{msgs[selection]}" />
                     </span>
