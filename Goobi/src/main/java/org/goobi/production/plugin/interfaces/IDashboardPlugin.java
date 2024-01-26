@@ -27,6 +27,8 @@ package org.goobi.production.plugin.interfaces;
 
 import java.io.Serializable;
 
+import javax.faces.event.ActionEvent;
+
 import org.goobi.production.enums.PluginGuiType;
 
 public interface IDashboardPlugin extends IPlugin, Serializable {
@@ -43,4 +45,14 @@ public interface IDashboardPlugin extends IPlugin, Serializable {
         return PluginGuiType.PART;
     }
 
+
+    /**
+     * This method is called, when a user opens the dashboard using the menu.
+     * It can be used to re-calculate some data. The default implementation does nothing
+     * 
+     */
+
+    default void updateDashboard(ActionEvent event) {
+        // do nothing
+    }
 }
