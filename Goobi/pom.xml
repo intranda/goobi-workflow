@@ -1446,6 +1446,8 @@
                                     <message>No Snapshots Allowed!</message>
                                      <excludes>
                                          <exclude>de.intranda.goobi.workflow:goobi-core</exclude>
+                                         <exclude>de.intranda.goobi.workflow:goobi-core-jar</exclude>
+                                         <exclude>de.intranda.goobi.workflow:goobi-core-war</exclude>
                                      </excludes>                               
                                 </requireReleaseDeps>
                             </rules>
