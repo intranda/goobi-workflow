@@ -1427,6 +1427,35 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.3.9</version>
+                                </requireMavenVersion>
+                                <requireReleaseDeps>
+                                    <message>No Snapshots Allowed!</message>
+                                     <excludes>
+                                         <exclude>de.intranda.goobi.workflow:goobi-core</exclude>
+                                         <exclude>de.intranda.goobi.workflow:goobi-core-jar</exclude>
+                                         <exclude>de.intranda.goobi.workflow:goobi-core-war</exclude>
+                                     </excludes>                               
+                                </requireReleaseDeps>
+                            </rules>
+                            <fail>${failOnSnapshot}</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>

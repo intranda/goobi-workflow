@@ -659,7 +659,7 @@ public class GetOpac {
         XMLReader parser = null;
         OpacResponseHandler ids = new OpacResponseHandler();
         /* Use Java 1.4 methods to create default parser. */
-        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParserFactory factory = SAXParserFactory.newInstance(); //NOSONAR: External schema validation is needed
         factory.setNamespaceAware(true);
         parser = factory.newSAXParser().getXMLReader();
 
