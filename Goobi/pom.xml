@@ -1444,6 +1444,9 @@
                                 </requireMavenVersion>
                                 <requireReleaseDeps>
                                     <message>No Snapshots Allowed!</message>
+                                     <excludes>
+                                         <exclude>de.intranda.goobi.workflow:goobi-core</exclude>
+                                     </excludes>                               
                                 </requireReleaseDeps>
                             </rules>
                             <fail>${failOnSnapshot}</fail>

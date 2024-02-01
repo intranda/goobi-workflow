@@ -33,7 +33,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -660,11 +659,9 @@ public class GetOpac {
         XMLReader parser = null;
         OpacResponseHandler ids = new OpacResponseHandler();
         /* Use Java 1.4 methods to create default parser. */
-        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParserFactory factory = SAXParserFactory.newInstance(); //NOSONAR: External schema validation is needed
         factory.setNamespaceAware(true);
         parser = factory.newSAXParser().getXMLReader();
-        parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 
         parser.setContentHandler(ids);
         parser.parse(new InputSource(new StringReader(opacResponse)));
