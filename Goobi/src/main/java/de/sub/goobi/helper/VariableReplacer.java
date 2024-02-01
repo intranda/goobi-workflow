@@ -59,6 +59,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -144,6 +145,8 @@ public class VariableReplacer {
     private static final String REGEX_PROCESS = PREFIX + "process\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+?)" + SUFFIX;
 
+    @Getter
+    @Setter
     private String separator = ",";
 
     private DigitalDocument dd;
@@ -249,7 +252,7 @@ public class VariableReplacer {
             String defaultFileProtocol = "file://";
             String windowsFileProtocol = "file:/";
             Matcher matcher = pTifUrl.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (tifpath == null) {
                     tifpath = getTifPath();
                 }
@@ -260,7 +263,7 @@ public class VariableReplacer {
                 }
             }
             matcher = pOrigurl.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (origpath == null) {
                     origpath = getMasterPath();
                 }
@@ -272,7 +275,7 @@ public class VariableReplacer {
             }
 
             matcher = pImageUrl.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (imagepath == null) {
                     imagepath = getImagePath();
                 }
@@ -284,7 +287,7 @@ public class VariableReplacer {
             }
 
             matcher = pS3TifPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (tifpath == null) {
                     tifpath = getTifPath();
                 }
@@ -292,7 +295,7 @@ public class VariableReplacer {
             }
 
             matcher = pS3OrigPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (origpath == null) {
                     origpath = getMasterPath();
                 }
@@ -300,7 +303,7 @@ public class VariableReplacer {
             }
 
             matcher = pS3ImagePath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (imagepath == null) {
                     imagepath = getImagePath();
                 }
@@ -308,7 +311,7 @@ public class VariableReplacer {
             }
 
             matcher = pS3Processpath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (processpath == null) {
                     processpath = getProcessPath();
                 }
@@ -316,7 +319,7 @@ public class VariableReplacer {
             }
 
             matcher = pS3ImportPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (importPath == null) {
                     importPath = getImportPath();
                 }
@@ -324,7 +327,7 @@ public class VariableReplacer {
             }
 
             matcher = pS3SourcePath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (sourcePath == null) {
                     sourcePath = getSourcePath();
                 }
@@ -332,7 +335,7 @@ public class VariableReplacer {
             }
 
             matcher = pS3OcrBasisPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (ocrBasisPath == null) {
                     ocrBasisPath = getOcrBasePath();
                 }
@@ -340,7 +343,7 @@ public class VariableReplacer {
             }
 
             matcher = pS3OcrPlainTextPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (ocrPlaintextPath == null) {
                     ocrPlaintextPath = getOcrPlainTextPath();
                 }
@@ -349,7 +352,7 @@ public class VariableReplacer {
             inString = pMetaFile.matcher(inString).replaceAll(metaFile);
 
             matcher = pTifPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (tifpath == null) {
                     tifpath = getTifPath();
                 }
@@ -357,7 +360,7 @@ public class VariableReplacer {
             }
 
             matcher = pOrigPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (origpath == null) {
                     origpath = getMasterPath();
                 }
@@ -365,7 +368,7 @@ public class VariableReplacer {
             }
 
             matcher = pImagePath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (imagepath == null) {
                     imagepath = getImagePath();
                 }
@@ -373,7 +376,7 @@ public class VariableReplacer {
             }
 
             matcher = pProcessPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (processpath == null) {
                     processpath = getProcessPath();
                 }
@@ -381,7 +384,7 @@ public class VariableReplacer {
             }
 
             matcher = pImportPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (importPath == null) {
                     importPath = getImportPath();
                 }
@@ -389,7 +392,7 @@ public class VariableReplacer {
             }
 
             matcher = pSourcePath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (sourcePath == null) {
                     sourcePath = getSourcePath();
                 }
@@ -397,7 +400,7 @@ public class VariableReplacer {
             }
 
             matcher = pOcrBasisPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (ocrBasisPath == null) {
                     ocrBasisPath = getOcrBasePath();
                 }
@@ -405,7 +408,7 @@ public class VariableReplacer {
             }
 
             matcher = pOcrPlaintextPath.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 if (ocrPlaintextPath == null) {
                     ocrPlaintextPath = getOcrPlainTextPath();
                 }
@@ -413,11 +416,11 @@ public class VariableReplacer {
             }
 
             matcher = piiifMediaFolder.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 inString = matcher.replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "media")));
             }
             matcher = piiifMasterFolder.matcher(inString);
-            if (matcher.matches()) {
+            if (matcher.find()) {
                 inString = matcher.replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "master")));
             }
 

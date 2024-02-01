@@ -15,7 +15,7 @@ function toggle( id ) {
 
 /**
  * method to click button when "Enter" is pressed in an input field
- * @param e the KeyPressEvent 
+ * @param e the KeyPressEvent
  * @param btnId the buttonId. If this is not set or null, the method reads the data-onenterbutton attribute of the target element
  * @returns false, if "Enter" was pressed
  */
@@ -39,7 +39,7 @@ function renderModal(data) {
 
 /**
  * Method to click the submit button on primefaces autocomplete.
- * 
+ *
  * @method submitEnter
  * @param {String} commandId The ID of the submit button.
  * @param {Event} e A JavaScript event which holds the key events.
@@ -62,16 +62,16 @@ function submitEnter( commandId, e ) {
 
 /**
  * Method to set on click handler to primefaces autocomplete items.
- * 
+ *
  * @method setAutocompleteListHandler
  * */
 function setAutocompleteListHandler() {
     setTimeout(function() {
         if ( $('.ui-autocomplete-panel li').length > 0 ) {
             $('.ui-autocomplete-panel li').on('click', function() {
-                document.getElementById( 'goButton' ).click();                
+                document.getElementById( 'goButton' ).click();
             });
-        }        
+        }
     }, 500);
 }
 
@@ -134,7 +134,7 @@ function submitOnEnter( event, classname ) {
         if ( !event.target ) {
             event.target = event.srcElement;
         }
-        
+
         // don't do anything if the element handles the enter key on its own
         if ( event.target.nodeName == 'A' ) {
             return;
@@ -151,7 +151,7 @@ function submitOnEnter( event, classname ) {
         if ( event.target.nodeName == 'TEXTAREA' ) {
             return;
         }
-        
+
         // swallow event
         if ( event.preventDefault ) {
             // Firefox
@@ -162,9 +162,27 @@ function submitOnEnter( event, classname ) {
             event.cancelBubble = true;
             event.returnValue = false;
         }
-        document.getElementsByClassName( classname )[ 0 ].click();
+        // if classname starts with #, look for the element with the relevant id
+        // that has the same JSF-prefix as the event source element id
+        if (classname.substring(0,1) === `#`) {
+            const id = event.target.id
+            const idPrefix = (id) => {
+                const idParts = id.split(`:`);
+                return idParts.length === 1
+                    ? id
+                    : idParts.slice(0, -1).join(`:`)
+            }
+            const targetId = classname.substring(1);
+            const fullTargetId = `${idPrefix(id)}:${targetId}`;
+
+            console.log(fullTargetId)
+
+            document.getElementById(fullTargetId).click();
+        } else {
+            document.getElementsByClassName( classname )[ 0 ].click();
+        }
     }
-    
+
 }
 
 // Thumbnails in METS Editor
@@ -178,20 +196,20 @@ function loadImages() {
 
 function drawOnCanvas( canvas ) {
     setTimeout( function() {
-        
+
         if ( canvas == null ) {
             return;
         }
         var ctx = canvas.getContext( '2d' );
         var d = canvas.dataset;
-        
+
         if ( !d ) {
             // fix for ie not supporting element.dataset
             d = {};
             d.image_small = canvas.getAttribute( 'data-image_small' );
             d.image_large = canvas.getAttribute( 'data-image_large' );
         }
-        
+
         var img = new Image();
         img.onload = function() {
             var scale = ( canvas.width * 2 ) / this.width;
@@ -283,7 +301,7 @@ function loadMenu() {
 	let small = document.getElementsByClassName("rendered-in-small-window");
 
   if(!isElement(menu)) return
-    
+
 	for (let index = 0; index < wide.length; index++) {
 		wide[index].style.display = (width >= maximumWidth ? "block" : "none");
 	}

@@ -115,6 +115,7 @@ public class VariableReplacerTest extends AbstractTest {
 
         assertTrue(replacer.replace("{iiifMediaFolder}").contains("api/process/image/1/testprocess_media/00000001.tif"));
         assertTrue(replacer.replace("{iiifMasterFolder}").contains("api/process/image/1/testprocess_master/00000001.tif"));
+
     }
 
     //    @Test
@@ -126,9 +127,10 @@ public class VariableReplacerTest extends AbstractTest {
         // {folder.name}
     }
 
-    //    @Test
+    @Test
     public void testCombineValues() {
-
+        VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
+        assertTrue(replacer.replace("{processpath}/thumbs/{processtitle}_media_1920").endsWith("metadata/1/thumbs/testprocess_media_1920"));
     }
 
     //  @Test

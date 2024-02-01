@@ -157,7 +157,8 @@
                     aria-label="#{msgs.NORM_viafSearch}"
                     jsf:onclick="$(this).parent().parent().next().modal('show');"
                     onfocus="#{cc.attrs.onfocus}"
-                    type="button">
+                    type="button"
+                    data-toggle="tooltip">
                     <img
                         class="toggle"
                         style="width: 16px;"
@@ -262,7 +263,9 @@
                                                             pt:aria-label="#{msgs.suchbegriff}"
                                                             styleClass="form-control"
                                                             pt:dir="auto"
-                                                            value="#{filter.searchValue}" />
+                                                            value="#{filter.searchValue}" 
+                                                            onkeypress="searchViaf(event)"   
+                                                            />
                                                     </ui:fragment>
 
                                                     <ui:fragment rendered="#{filter.searchField == 'local.sources'}">
@@ -516,6 +519,15 @@
                 </h:panelGroup>
             </div>
         </h:panelGroup>
+
+        <script>
+            function searchViaf(e) {
+                if(e.key != 'Enter') return
+                e.preventDefault()
+                var submit = document.querySelector('[id$="viafSearch"]');
+                submit.click()
+            }
+        </script>
 
     </composite:implementation>
 </ui:composition>

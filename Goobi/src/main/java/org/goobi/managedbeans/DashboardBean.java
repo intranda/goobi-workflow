@@ -29,7 +29,10 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
@@ -55,9 +58,10 @@ public class DashboardBean implements Serializable {
     @Getter
     private IDashboardPlugin plugin = null;
 
+    private boolean notInitializedYet = true;
+
     @PostConstruct
     public void initializePlugins() {
-
         User user = Helper.getCurrentUser();
         if (user != null) {
             String pluginName = user.getDashboardPlugin();
@@ -69,10 +73,15 @@ public class DashboardBean implements Serializable {
                     this.plugin = newPlugin;
                 }
             }
+            notInitializedYet = false;
         }
     }
 
     public String getPluginUi() {
+        if (notInitializedYet) {
+            initializePlugins();
+        }
+
         if (plugin == null) {
             return "";
         }
