@@ -144,6 +144,8 @@ public class VariableReplacer {
     private static final String REGEX_PROCESS = PREFIX + "process\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+?)" + SUFFIX;
 
+    @Getter
+    @Setter
     private String separator = ",";
 
     private DigitalDocument dd;

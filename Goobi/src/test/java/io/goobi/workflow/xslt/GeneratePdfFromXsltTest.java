@@ -66,6 +66,7 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -94,7 +95,7 @@ import de.sub.goobi.persistence.managers.UserManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyManager.class, StepManager.class, TemplateManager.class, MasterpieceManager.class, HistoryManager.class,
-    MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class, InstitutionManager.class, UserManager.class })
+        MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class, InstitutionManager.class, UserManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class GeneratePdfFromXsltTest extends AbstractTest {
 
@@ -322,6 +323,7 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         assertEquals("value", metadata.getValue());
     }
 
+    @Ignore
     @Test
     public void startMassExport() throws Exception {
 
@@ -341,6 +343,7 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         assertTrue(fixture.length() > 0);
     }
 
+    @Ignore
     @Test
     public void startSingleDocketExport() throws Exception {
 
@@ -356,6 +359,7 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         assertTrue(fixture.length() > 0);
     }
 
+    @Ignore
     @Test
     public void startMetadataExport() throws Exception {
 

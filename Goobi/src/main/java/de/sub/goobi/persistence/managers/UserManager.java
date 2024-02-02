@@ -211,6 +211,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplayRulesetColumn(rs.getBoolean("displayRulesetColumn"));
         r.setDisplaySelectBoxes(rs.getBoolean("displaySelectBoxes"));
         r.setDisplaySwappingColumn(rs.getBoolean("displaySwappingColumn"));
+        r.setDisplayNumberOfImages(rs.getBoolean("displayNumberOfImagesColumn"));
         r.setHideCorrectionTasks(rs.getBoolean("hideCorrectionTasks"));
         r.setEmail(rs.getString("email"));
         r.setShortcutPrefix(rs.getString("shortcut"));

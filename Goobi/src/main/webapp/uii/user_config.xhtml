@@ -443,6 +443,13 @@
                                     help="#{msgs.helpDisplayInstitutionColumn}"
                                     name="displayInstitutionColumnName" />
 
+                                <intranda:formInputCheckBox
+                                    id="displayNumberOfImagesColumn"
+                                    label="#{msgs.displayNumberOfImagesColumn}"
+                                    field="#{LoginForm.myBenutzer.displayNumberOfImages}"
+                                    help="#{msgs.helpDisplayNumberOfImagesColumn}"
+                                    name="displayNumberOfImagesColumnName" />
+
                                 <h:panelGroup rendered="#{HelperForm.showEditionDataEnabled}">
                                     <intranda:formInputCheckBox
                                         id="displayLastEditionDate"

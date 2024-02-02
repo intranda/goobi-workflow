@@ -96,7 +96,8 @@
                     aria-label="#{msgs.NORM_gndSearch}"
                     jsf:onclick="$(this).parent().parent().next().modal('show');"
                     onfocus="#{cc.attrs.onfocus}"
-                    type="button">
+                    type="button"
+                    data-toggle="tooltip">
                     <img
                         class="toggle"
                         style="width: 16px;"
@@ -150,7 +151,10 @@
                                 <x:inputText
                                     id="geonamesSearch"
                                     styleClass="form-control"
-                                    value="#{cc.attrs.field.searchValue}" />
+                                    value="#{cc.attrs.field.searchValue}"
+                                    
+                                    onkeypress="searchGeonames(event)"   
+                                     />
 
                                 <h:message
                                     for="geonamesSearch"
@@ -159,7 +163,7 @@
                             </div>
                             <div class="col-12 col-md-2">
                                 <button
-                                    jsf:id="gndSearchButton"
+                                    jsf:id="geonamesSearchButton"
                                     class="btn btn-blank"
                                     jsf:action="#{cc.attrs.field.searchGeonames}">
                                     <i
@@ -302,7 +306,14 @@
                 </h:panelGroup>
             </div>
         </h:panelGroup>
-
+        <script>
+            function searchGeonames(e) {
+                if(e.key != 'Enter') return
+                e.preventDefault()
+                var submit = document.querySelector('[id$="geonamesSearchButton"]');
+                submit.click()
+            }
+        </script>
     </composite:implementation>
 
 </ui:composition>

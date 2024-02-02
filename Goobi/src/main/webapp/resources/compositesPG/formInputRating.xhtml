@@ -14,43 +14,63 @@
         <composite:attribute name="label" />
         <composite:attribute name="field" />
         <composite:attribute name="help" />
-        <composite:attribute name="fieldStyle" default="form-select" />
+        <composite:attribute
+            name="fieldStyle"
+            default="form-select" />
         <composite:attribute name="style" />
-        <composite:attribute name="displayLabel" default="true" />
-        <composite:attribute name="readonly" default="false" />
-        <composite:attribute name="required" default="false" />
-        <composite:attribute name="displayAsRequired" default="false" />
-        <composite:attribute name="classLeft" default="col-12 col-md-3" />
-        <composite:attribute name="classRight" default="col-12 col-md-9" />
-        <composite:attribute name="tabindex" default="0" />
-        <composite:attribute name="execute" default="@this" />
-        <composite:attribute name="render" default="" />
+        <composite:attribute
+            name="displayLabel"
+            default="true" />
+        <composite:attribute
+            name="readonly"
+            default="false" />
+        <composite:attribute
+            name="required"
+            default="false" />
+        <composite:attribute
+            name="displayAsRequired"
+            default="false" />
+        <composite:attribute
+            name="classLeft"
+            default="col-12 col-md-3" />
+        <composite:attribute
+            name="classRight"
+            default="col-12 col-md-9" />
+        <composite:attribute
+            name="tabindex"
+            default="0" />
+        <composite:attribute
+            name="execute"
+            default="@this" />
+        <composite:attribute
+            name="render"
+            default="" />
     </composite:interface>
 
     <composite:implementation>
 
         <style>
-            .rating-star {
-                display: block;
-                float: left;
-            }
+.rating-star {
+    display: block;
+    float: left;
+}
 
-            .rating-star i {
-                color: #ccc;
-            }
+.rating-star i {
+    color: #ccc;
+}
 
-            .rating-star .active {
-                color: #368ee0;
-            }
+.rating-star .active {
+    color: #368ee0;
+}
 
-            .btn.rating-star {
-                text-decoration: none;
-                padding: 0;
-                line-height: inherit;
-                border: none;
-                background: none;
-            }
-        </style>
+.btn.rating-star {
+    text-decoration: none;
+    padding: 0;
+    line-height: inherit;
+    border: none;
+    background: none;
+}
+</style>
 
         <!-- ROW -->
         <div
@@ -58,10 +78,15 @@
             style="#{cc.attrs.style}">
 
             <!-- LABEL -->
-            <div class="#{cc.attrs.classLeft}" tabindex="-1">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
-                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
-                <composite:insertChildren />                        
+            <div
+                class="#{cc.attrs.classLeft}"
+                tabindex="-1">
+                <intranda:formLabel
+                    label="#{cc.attrs.label}"
+                    labelFor="#{cc.attrs.name}"
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}"
+                    rendered="#{cc.attrs.displayLabel}" />
+                <composite:insertChildren />
             </div>
             <!-- // LABEL -->
 
@@ -75,7 +100,9 @@
                     <li class="rating-star">
                         <button
                             class="btn rating-star"
-                            jsf:id="#{cc.attrs.name}-rating1">
+                            jsf:id="#{cc.attrs.name}-rating1"
+                            title="#{cc.attrs.label}"
+                            data-toggle="tooltip">
                             <f:ajax
                                 execute="#{cc.attrs.execute}"
                                 render="#{cc.attrs.render}" />
@@ -90,7 +117,9 @@
                     <li class="rating-star">
                         <button
                             class="btn rating-star"
-                            jsf:id="#{cc.attrs.name}-rating2">
+                            jsf:id="#{cc.attrs.name}-rating2"
+                            title="#{cc.attrs.label}"
+                            data-toggle="tooltip">
                             <f:ajax
                                 execute="#{cc.attrs.execute}"
                                 render="#{cc.attrs.render}" />
@@ -107,7 +136,9 @@
 
                         <button
                             class="btn rating-star"
-                            jsf:id="#{cc.attrs.name}-rating3">
+                            jsf:id="#{cc.attrs.name}-rating3"
+                            title="#{cc.attrs.label}"
+                            data-toggle="tooltip">
                             <f:ajax
                                 execute="#{cc.attrs.execute}"
                                 render="#{cc.attrs.render}" />
@@ -123,7 +154,9 @@
 
                         <button
                             class="btn rating-star"
-                            jsf:id="#{cc.attrs.name}-rating4">
+                            jsf:id="#{cc.attrs.name}-rating4"
+                            title="#{cc.attrs.label}"
+                            data-toggle="tooltip">
                             <f:ajax
                                 execute="#{cc.attrs.execute}"
                                 render="#{cc.attrs.render}" />
@@ -138,7 +171,9 @@
                     <li class="rating-star">
                         <button
                             class="btn rating-star"
-                            jsf:id="#{cc.attrs.name}-rating5">
+                            jsf:id="#{cc.attrs.name}-rating5"
+                            title="#{cc.attrs.label}"
+                            data-toggle="tooltip">
                             <f:ajax
                                 execute="#{cc.attrs.execute}"
                                 render="#{cc.attrs.render}" />

@@ -120,18 +120,13 @@ public class GoobiDefaultQueueListener {
                 origMessage = new String(bytes);
             }
             if (optTicket.isPresent()) {
-
                 log.debug("Handling ticket {}", optTicket.get());
                 try {
                     PluginReturnValue result = handleTicket(optTicket.get());
                     if (result == PluginReturnValue.FINISH) {
                         //acknowledge message, it is done
                         message.acknowledge();
-
-                        MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.DONE, "",
-                                origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
-                                optTicket.get().getStepId(), optTicket.get().getStepName());
-                        MQResultManager.insertResult(statusMessage);
+                        storeResult(origMessage, message, optTicket, MessageStatus.DONE);
                     } else {
                         //error or wait => put back to queue and retry by redeliveryPolicy
                         sess.recover();
@@ -139,10 +134,7 @@ public class GoobiDefaultQueueListener {
                 } catch (Throwable t) {
                     log.error("Error handling ticket " + message.getJMSMessageID() + ": ", t);
                     sess.recover();
-                    MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), MessageStatus.ERROR, t.getMessage(),
-                            origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
-                            optTicket.get().getStepId(), optTicket.get().getStepName());
-                    MQResultManager.insertResult(statusMessage);
+                    storeResult(origMessage, message, optTicket, MessageStatus.ERROR);
                 }
             }
         } catch (JMSException e) {
@@ -156,6 +148,19 @@ public class GoobiDefaultQueueListener {
                 if (!shouldStop) {
                     log.error(e);
                 }
+            }
+        }
+    }
+
+    private void storeResult(String origMessage, Message message, Optional<TaskTicket> optTicket, MessageStatus status) {
+        if (optTicket.isPresent()) {
+            try {
+                MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), status, "",
+                        origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
+                        optTicket.get().getStepId(), optTicket.get().getStepName());
+                MQResultManager.insertResult(statusMessage);
+            } catch (Exception e) {
+                // error when result is saved
             }
         }
     }

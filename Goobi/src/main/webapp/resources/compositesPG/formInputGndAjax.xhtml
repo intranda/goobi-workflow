@@ -90,7 +90,8 @@
                     aria-label="#{msgs.NORM_gndSearch}"
                     jsf:onclick="$(this).parent().parent().next().modal('show');"
                     onfocus="#{cc.attrs.onfocus}"
-                    type="button">
+                    type="button"
+                    data-toggle="tooltip">
                     <img
                         class="toggle"
                         style="width: 16px;"
@@ -167,7 +168,9 @@
                                     id="gndSearchInput"
                                     pt:aria-label="#{msgs.suchbegriff}"
                                     styleClass="form-control"
-                                    value="#{cc.attrs.field.searchValue}" />
+                                    value="#{cc.attrs.field.searchValue}" 
+                                    onkeypress="if(event.key == 'Enter') {event.preventDefault();$(this).parent().next().children('.btn').click();}"
+                                    />
                             </div>
                             <div class="col-12 col-md-2">
                                 <button
@@ -260,7 +263,7 @@
                 </h:panelGroup>
             </div>
         </h:panelGroup>
-
+        
     </composite:implementation>
 
 </ui:composition>

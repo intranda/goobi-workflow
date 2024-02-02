@@ -6308,16 +6308,16 @@
       </Metadata>
       <Metadata>
         <InternalName>PointOfOrigin</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:place/mods:placeTerm[@type='text']
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:place/mods:placeTerm[@type='text']
         </WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>CountryOfOrigin</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:place/#mods:placeTerm[@type='text']</WriteXPath>
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:place/#mods:placeTerm[@type='text']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>DateOfOrigin</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:dateCreated</WriteXPath>
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:dateCreated</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>AkzessionNumber</InternalName>
@@ -6334,7 +6334,7 @@
       </Metadata>
       <Metadata>
         <InternalName>datedigit</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:dateCaptured[@encoding='iso8601']
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:dateCaptured[@encoding='iso8601']
         </WriteXPath>
       </Metadata>
       <Metadata>
@@ -6348,12 +6348,12 @@
       </Metadata>
       <Metadata>
         <InternalName>PublisherName</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:publisher
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:publisher
         </WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>PlaceOfPublication</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/mods:place/#mods:placeTerm[@type='text']
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/mods:place/#mods:placeTerm[@type='text']
         </WriteXPath>
       </Metadata>
       <Metadata>
@@ -6456,7 +6456,7 @@
       </Metadata>
       <Metadata>
         <InternalName>PublicationYear</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:dateIssued[@encoding='iso8601'][@keyDate='yes']
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:dateIssued[@encoding='iso8601'][@keyDate='yes']
         </WriteXPath>
       </Metadata>
       <Metadata>
@@ -6470,17 +6470,17 @@
       </Metadata>
       <Metadata>
         <InternalName>PublicationRun</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:dateOther
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:dateOther
         </WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>PublicationStart</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/mods:dateIssued[@point='start'][@encoding='iso8601']
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/mods:dateIssued[@point='start'][@encoding='iso8601']
         </WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>PublicationEnd</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/mods:dateIssued[@point='end'][@encoding='iso8601']
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/mods:dateIssued[@point='end'][@encoding='iso8601']
         </WriteXPath>
       </Metadata>
       <!--
@@ -6603,11 +6603,11 @@
       </Metadata>
       <Metadata>
         <InternalName>Location</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:place</WriteXPath>
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:place</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>DateRecorded</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:dateCreated[@encoding='iso8601']
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:dateCreated[@encoding='iso8601']
         </WriteXPath>
       </Metadata>
       <Metadata>
@@ -6637,7 +6637,7 @@
       </Metadata>
       <Metadata>
         <InternalName>PrintingLocation</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:place/mods:placeTerm[@type='text']
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:place/mods:placeTerm[@type='text']
         </WriteXPath>
       </Metadata>
       <Metadata>
@@ -6729,48 +6729,39 @@
       </Metadata>
       <Metadata>
         <InternalName>Territory</InternalName>
-        <WriteXPath>./mods:mods/mods:subject/mods:hierarchicalGeographic/#mods:territory
-        </WriteXPath>
+        <WriteXPath>./mods:mods/mods:subject/mods:hierarchicalGeographic/#mods:territory</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>City</InternalName>
-        <WriteXPath>./mods:mods/mods:subject/mods:hierarchicalGeographic/#mods:city
-        </WriteXPath>
+        <WriteXPath>./mods:mods/mods:subject/mods:hierarchicalGeographic/#mods:city</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>Island</InternalName>
-        <WriteXPath>./mods:mods/mods:subject/mods:hierarchicalGeographic/#mods:island
-        </WriteXPath>
+        <WriteXPath>./mods:mods/mods:subject/mods:hierarchicalGeographic/#mods:island</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>Area</InternalName>
-        <WriteXPath>./mods:mods/mods:subject/mods:hierarchicalGeographic/#mods:area
-        </WriteXPath>
+        <WriteXPath>./mods:mods/mods:subject/mods:hierarchicalGeographic/#mods:area</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>_placeOfElectronicOrigin</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[2]/#mods:place/mods:placeTerm[@type='text']
-        </WriteXPath>
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='digitization']/#mods:place/mods:placeTerm[@type='text']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>_dateDigitization</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[2]/#mods:dateCaptured[@encoding='iso8601']
-        </WriteXPath>
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='digitization']/#mods:dateCaptured[@encoding='iso8601']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>_electronicPublisher</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[2]/#mods:publisher
-        </WriteXPath>
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='digitization']/#mods:publisher</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>_electronicEdition</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[2]/#mods:edition
-        </WriteXPath>
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='digitization']/#mods:edition</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>_digitalOrigin</InternalName>
-        <WriteXPath>./mods:mods/mods:physicalDescription/#mods:digitalOrigin/
-        </WriteXPath>
+        <WriteXPath>./mods:mods/mods:physicalDescription/#mods:digitalOrigin/</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>URN</InternalName>
@@ -7177,7 +7168,7 @@
       </Metadata>
       <Metadata>
         <InternalName>EditionStatement</InternalName>
-        <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:edition</WriteXPath>
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='production']/#mods:edition</WriteXPath>
       </Metadata>
       <!-- Subjects end -->
       <Metadata>

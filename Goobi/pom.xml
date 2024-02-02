@@ -4,7 +4,7 @@
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in the submodules -->
-    <version>23.12.3</version>
+    <version>24.01-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 
@@ -57,7 +57,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>23.12.3</publicVersion>
+        <publicVersion>24.01-SNAPSHOT</publicVersion>
         <!-- Use Java 11 for compiling -->
         <maven.compiler.release>11</maven.compiler.release>
 
@@ -82,7 +82,7 @@
         <normdataimporter.version>1.10.5</normdataimporter.version>
 
         <ugh-core.version>5.0.19</ugh-core.version>
-        <ugh-marc.version>5.0.17</ugh-marc.version>
+        <ugh-marc.version>5.0.18</ugh-marc.version>
         <ugh-lido.version>5.0.17</ugh-lido.version>
 
         <!-- Be careful with updates here -->
@@ -462,6 +462,10 @@
                 <exclusion>
                     <groupId>xalan</groupId>
                     <artifactId>xalan</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -935,11 +939,6 @@
             <version>1.2.5</version>
         </dependency>
         <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>de.schlichtherle</groupId>
             <artifactId>truezip</artifactId>
             <version>6.8.4</version>
@@ -1239,11 +1238,6 @@
         </dependency>
         <dependency>
             <groupId>de.intranda.other</groupId>
-            <artifactId>xmlParserAPIs</artifactId>
-            <version>x</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.other</groupId>
             <artifactId>xsdlib</artifactId>
             <version>x</version>
         </dependency>
@@ -1434,6 +1428,35 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.3.9</version>
+                                </requireMavenVersion>
+                                <requireReleaseDeps>
+                                    <message>No Snapshots Allowed!</message>
+                                     <excludes>
+                                         <exclude>de.intranda.goobi.workflow:goobi-core</exclude>
+                                         <exclude>de.intranda.goobi.workflow:goobi-core-jar</exclude>
+                                         <exclude>de.intranda.goobi.workflow:goobi-core-war</exclude>
+                                     </excludes>                               
+                                </requireReleaseDeps>
+                            </rules>
+                            <fail>${failOnSnapshot}</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>

@@ -62,7 +62,7 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to define a priority to a specific workflow step.");
-        addParameterToSampleCall(sb, STEPTITLE, "Scanning", "Title of the workflow step to be changed");
+        addParameterToSampleCall(sb, STEPTITLE, "Scanning", "Title of the workflow step to be changed. Leave blank or remove this line to apply to all workflow steps.");
         addParameterToSampleCall(sb, PRIORITY, PRIORITY_HIGHER,
                 "Priority to assign to the workflow step. Possible values are: `" + PRIORITY_STANDARD + "` `" + PRIORITY_HIGH + "` `"
                         + PRIORITY_HIGHER + "` `" + PRIORITY_HIGHEST + "` `" + PRIORITY_CORRECTION + "`");
@@ -74,12 +74,6 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
         super.prepare(processes, command, parameters);
 
         String missingParameter = "Missing parameter: ";
-        String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
-            return new ArrayList<>();
-        }
-
         String priority = parameters.get(PRIORITY);
         if (priority == null || priority.equals("")) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, PRIORITY);
@@ -108,7 +102,7 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
 
-        String stepTitle = parameters.get(STEPTITLE);
+        String stepTitle = parameters.getOrDefault(STEPTITLE, null);
         if (stepTitle == null) {
             stepTitle = "";
         }
