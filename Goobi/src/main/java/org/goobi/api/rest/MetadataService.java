@@ -20,6 +20,7 @@ package org.goobi.api.rest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -28,12 +29,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
+import org.goobi.beans.Step;
 import org.xml.sax.SAXException;
 
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
+import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -106,6 +111,14 @@ public abstract class MetadataService {
             log.debug("Generated process {} using marc upload", processTitle);
         } catch (DAOException | UGHException | ParserConfigurationException | SAXException | IOException | SwapException e) {
             log.error(e);
+        }
+
+        List<Step> steps = StepManager.getStepsForProcess(process.getId());
+        for (Step s : steps) {
+            if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum()) && s.isTypAutomatisch()) {
+                ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);
+                myThread.startOrPutToQueue();
+            }
         }
 
         return Response.status(204).build();
