@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +52,13 @@ import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import io.goobi.workflow.harvester.repository.Repository;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({  ProcessManager.class, ProjectManager.class, ProcessService.class })
+@PrepareForTest({ ProcessManager.class, ProjectManager.class, ProcessService.class, StepManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class MarcXmlParserTest extends AbstractTest {
 
@@ -110,10 +112,9 @@ public class MarcXmlParserTest extends AbstractTest {
         EasyMock.expect(repository.getParameter()).andReturn(parameterMap).anyTimes();
 
         EasyMock.expect(repository.downloadOaiRecord(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyObject()))
-        .andReturn(anchorFile)
-        .anyTimes();
+                .andReturn(anchorFile)
+                .anyTimes();
         EasyMock.replay(repository);
-
 
         Process process = EasyMock.createMock(Process.class);
         Ruleset ruleset = EasyMock.createMock(Ruleset.class);
@@ -123,6 +124,7 @@ public class MarcXmlParserTest extends AbstractTest {
         EasyMock.expect(process.getRegelsatz()).andReturn(ruleset).anyTimes();
         EasyMock.expect(process.getProjekt()).andReturn(project).anyTimes();
         EasyMock.expect(process.getDocket()).andReturn(null).anyTimes();
+        EasyMock.expect(process.getId()).andReturn(1).anyTimes();
 
         process.setProjekt(EasyMock.anyObject());
         EasyMock.expect(ruleset.getPreferences()).andReturn(prefs).anyTimes();
@@ -136,7 +138,10 @@ public class MarcXmlParserTest extends AbstractTest {
         EasyMock.expect(ProjectManager.getProjectByName(EasyMock.anyObject())).andReturn(project).anyTimes();
 
         PowerMock.mockStatic(ProcessService.class);
-        EasyMock.expect(  ProcessService.prepareProcess(EasyMock.anyString(), EasyMock.anyObject())).andReturn(process).anyTimes();
+        EasyMock.expect(ProcessService.prepareProcess(EasyMock.anyString(), EasyMock.anyObject())).andReturn(process).anyTimes();
+
+        PowerMock.mockStatic(StepManager.class);
+        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(Collections.emptyList()).anyTimes();
 
         EasyMock.expectLastCall();
         EasyMock.replay(ruleset);
@@ -178,17 +183,16 @@ public class MarcXmlParserTest extends AbstractTest {
     public void testReplaceMetadata() throws Exception {
         MarcXmlParser fixture = new MarcXmlParser();
         try (InputStream in = Files.newInputStream(testFile)) {
-            Response resp =  fixture.replaceMetadata(1, in);
+            Response resp = fixture.replaceMetadata(1, in);
             assertEquals(200, resp.getStatus());
         }
     }
-
 
     @Test
     public void testCreateNewProcess() throws Exception {
         MarcXmlParser fixture = new MarcXmlParser();
         try (InputStream in = Files.newInputStream(testFile)) {
-            Response resp =  fixture.createNewProcess("projectName", "templateName", "processTitle", in);
+            Response resp = fixture.createNewProcess("projectName", "templateName", "processTitle", in);
             assertEquals(204, resp.getStatus());
         }
     }
