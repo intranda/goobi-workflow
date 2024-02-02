@@ -79,12 +79,20 @@ public class HelperForm implements Serializable {
     // TODO re-added temporary for compiling issues
     public static final String MAIN_JSF_PATH = "/newpages";
 
+    /**
+     * @Deprecated Use {@link HelperForm#getVersion()} instead.
+     */
+    @Deprecated(forRemoval = false)
     public String getBuildVersion() {
-        return GoobiVersion.getBuildversion();
+        return getVersion();
     }
 
     public String getVersion() {
-        return GoobiVersion.getPublicVersion();
+        return GoobiVersion.getVersion();
+    }
+
+    public String getRevision() {
+        return GoobiVersion.getRevision();
     }
 
     // TODO: Change the defaults
@@ -323,7 +331,7 @@ public class HelperForm implements Serializable {
      * @return build date written by the ant script
      */
     public String getBuildDate() {
-        return GoobiVersion.getBuilddate();
+        return GoobiVersion.getBuildDate();
     }
 
     /**

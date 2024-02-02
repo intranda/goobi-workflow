@@ -35,27 +35,22 @@ import org.joda.time.DateTime;
 import lombok.Getter;
 
 public class GoobiVersion {
-
     private static DateTime now = DateTime.now();
 
     @Getter
-    private static String version = "N/A";
+    private static String revision = "N/A";
+
     @Getter
-    private static String buildversion = "N/A";
-    // after a long discussion about earth climate change we decided that a subtraction of 2000 years is probably the easiest way
-    // to get a two character year number. Just remember to change that value in 81 years from now on :)
+    private static String version = String.format("%02d.%02d-dev", now.getYear() % 100, now.getMonthOfYear());
+
     @Getter
-    private static String publicVersion = String.format("%02d.%02d-dev", now.getYear() - 2000, now.getMonthOfYear());
-    @Getter
-    private static String builddate = "N/A";
+    private static String buildDate = "N/A";
 
     public static void setupFromManifest(Manifest manifest) throws IllegalArgumentException {
         Attributes mainAttributes = manifest.getMainAttributes();
-
-        version = getOptionalValue(mainAttributes, "Implementation-Version").orElse(version);
-        buildversion = version;
-        builddate = getOptionalValue(mainAttributes, "Implementation-Build-Date").orElse(builddate);
-        publicVersion = getOptionalValue(mainAttributes, "version").orElse(publicVersion);
+        revision = getOptionalValue(mainAttributes, "Revision").orElse(revision);
+        version = getOptionalValue(mainAttributes, "Version").orElse(version);
+        buildDate = getOptionalValue(mainAttributes, "Build-Date").orElse(buildDate);
     }
 
     private static Optional<String> getOptionalValue(Attributes attributes, String attributeName) throws IllegalArgumentException {

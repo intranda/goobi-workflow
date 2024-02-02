@@ -193,18 +193,18 @@ public class PluginsBean implements Serializable {
             try (InputStream in = zipFile.getInputStream(manifestEntry); BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.startsWith("Build-Time: ")) {
+                    if (line.startsWith("Build-Date: ")) {
                         try {
-                            info.setBuildDate(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(line.replace("Build-Time: ", "")));
+                            info.setBuildDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(line.replace("Build-Date: ", "")));
                         } catch (ParseException e) {
                             log.error(e);
                         }
                     }
-                    if (line.startsWith("Implementation-SCM-Revision: ")) {
-                        info.setGitHash(line.replace("Implementation-SCM-Revision: ", ""));
+                    if (line.startsWith("Revision: ")) {
+                        info.setGitHash(line.replace("Revision: ", ""));
                     }
-                    if (line.startsWith("Goobi-Version: ")) {
-                        info.setGoobiVersion(line.replace("Goobi-Version: ", ""));
+                    if (line.startsWith("Version: ")) {
+                        info.setGoobiVersion(line.replace("Version: ", ""));
                     }
                 }
             }
