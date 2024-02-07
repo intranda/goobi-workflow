@@ -481,8 +481,8 @@ public class ProzesskopieForm implements Serializable {
         if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
             filter.append(" AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ")
-            .append(aktuellerNutzer.getId())
-            .append(")");
+                    .append(aktuellerNutzer.getId())
+                    .append(")");
         }
         Institution inst = null;
         if (aktuellerNutzer != null && !aktuellerNutzer.isSuperAdmin()) {
@@ -1545,6 +1545,7 @@ public class ProzesskopieForm implements Serializable {
             if (currentCatalogue == null && !catalogues.isEmpty()) {
                 // get first catalogue in case configured catalogue doesn't exist
                 currentCatalogue = catalogues.get(0);
+                this.opacKatalog = currentCatalogue.getTitle();
             }
             if (currentCatalogue != null) {
                 currentCatalogue.getOpacPlugin().setTemplateName(prozessVorlage.getTitel());
