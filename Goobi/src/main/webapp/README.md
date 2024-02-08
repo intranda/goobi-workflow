@@ -9,7 +9,7 @@ Required: `npm` >= v5.7.1
 2. For *development* purposes, make sure that the variables `eclipseWorkspaceLocation` and `tomcatTmp` in `gulpfile.js` point towards the correct location of your Tomcat Server.
 3. Depending on your build target, run one of the following scripts:
    - `npm run dev` for *development*, move compiled assets to Tomcat and watch for further changes.
-   - `npm run prod` for *production*, minify assets as needed without moving them to the server. Do this before merging a PR.
+   - `npm run build` for *production*, minify assets as needed without moving them to the server. Do this before merging a PR.
 
 ## Development
 
