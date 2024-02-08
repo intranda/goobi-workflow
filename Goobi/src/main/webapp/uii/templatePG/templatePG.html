@@ -381,22 +381,16 @@
         <!--Show and hide help messages-->
         <!--toggle_help is the legacy name for this function, it is used in most views, use gwToggleHelp.init in new markup-->
         <script>
-            gwToggleHelp.init;
+          gwToggleHelp.init;
+          //Show and hide goobi ajax loader
+          gwAjaxLoader.init();
+          //TOOLTIPS
+          //Initialize Bootstrap tooltips
+          gwInitTooltips.init();
+          //Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)
+          gwResizableTable.init();
+          gwFocusOnLoad.init();
         </script>
-
-        <!--Show and hide goobi ajax loader-->
-        <script>
-            gwAjaxLoader.init();
-        </script>
-
-        <!--TOOLTIPS-->
-        <!--Initialize Bootstrap tooltips-->
-        <script>
-            gwInitTooltips.init();
-        </script>
-
-        <!--Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)-->
-        <script>gwResizableTable.init();</script>
 
     </f:view>
 </h:body>
