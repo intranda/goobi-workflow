@@ -181,4 +181,3 @@ exports.dev = function() {
     watch(sources.static, { ignoreInitial: false }, static)
 };
 exports.prod = parallel(prodJsLegacy, prodJsRollup, prodBSCss, prodCss, prodLess);
-exports.test = parallel(devLess, devJsLegacy, devJsRollup, devBSCss, devCss, static);
