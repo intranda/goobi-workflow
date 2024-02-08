@@ -149,20 +149,10 @@
 
                                     <div class="row">
                                         <div class="col-12 col-md-3">
-                                            <h:outputLabel
-                                                for="loginAs"
-                                                value="#{msgs.login}"
-                                                title="#{msgs.requiredField}"
-                                                styleClass="form__label">
-
-                                                <f:passThroughAttribute
-                                                    name="data-bs-toggle"
-                                                    value="tooltip" />
-                                                <f:passThroughAttribute
-                                                    name="data-bs-placement"
-                                                    value="right" />
-                                                <span class="fa fa-asterisk" />
-                                            </h:outputLabel>
+                                            <intranda:formLabel
+                                                labelFor="loginAs"
+                                                label="#{msgs.login}"
+                                                labelRequired="true" />
                                         </div>
                                         <div class="col-12 col-md-9">
                                             <x:inputText
@@ -185,23 +175,10 @@
 
                                     <div class="row">
                                         <div class="col-12 col-md-3 ">
-
-                                            <h:outputLabel
-                                                styleClass="form__label"
-                                                for="ldapGruppe"
-                                                value="#{msgs.user_edit_loginType}"
-                                                title="#{msgs.requiredField}">
-
-                                                <f:passThroughAttribute
-                                                    name="data-bs-toggle"
-                                                    value="tooltip" />
-                                                <f:passThroughAttribute
-                                                    name="data-bs-placement"
-                                                    value="right" />
-
-
-                                                <span class="fa fa-asterisk form__required" />
-                                            </h:outputLabel>
+                                            <intranda:formLabel
+                                                labelFor="loginAs"
+                                                label="#{msgs.user_edit_loginType}"
+                                                labelRequired="true" />
                                         </div>
                                         <div class="col-12 col-md-9">
                                             <h:panelGroup rendered="#{cc.attrs.onevent == null}">
