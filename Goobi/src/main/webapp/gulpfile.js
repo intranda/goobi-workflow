@@ -167,7 +167,9 @@ function prodJsRollup() {
                 file: `${targetFolder.js}main.js`,
                 format: 'es',
                 sourcemap: true,
-                plugins: [terser()]
+                plugins: [terser({
+                    mangle:false
+                })]
             });
         });
 };
