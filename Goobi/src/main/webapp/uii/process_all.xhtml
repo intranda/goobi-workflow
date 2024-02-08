@@ -1227,8 +1227,8 @@
 
 															<!-- MASS IMPORT - MULTIPLE PROJECTS -->
 															<h:panelGroup
-																rendered="#{(ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1
-                                                                 or (ProzesskopieForm.availableProjects.size() == 1 and ProzesskopieForm.availableProjects.get(0).getTitel() != item.projekt.titel ))}">
+																rendered="#{(ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and (ProzesskopieForm.availableProjects.size() gt 1
+                                                                 or (ProzesskopieForm.availableProjects.size() == 1 and ProzesskopieForm.availableProjects.get(0).getTitel() != item.projekt.titel )))}">
 																<div
 																	class="dropdown-left"
 																	data-bs-toggle="tooltip"
