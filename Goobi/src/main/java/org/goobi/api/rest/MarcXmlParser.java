@@ -286,7 +286,7 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
                     if (c19 == 'a') {
                         isAnchor = true;
                     }
-                } else if ("controlfield".equalsIgnoreCase(el.getName())) {
+                    //} else if ("controlfield".equalsIgnoreCase(el.getName())) {
 
                 } else if ("datafield".equalsIgnoreCase(el.getName())) {
                     String tag = el.getAttributeValue("tag");
@@ -326,7 +326,7 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
             log.error(e);
         }
 
-        if (isAnchor || (isPeriodical && StringUtils.isBlank(anchorIdentifier))) {
+        if (isAnchor || isPeriodical) {
             // delete anchor records
             try {
                 StorageProvider.getInstance().deleteFile(file);
