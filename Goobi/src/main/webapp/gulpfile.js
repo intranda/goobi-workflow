@@ -54,7 +54,7 @@ const legacyTargetFolder = {
 }
 const targetFolder = {
     css: 'uii/templatePG/css/dist/',
-    js: 'uii/js/',
+    js: 'dist/js/',
     static: 'uii/',
 }
 
