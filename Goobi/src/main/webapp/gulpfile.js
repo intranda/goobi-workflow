@@ -16,10 +16,8 @@ const rollup = require('rollup');
 const cleanup = require('rollup-plugin-cleanup');
 const terser = require('@rollup/plugin-terser');
 
-// provide tomcat working dir to gulp
-const eclipseWorkspaceLocation = '/home/simon/Entwicklungsumgebung/';
-const tomcatTmp = 'tmp0/';
-const tomcatLocation = `${eclipseWorkspaceLocation}eclipse-workspace/.metadata/.plugins/org.eclipse.wst.server.core/${tomcatTmp}wtpwebapps/Goobi/`;
+// provide custom asset location for watch task
+const customLocation = ``;
 
 // source directories, files, globs
 const legacySources = {
@@ -61,7 +59,7 @@ const targetFolder = {
 // FUNCTIONS
 function static() {
     return src(sources.static)
-        .pipe(dest(`${tomcatLocation}${targetFolder.static}`))
+        .pipe(dest(`${customLocation}${targetFolder.static}`))
 };
 
 // function for legacy less
@@ -85,7 +83,7 @@ function devLess() {
     return src(`${legacySources.less}`)
     .pipe(less())
     .pipe(rename('goobiWorkflow.min.css'))
-    .pipe(dest(`${tomcatLocation}${legacyTargetFolder.lessDest}`))
+    .pipe(dest(`${customLocation}${legacyTargetFolder.lessDest}`))
 };
 
 function BSCss() {
@@ -102,13 +100,13 @@ function prodBSCss() {
 
 function devBSCss() {
     return BSCss()
-        .pipe(dest(`${tomcatLocation}${targetFolder.css}`));
+        .pipe(dest(`${customLocation}${targetFolder.css}`));
 };
 
 function devCss() {
     return src(sources.css)
         .pipe(sass().on('error', sass.logError))
-        .pipe(dest(`${tomcatLocation}${targetFolder.css}`));
+        .pipe(dest(`${customLocation}${targetFolder.css}`));
 };
 
 function prodCss() {
@@ -139,7 +137,7 @@ function prodJsLegacy() {
 function devJsLegacy() {
     return jsLegacy()
         .pipe(concat(`goobiWorkflowJS.min.js`))
-        .pipe(dest(`${tomcatLocation}${targetFolder.js}`))
+        .pipe(dest(`${customLocation}${targetFolder.js}`))
 };
 
 function devJsRollup() {
@@ -150,7 +148,7 @@ function devJsRollup() {
         })
         .then(bundle => {
             return bundle.write({
-                file: `${tomcatLocation}${targetFolder.js}main.js`,
+                file: `${customLocation}${targetFolder.js}main.js`,
                 format: 'es',
             });
         });
