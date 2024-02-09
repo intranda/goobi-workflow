@@ -37,11 +37,11 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.ConfigurationRuntimeException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
@@ -61,7 +61,7 @@ public class ConfigFileEditorBean implements Serializable {
     public static final String MESSAGE_KEY_PREFIX = "plugin_administration_config_file_editor";
 
     // The name of this file is needed to exclude it from the list that is shown in the GUI
-    public static final String CONFIGURATION_FILE = "plugin_intranda_administration_config_file_editor.xml";
+    public static final String CONFIGURATION_FILE = "goobi_configeditor.xml";
 
     @Getter
     private String title = "intranda_administration_config_file_editor";
@@ -102,10 +102,21 @@ public class ConfigFileEditorBean implements Serializable {
      * Constructor
      */
     public ConfigFileEditorBean() {
-        XMLConfiguration configuration = ConfigPlugins.getPluginConfig(this.title);
+        XMLConfiguration configuration = getConfig();
         ConfigFileUtils.init(configuration);
         getConfigFiles();
-        log.error("log");
+    }
+
+    private XMLConfiguration getConfig() {
+        XMLConfiguration config = new XMLConfiguration();
+        config.setDelimiterParsingDisabled(true);
+        try {
+            config.load(new Helper().getGoobiConfigDirectory() + CONFIGURATION_FILE);
+        } catch (ConfigurationException e) {
+            log.error("Error while reading the configuration file " + CONFIGURATION_FILE, e);
+        }
+        config.setReloadingStrategy(new FileChangedReloadingStrategy());
+        return config;
     }
 
     public String getCurrentEditorTitle() {

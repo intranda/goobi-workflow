@@ -14,7 +14,7 @@
 
     <ui:param
         name="myPageTitle"
-        value="#{msgs.config_file_editor}" />
+        value="#{msgs.intranda_administration_config_file_editor}" />
 
     <ui:define
         name="breadcrumb"
@@ -39,7 +39,7 @@
         <script type="text/javascript" src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}"/>
         <script type="text/javascript" src="template/js/codemirror/mode/properties/properties.js?v=#{HelperForm.buildVersion}"/>
         <script type="text/javascript" src="template/js/codemirror/mode/xml/xml.js?v=#{HelperForm.buildVersion}"/>
-        <script type="text/javascript" src="plugin_administration_config_file_editor.js" />
+        <script type="text/javascript" src="templatePG/js/modules/gwConfigFileEditor.js" />
     <style>
             .CodeMirror {
                 height: auto;
@@ -58,7 +58,7 @@
             styleClass="messages" />
             
         <!-- Without permission -->
-        <ui:fragment rendered="#{!LoginForm.hasRole('Plugin_administration_config_file_editor')}">
+        <ui:fragment rendered="#{!LoginForm.hasRole('Admin_config_file_editor')}">
             <intranda:box
                 boxType="neutral"
                 boxPadding="true"
@@ -66,7 +66,7 @@
                 title="#{msgs[configFileEditorBean.title]}">
                 
                 <div class="alert alert-danger alert-dismissable" >
-                    <h:outputText value="#{msgs.plugin_administration_missingPermission} Plugin_administration_config_file_editor"/>
+                    <h:outputText value="#{msgs.administration_missingPermission} Admin_config_file_editor"/>
                 </div>
             </intranda:box>
         </ui:fragment>
@@ -76,19 +76,11 @@
     
    
         <!-- With permission -->
-        <h:form id="configFileEditorForm" rendered="#{LoginForm.hasRole('Plugin_administration_config_file_editor')}">
+        <h:form id="configFileEditorForm" rendered="#{LoginForm.hasRole('Admin_config_file_editor')}">
 
              <div class="row">
                 <!-- This code block is used if the warnings for non-allowed directories are used in the backend -->
-                <!--
-                <h:panelGroup id="warnings" rendered="#{configFileEditorBean.warningListNotEmpty}">
-                    <ui:repeat var="item" value="#{configFileEditorBean.warningMessages}">
-                        <h:outputText id="warning"
-                            styleClass="alert alert-danger"
-                            value="#{item}" />
-                    </ui:repeat>
-                </h:panelGroup>
-                -->
+             
                 <!--
                 THIS HIDDEN DIV MUST BE RENDERED TO GET THE CURRENT CONFIG FILE TYPE
                 FROM THE BACKEND TO SET THE SYNTAX HIGHLIGHTING IN CODE MIRROR.
@@ -106,7 +98,7 @@
                         boxType="primary"
                         boxPadding="false"
                         icon="fa-files-o"
-                        title="#{msgs.plugin_administration_config_file_editor_config_file_selection}">
+                        title="#{msgs.administration_config_file_editor_config_file_selection}">
                         
                         <!-- TABLE WITH FILE LIST -->
                         <div class="gw-table gw-table-fixed">
@@ -119,7 +111,7 @@
                                     value="#{configFileEditorBean.configFiles}">
                                     <h:column>
                                         <f:facet name="header">
-                                            <h:outputText value="#{msgs.plugin_administration_config_file_editor_file_name}" />
+                                            <h:outputText value="#{msgs.administration_config_file_editor_file_name}" />
                                         </f:facet>
                                         <h:outputText
                                             value="#{item.fileName}"
@@ -140,7 +132,7 @@
                                             <button
                                                 jsf:id="edit"
                                                 class="btn #{configFileEditorBean.isActiveConfigFile(item) ? 'btn-primary' : 'btn-blank'}"
-                                                title="#{configFileEditorBean.isWritable(item) ? msgs.plugin_administration_config_file_editor_edit_file : msgs.plugin_administration_config_file_editor_show_file}"
+                                                title="#{configFileEditorBean.isWritable(item) ? msgs.administration_config_file_editor_edit_file : msgs.administration_config_file_editor_show_file}"
                                                 jsf:rel="tooltip"
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}">
                                                 <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
@@ -156,7 +148,7 @@
                                                 type="button"
                                                 jsf:onclick="loadEditorContent()"
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}"
-                                                title="#{configFileEditorBean.isWritable(item) ? msgs.plugin_administration_config_file_editor_edit_file : msgs.plugin_administration_config_file_editor_show_file}">
+                                                title="#{configFileEditorBean.isWritable(item) ? msgs.administration_config_file_editor_edit_file : msgs.administration_config_file_editor_show_file}">
                                                 <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
                                                 <!-- 
                                                 -->
@@ -289,7 +281,7 @@
                             <!-- MODAL HEADER -->
                             <div class="modal-header bg-primary-400 text-white">
                                 <h4 class="modal-title" id="myDialogLabel">
-                                    <h:outputText value="#{msgs.plugin_administration_config_file_editor_unsaved_changes}" />
+                                    <h:outputText value="#{msgs.administration_config_file_editor_unsaved_changes}" />
                                 </h4>
                                 <button
                                     type="button"
@@ -301,7 +293,7 @@
                             
                             <!-- MODAL BODY -->
                             <div class="modal-body">
-                                <p>#{msgs.plugin_administration_config_file_editor_save_unsaved_changes}</p>
+                                <p>#{msgs.administration_config_file_editor_save_unsaved_changes}</p>
                             </div>
                             <!-- // MODAL BODY -->
                             
