@@ -78,6 +78,19 @@
                             itemValue="#{item}" />
 
                         <h:panelGroup id="typeArea">
+                          <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'bach'}">
+                                       <intranda:formInputTextAjax
+                                    id="bachUrl"
+                                    label="#{msgs.intranda_administration_repository_bachUrl}"
+                                    field="#{harvesterBean.repository.oaiUrl}"
+                                    help="#{msgs.help_intranda_administration_repository_bachUrl}"
+                                    required="false"
+                                    name="bachUrl"
+                                    execute="@this"
+                                    render="myform:box:typeArea" />
+                          </h:panelGroup>
+                        
+                        
                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'oai'}">
 
                                 <intranda:formInputTextAjax

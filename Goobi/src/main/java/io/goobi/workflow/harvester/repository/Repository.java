@@ -36,6 +36,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.goobi.beans.DatabaseObject;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -48,6 +51,11 @@ import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.reflections.Reflections;
+
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.InvalidJsonException;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.ShellScript;
@@ -273,6 +281,10 @@ public class Repository implements Serializable, DatabaseObject {
                     log.debug("No new records harvested.");
                 }
                 return totalHarvested;
+
+            case "bach":
+                return harvestBach(jobId);
+
             default:
                 // not implemented
 
@@ -297,6 +309,75 @@ public class Repository implements Serializable, DatabaseObject {
         query.append("&fields=identifier,publicdate,title&output=xml");
 
         return IaTools.querySolrToDB(query.toString(), jobId, id);
+    }
+
+    private int harvestBach(Integer jobId) {
+        String bachUrl = url;
+        String authenticationToken = "Bearer xxx";
+        Map<String, String> additionalMetadata = new HashMap<>();
+        additionalMetadata.put("singleDigCollection", "abc");
+        String dateString = dateFormat.format(new Date());
+        // query api
+        HttpGet httpGet = new HttpGet(bachUrl);
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            httpGet.setHeader("Accept", "text/json");
+            httpGet.setHeader("Content-type", "text/json");
+            httpGet.setHeader("Authorization", authenticationToken);
+            String responseBody = client.execute(httpGet, HttpUtils.stringResponseHandler);
+
+            log.trace(responseBody);
+            // parse response
+            Object json = Configuration.defaultConfiguration().jsonProvider().parse(responseBody);
+            List<Object> results = new ArrayList<>();
+            try {
+                Object object = JsonPath.read(json, "theses");
+                if (object != null) {
+                    if (object instanceof List) {
+                        List<?> valueList = (List<?>) object;
+                        for (Object element : valueList) {
+                            results.add(element);
+
+                        }
+                    } else {
+                        results.add(object);
+                    }
+                }
+            } catch (PathNotFoundException e) {
+                // field not found, ignore this error
+            }
+
+            log.trace(results.size());
+            List<Record> allRecords = new ArrayList<>();
+            // run through all records
+
+            for (Object thesis : results) {
+                int thesisId = JsonPath.read(thesis, "thesis_id");
+                String submissionDate = JsonPath.read(thesis, "submitted_at");
+
+                log.trace(thesisId + ": " + submissionDate);
+
+                Record rec = new Record();
+                rec.setIdentifier("" + thesisId);
+                rec.setJobId(jobId);
+                rec.setRepositoryTimestamp(dateString);
+                rec.setRepositoryId(getId());
+                allRecords.add(rec);
+            }
+
+            // TODO filter all records, check timestamp, get thesis id, check if it exists
+
+            // if not, create new process
+
+        } catch (IOException e) {
+            String message = "IOException caught while executing request: " + httpGet.getRequestLine();
+            log.error(message);
+        } catch (InvalidJsonException e) {
+            String message = "ParseException caught while executing request: " + httpGet.getRequestLine();
+            log.error(message);
+
+        }
+
+        return 0;
     }
 
     private int harvestOai(Integer jobId) throws HarvestException {

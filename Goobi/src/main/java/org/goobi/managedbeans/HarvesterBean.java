@@ -56,7 +56,7 @@ public class HarvesterBean extends BasicBean implements Serializable {
     private List<SelectItem> availableProcessTemplates = null;
 
     @Getter
-    private String[] repositoryTypes = { "oai", "ia", "ia cli" };
+    private String[] repositoryTypes = { "oai", "ia", "ia cli", "bach" };
 
     @Getter
     @Setter
