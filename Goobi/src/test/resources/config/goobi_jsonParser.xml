@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- internal name of the docstruct -->
+    <docstruct>Monograph</docstruct>
+
+    <!--field list of all data taken from the json
+    object-->
+    <!--  metadataName: internal name of the metadata field -->
+    <!--  path: JSONPath to the value within the json object -->
+    <!--  type: one of Number, String, Boolean. String is default -->
+    <!-- default: default value, if the field is missing-->
+    <jsonFields>
+        <field metadataName="TitleDocMain" path="title" type="String" />
+
+        <field metadataName="CatalogIDDigital" path="id" type="Number" />
+    </jsonFields>
+
+    <!-- additional fields with static text -->
+    <staticFields>
+        <field metadataName="singleDigCollection" value="abc" />
+    </staticFields>
+
+</configuration>
