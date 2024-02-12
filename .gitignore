@@ -12,7 +12,7 @@ goobi1.9/WEB-INF/classes
 .DS_Store
 hotswap-agent.properties
 /Goobi/src/main/webapp/dist
-/Goobi/src/main/node/
+/Goobi/src/main/webapp/node
 
 # Local files used as styling reference while migrating to BS 5
 *_REF.xhtml
