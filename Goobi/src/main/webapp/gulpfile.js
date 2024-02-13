@@ -173,11 +173,11 @@ function prodJsRollup() {
 };
 
 exports.dev = function() {
-    watch(legacySources.less, { ignoreInitial: false }, devLess)
+    watch(legacySources.less, { ignoreInitial: false }, devLess);
     watch(legacySources.js, { ignoreInitial: false }, devJsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
-    watch(sources.bsCss, { ignoreInitial: false }, devBSCss)
-    watch(sources.css, { ignoreInitial: false }, devCss)
-    watch(sources.static, { ignoreInitial: false }, static)
+    watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
+    watch(sources.css, { ignoreInitial: false }, devCss);
+    watch(sources.static, { ignoreInitial: false }, static);
 };
 exports.prod = parallel(prodJsLegacy, prodJsRollup, prodBSCss, prodCss, prodLess);
