@@ -80,7 +80,8 @@ public enum UserRole {
     Admin_Jobtypes,
     Admin_Quartz,
     Admin_ApiKey,
-    Admin_Templates;
+    Admin_Templates,
+    Admin_config_file_editor;
 
     public static List<String> getAllRoles() {
         List<String> roles = new ArrayList<>();

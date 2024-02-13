@@ -29,13 +29,13 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -61,15 +61,12 @@ public class LockingListener implements ServletContextListener {
 
             JobDetail jobDetail = JobBuilder.newJob(FreeLockingJob.class).withIdentity(jobName, jobName).build();
 
-            Trigger trigger =
-                    TriggerBuilder.newTrigger()
-                            .withIdentity(jobName, jobName)
-
-                            .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(30))
-                            .startNow()
-
-                            .build();
+            CronTrigger trigger = TriggerBuilder.newTrigger()
+                    .withIdentity(jobName, jobName)
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 * * * * ?"))
+                    .build();
             sched.scheduleJob(jobDetail, trigger);
+
         } catch (SchedulerException e) {
             log.error(e);
 

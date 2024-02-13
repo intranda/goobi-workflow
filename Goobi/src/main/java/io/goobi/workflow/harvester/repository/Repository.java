@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
@@ -35,7 +36,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.goobi.api.rest.JsonImportParser;
 import org.goobi.beans.DatabaseObject;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -48,6 +54,11 @@ import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.reflections.Reflections;
+
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.InvalidJsonException;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.ShellScript;
@@ -273,6 +284,10 @@ public class Repository implements Serializable, DatabaseObject {
                     log.debug("No new records harvested.");
                 }
                 return totalHarvested;
+
+            case "bach":
+                return harvestBach(jobId);
+
             default:
                 // not implemented
 
@@ -297,6 +312,98 @@ public class Repository implements Serializable, DatabaseObject {
         query.append("&fields=identifier,publicdate,title&output=xml");
 
         return IaTools.querySolrToDB(query.toString(), jobId, id);
+    }
+
+    private int harvestBach(Integer jobId) {
+        String bachUrl = url;
+        String authenticationToken = parameter.get("authentication");
+        Map<String, String> additionalMetadata = new HashMap<>();
+        additionalMetadata.put("singleDigCollection", "abc");
+        String dateString = dateFormat.format(new Date());
+        // query api
+        HttpGet httpGet = new HttpGet(bachUrl);
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            httpGet.setHeader("Accept", "text/json");
+            httpGet.setHeader("Content-type", "text/json");
+            httpGet.setHeader("Authorization", authenticationToken);
+            String responseBody = client.execute(httpGet, HttpUtils.stringResponseHandler);
+
+            log.trace(responseBody);
+
+            // parse response
+            Object json = Configuration.defaultConfiguration().jsonProvider().parse(responseBody);
+            List<Record> extractedRecords = parseBachJson(jobId, dateString, json);
+
+            // check if thesis id was already used in a previous run
+            List<String> idList = new ArrayList<>(extractedRecords.size());
+            for (Record rec : extractedRecords) {
+                String thesisId = rec.getIdentifier();
+                idList.add(thesisId);
+            }
+
+            List<Record> newRecords = new ArrayList<>();
+            List<String> existingRecordIds = HarvesterRepositoryManager.getExistingIdentifier(idList);
+            for (Record rec : extractedRecords) {
+                String thesisId = rec.getIdentifier();
+                if (!existingRecordIds.contains(thesisId)) {
+                    newRecords.add(rec);
+                }
+            }
+
+            // save only the new records
+            return HarvesterRepositoryManager.addRecords(newRecords, false);
+        } catch (IOException e) {
+            String message = "IOException caught while executing request: " + httpGet.getRequestLine();
+            log.error(message);
+        } catch (InvalidJsonException e) {
+            String message = "ParseException caught while executing request: " + httpGet.getRequestLine();
+            log.error(message);
+
+        }
+
+        return 0;
+    }
+
+    private List<Record> parseBachJson(Integer jobId, String dateString, Object json) {
+        List<Object> results = new ArrayList<>();
+        try {
+            Object object = JsonPath.read(json, "theses");
+
+            if (object != null) {
+                if (object instanceof List) {
+                    List<?> valueList = (List<?>) object;
+                    for (Object element : valueList) {
+                        results.add(element);
+
+                    }
+                } else {
+                    results.add(object);
+                }
+            }
+        } catch (PathNotFoundException e) {
+            // field not found, ignore this error
+        }
+
+        log.trace(results.size());
+        List<Record> allRecords = new ArrayList<>();
+        // run through all records
+
+        for (Object thesis : results) {
+
+            int thesisId = JsonPath.read(thesis, "thesis_id");
+            String submissionDate = JsonPath.read(thesis, "submitted_at");
+
+            log.trace(thesisId + ": " + submissionDate);
+
+            Record rec = new Record();
+            rec.setSource(JsonPath.parse(thesis).jsonString());
+            rec.setIdentifier("" + thesisId);
+            rec.setJobId(jobId);
+            rec.setRepositoryTimestamp(dateString);
+            rec.setRepositoryId(getId());
+            allRecords.add(rec);
+        }
+        return allRecords;
     }
 
     private int harvestOai(Integer jobId) throws HarvestException {
@@ -617,8 +724,17 @@ public class Repository implements Serializable, DatabaseObject {
                     Thread.currentThread().interrupt();
                 }
                 break;
+            case "bach":
+
+                String jsonString = rec.getSource();
+                // call BachParser
+                String processTitle =
+                        rec.getIdentifier().replaceAll(ConfigurationHelper.getInstance().getProcessTitleReplacementRegex(), "_");
+                JsonImportParser parser = new JsonImportParser();
+                parser.createNewProcess(importProjectName, processTemplateName, processTitle,
+                        IOUtils.toInputStream(jsonString, StandardCharsets.UTF_8));
+                break;
             default:
-                //TODO
                 break;
 
         }
