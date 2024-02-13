@@ -2,6 +2,7 @@ package org.goobi.beans;
 
 import java.util.Date;
 
+import de.sub.goobi.helper.Helper;
 import lombok.AllArgsConstructor;
 
 /**
@@ -44,4 +45,7 @@ public class ImageComment {
         this.comment = comment;
     }
 
+    public String getLocalizedFormatedDate() {
+        return Helper.getDateAsLocalizedFormattedString(creationDate);
+    }
 }
