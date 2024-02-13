@@ -2,7 +2,6 @@ package de.sub.goobi.metadaten;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -118,12 +117,8 @@ public class ImageCommentPropertyHelper {
 		return property;
 	}
 
-
-	private static final String JSON_HEADER = "{\"comments\":";
-	private static final String JSON_TAIL = "}";
 	private ImageComments loadImageCommentsFromProcessProperty(Processproperty property) {
 		String propertyValue = property.getWert();
-		log.debug("propertyValue = " + propertyValue);
 		if (propertyValue == null) {
 			return new ImageComments();
 		}
@@ -131,28 +126,9 @@ public class ImageCommentPropertyHelper {
 		try {
 			return gson.fromJson(propertyValue, ImageComments.class);
 		} catch (JsonSyntaxException ex) {
-			ex.printStackTrace();
-			log.debug("Unable to read image comments property. Trying to read legacy format.");
-			try {
-				LegacyImageComments legacyComments = gson.fromJson(JSON_HEADER + propertyValue + JSON_TAIL,
-						LegacyImageComments.class);
-				ImageComments newComments = new ImageComments();
-				log.debug("Legacy comments found:");
-				legacyComments.comments.entrySet().stream().forEach(e -> {
-					//newComments.comments.add(new ImageComment(propertyValue, propertyValue, propertyValue))
-					log.debug("\t" + e.getKey() + " - " + e.getValue()); 
-				});
-				return newComments;
-			} catch (JsonSyntaxException ex2) {
-				log.error("Unable to read image comments Json property");
-				ex2.printStackTrace();
-				throw ex2;
-			}
+			log.error("Unable to read image comments Json property");
+			throw ex;
 		}
-	}
-
-	private class LegacyImageComments {
-		private Map<String, String> comments;
 	}
 
 	private class ImageComments {
