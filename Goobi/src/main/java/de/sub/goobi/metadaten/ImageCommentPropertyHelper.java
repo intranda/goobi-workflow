@@ -28,7 +28,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RequiredArgsConstructor
 public class ImageCommentPropertyHelper {
-	private static final String IMAGE_COMMENTS_HEADER = "image_comments";
+	private static final String IMAGE_COMMENTS_PROPERTY_NAME = "image_comments";
 	private static final String ERROR_MESSAGE_FOR_NULL_FOLDER_NAME = "folderName should not be null";
 	private static final String ERROR_MESSAGE_FOR_NULL_IMAGE_NAME = "imageName should not be null";
 
@@ -86,13 +86,13 @@ public class ImageCommentPropertyHelper {
 	}
 	
 	private ImageComments loadImageComments() {
-		Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_HEADER);
+		Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_PROPERTY_NAME);
 		ImageComments comments = loadImageCommentsFromProcessProperty(currentProperty);
 		return comments;
 	}
 	
 	private void saveImageComments(ImageComments ic) {
-		Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_HEADER);
+		Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_PROPERTY_NAME);
 		String newPropertyValue = createPropertyValue(ic);
 		log.debug("newPropertyValue = " + newPropertyValue);
 		currentProperty.setWert(newPropertyValue);
@@ -100,10 +100,7 @@ public class ImageCommentPropertyHelper {
 	}
 	
 	private String createPropertyValue(ImageComments comments) {
-		String value = gson.toJson(comments, ImageComments.class);
-		value = value.substring(value.indexOf(":") + 1, value.length() - 1);
-
-		return value;
+		return gson.toJson(comments, ImageComments.class);
 	}
 
 	private Processproperty prepareProcessproperty(String propertyTitle) {
@@ -134,15 +131,16 @@ public class ImageCommentPropertyHelper {
 		try {
 			return gson.fromJson(propertyValue, ImageComments.class);
 		} catch (JsonSyntaxException ex) {
+			ex.printStackTrace();
 			log.debug("Unable to read image comments property. Trying to read legacy format.");
 			try {
 				LegacyImageComments legacyComments = gson.fromJson(JSON_HEADER + propertyValue + JSON_TAIL,
 						LegacyImageComments.class);
 				ImageComments newComments = new ImageComments();
+				log.debug("Legacy comments found:");
 				legacyComments.comments.entrySet().stream().forEach(e -> {
-					// newComments.setComment(e.getKey(), new ExtImageComment(e.getValue()));
-					System.err.println(e.getKey() + " - " + e.getValue());
-
+					//newComments.comments.add(new ImageComment(propertyValue, propertyValue, propertyValue))
+					log.debug("\t" + e.getKey() + " - " + e.getValue()); 
 				});
 				return newComments;
 			} catch (JsonSyntaxException ex2) {
