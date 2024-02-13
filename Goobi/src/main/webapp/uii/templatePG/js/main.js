@@ -1,4 +1,5 @@
 import './modules/gwAjaxLoader';
+import './modules/gwConfigFileEditor';
 import './modules/gwFocusOnLoad';
 import './modules/gwHandleTooltip';
 import './modules/gwInitTooltips';
