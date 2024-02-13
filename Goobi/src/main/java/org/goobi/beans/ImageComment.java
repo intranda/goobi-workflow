@@ -1,5 +1,9 @@
 package org.goobi.beans;
 
+import java.util.Date;
+
+import lombok.AllArgsConstructor;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -20,13 +24,19 @@ package org.goobi.beans;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class ImageComment {
 
     private Integer processId;
     private String comment;
     private String imageName;
     private String imageFolder;
-
+    private Date creationDate;
+    private String userName;
+    private String step;
+    private String location;
+    
+    @Deprecated(forRemoval = true, since = "2024-02-12")
     public ImageComment(String imageFolder, String imageName, String comment) {
 
         this.imageFolder = imageFolder;

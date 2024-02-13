@@ -37,6 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,6 +68,7 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.AltoChange;
+import org.goobi.beans.ImageComment;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.SimpleAlto;
@@ -5083,7 +5085,11 @@ public class Metadaten implements Serializable {
             return null;
         }
 
-        return getCommentPropertyHelper().getComment(currentTifFolder, getImage().getImageName());
+        Optional<ImageComment> comment = getCommentPropertyHelper().getComment(currentTifFolder, getImage().getImageName());
+        if (!comment.isPresent()) {
+        	return null;
+        }
+        return comment.get().getComment();
     }
 
     public void setCommentPropertyForImage(String comment) {
@@ -5096,8 +5102,10 @@ public class Metadaten implements Serializable {
         if (comment == null || (oldComment != null && comment.contentEquals(oldComment)) || (oldComment == null && comment.isBlank())) {
             return;
         }
+        
+        ImageComment newComment = new ImageComment(myProzess.getId(), comment, getImage().getImageName(), currentTifFolder, new Date(), Helper.getCurrentUser().getLogin(), "", "Metadata");
 
-        getCommentPropertyHelper().setComment(currentTifFolder, getImage().getImageName(), comment);
+        getCommentPropertyHelper().setComment(currentTifFolder, getImage().getImageName(), newComment);
     }
 
     // =========================== Use ImageCommentPropertyHelper To Save Comments =========================== //
