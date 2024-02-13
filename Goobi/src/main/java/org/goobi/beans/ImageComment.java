@@ -27,7 +27,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ImageComment {
-
+	public static final String METADATA_EDITOR = "METS Editor";
+	public static final String IMAGEQA_PLUGIN = "ImageQA";
+	public static final String LAYOUT_WIZARD = "Layout Wizard";
+	
     private Integer processId;
     private String comment;
     private String imageName;
@@ -47,5 +50,21 @@ public class ImageComment {
 
     public String getLocalizedFormatedDate() {
         return Helper.getDateAsLocalizedFormattedString(creationDate);
+    }
+    
+    public String getStyleClass() {
+    	if (location == null) {
+    		return null;
+    	}
+    	switch (location) {
+    	case METADATA_EDITOR:
+    		return "badge badge-intranda-blue";
+    	case IMAGEQA_PLUGIN:
+    		return "badge badge-intranda-red";
+    	case LAYOUT_WIZARD:
+    		return "badge badge-intranda-green";
+    	default:
+    		return "badge badge-intranda-light";
+    	}
     }
 }

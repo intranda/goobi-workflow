@@ -5103,7 +5103,7 @@ public class Metadaten implements Serializable {
             return;
         }
         
-        ImageComment newComment = new ImageComment(myProzess.getId(), comment, getImage().getImageName(), currentTifFolder, new Date(), Helper.getCurrentUser().getLogin(), "", "Metadata");
+        ImageComment newComment = new ImageComment(myProzess.getId(), comment, getImage().getImageName(), currentTifFolder, new Date(), Helper.getCurrentUser().getLogin(), "", ImageComment.METADATA_EDITOR);
 
         getCommentPropertyHelper().setComment(currentTifFolder, getImage().getImageName(), newComment);
     }
