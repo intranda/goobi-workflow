@@ -131,6 +131,7 @@
                     <nodeVersion>v21.2.0</nodeVersion>
                     <npmVersion>10.2.3</npmVersion>
                     <workingDirectory>../src/main/webapp/</workingDirectory>
+                    <installDirectory>target</installDirectory>
                 </configuration>
             </plugin>
             <!-- get git version number -->
