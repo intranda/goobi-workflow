@@ -20,7 +20,7 @@ function reloadAllHandler() {
         $('#rowIndex').val(currIndex);
         $('#rowType').val(currType);
     });
-    
+
     $( 'body' ).on( 'click', 'a[id*="danteIndexTrigger-"]', function() {
         var currIndex = $( this ).attr( 'data-row' );
         var currType = $( this ).attr( 'data-datatype' );
@@ -28,12 +28,12 @@ function reloadAllHandler() {
         $( '#rowIndex' ).val( currIndex );
         $( '#groupIndex' ).val( currGroup );
         $( '#rowType' ).val( currType );
-        
+
         $('#resultList').empty();
         $('#danteInput').val('');
         $('#updatePluginButton').click();
     } );
-    
+
     $( 'body' ).on( 'click', 'a[id*="processIndexTrigger-"]', function() {
         var currIndex = $( this ).attr( 'data-row' );
         var currType = $( this ).attr( 'data-datatype' );
@@ -43,7 +43,7 @@ function reloadAllHandler() {
         $( '#rowType' ).val( currType );
         $('#updatePluginButton').click();
     } );
-    
+
     $( 'body' ).on( 'click', 'a[id*="viafIndexTrigger-"]', function() {
         var currIndex = $( this ).attr( 'data-row' );
         var currType = $( this ).attr( 'data-datatype' );
@@ -130,8 +130,8 @@ function scrollToThumbnail() {
     var useScroll = document.getElementById('menu-form:scrollToThumb').value;
     var shallScroll = '#{NavigationForm.uiStatus.mets_scrollToThumb}';
 
-    if (shallScroll == 'true' & amp;& amp; useScroll == "true") {
-        if (thumb != null & amp;& amp; thumb.position() != null) {
+    if (shallScroll == 'true' && useScroll == "true") {
+        if (thumb != null && thumb.position() != null) {
             var thumbScroll = thumb.position().top;
             $(document).scrollTop(thumbScroll - 22);
         } else {

@@ -255,7 +255,7 @@ const setup = function setupResizableTables() {
     }
 };
 
-const gwResizableTable = (() => {
+export default gwResizableTable = (() => {
     function init() {
         setup();
     }

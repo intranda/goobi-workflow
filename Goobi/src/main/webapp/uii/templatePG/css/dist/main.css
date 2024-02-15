@@ -1177,8 +1177,7 @@ a:focus, a:hover, a:active {
   }
   #navigation #navbarSupportedContent .dropdown-menu[data-bs-popper] {
     margin-top: 0;
-    left: -1px;
-    /* align dropdown + menu icon */
+    left: -1px; /* align dropdown + menu icon */
   }
 }
 .header__bottom {
@@ -2974,5 +2973,3 @@ body .ui-messages > div {
 .monthly-processes {
   height: 300px;
 }
-
-/*# sourceMappingURL=main.css.map */

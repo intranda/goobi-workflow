@@ -376,31 +376,21 @@
          // ]]>
         </script>
 
+        <script src="../dist/js/main.js?v=#{HelperForm.buildVersion}" />
+
         <!--Show and hide help messages-->
         <!--toggle_help is the legacy name for this function, it is used in most views, use gwToggleHelp.init in new markup-->
-        <script src="templatePG/js/modules/gwToggleHelp.js?v=#{HelperForm.buildVersion}" />
         <script>
-            const toggle_help = gwToggleHelp.init;
+          gwToggleHelp.init;
+          //Show and hide goobi ajax loader
+          gwAjaxLoader.init();
+          //TOOLTIPS
+          //Initialize Bootstrap tooltips
+          gwInitTooltips.init();
+          //Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)
+          gwResizableTable.init();
+          gwFocusOnLoad.init();
         </script>
-
-        <!--Show and hide goobi ajax loader-->
-        <script src="templatePG/js/modules/gwAjaxLoader.js?v=#{HelperForm.buildVersion}" />
-        <script>
-            gwAjaxLoader.init();
-        </script>
-
-        <!--TOOLTIPS-->
-        <!--Initialize Bootstrap tooltips-->
-        <script src="templatePG/js/modules/gwInitTooltips.js?v=#{HelperForm.buildVersion}" />
-        <script>
-            gwInitTooltips.init();
-        </script>
-
-        <!--Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)-->
-        <script src="templatePG/js/modules/gwHandleTooltip.js"></script>
-
-        <script src="templatePG/js/modules/gwResizableTable.js" />
-        <script>gwResizableTable.init();</script>
 
     </f:view>
 </h:body>

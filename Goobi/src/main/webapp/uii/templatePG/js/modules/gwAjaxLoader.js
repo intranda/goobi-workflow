@@ -1,8 +1,8 @@
-/** @description Show and hide goobi's ajaxLoader (∞). 
+/** @description Show and hide goobi's ajaxLoader (∞).
  */
-var gwAjaxLoader = ( function() {
+export default gwAjaxLoader = ( function() {
     'use strict';
-    
+
     var _debug = false;
     var _defaultSelector = '#ajaxloader';
 
@@ -11,7 +11,7 @@ var gwAjaxLoader = ( function() {
 
       // listen for jsf ajax envents
       jsf.ajax.addOnEvent((data) => _handleAjaxLoader(data, selector = _defaultSelector))
-      
+
     }
 
     function _handleAjaxLoader(data, selector) {

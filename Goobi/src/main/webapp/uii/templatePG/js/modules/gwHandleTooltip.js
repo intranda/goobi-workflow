@@ -2,7 +2,7 @@
  * @description Destroy tooltips on ajax call and initialize a new one if ajax call is done.
  *
  */
-var gwHandleTooltip = ( function() {
+export default gwHandleTooltip = ( function() {
     'use strict';
 
     var _debug = false;

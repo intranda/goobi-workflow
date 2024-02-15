@@ -1,15 +1,15 @@
 /**
  * @description Contains functions used in the navigation: `inc_menu.xhtml`, `inc_menu_main.xhtml` and `inc_menu_preferences.xhtml`.
- * 
+ *
  */
-var gwNavigation = ( function() {
+export default gwNavigation = ( function() {
     'use strict';
-    
+
     var _debug = false;
 
 
     /**
-    * LOCALE SWITCHER: Show and hide tooltips 
+    * LOCALE SWITCHER: Show and hide tooltips
     */
     function toggleLangTooltip(target) {
       if (_debug) console.log('%c### called gwNavigation.toggleLangTooltip.js ###', 'color: #368ee0')
