@@ -26,9 +26,10 @@ const legacySources = {
 }
 const sources = {
     bsCss: 'uii/templatePG/css/src/bootstrap.scss',
-    css: [
-        'uii/templatePG/css/src/main.scss',
-        'uii/templatePG/css/src/accessibility.scss'
+    css: 'uii/templatePG/css/src/',
+    cssGlob: [
+        'uii/templatePG/css/src/',
+        '!uii/templatePG/css/src/bootstrap.scss'
     ],
     cssDeps: [
         'node_modules/bootstrap/scss/',
@@ -88,9 +89,10 @@ function devLess() {
 
 function BSCss() {
     return src(sources.bsCss)
-        .pipe(sass({
-            includePaths: sources.cssDeps
-        }).on('error', sass.logError))
+        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(rename((path) => {
+            basename: path.basename += '.min'
+        }))
 };
 
 function prodBSCss() {
@@ -104,14 +106,22 @@ function devBSCss() {
 };
 
 function devCss() {
-    return src(sources.css)
+    return src(`${sources.css}main.scss`)
         .pipe(sass().on('error', sass.logError))
+        .pipe(rename((path) => {
+            basename: path.basename += '.min'
+        }))
         .pipe(dest(`${customLocation}${targetFolder.css}`));
 };
 
 function prodCss() {
-    return src(sources.css)
-        .pipe(sass().on('error', sass.logError))
+    return src(`${sources.css}main.scss`)
+        .pipe(sourcemaps.init())
+        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sourcemaps.write())
+        .pipe(rename((path) => {
+            basename: path.basename += '.min'
+        }))
         .pipe(dest(targetFolder.css));
 };
 
@@ -177,7 +187,7 @@ exports.dev = function() {
     watch(legacySources.js, { ignoreInitial: false }, devJsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
-    watch(sources.css, { ignoreInitial: false }, devCss);
+    watch(sources.cssGlob, { ignoreInitial: false }, devCss);
     watch(sources.static, { ignoreInitial: false }, static);
 };
 exports.prod = parallel(prodJsLegacy, prodJsRollup, prodBSCss, prodCss, prodLess);
