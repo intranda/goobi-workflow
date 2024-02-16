@@ -87,10 +87,12 @@ import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.ProcessTitleGenerator;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.XmlTools;
+import de.sub.goobi.helper.enums.ManipulationType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -300,7 +302,6 @@ public class ProzesskopieForm implements Serializable {
         this.bHelper.SchritteKopieren(this.prozessVorlage, this.prozessKopie);
         this.bHelper.ScanvorlagenKopieren(this.prozessVorlage, this.prozessKopie);
         this.bHelper.WerkstueckeKopieren(this.prozessVorlage, this.prozessKopie);
-        //        this.bHelper.EigenschaftenKopieren(this.prozessVorlage, this.prozessKopie);
 
         configuredProperties = PropertyParser.getInstance().getProcessCreationProperties(prozessKopie, prozessVorlage.getTitel());
 
@@ -1590,7 +1591,6 @@ public class ProzesskopieForm implements Serializable {
             }
 
         }
-        StringBuilder titleBuilder = new StringBuilder();
         String titeldefinition = "";
         ConfigProjects cp = ProzesskopieForm.initializeConfigProjects(this.prozessVorlage.getProjekt().getTitel());
         if (cp == null) {
@@ -1640,14 +1640,17 @@ public class ProzesskopieForm implements Serializable {
         }
 
         StringTokenizer tokenizer = new StringTokenizer(titeldefinition, "+");
+        ProcessTitleGenerator gen = new ProcessTitleGenerator();
+        gen.setSeparator("");
         /* jetzt den Bandtitel parsen */
         while (tokenizer.hasMoreTokens()) {
             String myString = tokenizer.nextToken();
+
             /*
              * wenn der String mit ' anfängt und mit ' endet, dann den Inhalt so übernehmen
              */
             if (myString.startsWith("'") && myString.endsWith("'")) {
-                titleBuilder.append(myString.substring(1, myString.length() - 1));
+                gen.addToken(myString.substring(1, myString.length() - 1), ManipulationType.NORMAL);
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (AdditionalField myField : this.additionalFields) {
@@ -1664,12 +1667,12 @@ public class ProzesskopieForm implements Serializable {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        titleBuilder.append(calcProcesstitelCheck(myField.getTitel(), myField.getWert()));
+                        gen.addToken(calcProcesstitelCheck(myField.getTitel(), myField.getWert()), ManipulationType.NORMAL);
                     }
                 }
             }
         }
-        String newTitle = titleBuilder.toString();
+        String newTitle = gen.generateTitle();
         if (newTitle.endsWith("_")) {
             newTitle = newTitle.substring(0, newTitle.length() - 1);
         }
