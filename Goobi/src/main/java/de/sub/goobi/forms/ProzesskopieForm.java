@@ -251,6 +251,7 @@ public class ProzesskopieForm implements Serializable {
     public String prepare() {
 
         currentCatalogue = null;
+        opacKatalog = "";
         atstsl = "";
         opacSuchbegriff = "";
         this.guessedImages = 0;
@@ -816,17 +817,18 @@ public class ProzesskopieForm implements Serializable {
      * 
      * @param processName title that has already been used by some process
      */
+    @SuppressWarnings("unused")
     private void printExistingProcessInfos(String processName) {
         if (StringUtils.isBlank(processName)) {
             return;
         }
 
-        Process existingProcess = ProcessManager.getProcessByExactTitle(processName);
+        Process currentProcess = ProcessManager.getProcessByExactTitle(processName);
 
         // basic infos
-        String processTitle = existingProcess.getTitel();
-        String creationDate = existingProcess.getErstellungsdatumAsString();
-        String projectName = existingProcess.getProjekt().getTitel();
+        String processTitle = currentProcess.getTitel();
+        String creationDate = currentProcess.getErstellungsdatumAsString();
+        String projectName = currentProcess.getProjekt().getTitel();
         StringBuilder basicBuilder = new StringBuilder("BASIC INFOS OF THE EXISTING PROCESS:\n");
         basicBuilder.append("process title: ").append(processTitle).append("\n");
         basicBuilder.append("creation date: ").append(creationDate).append("\n");
@@ -834,7 +836,7 @@ public class ProzesskopieForm implements Serializable {
         Helper.setFehlerMeldung(basicBuilder.toString());
 
         // infos of steps
-        List<Step> processSteps = existingProcess.getSchritte();
+        List<Step> processSteps = currentProcess.getSchritte();
         StringBuilder stepBuilder = new StringBuilder("LIST OF STEPS AND THEIR STATUS:\n");
         for (Step step : processSteps) {
             int stepId = step.getReihenfolge();
@@ -848,7 +850,7 @@ public class ProzesskopieForm implements Serializable {
         Helper.setFehlerMeldung(stepBuilder.toString());
 
         // journal entries
-        List<JournalEntry> journalEntries = existingProcess.getJournal();
+        List<JournalEntry> journalEntries = currentProcess.getJournal();
         StringBuilder journalBuilder = new StringBuilder("LIST OF JOURNAL ENTRIES:\n");
         for (JournalEntry entry : journalEntries) {
             String entryDate = entry.getFormattedCreationDate();
