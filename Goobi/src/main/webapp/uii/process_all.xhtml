@@ -1114,7 +1114,7 @@
 
 															<!-- CREATE PROCESS - ONE PROJECT -->
 															<button
-																class="btn fa fa-file-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'} button-schaltknopf"
+																class="btn #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'} button-schaltknopf"
 																jsf:action="#{ProzesskopieForm.prepare}"
 																jsf:id="action22"
 																jsf:rel="tooltip"
@@ -1127,6 +1127,7 @@
 					                                              }"
 																jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and
                                                                 ProzesskopieForm.availableProjects.size() eq 1 and ProzesskopieForm.availableProjects.get(0).getTitel() == item.projekt.titel}">
+																<span class="fa fa-file-o" />
 																<x:updateActionListener
 																	property="#{ProzesskopieForm.prozessVorlage}"
 																	value="#{item}" />
@@ -1147,11 +1148,12 @@
 																	<div class="btn-group position-static">
 																		<button
 																			jsf:id="copyProcessTempalte"
-																			class="btn fa fa-file-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
+																			class="btn #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
 																			aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
 																			data-bs-toggle="tooltip"
 																			jsf:action="#{ProzesskopieForm.prepare}"
 																			jsf:rel="tooltip">
+																			<span class="fa fa-file-o" />
 																			<x:updateActionListener
 																				property="#{ProzesskopieForm.prozessVorlage}"
 																				value="#{item}" />
@@ -1191,7 +1193,7 @@
 
 															<!-- MASS IMPORT - ONE PROJECT -->
 															<button
-																class="btn fa fa-files-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'} button-schaltknopf"
+																class="btn fa #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'} button-schaltknopf"
 																jsf:action="#{MassImportForm.prepare}"
 																jsf:id="action222"
 																jsf:rel="tooltip"
@@ -1204,6 +1206,7 @@
 																onclick="preventDoubleSubmit(this);"
 																jsf:rendered="#{(ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and
                                                                 ProzesskopieForm.availableProjects.size() eq 1 and ProzesskopieForm.availableProjects.get(0).getTitel() == item.projekt.titel)}">
+																<span class="fa fa-files-o" />
 																<x:updateActionListener
 																	property="#{MassImportForm.template}"
 																	value="#{item}" />
