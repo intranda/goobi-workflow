@@ -5087,7 +5087,7 @@ public class Metadaten implements Serializable {
 
         Optional<ImageComment> comment = getCommentPropertyHelper().getComment(currentTifFolder, getImage().getImageName());
         if (!comment.isPresent()) {
-        	return null;
+            return null;
         }
         return comment.get().getComment();
     }
@@ -5102,8 +5102,15 @@ public class Metadaten implements Serializable {
         if (comment == null || (oldComment != null && comment.contentEquals(oldComment)) || (oldComment == null && comment.isBlank())) {
             return;
         }
-        
-        ImageComment newComment = new ImageComment(myProzess.getId(), comment, getImage().getImageName(), currentTifFolder, new Date(), Helper.getCurrentUser().getLogin(), "", ImageComment.METADATA_EDITOR);
+
+        ImageComment newComment = new ImageComment(
+                comment,
+                getImage().getImageName(),
+                currentTifFolder,
+                new Date(),
+                Helper.getCurrentUser().getLogin(),
+                "",
+                ImageComment.ImageCommentLocation.METS_EDITOR);
 
         getCommentPropertyHelper().setComment(currentTifFolder, getImage().getImageName(), newComment);
     }

@@ -18,8 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * class used to replace the ImageCommentHelper to save image comments as
- * process properties
+ * class used to replace the ImageCommentHelper to save image comments as process properties
  * 
  * @author zehong
  *
@@ -27,112 +26,107 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RequiredArgsConstructor
 public class ImageCommentPropertyHelper {
-	private static final String IMAGE_COMMENTS_PROPERTY_NAME = "image_comments";
-	private static final String ERROR_MESSAGE_FOR_NULL_FOLDER_NAME = "folderName should not be null";
-	private static final String ERROR_MESSAGE_FOR_NULL_IMAGE_NAME = "imageName should not be null";
+    private static final String IMAGE_COMMENTS_PROPERTY_NAME = "image_comments";
+    private static final String ERROR_MESSAGE_FOR_NULL_FOLDER_NAME = "folderName should not be null";
+    private static final String ERROR_MESSAGE_FOR_NULL_IMAGE_NAME = "imageName should not be null";
 
-	private Gson gson = new Gson();
+    private Gson gson = new Gson();
 
-	@NonNull
-	private Process process;
+    @NonNull
+    private Process process;
 
-	
-	public Optional<ImageComment> getComment(String folderName, String imageName) {
-		if (folderName == null) {
-			log.error(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
-			throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
-		}
-		if (imageName == null) {
-			log.error(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
-			throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
-		}
-		
-		return loadImageComments().comments.stream()
-				.filter(c -> c.getImageFolder().equals(folderName) && c.getImageName().equals(imageName))
-				.findFirst();
-	}
+    public Optional<ImageComment> getComment(String folderName, String imageName) {
+        if (folderName == null) {
+            log.error(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
+            throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
+        }
+        if (imageName == null) {
+            log.error(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
+            throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
+        }
 
-	public void setComment(String folderName, String imageName, ImageComment comment) {
-		if (folderName == null) {
-			log.error(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
-			throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
-		}
-		if (imageName == null) {
-			log.error(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
-			throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
-		}
-		
-		ImageComments ic = loadImageComments();
-		// TODO: Replace
-		ic.comments.add(comment);
+        return loadImageComments().comments.stream()
+                .filter(c -> c.getImageFolder().equals(folderName) && c.getImageName().equals(imageName))
+                .findFirst();
+    }
 
-		saveImageComments(ic);
-	}
+    public void setComment(String folderName, String imageName, ImageComment comment) {
+        if (folderName == null) {
+            log.error(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
+            throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
+        }
+        if (imageName == null) {
+            log.error(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
+            throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
+        }
 
-	public List<ImageComment> getCommentsForFolder(String folderName) {
-		if (folderName == null) {
-			log.error(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
-			throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
-		}
-		
-		return loadImageComments().comments.stream()
-				.filter(c -> c.getImageFolder().equals(folderName))
-				.collect(Collectors.toList());
-	}
+        ImageComments ic = loadImageComments();
+        removeExistingCommentsForImage(ic, folderName, imageName);
+        ic.comments.add(comment);
 
-	public List<ImageComment> getAllComments() {
-		return loadImageComments().comments;
-	}
-	
-	private ImageComments loadImageComments() {
-		Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_PROPERTY_NAME);
-		ImageComments comments = loadImageCommentsFromProcessProperty(currentProperty);
-		return comments;
-	}
-	
-	private void saveImageComments(ImageComments ic) {
-		Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_PROPERTY_NAME);
-		String newPropertyValue = createPropertyValue(ic);
-		log.debug("newPropertyValue = " + newPropertyValue);
-		currentProperty.setWert(newPropertyValue);
-		PropertyManager.saveProcessProperty(currentProperty);
-	}
-	
-	private String createPropertyValue(ImageComments comments) {
-		return gson.toJson(comments, ImageComments.class);
-	}
+        saveImageComments(ic);
+    }
 
-	private Processproperty prepareProcessproperty(String propertyTitle) {
-		List<Processproperty> props = PropertyManager.getProcessPropertiesForProcess(process.getId());
-		for (Processproperty p : props) {
-			if (propertyTitle.equals(p.getTitel())) {
-				return p;
-			}
-		}
+    private void removeExistingCommentsForImage(ImageComments imageComments, String folderName, String imageName) {
+        List<ImageComment> commentsToDelete = imageComments.comments.stream()
+                .filter(ic -> ic.getImageFolder().equals(folderName) && ic.getImageName().equals(imageName))
+                .collect(Collectors.toList());
+        imageComments.comments.removeAll(commentsToDelete);
+    }
 
-		// no such property exists, create a new one
-		Processproperty property = new Processproperty();
-		property.setProcessId(process.getId());
-		property.setTitel(propertyTitle);
-		return property;
-	}
+    public List<ImageComment> getAllComments() {
+        return loadImageComments().comments;
+    }
 
-	private ImageComments loadImageCommentsFromProcessProperty(Processproperty property) {
-		String propertyValue = property.getWert();
-		if (propertyValue == null) {
-			return new ImageComments();
-		}
+    private ImageComments loadImageComments() {
+        Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_PROPERTY_NAME);
+        ImageComments comments = loadImageCommentsFromProcessProperty(currentProperty);
+        return comments;
+    }
 
-		try {
-			return gson.fromJson(propertyValue, ImageComments.class);
-		} catch (JsonSyntaxException ex) {
-			log.error("Unable to read image comments Json property");
-			throw ex;
-		}
-	}
+    private void saveImageComments(ImageComments ic) {
+        Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_PROPERTY_NAME);
+        String newPropertyValue = createPropertyValue(ic);
+        log.debug("newPropertyValue = " + newPropertyValue);
+        currentProperty.setWert(newPropertyValue);
+        PropertyManager.saveProcessProperty(currentProperty);
+    }
 
-	private class ImageComments {
-		private List<ImageComment> comments = new LinkedList<>();
-	}
+    private String createPropertyValue(ImageComments comments) {
+        return gson.toJson(comments, ImageComments.class);
+    }
+
+    private Processproperty prepareProcessproperty(String propertyTitle) {
+        List<Processproperty> props = PropertyManager.getProcessPropertiesForProcess(process.getId());
+        for (Processproperty p : props) {
+            if (propertyTitle.equals(p.getTitel())) {
+                return p;
+            }
+        }
+
+        // no such property exists, create a new one
+        Processproperty property = new Processproperty();
+        property.setProcessId(process.getId());
+        property.setTitel(propertyTitle);
+        return property;
+    }
+
+    private ImageComments loadImageCommentsFromProcessProperty(Processproperty property) {
+        String propertyValue = property.getWert();
+        if (propertyValue == null) {
+            return new ImageComments();
+        }
+
+        try {
+            return gson.fromJson(propertyValue, ImageComments.class);
+        } catch (JsonSyntaxException ex) {
+            log.error("Unable to read image comments Json property");
+            throw ex;
+        }
+    }
+
+    private class ImageComments {
+        private List<ImageComment> comments = new LinkedList<>();
+    }
 
 }

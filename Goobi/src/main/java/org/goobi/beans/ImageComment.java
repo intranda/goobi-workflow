@@ -27,19 +27,24 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ImageComment {
-	public static final String METADATA_EDITOR = "METS Editor";
-	public static final String IMAGEQA_PLUGIN = "ImageQA";
-	public static final String LAYOUT_WIZARD = "Layout Wizard";
-	
-    private Integer processId;
+    private static final String METADATA_EDITOR = "METS Editor";
+    private static final String IMAGEQA_PLUGIN = "ImageQA";
+    private static final String LAYOUT_WIZARD = "Layout Wizard";
+
+    public enum ImageCommentLocation {
+        METS_EDITOR,
+        PLUGIN_IMAGEQA,
+        LAYOUT_WIZARD,
+    }
+
     private String comment;
     private String imageName;
     private String imageFolder;
     private Date creationDate;
     private String userName;
     private String step;
-    private String location;
-    
+    private ImageCommentLocation location;
+
     @Deprecated(forRemoval = true, since = "2024-02-12")
     public ImageComment(String imageFolder, String imageName, String comment) {
 
@@ -51,20 +56,20 @@ public class ImageComment {
     public String getLocalizedFormatedDate() {
         return Helper.getDateAsLocalizedFormattedString(creationDate);
     }
-    
+
     public String getStyleClass() {
-    	if (location == null) {
-    		return null;
-    	}
-    	switch (location) {
-    	case METADATA_EDITOR:
-    		return "badge badge-intranda-blue";
-    	case IMAGEQA_PLUGIN:
-    		return "badge badge-intranda-red";
-    	case LAYOUT_WIZARD:
-    		return "badge badge-intranda-green";
-    	default:
-    		return "badge badge-intranda-light";
-    	}
+        if (location == null) {
+            return null;
+        }
+        switch (location) {
+            case METS_EDITOR:
+                return "badge badge-intranda-blue";
+            case PLUGIN_IMAGEQA:
+                return "badge badge-intranda-red";
+            case LAYOUT_WIZARD:
+                return "badge badge-intranda-green";
+            default:
+                return "badge badge-intranda-light";
+        }
     }
 }
