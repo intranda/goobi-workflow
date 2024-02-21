@@ -495,6 +495,9 @@ public class VariableReplacer {
         for (MatchResult r : findRegexMatches(REGEX_DB_META, inString)) {
             String metadataName = r.group(1);
             String value = MetadataManager.getAllValuesForMetadata(process.getId(), metadataName);
+            if (value == null) {
+                value = "";
+            }
             inString = inString.replace(r.group(), value);
         }
 

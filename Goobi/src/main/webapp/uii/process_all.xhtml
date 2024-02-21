@@ -44,29 +44,13 @@
 			type="text/javascript"
 			src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
 		<script
-			src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}"></script>
+			src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
 
 		<style>
 .CodeMirror {
 	border: 1px solid #ddd;
 }
 </style>
-
-		<!--
-	    <script type="text/javascript">
-        	function switchExpanded(id){
-        		console.log("called by: "+id);
-				var x = document.getElementById(id).getAttribute("aria-expanded");
-				console.log(x)
-				if (x == "true"){
-					x = "false"
-				} else {
-					x = "true"
-				}
-				document.getElementById(id).setAttribute("aria-expanded", x);
-        	}
-        </script>
-        -->
 
 
 		<main id="processAll">
@@ -219,23 +203,24 @@
                                                         sortField="prozesse.titel" />
 
                                                     <!-- CUSTOM COLUMNS HEADER -->
-                                                    <c:forEach
-                                                        items="#{LoginForm.listOfCustomColumns}"
-                                                        var="var">
-                                                        <intranda:columnheader
-                                                            addClass="header__custom-column header__col-m"
-                                                            form="#{ProzessverwaltungForm}"
-                                                            ajaxRender="processAllProcessesBox:myform"
-                                                            value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
-                                                            sortField="#{var}"
-                                                            rendered="#{LoginForm.isDisplaySortfield(var)}" />
-                                                        <intranda:columnheader
-                                                            addClass="header__custom-column header__col-m"
-                                                            sortable="false"
-                                                            value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
-                                                            rendered="#{!LoginForm.isDisplaySortfield(var)}" />
-                                                    </c:forEach>
-
+                                                    <ui:fragment rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                                                        <c:forEach
+                                                            items="#{LoginForm.listOfCustomColumns}"
+                                                            var="var">
+                                                            <intranda:columnheader
+                                                                addClass="header__custom-column header__col-m"
+                                                                form="#{ProzessverwaltungForm}"
+                                                                ajaxRender="processAllProcessesBox:myform"
+                                                                value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
+                                                                sortField="#{var}"
+                                                                rendered="#{LoginForm.isDisplaySortfield(var)}" />
+                                                            <intranda:columnheader
+                                                                addClass="header__custom-column header__col-m"
+                                                                sortable="false"
+                                                                value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
+                                                                rendered="#{!LoginForm.isDisplaySortfield(var)}" />
+                                                        </c:forEach>
+                                                    </ui:fragment>
                                                     <!-- CREATION DATE COLUMN HEADER -->
 													<intranda:columnheader
 														id="date"
@@ -519,8 +504,7 @@
 																						<li
 																							class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																							title="#{msgs.statusGesperrt}"
-																							data-bs-toggle="tooltip"
-																							rel="tooltip"><h:outputText
+																							data-bs-toggle="tooltip"><h:outputText
 																								value="#{step.bearbeitungsstatusEnum.title}"
 																								rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}" /></li>
 																					</h:panelGroup>
@@ -626,21 +610,21 @@
 													</td>
 
 													<!-- CUSTOM COLUMNS -->
-													<c:forEach
-														items="#{LoginForm.listOfCustomColumns}"
-														var="var">
-														<td
-															data-label="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}">
-															<h:outputText value="#{item.getReplacedVariable(var)}" />
-														</td>
-													</c:forEach>
-
+                                                    <ui:fragment rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+    													<c:forEach
+    														items="#{LoginForm.listOfCustomColumns}"
+    														var="var">
+    														<td
+    															data-label="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}">
+    															<h:outputText value="#{item.getReplacedVariable(var)}" />
+    														</td>
+    													</c:forEach>
+                                                    </ui:fragment>
 													<!-- PROCESS DATE -->
 													<td
 														data-label="#{msgs.vorgangsdatum}"
 														jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}">
 														<h:outputText value="#{item.erstellungsdatumAsString}">
-															<!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="date" dateStyle="medium"/> -->
 														</h:outputText>
 													</td>
 
