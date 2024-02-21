@@ -50,18 +50,23 @@ public class ImageCommentPropertyHelper {
                 .findFirst();
     }
 
+    @Deprecated(forRemoval = true, since = "2024-02-21")
     public void setComment(String folderName, String imageName, ImageComment comment) {
-        if (folderName == null) {
+        setComment(comment);
+    }
+
+    public void setComment(ImageComment comment) {
+        if (comment.getImageFolder() == null) {
             log.error(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
             throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_FOLDER_NAME);
         }
-        if (imageName == null) {
+        if (comment.getImageName() == null) {
             log.error(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
             throw new IllegalArgumentException(ERROR_MESSAGE_FOR_NULL_IMAGE_NAME);
         }
 
         ImageComments ic = loadImageComments();
-        removeExistingCommentsForImage(ic, folderName, imageName);
+        removeExistingCommentsForImage(ic, comment.getImageFolder(), comment.getImageName());
         ic.comments.add(comment);
 
         saveImageComments(ic);
