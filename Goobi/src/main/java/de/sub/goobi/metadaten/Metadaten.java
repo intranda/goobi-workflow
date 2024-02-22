@@ -72,6 +72,7 @@ import org.goobi.beans.ImageComment;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.SimpleAlto;
+import org.goobi.beans.Step;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.OrderedKeyMap;
 import org.goobi.production.enums.PluginType;
@@ -207,6 +208,9 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private Process myProzess;
+    @Getter
+    @Setter
+    private Optional<Step> myStep;
     @Getter
     private Prefs myPrefs;
     @Setter
@@ -1534,11 +1538,20 @@ public class Metadaten implements Serializable {
         String parameterDiscardChanges = "discardChanges";
         String parameterOverwriteChanges = "overwriteChanges";
         String parameterProcessId = "ProzesseID";
+        String parameterStepId = "SchrittID";
         String parameterUserId = "BenutzerID";
 
         try {
             Integer id = Integer.valueOf(Helper.getRequestParameter(parameterProcessId));
             this.myProzess = ProcessManager.getProcessById(id);
+
+            String rawStepId = Helper.getRequestParameter(parameterStepId);
+            if (rawStepId == null || "".equals(rawStepId)) {
+                this.myStep = Optional.empty();
+            } else {
+                Integer stepId = Integer.valueOf(rawStepId);
+                this.myStep = myProzess.getSchritte().stream().filter(s -> s.getId() == stepId).findFirst();
+            }
         } catch (NumberFormatException e1) {
             Helper.setFehlerMeldung("error while loading process data " + e1.getMessage());
             log.error(e1);
@@ -5109,7 +5122,7 @@ public class Metadaten implements Serializable {
                 currentTifFolder,
                 new Date(),
                 Helper.getCurrentUser().getNachVorname(),
-                "",
+                myStep.isPresent() ? myStep.get().getTitelLokalisiert() : "",
                 ImageComment.ImageCommentLocation.IMAGE_COMMENT_LOCATION_METADATA_EDITOR);
 
         getCommentPropertyHelper().setComment(newComment);
