@@ -27,14 +27,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ImageComment {
-    private static final String METADATA_EDITOR = "METS Editor";
-    private static final String IMAGEQA_PLUGIN = "ImageQA";
-    private static final String LAYOUT_WIZARD = "Layout Wizard";
-
     public enum ImageCommentLocation {
-        METS_EDITOR,
-        PLUGIN_IMAGEQA,
-        LAYOUT_WIZARD,
+        IMAGE_COMMENT_LOCATION_METADATA_EDITOR,
+        IMAGE_COMMENT_LOCATION_PLUGIN_IMAGEQA,
+        IMAGE_COMMENT_LOCATION_LAYOUT_WIZARD,
     }
 
     private String comment;
@@ -62,11 +58,11 @@ public class ImageComment {
             return null;
         }
         switch (location) {
-            case METS_EDITOR:
+            case IMAGE_COMMENT_LOCATION_METADATA_EDITOR:
                 return "badge badge-light-blue";
-            case PLUGIN_IMAGEQA:
+            case IMAGE_COMMENT_LOCATION_PLUGIN_IMAGEQA:
                 return "badge badge-light-red";
-            case LAYOUT_WIZARD:
+            case IMAGE_COMMENT_LOCATION_LAYOUT_WIZARD:
                 return "badge badge-light-green";
             default:
                 return "badge badge-light-light";

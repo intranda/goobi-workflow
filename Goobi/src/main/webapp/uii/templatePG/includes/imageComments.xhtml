@@ -13,17 +13,15 @@
     <composite:implementation>
                     <div
                         class="#{NavigationForm.uiStatus['imageCommentsBig']?'':''}"
-                        data-scrolldown="true"
-                        style="overflow: auto; width: auto; height: 330px;">
+                        data-scrolldown="true">
                         <h:panelGroup
                             rendered="#{bean.imageComments.size()>0}">
-                            <table style="width: 100%"
-                                class="table table-hover table-bordered">
+                            <table class="table table-hover table-bordered w-100">
                                 <ui:repeat var="entry"
                                     value="#{bean.imageComments}"
                                     varStatus="row">
                                     <h:panelGroup>
-                                        <tr class="row">
+                                        <tr class="first-row">
                                        		<td class="col">
                                        			<h:outputText
 	                                                value="#{entry.getLocalizedFormatedDate()}"
@@ -35,15 +33,15 @@
                                        		</td>
                                             <td class="col">
                                             	<h:outputText
-                                                    value="#{entry.step}"
-                                                    title="#{entry.location}"
+                                                    value="#{entry.step != null and entry.step != '' ? entry.step : msgs[entry.location]}"
+                                                    title="#{entry.step != null and entry.step != '' ? msgs[entry.location] : ''}"
                                                     styleClass="#{entry.styleClass}"
                                                     escape="false" />
                                             </td>
                                             <td class="col">
                                             	<h:outputText
                                                     value="#{entry.imageName}"
-                                                    title="#{entry.imageFolder}"
+                                                    title="#{entry.imageFolder}/#{entry.imageName}"
                                                     escape="false" />
                                             </td>
                                             <td class="col-6">

@@ -5108,11 +5108,11 @@ public class Metadaten implements Serializable {
                 getImage().getImageName(),
                 currentTifFolder,
                 new Date(),
-                Helper.getCurrentUser().getLogin(),
+                Helper.getCurrentUser().getNachVorname(),
                 "",
-                ImageComment.ImageCommentLocation.METS_EDITOR);
+                ImageComment.ImageCommentLocation.IMAGE_COMMENT_LOCATION_METADATA_EDITOR);
 
-        getCommentPropertyHelper().setComment(currentTifFolder, getImage().getImageName(), newComment);
+        getCommentPropertyHelper().setComment(newComment);
     }
 
     // =========================== Use ImageCommentPropertyHelper To Save Comments =========================== //
