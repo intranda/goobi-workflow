@@ -63,13 +63,13 @@ public class ImageComment {
         }
         switch (location) {
             case METS_EDITOR:
-                return "badge badge-intranda-blue";
+                return "badge badge-light-blue";
             case PLUGIN_IMAGEQA:
-                return "badge badge-intranda-red";
+                return "badge badge-light-red";
             case LAYOUT_WIZARD:
-                return "badge badge-intranda-green";
+                return "badge badge-light-green";
             default:
-                return "badge badge-intranda-light";
+                return "badge badge-light-light";
         }
     }
 }
