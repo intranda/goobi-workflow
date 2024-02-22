@@ -56,14 +56,12 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -2077,42 +2075,6 @@ public class MetadatenTest extends AbstractTest {
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         fixture.setCurrentMetadataToPerformSearch(md);
         assertEquals(DisplayType.select, fixture.getCurrentMetadataToPerformSearch().getMetadataDisplaytype());
-    }
-
-    @Test
-    @Ignore("This test has nothing to do with the Metadata, it tests the internal behavior of the ImageCommentPropertyHelper")
-    public void testGetCommentPropertyForImage() throws Exception {
-        List<Processproperty> props = new ArrayList<>();
-
-        PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andStubReturn(props);
-        PowerMock.replayAll();
-
-        Metadaten fixture = initMetadaten();
-        assertEquals("", fixture.getCommentPropertyForImage());
-
-        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
-        assertNotNull(helper);
-
-        // prepare some process property
-        String folderName = process.getImagesTifDirectory(false);
-        String imageName = fixture.getImage().getImageName();
-        String comment = "just some comment";
-
-        Processproperty property = new Processproperty();
-        property.setProcessId(process.getId());
-
-        // prepare title and value for this process property
-        String propertyTitle = Whitebox.invokeMethod(helper, "getPropertyTitle", folderName);
-//        ImageCommentPropertyHelper.ImageComments imageComments = Whitebox.invokeMethod(helper, "getImageComments", property);
-//        imageComments.setComment(imageName, comment);
-//        String propertyValue = Whitebox.invokeMethod(helper, "createPropertyValue", imageComments);
-
-//        property.setTitel(propertyTitle);
-//        property.setWert(propertyValue);
-//        props.add(property);
-
-        assertEquals(comment, fixture.getCommentPropertyForImage());
     }
 
     private Metadaten initMetadaten() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
