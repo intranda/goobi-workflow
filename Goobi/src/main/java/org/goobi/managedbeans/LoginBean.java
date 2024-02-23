@@ -460,10 +460,10 @@ public class LoginBean implements Serializable {
         
         String flowType = config.getOIDCFlowType();
         
-        if (flowType == "ImplicitFlow") {
+        if (flowType.equals("ImplicitFlow")) {
         	openIDIFLogin();        	
         }
-        if (flowType == "AuthorizationCodeFlow") {
+        else if (flowType.equals("AuthorizationCodeFlow")) {
         	openIDACFLogin();        	
         }
         else { // Default case, when FlowType is not set in config file.
