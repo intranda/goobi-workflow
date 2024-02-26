@@ -25,8 +25,12 @@ public class GoobiStringFileComparator implements Comparator<String> {
     @Override
     public int compare(String s1, String s2) {
         // Ignore file extension
-        s1 = s1.substring(0, s1.lastIndexOf(".")).toLowerCase();
-        s2 = s2.substring(0, s2.lastIndexOf(".")).toLowerCase();
+        if (s1.contains(".")) {
+            s1 = s1.substring(0, s1.lastIndexOf(".")).toLowerCase();
+        }
+        if (s2.contains(".")) {
+            s2 = s2.substring(0, s2.lastIndexOf(".")).toLowerCase();
+        }
 
         String[] s1Components = s1.split(DIGIT_NON_DIGIT_SPLIT_REGEX);
         String[] s2Components = s2.split(DIGIT_NON_DIGIT_SPLIT_REGEX);
