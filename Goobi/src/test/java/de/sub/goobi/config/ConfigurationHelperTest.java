@@ -642,7 +642,7 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testGetJobStartTimeForDailyHistoryAnalyser() {
-        assertNull( ConfigurationHelper.getInstance().getJobStartTime("dailyHistoryAnalyser"));
+        assertNull(ConfigurationHelper.getInstance().getJobStartTime("dailyHistoryAnalyser"));
     }
 
     @Test
@@ -1054,11 +1054,6 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testGetImageSorting() {
-        assertEquals("number", ConfigurationHelper.getInstance().getImageSorting());
-    }
-
-    @Test
     public void testGetImagePrefix() {
         assertEquals("\\d{8}", ConfigurationHelper.getInstance().getImagePrefix());
     }
@@ -1211,6 +1206,5 @@ public class ConfigurationHelperTest extends AbstractTest {
     public void testGetPathToIaCli() {
         assertEquals("/usr/local/bin/ia", ConfigurationHelper.getInstance().getPathToIaCli());
     }
-
 
 }

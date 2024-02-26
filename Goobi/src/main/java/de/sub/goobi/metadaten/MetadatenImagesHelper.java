@@ -36,7 +36,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -659,32 +658,6 @@ public class MetadatenImagesHelper {
         return false;
     }
 
-    public static class GoobiImageFileComparator implements Comparator<String> {
-
-        @Override
-        public int compare(String s1, String s2) {
-            String imageSorting = ConfigurationHelper.getInstance().getImageSorting();
-            s1 = s1.substring(0, s1.lastIndexOf("."));
-            s2 = s2.substring(0, s2.lastIndexOf("."));
-
-            if ("number".equalsIgnoreCase(imageSorting)) {
-                try {
-                    Integer i1 = Integer.valueOf(s1);
-                    Integer i2 = Integer.valueOf(s2);
-                    return i1.compareTo(i2);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Cannot compare \"" + s1 + "\" and \"" + s2
-                            + "\". The comparison is configured as a number comparison, but at least one of them is not a number!");
-                }
-            } else if ("alphanumeric".equalsIgnoreCase(imageSorting)) {
-                return s1.compareToIgnoreCase(s2);
-            } else {
-                return s1.compareToIgnoreCase(s2);
-            }
-        }
-
-    }
-
     /**
      * 
      * @param myProzess current process
@@ -703,10 +676,6 @@ public class MetadatenImagesHelper {
 
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageNameFilter);
 
-        /* alle Dateien durchlaufen */
-        if (dateien != null && !dateien.isEmpty()) {
-            Collections.sort(dateien, new GoobiImageFileComparator());
-        }
         return dateien;
 
     }
@@ -730,10 +699,6 @@ public class MetadatenImagesHelper {
 
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
 
-        /* alle Dateien durchlaufen */
-        if (dateien != null && !dateien.isEmpty()) {
-            Collections.sort(dateien, new GoobiImageFileComparator());
-        }
         return dateien;
 
     }
@@ -807,7 +772,6 @@ public class MetadatenImagesHelper {
             if (orderedFilenameList.size() == dateien.size()) {
                 return orderedFilenameList;
             } else {
-                Collections.sort(dateien, new GoobiImageFileComparator());
                 return dateien;
             }
         } else {
