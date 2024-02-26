@@ -1127,10 +1127,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorUseImageTiles", true);
     }
 
-    public String getImageSorting() {
-        return getLocalString("ImageSorting", "number");
-    }
-
     public String getImagePrefix() {
         return getLocalString("ImagePrefix", "\\d{8}");
     }
