@@ -182,7 +182,6 @@ public class GoobiFileComparatorTest {
                     expected = 1;
                 }
 
-                System.err.println("Comparing " + a + " with " + b);
                 int actual = comparator.compare(a, b);
                 if (Math.abs(actual) > 1) {
                     actual /= Math.abs(actual);
