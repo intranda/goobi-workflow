@@ -63,6 +63,29 @@
                         </div>
                     </c:if>
                     <!-- // AREA FOR GUI PLUGINS -->
+                    
+                    <!-- IMAGE COMMENTS -->
+                    <h:panelGroup
+                    	layout="block"
+                    	styleClass="mb-3"
+                    	rendered="#{AktuelleSchritteForm.mySchritt.prozess.imageComments.size()>0}">
+	                    <intranda:box
+	            			boxScope="processLog"
+				            boxType="outline"
+				            boxTitle="false">
+				            <intranda:boxTitle
+				                title="#{msgs.imageComments}"
+				                icon="fa-comment" />
+				            <ui:fragment>
+				            	<ui:include src="templatePG/includes/imageComments.xhtml">
+							        <ui:param
+					                    name="bean"
+					                    value="#{AktuelleSchritteForm.mySchritt.prozess}" />
+			            		</ui:include>
+				            </ui:fragment>
+	            		</intranda:box>
+            		</h:panelGroup>
+        			<!-- // IMAGE COMMENTS -->
 
 
                     <!-- PROPERTIES -->
@@ -128,7 +151,7 @@
                                     value="false" />
                                 <ui:param
                                     name="showImageComments"
-                                    value="true" />
+                                    value="false" />
                                 <ui:param
                                     name="bean"
                                     value="#{AktuelleSchritteForm.mySchritt.prozess}" />

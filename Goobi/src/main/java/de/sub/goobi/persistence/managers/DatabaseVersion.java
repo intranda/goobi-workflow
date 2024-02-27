@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +36,9 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.goobi.beans.ImageComment;
 import org.goobi.beans.Institution;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
@@ -43,15 +46,19 @@ import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
 
+import com.google.gson.Gson;
+
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.metadaten.ImageCommentPropertyHelper;
 import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 55;
+    public static final int EXPECTED_VERSION = 56;
+    private static final Gson GSON = new Gson();
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
@@ -393,9 +400,13 @@ public class DatabaseVersion {
                     log.trace("Update database to version 54.");
                     updateToVersion54();
                     tempVersion++;
-                case 54:
+                case 54: //NOSONAR, no break on purpose to run through all cases
                     log.trace("Update database to version 55.");
                     updateToVersion55();
+                    tempVersion++;
+                case 55: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 55.");
+                    updateToVersion56();
                     tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
@@ -409,6 +420,47 @@ public class DatabaseVersion {
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
         }
+    }
+
+    private static void updateToVersion56() throws Exception {
+        String sql = "SELECT * FROM prozesseeigenschaften WHERE Titel LIKE 'image comments%' AND WERT != '{}'";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            List<Processproperty> properties = new QueryRunner().query(connection, sql, PropertyMysqlHelper.resultSetToPropertyListHandler);
+            performNewImageCommentsPropertySQLInsertStatements(properties);
+            removeLegacyImageComments();
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException exception) {
+                    log.warn(exception);
+                }
+            }
+        }
+    }
+
+    private static void performNewImageCommentsPropertySQLInsertStatements(List<Processproperty> properties) throws SQLException {
+        for (Processproperty p : properties) {
+            createNewImageCommentsProperty(p);
+        }
+    }
+
+    private static void createNewImageCommentsProperty(Processproperty p) throws SQLException {
+        if (!p.getTitel().startsWith("image comments ")) {
+            throw new SQLException("Unable to parse legacy image comments folder name");
+        }
+        String imageFolder = p.getTitel().substring(15);
+        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(p.getProzess());
+        Map<String, String> legacyComments = GSON.fromJson(p.getWert(), Map.class);
+        legacyComments.entrySet()
+                .stream()
+                .forEach(lc -> helper.setComment(new ImageComment(imageFolder, lc.getKey(), lc.getValue())));
+    }
+
+    private static void removeLegacyImageComments() throws SQLException {
+        DatabaseVersion.runSql("DELETE FROM prozesseeigenschaften WHERE Titel LIKE 'image comments %';");
     }
 
     private static void updateToVersion55() {

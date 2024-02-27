@@ -1,5 +1,10 @@
 package org.goobi.beans;
 
+import java.util.Date;
+
+import de.sub.goobi.helper.Helper;
+import lombok.AllArgsConstructor;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -20,13 +25,23 @@ package org.goobi.beans;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class ImageComment {
+    public enum ImageCommentLocation {
+        IMAGE_COMMENT_LOCATION_METADATA_EDITOR,
+        IMAGE_COMMENT_LOCATION_PLUGIN_IMAGEQA,
+        IMAGE_COMMENT_LOCATION_LAYOUT_WIZARD,
+    }
 
-    private Integer processId;
     private String comment;
     private String imageName;
     private String imageFolder;
+    private Date creationDate;
+    private String userName;
+    private String step;
+    private ImageCommentLocation location;
 
+    @Deprecated(forRemoval = true, since = "2024-02-12")
     public ImageComment(String imageFolder, String imageName, String comment) {
 
         this.imageFolder = imageFolder;
@@ -34,4 +49,23 @@ public class ImageComment {
         this.comment = comment;
     }
 
+    public String getLocalizedFormatedDate() {
+        return Helper.getDateAsLocalizedFormattedString(creationDate);
+    }
+
+    public String getStyleClass() {
+        if (location == null) {
+            return null;
+        }
+        switch (location) {
+            case IMAGE_COMMENT_LOCATION_METADATA_EDITOR:
+                return "badge badge-light-blue";
+            case IMAGE_COMMENT_LOCATION_PLUGIN_IMAGEQA:
+                return "badge badge-light-red";
+            case IMAGE_COMMENT_LOCATION_LAYOUT_WIZARD:
+                return "badge badge-light-green";
+            default:
+                return "badge badge-light-light";
+        }
+    }
 }

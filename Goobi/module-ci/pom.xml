@@ -149,7 +149,7 @@
                  --add-opens java.desktop/java.awt=ALL-UNNAMED
                  --add-opens java.logging/java.util.logging=ALL-UNNAMED  
                  --add-opens java.base/java.util=ALL-UNNAMED
-
+				--add-opens java.base/jdk.internal.loader=ALL-UNNAMED
             </argLine>
                     
                     <skipTests>${skipTests}</skipTests>

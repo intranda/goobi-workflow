@@ -86,7 +86,7 @@ class PropertyMysqlHelper implements Serializable {
 
     }
 
-    private static final ResultSetHandler<Processproperty> resultSetToPropertyHandler = new ResultSetHandler<Processproperty>() {
+    private static final ResultSetHandler<Processproperty> resultSetToPropertyHandler = new ResultSetHandler<>() {
         @Override
         public Processproperty handle(ResultSet resultSet) throws SQLException {
             try {
@@ -100,7 +100,7 @@ class PropertyMysqlHelper implements Serializable {
         }
     };
 
-    private static final ResultSetHandler<List<Processproperty>> resultSetToPropertyListHandler = new ResultSetHandler<List<Processproperty>>() {
+    public static final ResultSetHandler<List<Processproperty>> resultSetToPropertyListHandler = new ResultSetHandler<>() {
         @Override
         public List<Processproperty> handle(ResultSet resultSet) throws SQLException {
             List<Processproperty> properties = new ArrayList<>();
@@ -116,7 +116,7 @@ class PropertyMysqlHelper implements Serializable {
     };
 
     private static final ResultSetHandler<List<Templateproperty>> resultSetToTemplatePropertyListHandler =
-            new ResultSetHandler<List<Templateproperty>>() {
+            new ResultSetHandler<>() {
                 @Override
                 public List<Templateproperty> handle(ResultSet resultSet) throws SQLException {
                     List<Templateproperty> properties = new ArrayList<>();
@@ -132,7 +132,7 @@ class PropertyMysqlHelper implements Serializable {
             };
 
     private static final ResultSetHandler<List<Masterpieceproperty>> resultSetToMasterpiecePropertyListHandler =
-            new ResultSetHandler<List<Masterpieceproperty>>() {
+            new ResultSetHandler<>() {
                 @Override
                 public List<Masterpieceproperty> handle(ResultSet resultSet) throws SQLException {
                     List<Masterpieceproperty> properties = new ArrayList<>();
