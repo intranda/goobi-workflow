@@ -1550,7 +1550,7 @@ public class Metadaten implements Serializable {
                 this.myStep = Optional.empty();
             } else {
                 Integer stepId = Integer.valueOf(rawStepId);
-                this.myStep = myProzess.getSchritte().stream().filter(s -> s.getId() == stepId).findFirst();
+                this.myStep = myProzess.getSchritte().stream().filter(s -> s.getId().equals(stepId)).findFirst();
             }
         } catch (NumberFormatException e1) {
             Helper.setFehlerMeldung("error while loading process data " + e1.getMessage());

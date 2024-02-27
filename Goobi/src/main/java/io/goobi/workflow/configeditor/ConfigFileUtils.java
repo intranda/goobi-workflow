@@ -141,7 +141,7 @@ public abstract class ConfigFileUtils {
         try {
             directory = xml.getString(element);
         } catch (Exception exception) {
-            exception.printStackTrace();
+            log.error(exception);
         }
         // No directory with this index found, loop breaks to look for further directories
         if (directory == null || directory.length() == 0) {
@@ -257,7 +257,6 @@ public abstract class ConfigFileUtils {
             Charset charset = ConfigFileUtils.standardCharset;
             return FileUtils.readFileToString(new File(fileName), charset);
         } catch (IOException | IllegalArgumentException ioException) {
-            ioException.printStackTrace();
             String message = "ConfigFileEditorAdministrationPlugin could not read file " + fileName;
             log.error(message);
             Helper.setFehlerMeldung("configFileEditor", message, "");
@@ -284,7 +283,6 @@ public abstract class ConfigFileUtils {
             FileUtils.write(new File(fileName), content, charset);
             Helper.setMeldung("configFileEditor", Helper.getTranslation("savedConfigFileSuccessfully"), "");
         } catch (IOException | IllegalArgumentException ioException) {
-            ioException.printStackTrace();
             String message = "ConfigFileEditorAdministrationPlugin could not write file " + fileName;
             log.error(message);
             Helper.setFehlerMeldung("configFileEditor", message, "");
@@ -296,7 +294,6 @@ public abstract class ConfigFileUtils {
         try {
             StorageProvider.getInstance().createFile(path);
         } catch (IOException ioException) {
-            ioException.printStackTrace();
             log.error("ConfigFileEditorAdministrationPlugin could not create file " + fileName);
         }
     }
@@ -306,7 +303,6 @@ public abstract class ConfigFileUtils {
         try {
             StorageProvider.getInstance().createDirectories(path);
         } catch (IOException ioException) {
-            ioException.printStackTrace();
             log.error("ConfigFileEditorAdministrationPlugin could not create directory " + directoryName);
         }
     }
