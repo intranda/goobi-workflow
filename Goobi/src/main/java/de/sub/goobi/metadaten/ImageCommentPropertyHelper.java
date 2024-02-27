@@ -80,7 +80,16 @@ public class ImageCommentPropertyHelper {
     }
 
     public List<ImageComment> getAllComments() {
-        return loadImageComments().comments;
+        return loadImageComments().comments.stream()
+                .sorted((c1, c2) -> {
+                    int imageCompare = c1.getImageName().compareTo(c2.getImageName());
+                    if (imageCompare != 0) {
+                        return imageCompare;
+                    }
+                    int folderCompare = c1.getImageFolder().compareTo(c2.getImageFolder());
+                    return folderCompare;
+                })
+                .collect(Collectors.toList());
     }
 
     private ImageComments loadImageComments() {
