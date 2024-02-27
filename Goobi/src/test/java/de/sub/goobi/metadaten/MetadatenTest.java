@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -75,6 +76,7 @@ import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
 import ugh.dl.Corporate;
@@ -89,7 +91,7 @@ import ugh.exceptions.ReadException;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, MetadataManager.class,
-        ProcessManager.class, PropertyManager.class })
+        ProcessManager.class, PropertyManager.class, StepManager.class })
 @PowerMockIgnore({ "javax.net.ssl.*" })
 public class MetadatenTest extends AbstractTest {
 
@@ -190,6 +192,10 @@ public class MetadatenTest extends AbstractTest {
         EasyMock.replay(facesContext);
         EasyMock.replay(root);
         EasyMock.replay(application);
+
+        PowerMock.mockStatic(StepManager.class);
+        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(Collections.emptyList());
+        PowerMock.replay(StepManager.class);
 
         prefs = process.getRegelsatz().getPreferences();
     }
