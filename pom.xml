@@ -11,6 +11,13 @@
     <artifactId>workflow-core</artifactId>
     <packaging>war</packaging>
 
+    <repositories>
+        <repository>
+            <id>intranda-public</id>
+            <url>https://nexus.intranda.com/repository/maven-public</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
