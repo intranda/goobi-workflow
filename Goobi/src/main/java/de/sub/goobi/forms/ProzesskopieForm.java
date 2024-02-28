@@ -87,10 +87,12 @@ import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.ProcessTitleGenerator;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.XmlTools;
+import de.sub.goobi.helper.enums.ManipulationType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -249,6 +251,7 @@ public class ProzesskopieForm implements Serializable {
     public String prepare() {
 
         currentCatalogue = null;
+        opacKatalog = "";
         atstsl = "";
         opacSuchbegriff = "";
         this.guessedImages = 0;
@@ -300,7 +303,6 @@ public class ProzesskopieForm implements Serializable {
         this.bHelper.SchritteKopieren(this.prozessVorlage, this.prozessKopie);
         this.bHelper.ScanvorlagenKopieren(this.prozessVorlage, this.prozessKopie);
         this.bHelper.WerkstueckeKopieren(this.prozessVorlage, this.prozessKopie);
-        //        this.bHelper.EigenschaftenKopieren(this.prozessVorlage, this.prozessKopie);
 
         configuredProperties = PropertyParser.getInstance().getProcessCreationProperties(prozessKopie, prozessVorlage.getTitel());
 
@@ -815,17 +817,18 @@ public class ProzesskopieForm implements Serializable {
      * 
      * @param processName title that has already been used by some process
      */
+    @SuppressWarnings("unused")
     private void printExistingProcessInfos(String processName) {
         if (StringUtils.isBlank(processName)) {
             return;
         }
 
-        Process existingProcess = ProcessManager.getProcessByExactTitle(processName);
+        Process currentProcess = ProcessManager.getProcessByExactTitle(processName);
 
         // basic infos
-        String processTitle = existingProcess.getTitel();
-        String creationDate = existingProcess.getErstellungsdatumAsString();
-        String projectName = existingProcess.getProjekt().getTitel();
+        String processTitle = currentProcess.getTitel();
+        String creationDate = currentProcess.getErstellungsdatumAsString();
+        String projectName = currentProcess.getProjekt().getTitel();
         StringBuilder basicBuilder = new StringBuilder("BASIC INFOS OF THE EXISTING PROCESS:\n");
         basicBuilder.append("process title: ").append(processTitle).append("\n");
         basicBuilder.append("creation date: ").append(creationDate).append("\n");
@@ -833,7 +836,7 @@ public class ProzesskopieForm implements Serializable {
         Helper.setFehlerMeldung(basicBuilder.toString());
 
         // infos of steps
-        List<Step> processSteps = existingProcess.getSchritte();
+        List<Step> processSteps = currentProcess.getSchritte();
         StringBuilder stepBuilder = new StringBuilder("LIST OF STEPS AND THEIR STATUS:\n");
         for (Step step : processSteps) {
             int stepId = step.getReihenfolge();
@@ -847,7 +850,7 @@ public class ProzesskopieForm implements Serializable {
         Helper.setFehlerMeldung(stepBuilder.toString());
 
         // journal entries
-        List<JournalEntry> journalEntries = existingProcess.getJournal();
+        List<JournalEntry> journalEntries = currentProcess.getJournal();
         StringBuilder journalBuilder = new StringBuilder("LIST OF JOURNAL ENTRIES:\n");
         for (JournalEntry entry : journalEntries) {
             String entryDate = entry.getFormattedCreationDate();
@@ -1590,7 +1593,6 @@ public class ProzesskopieForm implements Serializable {
             }
 
         }
-        StringBuilder titleBuilder = new StringBuilder();
         String titeldefinition = "";
         ConfigProjects cp = ProzesskopieForm.initializeConfigProjects(this.prozessVorlage.getProjekt().getTitel());
         if (cp == null) {
@@ -1640,14 +1642,17 @@ public class ProzesskopieForm implements Serializable {
         }
 
         StringTokenizer tokenizer = new StringTokenizer(titeldefinition, "+");
+        ProcessTitleGenerator gen = new ProcessTitleGenerator();
+        gen.setSeparator("");
         /* jetzt den Bandtitel parsen */
         while (tokenizer.hasMoreTokens()) {
             String myString = tokenizer.nextToken();
+
             /*
              * wenn der String mit ' anfängt und mit ' endet, dann den Inhalt so übernehmen
              */
             if (myString.startsWith("'") && myString.endsWith("'")) {
-                titleBuilder.append(myString.substring(1, myString.length() - 1));
+                gen.addToken(myString.substring(1, myString.length() - 1), ManipulationType.NORMAL);
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (AdditionalField myField : this.additionalFields) {
@@ -1664,12 +1669,12 @@ public class ProzesskopieForm implements Serializable {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        titleBuilder.append(calcProcesstitelCheck(myField.getTitel(), myField.getWert()));
+                        gen.addToken(calcProcesstitelCheck(myField.getTitel(), myField.getWert()), ManipulationType.NORMAL);
                     }
                 }
             }
         }
-        String newTitle = titleBuilder.toString();
+        String newTitle = gen.generateTitle();
         if (newTitle.endsWith("_")) {
             newTitle = newTitle.substring(0, newTitle.length() - 1);
         }

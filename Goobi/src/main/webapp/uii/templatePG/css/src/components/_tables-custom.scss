@@ -66,7 +66,9 @@
   }
 
   thead {
-    background-color: var(--clr-neutral-200);
+    th {
+      background-color: var(--clr-neutral-200);
+    }
     button {
       background-color: transparent;
       border: 0;
@@ -289,7 +291,10 @@
 
 .gw-table-fixed th button,
 .table-fixed th button,
-.table-resizable th button {
+.table-resizable th button,
+.gw-table th .column-header-sort,
+.table-fixed th .column-header-sort,
+.table-resizable th .column-header-sort {
   display: flex;
   align-items: center;
   justify-content: space-between;

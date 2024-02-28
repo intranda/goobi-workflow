@@ -65,13 +65,13 @@ public class HarvesterBeanTest {
     public void testRepositoryTypes() {
         HarvesterBean fixture = new HarvesterBean();
         assertNotNull(fixture);
-        String[] repositoryTypes  = fixture.getRepositoryTypes();
-        assertEquals(3, repositoryTypes.length);
+        String[] repositoryTypes = fixture.getRepositoryTypes();
+        assertEquals(4, repositoryTypes.length);
         assertEquals("oai", repositoryTypes[0]);
         assertEquals("ia", repositoryTypes[1]);
         assertEquals("ia cli", repositoryTypes[2]);
+        assertEquals("bach", repositoryTypes[3]);
     }
-
 
     @Test
     public void testRepository() {
@@ -84,7 +84,6 @@ public class HarvesterBeanTest {
         assertEquals(1, fixture.getRepository().getId().intValue());
     }
 
-
     @Test
     public void testCreateNewRepository() {
         HarvesterBean fixture = new HarvesterBean();
@@ -93,7 +92,6 @@ public class HarvesterBeanTest {
         assertEquals("repository_edit", fixture.createNewRepository());
         assertNotNull(fixture.getRepository());
     }
-
 
     @Test
     public void testSaveRepository() {
@@ -122,7 +120,6 @@ public class HarvesterBeanTest {
         assertNotNull(fixture);
         assertEquals("repository_all", fixture.filter());
     }
-
 
     @Test
     public void testSpeichern() {

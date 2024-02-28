@@ -34,7 +34,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
@@ -56,7 +55,6 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.CreatePdfFromServletThread;
-import de.sub.goobi.metadaten.MetadatenHelper;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Fileformat;
 import ugh.exceptions.DocStructHasNoTypeException;
@@ -214,7 +212,6 @@ public class ExportPdf extends ExportMets {
             file += data.toUri().toURL();
             filenames.add(file);
         }
-        Collections.sort(filenames, new MetadatenHelper(null, null));
         for (String f : filenames) {
             images.append(f).append("$");
         }

@@ -5,9 +5,10 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:of="http://omnifaces.org/functions"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    template="/uii/template/template.html"
+    template="#{AktuelleSchritteForm.myPlugin.title eq 'intranda_step_replace-images'
+        ? '/uii/templatePG/templatePG.html' : '/uii/template/template.html'}"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
     <ui:param
@@ -54,7 +55,7 @@
     </ui:define>
 
     <ui:define name="content">
-    
+
 		<h:form prependId="false">
 			<h:commandLink id="restPluginFinishLink" action="#{AktuelleSchritteForm.myPlugin.finish}" style="display:none;"></h:commandLink>
             <h:commandLink id="restPluginCloseStepLink" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" style="display:none;"></h:commandLink>
@@ -79,7 +80,7 @@
                 src="/goobi/plugins/#{AktuelleSchritteForm.myPlugin.title}/#{jsPath}"
                 type="text/javascript"></script>
         </c:forEach>
-    
+
     </ui:define>
 
 </ui:composition>

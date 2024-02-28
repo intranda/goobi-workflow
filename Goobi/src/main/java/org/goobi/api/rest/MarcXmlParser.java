@@ -275,6 +275,9 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
                     } else if (c6 == 'a' && c7 == 'b') {
                         // periodical volume
                         isMultiVolume = true;
+                    } else if (c6 == 'a' && c7 == 'a') {
+                        // periodical volume
+                        isMultiVolume = true;
                     }
 
                     if (c19 == 'b' || c19 == 'c') {
@@ -283,7 +286,7 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
                     if (c19 == 'a') {
                         isAnchor = true;
                     }
-                } else if ("controlfield".equalsIgnoreCase(el.getName())) {
+                    //} else if ("controlfield".equalsIgnoreCase(el.getName())) {
 
                 } else if ("datafield".equalsIgnoreCase(el.getName())) {
                     String tag = el.getAttributeValue("tag");
@@ -323,7 +326,7 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
             log.error(e);
         }
 
-        if (isAnchor || (isPeriodical && StringUtils.isBlank(anchorIdentifier))) {
+        if (isAnchor || isPeriodical) {
             // delete anchor records
             try {
                 StorageProvider.getInstance().deleteFile(file);
@@ -332,7 +335,7 @@ public class MarcXmlParser extends MetadataService implements MetadataParser, IR
             }
         }
         // if volume: get anchor id, download anchor file, add anchor record to main file
-        if (isMultiVolume) {
+        if (isMultiVolume || (isPeriodical && StringUtils.isNotBlank(anchorIdentifier))) {
             // if anchor: remove file
             java.nio.file.Path downloadFolder = repository.checkAndCreateDownloadFolder(ConfigurationHelper.getInstance().getTemporaryFolder());
             String query =

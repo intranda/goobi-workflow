@@ -146,13 +146,13 @@ public class LockingBean implements Serializable {
      */
 
     public static void removeOldSessions() {
-        // remove all sessions older than 30 minutes
+        // remove all sessions older than 10 minutes
         if (!lockedSessions.isEmpty()) {
             Map<String, Map<String, String>> copyOfMap = new HashMap<>(lockedSessions);
             for (Entry<String, Map<String, String>> entry : copyOfMap.entrySet()) {
                 Map<String, String> map = entry.getValue();
                 long timestamp = Long.parseLong(map.get(TIMESTAMP));
-                if (timestamp < System.currentTimeMillis() - 30 * 60 * 1000) {
+                if (timestamp < System.currentTimeMillis() - 10 * 60 * 1000) {
                     lockedSessions.remove(entry.getKey());
                 }
             }

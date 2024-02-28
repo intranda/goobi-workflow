@@ -1,10 +1,10 @@
 /**
- * @description Sets focus on the first element with a data attribute of `data-gw-focus-on-load="true"`. 
+ * @description Sets focus on the first element with a data attribute of `data-gw-focus-on-load="true"`.
  * Alternatively an id, class etc. can be passed to query the element.
  */
-var gwFocusOnLoad = ( function() {
+export default gwFocusOnLoad = ( function() {
     'use strict';
-    
+
     var _debug = false;
     var _defaultSelector = '[data-gw-focus-on-load="true"]';
 
@@ -21,17 +21,17 @@ var gwFocusOnLoad = ( function() {
 
         // Debugging
         if(_debug){
-          console.log('%c### Called _setFocus ###', 'color: #368ee0') 
+          console.log('%c### Called _setFocus ###', 'color: #368ee0')
           console.log('selector:', selector)
           console.log('queried element:', el)
 
-        } 
+        }
       }
       catch (error) {
         if (_debug) console.log(error)
       }
     }
-    
+
     return {
       init
     }

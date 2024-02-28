@@ -283,6 +283,15 @@
 									rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
 									icon="fa fa-database" />
 
+                                <!-- Ldapgruppen -->
+                                <intranda:menuItem
+                                    id="aConfigFileEditor"
+                                    parentMenu="menu_administration"
+                                    label="#{msgs.intranda_administration_config_file_editor}"
+                                    action="config_file_editor.xhtml"
+                                    rendered="#{LoginForm.hasRole('Admin_config_file_editor')}"
+                                    icon="fa fa-key" />
+
 
 								<!-- SWAGGER-API -->
 								<intranda:menuItem

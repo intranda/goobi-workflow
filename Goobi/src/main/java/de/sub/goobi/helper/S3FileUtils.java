@@ -363,7 +363,7 @@ public class S3FileUtils implements StorageProviderInterface {
             paths.addAll(nio.listFiles(folder));
         }
 
-        Collections.sort(paths);
+        Collections.sort(paths, new GoobiPathFileComparator());
         return paths;
     }
 
@@ -384,6 +384,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 log.error(e);
             }
         }
+        Collections.sort(filteredObjs, new GoobiPathFileComparator());
         return filteredObjs;
     }
 
@@ -398,6 +399,7 @@ public class S3FileUtils implements StorageProviderInterface {
         for (Path p : objs) {
             strObjs.add(p.getFileName().toString());
         }
+        Collections.sort(strObjs, new GoobiStringFileComparator());
         return strObjs;
     }
 
@@ -412,6 +414,7 @@ public class S3FileUtils implements StorageProviderInterface {
         for (Path p : objs) {
             strObjs.add(p.getFileName().toString());
         }
+        Collections.sort(strObjs, new GoobiStringFileComparator());
         return strObjs;
     }
 
@@ -434,7 +437,7 @@ public class S3FileUtils implements StorageProviderInterface {
         }
 
         List<String> folders = new ArrayList<>(objs);
-        Collections.sort(folders);
+        Collections.sort(folders, new GoobiStringFileComparator());
         return folders;
     }
 
@@ -564,27 +567,25 @@ public class S3FileUtils implements StorageProviderInterface {
                     Thread.currentThread().interrupt();
                 }
             }
+        } else if (getPathStorageType(destFile) == StorageType.S3) {
+            // both on s3 => standard copy on s3
+            Copy copy = transferManager.copy(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
+            try {
+                copy.waitForCompletion();
+            } catch (AmazonClientException e) {
+                throw new IOException(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         } else {
-            if (getPathStorageType(destFile) == StorageType.S3) {
-                // both on s3 => standard copy on s3
-                Copy copy = transferManager.copy(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
-                try {
-                    copy.waitForCompletion();
-                } catch (AmazonClientException e) {
-                    throw new IOException(e);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            } else {
-                // src on s3 and dest local => download file from s3 to local location
-                Download dl = transferManager.download(getBucket(), path2Key(srcFile), destFile.toFile());
-                try {
-                    dl.waitForCompletion();
-                } catch (AmazonClientException e) {
-                    throw new IOException(e);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+            // src on s3 and dest local => download file from s3 to local location
+            Download dl = transferManager.download(getBucket(), path2Key(srcFile), destFile.toFile());
+            try {
+                dl.waitForCompletion();
+            } catch (AmazonClientException e) {
+                throw new IOException(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -928,8 +929,6 @@ public class S3FileUtils implements StorageProviderInterface {
             s3Obj = s3.getObject(getBucket(), key);
             // There might be a better way to do this.
             is = new S3ObjectCloserInputStream(s3Obj.getObjectContent(), s3Obj);
-        } catch (AmazonServiceException ase) {
-            log.error(ase.getMessage(), ase);
         } catch (AmazonClientException ace) {
             log.error(ace.getMessage(), ace);
         }

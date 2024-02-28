@@ -138,7 +138,7 @@ public class VariableReplacer {
     private static final String REGEX_METAS = PREFIX + "metas\\.([\\w.-]*)" + SUFFIX;
 
     // $(folder.xyz) or {folder.xyz} are both ok
-    private static final String REGEX_FOLDER = PREFIX + "folder\\.([^)]}]+?)" + SUFFIX;
+    private static final String REGEX_FOLDER = PREFIX + "folder\\.([^)}]+?)" + SUFFIX;
 
     private static final String REGEX_PRODUCT = PREFIX + "product\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_TEMPLATE = PREFIX + "template\\.([^)}]+?)" + SUFFIX;
@@ -495,6 +495,9 @@ public class VariableReplacer {
         for (MatchResult r : findRegexMatches(REGEX_DB_META, inString)) {
             String metadataName = r.group(1);
             String value = MetadataManager.getAllValuesForMetadata(process.getId(), metadataName);
+            if (value == null) {
+                value = "";
+            }
             inString = inString.replace(r.group(), value);
         }
 

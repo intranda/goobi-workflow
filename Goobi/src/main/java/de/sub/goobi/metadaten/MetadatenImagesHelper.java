@@ -36,7 +36,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -394,9 +393,9 @@ public class MetadatenImagesHelper {
                     mdt = this.myPrefs.getMetadataTypeByName(METADATA_LOGICAL_PAGE_NUMBER);
                     mdTemp = new Metadata(mdt);
 
-                    if (defaultPagination.equalsIgnoreCase("arabic")) {
+                    if ("arabic".equalsIgnoreCase(defaultPagination)) {
                         mdTemp.setValue(String.valueOf(currentPhysicalOrder));
-                    } else if (defaultPagination.equalsIgnoreCase("roman")) {
+                    } else if ("roman".equalsIgnoreCase(defaultPagination)) {
                         RomanNumeral roman = new RomanNumeral();
                         roman.setValue(currentPhysicalOrder);
                         mdTemp.setValue(roman.getNumber());
@@ -417,9 +416,7 @@ public class MetadatenImagesHelper {
                     }
                     dsPage.addContentFile(cf);
 
-                } catch (TypeNotAllowedAsChildException e) {
-                    log.error(e);
-                } catch (MetadataTypeNotAllowedException e) {
+                } catch (TypeNotAllowedAsChildException | MetadataTypeNotAllowedException e) {
                     log.error(e);
                 }
             }
@@ -469,9 +466,9 @@ public class MetadatenImagesHelper {
                         mdt = this.myPrefs.getMetadataTypeByName(METADATA_LOGICAL_PAGE_NUMBER);
                         mdTemp = new Metadata(mdt);
 
-                        if (defaultPagination.equalsIgnoreCase("arabic")) {
+                        if ("arabic".equalsIgnoreCase(defaultPagination)) {
                             mdTemp.setValue(String.valueOf(currentPhysicalOrder));
-                        } else if (defaultPagination.equalsIgnoreCase("roman")) {
+                        } else if ("roman".equalsIgnoreCase(defaultPagination)) {
                             RomanNumeral roman = new RomanNumeral();
                             roman.setValue(currentPhysicalOrder);
                             mdTemp.setValue(roman.getNumber());
@@ -492,9 +489,7 @@ public class MetadatenImagesHelper {
                         }
                         dsPage.addContentFile(cf);
 
-                    } catch (TypeNotAllowedAsChildException e) {
-                        log.error(e);
-                    } catch (MetadataTypeNotAllowedException e) {
+                    } catch (TypeNotAllowedAsChildException | MetadataTypeNotAllowedException e) {
                         log.error(e);
                     }
                 }
@@ -521,7 +516,7 @@ public class MetadatenImagesHelper {
         // TODO check mimetypes of all 3d object files
         if (mimetype.startsWith("image")) {
             return this.mydocument.createDocStruct(docStructPage);
-        } else if (mimetype.startsWith("video") || mimetype.equals("application/mxf")) {
+        } else if (mimetype.startsWith("video") || "application/mxf".equals(mimetype)) {
             return this.mydocument.createDocStruct(docStructVideo);
         } else if (mimetype.startsWith("audio")) {
             return this.mydocument.createDocStruct(docStructAudio);
@@ -633,7 +628,7 @@ public class MetadatenImagesHelper {
             }
 
             this.myLastImage = dateien.size();
-            if (ConfigurationHelper.getInstance().getImagePrefix().equals("\\d{8}")) {
+            if ("\\d{8}".equals(ConfigurationHelper.getInstance().getImagePrefix())) {
                 int counter = 1;
                 int myDiff = 0;
                 String curFile = null;
@@ -663,31 +658,6 @@ public class MetadatenImagesHelper {
         return false;
     }
 
-    public static class GoobiImageFileComparator implements Comparator<String> {
-
-        @Override
-        public int compare(String s1, String s2) {
-            String imageSorting = ConfigurationHelper.getInstance().getImageSorting();
-            s1 = s1.substring(0, s1.lastIndexOf("."));
-            s2 = s2.substring(0, s2.lastIndexOf("."));
-
-            if (imageSorting.equalsIgnoreCase("number")) {
-                try {
-                    Integer i1 = Integer.valueOf(s1);
-                    Integer i2 = Integer.valueOf(s2);
-                    return i1.compareTo(i2);
-                } catch (NumberFormatException e) {
-                    return s1.compareToIgnoreCase(s2);
-                }
-            } else if (imageSorting.equalsIgnoreCase("alphanumeric")) {
-                return s1.compareToIgnoreCase(s2);
-            } else {
-                return s1.compareToIgnoreCase(s2);
-            }
-        }
-
-    }
-
     /**
      * 
      * @param myProzess current process
@@ -706,10 +676,6 @@ public class MetadatenImagesHelper {
 
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageNameFilter);
 
-        /* alle Dateien durchlaufen */
-        if (dateien != null && !dateien.isEmpty()) {
-            Collections.sort(dateien, new GoobiImageFileComparator());
-        }
         return dateien;
 
     }
@@ -733,10 +699,6 @@ public class MetadatenImagesHelper {
 
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
 
-        /* alle Dateien durchlaufen */
-        if (dateien != null && !dateien.isEmpty()) {
-            Collections.sort(dateien, new GoobiImageFileComparator());
-        }
         return dateien;
 
     }
@@ -810,7 +772,6 @@ public class MetadatenImagesHelper {
             if (orderedFilenameList.size() == dateien.size()) {
                 return orderedFilenameList;
             } else {
-                Collections.sort(dateien, new GoobiImageFileComparator());
                 return dateien;
             }
         } else {

@@ -78,6 +78,28 @@
                             itemValue="#{item}" />
 
                         <h:panelGroup id="typeArea">
+                            <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'bach'}">
+                                <intranda:formInputTextAjax
+                                    id="bachUrl"
+                                    label="#{msgs.intranda_administration_repository_bachUrl}"
+                                    field="#{harvesterBean.repository.oaiUrl}"
+                                    help="#{msgs.help_intranda_administration_repository_bachUrl}"
+                                    required="false"
+                                    name="bachUrl"
+                                    execute="@this"
+                                    render="myform:box:typeArea" />
+
+
+                                <intranda:formInputText
+                                    id="authentication"
+                                    label="#{msgs.authentication}"
+                                    field="#{harvesterBean.repository.parameter['authentication']}"
+                                    help="#{msgs.authentication}"
+                                    required="false"
+                                    name="authentication" />
+                            </h:panelGroup>
+
+
                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'oai'}">
 
                                 <intranda:formInputTextAjax
@@ -120,7 +142,9 @@
                                     label="#{msgs.intranda_administration_repository_testmode}"
                                     field="#{harvesterBean.repository.testMode}"
                                     help="#{msgs.help_intranda_administration_repository_testmode}"
-                                    name="testmode" execute="@form" render="@this"/>
+                                    name="testmode"
+                                    execute="@form"
+                                    render="@this" />
 
 
                                 <intranda:formInputText
@@ -129,7 +153,9 @@
                                     field="#{harvesterBean.repository.startDate}"
                                     help="#{msgs.help_intranda_administration_repository_startDate}"
                                     required="false"
-                                    name="startDate" execute="@form" render="@this"/>
+                                    name="startDate"
+                                    execute="@form"
+                                    render="@this" />
 
                                 <intranda:formInputText
                                     id="endDate"
@@ -137,7 +163,9 @@
                                     field="#{harvesterBean.repository.endDate}"
                                     help="#{msgs.help_intranda_administration_repository_startDate}"
                                     required="false"
-                                    name="endDate" execute="@form" render="@this"/>
+                                    name="endDate"
+                                    execute="@form"
+                                    render="@this" />
 
                             </h:panelGroup>
 
@@ -258,13 +286,6 @@
             </div>
             <!-- /row -->
         </h:form>
-
-        <!-- Focus first input field on load -->
-        <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
-        <script type="text/javascript">
-                                    gwFocusOnLoad.init()
-                                </script>
-
     </ui:define>
 
 </ui:composition>

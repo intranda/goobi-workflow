@@ -25,6 +25,7 @@
 package org.goobi.api.rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -36,8 +37,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
+import org.json.JSONObject;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
@@ -68,7 +77,7 @@ public class Login {
     private SessionForm sessionForm;
 
     @POST
-    @Path("/openid")
+    @Path("/openid/implicitflow")
     @Operation(summary = "OpenID connect callback", description = "Verifies an openID claim and starts a session for the user")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
@@ -115,6 +124,100 @@ public class Login {
             } else {
                 log.error("could not verify JWT");
             }
+        } else {
+            log.error(error);
+        }
+        servletResponse.sendRedirect("/goobi/index.xhtml");
+    }
+    @POST
+    @Path("/openid/authorizationcodeflow")
+    @Operation(summary = "OpenID connect callback", description = "Verifies an openID claim and starts a session for the user")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "login")
+    public void openIdLoginAuthFlow(@FormParam("error") String error, @FormParam("code") String authCode, @FormParam("state") String authState) throws IOException {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        String clientID = config.getOIDCClientID();
+        String nonce = (String) servletRequest.getSession().getAttribute("openIDNonce");
+        String state = (String) servletRequest.getSession().getAttribute("openIDState");
+        
+        if (error == null) {
+            // no error - we should have a token. Verify it.
+        	if (state.equals(authState)) {
+        		// Check that state is the same before proceeding
+        		if (authCode != null) {
+        			// Verify that an authorization code has been recieved.
+        			//Prepare a token request
+        			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        			
+        			try {
+        				String applicationPath = servletRequest.getContextPath();
+        				HttpPost request = new HttpPost(config.getOIDCTokenEndpoint());
+        				
+        				// Add header to token request
+        				request.addHeader("Host", config.getOIDCHostName());
+                    	request.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        				// Formulate body in token request
+                    	ArrayList<BasicHeader> bodyMap = new ArrayList<>();
+                    	bodyMap.add(new BasicHeader("grant_type", "authorization_code"));
+                    	bodyMap.add(new BasicHeader("code", authCode));
+                    	bodyMap.add(new BasicHeader("client_id", config.getOIDCClientID()));
+                    	bodyMap.add(new BasicHeader("client_secret", config.getOIDCClientSecret()));
+                    	bodyMap.add(new BasicHeader("redirect_uri", servletRequest.getScheme() + "://" + servletRequest.getServerName() + ":" + servletRequest.getServerPort() + applicationPath + "/api/login/openid/authorizationcodeflow"));
+                    	UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(bodyMap, "utf-8");
+                    	request.setEntity(urlEncodedFormEntity);
+                    	
+                    	HttpResponse response = (HttpResponse) httpClient.execute(request);                    	
+                    	JSONObject responseObj = new JSONObject(EntityUtils.toString(response.getEntity()));
+                    	String idToken = responseObj.getString("id_token");
+                    	DecodedJWT jwt = JwtHelper.verifyOpenIdToken(idToken);
+                    	if (jwt != null) {
+                    		// now check if the nonce is the same as in the old session
+                    		if (nonce.equals(jwt.getClaim("nonce").asString()) && clientID.equals(jwt.getClaim("aud").asString())) {
+                    			//all OK, login the user
+                    			HttpSession session = servletRequest.getSession();
+                    			LoginBean userBean = Helper.getLoginBeanFromSession(session);
+                    			
+                    			// get the user by the configured claim from the JWT
+                    			String login = jwt.getClaim(config.getOIDCIdClaim()).asString();
+                    			log.debug("logging in user " + login);
+                    			User user = UserManager.getUserBySsoId(login);
+                    			System.out.println("Trying to log in user with SSOID; " + login);
+                    			if (user == null) {
+                    				userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
+                    				servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
+                    				return;
+                    			}
+                    			userBean.setSsoError(null);
+                    			user.lazyLoad();
+                    			userBean.setMyBenutzer(user);
+                    			userBean.setRoles(user.getAllUserRoles());
+                    			userBean.setMyBenutzer(user);
+                    			//add the user to the sessionform that holds information about all logged in users
+                    			sessionForm.updateSessionUserName(servletRequest.getSession(), user);
+                    		} else {
+                    			if (!nonce.equals(jwt.getClaim("nonce").asString())) {
+                    				log.error("nonce does not match. Not logging user in");
+                    			}
+                    			if (!clientID.equals(jwt.getClaim("aud").asString())) {
+                    				log.error("clientID does not match aud. Not logging user in");
+                    			}
+                    		}
+                    	} else {
+                    		log.error("could not verify JWT");
+                    	}
+        			} catch(IOException e){
+        				log.error(e);
+        			}
+        			
+        		}
+        		else {
+        			log.error("Authorization Code not recieved! Please check request or response");
+        		}
+        	}else {
+        		log.error("State in response does not equal state in request!");
+        	}
         } else {
             log.error(error);
         }

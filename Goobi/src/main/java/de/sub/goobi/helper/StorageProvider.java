@@ -113,5 +113,4 @@ public class StorageProvider {
         isAllowed = isAllowed || name.matches(prefix + REGEX_EPUB);
         return isAllowed;
     }
-
 }

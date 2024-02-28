@@ -2031,30 +2031,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             }
         }
     }
-
-    // read the image comments from process properties and return all of them as a list, sorted by image names
+    
+    // TODO: Think about order
     public List<ImageComment> getImageComments() throws IOException, InterruptedException, SwapException, DAOException {
-
-        List<ImageComment> lstComments = new ArrayList<>();
-
-        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(this);
-
-        Map<String, Map<String, String>> commentsMap = helper.getAllComments();
-        for (Map.Entry<String, Map<String, String>> entry : commentsMap.entrySet()) {
-            String folderType = entry.getKey();
-            Map<String, String> comments = entry.getValue();
-            for (Map.Entry<String, String> imageCommentPair : comments.entrySet()) {
-                String imageName = imageCommentPair.getKey();
-                String imageComment = imageCommentPair.getValue();
-                if (StringUtils.isNotBlank(imageComment)) {
-                    lstComments.add(new ImageComment(folderType, imageName, imageComment));
-                }
-            }
-        }
-
-        // the use of TreeMap in ImageCommentPropertyHelper assures that the list is already sorted
-
-        return lstComments;
+    	return new ImageCommentPropertyHelper(this).getAllComments();
     }
 
     public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {

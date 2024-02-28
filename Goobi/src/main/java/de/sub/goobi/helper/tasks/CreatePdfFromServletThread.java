@@ -38,7 +38,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.core.UriBuilder;
@@ -56,7 +55,6 @@ import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import io.goobi.workflow.api.connection.HttpUtils;
 import lombok.Getter;
@@ -259,7 +257,6 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             file += data.toUri().toURL();
             filenames.add(file);
         }
-        Collections.sort(filenames, new MetadatenHelper(null, null));
         for (String f : filenames) {
             images.append(f).append("$");
         }

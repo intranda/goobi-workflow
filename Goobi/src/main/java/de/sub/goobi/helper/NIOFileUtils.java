@@ -155,7 +155,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 return Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix));
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -182,7 +182,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         } catch (IOException exception) {
             // do nothing
         }
-        Collections.sort(fileNames);
+        Collections.sort(fileNames, new GoobiPathFileComparator());
         return fileNames;
     }
 
@@ -199,7 +199,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         } catch (IOException exception) {
             // do nothing
         }
-        Collections.sort(fileNames);
+        Collections.sort(fileNames, new GoobiPathFileComparator());
         return fileNames;
     }
 
@@ -216,7 +216,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         } catch (IOException exception) {
             // do nothing
         }
-        Collections.sort(fileNames);
+        Collections.sort(fileNames, new GoobiStringFileComparator());
         return fileNames;
     }
 
@@ -233,7 +233,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         } catch (IOException exception) {
             // do nothing
         }
-        Collections.sort(fileNames);
+        Collections.sort(fileNames, new GoobiStringFileComparator());
         return fileNames;
     }
 
@@ -283,7 +283,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         return isAllowed;
     };
 
-    public static final DirectoryStream.Filter<Path> multimediaNameFilter = new DirectoryStream.Filter<Path>() {
+    public static final DirectoryStream.Filter<Path> multimediaNameFilter = new DirectoryStream.Filter<>() {
         @Override
         public boolean accept(Path path) throws IOException {
             String prefix = ConfigurationHelper.getInstance().getImagePrefix();
@@ -326,7 +326,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
     }
 
-    public static final DirectoryStream.Filter<Path> imageOrObjectNameFilter = new DirectoryStream.Filter<Path>() {
+    public static final DirectoryStream.Filter<Path> imageOrObjectNameFilter = new DirectoryStream.Filter<>() {
         @Override
         public boolean accept(Path path) throws IOException {
             return imageNameFilter.accept(path) || objectNameFilter.accept(path) || multimediaNameFilter.accept(path);

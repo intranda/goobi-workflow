@@ -465,6 +465,11 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
+    public void testOIDCFlowType() {
+        assertEquals("", ConfigurationHelper.getInstance().getOIDCFlowType());
+    }
+    
+    @Test
     public void testGetOIDCAuthEndpoint() {
         assertEquals("", ConfigurationHelper.getInstance().getOIDCAuthEndpoint());
     }
@@ -473,7 +478,17 @@ public class ConfigurationHelperTest extends AbstractTest {
     public void testGetOIDCLogoutEndpoint() {
         assertEquals("", ConfigurationHelper.getInstance().getOIDCLogoutEndpoint());
     }
+    
+    @Test
+    public void testOIDCTokenEndpoint() {
+        assertEquals("", ConfigurationHelper.getInstance().getOIDCTokenEndpoint());
+    }
 
+    @Test
+    public void testOIDCHostName() {
+        assertEquals("", ConfigurationHelper.getInstance().getOIDCHostName());
+    }
+    
     @Test
     public void testGetOIDCIssuer() {
         assertEquals("", ConfigurationHelper.getInstance().getOIDCIssuer());
@@ -487,6 +502,11 @@ public class ConfigurationHelperTest extends AbstractTest {
     @Test
     public void testGetOIDCClientID() {
         assertEquals("", ConfigurationHelper.getInstance().getOIDCClientID());
+    }
+    
+    @Test
+    public void testGetOIDCClientSecret() {
+        assertEquals("", ConfigurationHelper.getInstance().getOIDCClientSecret());
     }
 
     @Test
@@ -622,7 +642,7 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testGetJobStartTimeForDailyHistoryAnalyser() {
-        assertNull( ConfigurationHelper.getInstance().getJobStartTime("dailyHistoryAnalyser"));
+        assertNull(ConfigurationHelper.getInstance().getJobStartTime("dailyHistoryAnalyser"));
     }
 
     @Test
@@ -1034,11 +1054,6 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testGetImageSorting() {
-        assertEquals("number", ConfigurationHelper.getInstance().getImageSorting());
-    }
-
-    @Test
     public void testGetImagePrefix() {
         assertEquals("\\d{8}", ConfigurationHelper.getInstance().getImagePrefix());
     }
@@ -1191,6 +1206,5 @@ public class ConfigurationHelperTest extends AbstractTest {
     public void testGetPathToIaCli() {
         assertEquals("/usr/local/bin/ia", ConfigurationHelper.getInstance().getPathToIaCli());
     }
-
 
 }

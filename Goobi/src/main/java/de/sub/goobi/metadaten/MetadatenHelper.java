@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +50,6 @@ import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 import lombok.extern.log4j.Log4j2;
@@ -77,7 +75,7 @@ import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
 @Log4j2
-public class MetadatenHelper implements Comparator<Object> {
+public class MetadatenHelper {
     public static final int PAGENUMBER_FIRST = 0;
     public static final int PAGENUMBER_LAST = 1;
 
@@ -318,9 +316,7 @@ public class MetadatenHelper implements Comparator<Object> {
          * -------------------------------- und anschliessend alle Elemente in das Array packen --------------------------------
          */
         zaehler = 0;
-        Iterator<DocStructType> it = newTypes.iterator();
-        while (it.hasNext()) {
-            DocStructType dst = it.next();
+        for (DocStructType dst : newTypes) {
             String label = dst.getNameByLanguage(Helper.getMetadataLanguage());
             if (label == null) {
                 label = dst.getName();
@@ -441,29 +437,25 @@ public class MetadatenHelper implements Comparator<Object> {
                         } else {
                             allMetadata.addAll(existingData);
                         }
-                    } else {
-                        // check if it is in the default list
-                        if (displayMetadataTypes.contains(mdt)) {
-                            if (mdt.getIsPerson()) {
-                                Person p = new Person(mdt);
-                                p.setRole(mdt.getName());
-                                p.setParent(inStruct);
-                                allPersons.add(p);
-                            } else if (mdt.isCorporate()) {
-                                Corporate corporate = new Corporate(mdt);
-                                corporate.setRole(mdt.getName());
-                                corporate.setParent(inStruct);
-                                allCorporates.add(corporate);
-                            } else {
-                                Metadata md = new Metadata(mdt);
-                                md.setParent(inStruct);
-                                allMetadata.add(md); // add this new metadata
-                            }
+                    } else // check if it is in the default list
+                    if (displayMetadataTypes.contains(mdt)) {
+                        if (mdt.getIsPerson()) {
+                            Person p = new Person(mdt);
+                            p.setRole(mdt.getName());
+                            p.setParent(inStruct);
+                            allPersons.add(p);
+                        } else if (mdt.isCorporate()) {
+                            Corporate corporate = new Corporate(mdt);
+                            corporate.setRole(mdt.getName());
+                            corporate.setParent(inStruct);
+                            allCorporates.add(corporate);
+                        } else {
+                            Metadata md = new Metadata(mdt);
+                            md.setParent(inStruct);
+                            allMetadata.add(md); // add this new metadata
                         }
                     }
-                } catch (DocStructHasNoTypeException e) {
-                    // do nothing
-                } catch (MetadataTypeNotAllowedException e) {
+                } catch (DocStructHasNoTypeException | MetadataTypeNotAllowedException e) {
                     // do nothing
                 }
             }
@@ -520,9 +512,7 @@ public class MetadatenHelper implements Comparator<Object> {
                         inStruct.addMetadataGroup(md); // add this new metadata
                         // element
 
-                    } catch (DocStructHasNoTypeException e) {
-                        // do nothing
-                    } catch (MetadataTypeNotAllowedException e) {
+                    } catch (DocStructHasNoTypeException | MetadataTypeNotAllowedException e) {
                         // do nothing
                     }
                 }
@@ -591,9 +581,7 @@ public class MetadatenHelper implements Comparator<Object> {
             while ((bufRead.read(buffer)) >= 0) {
 
                 String temp = new String(buffer).toLowerCase();
-                Iterator<Entry<String, String>> i = types.entrySet().iterator();
-                while (i.hasNext()) {
-                    Entry<String, String> entry = i.next();
+                for (Entry<String, String> entry : types.entrySet()) {
                     if (temp.contains(entry.getValue())) {
                         return entry.getKey();
                     }
@@ -768,30 +756,6 @@ public class MetadatenHelper implements Comparator<Object> {
             myList.add(new SelectItem(mdt.getName(), getMetadatatypeLanguage(mdt)));
         }
         return myList;
-    }
-
-    @Override
-    public int compare(Object o1, Object o2) {
-        String imageSorting = ConfigurationHelper.getInstance().getImageSorting();
-        String s1 = (String) o1;
-        String s2 = (String) o2;
-        // comparing only prefixes of files:
-        s1 = s1.substring(0, s1.lastIndexOf("."));
-        s2 = s2.substring(0, s2.lastIndexOf("."));
-
-        if (imageSorting.equalsIgnoreCase("number")) {
-            try {
-                Integer i1 = Integer.valueOf(s1);
-                Integer i2 = Integer.valueOf(s2);
-                return i1.compareTo(i2);
-            } catch (NumberFormatException e) {
-                return s1.compareToIgnoreCase(s2);
-            }
-        } else if (imageSorting.equalsIgnoreCase("alphanumeric")) {
-            return s1.compareToIgnoreCase(s2);
-        } else {
-            return s1.compareToIgnoreCase(s2);
-        }
     }
 
     public static Fileformat getFileformatByName(String name, Ruleset ruleset) {

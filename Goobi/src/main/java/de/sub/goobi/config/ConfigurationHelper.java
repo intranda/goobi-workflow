@@ -657,11 +657,23 @@ public class ConfigurationHelper implements Serializable {
     public String getOIDCAuthEndpoint() {
         return getLocalString("OIDCAuthEndpoint", "");
     }
-
+    
+    public String getOIDCFlowType() {
+    	return getLocalString("OIDCFlowType", "");
+    }
+    
     public String getOIDCLogoutEndpoint() {
         return getLocalString("OIDCLogoutEndpoint", "");
     }
-
+    
+    public String getOIDCTokenEndpoint() {
+    	return getLocalString("OIDCTokenEndpoint", "");
+    }
+    
+    public String getOIDCHostName() {
+    	return getLocalString("OIDCHostName", "");
+    }
+    
     public String getOIDCIssuer() {
         return getLocalString("OIDCIssuer", "");
     }
@@ -672,6 +684,10 @@ public class ConfigurationHelper implements Serializable {
 
     public String getOIDCClientID() {
         return getLocalString("OIDCClientID", "");
+    }
+    
+    public String getOIDCClientSecret() {
+        return getLocalString("OIDCClientSecret", "");
     }
 
     public String getOIDCIdClaim() {
@@ -1125,10 +1141,6 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean getMetsEditorUseImageTiles() {
         return getLocalBoolean("MetsEditorUseImageTiles", true);
-    }
-
-    public String getImageSorting() {
-        return getLocalString("ImageSorting", "number");
     }
 
     public String getImagePrefix() {
