@@ -4,14 +4,14 @@
     <parent>
         <groupId>de.intranda.goobi.workflow</groupId>
         <artifactId>goobi-core</artifactId>
-        <version>24.02-SNAPSHOT</version>
+        <version>24.03-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
 
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core-jar</artifactId>
-    <version>24.02-SNAPSHOT</version>
+    <version>24.03-SNAPSHOT</version>
     <packaging>jar</packaging>
 
 
