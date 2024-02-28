@@ -23,7 +23,7 @@ pipeline {
     }
     stage('build') {
       steps {
-        sh 'mvn clean verify'
+        sh 'mvn clean verify -U'
       }
     }
     stage('sonarcloud') {
@@ -35,7 +35,7 @@ pipeline {
       }
       steps {
         withCredentials([string(credentialsId: 'jenkins-sonarcloud', variable: 'TOKEN')]) {
-          sh 'mvn verify sonar:sonar -Dsonar.token=$TOKEN'
+          sh 'mvn verify sonar:sonar -Dsonar.token=$TOKEN -U'
         }
       }
     }
@@ -47,7 +47,7 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy'
+        sh 'mvn -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy -U'
       }
     }
     stage('trigger pull-requester') {
