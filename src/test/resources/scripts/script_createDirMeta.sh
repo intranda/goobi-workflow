@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # erste Variable: Verzeichnis
 Verzeichnis="$1"
