@@ -1,10 +1,7 @@
-FROM maven:3.6-jdk-11 AS BUILD
-
+FROM maven:3.9.3-eclipse-temurin-17 AS BUILD
 COPY . /goobi/
 WORKDIR /goobi
-
-RUN mvn -f Goobi/pom.xml clean package
-
+RUN mvn clean package
 
 # Build actual application container
 FROM tomcat:8.5-jre8 as ASSEMBLE
@@ -19,15 +16,15 @@ ENV DB_PASSWORD goobi
 RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/tomcat/webapps/goobi
 
-COPY Goobi/install/docker/goobi.xml.template /usr/local/tomcat/conf/goobi.xml.template
-COPY Goobi/install/config/ /opt/digiverso/goobi/config/
-COPY Goobi/install/rulesets/ /opt/digiverso/goobi/rulesets/
-COPY Goobi/install/scripts/ /opt/digiverso/goobi/scripts/
-COPY Goobi/install/xslt/ /opt/digiverso/goobi/xslt/
-COPY Goobi/install/docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
-COPY Goobi/install/docker/server.xml /usr/local/tomcat/conf/server.xml
-COPY Goobi/install/docker/run.sh /run.sh
-COPY Goobi/install/docker/log4j.xml /opt/digiverso/log4j.xml
+COPY install/docker/goobi.xml.template /usr/local/tomcat/conf/goobi.xml.template
+COPY install/config/ /opt/digiverso/goobi/config/
+COPY install/rulesets/ /opt/digiverso/goobi/rulesets/
+COPY install/scripts/ /opt/digiverso/goobi/scripts/
+COPY install/xslt/ /opt/digiverso/goobi/xslt/
+COPY install/docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
+COPY install/docker/server.xml /usr/local/tomcat/conf/server.xml
+COPY install/docker/run.sh /run.sh
+COPY install/docker/log4j.xml /opt/digiverso/log4j.xml
 
 RUN sed -i 's/TOMCATUSER=tomcat/TOMCATUSER=root/' /opt/digiverso/goobi/scripts/iii.sh
 
@@ -51,7 +48,7 @@ RUN apt-get update && \
 RUN mkdir ${CATALINA_HOME}/webapps/ROOT && \
     echo '<% response.sendRedirect("/goobi/"); %>' > ${CATALINA_HOME}/webapps/ROOT/index.jsp
 
-COPY --from=BUILD  /goobi/Goobi/module-war/target/goobi.war /
+COPY --from=BUILD  target/workflow-core*.war /goobi.war
 RUN unzip /goobi.war -d /usr/local/tomcat/webapps/goobi && rm /goobi.war
 
 EXPOSE 8080
