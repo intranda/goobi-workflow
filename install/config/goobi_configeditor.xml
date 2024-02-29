@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config_plugin>
+    <!--
+    The configFileDirectories element contains a list of directories
+    that are used to collect all displayed files in the browser interface.
+
+    Each directory should be an absolute path that contains xml or properties files.
+    Other file types are not supported until now.
+    The directory name may end with a slash (/), otherwise it will be added automatically.
+
+    Backups are automatically created in a subfolder called "backup/".
+    You can override this with the optional attribute backupFolder="myOwnBackupPath/".
+    IMPORTANT: The directory must be an absolute path while the backupFolder parameter must be a relative path.
+    The backup directory name may end with a slash (/), otherwise it will be added automatically.
+    To save backup files in the selected configuration directory, overwrite the backup folder with backupFolder="".
+
+    By default 8 backup files are kept, older files will be deleted.
+    You can override this with the optional attribute backupFiles="".
+
+    You can filter the displayed configuration files in a directory with the fileRegex="" parameter.
+    If the parameter is not used or is empty, it will be ignored.
+    -->
+
+    <configFileDirectories>
+        <directory backupFiles="16">/opt/digiverso/goobi/config/</directory>
+        <directory backupFolder="wizzardBackup/" backupFiles="4">/opt/digiverso/layoutwizzard/</directory>
+        <directory backupFolder="itmPluginsBackup/" backupFiles="4" fileRegex=".*\.xml">/opt/digiverso/itm/plugins/config/</directory>
+        <directory backupFolder="itmBackup/" fileRegex=".*\.xml">/opt/digiverso/itm/config/</directory>
+        <!--
+        Example:
+        <directory backupFolder="exampleBackup/" backupFiles="12" fileRegex="*\.xml">/opt/digiverso/example/config/</directory>
+        -->
+    </configFileDirectories>
+
+</config_plugin>
