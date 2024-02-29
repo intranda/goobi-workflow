@@ -1,18 +1,22 @@
-/work
-goobi1.9/work
-/build
-goobi1.9/build
-/WEB-INF/classes
-goobi1.9/WEB-INF/classes
+# Junk files
+*~
+.DS_Store
+
+# Build
+target/
+bin/
+build/
+/src/main/webapp/node_modules/
+#/src/main/webapp/npm-debug.log
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# IntelliJ IDEA
 .idea
 *.iml
-/.project
-*~
-/.DS_Store
-.DS_Store
-hotswap-agent.properties
-/Goobi/src/main/webapp/dist
-/Goobi/src/main/webapp/node
 
-# Local files used as styling reference while migrating to BS 5
-*_REF.xhtml
+# Plugins
+hotswap-agent.properties

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:c="http://java.sun.com/jstl/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- Apple devices fullscreen -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<!-- Apple devices fullscreen -->
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<meta name="description" content="Goobi workflow" />
+	<meta name="author" content="intranda GmbH" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Script-Type" content="type" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta name="date" content="1970-01-01T00:00:00+01:00" />
+    <meta name="application" content="#{HelperForm.applicationHeaderTitle}" />
+    <meta name="version" content="#{HelperForm.version}" />
+    <meta name="build date" content="#{HelperForm.buildDate}" />
+    <meta name="git-revision" content="#{HelperForm.revision}" />
+
+	<title><h:outputText value="#{HelperForm.applicationHeaderTitle}" /></title>
+
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="template/css/bootstrap.min.css?version=2" />
+	<!-- Theme CSS -->
+	<link rel="stylesheet" href="template/css/style.css?v=1" />
+	<!-- Color CSS -->
+	<link rel="stylesheet" href="template/css/themes.css?v=1" />
+	<!-- Font Awesome CSS -->
+	<link rel="stylesheet" href="template/css/font-awesome.css?v=1" />
+	<!-- colorbox -->
+	<link rel="stylesheet" href="template/css/plugins/colorbox/colorbox.css?v=1" />
+	<!-- intranda -->
+	<link rel="stylesheet" href="template/css/intranda.css?v=1" />
+	<link rel="stylesheet" href="template/css/x3dom/x3dom.css?v=1" />
+	<link rel="stylesheet" href="template/css/image.css?v=1" />
+	<script src="template/js/intranda.js?v=1"></script>
+	<!-- jQuery -->
+	<script src="template/js/jquery.min.js"></script>
+	<!-- Mobile nav swipe -->
+	<script src="template/js/plugins/touchwipe/touchwipe.min.js"></script>
+	<!-- Nice Scroll -->
+	<script src="template/js/plugins/nicescroll/jquery.nicescroll.min.js"></script>
+	<!-- imagesLoaded -->
+	<script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js"></script>
+	<!-- jQuery UI -->
+	<script src="template/js/plugins/jquery-ui/jquery-ui.js"></script>
+	<!-- colorbox -->
+	<script src="template/js/plugins/colorbox/jquery.colorbox-min.js"></script>
+	<!-- slimScroll	-->
+	<script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<!-- Bootstrap -->
+	<script src="template/js/bootstrap.min.js"></script>
+	<!-- Bootbox -->
+	<script src="template/js/plugins/bootbox/jquery.bootbox.js"></script>
+	<!-- Bootbox -->
+	<script src="template/js/plugins/form/jquery.form.min.js"></script>
+	<!-- Validation -->
+	<script src="template/js/plugins/validation/jquery.validate.min.js"></script>
+	<script src="template/js/plugins/validation/additional-methods.min.js"></script>
+
+	<!-- OpenSeadragon image -->
+	<script src="template/js/reactiveX/rx.lite.min.js"></script>
+	<script src="template/js/q-promises/q.min.js"></script>
+	<script src="template/js/openseadragon/openseadragon.min.js"></script>
+	<script
+		src="template/js/openseadragon/openseadragon-viewerinputhook.js"></script>
+	<script src="template/js/imageView.min.js"></script>
+
+	<!-- 3D-Models -->
+	<script type="text/javascript"
+		src="template/js/three/three.min.js"></script>
+	<script type="text/javascript"
+		src="template/js/three/loaders/OBJLoader.js"></script>
+	<script type="text/javascript"
+		src="template/js/three/loaders/MTLLoader.js"></script>
+	<script type="text/javascript"
+		src="template/js/three/loaders/PLYLoader.js"></script>
+	<script type="text/javascript"
+		src="template/js/three/loaders/STLLoader.js"></script>
+	<script type="text/javascript"
+		src="template/js/three/loaders/FBXLoader.js"></script>
+	<script type="text/javascript"
+		src="template/js/three/loaders/TDSLoader.js"></script>
+    <script type="text/javascript"
+        src="template/js/three/loaders/DRACOLoader.js"></script>
+    <script type="text/javascript"
+        src="template/js/three/loaders/GLTFLoader.js"></script>
+	<script type="text/javascript"
+		src="template/js/three/controls/OrbitControls.js"></script>
+	<script type="text/javascript"
+		src="template/js/three/dependencies/inflate.min.js"></script>
+    <script src="template/js/x3dom/x3dom.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/objectView.min.js"></script>
+
+        <script type="text/javascript"
+            src='template/js/plugins/tinymce/tinymce.min.js'></script>
+
+
+	<!-- Theme framework -->
+	<!-- <script src="template/js/eakroko.js"></script> -->
+	<!-- Theme scripts -->
+	<script src="template/js/application.js?v=1"></script>
+
+	<!-- shortcuts -->
+	<script src="template/js/jquery.hotkeys.js"></script>
+
+	<!--[if lte IE 9]>
+	<script src="template/js/plugins/placeholder/jquery.placeholder.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				$('input, textarea').placeholder();
+			});
+		</script>
+	<![endif]-->
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="template/img/favicon.ico" />
+	<!-- Apple devices Homescreen icon -->
+    <link rel="apple-touch-icon-precomposed" href="template/img/apple-touch-icon.png" />
+
+</h:head>
+
+<ui:insert name="metadata" />
+
+<body class="#{LoginForm.myBenutzer == null?'login':''}" data-layout-sidebar="fixed" data-layout-topbar="fixed">
+	<f:view locale="#{SpracheForm.locale}">
+
+		<h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
+			<ui:include src="inc_login.xhtml" />
+		</h:panelGroup>
+
+		<c:if test="#{LoginForm.myBenutzer!=null}">
+			<ui:include src="inc_menu.xhtml" />
+
+			<div class="container-fluid" id="content">
+				<div id="left" style="width: #{Metadaten.treeWidth}px;">
+					<!-- <div id="left" class="no-resize" style="width:#{Metadaten.treeWidth}px"> -->
+					<!-- <div id="left" class="no-resize" > -->
+					<ui:insert name="sidebar">
+						<ui:include src="inc_sidebar.xhtml" />
+					</ui:insert>
+				</div>
+				<div id="main" style="margin-left: #{Metadaten.treeWidth}px">
+					<div class="container-fluid">
+						<ui:insert name="content" />
+					</div>
+				</div>
+			</div>
+		</c:if>
+		<style>
+			<h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false"/>
+		</style>
+	</f:view>
+
+	<div id="ajaxloader" style="position: absolute; right: 20px; top: 32px; display: none;">
+		<img src="template/img/goobi/ajaxloader2.gif" />
+	</div>
+</body>
+<script>
+	function printpage() {
+		var printReport = document.getElementById('left').innerHTML;
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = '#{HelperForm.servletPathWithHostAsUrl}/uii/template/css/intranda.css?version=1';
+
+		var win = window.open("", "", "");
+		var head = win.document.getElementsByTagName('head')[0];
+		head.appendChild(link);
+		win.document.body.innerHTML = printReport;
+
+		win.window.print();
+		win.close();
+	}
+
+
+	jsf.ajax.addOnEvent(function (data) {
+		var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+		var ajaxloader = document.getElementById("ajaxloader");
+		if (readOnlyMode === 'false') {
+			var saveButton = document.getElementById("menu-form:saveMetsFileButton");
+			// var validationButton = document.getElementById("menu-form:startValidationButton");
+			var saveMetsFileImage = document.getElementById("menu-form:saveMetsFileImage");
+
+			var ajaxSave = document.getElementById("menu-form:saveMetsFileButtonAjax");
+			// var ajaxValidation = document.getElementById("menu-form:startValidationButtonAjax");
+
+			var autoSave = document.getElementById("menu-form:automaticSave")
+
+			var exit = document.getElementById("exit");
+			var exitImage = document.getElementById("menu-form:exitImage");
+
+			switch (ajaxstatus) {
+				case "begin": // This is called right before ajax request is been sent.
+					ajaxloader.style.display = 'block';
+					saveButton.style.display = 'none';
+					validationButton.style.display = 'none';
+					saveMetsFileImage.style.display = 'block';
+
+					ajaxSave.disabled = true;
+					// ajaxValidation.disabled = true;
+					autoSave.disabled = true;
+
+					exit.style.display = 'none';
+					exitImage.style.display = 'block';
+					if (typeof renderInputFields == "function") {
+						renderInputFields(data); // tinymce
+					}
+					break;
+
+				case "complete": // This is called right after ajax response is received.
+					ajaxloader.style.display = 'none';
+					saveButton.style.display = '';
+					// validationButton.style.display = '';
+					saveMetsFileImage.style.display = 'none';
+
+					ajaxSave.disabled = false;
+					// ajaxValidation.disabled = false;
+					autoSave.disabled = false;
+
+					exit.style.display = 'block';
+					exitImage.style.display = 'none';
+					break;
+
+				case "success": // This is called when ajax response is successfully processed.
+					// NOOP.
+					$(function () {
+						$('[data-toggle="tooltip"]').tooltip();
+						$('[data-toggle="popover"]').popover();
+					})
+
+					if ($('.popover.fade.right.in').length > 0) {
+						$('.popover.fade.right.in').remove();
+					}
+					loadImages();
+					loadThumbnails();
+					addPaginationButtons();
+					reloadAllHandler();
+
+					targetImage = parseInt($("#contentArea").width()) + parseInt($("#left").width()) + 30;
+					// $("#BildArea2").css("left", targetImage);
+
+					fitResizeHandle();
+					if (typeof renderInputFields == "function") {
+						renderInputFields(data); // tinymce
+					}
+					break;
+			}
+		} else {
+
+			switch (ajaxstatus) {
+
+				case "begin": // This is called right before ajax request is been sent.
+					ajaxloader.style.display = 'block';
+					break;
+
+				case "complete": // This is called right after ajax response is received.
+					ajaxloader.style.display = 'none';
+
+				case "success": // This is called when ajax response is successfully processed.
+					// NOOP.
+					$(function () {
+						$('[data-toggle="tooltip"]').tooltip();
+						$('[data-toggle="popover"]').popover();
+					})
+
+					if ($('.popover.fade.right.in').length > 0) {
+						$('.popover.fade.right.in').remove();
+					}
+
+			}
+		}
+
+
+	});
+
+
+	function reloadAllHandler() {
+		$('a[id*="geonamesIndexTrigger-"]').on('click', function () {
+			var currIndex = $(this).attr('data-row');
+			var currType = $(this).attr('data-datatype');
+			$('#rowIndex').val(currIndex);
+			$('#rowType').val(currType);
+		});
+
+		$('a[id*="gndIndexTrigger-"]').on('click', function () {
+			var currIndex = $(this).attr('data-row');
+			var currType = $(this).attr('data-datatype');
+			$('#rowIndex').val(currIndex);
+			$('#rowType').val(currType);
+		});
+
+		$('a[id*="gndPersonIndexTrigger-"]').on('click', function () {
+			var currIndex = $(this).attr('data-row');
+			var currType = $(this).attr('data-datatype');
+			$('#rowIndex').val(currIndex);
+			$('#rowType').val(currType);
+		});
+	}
+
+	function addPaginationButtons() {
+		if ($('.pagination-thumb')) {
+			$('.pagination-thumb').remove();
+		}
+
+		$('table#myCheckboxes label').each(function () {
+			$(this).parent().append('<span title="#{msgs.mets_showThisImage}" class="fa fa-picture-o pagination-thumb" />');
+		});
+
+		$('table#myCheckboxes span').on('click', function (event) {
+			var number = parseInt($(this).prev().attr('for').replace('myCheckboxes:', ''));
+			$(escapeClientId('#jumpToImage_input')).val(number + 1);
+			$(escapeClientId('#goButton')).click();
+		});
+		var escapeClientId = function (a) {
+			return a.replace(/:/g, "\\:")
+		};
+	}
+
+	function paginierungWertAnzeigen() {
+		var paginationInputFields = document.getElementById("paginationInputFields");
+		var fictitiousField = document.getElementById("fictitious");
+		var inputBoxElement = document.getElementById("paginierungWert");
+		paginationInputFields.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
+		fictitiousField.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
+		if ($("#paginationType").val() == 2 || $("#paginationType").val() == 5) {
+			inputBoxElement.value = 'I';
+		}
+		if ($("#paginationType").val() == 1 || $("#paginationType").val() == 4) {
+			inputBoxElement.value = '1';
+		}
+	}
+
+
+	$(document).ready(function () {
+		target = parseInt($("#contentArea").width()) - parseInt($("#pagLeft").width()) - 10;
+		// $("#pagRight").css("width", target);
+		addPaginationButtons();
+
+		$('[data-toggle="tooltip"]').tooltip();
+		$('[data-toggle="popover"]').popover();
+		if ($('.popover.fade.right.in').length != 0) {
+			$('.popover.fade.right.in').remove();
+		}
+	});
+
+
+
+</script>
+</html>

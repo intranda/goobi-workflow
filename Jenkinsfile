@@ -18,12 +18,12 @@ pipeline {
   stages {
     stage('prepare') {
       steps {
-        sh 'git clean -fdx'
+        sh 'git reset --hard HEAD && git clean -fdx'
       }
     }
     stage('build') {
       steps {
-        sh 'mvn -f Goobi/pom.xml clean verify'
+        sh 'mvn clean verify -U'
       }
     }
     stage('sonarcloud') {
@@ -35,7 +35,7 @@ pipeline {
       }
       steps {
         withCredentials([string(credentialsId: 'jenkins-sonarcloud', variable: 'TOKEN')]) {
-          sh 'mvn -f Goobi/pom.xml verify sonar:sonar -Dsonar.token=$TOKEN'
+          sh 'mvn verify sonar:sonar -Dsonar.token=$TOKEN -U'
         }
       }
     }
@@ -47,7 +47,7 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -f Goobi/pom.xml -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy'
+        sh 'mvn -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy -U'
       }
     }
     stage('trigger pull-requester') {
@@ -64,19 +64,19 @@ pipeline {
       junit "**/target/surefire-reports/*.xml"
       step([
         $class           : 'JacocoPublisher',
-        execPattern      : 'Goobi/module-ci/target/jacoco.exec',
-        classPattern     : 'Goobi/module-ci/target/classes/',
-        sourcePattern    : 'Goobi/src/main/java',
+        execPattern      : 'target/jacoco.exec',
+        classPattern     : 'target/classes/',
+        sourcePattern    : 'src/main/java',
         exclusionPattern : '**/*Test.class'
       ])
       recordIssues (
         enabledForFailure: true, aggregatingResults: false,
-        tools: [checkStyle(pattern: '**/target/checkstyle-result.xml', reportEncoding: 'UTF-8')]
+        tools: [checkStyle(pattern: 'target/checkstyle-result.xml', reportEncoding: 'UTF-8')]
       )
-      dependencyCheckPublisher pattern: '**/target/dependency-check-report.xml'
+      dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     }
     success {
-      archiveArtifacts artifacts: 'Goobi/module-war/target/*.war, Goobi/install/db/goobi.sql', fingerprint: true
+      archiveArtifacts artifacts: 'target/*.war, target/*.jar, install/db/goobi.sql', fingerprint: true
     }
     changed {
       emailext(
