@@ -4,6 +4,10 @@
 @use "base/typography-custom";
 @use "base/utilities-custom";
 
+// LIBS
+@use "lib/font-awesome.css";
+@use "lib/codemirror.css";
+
 // COMPONENTS
 @use "components/nav-custom";
 @use "components/header";
