@@ -100,7 +100,7 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
       event.stopPropagation;
 
       tooltipTimeOut = setTimeout(() => {
-        if (!tooltip.tip.matches(':hover')) {
+        if (!tooltip.tip?.matches(':hover')) {
           tooltip.hide();
         }
       }, 200);
