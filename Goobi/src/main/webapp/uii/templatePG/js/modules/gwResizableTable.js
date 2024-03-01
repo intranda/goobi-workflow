@@ -134,11 +134,6 @@ const setListeners = function setListeners(tableWidth, handle) {
     let diffX;
     let totalWidth;
 
-    handle.addEventListener('mouseover', () => {
-        col = e.target.parentElement;
-        resizeHandles(col);
-    });
-
     handle.addEventListener('click', (e) => {
         if (e.detail === 2) {
             col = e.target.parentElement;
