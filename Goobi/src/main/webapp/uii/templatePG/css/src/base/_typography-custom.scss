@@ -14,24 +14,25 @@
 
 // Font sizes
 :root {
-  --fs-200: 1rem;
-  --fs-400: 1.2rem;
-  --fs-500: 1.4rem;
-  --fs-600: 1.6rem;
-  --fs-800: 1.8rem;
+  --fs-200: 0.625rem;
+  --fs-400: 0.75rem;
+  --fs-500: 0.875rem;
+  --fs-600: 1rem;
+  --fs-800: 1.125rem;
+  --bs-nav-link-font-size: var(--fs-400, 0.75rem);
 }
 
 // Set font family and body text
 body {
   font-family: Goobi, sans-serif;
-  font-size: var(--fs-400, 1.2rem);
+  font-size: var(--fs-400, 0.75rem);
   font-weight: 300;
 }
 
 // Styles for external UI elements
 body .ui-widget {
   font-family: Goobi, sans-serif;
-  font-size: 1.2rem;
+  font-size: 0.75rem;
   color: var(--bs-body-color);
 }
 
@@ -65,8 +66,8 @@ a {
   font-size: var(--fs-600);
 }
 .institutionEdit .tab-pane .heading-3 {
-  padding-left: 0.8rem;
-  padding-top: 1.2rem;
+  padding-left: 0.5rem;
+  padding-top: 0.75rem;
 }
 
 .font-status-done{

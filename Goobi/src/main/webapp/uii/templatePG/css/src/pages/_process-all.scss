@@ -66,7 +66,7 @@
     }
     > tbody {
       > * + * {
-        margin: 1.5rem 0 0;
+        margin: 0.9375rem 0 0;
       }
       > [role="row"] {
         display: flex;
@@ -77,10 +77,10 @@
         > td {
           border: 0;
           border-bottom: 1px solid var(--clr-neutral-300);
-          column-gap: 1rem;
+          column-gap: 0.625rem;
           display: flex;
           justify-content: space-between;
-          min-height: 1rem;
+          min-height: 0.625rem;
           width: 100%;
           &:before {
             content: attr(data-label);

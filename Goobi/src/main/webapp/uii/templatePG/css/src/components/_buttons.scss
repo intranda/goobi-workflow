@@ -7,9 +7,11 @@
   text-decoration: none;
   background-color: transparent;
   border: 0;
-  /*
-  padding: 0;
-  */
+  > .btn {
+    --bs-btn-padding-x: 0rem;
+    width: 29px;
+    margin-right: 5px;
+  }
 
   span {
       vertical-align: middle;
@@ -21,10 +23,19 @@
 }
 
 .btn-link-task {
+  .btn-success,
+  .btn-hot,
+  .btn-action,
+  .btn-primary,
+  .btn-primary-400,
+  [class*="btn-neutral-"] {
+    .fa {
+      color: var(--clr-white);
+    }
+  }
   span {
       color: var(--clr-text-400);
   }
-
 }
 
 
@@ -45,49 +56,19 @@
 
 button,
 .btn {
+  --bs-btn-disabled-bg: var(--clr-neutral-200);
+  --bs-btn-disabled-border-color: var(--clr-neutral-200);
+  --bs-btn-disabled-color: var(--clr-black);
+  --bs-btn-disabled-opacity: 0.65;
+  --bs-btn-font-size: var(--fs-400, 0.875rem);
+  --bs-btn-padding-y: 0.2343rem;
+  --bs-btn-padding-x: 0.46875rem;
   border-radius: var(--border-radius, 2px);
 
   i ~ *,
   .fa ~ * {
-    margin-inline-start: 0.4rem;
+    margin-inline-start: 0.25rem;
   }
-}
-
-/* ========================================
- * Badges
-/* ======================================== */
-
-// default color (applied if no other color is defined)
-.badge {
-  color: var(--clr-neutral-400);
-}
-
-button.badge,
-span.badge {
-  display: inline-block;
-  background-color: transparent;
-  border: 1px solid currentColor;
-  padding: 4px 8px;
-  font-size: 1.2rem;
-  font-weight: 400;
-  margin: 2px 2px;
-
-  i ~ span,
-  span ~ i,
-  .fa ~ span,
-  span ~ .fa {
-    margin-inline-start: 4px;
-  }
-
-  &:not(:last-child) {
-    margin-inline-end: 2px;
-  }
-}
-
-// pillshaped badges
-[class^="badge badge-intranda-"] {
-  color: var(--clr-white);
-  border-radius: 12px;
 }
 
 /* ========================================
@@ -148,7 +129,7 @@ span.badge {
 .dropdown-menu {
   border-color: var(--clr-neutral-300);
   .dropdown-item {
-    padding: 0.8rem 1.6rem;
+    padding: 0.5rem 1rem;
     &:hover,
     &:focus {
       background-color: var(--clr-neutral-200);
