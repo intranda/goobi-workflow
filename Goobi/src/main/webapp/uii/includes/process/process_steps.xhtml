@@ -565,6 +565,7 @@
                                         jsf:action="#{ProzessverwaltungForm.stepStatusDown}"
                                         jsf:rel="tooltip"
                                         title="#{msgs.statusRunterSetzen}"
+										data-bs-toggle="tooltip"
                                         aria-label="#{msgs.statusRunterSetzen}"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <span class="fa fa-chevron-left font-light margin-left-5" />
@@ -574,7 +575,8 @@
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                        <f:ajax render="@form" />
+                                        <f:ajax render="@form"
+                                            onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init();}" />
                                     </button>
 
                                     <!-- Bearbeitungsstatus hoch und runter -->
@@ -585,6 +587,7 @@
                                         jsf:action="#{ProzessverwaltungForm.stepStatusUp}"
                                         jsf:rel="tooltip"
                                         title="#{msgs.statusHoeherSetzen}"
+										data-bs-toggle="tooltip"
                                         aria-label="#{msgs.statusHoeherSetzen}"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <span class="fa fa-chevron-right font-light margin-left-5" />
@@ -594,7 +597,8 @@
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                        <f:ajax render="@form" />
+                                        <f:ajax render="@form"
+                                            onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init();}" />
                                     </button>
 
 

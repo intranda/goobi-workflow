@@ -11,7 +11,7 @@ export default gwHandleTooltip = ( function() {
 
     function init(data, { selector = _defaultSelector, restore = true } = {})  {
       // get the element triggering the ajax call
-      const trigger = bootstrap.Tooltip.getInstance(data.source)
+      const trigger = bootstrap.Tooltip.getOrCreateInstance(data.source)
       _removeTooltip(trigger);
 
       // Restore tooltips after ajax is done
@@ -30,6 +30,9 @@ export default gwHandleTooltip = ( function() {
 
       // if ajax call is done, init a new tooltip
       if (data.status === 'success') {
+        // this call to remove() is sanitizing the DOM from any still existing tooltips
+        // that might have been left behind after the previous ajax call
+        _remove();
         // get the rerendered trigger element
         const tooltipTriggers = document.querySelectorAll(selector)
 
@@ -39,6 +42,13 @@ export default gwHandleTooltip = ( function() {
         if (_debug) console.log(tooltipTriggers)
       }
     }
+
+    function _remove() {
+      if (_debug) console.log('%c### called gwHandleTooltip.remove ###', 'color: red')
+      // remove all tooltips
+      const tooltips = document.querySelectorAll('.tooltip')
+      tooltips.forEach(tooltip => tooltip.remove())
+    };
 
 
     return {
