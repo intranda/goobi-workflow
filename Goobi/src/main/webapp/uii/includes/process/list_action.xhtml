@@ -75,8 +75,8 @@
 
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
-                                            <button type="button" jsf:id="expandbutton2" class="expandbutton" onclick="toggle('possibleActions2')">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
+                                            <button type="button" jsf:id="expandbutton2" class="btn btn-lightgrey expandbutton" onclick="toggle('possibleActions2')">
+                                                <span class="margin-right-10 fa fa-globe fa-lg width-40" />
                                                 <h:outputText value="#{msgs.metadatenFuerDMSExportieren}" />
                                                 <f:ajax render="expandbutton2" />
                                             </button>
@@ -89,22 +89,22 @@
 
                                                 <li class="action-intent-li">
                                                     <!-- Download-Schaltknopf für Selection-->
-                                                    <button class="expandbutton" jsf:id="action6" jsf:action="#{ProzessverwaltungForm.exportDMSSelection}" jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action6" jsf:action="#{ProzessverwaltungForm.exportDMSSelection}" jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.auswahl2}" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- Download-Schaltknopf für Page-->
-                                                    <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.exportDMSPage}" title="#{msgs.trefferDieserSeite}" jsf:id="action7" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:action="#{ProzessverwaltungForm.exportDMSPage}" title="#{msgs.trefferDieserSeite}" jsf:id="action7" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.trefferDieserSeite}" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- Download-Schaltknopf für gesamtes Trefferset -->
-                                                    <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.exportDMSHits}" title="#{msgs.gesamtesTrefferset}" jsf:id="action8" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:action="#{ProzessverwaltungForm.exportDMSHits}" title="#{msgs.gesamtesTrefferset}" jsf:id="action8" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.gesamtesTrefferset}" />
                                                     </button>
                                                 </li>
@@ -117,8 +117,8 @@
                                             <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
                                             <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
                                             </div>
-                                            <button jsf:id="expandbutton5" jsf:action="#{NavigationForm.Reload}" class="button-link blue">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
+                                            <button jsf:id="expandbutton5" jsf:action="#{NavigationForm.Reload}" class="btn btn-lightgrey button-link blue">
+                                                <span class="margin-right-10 fa fa-cogs fa-lg width-40" />
                                                 <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
                                                 <f:setPropertyActionListener value="#{NavigationForm.uiStatus.goobiScript eq 'true' ? 'false' : 'true'}"
                                                 	target="#{NavigationForm.uiStatus.goobiScript}"/>
@@ -146,26 +146,26 @@
 	                                                    <!-- GoobiScript für selektierte Treffer der Seite -->
 	                                                    <ui:fragment rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 		                                                    <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
-		                                                    <button jsf:id="selectedModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}" pt:data-modalid="goobiScriptModal">
+		                                                    <button jsf:id="selectedModalRender" class="btn expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}" pt:data-modalid="goobiScriptModal">
 		                                                    	<f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="renderModal"/>
-		                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
+		                                                    	<span class="margin-right-10 fa fa-angle-right" />
 		                                                       <h:outputText value="#{msgs.auswahl2}" />
 		                                                    </button>
 	                                                    </ui:fragment>
 	                                                </li>
 	                                                <li class="action-intent-li">
 	                                                    <!-- GoobiScript für Treffer der Seite - modal rendern  -->
-	                                                    <button jsf:id="resultsModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptPage}" pt:data-modalid="goobiScriptModal">
+	                                                    <button jsf:id="resultsModalRender" class="btn expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptPage}" pt:data-modalid="goobiScriptModal">
 	                                                    	<f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="renderModal"/>
-	                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
+	                                                    	<span class="margin-right-10 fa fa-angle-right" />
 	                                                      		<h:outputText value="#{msgs.trefferDieserSeite}" />
 	                                                    </button>
 	                                                </li>
 	                                                <li class="action-intent-li">
 	                                                    <!-- GoobiScript für alle Treffer - modal rendern  -->
-	                                                    <button jsf:id="allModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptHits}" pt:data-modalid="goobiScriptModal">
+	                                                    <button jsf:id="allModalRender" class="btn expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptHits}" pt:data-modalid="goobiScriptModal">
 	                                                    	<f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="renderModal"/>
-	                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
+	                                                    	<span class="margin-right-10 fa fa-angle-right" />
 	                                                      		<h:outputText value="#{msgs.gesamtesTrefferset}" />
 	                                                    </button>
 				                                    </li>
@@ -177,8 +177,8 @@
 
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Download') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
-                                            <button type="button" jsf:id="expandbutton10" class="expandbutton">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-floppy-o fa-lg width-40" />
+                                            <button type="button" jsf:id="expandbutton10" class="btn btn-lightgrey expandbutton">
+                                                <span class="margin-right-10 fa fa-floppy-o fa-lg width-40" />
                                                 <h:outputText value="#{msgs.saveSearchResult}" />
                                                 <f:setPropertyActionListener target="#{ProzessverwaltungForm.dispaySearchResult}" value="#{not ProzessverwaltungForm.dispaySearchResult}" />
                                                 <f:ajax render="@form" />
@@ -200,13 +200,13 @@
                                                                 </h:selectOneMenu>
                                                             </h:column>
                                                             <h:column>
-                                                                <button jsf:id="addFilter" class="button-no-style" aria-label="#{msgs.addFilter}" jsf:action="#{ProzessverwaltungForm.addField}">
-                                                                    <span class="btn margin-left-5 fa fa-plus margin-bottom-regular" />
+                                                                <button jsf:id="addFilter" class="btn button-no-style" aria-label="#{msgs.addFilter}" jsf:action="#{ProzessverwaltungForm.addField}">
+                                                                    <span class="margin-left-5 fa fa-plus margin-bottom-regular" />
                                                                     <f:ajax render="@form" execute="@form" />
                                                                 </button>
 
-                                                                <button jsf:id="removeFilter" class="button-no-style" aria-label="#{msgs.removeFilter}" jsf:action="#{ProzessverwaltungForm.deleteField}" jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
-                                                                    <span class="btn fa fa-minus margin-bottom-regular" />
+                                                                <button jsf:id="removeFilter" class="btn button-no-style" aria-label="#{msgs.removeFilter}" jsf:action="#{ProzessverwaltungForm.deleteField}" jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
+                                                                    <span class="fa fa-minus margin-bottom-regular" />
                                                                     <x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
                                                                     <f:ajax render="@form" execute="@form" />
                                                                 </button>
@@ -218,8 +218,8 @@
 
 
                                                     <li class="action-intent-li">
-                                                        <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultXls}" title="#{msgs.createExcel}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                                            <span class="btn margin-right-10 fa fa-floppy-o" />
+                                                        <button class="btn expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultXls}" title="#{msgs.createExcel}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                                            <span class="margin-right-10 fa fa-floppy-o" />
                                                             <h:outputText value="#{msgs.createExcel}" />
                                                         </button>
                                                     </li>
@@ -227,23 +227,23 @@
 
 
                                                     <li class="action-intent-li">
-                                                        <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultDoc}" title="#{msgs.createDoc}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                                            <span class="btn margin-right-10 fa fa-floppy-o" />
+                                                        <button class="btn expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultDoc}" title="#{msgs.createDoc}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                                            <span class="margin-right-10 fa fa-floppy-o" />
                                                             <h:outputText value="#{msgs.createDoc}" />
                                                         </button>
                                                     </li>
 
 
                                                     <li class="action-intent-li">
-                                                        <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultRtf}" title="#{msgs.createRtf}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                                            <span class="btn margin-right-10 fa fa-floppy-o" />
+                                                        <button class="btn expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultRtf}" title="#{msgs.createRtf}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                                            <span class="margin-right-10 fa fa-floppy-o" />
                                                             <h:outputText value="#{msgs.createRtf}" />
                                                         </button>
                                                     </li>
 
                                                     <li class="action-intent-li">
-                                                        <button class="expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultAsPdf}" title="#{msgs.createPdf}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                                            <span class="btn margin-right-10 fa fa-floppy-o" />
+                                                        <button class="btn expandbutton" jsf:action="#{ProzessverwaltungForm.generateResultAsPdf}" title="#{msgs.createPdf}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                                            <span class="margin-right-10 fa fa-floppy-o" />
                                                             <h:outputText value="#{msgs.createPdf}" />
                                                         </button>
                                                     </li>
@@ -255,8 +255,8 @@
 
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
-                                            <button type="button" jsf:id="expandbutton6" class="expandbutton" onclick="toggle('possibleActions6')">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-table fa-lg width-40" />
+                                            <button type="button" jsf:id="expandbutton6" class="btn btn-lightgrey expandbutton" onclick="toggle('possibleActions6')">
+                                                <span class="margin-right-10 fa fa-table fa-lg width-40" />
                                                 <h:outputText value="#{msgs.anzahlMetadatenUndImagesErmitteln}" />
                                                 <f:ajax render="expandbutton6" />
                                             </button>
@@ -264,22 +264,22 @@
                                             <ul id="possibleActions6" style="display: none" class="action-intent-ul">
                                                 <li class="action-intent-li">
                                                     <!-- Statistische Auswertung-Schaltknopf für Page-->
-                                                    <button class="expandbutton" jsf:id="action20" jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesSelection}" jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action20" jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesSelection}" jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.auswahl2}" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- Statistische Auswertung-Schaltknopf für Page-->
-                                                    <button class="expandbutton" jsf:id="action21" jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesPage}" title="#{msgs.trefferDieserSeite}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action21" jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesPage}" title="#{msgs.trefferDieserSeite}">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.trefferDieserSeite}" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- Statistische Auswertung-Schaltknopf für gesamtes Trefferset -->
-                                                    <button class="expandbutton" jsf:id="action22" jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action22" jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.gesamtesTrefferset}" />
                                                     </button>
                                                 </li>
@@ -289,8 +289,8 @@
 
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
-                                            <button type="button" jsf:id="expandbutton7" class="expandbutton" onclick="toggle('possibleActions7')">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-bar-chart-o fa-lg width-40" />
+                                            <button type="button" jsf:id="expandbutton7" class="btn btn-lightgrey expandbutton" onclick="toggle('possibleActions7')">
+                                                <span class="margin-right-10 fa fa-bar-chart-o fa-lg width-40" />
                                                 <h:outputText value="#{msgs.statistischeAuswertung}" />
                                                 <f:ajax render="expandbutton7" />
                                             </button>
@@ -298,64 +298,64 @@
                                             <ul id="possibleActions7" style="display: none" class="action-intent-ul">
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsStatusVolumes-->
-                                                    <button class="expandbutton" jsf:id="action30" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsStatusVolumes}" title="#{msgs.statusOfVolumes}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action30" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsStatusVolumes}" title="#{msgs.statusOfVolumes}">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.statusOfVolumes}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsUsergroups -->
-                                                    <button class="expandbutton" jsf:id="action31" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsUsergroups}" title="#{msgs.statusForUsers}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action31" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsUsergroups}" title="#{msgs.statusForUsers}">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.statusForUsers}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsRuntimeSteps -->
-                                                    <button class="expandbutton" jsf:id="action32" jsf:rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}" jsf:action="#{ProzessverwaltungForm.statisticsRuntimeSteps}" title="#{msgs.runtimeOfSteps}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action32" jsf:rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}" jsf:action="#{ProzessverwaltungForm.statisticsRuntimeSteps}" title="#{msgs.runtimeOfSteps}">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.runtimeOfSteps}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsProduction -->
-                                                    <button class="expandbutton" jsf:id="action33" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsProduction}" title="#{msgs.productionStatistics}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action33" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsProduction}" title="#{msgs.productionStatistics}">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.productionStatistics}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsTroughput -->
-                                                    <button class="expandbutton" jsf:id="action34" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsTroughput}" title="#{msgs.productionThroughput}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action34" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsTroughput}" title="#{msgs.productionThroughput}">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.productionThroughput}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsStorage -->
-                                                    <button class="expandbutton" jsf:id="action35" jsf:action="#{ProzessverwaltungForm.statisticsStorage}" title="#{msgs.storageCalculator}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action35" jsf:action="#{ProzessverwaltungForm.statisticsStorage}" title="#{msgs.storageCalculator}">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.storageCalculator}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsCorrection -->
-                                                    <button class="expandbutton" jsf:id="action36" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsCorrection}" title="#{msgs.errorTracking}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action36" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsCorrection}" title="#{msgs.errorTracking}">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.errorTracking}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- ProjectAssociationss -->
-                                                    <button class="expandbutton" jsf:id="action37" jsf:action="#{ProzessverwaltungForm.statisticsProject}" title="#{msgs.projectAssociation}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <button class="btn expandbutton" jsf:id="action37" jsf:action="#{ProzessverwaltungForm.statisticsProject}" title="#{msgs.projectAssociation}">
+                                                        <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.projectAssociation}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>

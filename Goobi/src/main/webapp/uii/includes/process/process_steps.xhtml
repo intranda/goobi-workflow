@@ -630,8 +630,8 @@
                                         jsf:rendered="#{item.stepPlugin != '' and item.stepPlugin != null  and !item.typExportDMS}"
                                         jsf:action="#{ProzessverwaltungForm.startPlugin}"
                                         onclick="preventDoubleSubmit(this);"
-                                        class="button-link blue">
-                                        <span class="btn fa fa-puzzle-piece" style="font-size: 12px"></span>
+                                        class="btn button-link blue">
+                                        <span class="fa fa-puzzle-piece" style="font-size: 12px"></span>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -650,11 +650,11 @@
                                         jsf:rendered="#{item.typScriptStep and item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
                                         jsf:action="#{HelperForm.executeScriptsForStep(item.id)}"
                                         onclick="preventDoubleSubmit(this);"
-                                        class="button-link blue">
+                                        class="btn button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                        <span class="btn fa fa-cog margin-right-5"></span>
+                                        <span class="fa fa-cog margin-right-5"></span>
                                     </button>
 
                                     <button
@@ -663,11 +663,11 @@
                                         jsf:rendered="#{item.httpStep}"
                                         jsf:action="#{HelperForm.executeHttpCallForStep(item.id)}"
                                         onclick="preventDoubleSubmit(this);"
-                                        class="button-link blue">
+                                        class="btn button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                        <span class="btn fa fa-cog margin-right-5"></span>
+                                        <span class="fa fa-cog margin-right-5"></span>
                                     </button>
 
 
@@ -678,7 +678,7 @@
                                         jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.typExportDMS}"
                                         jsf:action="#{ProzessverwaltungForm.exportStep}"
                                         onclick="preventDoubleSubmit(this);"
-                                        class="button-link blue">
+                                        class="btn button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -686,7 +686,7 @@
                                             property="#{ProzessverwaltungForm.mySchritt}"
                                             value="#{item}" />
 
-                                        <span class="btn fa fa-globe margin-right-5"></span>
+                                        <span class="fa fa-globe margin-right-5"></span>
                                     </button>
 
                                 </h:column>
