@@ -663,10 +663,10 @@
 								<!-- UPLOAD FROM DONE FOLDER -->
 								<button jsf:id="uploadAll"
 									jsf:action="#{AktuelleSchritteForm.uploadFromHomeAlle}"
-									class="btn d-block"
+									class="btn btn-hot d-block"
 									title="#{msgs.verzeichnisFertigHochladen}"
 									onclick="if (!confirm('#{msgs.upload}')) return false">
-									<i class="btn btn-hot fa fa-cloud-upload" />
+									<span class="fa fa-cloud-upload" />
 									<span>
 										<h:outputText value="#{msgs.verzeichnisFertigHochladen}" />
 									</span>
@@ -675,10 +675,10 @@
 								<!-- DOWNLOAD PAGE HITS INTO USERS HOME -->
 								<button jsf:id="downloadPage"
 									jsf:action="#{AktuelleSchritteForm.downloadToHomePage}"
-									class="btn d-block"
+									class="btn btn-success d-block"
 									title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}"
 									onclick="if (!confirm('#{msgs.upload}')) return false">
-									<i class="btn btn-success fa fa-cloud-download" />
+									<span class="fa fa-cloud-download" />
 									<span>
 										<h:outputText value="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" />
 									</span>
@@ -687,10 +687,10 @@
 								<!-- DOWNLOAD ALL HITS INTO USERS HOME -->
 								<button jsf:id="downloadAll"
 									jsf:action="#{AktuelleSchritteForm.downloadToHomeHits}"
-									class="btn d-block"
+									class="btn btn-success d-block"
 									title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}"
 									onclick="if (!confirm('#{msgs.upload}')) return false">
-									<i class="btn btn-success fa fa-cloud-download" />
+									<span class="fa fa-cloud-download" />
 									<span>
 										<h:outputText value="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" />
 									</span>

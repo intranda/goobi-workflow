@@ -59,8 +59,8 @@
 
 <!-- 											<x:inputFileUpload id="fileupload" accept="image/*" value="#{Import.upDatei}" storage="file" -->
 <!-- 												required="false" styleClass="margin-bottom-regular" /> -->
-<!-- 											<h:commandLink id="button1" action="#{Import.Start}"> -->
-<!-- 												<span class="btn btn-lightgrey margin-right-10 fa fa-book fa-lg width-40" /> -->
+<!-- 											<h:commandLink styleClass="btn btn-lightgrey" id="button1" action="#{Import.Start}"> -->
+<!-- 												<span class="margin-right-10 fa fa-book fa-lg width-40" /> -->
 <!-- 												<h:outputText value="#{msgs.metadatenImportieren}"></h:outputText> -->
 <!-- 												<f:setPropertyActionListener target="#{Import.mySchritt}" -->
 <!-- 													value="#{AktuelleSchritteForm.batchHelper.currentStep}" /> -->
@@ -80,8 +80,8 @@
 									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL'}">
 										<li class="action-li">
 											<!-- Plugin Button only for Plugins without any gui or with full gui -->
-											<button jsf:id="runPluginFull" jsf:action="#{AktuelleSchritteForm.runPlugin}" class="expandbutton" onclick="preventDoubleSubmit(this);">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
+											<button jsf:id="runPluginFull" jsf:action="#{AktuelleSchritteForm.runPlugin}" class="btn btn-lightgrey expandbutton" onclick="preventDoubleSubmit(this);">
+												<span class="margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
 												<h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
 												<x:updateActionListener property="#{NavigationForm.uiStatus.pluginSimulation}" value="#{false}" />
 											</button>
@@ -91,8 +91,8 @@
 									<!-- Plugin - NONE -->
 									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}">
 										<li class="action-li">
-											<button jsf:id="runPluginNone" jsf:action="#{AktuelleSchritteForm.runPlugin}" class="expandbutton" onclick="preventDoubleSubmit(this);">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
+											<button jsf:id="runPluginNone" jsf:action="#{AktuelleSchritteForm.runPlugin}" class="btn btn-lightgrey expandbutton" onclick="preventDoubleSubmit(this);">
+												<span class="margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
 												<h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
 											</button>
 										</li>
@@ -104,8 +104,8 @@
 											<button
 												jsf:id="executeModule"
 												jsf:action="#{AktuelleSchritteForm.executeModule}"
-												title="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})" class="expandbutton" onclick="preventDoubleSubmit(this);">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-cog fa-lg width-40" />
+												title="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})" class="btn btn-lightgrey expandbutton" onclick="preventDoubleSubmit(this);">
+												<span class="margin-right-10 fa fa-cog fa-lg width-40" />
 												<h:outputText value="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})" />
 											</button>
 										</li>
@@ -116,10 +116,10 @@
 									<li class="action-li">
 								        <button jsf:id="executeScript"
 		                                    jsf:action="#{AktuelleSchritteForm.batchHelper.executeScript}"
-		                                    title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname1}" class="expandbutton" onclick="preventDoubleSubmit(this);">
+		                                    title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname1}" class="btn btn-lightgrey expandbutton" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname1}" />
-		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+		                                    <span class="margin-right-10 fa fa-wrench fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.batchHelper.currentStep.scriptname1}" />
 		                                </button>
 										</li>
@@ -129,10 +129,10 @@
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad2 != ''}">
 									<li class="action-li">
 								        <button jsf:id="executeScript2"
-		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}" class="expandbutton" onclick="preventDoubleSubmit(this);">
+		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}" class="btn btn-lightgrey expandbutton" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}" />
-		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+		                                    <span class="margin-right-10 fa fa-wrench fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}" />
 		                                </button>
 									</li>
@@ -142,10 +142,10 @@
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad3 != ''}">
 									<li class="action-li">
 									    <button jsf:id="executeScript3"
-		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}" class="expandbutton" onclick="preventDoubleSubmit(this);">
+		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}" class="btn btn-lightgrey expandbutton" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}" />
-		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+		                                    <span class="margin-right-10 fa fa-wrench fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}" />
 		                                </button>
 									</li>
@@ -155,10 +155,10 @@
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad4 != ''}">
 									<li class="action-li">
 									    <button jsf:id="executeScript4"
-		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}" class="expandbutton" onclick="preventDoubleSubmit(this);">
+		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}" class="btn btn-lightgrey expandbutton" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}" />
-		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+		                                    <span class="margin-right-10 fa fa-wrench fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}" />
 		                                </button>
 									</li>
@@ -168,10 +168,10 @@
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad5 != ''}">
 									<li class="action-li">
 									    <button jsf:id="executeScript5"
-		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}" class="expandbutton" onclick="preventDoubleSubmit(this);">
+		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}" class="btn btn-lightgrey expandbutton" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}" />
-		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+		                                    <span class="margin-right-10 fa fa-wrench fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}" />
 		                                </button>
 									</li>
@@ -184,8 +184,8 @@
 		                                <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10" value="#{msgs.timeoutWarningDMS}" />
 
 		                                <!-- Upload-Schaltknopf -->
-		                                <button jsf:action="#{AktuelleSchritteForm.batchHelper.exportDMS}" title="#{msgs.importDms}" jsf:id="export" class="expandbutton" onclick="preventDoubleSubmit(this);">
-		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
+		                                <button jsf:action="#{AktuelleSchritteForm.batchHelper.exportDMS}" title="#{msgs.importDms}" jsf:id="export" class="btn btn-lightgrey expandbutton" onclick="preventDoubleSubmit(this);">
+		                                    <span class="margin-right-10 fa fa-globe fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.importDms}" />
 		                                </button>
 									</li>
@@ -194,8 +194,8 @@
                                 <!-- Metadaten-Schaltknopf -->
                                 <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typMetadaten}">
 									<li class="action-li">
-		                                <h:commandLink action="#{Metadaten.XMLlesen}" title="#{msgs.metadatenBearbeiten}" id="metadata" class="expandbutton" onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');">
-		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-book fa-lg width-40" />
+		                                <h:commandLink action="#{Metadaten.XMLlesen}" title="#{msgs.metadatenBearbeiten}" id="metadata" class="btn btn-lightgrey expandbutton" onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');">
+		                                    <span class="margin-right-10 fa fa-book fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.metadatenBearbeiten}" />
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungszeitpunktNow}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungszeitpunktNow}" />
@@ -225,10 +225,10 @@
 
                                 <!-- Bearbeitung abbrechen-Schaltknopf -->
                                 <li class="action-li">
-	                                <button jsf:id="cancel" class="expandbutton"
+	                                <button jsf:id="cancel" class="btn btn-lightred expandbutton"
 	                                    jsf:action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerZurueckgeben}"
 	                                    title="#{msgs.cancelBatchEdition}">
-	                                    <span class="btn btn-lightred margin-right-10 fa fa-reply fa-lg width-40" />
+	                                    <span class="margin-right-10 fa fa-reply fa-lg width-40" />
 	                                    <h:outputText value="#{msgs.cancelBatchEdition}" />
 	                                </button>
 								</li>
@@ -236,10 +236,10 @@
                                 <!-- Abschliessen-Schaltknopf -->
                                  <h:panelGroup rendered="#{AktuelleSchritteForm.enableFinalizeButton}">
                                     <li class="action-li">
-    	                                <button jsf:id="finished" class="expandbutton"
+    	                                <button jsf:id="finished" class="btn btn-green expandbutton"
     	                                    jsf:action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerAbschliessen}"
     	                                    title="#{msgs.finishBatchEdition}">
-    	                                    <span class="btn btn-green margin-right-10 fa fa-check fa-lg width-40" />
+    	                                    <span class="margin-right-10 fa fa-check fa-lg width-40" />
     	                                    <h:outputText value="#{msgs.finishBatchEdition}" />
     	                                </button>
                                     </li>
