@@ -1,3 +1,4 @@
+import { hoverableTooltip } from './gwInitTooltips.js'
 /**
  * @description Destroy tooltips on ajax call and initialize a new one if ajax call is done.
  *

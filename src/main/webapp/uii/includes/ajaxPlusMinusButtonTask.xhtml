@@ -18,7 +18,9 @@
             </h:panelGroup>
 			<h:outputText value="#{item.titelLokalisiert}" />
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="true"/>
-			<f:ajax render=":myform" />
+			<f:ajax
+				render=":myform"
+				onevent="(data) => {gwHandleTooltip.init(data); gwResizableTable.reload(data); gwInitTooltips.init();}" />
 		</button>
 
 		<button type="button" class="font-black button-link" jsf:rendered="#{item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="hideDetails"
@@ -32,7 +34,9 @@
             </h:panelGroup>
             <h:outputText value="#{item.titelLokalisiert}" />
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="false"/>
-			<f:ajax render=":myform" />
+			<f:ajax
+				render=":myform"
+				onevent="(data) => {gwHandleTooltip.init(data); gwResizableTable.reload(data); gwInitTooltips.init();}" />
 		</button>
 
 	</composite:implementation>
