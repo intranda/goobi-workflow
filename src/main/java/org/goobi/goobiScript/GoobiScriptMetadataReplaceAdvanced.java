@@ -77,9 +77,9 @@ public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript imp
         addParameterToSampleCall(sb, FIELD, "Description",
                 "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameterToSampleCall(sb, VALUE, "s/old value/new value/g", "Regular expression to replace old term with the new term");
-        addParameterToSampleCall(sb, "authorityName", "", "Name of the normdatabase, e.g. viaf or gnd.");
+        addParameterToSampleCall(sb, "authorityName", "", "Name of the authority file, e.g. viaf or gnd.");
         addParameterToSampleCall(sb, NORMDATA_VALUE, "",
-                "Regular expression to replace old normdata value with new normdata value. e.g. `s/http:(.+)/https:$1/g` to replace http with https in all uris");
+                "Regular expression to replace old authority data value with new authority data value. e.g. `s/http:(.+)/https:$1/g` to replace http with https in all uris");
         addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, GROUP, "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");

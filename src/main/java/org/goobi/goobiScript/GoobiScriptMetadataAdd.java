@@ -80,8 +80,8 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                 "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameterToSampleCall(sb, VALUE, "This is my content.",
                 "This is used to define the value that shall be stored inside of the newly created metadata field.");
-        addParameterToSampleCall(sb, "authorityName", "", "Name of the normdatabase, e.g. viaf or gnd.");
-        addParameterToSampleCall(sb, "authorityValue", "", "Define the normdata value for this metadata field.");
+        addParameterToSampleCall(sb, "authorityName", "", "Name of the authority file, e.g. viaf or gnd.");
+        addParameterToSampleCall(sb, "authorityValue", "", "Define the authority data value for this metadata field.");
         addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, IGNORE_ERRORS, "true",
