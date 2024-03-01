@@ -1,6 +1,6 @@
 /* VARIABLES */
 .box {
-  --box-padding: 1.6rem;
+  --box-padding: 1rem;
   --box-padding-title: 7px 10px 7px 10px;
 }
 
@@ -30,13 +30,13 @@
     color: currentColor;
     .fa {
       color: currentColor;
-      font-size: 1.4rem;
+      font-size: 0.875rem;
     }
   }
 
   .btn--title-action {
     color: #fff;
-    border: 0.01rem solid #fff;
+    border: 0.0625rem solid #fff;
 
     i,
     .fa {
@@ -44,7 +44,7 @@
     }
 
     &:not(:last-child) {
-      margin-inline-end: 0.8rem;
+      margin-inline-end: 0.5rem;
     }
 
     &:hover {
@@ -58,7 +58,7 @@
 
   .btn--title-action-neutral {
     color: var(--clr-neutral-600);
-    border: 0.1rem solid var(--clr-neutral-300);
+    border: 0.0625rem solid var(--clr-neutral-300);
 
     i,
     .fa {
@@ -66,7 +66,7 @@
     }
 
     &:not(:last-child) {
-      margin-inline-end: 0.8rem;
+      margin-inline-end: 0.5rem;
     }
 
     &:hover {
@@ -80,8 +80,8 @@
 
   h2 {
     color: currentColor;
-    font-size: 1.5rem;
-    line-height: 2.4rem;
+    font-size: 0.9375rem;
+    line-height: 1.5rem;
     margin: 3px 0 3px 0;
 
     display: flex;
@@ -99,7 +99,7 @@
     // FA compass icon is very small, if compared to other FA icons.
     // => let's bumb up the font size!
     .fa-compass {
-      font-size: 2rem;
+      font-size: 1.25rem;
     }
   }
 }
@@ -144,9 +144,9 @@
       margin: 0;
     }
     .row > [class^="col-"] {
-      min-height: 4.5rem;
-      padding: 1.6rem 0.8rem;
-      padding: 0.8rem 0.8rem;
+      min-height: 2.8125rem;
+      padding: 1rem 0.5rem;
+      padding: 0.5rem 0.5rem;
     }
 
     .form-actions,
@@ -169,7 +169,7 @@
 .box {
   .tabs {
     display: flex;
-    gap: 0.8rem;
+    gap: 0.5rem;
     padding: 2px;
     list-style: none;
     margin-bottom: 0;
@@ -231,7 +231,7 @@
 
   .form__label i {
     vertical-align: super;
-    font-size: var(--fs-100, 0.8rem);
+    font-size: var(--fs-100, 0.5rem);
     color: var(--clr-neutral-400);
   }
 }
@@ -260,7 +260,7 @@
   flex-wrap: wrap;
   gap: 8px;
   justify-content: flex-end;
-  margin: 1.2rem 0;
+  margin: 0.75rem 0;
 
   // Push delete button to the left side
   .trigger-delete,

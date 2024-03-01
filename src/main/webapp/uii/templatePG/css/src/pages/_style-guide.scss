@@ -1,13 +1,13 @@
 #styleGuide {
-  --flow-space: 4.5rem;
+  --flow-space: 2.8125rem;
   counter-reset: heading;
 
   section {
-    --flow-space: 1.6rem;
-    --grid-size: 40rem, 1fr;
-    --gap: 2rem;
+    --flow-space: 1rem;
+    --grid-size: 25rem, 1fr;
+    --gap: 1.25rem;
     border: 2px solid var(--clr-neutral-200);
-    padding: 1.6rem;
+    padding: 1rem;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(var(--grid-size)));
     gap: var(--gap);
@@ -19,13 +19,13 @@
     &::before {
       counter-increment: heading;
       content: counter(heading);
-      margin-right: 1.2rem;
+      margin-right: 0.75rem;
       color: var(--clr-primary-400);
     }
   }
 
   .description {
-    font-size: 2rem;
+    font-size: 1.25rem;
     color: var(--clr-neutral-400);
   }
   section.colors {
@@ -48,7 +48,7 @@
       }
     }
     .switch {
-      --flow-space: 1.6rem;
+      --flow-space: 1rem;
       display: flex;
       gap: 8px;
     }
