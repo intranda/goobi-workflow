@@ -64,6 +64,16 @@ button,
   --bs-btn-padding-y: 0.2343rem;
   --bs-btn-padding-x: 0.46875rem;
   border-radius: var(--border-radius, 2px);
+  &--title-action {
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-padding-y: 0.25rem;
+    --bs-btn-padding-x: 0.5rem;
+    // double declaration of custom properties b/c we have divs with btn-styling containing buttons
+    .btn {
+      --bs-btn-disabled-bg: transparent;
+      --bs-btn-disabled-color: var(--clr-white)
+    }
+  }
 
   i ~ *,
   .fa ~ * {
