@@ -4,6 +4,9 @@ textarea {
   &:hover {
     border-color: var(--clr-primary-400) !important;
   }
+  &[type="checkbox"] {
+    margin-right: 5px;
+  }
 }
 
 .form-control,
