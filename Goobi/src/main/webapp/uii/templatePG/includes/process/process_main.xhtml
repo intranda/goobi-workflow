@@ -273,14 +273,13 @@
 										jsf:rel="tooltip"
                                         jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}"
 										title="#{!ProzessverwaltungForm.myProzess.containsExportStep ? msgs.noExportTask : ''}"
-										class="btn d-flex align-items-center btn--title-action"
-										style="padding: 0;">
+										class="d-flex align-items-center btn--title-action">
 										<!-- DMS-Export-Schaltknopf -->
 										<button
 											jsf:action="#{ProzessverwaltungForm.exportDMS}"
 											jsf:id="action21"
 											aria-label="#{msgs.exportDMS}"
-											class="btn btn-mini font-light"
+											class="btn btn-mini font-light border-0"
 											title="#{msgs.exportDMS}"
 											jsf:rel="tooltip"
 											jsf:disabled="#{!ProzessverwaltungForm.myProzess.containsExportStep}">
