@@ -44,7 +44,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
 
     private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
     private static final String STEPTITLE = "steptitle";
-    private static final String NUMBER = "number";
+    private static final String NUMBER = "order";
 
     @Override
     public String getAction() {
@@ -56,7 +56,8 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to add a new workflow step into the workflow.");
         addParameterToSampleCall(sb, STEPTITLE, "Scanning", "Title of the workflow step to add");
-        addParameterToSampleCall(sb, NUMBER, "5", "This number defines where in the workflow this new step is ordered into.");
+        addParameterToSampleCall(sb, NUMBER, "5",
+                "This number defines where in the workflow this new step is ordered into. Numerical values or the keyword 'end' are permitted in order to insert the step at a specific position or at the end");
         return sb.toString();
     }
 

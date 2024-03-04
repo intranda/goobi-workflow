@@ -53,7 +53,7 @@ public class RestStepResource {
     private String status;
 
     private Integer priority;
-    private Integer order;
+    private String order;
 
     private Date startDate;
     private Date finishDate;
@@ -80,7 +80,7 @@ public class RestStepResource {
         processName = process.getTitel();
         status = step.getBearbeitungsstatusEnum().getSearchString();
         priority = step.getPrioritaet();
-        order = step.getReihenfolge();
+        order = String.valueOf(step.getReihenfolge());
         startDate = step.getBearbeitungsbeginn();
         finishDate = step.getBearbeitungsende();
 

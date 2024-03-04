@@ -748,7 +748,7 @@ public class ProcessService implements IRestAuthentication {
             stepList.add(new RestStepResource(process, step));
         }
 
-        GenericEntity<List<RestStepResource>> entity = new GenericEntity<List<RestStepResource>>(stepList) {
+        GenericEntity<List<RestStepResource>> entity = new GenericEntity<>(stepList) {
         };
         return Response.status(200).entity(entity).build();
     }
@@ -824,6 +824,21 @@ public class ProcessService implements IRestAuthentication {
             return Response.status(404).entity("Step not found").build();
         }
 
+        if (resource.getOrder() != null) {
+            if (!StringUtils.isNumeric(resource.getOrder()) && !"end".equalsIgnoreCase(resource.getOrder())) {
+                return Response.status(400).entity("Order must be numeric or the keyword 'end'").build();
+            }
+
+            Process process = ProcessManager.getProcessById(id);
+            int orderNumber = 0;
+            if ("end".equalsIgnoreCase(resource.getOrder())) {
+                orderNumber = process.getSchritte().get(process.getSchritteSize() - 1).getReihenfolge() + 1;
+            } else {
+                orderNumber = Integer.parseInt(resource.getOrder());
+            }
+            step.setReihenfolge(orderNumber);
+        }
+
         if (StringUtils.isNotBlank(resource.getSteptitle())) {
             step.setTitel(resource.getSteptitle());
         }
@@ -877,6 +892,11 @@ public class ProcessService implements IRestAuthentication {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).build();
         }
+
+        if (!StringUtils.isNumeric(resource.getOrder()) && !"end".equalsIgnoreCase(resource.getOrder())) {
+            return Response.status(400).build();
+        }
+
         int id = Integer.parseInt(processid);
         Process process = ProcessManager.getProcessById(id);
         // process does not exist
@@ -898,7 +918,15 @@ public class ProcessService implements IRestAuthentication {
 
         Step step = new Step();
         step.setTitel(resource.getSteptitle());
-        step.setReihenfolge(resource.getOrder());
+
+        int orderNumber = 0;
+        if ("end".equalsIgnoreCase(resource.getOrder())) {
+            orderNumber = process.getSchritte().get(process.getSchritteSize() - 1).getReihenfolge() + 1;
+        } else {
+            orderNumber = Integer.parseInt(resource.getOrder());
+        }
+
+        step.setReihenfolge(orderNumber);
         step.setProzess(process);
         step.setProcessId(process.getId());
         process.getSchritte().add(step);
@@ -1110,7 +1138,7 @@ public class ProcessService implements IRestAuthentication {
             answer.add(new RestJournalResource(entry));
         }
 
-        GenericEntity<List<RestJournalResource>> entity = new GenericEntity<List<RestJournalResource>>(answer) {
+        GenericEntity<List<RestJournalResource>> entity = new GenericEntity<>(answer) {
         };
         return Response.status(200).entity(entity).build();
 
@@ -1279,7 +1307,7 @@ public class ProcessService implements IRestAuthentication {
             answer.add(new RestPropertyResource(entry));
         }
 
-        GenericEntity<List<RestPropertyResource>> entity = new GenericEntity<List<RestPropertyResource>>(answer) {
+        GenericEntity<List<RestPropertyResource>> entity = new GenericEntity<>(answer) {
         };
         return Response.status(200).entity(entity).build();
     }
@@ -1470,9 +1498,7 @@ public class ProcessService implements IRestAuthentication {
         if (resource.getPriority() != null) {
             step.setPrioritaet(resource.getPriority());
         }
-        if (resource.getOrder() != null) {
-            step.setReihenfolge(resource.getOrder());
-        }
+
         if (resource.getStartDate() != null) {
             step.setBearbeitungsbeginn(resource.getStartDate());
         }
@@ -1619,7 +1645,7 @@ public class ProcessService implements IRestAuthentication {
             } else {
                 metadataList.addAll(extractMetadata(logical, "topstruct"));
             }
-            GenericEntity<List<RestMetadataResource>> entity = new GenericEntity<List<RestMetadataResource>>(metadataList) {
+            GenericEntity<List<RestMetadataResource>> entity = new GenericEntity<>(metadataList) {
             };
             return Response.status(200).entity(entity).build();
         } catch (IOException | SwapException | UGHException e) {
