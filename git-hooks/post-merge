@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 path=src/main/webapp
 npm i --prefix $path
 npm run build --prefix $path
