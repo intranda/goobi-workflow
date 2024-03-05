@@ -8,8 +8,7 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:ds="http://deltaspike.apache.org/jsf"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    xmlns:ds="http://deltaspike.apache.org/jsf">
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,16 +27,13 @@
     <meta name="application" content="#{HelperForm.applicationHeaderTitle}" />
     <meta name="version" content="#{HelperForm.version}" />
     <meta name="build date" content="#{HelperForm.buildDate}" />
-    <meta name="git-revision" content="#{HelperForm.revision}" />
+    <meta name="git-revision" content="#{HelperForm.buildVersion}" />
     <title><h:outputText value="#{myPageTitle} - #{HelperForm.applicationHeaderTitle}" /></title>
 
 
     <!-- ========================================
           CSS
       ======================================== -->
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="templatePG/css/lib/font-awesome.css?v=#{HelperForm.buildVersion}" />
 
     <!-- Main styles (BS + custom styles) -->
     <link rel="stylesheet" href="templatePG/css/dist/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
@@ -307,17 +303,17 @@
 
                         <!-- MESSAGES -->
                         <div role="complementary">
-                            <h:panelGroup id="globalMessage" style="display: inline">
-                                <h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
-                            </h:panelGroup>
+                          <h:panelGroup id="globalMessage" style="display: inline">
+                            <h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
+                          </h:panelGroup>
                         </div>
                         <!-- // MESSAGES -->
 
-                      <!-- CONTENT -->
-                      <div jsf:id="main-content" tabindex="-1">
-                        <ui:insert name="content" />
-                      </div>
-                      <!-- // CONTENT -->
+                        <!-- CONTENT -->
+                        <div jsf:id="main-content" tabindex="-1">
+                          <ui:insert name="content" />
+                        </div>
+                        <!-- // CONTENT -->
 
                     </div>
                 </div>
@@ -438,6 +434,7 @@
           //Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)
           gwResizableTable.init();
           gwFocusOnLoad.init();
+          gwConfigEditor.init();
         </script>
 
     </f:view>

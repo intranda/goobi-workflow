@@ -61,7 +61,7 @@ export default gwInitTooltips = ( function() {
 * @param {*} element The element that triggers the Bootstrap tooltip
 * @returns A bootstrap tooltip
 */
-const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(element) {
+export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(element) {
   let tooltip = new bootstrap.Tooltip(element, {
     trigger: 'manual'
   });
@@ -100,7 +100,7 @@ const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(element) {
       event.stopPropagation;
 
       tooltipTimeOut = setTimeout(() => {
-        if (!tooltip.tip.matches(':hover')) {
+        if (!tooltip.tip?.matches(':hover')) {
           tooltip.hide();
         }
       }, 200);

@@ -128,13 +128,13 @@
                                                     </h:panelGroup></td>
                                                 <c:if test="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                                     <td><button
-                                                            class="button-link button-schaltknopf"
+                                                            class="btn button-link button-schaltknopf"
                                                             jsf:action="process_edit"
                                                             title="#{msgs.bearbeiten}"
                                                             jsf:id="editProperty"
                                                             aria-label="#{msgs.bearbeiten}"
                                                             jsf:rendered="#{proc.type.name != 'metadata'}">
-                                                            <i class="btn fa fa-pencil"></i>
+                                                            <span class="fa fa-pencil" />
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />
@@ -241,13 +241,13 @@
                                                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                                 value="eigenschaft" />
                                                         </button> <!-- duplicate container --> <button
-                                                            class="button-link button-schaltknopf"
+                                                            class="btn button-link button-schaltknopf"
                                                             jsf:id="duplicateProperty2"
                                                             aria-label="#{msgs.duplicate}"
                                                             jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}"
                                                             jsf:action="#{ProzessverwaltungForm.duplicateContainer}"
                                                             title="#{msgs.duplicate}">
-                                                            <i class="btn fa fa-plus margin-right-5"></i>
+                                                            <span class="fa fa-plus margin-right-5" />
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />

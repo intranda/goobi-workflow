@@ -1,3 +1,6 @@
-.tooltip {
+.tooltip,
+.popover {
   font-size: var(--fs-400);
+  --bs-popover-body-padding-y: 0.2343rem;;
+  --bs-popover-body-padding-x: 0.46875rem;;
 }

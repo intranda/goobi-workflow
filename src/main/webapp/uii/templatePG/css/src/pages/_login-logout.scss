@@ -5,34 +5,34 @@
  * logout.xhtml
  * ====================================== */
 
+ .login {
+	background-color: var(--clr-primary-400);
+}
+
 .login-logout {
 	position: absolute;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	left: 0px;
-	top: 0px;
-	right: 0px;
-	bottom: 0px;
-	background-color: var(--clr-primary-400);
     color: white;
+	height: 100%;
+	width: 100%;
 }
 
-
-
 .login-logout-body {
-	width: 450px;
+	max-height: 90vh;
+	width: 28rem;
 }
 
 .login-logout-body>h1 {
 	text-align: center;
+	font-size: 3rem;
 }
 
 .login-logout-body>h1>a {
 	color: white;
 	display: block;
 	font-weight: 300;
-	font-size: 48px;
 	padding: 2px 0;
 	text-decoration: none;
 }
@@ -43,12 +43,13 @@
 }
 
 .login-logout-box {
-	display: flex;
-	height: 240px;
 	background-color: white;
 	justify-content: center;
 	align-items: center;
     color: black;
+	display: flex;
+	height: 17rem;
+	max-height: 80vh;
 }
 
 .login-logout-box h2 {

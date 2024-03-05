@@ -23,7 +23,7 @@
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="true"/>
 			<f:ajax
 				render="#{ajaxRender}"
-				onevent="(data) => {gwHandleTooltip.init(data); gwResizableTable.reload(data); gwInitTooltips.init();}"/>
+				onevent="(data) => {gwInitTooltips.init(); gwHandleTooltip.init(data); gwResizableTable.reload(data);}"/>
 		</button>
 
 		<button

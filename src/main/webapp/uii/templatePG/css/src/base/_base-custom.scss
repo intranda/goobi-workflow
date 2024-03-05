@@ -2,14 +2,13 @@
   --gw-clr-border: var(--clr-neutral-300);
   --gw-border: 1px solid var(--gw-clr-border);
   --gw-border-radius: 2px;
-  --flow-space: 1.6rem;
+  --flow-space: 1rem;
 
   /* legacy: */
   --border-radius: 2px;
 }
 
 html {
-  font-size: 62.5%;
   -webkit-font-smoothing: antialiased;
 }
 

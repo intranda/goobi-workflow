@@ -565,6 +565,7 @@
                                         jsf:action="#{ProzessverwaltungForm.stepStatusDown}"
                                         jsf:rel="tooltip"
                                         title="#{msgs.statusRunterSetzen}"
+										data-bs-toggle="tooltip"
                                         aria-label="#{msgs.statusRunterSetzen}"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <span class="fa fa-chevron-left font-light margin-left-5" />
@@ -574,7 +575,8 @@
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                        <f:ajax render="@form" />
+                                        <f:ajax render="@form"
+                                            onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init();}" />
                                     </button>
 
                                     <!-- Bearbeitungsstatus hoch und runter -->
@@ -585,6 +587,7 @@
                                         jsf:action="#{ProzessverwaltungForm.stepStatusUp}"
                                         jsf:rel="tooltip"
                                         title="#{msgs.statusHoeherSetzen}"
+										data-bs-toggle="tooltip"
                                         aria-label="#{msgs.statusHoeherSetzen}"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <span class="fa fa-chevron-right font-light margin-left-5" />
@@ -594,7 +597,8 @@
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                        <f:ajax render="@form" />
+                                        <f:ajax render="@form"
+                                            onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init();}" />
                                     </button>
 
 
@@ -630,8 +634,8 @@
                                         jsf:rendered="#{item.stepPlugin != '' and item.stepPlugin != null  and !item.typExportDMS}"
                                         jsf:action="#{ProzessverwaltungForm.startPlugin}"
                                         onclick="preventDoubleSubmit(this);"
-                                        class="button-link blue">
-                                        <span class="btn fa fa-puzzle-piece" style="font-size: 12px"></span>
+                                        class="btn button-link blue">
+                                        <span class="fa fa-puzzle-piece" style="font-size: 12px"></span>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -650,11 +654,11 @@
                                         jsf:rendered="#{item.typScriptStep and item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
                                         jsf:action="#{HelperForm.executeScriptsForStep(item.id)}"
                                         onclick="preventDoubleSubmit(this);"
-                                        class="button-link blue">
+                                        class="btn button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                        <span class="btn fa fa-cog margin-right-5"></span>
+                                        <span class="fa fa-cog margin-right-5"></span>
                                     </button>
 
                                     <button
@@ -663,11 +667,11 @@
                                         jsf:rendered="#{item.httpStep}"
                                         jsf:action="#{HelperForm.executeHttpCallForStep(item.id)}"
                                         onclick="preventDoubleSubmit(this);"
-                                        class="button-link blue">
+                                        class="btn button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                        <span class="btn fa fa-cog margin-right-5"></span>
+                                        <span class="fa fa-cog margin-right-5"></span>
                                     </button>
 
 
@@ -678,7 +682,7 @@
                                         jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.typExportDMS}"
                                         jsf:action="#{ProzessverwaltungForm.exportStep}"
                                         onclick="preventDoubleSubmit(this);"
-                                        class="button-link blue">
+                                        class="btn button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -686,7 +690,7 @@
                                             property="#{ProzessverwaltungForm.mySchritt}"
                                             value="#{item}" />
 
-                                        <span class="btn fa fa-globe margin-right-5"></span>
+                                        <span class="fa fa-globe margin-right-5"></span>
                                     </button>
 
                                 </h:column>

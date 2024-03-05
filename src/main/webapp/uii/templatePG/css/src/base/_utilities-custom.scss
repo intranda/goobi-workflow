@@ -2,7 +2,7 @@
 // ignore style tags
 // Use it to easily apply equal flow space on all elements in a wrapper
 .flow > *:not(style) + * {
-  margin-top: var(--flow-space, 1.6rem);
+  margin-top: var(--flow-space, 1rem);
 }
 
 /* ------------- Background colors --------------- */
@@ -112,7 +112,7 @@
 }
 
 .gw-card {
-  padding: 1.6rem;
+  padding: 1rem;
   border: var(--gw-border);
   border-radius: var(--gw-border-radius);
 }
@@ -126,7 +126,7 @@
 }
 
 .goobiScript-source{
-	padding: 0.5rem; 
+	padding: 0.3125rem;
 	background: none repeat scroll 0 0 #eee;
 	border: 1px solid #ced4da;
 }
@@ -217,33 +217,33 @@
  * ====================================== */
 
 .mt-2 {
-  margin-top: 0.4rem !important;
+  margin-top: 0.25rem !important;
 }
 
 .mt-4 {
-  margin-top: 0.8rem !important;
+  margin-top: 0.5rem !important;
 }
 
 .mb-2 {
-  margin-bottom: 0.4rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .mb-4 {
-  margin-bottom: 0.8rem !important;
+  margin-bottom: 0.5rem !important;
 }
 
 .ms-2 {
-  margin-left: 0.4rem !important;
+  margin-left: 0.25rem !important;
 }
 
 .ms-4 {
-  margin-left: 2rem !important;
+  margin-left: 1.25rem !important;
 }
 
 .me-2 {
-  margin-right: 0.4rem !important;
+  margin-right: 0.25rem !important;
 }
 
 .me-4 {
-  margin-right: 0.8rem !important;
+  margin-right: 0.5rem !important;
 }

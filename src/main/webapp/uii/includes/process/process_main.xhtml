@@ -130,12 +130,12 @@
                                     <!--  modal rendern  -->
                                     <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and item.temporaryMetadataFiles}">
                                         <a
-                                            class="text_head"
+                                            class="btn text_head"
                                             title="#{msgs.metadatenBearbeiten}"
                                             href="#"
                                             data-toggle="modal"
                                             data-target="#myModal-#{count}">
-                                            <i class="btn fa fa-book"></i>
+                                            <span class="fa fa-book" />
                                         </a>
                                     </h:panelGroup>
                                     <div

@@ -266,8 +266,9 @@
                                         <button
                                             jsf:id="createExcel"
                                             jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
-                                            title="#{msgs.download_excel}">
-                                            <span class="btn margin-right-10 fa fa-floppy-o"></span>
+                                            title="#{msgs.download_excel}"
+                                            class="btn">
+                                            <span class="margin-right-10 fa fa-floppy-o"></span>
                                             <h:outputText value="#{msgs.download_excel}" />
                                             <x:updateActionListener
                                                 value="#{element}"
@@ -280,8 +281,9 @@
                                         <button
                                             jsf:id="createCsv"
                                             jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
-                                            title="#{msgs.download_csv}">
-                                            <span class="btn margin-right-10 fa fa-floppy-o"></span>
+                                            title="#{msgs.download_csv}"
+                                            class="btn">
+                                            <span class="margin-right-10 fa fa-floppy-o"></span>
                                             <h:outputText value="#{msgs.download_csv}" />
                                             <x:updateActionListener
                                                 value="#{element}"
@@ -316,8 +318,8 @@
                                                 jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
                                                 title="#{msgs.download_excel}"
                                                 jsf:rendered="#{element.dataTable.showableInTable}"
-                                                class="expandbutton margin-right-10">
-                                                <span class="btn margin-right-10 fa fa-floppy-o"></span>
+                                                class="btn expandbutton margin-right-10">
+                                                <span class="margin-right-10 fa fa-floppy-o"></span>
                                                 <h:outputText value="#{msgs.download_excel}" />
                                                 <x:updateActionListener
                                                     value="#{element}"
@@ -328,12 +330,12 @@
                                             </button>
 
                                             <button
-                                                class="expandbutton"
+                                                class="btn expandbutton"
                                                 jsf:id="createCsv2"
                                                 jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
                                                 title="#{msgs.download_csv}"
                                                 jsf:rendered="#{element.dataTable.showableInTable}">
-                                                <span class="btn margin-right-10 fa fa-floppy-o"></span>
+                                                <span class="margin-right-10 fa fa-floppy-o"></span>
                                                 <h:outputText value="#{msgs.download_csv}" />
                                                 <x:updateActionListener
                                                     value="#{element}"

@@ -130,10 +130,12 @@
 								jsf:id="runPluginFullGUI"
 								jsf:rendered="#{AktuelleSchritteForm.myPlugin !=null and (AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL' or AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART_AND_FULL')}"
 								jsf:action="#{AktuelleSchritteForm.runPlugin}"
-								class="btn  btn-link btn-link-task d-block "
+								class="btn btn-link btn-link-task d-block "
 								onclick="preventDoubleSubmit(this);">
 								<!-- <h:graphicImage value="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" /> -->
-								<i class="btn btn-neutral-600 fa fa-puzzle-piece" />
+								<span class="btn btn-blank">
+									<span class="fa fa-puzzle-piece" />
+								</span>
 								<span>
 									<h:outputText
 										value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
@@ -148,9 +150,9 @@
 								jsf:id="runPluginNoGUI"
 								jsf:rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}"
 								jsf:action="#{AktuelleSchritteForm.runPlugin}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-neutral-600 btn-link btn-link-task d-block"
 								onclick="preventDoubleSubmit(this);">
-								<i class="btn btn-neutral-600 fa fa-puzzle-piece" />
+								<span class="fa fa-puzzle-piece" />
 								<span>
 									<h:outputText
 										value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
@@ -165,7 +167,9 @@
 								class="btn btn-link btn-link-task d-block"
 								title="#{msgs.modulStarten} (#{currentStep.typModulName})"
 								onclick="preventDoubleSubmit(this);">
-								<i class="btn btn-neutral-600 fa fa-cog" />
+								<span class="btn btn-blank">
+									<span class="fa fa-cog" />
+								</span>
 								<span>
 									<h:outputText
 										value="#{msgs.modulStarten} (#{currentStep.typModulName})" />
@@ -183,7 +187,9 @@
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
 									value="#{currentStep.typAutomatischScriptpfad}" />
-								<i class="btn btn-neutral-600 fa fa-wrench" />
+								<span class="btn btn-blank">
+									<span class="fa fa-wrench" />
+								</span>
 								<span>
 									<h:outputText
 										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname1}" />
@@ -202,7 +208,9 @@
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
 									value="#{currentStep.typAutomatischScriptpfad2}" />
-								<i class="btn btn-neutral-600 fa fa-wrench" />
+								<span class="btn btn-blank">
+									<span class="fa fa-wrench" />
+								</span>
 								<span>
 									<h:outputText
 										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname2}" />
@@ -221,7 +229,9 @@
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
 									value="#{currentStep.typAutomatischScriptpfad3}" />
-								<i class="btn btn-neutral-600 fa fa-wrench" />
+								<span class="btn btn-blank">
+									<span class="fa fa-wrench" />
+								</span>
 								<span>
 									<h:outputText
 										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname3}" />
@@ -240,7 +250,9 @@
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
 									value="#{currentStep.typAutomatischScriptpfad4}" />
-								<i class="btn btn-neutral-600 fa fa-wrench" />
+								<span class="btn btn-blank">
+									<span class="fa fa-wrench" />
+								</span>
 								<span>
 									<h:outputText
 										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname4}" />
@@ -258,7 +270,9 @@
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
 									value="#{currentStep.typAutomatischScriptpfad5}" />
-								<i class="btn btn-neutral-600 fa fa-wrench" />
+								<span class="btn btn-blank">
+									<span class="fa fa-wrench" />
+								</span>
 								<span>
 									<h:outputText
 										value="#{msgs.scriptAusfuehren}: #{currentStep.scriptname5}" />
@@ -279,7 +293,9 @@
 									class="btn btn-link btn-link-task d-block"
 									title="#{msgs.importDms}"
 									onclick="preventDoubleSubmit(this);">
-									<i class="btn btn-neutral-600 fa fa-globe" />
+									<span class="btn btn-blank">
+										<span class="fa fa-upload" />
+									</span>
 									<span>
 										<h:outputText value="#{msgs.importDms}" />
 									</span>
@@ -299,7 +315,9 @@
 									rendered="#{!currentStep.prozess.temporaryMetadataFiles}"
 									onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
 									styleClass="btn btn-link btn-link-task">
-									<i class="btn btn-neutral-600 fa fa-book" />
+									<span class="btn btn-blank">
+										<span class="fa fa-book" />
+									</span>
 									<span>
 										<h:outputText value="#{msgs.metadatenBearbeiten}" />
 									</span>
@@ -309,9 +327,6 @@
 									<f:param
 										name="ProzesseID"
 										value="#{currentStep.prozess.id}" />
-									<f:param
-										name="SchrittID"
-										value="#{currentStep.id}" />
 									<f:param
 										name="BenutzerID"
 										value="#{LoginForm.myBenutzer.id}" />
@@ -358,12 +373,12 @@
 								<h:panelGroup
 									rendered="#{currentStep.prozess.temporaryMetadataFiles}">
 									<a
-										class="text_head"
+										class="btn btn-neutral-600 text_head"
 										title="#{msgs.metadatenBearbeiten}"
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#myModal">
-										<i class="btn btn-neutral-600 fa fa-book" />
+										<span class="fa fa-book" />
 										<span>
 											<h:outputText value="#{msgs.metadatenBearbeiten}" />
 										</span>
@@ -495,7 +510,9 @@
 								class="btn btn-link btn-link-task d-block"
 								title="#{msgs.laufzettelDrucken}"
 								onclick="preventDoubleSubmit(this);">
-								<i class="btn btn-neutral-600 fa fa-print" />
+								<span class="btn btn-blank">
+									<span class="fa fa-print" />
+								</span>
 								<span>
 									<h:outputText value="#{msgs.process_generateDocket}" />
 								</span>
@@ -509,7 +526,9 @@
                                 class="btn btn-link btn-link-task d-block"
                                 title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
                                 onclick="preventDoubleSubmit(this);">
-                                <i class="btn btn-hot fa fa-reply" />
+								<span class="btn btn-hot">
+									<span class="fa fa-reply" />
+								</span>
                                 <span>
                                     <h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
                                 </span>
@@ -523,7 +542,9 @@
 								class="btn btn-link btn-link-task d-block"
 								title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
 								onclick="preventDoubleSubmit(this);">
-								<i class="btn btn-hot fa fa-reply" />
+								<span class="btn btn-hot">
+									<span class="fa fa-reply" />
+								</span>
 								<span>
 									<h:outputText value="#{msgs.cancelBatchEdition}" />
 								</span>
@@ -537,7 +558,9 @@
                                 class="btn btn-link btn-link-task d-block"
                                 title="#{msgs.diesenSchrittAbschliessen}"
                                 onclick="preventDoubleSubmit(this);">
-                                <i class="btn btn-success fa fa-check" />
+								<span class="btn btn-success">
+									<span class="fa fa-check" />
+								</span>
                                 <span>
                                     <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
                                 </span>
@@ -551,7 +574,9 @@
 								class="btn btn-link btn-link-task d-block"
 								title="#{msgs.diesenSchrittAbschliessen}"
 								onclick="preventDoubleSubmit(this);">
-								<i class="btn btn-success fa fa-check" />
+								<span class="btn btn-success">
+									<span class="fa fa-check" />
+								</span>
 								<span>
 									<h:outputText value="#{msgs.finishBatchEdition}" />
 								</span>
