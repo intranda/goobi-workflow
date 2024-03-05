@@ -92,7 +92,7 @@ public class ObjectResource {
             foldername =
                     NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername).toString(),
                             process.getImagesDirectory());
-            List<URI> resourceURIs = getResources(Paths.get(process.getImagesDirectory(), foldername).toString(), baseFilename, baseURI);
+            List<URI> resourceURIs = getResources(Paths.get(foldername).toString(), baseFilename, baseURI);
             ObjectInfo info = new ObjectInfo(objectURI);
             info.setResources(resourceURIs);
             return info;
