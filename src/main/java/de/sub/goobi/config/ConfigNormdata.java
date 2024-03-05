@@ -36,10 +36,10 @@ public class ConfigNormdata {
     }
 
     /**
-     * Retrieves a list of configured normdatabases from the 'goobi_normdata.xml' configuration file. If the configuration file is not present or no
-     * normdatabases are configured, a default normdatabase is added.
+     * Retrieves a list of configured authority files from the 'goobi_normdata.xml' configuration file. If the configuration file is not present or no
+     * authority file are configured, a default authority file is added.
      * 
-     * @return A list of NormDatabase objects representing the configured normdatabases.
+     * @return A list of NormDatabase objects representing the configured authority file.
      */
     public static List<NormDatabase> getConfiguredNormdatabases() {
         List<NormDatabase> answer = new ArrayList<>();

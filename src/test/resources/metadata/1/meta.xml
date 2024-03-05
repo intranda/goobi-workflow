@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mets:mets OBJID="" xsi:schemaLocation="http://www.loc.gov/standards/premis/ http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/standards/mix/ http://www.loc.gov/standards/mix/mix.xsd" xmlns:mets="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:goobi="http://meta.goobi.org/v1.5.1/" xmlns:xlink="http://www.w3.org/1999/xlink">
-   <mets:metsHdr CREATEDATE="2023-11-18T16:20:18Z">
+   <mets:metsHdr CREATEDATE="2024-03-04T07:45:12Z">
       <mets:agent OTHERTYPE="SOFTWARE" ROLE="CREATOR" TYPE="OTHER">
-         <mets:name>Goobi - 70b17 - 2023-11-16T11:35:18Z</mets:name>
+         <mets:name>Goobi - 7ebd8 - 2023-11-27T09:36:54Z</mets:name>
          <mets:note>Goobi</mets:note>
       </mets:agent>
    </mets:metsHdr>

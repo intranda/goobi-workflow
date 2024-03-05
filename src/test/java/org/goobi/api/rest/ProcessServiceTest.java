@@ -390,7 +390,7 @@ public class ProcessServiceTest extends AbstractTest {
         stepResource.setStatus("stepdone");
 
         stepResource.setPriority(1);
-        stepResource.setOrder(10);
+        stepResource.setOrder("10");
         stepResource.setStartDate(new Date());
         stepResource.setFinishDate(new Date());
         stepResource.setSteptitle("step plugin");
@@ -442,7 +442,7 @@ public class ProcessServiceTest extends AbstractTest {
         assertEquals(400, response.getStatus());
 
         // missing usergroups
-        stepResource.setOrder(10);
+        stepResource.setOrder("10");
         response = service.createStep("1", stepResource);
         assertEquals(400, response.getStatus());
 

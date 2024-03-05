@@ -94,7 +94,7 @@ public class GoobiScriptAddStepTest extends AbstractTest {
         GoobiScriptAddStep fixture = new GoobiScriptAddStep();
         assertNotNull(fixture);
         assertEquals(
-                "---\\n# This GoobiScript allows to add a new workflow step into the workflow.\\naction: addStep\\n\\n# Title of the workflow step to add\\nsteptitle: Scanning\\n\\n# This number defines where in the workflow this new step is ordered into.\\nnumber: 5",
+                "---\\n# This GoobiScript allows to add a new workflow step into the workflow.\\naction: addStep\\n\\n# Title of the workflow step to add\\nsteptitle: Scanning\\n\\n# This number defines where in the workflow this new step is ordered into. Numerical values or the keyword 'end' are permitted in order to insert the step at a specific position or at the end\\norder: 5",
                 fixture.getSampleCall());
     }
 
@@ -105,7 +105,7 @@ public class GoobiScriptAddStepTest extends AbstractTest {
         String command = "addStep";
         Map<String, String> parameters = new HashMap<>();
         parameters.put("steptitle", "step 2");
-        parameters.put("number", "2");
+        parameters.put("order", "2");
         GoobiScriptAddStep fixture = new GoobiScriptAddStep();
         assertNotNull(fixture);
         List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
@@ -120,7 +120,7 @@ public class GoobiScriptAddStepTest extends AbstractTest {
         String command = "addStep";
         Map<String, String> parameters = new HashMap<>();
         parameters.put("steptitle", "step 2");
-        parameters.put("number", "2");
+        parameters.put("order", "2");
         GoobiScriptAddStep fixture = new GoobiScriptAddStep();
         List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
 

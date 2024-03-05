@@ -78,8 +78,8 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                 "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameterToSampleCall(sb, SEARCH, "Phone", "Term to be searched for");
         addParameterToSampleCall(sb, REPLACE, "Telephone", "Term that shall replace the searched term");
-        addParameterToSampleCall(sb, "authorityName", "", "Name of the normdatabase, e.g. viaf or gnd.");
-        addParameterToSampleCall(sb, "authorityValue", "", "Define the normdata value for this metadata field.");
+        addParameterToSampleCall(sb, "authorityName", "", "Name of the authority file, e.g. viaf or gnd.");
+        addParameterToSampleCall(sb, "authorityValue", "", "Define the authority data value for this metadata field.");
         addParameterToSampleCall(sb, POSITION, "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, GROUP, "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");
