@@ -53,8 +53,10 @@
 						<button
 							jsf:id="utid21"
 							jsf:action="#{ProzesskopieForm.prozessKopie.downloadDocket}"
-							class="btn btn-blank d-block">
-							<span class="fa fa-print" />
+							class="btn btn-link d-block mb-2">
+							<span class="btn btn-blank">
+								<span class="fa fa-print" />
+							</span>
 							<span>
 								<h:outputText value="#{msgs.process_generateDocket}" />
 							</span>
@@ -64,8 +66,10 @@
 						<button
 							jsf:id="utid20"
 							jsf:action="#{ProzesskopieForm.prepare}"
-							class="btn btn-blank d-block">
-							<span class="fa fa-file-o" />
+							class="btn btn-link d-block mb-2">
+							<span class="btn btn-blank">
+								<span class="fa fa-file-o" />
+							</span>
 							<span>
 								<h:outputText value="#{msgs.weiterenVorgangAnlegen}" />
 							</span>
@@ -75,9 +79,11 @@
 						<button
 							jsf:id="utid22"
 							jsf:action="process_edit"
-							class="btn btn-blank d-block"
+							class="btn btn-link d-block mb-2"
 							jsf:rendered="#{LoginForm.hasRole('Workflow_Processes')}">
-							<span class="fa fa-pencil" />
+							<span class="btn btn-blank">
+								<span class="fa fa-pencil" />
+							</span>
 							<span>
 								<h:outputText value="#{msgs.denErzeugtenBandOeffnen}" />
 							</span>
