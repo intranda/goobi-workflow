@@ -8,15 +8,16 @@
 @import "../../../../node_modules/bootstrap/scss/variables-dark";
 @import "../../../../node_modules/bootstrap/scss/maps";
 @import "../../../../node_modules/bootstrap/scss/mixins";
-@import "../../../../node_modules/bootstrap/scss/utilities";
+@import "../../../../node_modules/bootstrap/scss/root";
 
 // Layout & components
-@import "../../../../node_modules/bootstrap/scss/root";
+@import "../../../../node_modules/bootstrap/scss/utilities";
 @import "../../../../node_modules/bootstrap/scss/reboot";
 @import "../../../../node_modules/bootstrap/scss/type";
 @import "../../../../node_modules/bootstrap/scss/images";
 @import "../../../../node_modules/bootstrap/scss/containers";
 @import "../../../../node_modules/bootstrap/scss/grid";
+@import "../../../../node_modules/bootstrap/scss/helpers";
 @import "../../../../node_modules/bootstrap/scss/tables";
 @import "../../../../node_modules/bootstrap/scss/forms";
 @import "../../../../node_modules/bootstrap/scss/buttons";
@@ -42,9 +43,6 @@
 @import "../../../../node_modules/bootstrap/scss/spinners";
 @import "../../../../node_modules/bootstrap/scss/offcanvas";
 @import "../../../../node_modules/bootstrap/scss/placeholders";
-
-// Helpers
-@import "../../../../node_modules/bootstrap/scss/helpers";
 
 // Utilities
 @import "../../../../node_modules/bootstrap/scss/utilities/api";
