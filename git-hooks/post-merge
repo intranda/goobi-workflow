@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+path=src/main/webapp
+declare -a sources=("${path}/uii/templatePG/css/src/" "${path}/uii/templatePG/css/lib/" "${path}/uii/templatePG/js/")
+
+runBuild() {
+    if [ ! -d "${path}/node_modules" ]; then
+        echo "Node modules not found. Running npm install..."
+        runInstall
+        exit 0
+    fi
+    npm run build --prefix $path
+}
+runInstall() {
+    npm ci --prefix $path
+    runBuild
+}
+CheckIfChanged() {
+    for i in "${sources[@]}"
+    do
+        if echo git diff --name-only HEAD@{1} HEAD -- | grep --quiet "$i"; then
+            echo "Changes detected at $i"
+            runBuild
+            exit 0
+        else
+            echo "No changes detected at $i"
+        fi
+    done
+    echo "No changes detected in any source files"
+}
+CheckIfPresent() {
+    if [ ! -f "${path}/dist/js/main.js" ]; then
+        echo "No compiled assets found. Full run of npm commencing..."
+        runInstall
+        exit 0
+    else
+        echo "Compiled assets found. Checking for changes..."
+    fi
+}
+
+CheckIfPresent
+CheckIfChanged
