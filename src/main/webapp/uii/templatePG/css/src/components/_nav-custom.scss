@@ -32,10 +32,15 @@
   // Nav items
   .nav-item {
     color: var(--text-nav, var(--clr-white));
-  }
-  .nav-item.active {
-    background-color: var(--bg-body, var(--clr-white));
-    color: var(--text-active);
+    &.active {
+      background-color: var(--bg-body, var(--clr-white));
+      color: var(--text-active);
+    }
+    &:not(.active) {
+      .dropdown-toggle.show {
+        --bs-navbar-active-color: var(--clr-white);
+      }
+    }
   }
 
   .nav-link {
