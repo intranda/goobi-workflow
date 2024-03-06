@@ -12,7 +12,8 @@
 
     <composite:implementation>
                     <div
-                        class="#{NavigationForm.uiStatus['imageCommentsBig']?'':''}"
+                        class="#{NavigationForm.uiStatus['imageCommentsBig']?'':''} overflow-y-auto"
+                        style="min-height: 330px; height: 330px;"
                         data-scrolldown="true">
                         <h:panelGroup
                             rendered="#{bean.imageComments.size()>0}">
@@ -38,13 +39,13 @@
                                                     styleClass="#{entry.styleClass}"
                                                     escape="false" />
                                             </td>
-                                            <td class="col">
+                                            <td class="col-4">
                                             	<h:outputText
                                                     value="#{entry.imageName}"
                                                     title="#{entry.imageFolder}/#{entry.imageName}"
                                                     escape="false" />
                                             </td>
-                                            <td class="col-6">
+                                            <td class="col-2">
                                            		<h:outputText
                                                     value="#{entry.comment}"
                                                     escape="false" />
