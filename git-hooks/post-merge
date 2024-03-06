@@ -11,7 +11,7 @@ runBuild() {
     npm run build --prefix $path
 }
 runInstall() {
-    npm i --prefix $path
+    npm ci --prefix $path
     runBuild
 }
 CheckIfChanged() {
