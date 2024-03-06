@@ -9,7 +9,6 @@ build/
 /src/main/webapp/node_modules/
 /src/main/webapp/META-INF/context.xml
 /src/main/webapp/dist/
-/src/main/webapp/package-lock.json
 #/src/main/webapp/npm-debug.log
 
 # Eclipse
