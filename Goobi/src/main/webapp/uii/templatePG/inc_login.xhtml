@@ -37,7 +37,7 @@
         					</h2>
         					<h:form styleClass="form-validate mt-4" id="loginForm" prependId="false">
         						<h:panelGroup id="globalWarningMessage">
-        							<h:panelGroup rendered="#{SessionForm.logoutMessage!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
+        							<h:panelGroup rendered="#{SessionForm.logoutMessage!=''}" styleClass="alert alert-danger d-block text-break h6">
         								<span class="fa fa-exclamation-triangle" />
         								<h:outputText value="#{SessionForm.logoutMessage}" />
         							</h:panelGroup>
