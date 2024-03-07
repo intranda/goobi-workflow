@@ -1,5 +1,6 @@
 package de.sub.goobi.metadaten;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +68,11 @@ public class ImageCommentPropertyHelper {
 
         ImageComments ic = loadImageComments();
         removeExistingCommentsForImage(ic, comment.getImageFolder(), comment.getImageName());
-        ic.comments.add(comment);
+
+        // Empty comment string is interpreted as removal
+        if (comment.getComment() != null  && !comment.getComment().isEmpty()) {
+            ic.comments.add(comment);
+        }
 
         saveImageComments(ic);
     }
@@ -81,21 +86,13 @@ public class ImageCommentPropertyHelper {
 
     public List<ImageComment> getAllComments() {
         return loadImageComments().comments.stream()
-                .sorted((c1, c2) -> {
-                    int imageCompare = c1.getImageName().compareTo(c2.getImageName());
-                    if (imageCompare != 0) {
-                        return imageCompare;
-                    }
-                    int folderCompare = c1.getImageFolder().compareTo(c2.getImageFolder());
-                    return folderCompare;
-                })
+                .sorted(Comparator.comparing(ImageComment::getImageName).thenComparing(ImageComment::getImageFolder))
                 .collect(Collectors.toList());
     }
 
     private ImageComments loadImageComments() {
         Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_PROPERTY_NAME);
-        ImageComments comments = loadImageCommentsFromProcessProperty(currentProperty);
-        return comments;
+        return loadImageCommentsFromProcessProperty(currentProperty);
     }
 
     private void saveImageComments(ImageComments ic) {
