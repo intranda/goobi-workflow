@@ -5099,10 +5099,7 @@ public class Metadaten implements Serializable {
         }
 
         Optional<ImageComment> comment = getCommentPropertyHelper().getComment(currentTifFolder, getImage().getImageName());
-        if (!comment.isPresent()) {
-            return null;
-        }
-        return comment.get().getComment();
+        return comment.map(ImageComment::getComment).orElse(null);
     }
 
     public void setCommentPropertyForImage(String comment) {
