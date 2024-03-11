@@ -54,44 +54,7 @@
 						boxPadding="false">
 						<intranda:boxTitle
 							title="#{myPageTitle}"
-							icon="fa-database">
-
-							<div class="actions d-flex">
-								<!-- download all records as csv/excel -->
-								<button
-									jsf:id="downloadRecords"
-									class="btn d-flex align-items-center btn--title-action"
-									jsf:rel="tooltip"
-									jsf:action="#{vocabularyBean.downloadRecords}"
-									title="#{msgs.vocabularyManager_downloadRecords}">
-									<span class="fa fa-download" />
-									<f:passThroughAttribute
-										name="data-toggle"
-										value="tooltip" />
-									<f:passThroughAttribute
-										name="aria-label"
-										value="#{msgs.vocabularyManager_downloadRecords}" />
-								</button>
-
-								<!-- import all records from excel -->
-								<button
-									jsf:id="uploadRecords"
-									class="btn d-flex align-items-center btn--title-action"
-									jsf:rel="tooltip"
-									jsf:action="#{vocabularyBean.uploadRecords}"
-									title="#{msgs.vocabularyManager_uploadRecords}">
-									<span class="fa fa-upload" />
-									<f:passThroughAttribute
-										name="data-toggle"
-										value="tooltip" />
-									<f:passThroughAttribute
-										name="aria-label"
-										value="#{msgs.vocabularyManager_uploadRecords}" />
-								</button>
-							</div>
-							<!-- /actions -->
-
-						</intranda:boxTitle>
+							icon="fa-database" />
 
 						<intranda:formInputText
 							id="title"
