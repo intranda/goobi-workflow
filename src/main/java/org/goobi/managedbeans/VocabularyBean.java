@@ -654,9 +654,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
                                         updated = true;
                                     }
                                 }
-                                if (updated) {
-                                    updateRecords.add(recordToUpdate);
-                                }
+                            }
+                            if (updated) {
+                                updateRecords.add(recordToUpdate);
                             }
                         } else {
                             // create new record
