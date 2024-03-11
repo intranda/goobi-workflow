@@ -629,7 +629,17 @@ public class MassImportForm implements Serializable {
     public void setCurrentPlugin(String currentPlugin) {
         this.currentPlugin = currentPlugin;
         if (currentPlugin != null && currentPlugin.length() > 0) {
-            this.plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, this.currentPlugin);
+            // check if currentPlugin name contains a sub
+            if (currentPlugin.contains(" -- ")) {
+                String[] parts = currentPlugin.split(" -- ");
+                // first part: plugin name
+                plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, parts[0]);
+                // second part: config name
+                plugin.setConfigurationName(parts[1]);
+
+            } else {
+                this.plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, this.currentPlugin);
+            }
             plugin.setForm(this);
             if (this.plugin.getImportTypes().contains(ImportType.FOLDER)) {
                 this.allFilenames = this.plugin.getAllFilenames();

@@ -116,9 +116,25 @@ public interface IImportPlugin extends IPlugin, Serializable {
         // the default implementation ignores this call
     }
 
+    /**
+     * Get all plugin instances. The default implementation returns the plugin name only-
+     * 
+     * @return
+     */
+
     default List<String> getPluginNames() {
         List<String> list = new ArrayList<>();
         list.add(getTitle());
         return list;
+    }
+
+    /**
+     * Option to set a special configuration name. This might be used to load a special configuration for the import
+     * 
+     * @param configuration
+     */
+
+    default void setConfigurationName(String configuration) {
+        // the default implementation ignores this call
     }
 }
