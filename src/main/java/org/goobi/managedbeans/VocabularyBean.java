@@ -593,7 +593,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 }
             }
             VocabularyManager.insertNewRecords(recordsToAdd, currentVocabulary.getId());
-            log.debug("Stored {} new records", recordsToAdd.size());
+            String message = String.format("Stored %s new records", recordsToAdd.size());
+            log.debug(message);
+            Helper.setMeldung(message);
         }
 
         if (importType.equals(IMPORT_TYPE_MERGE)) {
@@ -682,15 +684,19 @@ public class VocabularyBean extends BasicBean implements Serializable {
             }
 
             if (!newRecords.isEmpty()) {
-                log.debug("Created {} new record(s)", newRecords.size());
+                String message = String.format("Created %s new record(s)", newRecords.size());
+                log.debug(message);
+                Helper.setMeldung(message);
                 VocabularyManager.insertNewRecords(newRecords, currentVocabulary.getId());
             }
             if (!updateRecords.isEmpty()) {
-                log.debug("Updated {} record(s)", updateRecords.size());
+                String message = String.format("Updated %s record(s)", updateRecords.size());
+                log.debug(message);
+                Helper.setMeldung(message);
                 VocabularyManager.batchUpdateRecords(updateRecords, currentVocabulary.getId());
             }
         }
-        return FilterKein();
+        return editRecords();
     }
 
     /**
