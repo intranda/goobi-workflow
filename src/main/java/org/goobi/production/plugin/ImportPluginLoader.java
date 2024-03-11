@@ -44,7 +44,7 @@ public class ImportPluginLoader extends PluginLoader {
         for (IPlugin p : PluginLoader.getPluginList(PluginType.Import)) {
             IImportPlugin ip = (IImportPlugin) p;
             if (ip.getImportTypes().contains(type)) {
-                pluginList.add(p.getTitle());
+                pluginList.addAll(ip.getPluginNames());
             }
         }
         Collections.sort(pluginList);

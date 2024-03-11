@@ -27,6 +27,7 @@ package org.goobi.production.plugin.interfaces;
  */
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.goobi.production.enums.ImportType;
@@ -113,5 +114,11 @@ public interface IImportPlugin extends IPlugin, Serializable {
      */
     default void setWorkflowTitle(String workflowTitle) {
         // the default implementation ignores this call
+    }
+
+    default List<String> getPluginNames() {
+        List<String> list = new ArrayList<>();
+        list.add(getTitle());
+        return list;
     }
 }
