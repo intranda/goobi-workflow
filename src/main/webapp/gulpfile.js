@@ -58,7 +58,7 @@ const targetFolder = {
 
 // FUNCTIONS
 function static() {
-    return src(sources.static)
+    return src(sources.static, {since: gulp.lastRun(static)})
         .pipe(dest(`${customLocation}${targetFolder.static}`))
 };
 
