@@ -1,19 +1,42 @@
 #!/usr/bin/env bash
-path=src/main/webapp
+path=src/main/webapp/
+cssPath="/uii/templatePG/css/"
 declare -a sources=("${path}/uii/templatePG/css/src/" "${path}/uii/templatePG/css/lib/" "${path}/uii/templatePG/js/")
 
 runBuild() {
-    if [ ! -d "${path}/node_modules" ]; then
-        echo "Node modules not found. Running npm install..."
-        runInstall
-        exit 0
-    fi
+    checkModules
     npm run build --prefix $path
 }
+
 runInstall() {
     npm ci --prefix $path
     runBuild
 }
+
+checkModules() {
+    if [ ! -d "${path}node_modules" ]; then
+        echo "Node modules not found. Running npm install..."
+        runInstall
+        exit 0
+    fi
+}
+
+checkAssets() {
+    if [ ! -f "${path}dist/js/main.js" ]; then
+        echo "Compiled JS not found. Running npm build..."
+        runBuild
+        exit 0
+    elif [ ! -f "${path}${cssPath}dist/main.min.css" ]; then
+        echo "Compiled CSS not found. Running npm build..."
+        runBuild
+        exit 0
+    elif [ ! -f "${path}${cssPath}dist/bootstrap.min.css" ]; then
+        echo "Compiled BS CSS not found. Running npm build..."
+        runBuild
+        exit 0
+    fi
+}
+
 CheckIfChanged() {
     for i in "${sources[@]}"
     do
@@ -27,14 +50,11 @@ CheckIfChanged() {
     done
     echo "No changes detected in any source files"
 }
+
 CheckIfPresent() {
-    if [ ! -f "${path}/dist/js/main.js" ]; then
-        echo "No compiled assets found. Full run of npm commencing..."
-        runInstall
-        exit 0
-    else
-        echo "Compiled assets found. Checking for changes..."
-    fi
+    checkAssets
+    checkModules
+    echo "Compiled assets found. Checking for changes..."
 }
 
 CheckIfPresent
