@@ -107,7 +107,9 @@ function devBSCss() {
 
 function devCss() {
     return src(`${sources.css}main.scss`)
+        .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
+        .pipe(sourcemaps.write())
         .pipe(rename((path) => {
             basename: path.basename += '.min'
         }))
