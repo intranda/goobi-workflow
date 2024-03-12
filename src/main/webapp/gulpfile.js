@@ -43,8 +43,7 @@ const sources = {
         'uii/**/*.png',
         'uii/**/*.svg',
         'uii/**/*.gif',
-        'uii/**/*.ico',
-        'uii/**/*.css',
+        'uii/**/*.ico'
     ]
 }
 // target directories
