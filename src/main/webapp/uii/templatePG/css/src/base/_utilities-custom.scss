@@ -131,6 +131,20 @@
 	border: 1px solid #ced4da;
 }
 
+// use this on content that should not exceed lower edge of viewport
+.vertical-fit {
+  max-height: calc(100vh - 265px);
+}
+
+.preformatted {
+  white-space: pre;
+  font-size: 13px;
+  color: var(--clr-neutral-600);
+  height: auto;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  background-color: var(--clr-neutral-200);
+}
 
 /* ------------- Legacy statistics --------------- */
 .standardTable {
