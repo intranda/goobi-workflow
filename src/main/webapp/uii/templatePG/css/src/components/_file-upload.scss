@@ -3,7 +3,7 @@
  * ===================================== */
 
 
-body .ui-fileupload .ui-fileupload-buttonbar {
+ body .ui-fileupload .ui-fileupload-buttonbar {
   display: flex;
   justify-content: center;
   background: transparent;
@@ -17,8 +17,17 @@ body .ui-fileupload .ui-fileupload-content {
   border: 0;
 }
 
-body .ui-button.ui-button-text-icon-left .ui-button-text {
-  padding: 0.3125rem 0.625rem 0.3125rem 0.625rem;
+body .ui-button.ui-button-text-icon-left {
+  .ui-button-icon-left {
+    color: var(--clr-white);
+    font-size: var(--fs-200);
+    top: 75%;
+    transform: translateY(-40%);
+  }
+  .ui-button-text {
+    color: var(--clr-white);
+    padding: 0.3125rem 0.625rem 0.3125rem 2rem;
+  }
 }
 
 body .ui-icon-close {
@@ -83,4 +92,70 @@ body .ui-messages>div {
 
 .ui-icon-plusthick {
   display: none !important;
+}
+
+.ui-fileupload {
+  &.upload-override {
+    .ui-widget-header {
+        background: transparent;
+        border: none;
+        padding: 0;
+        .ui-button {
+          background: transparent;
+          border: none;
+        }
+    }
+
+    .ui-corner-top {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+    }
+
+    .ui-widget-header {
+        text-shadow: none;
+    }
+
+    .ui-widget {
+        font-family: inherit;
+        border-radius: 0;
+        color: #444;
+    }
+
+    .ui-fileupload-content {
+        display: none;
+    }
+
+    .ui-button-icon-left {
+        display: none;
+    }
+
+    .ui-button-text.ui-c {
+        font-weight: normal;
+        padding: 0 !important;
+    }
+
+    .ui-fileupload-choose {
+        background: #eee;
+        border: 0;
+        box-shadow: none;
+        text-shadow: none;
+        border-radius: 0;
+        color: #444;
+        filter: none;
+        padding: 0;
+    }
+
+    .ui-fileupload-buttonbar span.ui-button .ui-button-text {
+        background: #666666;
+        color:white;
+        margin:0;
+        padding:0;
+     }
+
+    .ui-state-hover {
+        background: #ccc !important;
+        text-shadow: none;
+        text-decoration: none;
+    }
+  }
 }
