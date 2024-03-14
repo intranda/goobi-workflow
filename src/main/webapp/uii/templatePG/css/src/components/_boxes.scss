@@ -242,6 +242,15 @@
     background: transparent;
     color: var(--bs-body-color);
   }
+  .tab {
+    border-color: var(--clr-text-400);
+    &.active {
+      background-color: var(--clr-neutral-600);
+      border-color: var(--clr-neutral-600);
+      color: var(--clr-white);
+
+    }
+  }
 }
 
 // Standalone help block below some boxes
