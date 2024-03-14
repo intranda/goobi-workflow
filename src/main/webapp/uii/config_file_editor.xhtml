@@ -200,6 +200,23 @@
                                 <!-- Buttons on top of text editor -->
                                 <div class="form-actions mt-0 mb-3">
                                     <!-- Cancel-Button -->
+                                    
+                                <!-- BUTTON TO DOWNLOAD FILE -->
+                                <!-- TODO open modal, show current version and backup file -->
+                                <!-- radio buttons to select the wanted version -->
+                                    <button
+                                        jsf:id="downloadFile"
+                                        jsf:action="#{configFileEditorBean.downloadCurrentConfigFile}"
+                                        class="btn btn-blank"
+                                        title="#{msgs.downloadCurrentConfigFile}">
+                                        <span>
+                                            <h:outputText value="#{msgs.downloadFile}" />
+                                        </span>
+                                        <span>
+                                        </span>
+                                    </button>                      
+                                    
+                                    
                                     <button
                                         jsf:id="cancel"
                                         class="btn btn-blank float-end"

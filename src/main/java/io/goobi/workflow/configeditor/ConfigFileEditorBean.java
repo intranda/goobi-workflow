@@ -22,13 +22,19 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,6 +48,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
@@ -346,5 +353,38 @@ public class ConfigFileEditorBean implements Serializable {
         }
 
         return eh.getErrors();
+    }
+
+    public void downloadCurrentConfigFile() {
+
+        if (currentConfigFile != null) {
+            Path file = Paths.get(currentConfigFile.getConfigDirectory().getDirectory(), currentConfigFile.getFileName());
+
+            FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+            if (!facesContext.getResponseComplete()) {
+                HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+                String contentType = servletContext.getMimeType(currentConfigFile.getFileName());
+                response.setContentType(contentType);
+                response.setHeader("Content-Disposition", "attachment;filename=\"" + currentConfigFile.getFileName() + "\"");
+
+                // write docket to servlet output stream
+                try {
+                    ServletOutputStream out = response.getOutputStream();
+                    Files.copy(file, out);
+
+                    out.flush();
+                } catch (IOException e) {
+                    log.error("IOException while exporting run note", e);
+                }
+
+                facesContext.responseComplete();
+            }
+
+        } else {
+            // TODO display error message
+        }
+
     }
 }
