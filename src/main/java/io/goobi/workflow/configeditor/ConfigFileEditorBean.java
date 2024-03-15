@@ -45,6 +45,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.goobi.io.BackupFileManager;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -104,6 +105,10 @@ public class ConfigFileEditorBean implements Serializable {
 
     @Getter
     private boolean validationError;
+
+    @Getter
+    @Setter
+    private transient Path selectedFile;
 
     /**
      * Constructor
@@ -355,36 +360,69 @@ public class ConfigFileEditorBean implements Serializable {
         return eh.getErrors();
     }
 
+    /**
+     * 
+     * Download the selected configuration file
+     * 
+     */
     public void downloadCurrentConfigFile() {
+        Path file = Paths.get(currentConfigFile.getConfigDirectory().getDirectory(), currentConfigFile.getFileName());
+        downloadSelectedFile(file);
+    }
 
-        if (currentConfigFile != null) {
-            Path file = Paths.get(currentConfigFile.getConfigDirectory().getDirectory(), currentConfigFile.getFileName());
+    /**
+     * Download a file from the list
+     * 
+     */
 
-            FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-            if (!facesContext.getResponseComplete()) {
-                HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+    public void downloadBackupFile() {
+        downloadSelectedFile(selectedFile);
+    }
 
-                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-                String contentType = servletContext.getMimeType(currentConfigFile.getFileName());
-                response.setContentType(contentType);
-                response.setHeader("Content-Disposition", "attachment;filename=\"" + currentConfigFile.getFileName() + "\"");
+    /**
+     * 
+     * Download selected file
+     *
+     * @param file
+     */
 
-                // write docket to servlet output stream
-                try {
-                    ServletOutputStream out = response.getOutputStream();
-                    Files.copy(file, out);
+    private void downloadSelectedFile(Path file) {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
-                    out.flush();
-                } catch (IOException e) {
-                    log.error("IOException while exporting run note", e);
-                }
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(file.getFileName().toString());
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + file.getFileName().toString() + "\"");
 
-                facesContext.responseComplete();
+            // write docket to servlet output stream
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                Files.copy(file, out);
+
+                out.flush();
+            } catch (IOException e) {
+                log.error("IOException while exporting run note", e);
             }
 
-        } else {
-            // TODO display error message
+            facesContext.responseComplete();
         }
-
     }
+
+    /**
+     * get a list of all backup files for the selected file
+     * 
+     */
+
+    public List<Path> getDownloadFileAndBackups() {
+        List<Path> downloadFiles = new ArrayList<>();
+        if (currentConfigFile != null) {
+            // backup files ordered by date desc
+            String backupDirectory = currentConfigFile.getConfigDirectory().getBackupDirectory();
+            downloadFiles.addAll(BackupFileManager.getBackupFilesSortedByAge(backupDirectory, currentConfigFile.getFileName()));
+        }
+        return downloadFiles;
+    }
+
 }

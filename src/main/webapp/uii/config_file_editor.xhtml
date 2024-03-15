@@ -9,7 +9,6 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
     <ui:param
@@ -35,16 +34,24 @@
     </ui:define>
 
     <ui:define name="content">
-        <link rel="stylesheet" href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}"/>
-        <script type="text/javascript" src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}"/>
-        <script type="text/javascript" src="template/js/codemirror/mode/properties/properties.js?v=#{HelperForm.buildVersion}"/>
-        <script type="text/javascript" src="template/js/codemirror/mode/xml/xml.js?v=#{HelperForm.buildVersion}"/>
-    <style>
-            .CodeMirror {
-                height: auto;
-            }
-        </style>
-            <!-- The area for messages that came from the backend -->
+        <link
+            rel="stylesheet"
+            href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}" />
+        <script
+            type="text/javascript"
+            src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
+        <script
+            type="text/javascript"
+            src="template/js/codemirror/mode/properties/properties.js?v=#{HelperForm.buildVersion}" />
+        <script
+            type="text/javascript"
+            src="template/js/codemirror/mode/xml/xml.js?v=#{HelperForm.buildVersion}" />
+        <style>
+.CodeMirror {
+    height: auto;
+}
+</style>
+        <!-- The area for messages that came from the backend -->
         <h:messages
             for="configFileEditor"
             escape="false"
@@ -64,8 +71,8 @@
                 icon="fa-plug"
                 title="#{msgs[configFileEditorBean.title]}">
 
-                <div class="alert alert-danger alert-dismissable" >
-                    <h:outputText value="#{msgs.administration_missingPermission} Admin_config_file_editor"/>
+                <div class="alert alert-danger alert-dismissable">
+                    <h:outputText value="#{msgs.administration_missingPermission} Admin_config_file_editor" />
                 </div>
             </intranda:box>
         </ui:fragment>
@@ -75,9 +82,11 @@
 
 
         <!-- With permission -->
-        <h:form id="configFileEditorForm" rendered="#{LoginForm.hasRole('Admin_config_file_editor')}">
+        <h:form
+            id="configFileEditorForm"
+            rendered="#{LoginForm.hasRole('Admin_config_file_editor')}">
 
-             <div class="row">
+            <div class="row">
                 <!-- This code block is used if the warnings for non-allowed directories are used in the backend -->
 
                 <!--
@@ -85,12 +94,14 @@
                 FROM THE BACKEND TO SET THE SYNTAX HIGHLIGHTING IN CODE MIRROR.
                 DO NOT REMOVE IT.
                 -->
-                <div id="currentConfigFileType" style="position: absolute; visibility: hidden">
-                    #{configFileEditorBean.currentConfigFileType}
-                </div>
+                <div
+                    id="currentConfigFileType"
+                    style="position: absolute; visibility: hidden">#{configFileEditorBean.currentConfigFileType}</div>
 
                 <!-- LEFT AREA -->
-                <div class="col-sm-12 col-md-4 mb-3" id="leftarea">
+                <div
+                    class="col-sm-12 col-md-4 mb-3"
+                    id="leftarea">
 
                     <!-- BOX WITH FILES -->
                     <intranda:box
@@ -135,8 +146,6 @@
                                                 jsf:rel="tooltip"
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}">
                                                 <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
-                                                <!--
-                                                 -->
                                                 <f:ajax render="configFileEditorForm" />
                                             </button>
                                         </h:panelGroup>
@@ -149,9 +158,9 @@
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}"
                                                 title="#{configFileEditorBean.isWritable(item) ? msgs.administration_config_file_editor_edit_file : msgs.administration_config_file_editor_show_file}">
                                                 <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
-                                                <!--
-                                                -->
-                                                <f:ajax render="@form" execute="@form" />
+                                                <f:ajax
+                                                    render="@form"
+                                                    execute="@form" />
                                             </button>
                                         </h:panelGroup>
                                     </h:column>
@@ -164,16 +173,21 @@
 
 
                     <!-- BOX WITH HELP -->
-                    <div class="mt-3" jsf:rendered="#{msgs['plugin_administration_config_file_editor_help_'.concat(configFileEditorBean.currentConfigFile.getFileName())] ne 'plugin_administration_config_file_editor_help_'.concat(configFileEditorBean.currentConfigFile.getFileName())}">
+                    <div
+                        class="mt-3"
+                        jsf:rendered="#{msgs['plugin_administration_config_file_editor_help_'.concat(configFileEditorBean.currentConfigFile.getFileName())] ne 'plugin_administration_config_file_editor_help_'.concat(configFileEditorBean.currentConfigFile.getFileName())}">
                         <intranda:box
                             boxType="outline"
                             boxPadding="true"
                             icon="fa-question-circle-o"
                             title="#{configFileEditorBean.explanationTitle}">
 
-                            <h:panelGroup id="actionform" styleClass="col-sm-12">
+                            <h:panelGroup
+                                id="actionform"
+                                styleClass="col-sm-12">
                                 <div class="row">
-                                    <h:outputText escape="false"
+                                    <h:outputText
+                                        escape="false"
                                         value="#{msgs['plugin_administration_config_file_editor_help_'.concat(configFileEditorBean.currentConfigFile.getFileName())]}" />
                                 </div>
                             </h:panelGroup>
@@ -186,7 +200,9 @@
 
 
                 <!-- RIGHT AREA -->
-                <div class="col-sm-12 col-md-8" id="rightarea">
+                <div
+                    class="col-sm-12 col-md-8"
+                    id="rightarea">
                     <h:panelGroup rendered="#{configFileEditorBean.currentConfigFile != null}">
 
                         <intranda:box
@@ -199,24 +215,49 @@
                             <div id="boxUntilBottom">
                                 <!-- Buttons on top of text editor -->
                                 <div class="form-actions mt-0 mb-3">
+
+                                    <!-- Button to download current file -->
+                                    <div class="btn-group">
+                                        <button
+                                            jsf:id="downloadFile"
+                                            jsf:action="#{configFileEditorBean.downloadCurrentConfigFile}"
+                                            class="btn btn-blank"
+                                            title="#{msgs.downloadFile}">
+                                            <span>
+                                                <h:outputText value="#{msgs.downloadFile}" />
+                                            </span>
+                                        </button>
+
+                                        <!-- or select a version from the backup -->
+                                        <ui:fragment rendered="#{configFileEditorBean.downloadFileAndBackups.size()>0}">
+                                            <button
+                                                type="button"
+                                                class="btn btn-blank dropdown-toggle dropdown-toggle-split"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                <span class="visually-hidden">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <ui:repeat
+                                                    var="backupFile"
+                                                    value="#{configFileEditorBean.downloadFileAndBackups}">
+                                                    <li>
+                                                        <button
+                                                            jsf:id="prepare"
+                                                            jsf:action="#{configFileEditorBean.downloadBackupFile}"
+                                                            class="dropdown-item">
+                                                            <h:outputText value="#{backupFile.fileName}" />
+
+                                                            <x:updateActionListener
+                                                                property="#{configFileEditorBean.selectedFile}"
+                                                                value="#{backupFile}" />
+                                                        </button>
+                                                    </li>
+                                                </ui:repeat>
+                                            </ul>
+                                        </ui:fragment>
+                                    </div>
                                     <!-- Cancel-Button -->
-                                    
-                                <!-- BUTTON TO DOWNLOAD FILE -->
-                                <!-- TODO open modal, show current version and backup file -->
-                                <!-- radio buttons to select the wanted version -->
-                                    <button
-                                        jsf:id="downloadFile"
-                                        jsf:action="#{configFileEditorBean.downloadCurrentConfigFile}"
-                                        class="btn btn-blank"
-                                        title="#{msgs.downloadCurrentConfigFile}">
-                                        <span>
-                                            <h:outputText value="#{msgs.downloadFile}" />
-                                        </span>
-                                        <span>
-                                        </span>
-                                    </button>                      
-                                    
-                                    
                                     <button
                                         jsf:id="cancel"
                                         class="btn btn-blank float-end"
@@ -273,7 +314,7 @@
                             icon="fa-wrench"
                             title="#{msgs.noFileSelected}">
 
-                            <div style="background-color: #eee; height: 250px;"/>
+                            <div style="background-color: #eee; height: 250px;" />
                         </intranda:box>
 
                     </h:panelGroup>
@@ -288,12 +329,16 @@
                     role="modal"
                     aria-labelledby="myDialogLabel"
                     jsf:rendered="#{configFileEditorBean.configFileContentChanged}">
-                    <div class="modal-dialog" role="document">
+                    <div
+                        class="modal-dialog"
+                        role="document">
                         <div class="modal-content">
 
                             <!-- MODAL HEADER -->
                             <div class="modal-header bg-primary-400 text-white">
-                                <h4 class="modal-title" id="myDialogLabel">
+                                <h4
+                                    class="modal-title"
+                                    id="myDialogLabel">
                                     <h:outputText value="#{msgs.administration_config_file_editor_unsaved_changes}" />
                                 </h4>
                                 <button
@@ -317,18 +362,14 @@
                                     jsf:id="ignoreChangedFile"
                                     jsf:action="#{configFileEditorBean.editConfigFileIgnore}">
                                     <i class="fa fa-trash-o"></i>
-                                    <span>
-                                        #{msgs.discard}
-                                    </span>
+                                    <span> #{msgs.discard} </span>
                                 </button>
                                 <button
                                     class="btn btn-success"
                                     jsf:id="saveWhenChangedFile"
                                     jsf:action="#{configFileEditorBean.save}">
                                     <i class="fa fa-save"></i>
-                                    <span>
-                                        #{msgs.save}
-                                    </span>
+                                    <span> #{msgs.save} </span>
                                 </button>
                             </div>
                             <!-- // MODAL FOOTER -->
@@ -338,10 +379,15 @@
                 </div>
                 <!-- // MODAL TO ASK FOR SAVING -->
 
-                <div jsf:id="test" jsf:rendered="#{configFileEditorBean.configFileContentChanged}">
+                <div
+                    jsf:id="test"
+                    jsf:rendered="#{configFileEditorBean.configFileContentChanged}">
                     <script>
-                        $('#saveDialog').modal('show')
-                    </script>
+																					$(
+																							'#saveDialog')
+																							.modal(
+																									'show')
+																				</script>
                 </div>
             </div>
         </h:form>
