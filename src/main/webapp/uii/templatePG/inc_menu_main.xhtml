@@ -283,13 +283,13 @@
 									rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
 									icon="fa fa-database" />
 
-                                <!-- Ldapgruppen -->
+                                <!-- config editor -->
                                 <intranda:menuItem
                                     id="aConfigFileEditor"
                                     parentMenu="menu_administration"
                                     label="#{msgs.intranda_administration_config_file_editor}"
                                     action="config_file_editor.xhtml"
-                                    rendered="#{LoginForm.hasRole('Admin_config_file_editor')}"
+                                    rendered="#{LoginForm.hasRole('Admin_config_file_editor') and NavigationForm.showConfigEditor}"
                                     icon="fa fa-key" />
 
 

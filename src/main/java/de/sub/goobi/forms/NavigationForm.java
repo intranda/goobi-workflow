@@ -46,6 +46,7 @@ import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import lombok.Getter;
 import lombok.Setter;
@@ -186,6 +187,10 @@ public class NavigationForm implements Serializable {
 
     public boolean isEmailActive() {
         return SendMail.getInstance().getConfig().isEnableStatusChangeMail();
+    }
+
+    public boolean isShowConfigEditor() {
+        return ConfigurationHelper.getInstance().isEnableConfigEditor();
     }
 
 }

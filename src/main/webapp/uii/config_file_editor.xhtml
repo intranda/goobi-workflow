@@ -83,6 +83,7 @@
 
         <!-- With permission -->
         <h:form
+            enctype="multipart/form-data"
             id="configFileEditorForm"
             rendered="#{LoginForm.hasRole('Admin_config_file_editor')}">
 
@@ -215,6 +216,24 @@
                             <div id="boxUntilBottom">
                                 <!-- Buttons on top of text editor -->
                                 <div class="form-actions mt-0 mb-3">
+
+                                    <!-- upload a new file, replace content with it -->
+                                    <div>
+                                        <intranda:formLabel
+                                            label="#{msgs.fileUpload}"
+                                            labelFor="fileupload"
+                                            labelRequired="false" />
+                                        <h:inputFile
+                                            id="fileupload"
+                                            value="#{configFileEditorBean.uploadedFile}"
+                                            storage="file"
+                                            styleClass="form-control"
+                                            required="false">
+                                            <f:ajax
+                                                listener="#{configFileEditorBean.uploadFile}"
+                                                render="@form" />
+                                        </h:inputFile>
+                                    </div>
 
                                     <!-- Button to download current file -->
                                     <div class="btn-group">
