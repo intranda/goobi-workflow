@@ -9,6 +9,13 @@ textarea {
   }
 }
 
+.ui-calendar {
+  width: 100%;
+  .hasDatepicker {
+    width: 100%;
+  }
+}
+
 .form-control,
 .form-select {
   font-size: var(--fs-400)
