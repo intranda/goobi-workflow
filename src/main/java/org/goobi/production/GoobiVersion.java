@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 import lombok.Getter;
@@ -55,6 +56,9 @@ public class GoobiVersion {
 
     private static Optional<String> getOptionalValue(Attributes attributes, String attributeName) throws IllegalArgumentException {
         String result = attributes.getValue(attributeName);
+        if (StringUtils.isBlank(result)) {
+            result = null;
+        }
         return Optional.ofNullable(result);
     }
 }
