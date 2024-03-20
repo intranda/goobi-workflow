@@ -218,26 +218,23 @@
 
                             <div id="boxUntilBottom">
                                 <!-- Buttons on top of text editor -->
-                                <div class="form-actions mt-0 mb-3">
+                                <div class="box__actions mt-0 mb-3">
 
                                     <!-- upload a new file, replace content with it -->
-                                    <div>
-                                        <intranda:formLabel
-                                            label="#{msgs.fileUpload}"
-                                            labelFor="fileupload"
-                                            labelRequired="false" />
+                                    <label class="btn btn-blank">
+                                        <h:outputText value="#{msgs.fileUpload}" />
                                         <h:inputFile
                                             id="fileupload"
                                             value="#{configFileEditorBean.uploadedFile}"
                                             storage="file"
-                                            styleClass="form-control"
+                                            style="display:none"
                                             required="false">
                                             <f:ajax
                                                 listener="#{configFileEditorBean.uploadFile}"
                                                 render="@form"
                                                 onevent="function() { gwConfigEditor.init();}" />
                                         </h:inputFile>
-                                    </div>
+                                    </label>
 
                                     <!-- Button to download current file -->
                                     <div class="btn-group">
@@ -253,31 +250,35 @@
 
                                         <!-- or select a version from the backup -->
                                         <ui:fragment rendered="#{configFileEditorBean.downloadFileAndBackups.size()>0}">
-                                            <button
-                                                type="button"
-                                                class="btn btn-blank dropdown-toggle dropdown-toggle-split"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false">
-                                                <span class="visually-hidden">Toggle Dropdown</span>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <ui:repeat
-                                                    var="backupFile"
-                                                    value="#{configFileEditorBean.downloadFileAndBackups}">
-                                                    <li>
-                                                        <button
-                                                            jsf:id="prepare"
-                                                            jsf:action="#{configFileEditorBean.downloadBackupFile}"
-                                                            class="dropdown-item">
-                                                            <h:outputText value="#{backupFile.fileName}" />
+                                            <div
+                                                data-bs-toggle="tooltip"
+                                                title="Toggle Dropdown">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-blank dropdown-toggle dropdown-toggle-split"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <ui:repeat
+                                                        var="backupFile"
+                                                        value="#{configFileEditorBean.downloadFileAndBackups}">
+                                                        <li>
+                                                            <button
+                                                                jsf:id="prepare"
+                                                                jsf:action="#{configFileEditorBean.downloadBackupFile}"
+                                                                class="dropdown-item">
+                                                                <h:outputText value="#{backupFile.fileName}" />
 
-                                                            <x:updateActionListener
-                                                                property="#{configFileEditorBean.selectedFile}"
-                                                                value="#{backupFile}" />
-                                                        </button>
-                                                    </li>
-                                                </ui:repeat>
-                                            </ul>
+                                                                <x:updateActionListener
+                                                                    property="#{configFileEditorBean.selectedFile}"
+                                                                    value="#{backupFile}" />
+                                                            </button>
+                                                        </li>
+                                                    </ui:repeat>
+                                                </ul>
+                                            </div>
                                         </ui:fragment>
                                     </div>
                                     <!-- Cancel-Button -->
