@@ -9,12 +9,14 @@
 @use "lib/codemirror.css";
 
 // COMPONENTS
+@use "components/collapse";
 @use "components/nav-custom";
 @use "components/header";
 @use "components/alerts-custom";
 @use "components/badges";
 @use "components/breadcrumbs";
 @use "components/boxes";
+@use "components/dropdowns";
 @use "components/tables-custom";
 @use "components/forms-custom";
 @use "components/progressbar";
