@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.sub.goobi.beans.property.IGoobiProperty;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.PropertyType;
 import lombok.Getter;
 import lombok.Setter;
@@ -133,5 +134,9 @@ public class ErrorProperty implements Serializable, IGoobiProperty {
     @Override
     public String getNormalizedValue() {
         return this.wert.replace(" ", "_").trim();
+    }
+
+    public String getNormalizedDate() {
+        return Helper.getDateAsFormattedString(creationDate);
     }
 }

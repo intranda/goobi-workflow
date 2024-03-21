@@ -472,6 +472,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("excludeMonitoringAgentName");
     }
 
+    public boolean isEnableConfigEditor() {
+        return getLocalBoolean("showConfigEditor", true);
+    }
+
     /*
      * category in goobi_config.properties: LDAP
      */
@@ -657,23 +661,23 @@ public class ConfigurationHelper implements Serializable {
     public String getOIDCAuthEndpoint() {
         return getLocalString("OIDCAuthEndpoint", "");
     }
-    
+
     public String getOIDCFlowType() {
-    	return getLocalString("OIDCFlowType", "");
+        return getLocalString("OIDCFlowType", "");
     }
-    
+
     public String getOIDCLogoutEndpoint() {
         return getLocalString("OIDCLogoutEndpoint", "");
     }
-    
+
     public String getOIDCTokenEndpoint() {
-    	return getLocalString("OIDCTokenEndpoint", "");
+        return getLocalString("OIDCTokenEndpoint", "");
     }
-    
+
     public String getOIDCHostName() {
-    	return getLocalString("OIDCHostName", "");
+        return getLocalString("OIDCHostName", "");
     }
-    
+
     public String getOIDCIssuer() {
         return getLocalString("OIDCIssuer", "");
     }
@@ -685,7 +689,7 @@ public class ConfigurationHelper implements Serializable {
     public String getOIDCClientID() {
         return getLocalString("OIDCClientID", "");
     }
-    
+
     public String getOIDCClientSecret() {
         return getLocalString("OIDCClientSecret", "");
     }
@@ -1349,5 +1353,4 @@ public class ConfigurationHelper implements Serializable {
             }
         }
     }
-
 }

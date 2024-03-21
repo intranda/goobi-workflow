@@ -189,7 +189,7 @@ public abstract class BackupFileManager {
      * @param fileName The file name to search the backup files for
      * @return The list of backup files
      */
-    private static List<Path> getBackupFilesSortedByAge(String path, String fileName) {
+    public static List<Path> getBackupFilesSortedByAge(String path, String fileName) {
         List<Path> files = BackupFileManager.getFilteredBackupFiles(path, fileName);
         BackupFileManager.sortFilesByName(files, fileName);
         return files;
@@ -240,14 +240,12 @@ public abstract class BackupFileManager {
             } else {
                 return false;
             }
+        } else if (secondName.length() == maximumNameLength) {
+            return true;
         } else {
-            if (secondName.length() == maximumNameLength) {
-                return true;
-            } else {
-                boolean longer = firstName.length() > secondName.length();
-                boolean sameLength = firstName.length() == secondName.length();
-                return longer || (sameLength && firstName.compareTo(secondName) > 0);
-            }
+            boolean longer = firstName.length() > secondName.length();
+            boolean sameLength = firstName.length() == secondName.length();
+            return longer || (sameLength && firstName.compareTo(secondName) > 0);
         }
     }
 

@@ -20,15 +20,23 @@ package io.goobi.workflow.configeditor;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,9 +47,11 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.goobi.io.BackupFileManager;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
@@ -97,6 +107,20 @@ public class ConfigFileEditorBean implements Serializable {
 
     @Getter
     private boolean validationError;
+
+    /*
+     * contains the selected file to download. Is used to select a version from the backup
+     */
+    @Getter
+    @Setter
+    private transient Path selectedFile;
+
+    /*
+     * Upload a new file and replace the current content with it
+     */
+    @Getter
+    @Setter
+    private transient Part uploadedFile = null;
 
     /**
      * Constructor
@@ -347,4 +371,90 @@ public class ConfigFileEditorBean implements Serializable {
 
         return eh.getErrors();
     }
+
+    /**
+     * 
+     * Download the selected configuration file
+     * 
+     */
+    public void downloadCurrentConfigFile() {
+        Path file = Paths.get(currentConfigFile.getConfigDirectory().getDirectory(), currentConfigFile.getFileName());
+        downloadSelectedFile(file);
+    }
+
+    /**
+     * Download a file from the list
+     * 
+     */
+
+    public void downloadBackupFile() {
+        downloadSelectedFile(selectedFile);
+    }
+
+    /**
+     * 
+     * Download selected file
+     *
+     * @param file
+     */
+
+    private void downloadSelectedFile(Path file) {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(file.getFileName().toString());
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + file.getFileName().toString() + "\"");
+
+            // write docket to servlet output stream
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                Files.copy(file, out);
+
+                out.flush();
+            } catch (IOException e) {
+                log.error("IOException while exporting run note", e);
+            }
+
+            facesContext.responseComplete();
+        }
+    }
+
+    /**
+     * get a list of all backup files for the selected file
+     * 
+     */
+
+    public List<Path> getDownloadFileAndBackups() {
+        List<Path> downloadFiles = new ArrayList<>();
+        if (currentConfigFile != null) {
+            // backup files ordered by date desc
+            String backupDirectory = currentConfigFile.getConfigDirectory().getBackupDirectory();
+            downloadFiles.addAll(BackupFileManager.getBackupFilesSortedByAge(backupDirectory, currentConfigFile.getFileName()));
+        }
+        return downloadFiles;
+    }
+
+    // upload a new file
+    public void uploadFile() {
+
+        if (this.uploadedFile == null) {
+            Helper.setFehlerMeldung("noFileSelected");
+            return;
+        }
+
+        // read uploaded file
+        try (InputStream inputStream = this.uploadedFile.getInputStream()) {
+
+            // replace current content with content from uploaded file
+            currentConfigFileFileContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            Helper.setFehlerMeldung("uploadFailed");
+        }
+    }
+
 }
