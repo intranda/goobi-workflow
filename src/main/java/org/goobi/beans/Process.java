@@ -66,7 +66,6 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
-import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
@@ -1852,11 +1851,15 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         }
 
         if (!this.isIstTemplate()) {
-            /* Tiffwriter-Datei löschen */
-            GoobiScript gs = new GoobiScript();
-            List<Integer> pro = new ArrayList<>();
-            pro.add(this.getId());
-            gs.deleteTiffHeaderFile(pro);
+            /* delete old tiffwriter file, if it exists */
+            try {
+                Path tiffheaderfile = Paths.get(getImagesDirectory() + "tiffwriter.conf");
+                if (StorageProvider.getInstance().isFileExists(tiffheaderfile)) {
+                    StorageProvider.getInstance().deleteDir(tiffheaderfile);
+                }
+            } catch (IOException | SwapException e) {
+                log.error(e);
+            }
 
             // update paths in metadata file
             try {
@@ -2031,10 +2034,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             }
         }
     }
-    
+
     // TODO: Think about order
     public List<ImageComment> getImageComments() throws IOException, InterruptedException, SwapException, DAOException {
-    	return new ImageCommentPropertyHelper(this).getAllComments();
+        return new ImageCommentPropertyHelper(this).getAllComments();
     }
 
     public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {
