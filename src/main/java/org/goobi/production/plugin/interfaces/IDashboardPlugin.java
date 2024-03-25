@@ -44,15 +44,4 @@ public interface IDashboardPlugin extends IPlugin, Serializable {
     default PluginGuiType getPluginGuiType() {
         return PluginGuiType.PART;
     }
-
-
-    /**
-     * This method is called, when a user opens the dashboard using the menu.
-     * It can be used to re-calculate some data. The default implementation does nothing
-     * 
-     */
-
-    default void updateDashboard(ActionEvent event) {
-        // do nothing
-    }
 }
