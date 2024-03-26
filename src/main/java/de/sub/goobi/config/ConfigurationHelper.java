@@ -698,6 +698,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("OIDCIdClaim", "email");
     }
 
+    public String getOIDCScope() {
+        return getLocalString("OIDCScope", "openid");
+    }
+
     public boolean isUseOIDCSSOLogout() {
         return getLocalBoolean("useOIDCSSOLogout", false);
     }
@@ -1353,4 +1357,5 @@ public class ConfigurationHelper implements Serializable {
             }
         }
     }
+
 }

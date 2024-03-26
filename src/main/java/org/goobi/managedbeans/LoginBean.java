@@ -166,7 +166,6 @@ public class LoginBean implements Serializable {
                 ec.redirect(logoutPath);
             }
         } catch (URISyntaxException | IOException e) {
-            // TODO Auto-generated catch block
             log.error(e);
         }
     }
@@ -188,7 +187,7 @@ public class LoginBean implements Serializable {
 
         // Get user account from database
 
-        // TODO check if email or account name was used
+        // check if email or account name was used
         User user = null;
         if (EmailValidator.getInstance().isValid(login)) {
             user = LoginBean.findUserByMail(login);
@@ -389,85 +388,83 @@ public class LoginBean implements Serializable {
     }
 
     public void openIDIFLogin() {
-    	ConfigurationHelper config = ConfigurationHelper.getInstance();
-        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-        
-    	byte[] secureBytes = new byte[64];
-    	new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes);
-    	String nonce = Base64.getUrlEncoder().encodeToString(secureBytes);
-    	HttpSession session = (HttpSession) ec.getSession(false);
-    	session.setAttribute("openIDNonce", nonce);
-    	String applicationPath = ec.getApplicationContextPath();
-    	HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
-    	try {
-    		URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
-    		builder.addParameter("client_id", config.getOIDCClientID());
-    		builder.addParameter("response_type", "id_token");
-    		builder.addParameter("redirect_uri",
-    				hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/api/login/openid/implicitflow");
-    		builder.addParameter("response_mode", "form_post");
-    		builder.addParameter("scope", "openid");
-    		builder.addParameter("nonce", nonce);
-    		
-    		ec.redirect(builder.build().toString());
-    	} catch (URISyntaxException | IOException e) {
-    		// TODO Auto-generated catch block
-    		log.error(e);
-    	}
-    	
-    }
-    
-    public void openIDACFLogin() {
-    	ConfigurationHelper config = ConfigurationHelper.getInstance();
-        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-        HttpSession session = (HttpSession) ec.getSession(false);
-        
-        byte[] secureBytes1 = new byte[64];
-    	new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes1);
-    	String nonce = Base64.getUrlEncoder().encodeToString(secureBytes1);
-    	session.setAttribute("openIDNonce", nonce);
-    	
-    	byte[] secureBytes2 = new byte[64];
-    	new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes2);
-    	String state = Base64.getUrlEncoder().encodeToString(secureBytes2);
-    	session.setAttribute("openIDState", state);
-    	
-    	String applicationPath = ec.getApplicationContextPath();
-    	HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
-        
-    	try {
-    		URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
-    		builder.addParameter("client_id", config.getOIDCClientID());
-    		builder.addParameter("response_type", "code");
-    		builder.addParameter("redirect_uri",
-    				hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/api/login/openid/authorizationcodeflow");
-    		builder.addParameter("response_mode", "form_post");
-    		builder.addParameter("scope", "openid");
-    		builder.addParameter("nonce", nonce);
-    		builder.addParameter("state", state);
-    		
-    		ec.redirect(builder.build().toString());
-    	} catch (URISyntaxException | IOException e) {
-    		// TODO Auto-generated catch block
-    		log.error(e);
-    	}
-    	
-    }
-    
-    public void openIDLogin() {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-        
+
+        byte[] secureBytes = new byte[64];
+        new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes);
+        String nonce = Base64.getUrlEncoder().encodeToString(secureBytes);
+        HttpSession session = (HttpSession) ec.getSession(false);
+        session.setAttribute("openIDNonce", nonce);
+        String applicationPath = ec.getApplicationContextPath();
+        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+        try {
+            URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
+            builder.addParameter("client_id", config.getOIDCClientID());
+            builder.addParameter("response_type", "id_token");
+            builder.addParameter("redirect_uri",
+                    hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath
+                            + "/api/login/openid/implicitflow");
+            builder.addParameter("response_mode", "form_post");
+            builder.addParameter("scope", config.getOIDCScope());
+            builder.addParameter("nonce", nonce);
+
+            ec.redirect(builder.build().toString());
+        } catch (URISyntaxException | IOException e) {
+            // TODO Auto-generated catch block
+            log.error(e);
+        }
+
+    }
+
+    public void openIDACFLogin() {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+        HttpSession session = (HttpSession) ec.getSession(false);
+
+        byte[] secureBytes1 = new byte[64];
+        new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes1);
+        String nonce = Base64.getUrlEncoder().encodeToString(secureBytes1);
+        session.setAttribute("openIDNonce", nonce);
+
+        byte[] secureBytes2 = new byte[64];
+        new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes2);
+        String state = Base64.getUrlEncoder().encodeToString(secureBytes2);
+        session.setAttribute("openIDState", state);
+
+        String applicationPath = ec.getApplicationContextPath();
+        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+
+        try {
+            URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
+            builder.addParameter("client_id", config.getOIDCClientID());
+            builder.addParameter("response_type", "code");
+            builder.addParameter("redirect_uri",
+                    hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath
+                            + "/api/login/openid/authorizationcodeflow");
+            builder.addParameter("response_mode", "form_post");
+            builder.addParameter("scope", config.getOIDCScope());
+            builder.addParameter("nonce", nonce);
+            builder.addParameter("state", state);
+
+            ec.redirect(builder.build().toString());
+        } catch (URISyntaxException | IOException e) {
+            log.error(e);
+        }
+
+    }
+
+    public void openIDLogin() {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+
         String flowType = config.getOIDCFlowType();
-        
-        if (flowType.equals("ImplicitFlow")) {
-        	openIDIFLogin();        	
-        }
-        else if (flowType.equals("AuthorizationCodeFlow")) {
-        	openIDACFLogin();        	
-        }
-        else { // Default case, when FlowType is not set in config file.
-        	openIDIFLogin();        	
+
+        if ("ImplicitFlow".equals(flowType)) {
+            openIDIFLogin();
+        } else if ("AuthorizationCodeFlow".equals(flowType)) {
+            openIDACFLogin();
+        } else { // Default case, when FlowType is not set in config file.
+            openIDIFLogin();
         }
     }
 
