@@ -25,7 +25,6 @@
  */
 package org.goobi.managedbeans;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,6 +51,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
@@ -62,7 +62,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
@@ -335,24 +334,12 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public void downloadRecords() {
         VocabularyManager.getAllRecords(currentVocabulary);
         String title = currentVocabulary.getTitle();
-        String description = currentVocabulary.getDescription();
         List<Definition> definitionList = currentVocabulary.getStruct();
         List<VocabRecord> recordList = currentVocabulary.getRecords();
 
-        Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet((StringUtils.isBlank(description) ? title : title + " - " + description).replace("/", ""));
-
-        // create header
-        Row headerRow = sheet.createRow(0);
-        int columnCounter = 0;
         List<String> headers = new ArrayList<>();
 
         for (Definition definition : definitionList) {
-            headerRow.createCell(columnCounter)
-            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
-                    : definition.getLabel());
-            columnCounter = columnCounter + 1;
-
             headers.add(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
                     : definition.getLabel());
         }
@@ -386,11 +373,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
             out.flush();
 
             facesContext.responseComplete();
-        } catch (IOException e) {
-            log.error(e);
-        }
-        try {
-            wb.close();
         } catch (IOException e) {
             log.error(e);
         }
@@ -428,10 +410,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
         } else {
 
             try {
-                file = new FileInputStream(importFile.toFile());
                 log.debug("Importing file {}", importFile.toString());
-                BOMInputStream in = new BOMInputStream(file, false);
-                try (Workbook wb = WorkbookFactory.create(in)) {
+                try (BOMInputStream in = BOMInputStream.builder()
+                        .setPath(importFile)
+                        .setByteOrderMarks(ByteOrderMark.UTF_8)
+                        .setInclude(false)
+                        .get();
+                        Workbook wb = WorkbookFactory.create(in)) {
+
                     Sheet sheet = wb.getSheetAt(0);
                     Iterator<Row> rowIterator = sheet.rowIterator();
                     Row headerRow = rowIterator.next();
@@ -566,12 +552,12 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return
      */
     public String importRecords() {
-        if (importType.equals(IMPORT_TYPE_REMOVE)) {
+        if (IMPORT_TYPE_REMOVE.equals(importType)) {
             // if selected, remove existing entries of this vocabulary
             VocabularyManager.deleteAllRecords(currentVocabulary);
             currentVocabulary.setRecords(new ArrayList<>());
         }
-        if (importType.equals(IMPORT_TYPE_REMOVE) || importType.equals(IMPORT_TYPE_ADD)) {
+        if (IMPORT_TYPE_REMOVE.equals(importType) || IMPORT_TYPE_ADD.equals(importType)) {
             List<VocabRecord> recordsToAdd = new ArrayList<>(rowsToImport.size());
             for (Row row : rowsToImport) {
                 VocabRecord vocabRecord = new VocabRecord();
@@ -598,7 +584,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             Helper.setMeldung(message);
         }
 
-        if (importType.equals(IMPORT_TYPE_MERGE)) {
+        if (IMPORT_TYPE_MERGE.equals(importType)) {
             List<VocabRecord> newRecords = new ArrayList<>();
             List<VocabRecord> updateRecords = new ArrayList<>();
             // get main entry row
@@ -886,16 +872,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
         String type = field.getDefinition().getType();
         String valueThatShouldBeSet;
-        if (value == null || value.equals("null")) {
+        if (value == null || "null".equals(value)) {
             valueThatShouldBeSet = "";
+        } else // This is multiselect -> requires a string array
+        if ("select".equals(type)) {
+            String[] array = (String[]) (value);
+            valueThatShouldBeSet = String.join("|", array);
         } else {
-            // This is multiselect -> requires a string array
-            if (type.equals("select")) {
-                String[] array = (String[]) (value);
-                valueThatShouldBeSet = String.join("|", array);
-            } else {
-                valueThatShouldBeSet = value.toString().trim();
-            }
+            valueThatShouldBeSet = value.toString().trim();
         }
 
         // Validate the currently set record:
