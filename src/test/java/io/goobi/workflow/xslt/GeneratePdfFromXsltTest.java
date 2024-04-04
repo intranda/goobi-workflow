@@ -179,7 +179,7 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         p.setWert("value");
         props.add(p);
 
-        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(props);
+        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(props).anyTimes();
 
         List<Step> steps = new ArrayList<>();
         Step step = new Step();
