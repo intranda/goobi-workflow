@@ -135,18 +135,23 @@ public class PropertyParser {
         xpath.append("]");
         if (step != null) {
             // limit by step
-            xpath.append("[./showStep/@name=");
+            xpath.append("/showStep[@name=");
             xpath.append(PropertyParser.getEscapedProperty(step.getTitel()));
-            xpath.append("]");
-        }
-        // limit by workflow
-        if (StringUtils.isNotBlank(workflowTitle)) {
-            xpath.append("[not(./workflow) or ./workflow='*' or ./workflow=");
-            xpath.append(PropertyParser.getEscapedProperty(workflowTitle));
-            xpath.append("]");
+            xpath.append(" and (@template='*' or not(@template) ");
+            if (StringUtils.isNotBlank(workflowTitle)) {
+                xpath.append("or @template=");
+                xpath.append(PropertyParser.getEscapedProperty(workflowTitle));
+            }
+            xpath.append(" )]/..");
         } else {
-            xpath.append("[not(./workflow) or ./workflow='*']");
+            xpath.append("[not(./showProcessGroup/@template) or ./showProcessGroup/@template='*' ");
+            if (StringUtils.isNotBlank(workflowTitle)) {
+                xpath.append("or ./showProcessGroup/@template=");
+                xpath.append(PropertyParser.getEscapedProperty(workflowTitle));
+            }
+            xpath.append("]");
         }
+
         // get name attribute
         xpath.append("/@name");
 
@@ -203,18 +208,10 @@ public class PropertyParser {
                 pp.getProjects().add(config.getString(property + "/project[" + (j + 1) + "]"));
             }
 
-            // workflows
-            count = config.getMaxIndex(property + "/workflow");
-            for (int j = 0; j <= count; j++) {
-                pp.getWorkflows().add(config.getString(property + "/workflow[" + (j + 1) + "]"));
-            }
-
-            // project and workflows are configured correct?
+            // project is configured correct?
             boolean projectOk = pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle) || pp.getProjects().isEmpty();
-            boolean workflowOk = pp.getWorkflows().contains("*") || pp.getWorkflows().contains(workflowTitle) || pp.getWorkflows().isEmpty();
 
-            if (projectOk && workflowOk) {
-
+            if (projectOk) {
                 // showStep
                 boolean containsCurrentStepTitle = false;
                 count = config.getMaxIndex(property + "/showStep");
@@ -223,9 +220,14 @@ public class PropertyParser {
                     String showStep = property + "/showStep[" + (j + 1) + "]";
                     ssc.setName(config.getString(showStep + "/@name"));
                     String access = config.getString(showStep + "/@access");
+                    String configuredTemplate = config.getString(showStep + "/@template", "*");
                     boolean duplicate = config.getBoolean(showStep + "/@duplicate", false);
                     ssc.setAccessCondition(AccessCondition.getAccessConditionByName(access));
-                    if (ssc.getName().equals(stepTitle) || "*".equals(ssc.getName())) {
+
+                    boolean workflowMatches =
+                            "*".equals(configuredTemplate) || (StringUtils.isNotBlank(workflowTitle) && configuredTemplate.equals(workflowTitle));
+
+                    if ((ssc.getName().equals(stepTitle) || "*".equals(ssc.getName())) && workflowMatches) {
                         containsCurrentStepTitle = true;
                         pp.setDuplicationAllowed(duplicate);
                         pp.setCurrentStepAccessCondition(AccessCondition.getAccessConditionByName(access));
@@ -314,6 +316,13 @@ public class PropertyParser {
             return properties;
         }
 
+        String workflowTitle = "";
+        for (Processproperty p : process.getEigenschaften()) {
+            if ("Template".equals(p.getTitel())) {
+                workflowTitle = p.getWert();
+            }
+        }
+
         // run though all properties
         int countProperties = config.getMaxIndex("/property");
         for (int i = 0; i <= countProperties; i++) {
@@ -324,16 +333,43 @@ public class PropertyParser {
             pp.setName(config.getString(property + "/@name"));
             pp.setContainer(config.getInt(property + "/@container"));
 
+            // workflows
+
+            // project and workflows are configured correct?
+
             // projects
             int count = config.getMaxIndex(property + "/project");
             for (int j = 0; j <= count; j++) {
                 pp.getProjects().add(config.getString(property + "/project[" + (j + 1) + "]"));
             }
 
+            boolean templateMatches = false;
+            String groupAccess = "write";
+            if (StringUtils.isBlank(workflowTitle)) {
+                templateMatches = true;
+            } else {
+                // get configured showProcessGroup elements
+                count = config.getMaxIndex(property + "/showProcessGroup");
+                // no element exists
+                if (count == -1) {
+                    templateMatches = true;
+                } else {
+                    // run through all, check if template matches
+                    for (int j = 0; j <= count; j++) {
+                        String configuredTempate = config.getString(property + "/showProcessGroup[" + (j + 1) + "]/@template");
+                        if (StringUtils.isBlank(configuredTempate) || "*".equals(configuredTempate) || workflowTitle.equals(configuredTempate)) {
+                            templateMatches = true;
+                            groupAccess = config.getString(property + "/showProcessGroup[" + (j + 1) + "]/@access");
+                            break;
+                        }
+                    }
+                }
+            }
+
             // project is configured
-            if (pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle)) {
-                String groupAccess = config.getString(property + "/showProcessGroup[@access]");
+            if (templateMatches && (pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle))) {
                 if (groupAccess != null) {
+
                     pp.setShowProcessGroupAccessCondition(AccessCondition.getAccessConditionByName(groupAccess));
                 } else {
                     pp.setShowProcessGroupAccessCondition(AccessCondition.WRITE);
