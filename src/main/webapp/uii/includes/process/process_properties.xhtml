@@ -94,7 +94,7 @@
 
                                             <tr>
                                                 <td><span
-                                                    title="{processproperty.#{proc.name}}"
+                                                    title="&quot;{process.#{proc.name}}&quot;"
                                                     data-toggle="tooltip"
                                                     rel="tooltip">#{proc.name}</span></td>
                                                 <td>
@@ -188,7 +188,7 @@
                                         <h:panelGroup rendered="#{container != 0}">
                                             <tr>
                                                 <td><span
-                                                    title="{process.#{process_item.name}}"
+                                                    title="&quot;{process.#{process_item.name}}&quot;"
                                                     rel="tooltip">#{process_item.name}</span></td>
                                                 <td>
                                                 	<x:dataList var="val" value="#{process_item.valueList}" rendered="#{process_item.type.name == 'listmultiselect'}">
