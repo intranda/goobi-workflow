@@ -343,12 +343,14 @@ public class MassImportForm implements Serializable {
                             bld.append(r.getId());
                             bld.append(",");
                         }
+                        igs.setRecords(recordList);
                     } else if (!this.selectedFilenames.isEmpty()) {
                         List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
                         for (Record r : recordList) {
                             bld.append(r.getId());
                             bld.append(",");
                         }
+                        igs.setRecords(recordList);
                     }
                     String myIdentifiers = bld.toString();
                     if (myIdentifiers.endsWith(",")) {
