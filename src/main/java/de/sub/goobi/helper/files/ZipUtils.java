@@ -87,7 +87,7 @@ public class ZipUtils {
                  * - Symlinks are ignored (and can not produce denial of service due to recursion)
                  * - the absolute path of each file entry is checked (so that "../" entries can not overwrite files outside the target directory)
                  */
-                while ((entry = zipInputStream.getNextEntry()) != null) {// NOSONAR (see above)
+                while ((entry = zipInputStream.getNextEntry()) != null) { // NOSONAR (see above)
 
                     // The absolute path is created here, entries like "../" cause an IOException
                     final Path newPath = zipSlipProtect(entry, destinationDir);

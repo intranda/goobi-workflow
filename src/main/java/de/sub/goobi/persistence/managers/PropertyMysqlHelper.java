@@ -44,19 +44,19 @@ class PropertyMysqlHelper implements Serializable {
      * The NOSONAR tags are used here because the string constants have exactly the same name as the database column names. Sonarcloud recommends to
      * use only uppercase and underscores, but that would make the use cases of the constants less readable.
      */
-    private static final String prozesseeigenschaftenID = "prozesseeigenschaftenID";// NOSONAR
-    private static final String vorlageneigenschaftenID = "vorlageneigenschaftenID";// NOSONAR
-    private static final String werkstueckeeigenschaftenID = "werkstueckeeigenschaftenID";// NOSONAR
-    private static final String Titel = "Titel";// NOSONAR
-    private static final String Wert = "Wert";// NOSONAR
-    private static final String IstObligatorisch = "IstObligatorisch";// NOSONAR
-    private static final String DatentypenID = "DatentypenID";// NOSONAR
-    private static final String Auswahl = "Auswahl";// NOSONAR
-    private static final String prozesseID = "prozesseID";// NOSONAR
-    private static final String vorlagenID = "vorlagenID";// NOSONAR
-    private static final String werkstueckeID = "werkstueckeID";// NOSONAR
-    private static final String creationDate = "creationDate";// NOSONAR
-    private static final String container = "container";// NOSONAR
+    private static final String prozesseeigenschaftenID = "prozesseeigenschaftenID"; // NOSONAR
+    private static final String vorlageneigenschaftenID = "vorlageneigenschaftenID"; // NOSONAR
+    private static final String werkstueckeeigenschaftenID = "werkstueckeeigenschaftenID"; // NOSONAR
+    private static final String Titel = "Titel"; // NOSONAR
+    private static final String Wert = "Wert"; // NOSONAR
+    private static final String IstObligatorisch = "IstObligatorisch"; // NOSONAR
+    private static final String DatentypenID = "DatentypenID"; // NOSONAR
+    private static final String Auswahl = "Auswahl"; // NOSONAR
+    private static final String prozesseID = "prozesseID"; // NOSONAR
+    private static final String vorlagenID = "vorlagenID"; // NOSONAR
+    private static final String werkstueckeID = "werkstueckeID"; // NOSONAR
+    private static final String creationDate = "creationDate"; // NOSONAR
+    private static final String container = "container"; // NOSONAR
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {
         String sql = "SELECT * FROM prozesseeigenschaften WHERE prozesseID = ? ORDER BY container, Titel, creationDate desc";
