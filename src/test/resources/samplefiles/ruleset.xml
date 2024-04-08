@@ -2293,6 +2293,110 @@
     <metadata num="1o">_directionRTL</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
+    <Name>Thesis</Name>
+    <language name="de">Thesis</language>
+    <language name="en">Thesis</language>  
+    <metadata num="1o">URN</metadata>
+    <metadata DefaultDisplay="true" num="*">ISBN</metadata>
+    <metadata num="*">Sponsorship</metadata>
+    <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
+    <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
+    <metadata num="*">PhysicalDescriptionOther</metadata>
+    <metadata num="*">FormatSourcePrint</metadata>
+    <metadata num="1o">_placeOfElectronicOrigin</metadata>
+    <metadata num="1o">CreatorsAllOrigin</metadata>
+    <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
+    <metadata num="1o">BibliographicCitation</metadata>
+    <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
+    <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
+    <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
+    <metadata num="1o">PublisherName</metadata>
+    <metadata num="1o">_digitalOrigin</metadata>
+    <metadata num="1o">_electronicPublisher</metadata>
+    <metadata num="1o">_purl</metadata>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1o">_dateDigitization</metadata>
+    <metadata num="*">TitleDocMainShort</metadata>
+    <metadata num="*">TitleDocSub1</metadata>
+    <metadata num="*">shelfmarksource</metadata>
+    <metadata num="1o">_electronicEdition</metadata>
+    <metadata num="+">singleDigCollection</metadata>
+    <metadata num="*">_ucc_id</metadata>
+    <metadata DefaultDisplay="true" num="*">DocLanguage</metadata>
+    <metadata num="*">OrigLanguage</metadata>
+    <metadata num="*">RezenssionsZssDBID</metadata>
+    <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
+    <metadata DefaultDisplay="true" num="1m">TitleDocMain</metadata>
+    <metadata num="1o">AdditionalInformation</metadata>
+    <metadata num="*">DDC</metadata>
+    <metadata num="*">Description</metadata>
+    <metadata num="1o">relatedSeries</metadata>
+    <metadata num="1o">CatalogIDMainSeries</metadata>
+    <metadata num="1o">TitleDocMainSeries</metadata>
+    <metadata num="1o">SeriesOrder</metadata>
+    <metadata num="*" DefaultDisplay="true">Author</metadata>
+    <metadata num="*">Annotator</metadata>
+    <metadata num="*">Bearbeiter</metadata>
+    <metadata num="*">Cartographer</metadata>
+    <metadata num="*">Client</metadata>
+    <metadata num="*">Compiler</metadata>
+    <metadata num="*">Composer</metadata>
+    <metadata num="*">Contributor</metadata>
+    <metadata num="*">Creator</metadata>
+    <metadata num="*">Curator</metadata>
+    <metadata num="*">Draftsman</metadata>
+    <metadata num="1o" DefaultDisplay="false">Editor</metadata>
+    <metadata num="*">Engraver</metadata>
+    <metadata num="*">Honoree</metadata>
+    <metadata num="*">Host</metadata>
+    <metadata num="*">Artist</metadata>
+    <metadata num="*">IllustratorArtist</metadata>
+    <metadata num="*">Lithographer</metadata>
+    <metadata num="*">OtherPerson</metadata>
+    <metadata num="*">Photographer</metadata>
+    <metadata num="*">Printer</metadata>
+    <metadata num="*">PublisherPerson</metadata>
+    <metadata num="*">Redaktor</metadata>
+    <metadata num="*">Sculptor</metadata>
+    <metadata num="*">Translator</metadata>
+    <metadata num="*">Witness</metadata>
+    <metadata num="*">CorporateAddressee</metadata>
+    <metadata num="*">CorporateArtist</metadata>
+    <metadata num="*">CorporateCompiler</metadata>
+    <metadata num="*">CorporateContributor</metadata>
+    <metadata num="*">CorporateCurator</metadata>
+    <metadata num="*">CorporateEngraver</metadata>
+    <metadata num="*">CorporateIllustrator</metadata>
+    <metadata num="*">CorporateOrganizer</metadata>
+    <metadata num="*">CorporateOther</metadata>
+    <metadata num="*">CorporatePhotographer</metadata>
+    <metadata num="*">CorporateTranslator</metadata>
+    <metadata num="*">HostInstitution</metadata>
+    <metadata num="*">IssuingBody</metadata>
+    <metadata num="*">LegislativeBody</metadata>
+    <metadata num="*">SubjectCorporate</metadata>
+    <metadata num="*">SubjectForm</metadata>
+    <metadata num="*">SubjectGeographic</metadata>
+    <metadata num="*">SubjectPerson</metadata>
+    <metadata num="*">SubjectTemporal</metadata>
+    <metadata num="*">SubjectTitle</metadata>
+    <metadata num="*">SubjectTopic</metadata>
+    <metadata num="1o">copyrightimageset</metadata>
+    <metadata num="*">PhysicalLocation</metadata>
+    <metadata num="*">StatementOfResponsibility</metadata>
+    <metadata num="*">PlaceOfManufacture</metadata>
+    <metadata num="*">Manufacturer</metadata>
+    <metadata num="*">Note</metadata>
+    <metadata num="*">BindingNote</metadata>
+    <metadata num="*">CustodialHistory</metadata>
+    <metadata num="*">Abstract</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
+    <metadata num="1o">_directionRTL</metadata>
+  </DocStrctType>  
+  <DocStrctType topStruct="true">
     <Name>Incunable</Name>
     <language name="de">Inkunabel</language>
     <language name="en">Incunable</language>
@@ -4179,6 +4283,26 @@
         <picaContent>Kd</picaContent>
       </DocStruct>
     </PicaPlus>
+    
+           <Json>
+            <Metadata>
+                <Name>TitleDocMain</Name>
+                <field>title</field>
+                <type>String</type>
+            </Metadata>
+            <Metadata>
+                <Name>CatalogIDDigital</Name>
+                <field>id</field>
+                <type>Number</type>
+            </Metadata>
+                 <Metadata>
+                <Name>singleDigCollection</Name>
+                <field>non_existing</field>
+                <type>Number</type>
+                <defaultValue>abc</defaultValue>
+            </Metadata>       
+            </Json>
+    
     <Marc>
       <Metadata>
         <!-- internal metadata name -->

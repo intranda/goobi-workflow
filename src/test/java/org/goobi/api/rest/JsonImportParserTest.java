@@ -88,7 +88,7 @@ public class JsonImportParserTest extends AbstractTest {
         Fileformat ff = fixture.readMetadataFile(stream, prefs);
         assertNotNull(ff);
         DocStruct logical = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals("Monograph", logical.getType().getName());
+        assertEquals("Thesis", logical.getType().getName());
 
         assertEquals(3, logical.getAllMetadata().size());
 
