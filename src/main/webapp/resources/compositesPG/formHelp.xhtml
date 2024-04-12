@@ -4,18 +4,17 @@
 
     <composite:interface>
         <composite:attribute name="content" />
+        <composite:attribute name="msgFor" />
     </composite:interface>
 
     <composite:implementation>
 		<div class="form__help">
 			<h:message for="#{cc.attrs.msgFor}" showDetail="true" styleClass="text-danger"/>
-			<h:outputText 
-				styleClass="help-block font-light text-neutral-600" 
-				value="#{cc.attrs.content}" 
+			<h:outputText
+				styleClass="help-block font-light text-neutral-600"
+				value="#{cc.attrs.content}"
 				style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"/>
 		</div>
     </composite:implementation>
 
 </ui:composition>
-
-
