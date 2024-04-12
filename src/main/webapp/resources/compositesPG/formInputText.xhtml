@@ -19,13 +19,14 @@
 		<composite:attribute name="onfocus" default="" />
 		<composite:attribute name="tabindex" default="0" />
 		<composite:attribute name="focusOnLoad" default="false" />
-        <composite:attribute name="displayLabel" default="true" />        
+        <composite:attribute name="displayLabel" default="true" />
 		<composite:attribute
 			name="validationMethod"
 			default="null"
 			method-signature="java.lang.Object action(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)" />
 		<composite:attribute name="idForValidator" default="#{cc.attrs.name}" />
 		<!-- "idForValidator" can be requested by the validator with uiComponent.getAttributes().get("idForValidator"); -->
+		<composite:editableValueHolder name="customValidator" targets="#{cc.attrs.name}" />
 	</composite:interface>
 
 	<composite:implementation>
@@ -35,9 +36,9 @@
 
 			<!-- LABEL -->
             <div class="#{cc.attrs.classLeft}" tabindex="-1">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}"
                     labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
-                <composite:insertChildren />                        
+                <composite:insertChildren />
             </div>
 			<!-- // LABEL -->
 
@@ -63,14 +64,12 @@
                 <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />
 				<!-- Help messages, inline + warning -->
 				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
-			</div> 
+			</div>
 			<!-- // CONTENT -->
 
-		</div> 
+		</div>
 		<!-- // ROW -->
 
 	</composite:implementation>
 
 </ui:composition>
-
-

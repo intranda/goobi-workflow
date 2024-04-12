@@ -22,6 +22,7 @@
         <composite:attribute name="render" default="" />
         <composite:attribute name="ajaxevent" default="blur" />
         <composite:attribute name="displayLabel" default="true" />
+		<composite:editableValueHolder name="customValidator" targets="#{cc.attrs.name}" />
 	</composite:interface>
 
 	<composite:implementation>
@@ -31,10 +32,10 @@
 
             <!-- LABEL -->
             <div class="#{cc.attrs.classLeft}">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}"
                      labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
                  <composite:insertChildren />
-            </div> 
+            </div>
             <!-- // LABEL -->
 
             <!-- CONTENT -->
@@ -48,19 +49,17 @@
                     onfocus="#{cc.attrs.onfocus}"
                     tabindex="#{cc.attrs.tabindex}">
 
-					<f:ajax execute="#{cc.attrs.execute}" render="#{cc.attrs.render}" event="blur"/>
+					<f:ajax execute="#{cc.attrs.execute}" render="#{cc.attrs.render}" event="#{cc.attrs.ajaxevent}"/>
 				</h:inputText>
                 <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />
 				<!-- Help messages, inline + warning -->
 				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
 			</div>
 			<!-- // CONTENT -->
-			
+
 		</div>
 		<!-- // ROW -->
 
 	</composite:implementation>
 
 </ui:composition>
-
-
