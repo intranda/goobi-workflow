@@ -23,7 +23,9 @@
 		<composite:attribute name="tabindex" default="0" />
 		<composite:attribute name="itemValue" default="#{var.itemValue}"/>
         <composite:attribute name="itemLabel" default="#{var.itemLabel}" />
-        <composite:attribute name="displayLabel" default="true" />        
+        <composite:attribute name="displayLabel" default="true" />
+        <composite:attribute name="placeholder" default="true" />
+        <composite:attribute name="placeholderDisabled" default="false" />
     </composite:interface>
 
 	<composite:implementation>
@@ -35,9 +37,9 @@
 
             <!-- LABEL -->
             <div class="#{cc.attrs.classLeft}" tabindex="-1">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}"
                     labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
-                <composite:insertChildren />                        
+                <composite:insertChildren />
             </div>
             <!-- // LABEL -->
 
@@ -49,6 +51,11 @@
                     value="#{cc.attrs.field}"
                     tabindex="#{cc.attrs.tabindex}"
                     readonly="#{cc.attrs.readonly}">
+                    <f:selectItem
+                        itemValue="null"
+                        itemLabel="#{msgs.bitteAuswaehlen}"
+                        itemDisabled="#{cc.attrs.placeholderDisabled}"
+                        rendered="#{cc.attrs.placeholder}" />
                     <f:selectItems
                         value="#{cc.attrs.selectItems}"
                         var="#{cc.attrs.var}"
@@ -69,5 +76,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-
