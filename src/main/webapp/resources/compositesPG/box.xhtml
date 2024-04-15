@@ -21,6 +21,7 @@
 		<composite:attribute name="icon" />
 		<composite:attribute name="title" />
         <composite:attribute name="boxClass"/>
+		<composite:attribute name="compactForm" default="false" />
 	</composite:interface>
 
 	<composite:implementation>
@@ -46,13 +47,13 @@
 					title="#{cc.attrs.title}"
 					icon="#{cc.attrs.icon}"/>
 
-				<div class="#{cc.attrs.boxTitle ? 'box__body' : 'box__content-inner'}">
+				<div class="#{cc.attrs.boxTitle ? 'box__body' : 'box__content-inner'} #{cc.attrs.compactForm ? 'boxform--compact' : ''}">
 					<composite:insertChildren />
 				</div>
 
 			</h:panelGroup>
 			<!-- // BOX CONTENT -->
-			
+
     </h:panelGroup>
 	<!-- // BOX -->
 

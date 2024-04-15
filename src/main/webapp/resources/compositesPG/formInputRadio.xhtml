@@ -9,6 +9,7 @@
 		<composite:attribute name="field" />
 		<composite:attribute name="help" />
 		<composite:attribute name="fieldStyle" default=""/>
+        <composite:attribute name="direction" default="horizontal" />
 		<composite:attribute name="required" default="true" />
 		<composite:attribute name="displayAsRequired" default="false" />
 		<composite:attribute name="style" default="" />
@@ -20,12 +21,6 @@
 		<composite:attribute name="tabindex" default="0" />
 		<composite:attribute name="focusOnLoad" default="false" />
         <composite:attribute name="displayLabel" default="true" />
-		<composite:attribute
-			name="validationMethod"
-			default="null"
-			method-signature="java.lang.Object action(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)" />
-		<composite:attribute name="idForValidator" default="#{cc.attrs.name}" />
-		<!-- "idForValidator" can be requested by the validator with uiComponent.getAttributes().get("idForValidator"); -->
 		<composite:editableValueHolder name="customValidator" targets="#{cc.attrs.name}" />
 	</composite:interface>
 
@@ -38,29 +33,26 @@
             <div class="#{cc.attrs.classLeft}" tabindex="-1">
                 <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}"
                     labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
-                <composite:insertChildren />
             </div>
 			<!-- // LABEL -->
 
 			<!-- CONTENT -->
 			<div class="#{cc.attrs.classRight}">
-				<h:inputText
+				<h:selectOneRadio
 					id="#{cc.attrs.name}"
-					styleClass="form-control form__input #{cc.attrs.fieldStyle}"
+					styleClass="w-100 select-radio select-radio-#{cc.attrs.direction} #{cc.attrs.fieldStyle}"
 					value="#{cc.attrs.field}"
 					required="#{cc.attrs.required}"
-					readonly="#{cc.attrs.readonly}"
 					disabled="#{cc.attrs.readonly}"
 					onfocus="#{cc.attrs.onfocus}"
-					tabindex="#{cc.attrs.tabindex}"
-					validator="#{cc.attrs.validationMethod}"
-					idForValidator="#{cc.attrs.idForValidator}">
+					tabindex="#{cc.attrs.tabindex}">
 					<!-- if set, this input will be focussed on page load, if gwFocusOnLoad.init() is called
 							 (will be ignored if it is not the first input field on the page with this attribute) -->
 					<c:if test="#{cc.attrs.focusOnLoad}">
 						<f:passThroughAttribute name="data-gw-focus-on-load" value="#{cc.attrs.focusOnLoad}" />
 					</c:if>
-				</h:inputText>
+                    <composite:insertChildren />
+				</h:selectOneRadio>
                 <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />
 				<!-- Help messages, inline + warning -->
 				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
