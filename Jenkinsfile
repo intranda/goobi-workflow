@@ -50,14 +50,6 @@ pipeline {
         sh 'mvn -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy -U'
       }
     }
-    stage('trigger pull-requester') {
-      when {
-        branch 'master'
-      }
-      steps {
-        build wait: false, job: '../goobi-plugins-pull-requester/master'
-      }
-    }
   }
   post {
     always {
