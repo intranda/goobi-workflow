@@ -68,7 +68,7 @@ public class JsonImportParser extends MetadataService implements MetadataParser,
             throws ParserConfigurationException, SAXException, IOException, ReadException, PreferencesException, TypeNotAllowedForParentException {
 
         JsonFileformat fileformat = new JsonFileformat(prefs);
-        fileformat.read(inputStream, "Thesis");
+        fileformat.read(inputStream);
 
         return fileformat;
     }
