@@ -111,13 +111,18 @@ option:checked {
 
 // Other overrides
 body .ui-inputfield {
-  padding: 0.2343rem 0.75rem;
+  padding: 0.375rem 0.75rem;
   border: var(--gw-border);
+  border-color: var(--bs-border-color);
   border-radius: var(--gw-border-radius);
 
   &:hover {
     border-color: var(--clr-primary-400);
   }
+}
+// override for reduced opacity in spans SURROUNDING input in primefaces
+body .ui-state-disabled {
+  opacity: initial;
 }
 
 
