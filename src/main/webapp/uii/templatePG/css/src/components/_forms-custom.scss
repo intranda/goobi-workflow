@@ -115,16 +115,32 @@ body .ui-inputfield {
   border: var(--gw-border);
   border-color: var(--bs-border-color);
   border-radius: var(--gw-border-radius);
-
   &:hover {
     border-color: var(--clr-primary-400);
+  }
+  &.ui-state-error {
+    border-color: var(--bs-border-color);
   }
 }
 // override for reduced opacity in spans SURROUNDING input in primefaces
 body .ui-state-disabled {
   opacity: initial;
 }
-
+body {
+  .ui-autocomplete-panel {
+    border-radius: var(--gw-border-radius);
+    .ui-autocomplete-items {
+      .ui-autocomplete-item {
+        line-height: 1.5;
+        margin-inline: 0.5em;
+        &.ui-state-highlight {
+          background-color: var(--clr-action);
+          color: #fff;
+        }
+      }
+    }
+  }
+}
 
 // Option buttons
 .select-radio td {
