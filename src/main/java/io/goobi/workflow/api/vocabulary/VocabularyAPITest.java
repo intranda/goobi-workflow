@@ -26,5 +26,19 @@ public class VocabularyAPITest {
         german.get_links().entrySet().stream()
                 .map(e -> e.getKey() + " -> " + e.getValue())
                 .forEach(System.out::println);
+
+        Language italian = new Language();
+        italian.setName("Italian");
+        italian.setAbbreviation("ita");
+
+        try {
+            italian = api.createLanguage(italian);
+            System.out.println(italian.getAbbreviation());
+            italian.get_links().entrySet().stream()
+                    .map(e -> e.getKey() + " -> " + e.getValue())
+                    .forEach(System.out::println);
+        } catch (APIException e) {
+            System.err.println(e.getReason());
+        }
     }
 }

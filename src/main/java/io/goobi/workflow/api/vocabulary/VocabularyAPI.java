@@ -5,7 +5,9 @@ import io.goobi.workflow.api.vocabulary.hateoas.LanguagePageResult;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 public class VocabularyAPI {
     private static final String LANGUAGES_ENDPOINT = "/api/v1/languages";
@@ -18,15 +20,36 @@ public class VocabularyAPI {
         baseUrl = "http://" + host + ":" + port;
     }
 
-    private <T> T get(String endpoint, Class<T> clazz, Object... parameters) {
+    private String generateUrl(String endpoint, Object... parameters) {
         String url = baseUrl + endpoint;
         for (int i = 0; i < parameters.length; i++) {
             url = url.replace("{{" + i + "}}", parameters[i].toString());
         }
-        return client
-                .target(url)
+        return url;
+    }
+
+    private <T> T get(String endpoint, Class<T> clazz, Object... parameters) {
+        try (Response response = client
+                .target(generateUrl(endpoint, parameters))
                 .request(MediaType.APPLICATION_JSON)
-                .get(clazz);
+                .get()) {
+            if (response.getStatus() / 100 != 2) {
+                throw new APIException(generateUrl(endpoint, parameters), "GET", response.getStatus(), response.readEntity(String.class));
+            }
+            return response.readEntity(clazz);
+        }
+    }
+
+    private <T> T post(String endpoint, Class<T> clazz, T obj, Object... parameters) {
+        try (Response response = client
+                .target(generateUrl(endpoint, parameters))
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(obj))) {
+            if (response.getStatus() / 100 != 2) {
+                throw new APIException(generateUrl(endpoint, parameters), "POST", response.getStatus(), response.readEntity(String.class));
+            }
+            return response.readEntity(clazz);
+        }
     }
 
     public LanguagePageResult listLanguages() {
@@ -35,5 +58,9 @@ public class VocabularyAPI {
 
     public Language getLanguage(long id) {
         return get(LANGUAGE_ENDPOINT, Language.class, id);
+    }
+
+    public Language createLanguage(Language language) {
+        return post(LANGUAGES_ENDPOINT, Language.class, language);
     }
 }
