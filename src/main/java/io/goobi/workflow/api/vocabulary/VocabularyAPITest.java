@@ -4,7 +4,7 @@ import io.goobi.vocabulary.exchange.Language;
 import io.goobi.workflow.api.vocabulary.hateoas.LanguagePageResult;
 
 public class VocabularyAPITest {
-    private static VocabularyAPI api = new VocabularyAPI();
+    private static VocabularyAPI api = new VocabularyAPI("localhost", 8080);
     public static void main(String[] args) {
         LanguagePageResult result = api.listLanguages();
 
