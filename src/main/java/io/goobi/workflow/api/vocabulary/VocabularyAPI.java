@@ -52,6 +52,18 @@ public class VocabularyAPI {
         }
     }
 
+    private <T> T put(String endpoint, Class<T> clazz, T obj, Object... parameters) {
+        try (Response response = client
+                .target(generateUrl(endpoint, parameters))
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.json(obj))) {
+            if (response.getStatus() / 100 != 2) {
+                throw new APIException(generateUrl(endpoint, parameters), "PUT", response.getStatus(), response.readEntity(String.class));
+            }
+            return response.readEntity(clazz);
+        }
+    }
+
     public LanguagePageResult listLanguages() {
         return get(LANGUAGES_ENDPOINT, LanguagePageResult.class);
     }
@@ -62,5 +74,13 @@ public class VocabularyAPI {
 
     public Language createLanguage(Language language) {
         return post(LANGUAGES_ENDPOINT, Language.class, language);
+    }
+
+    public Language changeLanguage(Language language) {
+        long id = language.getId();
+        language.setId(null);
+        Language newLanguage = put(LANGUAGE_ENDPOINT, Language.class, language, id);
+        language.setId(id);
+        return newLanguage;
     }
 }

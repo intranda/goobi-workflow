@@ -27,6 +27,9 @@ public class VocabularyAPITest {
                 .map(e -> e.getKey() + " -> " + e.getValue())
                 .forEach(System.out::println);
 
+        german.setAbbreviation("deu");
+        api.changeLanguage(german);
+
         Language italian = new Language();
         italian.setName("Italian");
         italian.setAbbreviation("ita");
