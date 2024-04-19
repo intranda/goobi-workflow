@@ -15,6 +15,13 @@
             <url>https://nexus.intranda.com/repository/maven-public</url>
         </repository>
     </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>io.goobi.vocabulary</groupId>
+            <artifactId>exchange</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -79,8 +86,7 @@
                         </goals>
                         <configuration>
                             <sourceFile>${project.build.directory}/classes/template.properties</sourceFile>
-                            <destinationFile>${project.build.directory}/classes/goobi_config.properties
-                            </destinationFile>
+                            <destinationFile>${project.build.directory}/classes/goobi_config.properties</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
@@ -100,4 +106,3 @@
         </resources>
     </build>
 </project>
-
