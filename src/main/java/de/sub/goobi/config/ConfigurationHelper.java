@@ -1291,6 +1291,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("pdfAsDownload", true);
     }
 
+    public String getVocabularyServerHost() {
+        return getLocalString("vocabularyServerHost", "localhost");
+    }
+
+    public int getVocabularyServerPort() {
+        return getLocalInt("vocabularyServerPort", 8081);
+    }
+
     /**
      * This setter is only used by unit tests and makes manipulation of the configuration possible.
      *

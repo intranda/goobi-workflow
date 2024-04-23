@@ -49,6 +49,7 @@ import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.ByteOrderMark;
@@ -98,6 +99,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private static final String IMPORT_TYPE_MERGE = "merge";
     private static final String IMPORT_TYPE_ADD = "add";
     private static final String IMPORT_TYPE_REMOVE = "remove";
+
+    private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     @Getter
     @Setter
