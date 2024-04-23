@@ -50,6 +50,8 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
+import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.ByteOrderMark;
@@ -101,6 +103,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private static final String IMPORT_TYPE_REMOVE = "remove";
 
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
+
+    @Getter
+    private Paginator<io.goobi.vocabulary.exchange.Vocabulary> vocabularyPaginator;
 
     @Getter
     @Setter
@@ -164,6 +169,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public String FilterKein() {
         VocabularyManager vm = new VocabularyManager();
         paginator = new DatabasePaginator(sortField, filter, vm, RETURN_PAGE_ALL);
+        vocabularyPaginator = new HATEOASPaginator<>(VocabularyPageResult.class, api.vocabularies().list(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()));
         return RETURN_PAGE_ALL;
     }
 

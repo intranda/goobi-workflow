@@ -21,6 +21,10 @@ public abstract class CRUDAPI<InstanceType extends Identifiable, PageResultType>
         return restApi.get(commonEndpoint, pageResultTypeClass);
     }
 
+    public PageResultType list(int size) {
+        return restApi.get(commonEndpoint + "?size=" + size, pageResultTypeClass);
+    }
+
     public InstanceType get(long id) {
         return restApi.get(instanceEndpoint, instanceTypeClass, id);
     }
