@@ -9,6 +9,7 @@ public class VocabularyAPITest {
     private static LanguageAPI languageAPI = new LanguageAPI("localhost", 8080);
     private static FieldTypeAPI typeAPI = new FieldTypeAPI("localhost", 8080);
     private static VocabularySchemaAPI schemaAPI = new VocabularySchemaAPI("localhost", 8080);
+    private static VocabularyAPI vocabularyAPI = new VocabularyAPI("localhost", 8080);
 
     public static void main(String[] args) {
         FieldTypePageResult types = typeAPI.list();
@@ -64,5 +65,9 @@ public class VocabularyAPITest {
             System.out.println(s.getId());
             s.getDefinitions().forEach(d -> System.out.println("\t" + d.getName()));
         });
+
+        vocabularyAPI.list().getContent().stream()
+                .map(v -> v.getName() + " (" + v.getDescription() + ")")
+                .forEach(System.out::println);
     }
 }
