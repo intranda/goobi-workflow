@@ -1,6 +1,8 @@
 package io.goobi.workflow.api.vocabulary;
 
+import io.goobi.vocabulary.exchange.FieldType;
 import io.goobi.vocabulary.exchange.Language;
+import io.goobi.workflow.api.vocabulary.hateoas.FieldTypePageResult;
 import io.goobi.workflow.api.vocabulary.hateoas.LanguagePageResult;
 
 import javax.ws.rs.client.Client;
@@ -12,6 +14,8 @@ import javax.ws.rs.core.Response;
 public class VocabularyAPI {
     private static final String LANGUAGES_ENDPOINT = "/api/v1/languages";
     private static final String LANGUAGE_ENDPOINT = "/api/v1/languages/{{0}}";
+    private static final String FIELD_TYPES_ENDPOINT = "/api/v1/types";
+    private static final String FIELD_TYPE_ENDPOINT = "/api/v1/types/{{0}}";
 
     private final Client client = ClientBuilder.newClient();
     private String baseUrl;
@@ -98,5 +102,29 @@ public class VocabularyAPI {
 
     public void deleteLanguage(Language language) {
         delete(LANGUAGE_ENDPOINT, Language.class, language.getId());
+    }
+
+    public FieldTypePageResult listFieldTypes() {
+        return get(FIELD_TYPES_ENDPOINT, FieldTypePageResult.class);
+    }
+
+    public FieldType getFieldType(long id) {
+        return get(FIELD_TYPE_ENDPOINT, FieldType.class, id);
+    }
+
+    public FieldType createFieldType(FieldType fieldType) {
+        return post(FIELD_TYPES_ENDPOINT, FieldType.class, fieldType);
+    }
+
+    public FieldType changeFieldType(FieldType fieldType) {
+        long id = fieldType.getId();
+        fieldType.setId(null);
+        FieldType newFieldType = put(FIELD_TYPE_ENDPOINT, FieldType.class, fieldType, id);
+        fieldType.setId(id);
+        return newFieldType;
+    }
+
+    public void deleteFieldType(FieldType fieldType) {
+        delete(FIELD_TYPE_ENDPOINT, FieldType.class, fieldType.getId());
     }
 }

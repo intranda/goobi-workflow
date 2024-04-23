@@ -1,14 +1,20 @@
 package io.goobi.workflow.api.vocabulary;
 
 import io.goobi.vocabulary.exchange.Language;
+import io.goobi.workflow.api.vocabulary.hateoas.FieldTypePageResult;
 import io.goobi.workflow.api.vocabulary.hateoas.LanguagePageResult;
 
 public class VocabularyAPITest {
     private static VocabularyAPI api = new VocabularyAPI("localhost", 8080);
 
     public static void main(String[] args) {
-        LanguagePageResult result = api.listLanguages();
+        FieldTypePageResult types = api.listFieldTypes();
+        System.out.println(types);
+        types.getContent().stream()
+                .map(l -> l.getId() + ": " + l.getName())
+                .forEach(System.out::println);
 
+        LanguagePageResult result = api.listLanguages();
         System.out.println(result);
         result.getContent().stream()
                 .map(l -> l.getId() + ": " + l.getName())
