@@ -64,6 +64,18 @@ public class VocabularyAPI {
         }
     }
 
+    private <T> T delete(String endpoint, Class<T> clazz, Object... parameters) {
+        try (Response response = client
+                .target(generateUrl(endpoint, parameters))
+                .request(MediaType.APPLICATION_JSON)
+                .delete()) {
+            if (response.getStatus() / 100 != 2) {
+                throw new APIException(generateUrl(endpoint, parameters), "DELETE", response.getStatus(), response.readEntity(String.class));
+            }
+            return response.readEntity(clazz);
+        }
+    }
+
     public LanguagePageResult listLanguages() {
         return get(LANGUAGES_ENDPOINT, LanguagePageResult.class);
     }
@@ -82,5 +94,9 @@ public class VocabularyAPI {
         Language newLanguage = put(LANGUAGE_ENDPOINT, Language.class, language, id);
         language.setId(id);
         return newLanguage;
+    }
+
+    public void deleteLanguage(Language language) {
+        delete(LANGUAGE_ENDPOINT, Language.class, language.getId());
     }
 }

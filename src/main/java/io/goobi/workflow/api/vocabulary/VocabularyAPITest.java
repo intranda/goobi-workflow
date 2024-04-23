@@ -5,6 +5,7 @@ import io.goobi.workflow.api.vocabulary.hateoas.LanguagePageResult;
 
 public class VocabularyAPITest {
     private static VocabularyAPI api = new VocabularyAPI("localhost", 8080);
+
     public static void main(String[] args) {
         LanguagePageResult result = api.listLanguages();
 
@@ -27,8 +28,13 @@ public class VocabularyAPITest {
                 .map(e -> e.getKey() + " -> " + e.getValue())
                 .forEach(System.out::println);
 
-        german.setAbbreviation("deu");
+        german.setAbbreviation("ger");
         api.changeLanguage(german);
+
+        Language oldItalian = result.getContent().stream()
+                .filter(l -> l.getAbbreviation().equals("ita"))
+                .findAny().orElseThrow();
+        api.deleteLanguage(oldItalian);
 
         Language italian = new Language();
         italian.setName("Italian");
