@@ -1,8 +1,7 @@
 package io.goobi.workflow.api.vocabulary;
 
-import io.goobi.vocabulary.exchange.FieldType;
+import io.goobi.vocabulary.exchange.Identifiable;
 import io.goobi.vocabulary.exchange.Language;
-import io.goobi.workflow.api.vocabulary.hateoas.FieldTypePageResult;
 import io.goobi.workflow.api.vocabulary.hateoas.LanguagePageResult;
 
 import javax.ws.rs.client.Client;
@@ -11,17 +10,20 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-public class VocabularyAPI {
-    private static final String LANGUAGES_ENDPOINT = "/api/v1/languages";
-    private static final String LANGUAGE_ENDPOINT = "/api/v1/languages/{{0}}";
-    private static final String FIELD_TYPES_ENDPOINT = "/api/v1/types";
-    private static final String FIELD_TYPE_ENDPOINT = "/api/v1/types/{{0}}";
-
+public abstract class BaseAPI<InstanceType extends Identifiable, PageResultType> {
     private final Client client = ClientBuilder.newClient();
+    private final Class<InstanceType> instanceTypeClass;
+    private final Class<PageResultType> pageResultTypeClass;
     private String baseUrl;
+    private String commonEndpoint;
+    private String instanceEndpoint;
 
-    public VocabularyAPI(String host, int port) {
+    protected BaseAPI(String host, int port, Class<InstanceType> instanceTypeClass, Class<PageResultType> pageResultTypeClass, String commonEndpoint, String instanceEndpoint) {
         baseUrl = "http://" + host + ":" + port;
+        this.instanceTypeClass = instanceTypeClass;
+        this.pageResultTypeClass = pageResultTypeClass;
+        this.commonEndpoint = commonEndpoint;
+        this.instanceEndpoint = instanceEndpoint;
     }
 
     private String generateUrl(String endpoint, Object... parameters) {
@@ -80,51 +82,27 @@ public class VocabularyAPI {
         }
     }
 
-    public LanguagePageResult listLanguages() {
-        return get(LANGUAGES_ENDPOINT, LanguagePageResult.class);
+    public PageResultType list() {
+        return get(commonEndpoint, pageResultTypeClass);
     }
 
-    public Language getLanguage(long id) {
-        return get(LANGUAGE_ENDPOINT, Language.class, id);
+    public InstanceType get(long id) {
+        return get(instanceEndpoint, instanceTypeClass, id);
     }
 
-    public Language createLanguage(Language language) {
-        return post(LANGUAGES_ENDPOINT, Language.class, language);
+    public InstanceType create(InstanceType obj) {
+        return post(commonEndpoint, instanceTypeClass, obj);
     }
 
-    public Language changeLanguage(Language language) {
-        long id = language.getId();
-        language.setId(null);
-        Language newLanguage = put(LANGUAGE_ENDPOINT, Language.class, language, id);
-        language.setId(id);
-        return newLanguage;
+    public InstanceType change(InstanceType obj) {
+        long id = obj.getId();
+        obj.setId(null);
+        InstanceType newObj = put(instanceEndpoint, instanceTypeClass, obj, id);
+        obj.setId(id);
+        return newObj;
     }
 
-    public void deleteLanguage(Language language) {
-        delete(LANGUAGE_ENDPOINT, Language.class, language.getId());
-    }
-
-    public FieldTypePageResult listFieldTypes() {
-        return get(FIELD_TYPES_ENDPOINT, FieldTypePageResult.class);
-    }
-
-    public FieldType getFieldType(long id) {
-        return get(FIELD_TYPE_ENDPOINT, FieldType.class, id);
-    }
-
-    public FieldType createFieldType(FieldType fieldType) {
-        return post(FIELD_TYPES_ENDPOINT, FieldType.class, fieldType);
-    }
-
-    public FieldType changeFieldType(FieldType fieldType) {
-        long id = fieldType.getId();
-        fieldType.setId(null);
-        FieldType newFieldType = put(FIELD_TYPE_ENDPOINT, FieldType.class, fieldType, id);
-        fieldType.setId(id);
-        return newFieldType;
-    }
-
-    public void deleteFieldType(FieldType fieldType) {
-        delete(FIELD_TYPE_ENDPOINT, FieldType.class, fieldType.getId());
+    public void delete(InstanceType obj) {
+        delete(instanceEndpoint, instanceTypeClass, obj.getId());
     }
 }
