@@ -3,10 +3,12 @@ package io.goobi.workflow.api.vocabulary;
 import io.goobi.vocabulary.exchange.Language;
 import io.goobi.workflow.api.vocabulary.hateoas.FieldTypePageResult;
 import io.goobi.workflow.api.vocabulary.hateoas.LanguagePageResult;
+import io.goobi.workflow.api.vocabulary.hateoas.VocabularySchemaPageResult;
 
 public class VocabularyAPITest {
     private static LanguageAPI languageAPI = new LanguageAPI("localhost", 8080);
     private static FieldTypeAPI typeAPI = new FieldTypeAPI("localhost", 8080);
+    private static VocabularySchemaAPI schemaAPI = new VocabularySchemaAPI("localhost", 8080);
 
     public static void main(String[] args) {
         FieldTypePageResult types = typeAPI.list();
@@ -56,5 +58,11 @@ public class VocabularyAPITest {
         } catch (APIException e) {
             System.err.println(e.getReason());
         }
+
+        VocabularySchemaPageResult schemas = schemaAPI.list();
+        schemas.getContent().forEach(s -> {
+            System.out.println(s.getId());
+            s.getDefinitions().forEach(d -> System.out.println("\t" + d.getName()));
+        });
     }
 }
