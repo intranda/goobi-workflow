@@ -3,7 +3,7 @@ package io.goobi.workflow.api.vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularySchemaPageResult;
 
-public class VocabularySchemaAPI extends BaseAPI<VocabularySchema, VocabularySchemaPageResult> {
+public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySchemaPageResult> {
     private static final String COMMON_ENDPOINT = "/api/v1/schemas";
     private static final String INSTANCE_ENDPOINT = COMMON_ENDPOINT + "/{{0}}";
 
