@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FieldTypePageResult extends BasePageResult {
+public class FieldTypePageResult extends BasePageResult<FieldType> {
     @Data
     private class EmbeddedWrapper {
         private List<FieldType> fieldTypeList;

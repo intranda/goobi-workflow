@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LanguagePageResult extends BasePageResult {
+public class LanguagePageResult extends BasePageResult<Language> {
     @Data
     private class EmbeddedWrapper {
         private List<Language> languageList;

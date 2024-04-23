@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class VocabularyRecordPageResult extends BasePageResult {
+public class VocabularyRecordPageResult extends BasePageResult<VocabularyRecord> {
     @Data
     private class EmbeddedWrapper {
         private List<VocabularyRecord> vocabularyRecordList;
