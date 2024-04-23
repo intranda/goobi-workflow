@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import lombok.Data;
 
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -17,6 +18,9 @@ public class VocabularyPageResult extends BasePageResult {
     private EmbeddedWrapper _embedded;
 
     public List<Vocabulary> getContent() {
+        if (_embedded == null) {
+            return Collections.emptyList();
+        }
         return _embedded.getVocabularyList();
     }
 }
