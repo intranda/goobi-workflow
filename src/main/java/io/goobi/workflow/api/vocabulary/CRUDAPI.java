@@ -33,8 +33,7 @@ public abstract class CRUDAPI<InstanceType extends Identifiable, PageResultType>
             params += params.isEmpty() ? "?" : "&";
             params += "page=" + page.get();
         }
-        PageResultType result = restApi.get(commonEndpoint + params, pageResultTypeClass);
-        return result;
+        return restApi.get(commonEndpoint + params, pageResultTypeClass);
     }
 
     public InstanceType get(long id) {
