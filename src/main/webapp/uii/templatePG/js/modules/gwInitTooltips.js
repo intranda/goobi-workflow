@@ -2,7 +2,6 @@
  * @description Destroy ALL tooltips and initialize again.
  *
  */
-
 export default gwInitTooltips = ( function() {
   'use strict';
 
@@ -43,7 +42,7 @@ export default gwInitTooltips = ( function() {
   /** @description Initialize popovers.  */
   function _initPopovers() {
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-  var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
     return hoverablePopover(popoverTriggerEl)
     })
   }
@@ -53,6 +52,38 @@ export default gwInitTooltips = ( function() {
   }
 
 } )();
+
+/**
+ * Function to hide all open Bootstrap tooltips in the document
+ */
+const hideAllTooltips = () => {
+  const tooltips = document.querySelectorAll('[aria-describedby*="tooltip"]');
+  tooltips.forEach((tooltip) => {
+    const tooltipId = tooltip.getAttribute('aria-describedby');
+    const tooltipElement = document.getElementById(tooltipId);
+    const tooltipInstance = bootstrap.Tooltip.getInstance(tooltipElement);
+
+    if (tooltipInstance) {
+      tooltipInstance.hide();
+    }
+  });
+};
+
+/**
+ * Function to hide all open Bootstrap popovers in the document
+ */
+const hideAllPopovers = () => {
+  const popovers = document.querySelectorAll('[aria-describedby*="popover"]');
+  popovers.forEach((popover) => {
+    const popoverId = popover.getAttribute('aria-describedby');
+    const popoverElement = document.getElementById(popoverId);
+    const popoverInstance = bootstrap.Popover.getInstance(popoverElement);
+
+    if (popoverInstance) {
+      popoverInstance.hide();
+    }
+  });
+}
 
 /**
 * Utility function to improve accessibility for Bootstrap tooltips to conform
@@ -71,6 +102,9 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
     element.addEventListener(eventType, (event) => {
       event.preventDefault;
       event.stopPropagation;
+
+      // make sure no tooltips are open before opening a new one
+      hideAllTooltips();
 
       clearTimeout(tooltipTimeOut);
       tooltip.show();
@@ -128,8 +162,13 @@ const hoverablePopover = function keepPopoverOpenOnHoverOverContent(element) {
     element.addEventListener(eventType, (event) => {
       event.preventDefault;
       event.stopPropagation;
+
+      // make sure no popovers are open before opening a new one
+      hideAllPopovers();
       clearTimeout(popoverTimeOut);
+
       popover.show();
+
       popover.tip.addEventListener('mouseleave', () => {
         event.preventDefault;
         event.stopPropagation;
