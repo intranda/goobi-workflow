@@ -128,11 +128,21 @@ public class DatabasePaginator implements Serializable {
     }
 
     public boolean hasNextPage() {
-        return this.results.size() > this.pageSize;
+        return !isLastPage();
     }
 
     public boolean hasPreviousPage() {
         return this.page > 0;
+    }
+
+    public String getHasPreviousPage() {
+        // Inverted value due to binding to "disabled" property
+        return !hasNextPage() ? null : "disabled";
+    }
+
+    public String getHasNextPage() {
+        // Inverted value due to binding to "disabled" property
+        return !hasPreviousPage() ? null : "disabled";
     }
 
     public Long getPageNumberCurrent() {
