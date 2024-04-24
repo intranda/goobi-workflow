@@ -25,33 +25,16 @@
  */
 package org.goobi.managedbeans;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ComponentSystemEvent;
-import javax.faces.model.SelectItem;
-import javax.faces.validator.ValidatorException;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletResponse;
-
+import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.VocabularyManager;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
-import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.ByteOrderMark;
@@ -76,15 +59,28 @@ import org.goobi.vocabulary.helper.ImportJsonVocabulary;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
-import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.persistence.managers.VocabularyManager;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ComponentSystemEvent;
+import javax.faces.model.SelectItem;
+import javax.faces.validator.ValidatorException;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Named
 @WindowScoped
@@ -103,9 +99,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private static final String IMPORT_TYPE_REMOVE = "remove";
 
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
-
-    @Getter
-    private Paginator<io.goobi.vocabulary.exchange.Vocabulary> vocabularyPaginator;
 
     @Getter
     @Setter
@@ -167,9 +160,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return path to list records
      */
     public String FilterKein() {
-        VocabularyManager vm = new VocabularyManager();
-        paginator = new DatabasePaginator(sortField, filter, vm, RETURN_PAGE_ALL);
-        vocabularyPaginator = new HATEOASPaginator<>(VocabularyPageResult.class, api.vocabularies().list(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()));
+        paginator = new DatabasePaginator(sortField, filter, new io.goobi.workflow.api.vocabulary.VocabularyManager(api.vocabularies()), RETURN_PAGE_ALL);
         return RETURN_PAGE_ALL;
     }
 

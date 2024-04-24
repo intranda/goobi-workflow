@@ -53,7 +53,7 @@
 
                       <div class="gw-table__search">
                         <div class="gw-table__search__length">
-                            <h:outputText value="#{msgs.treffer}: #{vocabularyBean.vocabularyPaginator.totalResults}" />
+                            <h:outputText value="#{msgs.treffer}: #{vocabularyBean.paginator.totalResults}" />
                         </div>
                         <div class="gw-table__filters">
                           <!-- show field definitions -->
@@ -79,7 +79,7 @@
                             id="vocabularies"
                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                             var="item"
-                            value="#{vocabularyBean.vocabularyPaginator.items}">
+                            value="#{vocabularyBean.paginator.list}">
 
                             <h:column>
                               <f:facet name="header">
@@ -182,7 +182,7 @@
                               </span>
                             </button>
 
-                          <intranda:tablePaginator id="vocabulary" paginator="#{vocabularyBean.vocabularyPaginator}" />
+                          <intranda:tablePaginator id="vocabulary" paginator="#{vocabularyBean.paginator}" />
                         </div>
 
                     </intranda:box>

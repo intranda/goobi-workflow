@@ -2,6 +2,8 @@ package io.goobi.workflow.api.vocabulary;
 
 import io.goobi.vocabulary.exchange.Identifiable;
 
+import java.util.Optional;
+
 public abstract class CRUDAPI<InstanceType extends Identifiable, PageResultType> {
     private final RESTAPI restApi;
     private final Class<InstanceType> instanceTypeClass;
@@ -21,8 +23,18 @@ public abstract class CRUDAPI<InstanceType extends Identifiable, PageResultType>
         return restApi.get(commonEndpoint, pageResultTypeClass);
     }
 
-    public PageResultType list(int size) {
-        return restApi.get(commonEndpoint + "?size=" + size, pageResultTypeClass);
+    public PageResultType list(Optional<Integer> size, Optional<Integer> page) {
+        String params = "";
+        if (size.isPresent()) {
+            params += params.isEmpty() ? "?" : "&";
+            params += "size=" + size.get();
+        }
+        if (page.isPresent()) {
+            params += params.isEmpty() ? "?" : "&";
+            params += "page=" + page.get();
+        }
+        PageResultType result = restApi.get(commonEndpoint + params, pageResultTypeClass);
+        return result;
     }
 
     public InstanceType get(long id) {
