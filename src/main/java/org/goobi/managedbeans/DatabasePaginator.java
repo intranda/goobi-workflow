@@ -136,13 +136,11 @@ public class DatabasePaginator implements Serializable {
     }
 
     public String getHasPreviousPage() {
-        // Inverted value due to binding to "disabled" property
-        return !hasNextPage() ? null : "disabled";
+        return hasPreviousPage() ? null : "disabled";
     }
 
     public String getHasNextPage() {
-        // Inverted value due to binding to "disabled" property
-        return !hasPreviousPage() ? null : "disabled";
+        return hasNextPage() ? null : "disabled";
     }
 
     public Long getPageNumberCurrent() {
