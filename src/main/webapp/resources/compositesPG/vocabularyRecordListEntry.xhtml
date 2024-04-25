@@ -1,0 +1,41 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+        xmlns:h="http://java.sun.com/jsf/html"
+>
+
+    <composite:interface>
+        <composite:attribute name="record" type="io.goobi.workflow.api.vocabulary.objects.VocabularyRecordDO"
+                             required="true"/>
+        <composite:attribute name="editRecordCallback"
+                             method-signature="java.lang.String edit(io.goobi.workflow.api.vocabulary.objects.VocabularyRecordDO)"
+                             required="false"/>
+    </composite:interface>
+
+    <composite:implementation>
+        <tr>
+            <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}">
+                <td class="tableColumnOverflow maxWidth150">
+                    <h:outputText value="#{titleValue}"/>
+                </td>
+            </ui:repeat>
+            <!--            <td>-->
+            <!--                <button-->
+            <!--                        type="button"-->
+            <!--                        jsf:id="switch"-->
+            <!--                        class="btn #{vocabularyBean.currentVocabRecord != cc.attrs.record ? 'btn-blank' : 'btn-primary-400'}"-->
+            <!--                        jsf:action="#{vocabularyBean.Reload}"-->
+            <!--                        title="#{msgs.bearbeiten}"-->
+            <!--                        data-bs-toggle="tooltip">-->
+            <!--                    <i class="font-size-s fa fa-pencil"/>-->
+            <!--                    <f:setPropertyActionListener-->
+            <!--                            value="#{cc.attrs.record}"-->
+            <!--                            target="#{vocabularyBean.currentVocabRecord}"/>-->
+            <!--                    <f:ajax execute="@this" render="@form"/>-->
+            <!--                    <f:passThroughAttribute name="aria-label" value="#{cc.attrs.record.id}"/>-->
+            <!--                </button>-->
+            <!--            </td>-->
+        </tr>
+    </composite:implementation>
+</ui:composition>

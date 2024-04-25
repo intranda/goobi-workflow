@@ -60,14 +60,14 @@
 							id="title"
 							name="titel"
 							label="#{msgs.vocabularyManager_vocabulary}"
-							field="#{vocabularyBean.currentVocabulary.title}"
+							field="#{vocabularyBean.currentVocabularyLEGACY.title}"
 							help="#{msgs.help_vocabulary_title}" />
 
 						<intranda:formInputTextArea
 							id="file"
 							name="fileName"
 							label="#{msgs.vocabularyManager_description}"
-							field="#{vocabularyBean.currentVocabulary.description}"
+							field="#{vocabularyBean.currentVocabularyLEGACY.description}"
 							help="#{msgs.help_vocabulary_description}"
 							required="false"
 							aria-label="#{msgs.vocabularyManager_description}" />
@@ -87,9 +87,9 @@
 
 										<x:dataTable
 											styleClass="table table-hover table-bordered"
-											value="#{vocabularyBean.currentVocabulary.struct}"
+											value="#{vocabularyBean.currentVocabularyLEGACY.struct}"
 											var="definition"
-											rendered="#{vocabularyBean.currentVocabulary.struct.size() > 0}"
+											rendered="#{vocabularyBean.currentVocabularyLEGACY.struct.size() > 0}"
 											forceId="true">
 
 											<h:column>
@@ -344,7 +344,7 @@
 									jsf:action="#{vocabularyBean.deleteVocabulary}"
 									class="btn btn-hot trigger-delete"
 									onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
-									jsf:rendered="#{vocabularyBean.currentVocabulary.id != null}">
+									jsf:rendered="#{vocabularyBean.currentVocabularyLEGACY.id != null}">
 									<span class="fa fa-trash-o" />
 									<span>
 										<h:outputText value="#{msgs.loeschen}" />

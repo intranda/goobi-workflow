@@ -3,6 +3,8 @@ package io.goobi.workflow.api.vocabulary;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
 
+import java.util.Optional;
+
 public class VocabularyRecordAPI {
     private static final String IN_VOCABULARY_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records";
     private static final String IN_VOCABULARY_SEARCH_ENDPOINT = "/api/v1/vocabularies/{{0}}/records/search";
@@ -16,6 +18,19 @@ public class VocabularyRecordAPI {
 
     public VocabularyRecordPageResult list(long vocabularyId) {
         return restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, vocabularyId);
+    }
+
+    public VocabularyRecordPageResult list(long vocabularyId, Optional<Integer> size, Optional<Integer> page) {
+        String params = "";
+        if (size.isPresent()) {
+            params += params.isEmpty() ? "?" : "&";
+            params += "size=" + size.get();
+        }
+        if (page.isPresent()) {
+            params += params.isEmpty() ? "?" : "&";
+            params += "page=" + page.get();
+        }
+        return restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + params, VocabularyRecordPageResult.class, vocabularyId);
     }
 
     public VocabularyRecord get(long id) {

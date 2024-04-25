@@ -28,7 +28,11 @@ package org.goobi.managedbeans;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.VocabularyManager;
+import io.goobi.vocabulary.exchange.FieldDefinition;
+import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.objects.VocabularyDO;
+import io.goobi.workflow.api.vocabulary.objects.VocabularyRecordDO;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
@@ -81,6 +85,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Named
 @WindowScoped
@@ -98,11 +103,23 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private static final String IMPORT_TYPE_ADD = "add";
     private static final String IMPORT_TYPE_REMOVE = "remove";
 
+    @Getter
+    private DatabasePaginator recordPaginator;
+
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     @Getter
     @Setter
-    private Vocabulary currentVocabulary;
+    private Vocabulary currentVocabularyLEGACY;
+
+    @Getter
+    private VocabularyDO currentVocabulary;
+    public void setCurrentVocabulary(final VocabularyDO newVocabulary) {
+        this.currentVocabulary = newVocabulary;
+        this.currentSchema = api.vocabularySchemas().get(newVocabulary.getSchemaId());
+    }
+    @Getter
+    private transient VocabularySchema currentSchema;
 
     @Getter
     @Setter
@@ -146,6 +163,12 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private List<Definition> removedDefinitions = null;
     private transient DataFormatter dataFormatter = new DataFormatter();
 
+    public List<FieldDefinition> getMainFields() {
+        return currentSchema.getDefinitions().stream()
+                .filter(d -> Boolean.TRUE.equals(d.getMainEntry()))
+                .collect(Collectors.toList());
+    }
+
     /**
      * Constructor for class
      */
@@ -160,7 +183,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return path to list records
      */
     public String FilterKein() {
-        paginator = new DatabasePaginator(sortField, filter, new io.goobi.workflow.api.vocabulary.VocabularyManager(api.vocabularies()), RETURN_PAGE_ALL);
+        paginator = new DatabasePaginator(sortField, filter, new io.goobi.workflow.api.vocabulary.objects.VocabularyManager(api.vocabularies()), RETURN_PAGE_ALL);
         return RETURN_PAGE_ALL;
     }
 
@@ -176,26 +199,29 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     /**
      * method to start editing the records
-     * 
+     *
      * @return path to list and edit records
      */
     public String editRecords() {
         // load records of selected vocabulary
         // initial first page
-        VocabularyManager.getAllRecords(currentVocabulary);
-        currentVocabulary.runFilter();
-        currentVocabulary.setTotalNumberOfRecords(currentVocabulary.getRecords().size());
-        if (!currentVocabulary.getRecords().isEmpty()) {
-            currentVocabRecord = currentVocabulary.getRecords().get(0);
-        } else {
-            addRecord();
-        }
+//        VocabularyManager.getAllRecords(currentVocabularyLEGACY);
+//        currentVocabularyLEGACY.runFilter();
+//        currentVocabularyLEGACY.setTotalNumberOfRecords(currentVocabularyLEGACY.getRecords().size());
+//        if (!currentVocabularyLEGACY.getRecords().isEmpty()) {
+//            currentVocabRecord = currentVocabularyLEGACY.getRecords().get(0);
+//        } else {
+//            addRecord();
+//        }
+        VocabularyRecordDO record = new VocabularyRecordDO();
+
+        recordPaginator = new DatabasePaginator(sortField, filter, new io.goobi.workflow.api.vocabulary.objects.VocabularyRecordManager(api.vocabularyRecords(), currentVocabulary), RETURN_PAGE_ALL);
         return RETURN_PAGE_RECORDS;
     }
 
     public String uploadToServerRecords() {
-        VocabularyManager.getAllRecords(currentVocabulary);
-        Boolean boOK = VocabularyUploader.upload(currentVocabulary);
+        VocabularyManager.getAllRecords(currentVocabularyLEGACY);
+        Boolean boOK = VocabularyUploader.upload(currentVocabularyLEGACY);
         if (Boolean.TRUE.equals(boOK)) {
             Helper.setMeldung(Helper.getTranslation("ExportFinished"));
             return RETURN_PAGE_ALL;
@@ -211,7 +237,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return path to vocabulary edition area
      */
     public String newVocabulary() {
-        currentVocabulary = new Vocabulary();
+        currentVocabularyLEGACY = new Vocabulary();
         return editVocabulary();
     }
 
@@ -222,7 +248,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     public String saveVocabulary() {
         int numberOfMainEntries = 0;
-        for (Definition def : currentVocabulary.getStruct()) {
+        for (Definition def : currentVocabularyLEGACY.getStruct()) {
             if (def.isMainEntry()) {
                 numberOfMainEntries++;
             }
@@ -237,8 +263,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
             return "";
         }
         // check if title is unique
-        if (VocabularyManager.isTitleUnique(currentVocabulary)) {
-            VocabularyManager.saveVocabulary(currentVocabulary);
+        if (VocabularyManager.isTitleUnique(currentVocabularyLEGACY)) {
+            VocabularyManager.saveVocabulary(currentVocabularyLEGACY);
         } else {
             Helper.setFehlerMeldung(Helper.getTranslation("vocabularyManager_titleNotUnique"));
             return "";
@@ -256,8 +282,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return path to the vocabulary listing
      */
     public String deleteVocabulary() {
-        if (currentVocabulary.getId() != null) {
-            VocabularyManager.deleteVocabulary(currentVocabulary);
+        if (currentVocabularyLEGACY.getId() != null) {
+            VocabularyManager.deleteVocabulary(currentVocabularyLEGACY);
         }
         return cancelEdition();
     }
@@ -275,30 +301,30 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     public void deleteDefinition() {
-        if (currentDefinition != null && currentVocabulary != null) {
-            currentVocabulary.getStruct().remove(currentDefinition);
+        if (currentDefinition != null && currentVocabularyLEGACY != null) {
+            currentVocabularyLEGACY.getStruct().remove(currentDefinition);
             removedDefinitions.add(currentDefinition);
         }
     }
 
     public void addDefinition() {
-        currentVocabulary.getStruct().add(new Definition());
+        currentVocabularyLEGACY.getStruct().add(new Definition());
     }
 
     public void addRecord() {
         VocabRecord rec = new VocabRecord();
         List<Field> fieldList = new ArrayList<>();
-        for (Definition definition : currentVocabulary.getStruct()) {
+        for (Definition definition : currentVocabularyLEGACY.getStruct()) {
             Field field = new Field(definition.getLabel(), definition.getLanguage(), "", definition);
             fieldList.add(field);
         }
         rec.setFields(fieldList);
-        currentVocabulary.getRecords().add(rec);
+        currentVocabularyLEGACY.getRecords().add(rec);
         currentVocabRecord = rec;
     }
 
     public void deleteRecord() {
-        currentVocabulary.getRecords().remove(currentVocabRecord);
+        currentVocabularyLEGACY.getRecords().remove(currentVocabRecord);
         VocabularyManager.deleteRecord(currentVocabRecord);
         editRecords();
     }
@@ -313,7 +339,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     public void saveRecordEdition() {
 
-        VocabularyManager.saveRecord(this.currentVocabulary.getId(), this.currentVocabRecord);
+        VocabularyManager.saveRecord(this.currentVocabularyLEGACY.getId(), this.currentVocabRecord);
 
         // editRecords() reloads the list in the left vocabulary record menu. The id must be stored to keep the current record selected because the
         // object reference gets lost during the reload
@@ -333,10 +359,10 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * create an excel result and send it to the response output stream
      */
     public void downloadRecords() {
-        VocabularyManager.getAllRecords(currentVocabulary);
-        String title = currentVocabulary.getTitle();
-        List<Definition> definitionList = currentVocabulary.getStruct();
-        List<VocabRecord> recordList = currentVocabulary.getRecords();
+        VocabularyManager.getAllRecords(currentVocabularyLEGACY);
+        String title = currentVocabularyLEGACY.getTitle();
+        List<Definition> definitionList = currentVocabularyLEGACY.getStruct();
+        List<VocabRecord> recordList = currentVocabularyLEGACY.getRecords();
 
         List<String> headers = new ArrayList<>();
 
@@ -457,9 +483,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
         if (importFile.getFileName().toString().endsWith(".json")) {
 
-            List<VocabRecord> records = ImportJsonVocabulary.convertJsonVocabulary(currentVocabulary, importFile);
-            VocabularyManager.saveVocabulary(currentVocabulary);
-            VocabularyManager.insertNewRecords(records, currentVocabulary.getId());
+            List<VocabRecord> records = ImportJsonVocabulary.convertJsonVocabulary(currentVocabularyLEGACY, importFile);
+            VocabularyManager.saveVocabulary(currentVocabularyLEGACY);
+            VocabularyManager.insertNewRecords(records, currentVocabularyLEGACY.getId());
 
             Helper.setMeldung("Imported records: " + records.size());
 
@@ -500,14 +526,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         if (excelTitle.matches(".*\\(.{3}\\)")) {
                             String titlePart = excelTitle.substring(0, excelTitle.lastIndexOf("(")).trim();
                             String languagePart = excelTitle.substring(excelTitle.lastIndexOf("(") + 1, excelTitle.lastIndexOf(")")).trim();
-                            for (Definition def : currentVocabulary.getStruct()) {
+                            for (Definition def : currentVocabularyLEGACY.getStruct()) {
                                 if (def.getLabel().equals(titlePart) && def.getLanguage().equals(languagePart)) {
                                     mf.setAssignedField(def);
                                 }
                             }
                         } else {
                             String titlePart = excelTitle.trim();
-                            for (Definition def : currentVocabulary.getStruct()) {
+                            for (Definition def : currentVocabularyLEGACY.getStruct()) {
                                 if (def.getLabel().equals(titlePart) && StringUtils.isBlank(def.getLanguage())) {
                                     mf.setAssignedField(def);
                                 }
@@ -568,10 +594,10 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return path to the excel upload area
      */
     public String uploadRecords() {
-        VocabularyManager.getAllRecords(currentVocabulary);
+        VocabularyManager.getAllRecords(currentVocabularyLEGACY);
         allDefinitionNames = new ArrayList<>();
         allDefinitionNames.add(new SelectItem("", "-"));
-        for (Definition definition : currentVocabulary.getStruct()) {
+        for (Definition definition : currentVocabularyLEGACY.getStruct()) {
             String definitionName;
             if (StringUtils.isNotBlank(definition.getLanguage())) {
                 definitionName = definition.getLabel() + " (" + definition.getLanguage() + ")";
@@ -610,8 +636,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public String importRecords() {
         if (IMPORT_TYPE_REMOVE.equals(importType)) {
             // if selected, remove existing entries of this vocabulary
-            VocabularyManager.deleteAllRecords(currentVocabulary);
-            currentVocabulary.setRecords(new ArrayList<>());
+            VocabularyManager.deleteAllRecords(currentVocabularyLEGACY);
+            currentVocabularyLEGACY.setRecords(new ArrayList<>());
         }
         if (IMPORT_TYPE_REMOVE.equals(importType) || IMPORT_TYPE_ADD.equals(importType)) {
             List<VocabRecord> recordsToAdd = new ArrayList<>(rowsToImport.size());
@@ -634,7 +660,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                     addFieldToRecord(vocabRecord, fieldList);
                 }
             }
-            VocabularyManager.insertNewRecords(recordsToAdd, currentVocabulary.getId());
+            VocabularyManager.insertNewRecords(recordsToAdd, currentVocabularyLEGACY.getId());
             String message = String.format("Stored %s new records", recordsToAdd.size());
             log.debug(message);
             Helper.setMeldung(message);
@@ -655,7 +681,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
             if (mainEntryColumnNumber != null) {
                 Map<String, VocabRecord> existingRecords = new HashMap<>();
-                for (VocabRecord vr : currentVocabulary.getRecords()) {
+                for (VocabRecord vr : currentVocabularyLEGACY.getRecords()) {
                     for (Field f : vr.getFields()) {
                         if (f.getDefinitionId().equals(mainEntryDefinitionId)) {
                             existingRecords.put(f.getValue(), vr);
@@ -729,13 +755,13 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 String message = String.format("Created %s new record(s)", newRecords.size());
                 log.debug(message);
                 Helper.setMeldung(message);
-                VocabularyManager.insertNewRecords(newRecords, currentVocabulary.getId());
+                VocabularyManager.insertNewRecords(newRecords, currentVocabularyLEGACY.getId());
             }
             if (!updateRecords.isEmpty()) {
                 String message = String.format("Updated %s record(s)", updateRecords.size());
                 log.debug(message);
                 Helper.setMeldung(message);
-                VocabularyManager.batchUpdateRecords(updateRecords, currentVocabulary.getId());
+                VocabularyManager.batchUpdateRecords(updateRecords, currentVocabularyLEGACY.getId());
             }
         }
         return editRecords();
@@ -748,7 +774,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @param fieldList List of fields to add to the record
      */
     private void addFieldToRecord(VocabRecord vocabRecord, List<Field> fieldList) {
-        for (Definition def : currentVocabulary.getStruct()) {
+        for (Definition def : currentVocabularyLEGACY.getStruct()) {
             boolean fieldExists = false;
             for (Field f : fieldList) {
                 if (def.getId().equals(f.getDefinition().getId())) {
@@ -762,7 +788,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             }
         }
         vocabRecord.setFields(fieldList);
-        currentVocabulary.getRecords().add(vocabRecord);
+        currentVocabularyLEGACY.getRecords().add(vocabRecord);
     }
 
     /**
@@ -783,6 +809,13 @@ public class VocabularyBean extends BasicBean implements Serializable {
             value = dataFormatter.formatCellValue(cell).trim();
         }
         return value;
+    }
+
+    public Object getGetFieldValue(VocabularyRecordDO record, FieldDefinition fieldDefinition) {
+        return record.getFields().stream()
+                .filter(f -> f.getDefinitionId().equals(fieldDefinition.getId()))
+                .findFirst()
+                .orElseThrow();
     }
 
     /**
@@ -853,14 +886,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 if (value.matches(".*\\(.*\\)")) { //NOSONAR, regex is not vulnerable to backtracking
                     String titlePart = value.substring(0, value.lastIndexOf("(")).trim();
                     String languagePart = value.substring(value.lastIndexOf("(") + 1, value.lastIndexOf(")")).trim();
-                    for (Definition def : currentVocabulary.getStruct()) {
+                    for (Definition def : currentVocabularyLEGACY.getStruct()) {
                         if (def.getLabel().equals(titlePart) && def.getLanguage().equals(languagePart)) {
                             assignedField = def;
                             break;
                         }
                     }
                 } else {
-                    for (Definition def : currentVocabulary.getStruct()) {
+                    for (Definition def : currentVocabularyLEGACY.getStruct()) {
                         if (def.getLabel().equals(value) && StringUtils.isBlank(def.getLanguage())) {
                             assignedField = def;
                         }
@@ -881,7 +914,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public void setCurrentVocabRecord(VocabRecord currentVocabRecord) {
 
         // Set records to valid because validation errors are discarded
-        for (VocabRecord vocabRecord : this.currentVocabulary.getRecords()) {
+        for (VocabRecord vocabRecord : this.currentVocabularyLEGACY.getRecords()) {
             vocabRecord.setValid(true);
         }
 
@@ -897,7 +930,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return The vocabulary record or null if it could not be found
      */
     private VocabRecord getVocabRecordById(int id) {
-        for (VocabRecord vocabulary : this.currentVocabulary.getRecords()) {
+        for (VocabRecord vocabulary : this.currentVocabularyLEGACY.getRecords()) {
             if (vocabulary.getId() == id) {
                 return vocabulary;
             }
@@ -912,7 +945,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             // to reset the validation results on the first executed validation of the current submit-trial
             if (this.resetResultsOnNextValidation) {
                 // Only the invalid records should be set to 'valid=false' later
-                for (VocabRecord currentRecord : this.currentVocabulary.getRecords()) {
+                for (VocabRecord currentRecord : this.currentVocabularyLEGACY.getRecords()) {
                     currentRecord.setValid(true);
                 }
                 this.resetResultsOnNextValidation = false;
@@ -940,7 +973,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
         // Validate the currently set record:
         boolean success =
-                VocabularyFieldValidator.validateFieldInRecords(this.currentVocabulary, this.currentVocabRecord, field, valueThatShouldBeSet);
+                VocabularyFieldValidator.validateFieldInRecords(this.currentVocabularyLEGACY, this.currentVocabRecord, field, valueThatShouldBeSet);
         if (!success) {
             String errorMessageKey = field.getValidationMessage();
             String translation = Helper.getTranslation(errorMessageKey);

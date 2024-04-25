@@ -148,7 +148,7 @@
                                         name="aria-label"
                                         value="#{msgs.vocabularyManager_editVocabulary}" />
                                     <f:setPropertyActionListener
-                                        target="#{vocabularyBean.currentVocabulary}"
+                                        target="#{vocabularyBean.currentVocabularyLEGACY}"
                                         value="#{item}" />
                                 </button>
 
@@ -160,7 +160,7 @@
                                     title="#{msgs.vocabularyManager_uploadToServerRecords}">
                                     <span class="fa fa-database" />
                                     <f:setPropertyActionListener
-                                        target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
+                                            target="#{vocabularyBean.currentVocabularyLEGACY}" value="#{item}" />
                                 </h:commandLink>
                               </div>
 

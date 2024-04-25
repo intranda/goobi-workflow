@@ -1,0 +1,189 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+        xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+        xmlns:x="http://myfaces.apache.org/tomahawk"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
+>
+
+    <composite:interface>
+        <composite:attribute
+                name="vocabulary"
+                type="io.goobi.workflow.api.vocabulary.objects.VocabularyDO"
+                required="true"
+        />
+    </composite:interface>
+
+    <composite:implementation>
+        <intranda:box
+                boxType="neutral"
+                boxTitle="false"
+        >
+            <intranda:boxTitle
+                    title="Test"
+                    icon="fa-database">
+                <div class="actions d-flex">
+                    <!-- download all records as csv/excel -->
+                    <button
+                            jsf:id="downloadRecords"
+                            class="btn d-flex align-items-center btn--title-action"
+                            jsf:rel="tooltip"
+                            jsf:action="#{vocabularyBean.downloadRecords}"
+                            title="#{msgs.vocabularyManager_downloadRecords}">
+                        <span class="fa fa-download"/>
+                        <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip"/>
+                        <f:passThroughAttribute
+                                name="aria-label"
+                                value="#{msgs.vocabularyManager_downloadRecords}"/>
+                    </button>
+
+                    <!-- import all records from excel -->
+                    <button
+                            jsf:id="uploadRecords"
+                            class="btn d-flex align-items-center btn--title-action"
+                            jsf:rel="tooltip"
+                            jsf:action="#{vocabularyBean.uploadRecords}"
+                            title="#{msgs.vocabularyManager_uploadRecords}">
+                        <span class="fa fa-upload"/>
+                        <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip"/>
+                        <f:passThroughAttribute
+                                name="aria-label"
+                                value="#{msgs.vocabularyManager_uploadRecords}"/>
+                    </button>
+                </div>
+                <!-- /actions -->
+            </intranda:boxTitle>
+
+            <!-- table of records -->
+            <h:panelGroup id="recordList" styleClass="gw-table gw-table-fixed">
+
+                <div class="gw-table gw-table__search">
+
+                    <div class="gw-table__search__length">
+                        <!-- TODO: Calculate the filtered result size -->
+                        <h:outputText value="#{msgs.treffer}: #{vocabularyBean.recordPaginator.totalResults}"/>
+                        <h:outputText
+                                rendered="#{vocabularyBean.currentVocabularyLEGACY.searchValue != null and vocabularyBean.currentVocabularyLEGACY.searchValue ne ''}"
+                                value=" #{msgs.von} #{vocabularyBean.currentVocabularyLEGACY.records.size()}"/>
+                    </div>
+
+                    <div class="gw-table__filters">
+                        <!-- Search box -->
+                        <div class="gw-table__filters__search-bar">
+
+                            <div class="input-group input-group">
+
+                          <span class="input-group-text">
+                              <span class="fa fa-search"/>
+                          </span>
+                                <h:inputText
+                                        id="searchField"
+                                        pt:aria-label="search"
+                                        styleClass="form-control searchfield"
+                                        value="#{vocabularyBean.currentVocabularyLEGACY.searchValue}">
+                                    <f:passThroughAttribute
+                                            name="placeholder"
+                                            value="#{msgs.search}"/>
+                                </h:inputText>
+                                <button
+                                        type="button"
+                                        jsf:id="FilterAlle2"
+                                        jsf:forceId="true"
+                                        class="btn btn-blank"
+                                        jsf:action="#{vocabularyBean.currentVocabularyLEGACY.runFilter}">
+                                    <f:ajax render="@form" execute="@form"></f:ajax>
+                                    #{msgs.search}
+                                </button>
+                            </div>
+                            <x:commandButton
+                                    type="submit"
+                                    id="FilterAlle"
+                                    forceId="true"
+                                    style="display: none;"
+                                    action="#{vocabularyBean.currentVocabularyLEGACY.runFilter}">
+                                <f:ajax render="@form" execute="@form"></f:ajax>
+                            </x:commandButton>
+                        </div> <!-- /__search-bar -->
+                    </div> <!-- /__filters -->
+                </div> <!-- /__search -->
+
+                <div class="gw-table__wrapper">
+
+                    <table class="table table-hover table-bordered">
+
+                        <thead>
+                        <tr role="row">
+
+                            <ui:repeat var="definition" value="#{vocabularyBean.currentVocabularyLEGACY.mainFields}">
+                                <th scope="col" role="columnheader"
+                                    aria-sort="#{vocabularyBean.currentVocabularyLEGACY.sortfield== definition.idAsString.concat('Desc') ? 'descending' : vocabularyBean.currentVocabularyLEGACY.sortfield== definition.idAsString.concat('Asc') ? 'ascending' :'none'}">
+                                    <button
+                                            jsf:id="changeOrderLabel"
+                                            class="button-link"
+                                            style="width: 100%; text-align: left;"
+                                            jsf:action="#{vocabularyBean.currentVocabularyLEGACY.changeOrder}"
+                                            aria-label="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}">
+                                        <h:outputText
+                                                value="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}"/>
+
+                                        <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabularyLEGACY.sortfield==definition.idAsString.concat('Desc')?'fa-sort-desc':vocabularyBean.currentVocabularyLEGACY.sortfield==definition.idAsString.concat('Asc')?'fa-sort-asc':'fa-sort'}"></span>
+                                        <f:setPropertyActionListener
+                                                target="#{vocabularyBean.currentVocabularyLEGACY.sortfield}"
+                                                value="#{vocabularyBean.currentVocabularyLEGACY.sortfield==definition.idAsString.concat('Asc')?definition.idAsString.concat('Desc'):definition.idAsString.concat('Asc')}"/>
+                                        <f:ajax render="@form"/>
+                                    </button>
+                                </th>
+
+                            </ui:repeat>
+                            <th class="gw-table-fixed__actions">
+                                <h:outputText value="#{msgs.auswahl}"/>
+                            </th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <ui:repeat varStatus="status" var="record" value="#{vocabularyBean.recordPaginator.list}">
+                            <intranda:vocabularyRecordListEntry record="#{record}"/>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                </div>
+            </h:panelGroup>
+
+            <!-- navigation buttons to flip through all records -->
+            <div class="box__actions">
+
+                <!-- add new record -->
+                <button jsf:id="new_record" jsf:action="#{vocabularyBean.addRecord}"
+                        class="btn btn-primary-400 me-auto"
+                        title="#{msgs.vocabularyManager_addRecord}">
+                    <i aria-hidden="true" class="fa fa-plus margin-right-5"/>
+                    <span>
+                          <h:outputText value="#{msgs.vocabularyManager_addRecord}"/>
+                      </span>
+                </button>
+
+                <intranda:tablePaginator id="record" paginator="#{vocabularyBean.recordPaginator}"/>
+            </div> <!-- /box__actions -->
+
+            <!-- Cancel (go back to vocab overview)-->
+            <button
+                    class="btn btn-blank mt-4"
+                    jsf:id="abbrechen"
+                    jsf:type="cancel"
+                    jsf:action="#{vocabularyBean.cancelRecordEdition}"
+                    jsf:immediate="true">
+                <h:outputText value="#{msgs.vocabularyManager_backToVocabularies}"/>
+            </button>
+        </intranda:box>
+    </composite:implementation>
+</ui:composition>

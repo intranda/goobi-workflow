@@ -6,6 +6,6 @@ import org.goobi.beans.DatabaseObject;
 public class VocabularyDO extends Vocabulary implements DatabaseObject {
     @Override
     public void lazyLoad() {
-
+        // REST objects don't require lazy loading
     }
 }
