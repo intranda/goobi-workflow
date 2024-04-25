@@ -5,8 +5,8 @@ permissions:
 
 on:
   push:
-    branches:
-      - 'master'
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -27,20 +27,11 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Build with Maven
         run: mvn clean verify -U
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d %H:%M:%S %Z')"
-      - name: Create tag name from date
-        id: tagdate
-        run: echo "::set-output name=tagdate::$(date +'%Y-%m-%d_%H-%M-%S_%Z')"
-      - name: Rename WAR
-        run: mv target/*.war target/goobi.war
       - name: Release
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          name: ${{ steps.date.outputs.date }}
-          tag_name: ${{ steps.tagdate.outputs.tagdate }}
+          name: Release ${{ github.ref_name }}
           generate_release_notes: true
           draft: false
           prerelease: false
