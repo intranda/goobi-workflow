@@ -30,6 +30,7 @@ pipeline {
       when {
         anyOf {
           branch 'master'
+          branch 'release_*'
           branch 'sonar_*'
         }
       }
@@ -68,7 +69,7 @@ pipeline {
       dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     }
     success {
-      archiveArtifacts artifacts: 'target/*.war, target/*.jar, install/db/goobi.sql', fingerprint: true
+      archiveArtifacts artifacts: '**/*.war, **/*.jar, install/db/goobi.sql', fingerprint: true
     }
     changed {
       emailext(

@@ -1,45 +1,48 @@
-name: Build and upload to release
+name: Publish Release Build
+
+permissions:
+  contents: write
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - 'master'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 17
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
-    - name: Set up Maven cache
-      uses: actions/cache@v1
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-    
-    - name: Build with Maven
-      run: mvn package -DskipTests
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-    - name: Upload Release Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: /home/runner/work/goobi-workflow/goobi-workflow/Goobi/module-war/target/goobi.war
-        asset_name: goobi.war
-        asset_content_type: application/war
+      - name: Check out source code
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Set up Maven cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Build with Maven
+        run: mvn clean verify -U
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d %H:%M:%S %Z')"
+      - name: Create tag name from date
+        id: tagdate
+        run: echo "::set-output name=tagdate::$(date +'%Y-%m-%d_%H-%M-%S_%Z')"
+      - name: Rename WAR
+        run: mv target/*.war target/goobi.war
+      - name: Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.date.outputs.date }}
+          tag_name: ${{ steps.tagdate.outputs.tagdate }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          files: |
+            **/target/*.war
