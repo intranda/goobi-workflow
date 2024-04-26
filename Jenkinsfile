@@ -21,9 +21,24 @@ pipeline {
         sh 'git reset --hard HEAD && git clean -fdx'
       }
     }
-    stage('build') {
+    stage('build-snapshot') {
+      when {
+        anyOf {
+          branch 'develop'
+        }
+      }
       steps {
-        sh 'mvn clean verify -U'
+        sh 'mvn clean verify -U -P snapshot-build'
+      }
+    }
+    stage('build-release') {
+      when {
+        anyOf {
+          branch 'master'
+        }
+      }
+      steps {
+        sh 'mvn clean verify -U -P release-build'
       }
     }
     stage('sonarcloud') {
