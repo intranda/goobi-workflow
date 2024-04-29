@@ -62,6 +62,9 @@
     <Logger name="org.goobi" level="TRACE" additivity="true">
       <AppenderRef ref="goobi" />
     </Logger>
+    <Logger name="io.goobi" level="TRACE" additivity="true">
+      <AppenderRef ref="goobi" />
+    </Logger>    
     <Logger name="de.sub.goobi" level="TRACE" additivity="true">
       <AppenderRef ref="goobi" />
     </Logger>
