@@ -371,6 +371,10 @@ public class BeanHelper implements Serializable {
         WerkstueckeKopieren(template, newProcess);
         EigenschaftenKopieren(template, newProcess);
 
+        // add template information
+        EigenschaftHinzufuegen(newProcess, "Template", template.getTitel());
+        EigenschaftHinzufuegen(newProcess, "TemplateID", String.valueOf(template.getId()));
+
         // update task edition dates
         for (Step step : newProcess.getSchritteList()) {
 
