@@ -84,6 +84,7 @@ pipeline {
               echo "${projectversion}"
               git tag -a "v${projectversion}" -m "releasing v${projectversion}" && git push origin v"${projectversion}"
           '''
+        }
       }
     }
   }
