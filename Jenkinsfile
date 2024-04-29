@@ -23,8 +23,8 @@ pipeline {
     }
     stage('build-snapshot') {
       when {
-        anyOf {
-          branch 'develop'
+        not {
+          branch 'master'
         }
       }
       steps {
