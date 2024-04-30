@@ -1,0 +1,154 @@
+input,
+select,
+textarea {
+  &:hover {
+    border-color: var(--clr-primary-400) !important;
+  }
+  &[type="checkbox"] {
+    margin-right: 5px;
+  }
+}
+
+.ui-calendar {
+  width: 100%;
+  .hasDatepicker {
+    width: 100%;
+  }
+}
+
+.form-control,
+.form-select {
+  font-size: var(--fs-400)
+}
+
+th {
+  font-weight: inherit;
+}
+
+.form-group {
+  padding: 8px;
+  margin-bottom: 0;
+}
+
+label,
+.form__label {
+  font-size: var(--fs-400);
+  align-self: flex-start;
+  display: flex;
+  overflow: hidden;
+  hyphens: auto;
+  .fa {
+    font-size: var(--fs-200, 10px);
+  }
+}
+
+.form__help,
+.help-block {
+  flex: 1 1 100%;
+
+  span {
+    color: var(--clr-neutral-600);
+  }
+
+  .text-danger, // error msg
+  .help-block // help text
+  {
+    margin-left: 1px;
+    margin-top: 4px;
+  }
+}
+
+// BS helper
+.form-text {
+  font-size: var(--fs-400);
+}
+
+.label-col {
+  background-color: var(--clr-neutral-200);
+  border-right: 1px solid var(--clr-neutral-300);
+
+  @media screen and (max-width: 767px) {
+    border-right: 0;
+  }
+
+  .fa-asterisk {
+    vertical-align: super;
+  }
+}
+
+.label-left {
+  .form-group {
+    display: flex;
+    padding: 0;
+  }
+
+  .form-group > [class^="col"] {
+    padding: 1rem;
+    border-bottom: 1px solid var(--clr-border, #ced4da);
+  }
+
+  .control-label {
+    background-color: var(--clr-neutral-200);
+    border-right: 1px solid var(--clr-border, #ced4da);
+  }
+
+  .control-label [class^="col-"] {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
+
+option:checked {
+  background-color: var(--clr-primary-400);
+  color: #fff;
+}
+
+// BS 5 Overrides
+.input-group-text {
+  background-color: var(--clr-neutral-200);
+}
+
+// Other overrides
+body .ui-inputfield {
+  padding: 0.1875rem 0.75rem;
+  border: var(--gw-border);
+  border-color: var(--bs-border-color);
+  border-radius: var(--gw-border-radius);
+  &:hover {
+    border-color: var(--clr-primary-400);
+  }
+  &.ui-state-error {
+    border-color: var(--bs-border-color);
+  }
+}
+// override for reduced opacity in spans SURROUNDING input in primefaces
+body .ui-state-disabled {
+  opacity: initial;
+}
+body {
+  .ui-autocomplete-panel {
+    border-radius: var(--gw-border-radius);
+    .ui-autocomplete-items {
+      .ui-autocomplete-item {
+        line-height: 1.5;
+        margin-inline: 0.5em;
+        &.ui-state-highlight {
+          background-color: var(--clr-neutral-200);
+        }
+      }
+    }
+  }
+}
+
+// Option buttons
+.select-radio td {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.select-radio-horizontal tr {
+  display: flex;
+  gap: 12px;
+  border-width: 0 !important;
+}

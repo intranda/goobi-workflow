@@ -1,0 +1,57 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:of="http://omnifaces.org/functions"
+	template="#{AdministrationForm.administrationPlugin.title eq 'intranda_administration_config_file_editor'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_ruleset_editor'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_googlebooks_harvester'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_hotfolder_nli'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_nli_dailypress'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_ruleset_compatibility'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_data_poller'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_goobi2goobi_import_infrastructure'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_goobi2goobi_import_data'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_goobi2goobi_export'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_metadata_backup'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_deliveryManagement'
+        or AdministrationForm.administrationPlugin.title eq 'intranda_administration_snippetCreator'
+        or AdministrationForm.administrationPlugin.title eq 'a-plugin_kb_projects'
+        or AdministrationForm.administrationPlugin.title eq 'b-plugin_kb_subprojects'
+        or AdministrationForm.administrationPlugin.title eq 'c-plugin_kb_metadata-upload'
+        or AdministrationForm.administrationPlugin.title eq 'd-plugin_kb_import-dashboard'
+        ? '/uii/templatePG/templatePG.html' : '/uii/template/template.html'}"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{NavigationForm.aktuell == 'a38'?msgs[AdministrationForm.administrationPlugin.title]:msgs.administration}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="admin"
+            label="#{myPageTitle}"
+            action="administration"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:panelGroup rendered="#{NavigationForm.aktuell == 'a38'}">
+            <ui:include src="#{AdministrationForm.administrationPlugin.gui}"></ui:include>
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>

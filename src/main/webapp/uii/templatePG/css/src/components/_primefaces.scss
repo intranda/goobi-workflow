@@ -1,0 +1,18 @@
+.ui-fileupload {
+    display: flex;
+    &-files {
+        width: 100%;
+    }
+    .ui-button {
+        color: white;
+        .ui-button-text {
+            margin-left: 0.625rem;
+        }
+    }
+    .ui-progressbar {
+        background: var(--clr-neutral-100);
+    }
+    .ui-progressbar-label {
+        color: var(--clr-primary-400)
+    }
+}

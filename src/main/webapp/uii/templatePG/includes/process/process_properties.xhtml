@@ -1,0 +1,611 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<ui:include src="../calendarJavaScript.xhtml" />
+
+		<!-- LIST OF CONFIGURED METADATA -->
+		<ui:fragment
+			rendered="#{ProzessverwaltungForm.sizeOfDisplayableMetadata != 0}">
+			<div class="row">
+				<div class="col-sm-12 mt-3">
+
+					<intranda:box
+						boxType="outline"
+						boxPadding="false"
+						icon="fa-list"
+						title="#{msgs.descriptiveMetadata}">
+
+						<table class="table table-hover table-bordered">
+							<c:forEach
+								items="#{ProzessverwaltungForm.displayableMetadataMap}"
+								var="metadata">
+								<tr>
+									<td class="process_propertyName">
+										<span
+											title="#{metadata.key}"
+											data-toggle="tooltip">#{msgs[metadata.key]}</span>
+									</td>
+									<td class="process_propertyValue">
+										<c:forEach
+											items="#{metadata.value}"
+											var="metadataValue">
+											<h:outputText
+												value="#{msgs[metadataValue]}"
+												rendered="#{metadata.key == 'DocStruct'}" />
+											<h:outputText
+												value="#{metadataValue}"
+												rendered="#{metadata.key != 'DocStruct'}" />
+											<br />
+										</c:forEach>
+									</td>
+								</tr>
+							</c:forEach>
+						</table>
+					</intranda:box>
+				</div>
+			</div>
+		</ui:fragment>
+		<!-- // LIST OF CONFIGURED METADATA -->
+
+
+		<!-- LIST OF PROPERTIES -->
+		<h:panelGroup
+			rendered="#{ProzessverwaltungForm.modusBearbeiten!='eigenschaft'}">
+			<div class="row">
+				<div class="col-sm-12 mt-3">
+					<h:form id="propertyList">
+
+						<intranda:box
+							id="properties"
+							boxType="outline"
+							boxPadding="false"
+							boxTitle="false">
+
+							<intranda:boxTitle
+								title="#{msgs.eigenschaften}"
+								icon="fa-list">
+								<div class="actions d-flex">
+									<button
+										jsf:action="#{ProzessverwaltungForm.createNewProperty}"
+										jsf:id="newProperty"
+										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+										title="#{msgs.eigenschaftHinzufuegen}"
+										class="btn d-flex align-items-center btn--title-action-neutral">
+										<x:updateActionListener
+											property="#{ProzessverwaltungForm.container}"
+											value="0" />
+										<x:updateActionListener
+											property="#{ProzessverwaltungForm.modusBearbeiten}"
+											value="eigenschaft" />
+										<span class="fa fa-plus" />
+										<f:passThroughAttribute
+											name="data-toggle"
+											value="tooltip" />
+									</button>
+								</div>
+							</intranda:boxTitle>
+
+
+							<!-- TABLE OF EXISTING PROPERTIES -->
+							<table
+								class="table table-hover table-bordered"
+								id="propertyTable">
+
+								<!-- LIST OF CONTAINERS -->
+								<x:dataList
+									var="container"
+									value="#{ProzessverwaltungForm.containerList}"
+									id="container"
+									rowCountVar="rowCount"
+									rowIndexVar="rowIndex">
+
+									<!-- LIST OF PROPERTIES IN CONTAINER 0 -->
+									<x:dataList
+										var="proc"
+										value="#{ProzessverwaltungForm.containerlessProperties}"
+										id="containerless"
+										rowCountVar="propCount"
+										rowIndexVar="propInd">
+										<h:panelGroup rendered="#{container == 0}">
+											<tr>
+												<td class="process_propertyName">
+													<span
+														title="&quot;{process.#{proc.name}}&quot;"
+														data-toggle="tooltip"
+														rel="tooltip">#{proc.name}</span>
+												</td>
+												<td class="process_propertyValue">
+													<x:dataList
+														var="val"
+														value="#{proc.valueList}"
+														rendered="#{proc.type.name == 'listmultiselect'}">
+														<h:outputText
+															value="#{val}"
+															styleClass="badge badge-no-radius badge-light-grey" />
+													</x:dataList>
+													<h:outputText
+														value="#{proc.readValue}"
+														rendered="#{proc.type.name == 'html'}"
+														escape="false" />
+													<h:outputText
+														value="#{proc.readValue}"
+														rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html' and proc.type.name != 'listmultiselect'}" />
+													<h:outputLink
+														pt:aria-label="#{proc.name}"
+														value="#{proc.readValue}"
+														title="#{proc.readValue}"
+														target="_blank"
+														rendered="#{proc.type.name == 'link'}">
+														<h:outputText value="#{proc.readValue}" />
+														<f:passThroughAttribute
+															name="data-toggle"
+															value="tooltip" />
+													</h:outputLink>
+													<h:panelGroup rendered="#{proc.type.name == 'boolean'}">
+														<h:panelGroup rendered="#{proc.readValue eq 'true'}">
+															<span class="fa fa-check-square-o fa-lg" />
+														</h:panelGroup>
+														<h:panelGroup rendered="#{proc.readValue ne 'true'}">
+															<span class="fa fa-square-o fa-lg" />
+														</h:panelGroup>
+													</h:panelGroup>
+												</td>
+												<c:if
+													test="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+													<td class="process_propertyAction">
+														<button
+															class="btn btn-blank"
+															jsf:action="process_edit"
+															title="#{msgs.bearbeiten}"
+															jsf:id="editProperty"
+															aria-label="#{msgs.bearbeiten}"
+															jsf:rendered="#{proc.type.name != 'metadata'}">
+															<span class="fa fa-pencil" />
+															<f:passThroughAttribute
+																name="data-toggle"
+																value="tooltip" />
+															<x:updateActionListener
+																property="#{ProzessverwaltungForm.processProperty}"
+																value="#{proc}" />
+															<x:updateActionListener
+																property="#{ProzessverwaltungForm.container}"
+																value="0" />
+															<x:updateActionListener
+																property="#{ProzessverwaltungForm.modusBearbeiten}"
+																value="eigenschaft" />
+														</button>
+														<button
+															jsf:action="#{ProzessverwaltungForm.duplicateProperty}"
+															class="btn btn-blank ms-2"
+															title="#{msgs.duplicate}"
+															jsf:id="duplicateProperty"
+															jsf:rendered="#{proc.type.name != 'metadata'}">
+															<i
+																class="fa fa-clipboard"
+																title="#{msgs.duplicate}"></i>
+															<f:passThroughAttribute
+																name="data-toggle"
+																value="tooltip" />
+															<x:updateActionListener
+																property="#{ProzessverwaltungForm.processProperty}"
+																value="#{proc}" />
+															<x:updateActionListener
+																property="#{ProzessverwaltungForm.container}"
+																value="0" />
+														</button>
+													</td>
+												</c:if>
+											</tr>
+										</h:panelGroup>
+									</x:dataList>
+									<!-- // LIST OF PROPERTIES IN CONTAINER 0 -->
+
+									<!-- BLANK TABLE ROW -->
+									<h:panelGroup
+										rendered="#{rowIndex lt rowCount and rowIndex != 0}">
+										<tr>
+											<td colspan="3">
+												<h:outputText
+													value="&amp;nbsp;"
+													escape="false" />
+											</td>
+										</tr>
+									</h:panelGroup>
+									<!-- // BLANK TABLE ROW -->
+
+									<!-- LIST OF PROPERTIES IN CONTAINER NOT 0 -->
+									<x:dataList
+										var="process_item"
+										id="container"
+										value="#{ProzessverwaltungForm.containers[container].propertyList}"
+										rowCountVar="propCount"
+										rowIndexVar="propInd">
+										<h:panelGroup rendered="#{container != 0}">
+											<tr>
+												<td class="process_propertyName">
+													<span
+														title="{process.#{process_item.name}}"
+														rel="tooltip" data-toggle="tooltip">#{process_item.name}
+                                                    </span>
+												</td>
+												<td class="process_propertyValue">
+													<x:dataList
+														var="val"
+														value="#{process_item.valueList}"
+														rendered="#{process_item.type.name == 'listmultiselect'}">
+														<h:outputText
+															value="#{val}"
+															styleClass="badge badge-no-radius badge-light-grey" />
+													</x:dataList>
+													<h:outputText
+														value="#{process_item.readValue}"
+														rendered="#{process_item.type.name == 'html'}"
+														escape="false" />
+													<h:outputText
+														value="#{process_item.readValue}"
+														rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean' and process_item.type.name != 'html' and process_item.type.name != 'listmultiselect'}" />
+													<h:outputLink
+														pt:aria-label="#{process_item.name}"
+														value="#{process_item.readValue}"
+														title="#{process_item.readValue}"
+														target="_blank"
+														rendered="#{process_item.type.name == 'link'}">
+														<h:outputText value="#{process_item.readValue}" />
+														<f:passThroughAttribute
+															name="data-toggle"
+															value="tooltip" />
+													</h:outputLink>
+													<h:panelGroup
+														rendered="#{process_item.type.name == 'boolean'}">
+														<h:panelGroup
+															rendered="#{process_item.readValue eq 'true'}">
+															<span class="fa fa-check-square-o fa-lg" />
+														</h:panelGroup>
+														<h:panelGroup
+															rendered="#{process_item.readValue ne 'true'}">
+															<span class="fa fa-square-o fa-lg" />
+														</h:panelGroup>
+													</h:panelGroup>
+												</td>
+												<h:panelGroup
+													rendered="#{propInd == 0}"
+													id="cont">
+													<td class="process_propertyAction"
+														rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
+														<!-- edit container -->
+														<button
+															class="btn btn-blank"
+															jsf:action="process_edit"
+															jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}"
+															title="#{msgs.bearbeiten}"
+															jsf:id="editProperty2">
+															<i
+																class="fa fa-pencil"
+																title="#{msgs.bearbeiten}"></i>
+															<f:passThroughAttribute
+																name="data-toggle"
+																value="tooltip" />
+															<x:updateActionListener
+																property="#{ProzessverwaltungForm.container}"
+																value="#{container}" />
+															<x:updateActionListener
+																property="#{ProzessverwaltungForm.modusBearbeiten}"
+																value="eigenschaft" />
+														</button>
+														<!-- duplicate container -->
+														<button
+															class="btn btn-blank ms-2"
+															jsf:id="duplicateProperty2"
+															aria-label="#{msgs.duplicate}"
+															jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}"
+															jsf:action="#{ProzessverwaltungForm.duplicateContainer}"
+															title="#{msgs.duplicate}">
+															<span class="fa fa-clipboard" />
+															<f:passThroughAttribute
+																name="data-toggle"
+																value="tooltip" />
+															<x:updateActionListener
+																property="#{ProzessverwaltungForm.container}"
+																value="#{container}" />
+														</button>
+													</td>
+												</h:panelGroup>
+
+											</tr>
+										</h:panelGroup>
+									</x:dataList>
+									<!-- // LIST OF PROPERTIES IN CONTAINER NOT 0 -->
+
+								</x:dataList>
+							</table>
+							<!-- // TABLE OF EXISTING PROPERTIES -->
+
+						</intranda:box>
+					</h:form>
+				</div>
+			</div>
+		</h:panelGroup>
+		<!-- // LIST OF PROPERTIES -->
+
+
+		<!-- EDIT PROPERTY AREA -->
+		<h:panelGroup styleClass="d-block mt-3"
+			rendered="#{ProzessverwaltungForm.modusBearbeiten=='eigenschaft'}">
+
+			<h:form
+				id="myform"
+				onkeypress="submitOnEnter(event);">
+
+				<div class="row">
+					<div class="col-sm-12">
+
+						<intranda:box
+							boxType="action"
+							boxForm="true"
+							boxPadding="false"
+							title="#{msgs.eigenschaft}"
+							icon="fa-edit">
+
+							<x:dataList
+								var="myprocess_item"
+								value="#{ProzessverwaltungForm.containerProperties}">
+
+								<!-- NEW AS TEXT -->
+								<h:panelGroup>
+									<h:panelGroup rendered="#{myprocess_item.isNew}">
+										<intranda:formInputText
+											id="title"
+											name="titlename"
+											label="#{msgs.titel}"
+											field="#{myprocess_item.name}"
+											help="#{msgs.helpPropertyTitle}"
+											required="false" />
+									</h:panelGroup>
+								</h:panelGroup>
+								<!-- // NEW AS TEXT -->
+
+								<!-- VALUE AS TEXT -->
+								<h:panelGroup styleClass="row"
+									rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
+									<div class="col-12 col-md-3">
+										<intranda:formLabel label="#{myprocess_item.name}"
+										labelFor="value" labelRequired="false"/>
+									</div>
+									<div class="col-12 col-md-9">
+										<h:inputText
+											id="value"
+											forceId="true"
+											styleClass="form-control form__input"
+											value="#{myprocess_item.value}"
+											required="false"
+											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+										</h:inputText>
+										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="value" />
+									</div>
+								</h:panelGroup>
+								<!-- // VALUE AS TEXT -->
+
+								<!-- VALUE AS TEXTAREA -->
+								<h:panelGroup styleClass="row"
+									rendered="#{(myprocess_item.type.name == 'textarea')}">
+									<div class="col-12 col-md-3">
+										<intranda:formLabel label="#{myprocess_item.name}"
+										labelFor="textareaValue" labelRequired="false"/>
+									</div>
+									<div class="col-12 col-md-9">
+										<h:inputTextarea
+											id="textareaValue"
+											rows="7"
+											forceId="true"
+											styleClass="form-control form__input"
+											value="#{myprocess_item.value}"
+											required="false"
+											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+										</h:inputTextarea>
+										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="textareaValue" />
+									</div>
+								</h:panelGroup>
+								<!-- // VALUE AS TEXTAREA -->
+
+								<!-- VALUE AS NUMBER -->
+								<h:panelGroup styleClass="row"
+									rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
+									<div class="col-12 col-md-3">
+										<intranda:formLabel label="#{myprocess_item.name}"
+										labelFor="number" labelRequired="false"/>
+									</div>
+									<div class="col-12 col-md-9">
+										<x:inputText
+											id="number"
+											forceId="true"
+											styleClass="form-control form__input"
+											value="#{myprocess_item.value}"
+											required="false"
+											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+											<f:validateLongRange minimum="0" />
+										</x:inputText>
+										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="number" />
+									</div>
+								</h:panelGroup>
+								<!-- // VALUE AS NUMBER -->
+
+								<!-- VALUE AS DROPDOQWN -->
+								<h:panelGroup styleClass="row"
+									rendered="#{(myprocess_item.type.name == 'list')}">
+									<div class="col-12 col-md-3">
+										<intranda:formLabel label="#{myprocess_item.name}"
+										labelFor="select" labelRequired="false"/>
+									</div>
+									<div class="col-12 col-md-9">
+										<h:selectOneMenu
+											id="select"
+											styleClass="form-select"
+											required="false"
+											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+											value="#{myprocess_item.value}">
+											<f:selectItems
+												value="#{myprocess_item.possibleValues}"
+												var="myprocess_items"
+												itemLabel="#{myprocess_items}"
+												itemValue="#{myprocess_items}" />
+										</h:selectOneMenu>
+										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="select" />
+									</div>
+								</h:panelGroup>
+								<!-- // VALUE AS DROPDOQWN -->
+
+								<!-- VALUE AS MULTI SELECT -->
+								<h:panelGroup styleClass="row"
+									rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
+									<div class="col-12 col-md-3">
+										<intranda:formLabel label="#{myprocess_item.name}"
+										labelFor="selectmany"  labelRequired="false"/>
+									</div>
+									<div class="col-12 col-md-9">
+										<h:selectManyListbox
+											id="selectmany"
+											value="#{myprocess_item.valueList}"
+											size="5"
+											styleClass="form-control"
+											required="false"
+											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+											<f:selectItems
+												value="#{myprocess_item.possibleValues}"
+												var="myprocess_items"
+												itemLabel="#{myprocess_items}"
+												itemValue="#{myprocess_items}" />
+										</h:selectManyListbox>
+										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="selectmany" />
+									</div>
+								</h:panelGroup>
+								<!-- VALUE AS MULTI SELECT -->
+
+								<!-- VALUE AS BOOLEAN -->
+								<h:panelGroup styleClass="row"
+									rendered="#{(myprocess_item.type.name == 'boolean')}">
+									<div class="col-12 col-md-3">
+										<intranda:formLabel label="#{myprocess_item.name}"
+										labelFor="boolean"  labelRequired="false"/>
+									</div>
+									<div class="col-12 col-md-9">
+										<h:selectBooleanCheckbox
+											id="boolean"
+											value="#{myprocess_item.booleanValue}"
+											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+										</h:selectBooleanCheckbox>
+										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="boolean" />
+									</div>
+								</h:panelGroup>
+								<!-- // VALUE AS BOOLEAN -->
+
+								<!-- VALUE AS DATE -->
+								<h:panelGroup styleClass="row"
+									rendered="#{(myprocess_item.type.name == 'date')}">
+									<div class="col-12 col-md-3">
+										<intranda:formLabel label="#{myprocess_item.name}"
+										labelFor="date"  labelRequired="false"/>
+									</div>
+									<div class="col-12 col-md-9">
+										<p:calendar
+											id="date"
+											value="#{myprocess_item.dateValue}"
+											locale="#{SpracheForm.locale}"
+											readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"/>
+										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="date" />
+									</div>
+								</h:panelGroup>
+								<!-- // VALUE AS DATE -->
+
+								<!-- VALUE AS HTML -->
+								<h:panelGroup styleClass="row"
+									rendered="#{(myprocess_item.type.name == 'html')}">
+									<div class="col-12 col-md-3">
+										<intranda:formLabel label="#{myprocess_item.name}"
+										labelFor="html" labelRequired="false"/>
+									</div>
+									<div class="col-12 col-md-9">
+										<x:inputTextarea
+											id="html"
+											forceId="true"
+											styleClass="form-control"
+											value="#{myprocess_item.value}"
+											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"></x:inputTextarea>
+										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="html" />
+									</div>
+								</h:panelGroup>
+								<!-- // VALUE AS HTML -->
+
+							</x:dataList>
+
+							<div class="box__actions">
+
+								<!-- Cancel -->
+								<button
+									jsf:id="cancel"
+									class="btn btn-blank"
+									jsf:immediate="true"
+									jsf:action="#{NavigationForm.Reload}">
+									<span>
+										<h:outputText value="#{msgs.abbrechen}" />
+									</span>
+									<x:updateActionListener
+										property="#{ProzessverwaltungForm.modusBearbeiten}"
+										value="" />
+								</button>
+
+								<!-- Save -->
+								<button
+									jsf:id="save"
+									class="btn btn-success submitOnEnter"
+									jsf:action="#{ProzessverwaltungForm.saveCurrentProperty}">
+									<span class="fa fa-save" />
+									<x:updateActionListener
+										property="#{ProzessverwaltungForm.modusBearbeiten}"
+										value="" />
+									<span>
+										<h:outputText value="#{msgs.speichern}" />
+									</span>
+								</button>
+
+								<!-- Delete -->
+								<button
+									jsf:id="delete"
+									class="btn btn-hot trigger-delete"
+									jsf:action="#{ProzessverwaltungForm.deleteProperty}"
+									onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false">
+									<x:updateActionListener
+										property="#{ProzessverwaltungForm.modusBearbeiten}"
+										value="" />
+									<span class="fa fa-trash-o" />
+									<span>
+										<h:outputText value="#{msgs.loeschen}" />
+									</span>
+								</button>
+
+							</div>
+
+						</intranda:box>
+					</div>
+				</div>
+			</h:form>
+
+		</h:panelGroup>
+		<!-- // EDIT PROPERTY AREA -->
+
+	</composite:implementation>
+</ui:composition>

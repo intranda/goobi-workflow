@@ -1,0 +1,298 @@
+/* VARIABLES */
+.box {
+  --box-padding: 1rem;
+  --box-padding-title: 7px 10px 7px 10px;
+}
+
+.box.box--small {
+  --box-padding-title: 2px 0 2px 10px;
+  --box-padding-title: 0 10px;
+}
+
+.box {
+  max-width: 100%;
+  border: 0.15rem solid var(--clr-neutral-300);
+  border-radius: var(--border-radius);
+}
+
+.box__title {
+  // margin: -0.3px; // Fix a chrome bug => otherwise gaps between title + box border are visible when zooming in
+  color: var(--clr-white, #fff);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  padding: var(--box-padding-title);
+  border-bottom: 0.15rem solid var(--clr-neutral-300);
+  background-color: var(--clr-neutral-300);
+
+  a,
+  button {
+    color: currentColor;
+    .fa {
+      color: currentColor;
+      font-size: 0.875rem;
+    }
+  }
+
+  .btn--title-action {
+    color: #fff;
+    border: 0.0625rem solid #fff;
+
+    i,
+    .fa {
+      color: currentColor;
+    }
+
+    &:not(:last-child) {
+      margin-inline-end: 0.5rem;
+    }
+
+    &:hover {
+      background-color: #fff;
+      i,
+      .fa {
+        color: var(--bs-body-color);
+      }
+    }
+  }
+
+  .btn--title-action-neutral {
+    color: var(--clr-neutral-600);
+    border: 0.0625rem solid var(--clr-neutral-300);
+
+    i,
+    .fa {
+      color: currentColor;
+    }
+
+    &:not(:last-child) {
+      margin-inline-end: 0.5rem;
+    }
+
+    &:hover {
+      background-color: var(--clr-neutral-600);
+      i,
+      .fa {
+        color: #fff;
+      }
+    }
+  }
+
+  h2 {
+    color: currentColor;
+    font-size: 0.9375rem;
+    line-height: 1.5rem;
+    margin: 3px 0 3px 0;
+
+    display: flex;
+    align-items: center;
+    // avoid overflow of long titles
+    // ellipses are not visible, but this is better than nothing
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .fa {
+      margin: 0 10px 0 5px;
+    }
+    // FA compass icon is very small, if compared to other FA icons.
+    // => let's bumb up the font size!
+    .fa-compass {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+.box--padded .box__body,
+.box--no-padding .box--padded .box__body, // boxes with padding nested in no-padding boxes
+.box__body.box__body--padded.box__body--padded {
+  padding: var(--box-padding);
+
+  .gw-table__search,
+  .dataTables__search,
+  .dataTables__search__container {
+    margin-top: 0;
+  }
+
+  .form-actions,
+  .form__actions,
+  .box__actions {
+    margin: 0;
+    margin-top: var(--box-padding);
+  }
+
+  tr {
+    border-left: 1px solid var(--clr-neutral-300);
+    border-right: 1px solid var(--clr-neutral-300);
+  }
+
+  .no-borders tr {
+    border: 0;
+  }
+}
+
+.box--no-padding .box__body {
+  padding: 0;
+}
+/* Box content without padding */
+.box--no-padding {
+  .box__content {
+    /* prevent rows from overlapping boxes */
+    .row,
+    [class^="col-"] {
+      margin: 0;
+    }
+    .row > [class^="col-"] {
+      min-height: 2.8125rem;
+      padding: 1rem 0.5rem;
+      padding: 0.5rem 0.5rem;
+    }
+
+    .form-actions,
+    .box__actions,
+    .form__actions {
+      margin: var(--box-padding);
+    }
+
+    .dataTables__search__container {
+      margin: var(--box-padding);
+    }
+  }
+}
+
+/**
+ * TABS
+ * Some boxes have tabs => box content is changed using ajax calls
+ * */
+
+.box {
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 2px;
+    list-style: none;
+    margin-bottom: 0;
+    margin-right: 8px;
+    align-items: center;
+    .tab {
+      display: flex;
+      padding: 0.2em 0.8em;
+      border-radius: var(--border-radius);
+      border: 1px solid;
+      border-color: var(--clr-white);
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+    .tab.active {
+      background-color: var(--clr-white);
+      color: var(--clr-text-400);
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+    .tab-inactive {
+      background-color: var(--clr-neutral-300);
+      border-color: var(--clr-neutral-300);
+      color: var(--bs-body-color);
+    }
+    .tab-content > .tab-pane {
+      display: none;
+      &.active {
+        display: block;
+      }
+    }
+  }
+  .tabs:not(.tabs-inactive) {
+    .tab:hover {
+      background-color: var(--clr-white);
+      color: var(--clr-text-400);
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+    .tab:hover {
+      background-color: var(--clr-neutral-200);
+    }
+  }
+}
+
+/* Layout for boxes with forms */
+.box.form-box {
+  .row {
+    border-bottom: 1px solid var(--clr-neutral-300);
+  }
+
+  .col-md-3,
+  .col-md-9 {
+    display: flex;
+
+    /* align-items: center;*/
+    flex-wrap: wrap;
+    // stretch nested boxes to full width
+    .box {
+      flex: 1;
+    }
+  }
+
+  .col-md-3 {
+    background: var(--clr-neutral-200);
+    border-right: 1px solid var(--clr-neutral-300);
+  }
+
+  .form__label i {
+    vertical-align: super;
+    font-size: var(--fs-100, 0.5rem);
+    color: var(--clr-neutral-400);
+  }
+  .boxform--compact {
+    .row > [class^="col-"] {
+      min-height: 1.4rem;
+      padding: 0.25rem 0.25rem;
+    }
+    .form-control {
+      padding: 0.1875rem 0.375rem;
+    }
+    .form-select {
+      padding: .1875rem 1.125rem .1875rem .375rem;
+    }
+  }
+}
+
+.box.box--outline {
+  .box__title {
+    --box-padding-title: 8px 8px 8px 10px;
+    background: transparent;
+    color: var(--bs-body-color);
+  }
+  .tab {
+    border-color: var(--clr-text-400);
+    &.active {
+      background-color: var(--clr-neutral-600);
+      border-color: var(--clr-neutral-600);
+      color: var(--clr-white);
+
+    }
+  }
+}
+
+// Standalone help block below some boxes
+.box__help {
+  display: block;
+  flex: 1 1 100%;
+  margin-left: 1px;
+}
+
+// row of buttons in box `footers`
+// box__actions is default, rest: legacy classes
+.form-actions,
+.form__actions,
+.box__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin: 0.75rem 0;
+
+  // Push delete button to the left side
+  .trigger-delete,
+  &__delete {
+    order: -1;
+    margin-right: auto;
+  }
+}

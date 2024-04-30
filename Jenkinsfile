@@ -18,24 +18,52 @@ pipeline {
   stages {
     stage('prepare') {
       steps {
-        sh 'git clean -fdx'
+        sh 'git reset --hard HEAD && git clean -fdx'
       }
     }
-    stage('build') {
+    stage('build-snapshot') {
+      when {
+        not {
+          anyOf {
+            branch 'master'
+            branch 'release_*'
+            allOf {
+              branch 'PR-*'
+              expression { env.CHANGE_BRANCH.startsWith("release_") }
+            }
+          }
+        }
+      }
       steps {
-        sh 'mvn -f Goobi/pom.xml clean verify'
+        sh 'mvn clean verify -U -P snapshot-build'
+      }
+    }
+    stage('build-release') {
+      when {
+        anyOf {
+          branch 'master'
+          branch 'release_*'
+          allOf {
+            branch 'PR-*'
+            expression { env.CHANGE_BRANCH.startsWith("release_") }
+          }
+        }
+      }
+      steps {
+        sh 'mvn clean verify -U -P release-build'
       }
     }
     stage('sonarcloud') {
       when {
         anyOf {
           branch 'master'
+          branch 'release_*'
           branch 'sonar_*'
         }
       }
       steps {
         withCredentials([string(credentialsId: 'jenkins-sonarcloud', variable: 'TOKEN')]) {
-          sh 'mvn -f Goobi/pom.xml verify sonar:sonar -Dsonar.token=$TOKEN'
+          sh 'mvn verify sonar:sonar -Dsonar.token=$TOKEN -U'
         }
       }
     }
@@ -47,15 +75,28 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -f Goobi/pom.xml -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy'
+        sh 'mvn -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy -U'
       }
     }
-    stage('trigger pull-requester') {
-      when {
-        branch 'master'
-      }
+    stage('tag release') {
+      when { branch 'master' }
       steps {
-        build wait: false, job: '../goobi-plugins-pull-requester/master'
+        withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314',
+                 gitToolName: 'git-tool')]) {
+          sh '''#!/bin/bash -xe
+              projectversion=$(mvn org.apache.maven.plugins:maven-help-plugin:3.4.0:evaluate -Dexpression=project.version -q -DforceStdout)
+              if [ $? != 0 ]
+              then 
+                  exit 1
+              elif [[ "${projectversion}" =~ "SNAPSHOT" ]]
+              then
+                  echo "This is a SNAPSHOT version"
+                  exit 1
+              fi
+              echo "${projectversion}"
+              git tag -a "v${projectversion}" -m "releasing v${projectversion}" && git push origin v"${projectversion}"
+          '''
+        }
       }
     }
   }
@@ -64,19 +105,19 @@ pipeline {
       junit "**/target/surefire-reports/*.xml"
       step([
         $class           : 'JacocoPublisher',
-        execPattern      : 'Goobi/module-ci/target/jacoco.exec',
-        classPattern     : 'Goobi/module-ci/target/classes/',
-        sourcePattern    : 'Goobi/src/main/java',
+        execPattern      : 'target/jacoco.exec',
+        classPattern     : 'target/classes/',
+        sourcePattern    : 'src/main/java',
         exclusionPattern : '**/*Test.class'
       ])
       recordIssues (
         enabledForFailure: true, aggregatingResults: false,
-        tools: [checkStyle(pattern: '**/target/checkstyle-result.xml', reportEncoding: 'UTF-8')]
+        tools: [checkStyle(pattern: 'target/checkstyle-result.xml', reportEncoding: 'UTF-8')]
       )
-      dependencyCheckPublisher pattern: '**/target/dependency-check-report.xml'
+      dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     }
     success {
-      archiveArtifacts artifacts: 'Goobi/module-war/target/*.war, Goobi/install/db/goobi.sql', fingerprint: true
+      archiveArtifacts artifacts: '**/*.war, **/*.jar, install/db/goobi.sql', fingerprint: true
     }
     changed {
       emailext(

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="#{SpracheForm.locale}" xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:ds="http://deltaspike.apache.org/jsf">
+<h:head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Apple devices fullscreen -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Apple devices fullscreen -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="description" content="Goobi workflow" />
+    <meta name="author" content="intranda GmbH" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Script-Type" content="type" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta name="date" content="1970-01-01T00:00:00+01:00" />
+    <meta name="application" content="#{HelperForm.applicationHeaderTitle}" />
+    <meta name="version" content="#{HelperForm.version}" />
+    <meta name="build date" content="#{HelperForm.buildDate}" />
+    <meta name="git-revision" content="#{HelperForm.revision}" />
+    <title><h:outputText value="#{myPageTitle} - #{HelperForm.applicationHeaderTitle}" /></title>
+
+
+    <!-- ========================================
+          CSS
+      ======================================== -->
+
+    <!-- Main styles (BS + custom styles) -->
+    <link rel="stylesheet" href="templatePG/css/dist/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="templatePG/css/dist/main.min.css?v=#{HelperForm.buildVersion}" />
+
+    <!-- Mets Editor -->
+    <!-- <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css?v=#{HelperForm.buildVersion}" /> -->
+
+    <!-- WCAG compatibility CSS -->
+    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
+    <!--
+      <link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
+    -->
+      <link rel="stylesheet" href="templatePG/css/dist/accessibility.css?v=#{HelperForm.buildVersion}" />
+    </ui:fragment>
+
+    <!-- CUSTOM CSS (user specific)-->
+    <style>
+        <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
+    </style>
+
+
+    <!-- ========================================
+        JAVASCRIPT
+      ======================================== -->
+
+    <!-- Bootstrap -->
+
+    <!-- Bootstrap 5 -->
+    <script src="templatePG/js/bootstrap.bundle.min.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!-- HC-Sticky -->
+    <script src="templatePG/js/hc-sticky.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!-- INTRANDA JS -->
+    <script src="template/js/intranda.js?v=1.2"></script>
+
+    <!-- jQuery -->
+    <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
+
+    <!-- imagesLoaded => used in application.js -->
+    <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!-- jQuery UI -->
+    <script src="template/js/plugins/jquery-ui/jquery-ui.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!-- slimScroll => used in application.js -->
+    <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!--
+      ==> used in formInputSlider.xhtml, however the plugin only supports bs4!
+    <script src="template/js/bootstrap-slider.js?v=#{HelperForm.buildVersion}"></script>
+    -->
+
+    <!-- Reactive rx -->
+    <script src="template/js/reactiveX/rx.lite.min.js"></script>
+
+    <!-- shortcuts ==> used in several templates (also plugins) + _metseditor.xhtml -->
+    <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!-- Theme scripts -->
+    <script src="template/js/application.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!--[if lte IE 9]>
+	<script src="template/js/plugins/placeholder/jquery.placeholder.min.js?v=#{HelperForm.buildVersion}"></script>
+		<script>
+			$(document).ready(function() {
+				$('input, textarea').placeholder();
+			});
+		</script>
+	<![endif]-->
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="template/img/favicon.ico" />
+    <!-- Apple devices Homescreen icon -->
+    <link rel="apple-touch-icon-precomposed" href="template/img/apple-touch-icon.png" />
+
+    <!-- SKIP LINK MARKUP -->
+    <span class="outer-skip-link">
+    	<a class="skip-main sr-only" href="#main-content" tabindex="0">#{msgs.skipMainContent}</a>
+    </span>
+
+</h:head>
+
+<ui:insert name="metadata" />
+
+<h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right'} templatePG" style="#{LoginForm.myBenutzer == null?'height:300px;':''}">
+   <ds:windowId/>
+    <f:view locale="#{SpracheForm.locale}">
+
+        <h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
+            <ui:include src="inc_login.xhtml" />
+        </h:panelGroup>
+
+        <c:if test="#{LoginForm.myBenutzer!=null}">
+          <header role="banner" aria-label="page-header">
+            <ui:include src="inc_menu.xhtml" />
+          </header>
+
+            <div class="container-fluid" id="content" style="padding-bottom:20px">
+                <div id="main" style="margin-right: 0px;">
+                    <div class="flow container-fluid">
+
+                        <h:form id="header">
+
+                            <!-- GOOBI SCRIPT RUNNING -->
+                            <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+                                <div class="d-none">
+                                    <o:socket channel="goobiscriptUpdateChannel">
+                                        <f:ajax render="goobiScriptResults2" event="update"/>
+                                    </o:socket>
+                                    <o:commandScript name="updateGoobiScriptIndicator"  render="goobiScriptResults2" />
+                                </div>
+                              </ui:fragment>
+                            <!-- // GOOBI SCRIPT RUNNING -->
+
+                            <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
+
+                            <!-- HEADER -->
+                            <header class="header">
+
+                              <!-- GLOBAL WARNING MESSAGE -->
+                              <div class="header__top">
+                                <h:panelGroup layout="block" id="globalWarningMessage" styleClass="mt-4">
+                                    <h:panelGroup layout="block" rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger" style="line-height:40px;font-size:24px;">
+                                      <i class="fa fa-exclamation-triangle"></i>
+                                      <span>
+                                        <h:outputText value="#{SessionForm.logoutMessage}" />
+                                      </span>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <o:socket channel="adminMessageChannel">
+                                    <f:ajax event="update" render="globalWarningMessage"/>
+                                </o:socket>
+                              </div>
+                              <!-- // GLOBAL WARNING MESSAGE -->
+
+	                            <div class="header__bottom">
+                                    <h1>
+                                      <ui:insert name="title">
+                                        <h:outputText value="#{myPageTitle}" />
+                                      </ui:insert>
+                                    </h1>
+
+                                <ui:insert name="info" />
+	                                <ul class="stats">
+
+                                    <!-- AJAX LOADER -->
+                                    <li id="ajaxloader" class='' style="display: none;">
+                                        <img src="template/img/goobi/ajaxloader2.gif" />
+                                    </li>
+                                    <!-- // AJAX LOADER -->
+
+                                    <!-- GOOBI SCRIPT -->
+                                    <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+	                                  <li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script">
+                                      <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
+                                        <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
+                                        <div class="details">
+                                          <span class="big">#{msgs.goobiScript_isActive}</span>
+                                          <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
+                                        </div>
+                                      </button>
+                                    </li>
+                                    </ui:fragment>
+
+                                    <!-- CURRENT USERS -->
+                                    <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
+                                      <li class='bg-neutral-400 stats__current-users'>
+                                        <button jsf:action="currentUsers" jsf:id="currentUsers">
+                                          <i class="fa fa-users"></i>
+                                          <div class="details">
+                                            <span>#{msgs.aktiveBenutzer}</span>
+                                            <span>#{SessionForm.numberOfSessions}</span>
+                                            <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
+                                          </div>
+                                        </button>
+                                      </li>
+                                    </h:panelGroup>
+                                    <!-- // CURRENT USERS -->
+
+                                    <!-- DATE -->
+                                    <li class="bg-neutral-400 stats__date">
+                                      <i class="fa fa-calendar"></i>
+                                      <div class="details">
+                                        <span class="big">
+                                        <h:outputText value="#{SessionForm.currentTime}" />
+                                        <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
+                                          <div style="height: 12px;width: 20px;display: inline-block;"></div>
+                                        </a>
+                                        </span>
+                                        <span>
+                                        <h:outputText value="#{SessionForm.date}">
+                                          <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+                                          </h:outputText>
+                                        </span>
+                                      </div>
+                                    </li>
+                                    <!-- // DATE -->
+
+                                  </ul>
+                                </div>
+
+                              </header>
+                              <!-- // HEADER -->
+
+                        </h:form>
+
+                        <!-- BREADCRUMB -->
+                        <nav class="navigation-breadcrumb" aria-label="Breadcrumb">
+	                        <h:form style="margin:0px;" id="breadcrumb">
+	                            <div class="breadcrumbs">
+	                                <ol>
+	                                    <ui:insert name="breadcrumb" />
+	                                </ol>
+	                            </div>
+	                        </h:form>
+						            </nav>
+                        <!-- // BREADCRUMB -->
+
+                        <!-- <ui:fragment rendered="#{not empty facesContext.messageList}"> -->
+                            <!-- MESSAGE CONTAINER -->
+                            <!-- <div class="toast-container border-bottom-0 position-fixed top-0 start-50 w-25 translate-middle-x">
+                              <div
+                                class="collapse #{not empty facesContext.messageList ? 'show' : ''}"
+                                id="messageContainer"> -->
+                                  <!-- MESSAGE LIST -->
+                                  <!-- <ol role="list" class="list-group-flush ps-0 mt-3">
+                                    <o:messages var="message" globalOnly="true">
+                                        <li
+                                         role="item"
+                                         data-bs-autohide="false"
+                                         class="toast show align-items-center text-white list-group-item mt-2 mx-5 color-box #{message.severity.ordinal == 0 ? 'bg-primary' : 'bg-hot'}">
+                                              <div class="toast-body my-2">
+                                                <h:outputText value="#{message.detail}: " rendered="#{message.detail ne ''}"/>
+                                                <h:outputText value="#{message.summary}"/>
+                                              </div>
+                                          </li>
+                                    </o:messages>
+                                  </ol> -->
+                                  <!-- // MESSAGE LIST -->
+                                <!-- </div> -->
+                               <!-- BUTTON TO HIDE MESSAGES -->
+                                <!-- <button
+                                  class="btn btn-action position-absolute top-100 start-50 translate-middle toast-button"
+                                  type="button"
+                                  data-bs-toggle="collapse"
+                                  data-bs-target="#messageContainer"
+                                  aria-expanded="#{not empty facesContext.messageList ? 'show' : ''}"
+                                  aria-controls="messageContainer">
+                                  <span class="fa fa-angle-up toast-expanded" />
+                                  <span class="toast-expanded">
+                                      <h:outputText value="#{msgs.messagesHide}"/>
+                                  </span>
+                                  <span class="fa fa-angle-down toast-collapsed" />
+                                  <span class="toast-collapsed">
+                                      <h:outputText value="#{fn:length(facesContext.messageList)} #{msgs.messagesShow}"/>
+                                  </span>
+                                </button> -->
+                                <!-- // BUTTON TO HIDE MESSAGES -->
+                            <!-- </div> -->
+                            <!-- // MESSAGE CONTAINER -->
+
+                        <!-- </ui:fragment> -->
+                        <!-- // MESSAGES -->
+
+
+                        <!-- MESSAGES -->
+                        <div role="complementary">
+                          <h:panelGroup id="globalMessage" style="display: inline">
+                            <h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
+                          </h:panelGroup>
+                        </div>
+                        <!-- // MESSAGES -->
+
+                        <!-- CONTENT -->
+                        <div jsf:id="main-content" tabindex="-1">
+                          <ui:insert name="content" />
+                        </div>
+                        <!-- // CONTENT -->
+
+                    </div>
+                </div>
+            </div>
+
+        </c:if>
+
+
+        <!-- JAVASCRIPT -->
+        <script src="template/js/dist/goobiWorkflowJS.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script>
+            // goobiWorkflowConfig = {};
+
+            // goobiWorkflowJS.init(goobiWorkflowConfig);
+        </script>
+        <script>
+     // <![CDATA[
+
+            // THIS CODE HAS BEEN REFACTORED INTO MODULES (see below)
+            // IT REMAINS FOR REFERENCE
+            // FEEL FREE TO DELETE IT, IF YOU DO NOT NEED IT ANYMORE
+
+            /*
+            jsf.ajax.addOnEvent(function (data) {
+                var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+                var ajaxloader = document.getElementById("ajaxloader");
+                var source = data.source;
+                var noLoaderGif = source.type == "hidden" && source.id.indexOf("header") == 0;
+
+                switch (ajaxstatus) {
+                    case "begin": // This is called right before ajax request is been sent.
+                    	if(ajaxloader && !noLoaderGif) {
+                        	ajaxloader.style.display = 'block';
+                    	}
+                        break;
+
+                    case "complete": // This is called right after ajax response is received.
+                    	if(ajaxloader) {
+                        	ajaxloader.style.display = 'none';
+                    	}
+                        break;
+
+                    case "success": // This is called when ajax response is successfully processed.
+                        // NOOP.
+                        $(function () {
+                            $('[data-toggle="tooltip"]').tooltip();
+                            $('[data-toggle="tooltip"]').tooltip();
+                            $('[data-toggle="popover"]').popover();
+                            if ($('.popover.fade.right.in').length > 0) {
+                                $('.popover.fade.right.in').remove();
+                            }
+                            scrollDownScrollDowns();
+                       })
+                        if (window.noLoadImages === undefined) {
+                            loadImages();
+                        }
+                        break;
+
+                }
+            });
+
+
+            function toggle_help(data) {
+              if (data.status === 'success') {
+                elements = document.getElementsByClassName("help-block");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].style.display = elements[i].style.display == 'block' ? 'none' : 'block';
+                    }
+                }
+            }
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
+                var myButton = $("a[id$=':navnext']")
+                if (myButton != null) {
+                    myButton.click();
+                }
+            });
+
+
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
+                var myButton = $("a[id$=':navnext']")
+                if (myButton != null) {
+                    myButton.click();
+                }
+            });
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+left', function () {
+                var myButton = $("a[id$=':navprev']")
+                if (myButton != null) {
+                    myButton.click();
+                }
+            });
+            */
+
+            // WHAT DOES IT DO?
+            window.myfaces = window.myfaces || {};
+            myfaces.config = myfaces.config || {};
+            //set the config part
+            myfaces.config.no_portlet_env = true;
+            $(document).ready(function () {
+                setTimeout(scrollDownScrollDowns(), 100);
+            });
+         // ]]>
+        </script>
+
+        <script src="../dist/js/main.js?v=#{HelperForm.buildVersion}" />
+
+        <!--Show and hide help messages-->
+        <!--toggle_help is the legacy name for this function, it is used in most views, use gwToggleHelp.init in new markup-->
+        <script>
+          gwToggleHelp.init;
+          //Show and hide goobi ajax loader
+          gwAjaxLoader.init();
+          //TOOLTIPS
+          //Initialize Bootstrap tooltips
+          gwInitTooltips.init();
+          //Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)
+          gwResizableTable.init();
+          gwFocusOnLoad.init();
+          gwConfigEditor.init();
+        </script>
+
+    </f:view>
+</h:body>
+</html>
