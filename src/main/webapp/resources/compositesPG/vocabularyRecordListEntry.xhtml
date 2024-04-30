@@ -9,9 +9,6 @@
     <composite:interface componentType="org.goobi.managedbeans.VocabularyRecordBean">
         <composite:attribute name="record" type="io.goobi.vocabulary.exchange.VocabularyRecord"
                              required="true"/>
-        <composite:attribute name="editRecordCallback"
-                             method-signature="java.lang.String edit(io.goobi.vocabulary.exchange.VocabularyRecord)"
-                             required="false"/>
     </composite:interface>
 
     <composite:implementation>
@@ -22,19 +19,22 @@
                 </td>
             </ui:repeat>
             <td>
+
                 <button
-                        type="button"
                         jsf:id="switch"
-<!--                        class="btn #{vocabularyRecordListBean.currentVocabRecord != cc.attrs.record ? 'btn-blank' : 'btn-primary-400'}"-->
-<!--                        jsf:action="#{vocabularyBean.Reload}"-->
                         title="#{msgs.bearbeiten}"
+                        class="btn btn-blank"
+                        jsf:action="#{vocabularyRecordListBean.edit(cc.attrs.record)}"
                         data-bs-toggle="tooltip">
+                    <!-- These belong in the button -->
+                    <!--                        class="btn #{vocabularyRecordListBean.currentVocabRecord != cc.attrs.record ? 'btn-blank' : 'btn-primary-400'}"-->
+                    <!--                        jsf:action="#{vocabularyBean.Reload}"-->
                     <i class="font-size-s fa fa-pencil"/>
-                    <f:setPropertyActionListener
-                            value="#{cc.attrs.record}"
-                            target="#{vocabularyBean.currentVocabRecord}"/>
-                    <f:ajax execute="@this" render="@form"/>
-                    <f:passThroughAttribute name="aria-label" value="#{cc.attrs.record.id}"/>
+                    <!--                    <f:setPropertyActionListener-->
+                    <!--                            value="#{cc.attrs.record}"-->
+                    <!--                            target="#{vocabularyBean.currentVocabRecord}"/>-->
+                    <!--                    <f:ajax execute="@this" render="@form"/>-->
+                    <!--                    <f:passThroughAttribute name="aria-label" value="#{cc.attrs.record.id}"/>-->
                 </button>
             </td>
         </tr>

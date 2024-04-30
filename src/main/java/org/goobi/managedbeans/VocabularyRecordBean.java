@@ -41,7 +41,6 @@ public class VocabularyRecordBean extends UINamingContainer {
     private final String language = transformToThreeCharacterAbbreviation(Helper.getSessionLocale().getLanguage());
 
     public List<String> getTitleValues() {
-        System.err.println(language);
         VocabularyRecord me = (VocabularyRecord) getStateHelper().eval("record");
         return me.getFields().stream()
                 .sorted(Comparator.comparingLong(FieldInstance::getDefinitionId))

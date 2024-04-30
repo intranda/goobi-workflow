@@ -62,6 +62,9 @@ public class VocabularyRecordListBean implements Serializable {
     private transient VocabularySchema schema;
 
     @Getter
+    private transient VocabularyRecord currentRecord;
+
+    @Getter
     private transient List<FieldDefinition> mainFields;
 
     public String load(Vocabulary vocabulary) {
@@ -71,6 +74,10 @@ public class VocabularyRecordListBean implements Serializable {
         loadSchema();
 
         return RETURN_PAGE_OVERVIEW;
+    }
+
+    public void edit(VocabularyRecord vocabularyRecord) {
+        this.currentRecord = vocabularyRecord;
     }
 
     private void loadPaginator() {

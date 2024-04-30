@@ -1,0 +1,145 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        template="/uii/templatePG/templatePG.html"
+        xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+        xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+>
+
+    <composite:interface>
+        <composite:attribute
+                name="record"
+                type="io.goobi.vocabulary.exchange.VocabularyRecord"
+                required="true"
+        />
+    </composite:interface>
+
+    <composite:implementation>
+        <intranda:box
+                boxType="action"
+                boxForm="true"
+                boxPadding="false"
+                icon="fa-file-o">
+            <!-- title="#{vocabularyBeanLEGACY.currentVocabRecord.title eq '' ? vocabularyBeanLEGACY.currentVocabularyLEGACY.title : vocabularyBeanLEGACY.currentVocabRecord.title}" -->
+
+            <intranda:formOutputText label="#{msgs.id}"
+                                     field="#{cc.attrs.record.id}"
+                                     name="recordid"/>
+
+            <ui:repeat var="field" value="#{vocabularyBeanLEGACY.currentVocabRecord.fields}">
+                <!--                            <ui:fragment rendered="#{field.definition.type eq 'input'}">-->
+                <!--                                <intranda:formInputText-->
+                <!--                                        name="field1"-->
+                <!--                                        field="#{field.value}"-->
+                <!--                                        required="#{field.definition.required}"-->
+                <!--                                        displayAsRequired="#{field.definition.required}"-->
+                <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
+                <!--                                        validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
+                <!--                                        idForValidator="#{field.label}"/>-->
+                <!--                            </ui:fragment>-->
+                <!--                            <ui:fragment rendered="#{field.definition.type eq 'textarea'}">-->
+                <!--                                <intranda:formInputTextArea-->
+                <!--                                        name="field2"-->
+                <!--                                        field="#{field.value}"-->
+                <!--                                        required="#{field.definition.required}"-->
+                <!--                                        displayAsRequired="#{field.definition.required}"-->
+                <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
+                <!--                                        validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
+                <!--                                        idForValidator="#{field.label}"/>-->
+                <!--                            </ui:fragment>-->
+                <!--                            <ui:fragment rendered="#{field.definition.type eq 'select1'}">-->
+                <!--                                <intranda:formInputDropDown-->
+                <!--                                        name="field3"-->
+                <!--                                        field="#{field.value}"-->
+                <!--                                        selectItems="#{field.definition.selecteableValues}"-->
+                <!--                                        required="#{field.definition.required}"-->
+                <!--                                        displayAsRequired="#{field.definition.required}"-->
+                <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
+                <!--                                        validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
+                <!--                                        idForValidator="#{field.label}"/>-->
+                <!--                            </ui:fragment>-->
+                <!--                            <ui:fragment rendered="#{field.definition.type eq 'select'}">-->
+                <!--                                <intranda:formInputSelectMany-->
+                <!--                                        name="field4"-->
+                <!--                                        field="#{field.valueMultiSelect}"-->
+                <!--                                        selectItems="#{field.definition.selectList}"-->
+                <!--                                        required="#{field.definition.required}"-->
+                <!--                                        displayAsRequired="#{field.definition.required}"-->
+                <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
+                <!--                                        validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
+                <!--                                        idForValidator="#{field.label}"/>-->
+                <!--                            </ui:fragment>-->
+                <!--                            <ui:fragment rendered="#{field.definition.type eq 'html'}">-->
+                <!--                                <intranda:formInputTextArea-->
+                <!--                                        name="field5"-->
+                <!--                                        field="#{field.value}"-->
+                <!--                                        required="#{field.definition.required}"-->
+                <!--                                        displayAsRequired="#{field.definition.required}"-->
+                <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
+                <!--                                        validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
+                <!--                                        idForValidator="#{field.label}"/>-->
+                <!--                            </ui:fragment>-->
+            </ui:repeat>
+
+            <!--                        <div class="box__actions">-->
+
+            <!--                            &lt;!&ndash; Delete &ndash;&gt;-->
+            <!--                            <c:if test="#{vocabularyBeanLEGACY.currentVocabRecord.id != null}">-->
+            <!--                                <a-->
+            <!--                                        id="delete"-->
+            <!--                                        href="#"-->
+            <!--                                        class="btn btn-hot me-auto"-->
+            <!--                                        data-bs-toggle="modal"-->
+            <!--                                        data-bs-target="#deleteModal">-->
+            <!--                                    <i class="fa fa-trash-o" title="#{msgs.vocabularyManager_deleteRecord}"/>-->
+            <!--                                    <span>-->
+            <!--                                        <h:outputText value="#{msgs.loeschen}"/>-->
+            <!--                                      </span>-->
+            <!--                                </a>-->
+
+            <!--                                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"-->
+            <!--                                     aria-labelledby="myModalLabel">-->
+            <!--                                    <div class="modal-dialog" role="document">-->
+            <!--                                        <div class="modal-content">-->
+            <!--                                            <div class="modal-header bg-primary-400 text-white">-->
+            <!--                                                <h4 class="modal-title" id="myModalLabel">-->
+            <!--                                                    <h:outputText value="#{msgs.loeschen}"/>-->
+            <!--                                                </h4>-->
+            <!--                                            </div>-->
+            <!--                                            <div class="modal-body">-->
+            <!--                                                <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>-->
+            <!--                                            </div>-->
+            <!--                                            <div class="modal-footer">-->
+            <!--                                                <button type="button" class="btn btn-blank" data-bs-dismiss="modal"-->
+            <!--                                                        aria-hidden="true">#{msgs.abbrechen}</button>-->
+            <!--                                                <button jsf:id="confirmDelete" class="btn btn-hot"-->
+            <!--                                                        jsf:action="#{vocabularyBeanLEGACY.deleteRecord}">-->
+            <!--                                                    <span class="fa fa-trash-o"/>-->
+            <!--                                                    <span>-->
+            <!--                                                    <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>-->
+            <!--                                                  </span>-->
+            <!--                                                </button>-->
+            <!--                                            </div>-->
+            <!--                                        </div>-->
+            <!--                                    </div>-->
+            <!--                                </div>-->
+            <!--                            </c:if>-->
+
+            <!--                            &lt;!&ndash; Save &ndash;&gt;-->
+            <!--                            <f:event listener="#{vocabularyBeanLEGACY.resetValidationResults}" type="preRenderView"/>-->
+            <!--                            <button-->
+            <!--                                    class="btn btn-success submitOnEnter"-->
+            <!--                                    jsf:id="absenden"-->
+            <!--                                    type="submit"-->
+            <!--                                    jsf:action="#{vocabularyBeanLEGACY.saveRecordEdition}">-->
+            <!--                                <span class="fa fa-save"/>-->
+            <!--                                <span>-->
+            <!--                                      <h:outputText value="#{msgs.speichern}"/>-->
+            <!--                                    </span>-->
+            <!--                            </button>-->
+
+            <!--                        </div>-->
+
+        </intranda:box>
+    </composite:implementation>
+</ui:composition>
