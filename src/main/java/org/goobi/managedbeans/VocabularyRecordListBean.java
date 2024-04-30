@@ -26,33 +26,73 @@
 package org.goobi.managedbeans;
 
 import de.sub.goobi.helper.Helper;
+import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.Vocabulary;
+import io.goobi.vocabulary.exchange.VocabularyRecord;
+import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
-import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
+import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.apache.deltaspike.core.api.scope.ViewAccessScoped;
 
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Named
-@WindowScoped
+@ViewAccessScoped
 @Log4j2
-public class VocabularyBean implements Serializable {
+public class VocabularyRecordListBean implements Serializable {
     private static final long serialVersionUID = 5672948572345L;
 
-    private static final String RETURN_PAGE_OVERVIEW = "vocabulary_overview";
+    private static final String RETURN_PAGE_OVERVIEW = "vocabulary_records";
 
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     @Getter
-    private transient Paginator<Vocabulary> paginator;
+    private transient Paginator<VocabularyRecord> paginator;
 
-    public String load() {
-        paginator = new HATEOASPaginator<>(VocabularyPageResult.class, api.vocabularies().list(Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()), Optional.empty()));
+    @Getter
+    private transient Vocabulary vocabulary;
+
+    private transient VocabularySchema schema;
+
+    @Getter
+    private transient List<FieldDefinition> mainFields;
+
+    public String load(Vocabulary vocabulary) {
+        this.vocabulary = vocabulary;
+
+        loadPaginator();
+        loadSchema();
+
         return RETURN_PAGE_OVERVIEW;
+    }
+
+    private void loadPaginator() {
+        // TODO: Unclean to have static Helper access to user here..
+        this.paginator = new HATEOASPaginator<>(
+                VocabularyRecordPageResult.class,
+                api.vocabularyRecords().list(
+                        this.vocabulary.getId(),
+                        Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
+                        Optional.empty()
+                )
+        );
+    }
+
+    private void loadSchema() {
+        this.schema = api.vocabularySchemas().get(this.vocabulary.getSchemaId());
+        loadMainFieldDefinitions();
+    }
+
+    private void loadMainFieldDefinitions() {
+        this.mainFields = this.schema.getDefinitions().stream()
+                .filter(d -> Boolean.TRUE.equals(d.getMainEntry()))
+                .collect(Collectors.toList());
     }
 }

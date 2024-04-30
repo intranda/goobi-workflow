@@ -1,6 +1,7 @@
 package io.goobi.workflow.api.vocabulary.hateoas;
 
 import io.goobi.workflow.api.vocabulary.APIException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.goobi.managedbeans.Paginator;
 
 import javax.ws.rs.client.Client;
@@ -63,9 +64,9 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
             pageNumber.ifPresent(value -> parameters.put("page", String.valueOf(value)));
             if (questionMarkIndex < 0) {
                 url += "?";
-                questionMarkIndex = url.length()-1;
+                questionMarkIndex = url.length() - 1;
             }
-            url = url.substring(0, questionMarkIndex) + parameters.entrySet().stream()
+            url = url.substring(0, questionMarkIndex + 1) + parameters.entrySet().stream()
                     .map(e -> e.getKey() + "=" + e.getValue())
                     .collect(Collectors.joining("&"));
         }
@@ -73,13 +74,21 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
     }
 
     @Override
-    public long getPageNumberCurrent() {
+    public long getCurrentPage() {
         return currentPage.getPage().getNumber() + 1;
     }
 
     @Override
-    public long getPageNumberLast() {
-        return currentPage.getPage().getTotalPages();
+    public void setCurrentPage(long page) {
+        if (page != getCurrentPage()) {
+            if (page > getNumberOfPages()) {
+                page = getNumberOfPages();
+            }
+            if (page < 1) {
+                page = 1;
+            }
+            request(currentPage.get_links().get(NAVIGATE_FIRST).getHref(), Optional.of(currentPage.getPage().getSize()), Optional.of(page - 1));
+        }
     }
 
     @Override
@@ -94,7 +103,7 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
 
     @Override
     public void setPageSize(long pageSize) {
-
+        throw new NotImplementedException("to be done");
     }
 
     @Override
@@ -103,22 +112,17 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
     }
 
     @Override
-    public long getTxtMoveTo() {
-        return getPageNumberCurrent();
+    public long getNumberOfPages() {
+        return currentPage.getPage().getTotalPages();
     }
 
     @Override
-    public void setTxtMoveTo(long txtMoveTo) {
-        System.err.println("Not implemented");
-    }
-
-    @Override
-    public boolean getHasPreviousPage() {
+    public boolean hasPreviousPage() {
         return currentPage.get_links().containsKey(NAVIGATE_PREVIOUS);
     }
 
     @Override
-    public boolean getHasNextPage() {
+    public boolean hasNextPage() {
         return currentPage.get_links().containsKey(NAVIGATE_NEXT);
     }
 
@@ -134,7 +138,7 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
 
     @Override
     public void cmdMoveNext() {
-        if (!getHasNextPage()) {
+        if (!hasNextPage()) {
             return;
         }
         request(currentPage.get_links().get(NAVIGATE_NEXT).getHref());
@@ -142,7 +146,7 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
 
     @Override
     public void cmdMovePrevious() {
-        if (!getHasPreviousPage()) {
+        if (!hasPreviousPage()) {
             return;
         }
         request(currentPage.get_links().get(NAVIGATE_PREVIOUS).getHref());

@@ -26,33 +26,44 @@
 package org.goobi.managedbeans;
 
 import de.sub.goobi.helper.Helper;
-import io.goobi.vocabulary.exchange.Vocabulary;
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
-import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
-import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
+import io.goobi.vocabulary.exchange.FieldInstance;
+import io.goobi.vocabulary.exchange.VocabularyRecord;
 
-import javax.inject.Named;
-import java.io.Serializable;
-import java.util.Optional;
+import javax.faces.component.FacesComponent;
+import javax.faces.component.UINamingContainer;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-@Named
-@WindowScoped
-@Log4j2
-public class VocabularyBean implements Serializable {
-    private static final long serialVersionUID = 5672948572345L;
+@FacesComponent("org.goobi.managedbeans.VocabularyRecordBean")
+public class VocabularyRecordBean extends UINamingContainer {
+    private final String language = transformToThreeCharacterAbbreviation(Helper.getSessionLocale().getLanguage());
 
-    private static final String RETURN_PAGE_OVERVIEW = "vocabulary_overview";
+    public List<String> getTitleValues() {
+        System.err.println(language);
+        VocabularyRecord me = (VocabularyRecord) getStateHelper().eval("record");
+        return me.getFields().stream()
+                .sorted(Comparator.comparingLong(FieldInstance::getDefinitionId))
+                .map(f -> f.getValues().stream()
+                        .flatMap(v -> v.getTranslations().entrySet().stream())
+                        .filter(t -> t.getKey() == language)
+                        .map(Map.Entry::getValue)
+                        .findFirst()
+                        .orElseThrow())
+                .collect(Collectors.toList());
+    }
 
-    private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
-
-    @Getter
-    private transient Paginator<Vocabulary> paginator;
-
-    public String load() {
-        paginator = new HATEOASPaginator<>(VocabularyPageResult.class, api.vocabularies().list(Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()), Optional.empty()));
-        return RETURN_PAGE_OVERVIEW;
+    private String transformToThreeCharacterAbbreviation(String language) {
+        switch (language) {
+            case "en":
+                return "eng";
+            case "de":
+                return "ger";
+            case "fr":
+                return "fre";
+            default:
+                throw new IllegalArgumentException("Unknown language: \"" + language + "\"");
+        }
     }
 }

@@ -13,7 +13,7 @@
 
     <ui:param
         name="myPageTitle"
-        value="#{msgs.vocabularyManager_uploadVocabulary}: #{vocabularyBean.currentVocabularyLEGACY.title}" />
+        value="#{msgs.vocabularyManager_uploadVocabulary}: #{vocabularyBeanLEGACY.currentVocabularyLEGACY.title}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
@@ -57,7 +57,7 @@
                               id="uploadform"
                               prependId="false" enctype="multipart/form-data">
                               <p:fileUpload
-                                  listener="#{vocabularyBean.handleFileUpload}"
+                                  listener="#{vocabularyBeanLEGACY.handleFileUpload}"
                                   id="upload"
                                   name="uploadName"
                                   auto="true"
@@ -88,7 +88,7 @@
                                     prependId="false">
 
                                     <h:selectOneRadio id="vocabSelects"
-                                        value="#{vocabularyBean.importType}" styleClass="select-radio select-radio-horizontal">
+                                                      value="#{vocabularyBeanLEGACY.importType}" styleClass="select-radio select-radio-horizontal">
                                         <f:selectItem
                                             itemLabel="#{msgs.vocabularyManager_excelImport_removeExisting}"
                                             itemValue="remove" />
@@ -107,10 +107,10 @@
                                         <div class="gw-table__wrapper">
                                     <x:dataTable
                                         id="headerAssignment"
-                                        rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                        rendered="#{vocabularyBeanLEGACY.headerOrder.size() gt 0}"
                                         styleClass="table table-hover table-nomargin dataTable table-bordered table-border-right responsive"
                                         var="column"
-                                        value="#{vocabularyBean.headerOrder}">
+                                        value="#{vocabularyBeanLEGACY.headerOrder}">
 
                                         <h:column>
                                             <f:facet name="header">
@@ -132,7 +132,7 @@
                                             <h:selectOneMenu
                                                 styleClass="form-control"
                                                 value="#{column.currentDefinition}">
-                                                <f:selectItems value="#{vocabularyBean.allDefinitionNames}" />
+                                                <f:selectItems value="#{vocabularyBeanLEGACY.allDefinitionNames}" />
                                                 <f:ajax
                                                     execute="@this"
                                                     render=":headerAssignment" />
@@ -145,20 +145,20 @@
                                     <h:panelGroup id="vocabularyWarning">
                                         <h:panelGroup
                                             layout="block"
-                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.importType == 'remove'}"
+                                            rendered="#{vocabularyBeanLEGACY.headerOrder.size() gt 0 and vocabularyBeanLEGACY.importType == 'remove'}"
                                             styleClass="alert alert-danger mt-4">
                                             <h:outputText
-                                                value="#{vocabularyBean.filename}"
+                                                value="#{vocabularyBeanLEGACY.filename}"
                                                 styleClass="fw-bold" />
                                             <h:outputText value=" - #{msgs.vocabularyManager_excelImport_alert}" />
                                         </h:panelGroup>
 
                                         <h:panelGroup
                                             layout="block"
-                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.importType != 'remove'}"
+                                            rendered="#{vocabularyBeanLEGACY.headerOrder.size() gt 0 and vocabularyBeanLEGACY.importType != 'remove'}"
                                             styleClass="alert alert-warning mt-4">
                                             <h:outputText
-                                                value="#{vocabularyBean.filename}"
+                                                value="#{vocabularyBeanLEGACY.filename}"
                                                 styleClass="fw-bold" />
                                             <h:outputText value=" - #{msgs.vocabularyManager_excelImport_info}" />
                                         </h:panelGroup>
@@ -175,18 +175,18 @@
                                   class="btn btn-blank"
                                   jsf:id="abbrechen"
                                   type="cancel"
-                                  jsf:action="#{vocabularyBean.editVocabulary}"
+                                  jsf:action="#{vocabularyBeanLEGACY.editVocabulary}"
                                   jsf:immediate="true">
                                   <h:outputText value="#{msgs.abbrechen}" />
                               </a>
 
                               <!-- Save -->
                               <button
-                                  jsf:rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                  jsf:rendered="#{vocabularyBeanLEGACY.headerOrder.size() gt 0}"
                                   class="btn btn-success"
                                   jsf:id="absenden"
                                   type="submit"
-                                  jsf:action="#{vocabularyBean.importRecords}">
+                                  jsf:action="#{vocabularyBeanLEGACY.importRecords}">
                                   <span class="fa fa-save margin-right-5" />
                                   <span>
                                       <h:outputText value="#{msgs.vocabularyManager_excelImport_importRecords}" />

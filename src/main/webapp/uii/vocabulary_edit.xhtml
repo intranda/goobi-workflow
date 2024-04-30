@@ -60,14 +60,14 @@
 							id="title"
 							name="titel"
 							label="#{msgs.vocabularyManager_vocabulary}"
-							field="#{vocabularyBean.currentVocabularyLEGACY.title}"
+							field="#{vocabularyBeanLEGACY.currentVocabularyLEGACY.title}"
 							help="#{msgs.help_vocabulary_title}" />
 
 						<intranda:formInputTextArea
 							id="file"
 							name="fileName"
 							label="#{msgs.vocabularyManager_description}"
-							field="#{vocabularyBean.currentVocabularyLEGACY.description}"
+							field="#{vocabularyBeanLEGACY.currentVocabularyLEGACY.description}"
 							help="#{msgs.help_vocabulary_description}"
 							required="false"
 							aria-label="#{msgs.vocabularyManager_description}" />
@@ -87,9 +87,9 @@
 
 										<x:dataTable
 											styleClass="table table-hover table-bordered"
-											value="#{vocabularyBean.currentVocabularyLEGACY.struct}"
+											value="#{vocabularyBeanLEGACY.currentVocabularyLEGACY.struct}"
 											var="definition"
-											rendered="#{vocabularyBean.currentVocabularyLEGACY.struct.size() > 0}"
+											rendered="#{vocabularyBeanLEGACY.currentVocabularyLEGACY.struct.size() > 0}"
 											forceId="true">
 
 											<h:column>
@@ -154,7 +154,7 @@
 													id="fieldname">
 													<f:selectItems
 														var="fieldname"
-														value="#{vocabularyBean.possibleDefinitionTypes}"
+														value="#{vocabularyBeanLEGACY.possibleDefinitionTypes}"
 														itemValue="#{fieldname}"
 														itemLabel="#{fieldname}" />
 													<f:ajax
@@ -275,11 +275,11 @@
 														jsf:id="delete"
 														class="btn btn-hot"
 														title="#{msgs.vocabularyManager_deleteDefinition}"
-														jsf:action="#{vocabularyBean.deleteDefinition}"
+														jsf:action="#{vocabularyBeanLEGACY.deleteDefinition}"
 														onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
 														jsf:immediate="true">
 														<f:setPropertyActionListener
-															target="#{vocabularyBean.currentDefinition}"
+															target="#{vocabularyBeanLEGACY.currentDefinition}"
 															value="#{definition}" />
 														<span class="fa fa-trash-o font-bold" />
 													</button>
@@ -296,7 +296,7 @@
 									<button
 										jsf:id="new_def"
 										class="btn btn-primary-400 me-auto"
-										jsf:action="#{vocabularyBean.addDefinition}"
+										jsf:action="#{vocabularyBeanLEGACY.addDefinition}"
 										title="#{msgs.vocabularyManager_addDefinition}">
 										<i
 											aria-hidden="true"
@@ -320,7 +320,7 @@
 									class="btn btn-blank submitOnEnter"
 									jsf:id="abbrechen"
 									jsf:type="cancel"
-									jsf:action="#{vocabularyBean.cancelEdition}"
+									jsf:action="#{vocabularyBeanLEGACY.cancelEdition}"
 									jsf:immediate="true">
 									<span>
 										<h:outputText value="#{msgs.abbrechen}" />
@@ -332,7 +332,7 @@
 									class="btn btn-success submitOnEnter"
 									jsf:id="absenden"
 									type="submit"
-									jsf:action="#{vocabularyBean.saveVocabulary}">
+									jsf:action="#{vocabularyBeanLEGACY.saveVocabulary}">
 									<span class="fa fa-save" />
 									<span>
 										<h:outputText value="#{msgs.speichern}" />
@@ -341,10 +341,10 @@
 
 								<button
 									jsf:id="delete"
-									jsf:action="#{vocabularyBean.deleteVocabulary}"
+									jsf:action="#{vocabularyBeanLEGACY.deleteVocabulary}"
 									class="btn btn-hot trigger-delete"
 									onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
-									jsf:rendered="#{vocabularyBean.currentVocabularyLEGACY.id != null}">
+									jsf:rendered="#{vocabularyBeanLEGACY.currentVocabularyLEGACY.id != null}">
 									<span class="fa fa-trash-o" />
 									<span>
 										<h:outputText value="#{msgs.loeschen}" />

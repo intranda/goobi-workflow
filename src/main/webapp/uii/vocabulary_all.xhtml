@@ -53,7 +53,7 @@
 
                       <div class="gw-table__search">
                         <div class="gw-table__search__length">
-                            <h:outputText value="#{msgs.treffer}: #{vocabularyBean.paginator.totalResults}" />
+                            <h:outputText value="#{msgs.treffer}: #{vocabularyBeanLEGACY.paginator.totalResults}" />
                         </div>
                         <div class="gw-table__filters">
                           <!-- show field definitions -->
@@ -79,7 +79,7 @@
                             id="vocabularies"
                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                             var="item"
-                            value="#{vocabularyBean.paginator.list}">
+                            value="#{vocabularyBeanLEGACY.paginator.list}">
 
                             <h:column>
                               <f:facet name="header">
@@ -118,7 +118,7 @@
                                     jsf:id="editRecords"
                                     class="btn btn-blank"
                                     jsf:rel="tooltip"
-                                    jsf:action="#{vocabularyBean.editRecords}"
+                                    jsf:action="#{vocabularyBeanLEGACY.editRecords}"
                                     title="#{msgs.vocabularyManager_editRecords}">
                                     <span class="fa fa-pencil" />
                                     <f:passThroughAttribute
@@ -128,7 +128,7 @@
                                         name="aria-label"
                                         value="#{msgs.vocabularyManager_editRecords}" />
                                     <f:setPropertyActionListener
-                                        target="#{vocabularyBean.currentVocabulary}"
+                                        target="#{vocabularyBeanLEGACY.currentVocabulary}"
                                         value="#{item}" />
                                 </button>
 
@@ -137,7 +137,7 @@
                                     jsf:id="edit"
                                     class="btn btn-blank"
                                     jsf:rel="tooltip"
-                                    jsf:action="#{vocabularyBean.editVocabulary}"
+                                    jsf:action="#{vocabularyBeanLEGACY.editVocabulary}"
                                     jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
                                     title="#{msgs.vocabularyManager_editVocabulary}">
                                     <span class="fa fa-cog" />
@@ -148,19 +148,19 @@
                                         name="aria-label"
                                         value="#{msgs.vocabularyManager_editVocabulary}" />
                                     <f:setPropertyActionListener
-                                        target="#{vocabularyBean.currentVocabularyLEGACY}"
+                                        target="#{vocabularyBeanLEGACY.currentVocabularyLEGACY}"
                                         value="#{item}" />
                                 </button>
 
                                 <!-- upload records to server -->
                                 <h:commandLink id="uploadToServerRecords"
                                     styleClass="btn btn-blank" rel="tooltip"
-                                    action="#{vocabularyBean.uploadToServerRecords}"
-                                    rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management') and vocabularyBean.useAuthorityServer()}"
+                                    action="#{vocabularyBeanLEGACY.uploadToServerRecords}"
+                                    rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management') and vocabularyBeanLEGACY.useAuthorityServer()}"
                                     title="#{msgs.vocabularyManager_uploadToServerRecords}">
                                     <span class="fa fa-database" />
                                     <f:setPropertyActionListener
-                                            target="#{vocabularyBean.currentVocabularyLEGACY}" value="#{item}" />
+                                            target="#{vocabularyBeanLEGACY.currentVocabularyLEGACY}" value="#{item}" />
                                 </h:commandLink>
                               </div>
 
@@ -175,14 +175,14 @@
                             <button
                               jsf:id="new"
                               class="btn btn-primary-400 me-auto"
-                              jsf:action="#{vocabularyBean.newVocabulary}">
+                              jsf:action="#{vocabularyBeanLEGACY.newVocabulary}">
                               <span class="fa fa-plus" />
                               <span>
                                 <h:outputText value="#{msgs.vocabularyManager_addNewVocabulary}" />
                               </span>
                             </button>
 
-                          <intranda:tablePaginator id="vocabulary" paginator="#{vocabularyBean.paginator}" />
+                          <intranda:tablePaginator id="vocabulary" paginator="#{vocabularyBeanLEGACY.paginator}" />
                         </div>
 
                     </intranda:box>
