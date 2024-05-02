@@ -171,4 +171,8 @@ public class VocabularyRecordsBean implements Serializable {
                 throw new IllegalArgumentException("Unknown language: \"" + language + "\"");
         }
     }
+
+    public void saveRecord() {
+        System.err.println(currentRecord);
+    }
 }
