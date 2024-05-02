@@ -66,7 +66,7 @@
 
                     <div class="gw-table__search__length">
                         <!-- TODO: Calculate the filtered result size -->
-                        <h:outputText value="#{msgs.treffer}: #{vocabularyRecordListBean.paginator.totalResults}"/>
+                        <h:outputText value="#{msgs.treffer}: #{vocabularyRecordsBean.paginator.totalResults}"/>
                         <!--                        <h:outputText-->
                         <!--                                rendered="#{vocabularyBean.currentVocabularyLEGACY.searchValue != null and vocabularyBean.currentVocabularyLEGACY.searchValue ne ''}"-->
                         <!--                                value=" #{msgs.von} #{vocabularyBean.currentVocabularyLEGACY.records.size()}"/>-->
@@ -119,7 +119,7 @@
                         <thead>
                         <tr role="row">
 
-                            <ui:repeat var="definition" value="#{vocabularyRecordListBean.mainFields}">
+                            <ui:repeat var="definition" value="#{vocabularyRecordsBean.titleFields}">
                                 <th scope="col" role="columnheader">
                                     <!--                                    <button-->
                                     <!--                                            jsf:id="changeOrderLabel"-->
@@ -127,8 +127,9 @@
                                     <!--                                            style="width: 100%; text-align: left;"-->
                                     <!--                                            jsf:action="#{vocabularyBean.currentVocabularyLEGACY.changeOrder}"-->
                                     <!--                                            aria-label="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}">-->
-                                    <!--                                        <h:outputText-->
-                                    <!--                                                value="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}"/>-->
+                                    <h:outputText
+                                            value="#{definition.name}"/>
+                                    <!--                                            value="#{definition.name} #{definition.language != '' ? msgs[definition.language] : ''}"/>-->
 
                                     <!--                                        <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabularyLEGACY.sortfield==definition.idAsString.concat('Desc')?'fa-sort-desc':vocabularyBean.currentVocabularyLEGACY.sortfield==definition.idAsString.concat('Asc')?'fa-sort-asc':'fa-sort'}"></span>-->
                                     <!--                                        <f:setPropertyActionListener-->
@@ -147,7 +148,7 @@
                         </thead>
 
                         <tbody>
-                        <ui:repeat varStatus="status" var="record" value="#{vocabularyRecordListBean.paginator.items}">
+                        <ui:repeat varStatus="status" var="record" value="#{vocabularyRecordsBean.paginator.items}">
                             <intranda:vocabularyRecordListEntry record="#{record}"/>
                         </ui:repeat>
                         </tbody>
@@ -168,7 +169,7 @@
                 <!--                      </span>-->
                 <!--                </button>-->
 
-                <intranda:paginator id="record" paginator="#{vocabularyRecordListBean.paginator}"/>
+                <intranda:paginator id="record" paginator="#{vocabularyRecordsBean.paginator}"/>
             </div> <!-- /box__actions -->
 
             <!-- Cancel (go back to vocab overview)-->

@@ -7,11 +7,6 @@
 >
 
     <composite:interface>
-        <composite:attribute
-                name="record"
-                type="io.goobi.vocabulary.exchange.VocabularyRecord"
-                required="true"
-        />
     </composite:interface>
 
     <composite:implementation>
@@ -23,20 +18,34 @@
             <!-- title="#{vocabularyBeanLEGACY.currentVocabRecord.title eq '' ? vocabularyBeanLEGACY.currentVocabularyLEGACY.title : vocabularyBeanLEGACY.currentVocabRecord.title}" -->
 
             <intranda:formOutputText label="#{msgs.id}"
-                                     field="#{cc.attrs.record.id}"
+                                     field="#{vocabularyRecordsBean.currentRecord.id}"
                                      name="recordid"/>
 
-            <ui:repeat var="field" value="#{vocabularyBeanLEGACY.currentVocabRecord.fields}">
-                <!--                            <ui:fragment rendered="#{field.definition.type eq 'input'}">-->
-                <!--                                <intranda:formInputText-->
-                <!--                                        name="field1"-->
-                <!--                                        field="#{field.value}"-->
-                <!--                                        required="#{field.definition.required}"-->
-                <!--                                        displayAsRequired="#{field.definition.required}"-->
-                <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
-                <!--                                        validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
-                <!--                                        idForValidator="#{field.label}"/>-->
-                <!--                            </ui:fragment>-->
+            <ui:repeat var="field" value="#{vocabularyRecordsBean.currentRecord.fields}">
+                <ui:repeat var="language"
+                           value="#{vocabularyRecordsBean.getLanguages(vocabularyRecordsBean.getDefinition(field))}">
+                    <ui:fragment>
+                        <intranda:formInputText
+                                name="field1"
+                                field="#{vocabularyRecordsBean.getValue(field, language)}"
+                                required="#{vocabularyRecordsBean.getDefinition(field).required}"
+                                displayAsRequired="#{vocabularyRecordsBean.getDefinition(field).required}"
+                                label="#{vocabularyRecordsBean.getDefinition(field).name} (#{language})"/>
+                    </ui:fragment>
+                </ui:repeat>
+                <!--                label="#{cc.getDefinition(field).name} #{cc.getDefinition(field).language != '' ? msgs[field.displayLanguageKey] : ''}"-->
+                <!--                validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
+                <!--                idForValidator="#{field.label}"-->
+                <!--                <ui:fragment rendered="#{field.definition.type eq 'input'}">-->
+                <!--                    <intranda:formInputText-->
+                <!--                            name="field1"-->
+                <!--                            field="#{field.value}"-->
+                <!--                            required="#{field.definition.required}"-->
+                <!--                            displayAsRequired="#{field.definition.required}"-->
+                <!--                            label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
+                <!--                            validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
+                <!--                            idForValidator="#{field.label}"/>-->
+                <!--                </ui:fragment>-->
                 <!--                            <ui:fragment rendered="#{field.definition.type eq 'textarea'}">-->
                 <!--                                <intranda:formInputTextArea-->
                 <!--                                        name="field2"-->
