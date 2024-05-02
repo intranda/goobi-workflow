@@ -7,11 +7,16 @@
 >
 
     <composite:interface>
+        <composite:attribute
+                name="record"
+                type="io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord"
+                required="true"
+        />
     </composite:interface>
 
     <composite:implementation>
         <tr>
-            <ui:repeat var="titleValue" value="#{vocabularyRecordsBean.titleValues}">
+            <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}">
                 <td class="tableColumnOverflow maxWidth150">
                     <h:outputText value="#{titleValue}"/>
                 </td>
@@ -21,7 +26,7 @@
                 <button
                         jsf:id="switch"
                         title="#{msgs.bearbeiten}"
-                        class="btn btn-blank"
+                        class="btn #{vocabularyRecordsBean.currentRecord != cc.attrs.record ? 'btn-blank' : 'btn-primary-400'}"
                         jsf:action="#{vocabularyRecordsBean.edit(cc.attrs.record)}"
                         data-bs-toggle="tooltip">
                     <!-- These belong in the button -->

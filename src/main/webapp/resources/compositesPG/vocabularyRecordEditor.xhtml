@@ -21,18 +21,20 @@
                                      field="#{vocabularyRecordsBean.currentRecord.id}"
                                      name="recordid"/>
 
-            <ui:repeat var="field" value="#{vocabularyRecordsBean.currentRecord.fields}">
-                <ui:repeat var="language"
-                           value="#{vocabularyRecordsBean.getLanguages(vocabularyRecordsBean.getDefinition(field))}">
-                    <ui:fragment>
-                        <intranda:formInputText
-                                name="field1"
-                                field="#{vocabularyRecordsBean.getValue(field, language)}"
-                                required="#{vocabularyRecordsBean.getDefinition(field).required}"
-                                displayAsRequired="#{vocabularyRecordsBean.getDefinition(field).required}"
-                                label="#{vocabularyRecordsBean.getDefinition(field).name} (#{language})"/>
-                    </ui:fragment>
-                </ui:repeat>
+            <ui:repeat var="field" value="#{vocabularyRecordsBean.currentRecord.jsfFields}">
+                <!--                <ui:repeat var="language"-->
+                <!--                           value="#{vocabularyRecordsBean.getLanguages(vocabularyRecordsBean.getDefinition(field))}">-->
+                <ui:fragment>
+                    <intranda:formInputText
+                            name="field1"
+                            field="#{field.value}"
+                            required="#{vocabularyRecordsBean.getDefinition(field).required}"
+                            displayAsRequired="#{vocabularyRecordsBean.getDefinition(field).required}"
+                            label="#{vocabularyRecordsBean.getDefinition(field).name} #{field.language != '' ? msgs[field.displayLanguageKey] : ''}"/>
+                </ui:fragment>
+
+                <!--                label="#{vocabularyRecordsBean.getDefinition(field).name} (#{language})"/>-->
+                <!--                </ui:repeat>-->
                 <!--                label="#{cc.getDefinition(field).name} #{cc.getDefinition(field).language != '' ? msgs[field.displayLanguageKey] : ''}"-->
                 <!--                validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
                 <!--                idForValidator="#{field.label}"-->

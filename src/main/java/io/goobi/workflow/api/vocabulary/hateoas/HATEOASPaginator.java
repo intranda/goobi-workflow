@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Paginator<T> {
@@ -21,13 +22,15 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
     public static final String NAVIGATE_LAST = "last";
 
     private final Client client = ClientBuilder.newClient();
+    private final Optional<Consumer<T>> consumeCallback;
 
     private Class<PageT> pageClass;
     private PageT currentPage;
 
-    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage) {
+    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Consumer<T> consumeCallback) {
         this.pageClass = pageClass;
         this.currentPage = initialPage;
+        this.consumeCallback = Optional.ofNullable(consumeCallback);
     }
 
     private void request(String url) {
@@ -44,6 +47,7 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
                 throw new APIException(url, "GET", response.getStatus(), response.readEntity(String.class));
             }
             currentPage = response.readEntity(pageClass);
+            this.consumeCallback.ifPresent(callback -> currentPage.getContent().forEach(callback));
         }
     }
 

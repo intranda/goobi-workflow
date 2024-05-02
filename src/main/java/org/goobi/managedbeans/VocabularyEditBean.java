@@ -25,41 +25,34 @@
  */
 package org.goobi.managedbeans;
 
-import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.Vocabulary;
+import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
-import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.Optional;
 
 @Named
 @WindowScoped
 @Log4j2
-public class VocabularyBean implements Serializable {
+public class VocabularyEditBean implements Serializable {
     private static final long serialVersionUID = 5672948572345L;
 
-    private static final String RETURN_PAGE_OVERVIEW = "vocabulary_overview";
+    private static final String RETURN_PAGE_OVERVIEW = "vocabulary_edit";
 
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     @Getter
-    private transient Paginator<Vocabulary> paginator;
+    private Vocabulary vocabulary;
+    @Getter
+    private VocabularySchema schema;
 
-    public String load() {
-        paginator = new HATEOASPaginator<>(
-                VocabularyPageResult.class,
-                api.vocabularies().list(
-                        Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
-                        Optional.empty()
-                ),
-                null
-        );
+    public String load(Vocabulary vocabulary) {
+        this.vocabulary = vocabulary;
+        this.schema = api.vocabularySchemas().get(vocabulary.getSchemaId());
         return RETURN_PAGE_OVERVIEW;
     }
 }

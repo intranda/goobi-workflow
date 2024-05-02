@@ -30,18 +30,17 @@ import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.FieldInstance;
 import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.Vocabulary;
-import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
+import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +58,7 @@ public class VocabularyRecordsBean implements Serializable {
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     @Getter
-    private transient Paginator<VocabularyRecord> paginator;
+    private transient Paginator<JSFVocabularyRecord> paginator;
 
     @Getter
     private transient Vocabulary vocabulary;
@@ -67,7 +66,7 @@ public class VocabularyRecordsBean implements Serializable {
     private transient VocabularySchema schema;
 
     @Getter
-    private transient VocabularyRecord currentRecord;
+    private transient JSFVocabularyRecord currentRecord;
 
     @Getter
     private transient List<FieldDefinition> mainFields;
@@ -89,7 +88,7 @@ public class VocabularyRecordsBean implements Serializable {
         return RETURN_PAGE_OVERVIEW;
     }
 
-    public void edit(VocabularyRecord vocabularyRecord) {
+    public void edit(JSFVocabularyRecord vocabularyRecord) {
         this.currentRecord = vocabularyRecord;
     }
 
@@ -97,43 +96,25 @@ public class VocabularyRecordsBean implements Serializable {
         return definitionsIdMap.get(field.getDefinitionId());
     }
 
-    public String getValue(FieldInstance field) {
-        return field.getValues().stream()
-                .flatMap(v -> v.getTranslations().values().stream())
-                .collect(Collectors.joining(" :: "));
-    }
-
-    public String getValue(FieldInstance field, String language) {
-        return field.getValues().stream()
-                .flatMap(v -> v.getTranslations().entrySet().stream()
-                        .filter(t -> t.getKey().equals(language))
-                        .map(Map.Entry::getValue)
-                )
-                .collect(Collectors.joining("|"));
-    }
+//    public String getValue(FieldInstance field) {
+//        return field.getValues().stream()
+//                .flatMap(v -> v.getTranslations().values().stream())
+//                .collect(Collectors.joining(" :: "));
+//    }
+//
+//    public String getValue(FieldInstance field, String language) {
+//        return field.getValues().stream()
+//                .flatMap(v -> v.getTranslations().entrySet().stream()
+//                        .filter(t -> t.getKey().equals(language))
+//                        .map(Map.Entry::getValue)
+//                )
+//                .collect(Collectors.joining("|"));
+//    }
 
     public List<String> getLanguages(FieldDefinition definition) {
         return definition.getTranslationDefinitions().stream()
                 .map(TranslationDefinition::getLanguage)
                 .collect(Collectors.toList());
-    }
-
-    public List<String> getTitleValues() {
-        return definitions.stream()
-                .sorted(Comparator.comparingLong(FieldDefinition::getId))
-                .map(this::getFieldValue)
-                .collect(Collectors.toList());
-    }
-
-    private String getFieldValue(FieldDefinition definition) {
-        // TODO: Decide which language to show
-        return currentRecord.getFields().stream()
-                .filter(f -> f.getDefinitionId().equals(definition.getId()))
-                .flatMap(f -> f.getValues().stream())
-                .flatMap(v -> v.getTranslations().entrySet().stream()
-                        .filter(t -> t.getKey().equals(language))
-                        .map(Map.Entry::getValue))
-                .collect(Collectors.joining("|"));
     }
 
     private void loadPaginator() {
@@ -144,8 +125,14 @@ public class VocabularyRecordsBean implements Serializable {
                         this.vocabulary.getId(),
                         Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
                         Optional.empty()
-                )
+                ),
+                this::loadRecord
         );
+    }
+
+    private void loadRecord(JSFVocabularyRecord record) {
+        record.load(schema);
+        record.setLanguage(language);
     }
 
     private void loadSchema() {
