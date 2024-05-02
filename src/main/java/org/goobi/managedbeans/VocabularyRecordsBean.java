@@ -28,7 +28,9 @@ package org.goobi.managedbeans;
 import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.FieldInstance;
+import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.TranslationDefinition;
+import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
@@ -133,6 +135,27 @@ public class VocabularyRecordsBean implements Serializable {
     private void loadRecord(JSFVocabularyRecord record) {
         record.load(schema);
         record.setLanguage(language);
+        prepareEmptyFieldsForEditing(record);
+    }
+
+    private void prepareEmptyFieldsForEditing(JSFVocabularyRecord record) {
+        List<Long> existingFields = record.getFields().stream()
+                .map(FieldInstance::getDefinitionId)
+                .collect(Collectors.toList());
+        List<Long> missingFields = definitionsIdMap.keySet()
+                .stream().filter(i -> !existingFields.contains(i))
+                .collect(Collectors.toList());
+        missingFields.forEach(d -> {
+            FieldInstance field = new FieldInstance();
+            FieldValue value = new FieldValue();
+            definitionsIdMap.get(d).getTranslationDefinitions().forEach(t -> {
+                TranslationInstance translation = new TranslationInstance();
+                translation.setLanguage(t.getLanguage());
+                translation.setValue("");
+                value.getTranslations().add(translation);
+            });
+            field.getValues().add(value);
+        });
     }
 
     private void loadSchema() {

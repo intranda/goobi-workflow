@@ -23,52 +23,43 @@
                                      field="#{vocabularyRecordsBean.currentRecord.id}"
                                      name="recordid"/>
 
-            <ui:repeat var="field" value="#{vocabularyRecordsBean.currentRecord.fields}">
-                <ui:repeat var="value" value="#{field.values}">
-                    <div class="row w-100">
-                        <div class="col-12 col-md-3" tabindex="-1">
-                            <intranda:formLabel label="#{vocabularyRecordsBean.getDefinition(field).name}"/>
-                        </div>
-                        <div class="col-12 col-md-9">
-                            <ui:repeat var="lang" value="#{value.translations.keySet()}">
-                                <div class="row">
-                                    <ui:fragment>
-                                        <!--                            <intranda:formInputText-->
-                                        <!--                                    name="field1"-->
-                                        <!--                                    field="#{value.translations.get(lang)}"-->
-                                        <!--                                    required="#{vocabularyRecordsBean.getDefinition(field).required}"-->
-                                        <!--                                    displayAsRequired="#{vocabularyRecordsBean.getDefinition(field).required}"-->
-                                        <!--                                    label="#{vocabularyRecordsBean.getDefinition(field).name}"/>-->
-
-                                        <!-- LABEL -->
+            <ui:repeat var="field" value="#{vocabularyRecordsBean.currentRecord.sortedFields()}">
+                <div class="row">
+                    <div class="col-12 col-md-3" tabindex="-1">
+                        <intranda:formLabel label="#{vocabularyRecordsBean.getDefinition(field).name}"/>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <ui:repeat var="value" value="#{field.values}">
+                            <div class="row border-1">
+                                <ui:repeat var="translation" value="#{value.translations}">
+                                    <div class="row col-12 border-0">
+                                        <!-- LANGUAGE -->
                                         <div class="col-12 col-md-2" tabindex="-1">
-                                            <intranda:formLabel label="#{lang}" labelFor="field1"/>
+                                            <intranda:formLabel
+                                                    rendered="#{translation.language != null}"
+                                                    label="#{translation.language}"
+                                                    labelFor="field"/>
                                         </div>
-                                        <!-- // LABEL -->
+                                        <!-- // LANGUAGE -->
 
                                         <!-- CONTENT -->
                                         <div class="col-12 col-md-10">
                                             <h:inputText
-                                                    id="field1"
+                                                    id="field"
                                                     styleClass="form-control form__input"
-                                                    value="#{value.translations.get(lang)}"
+                                                    value="#{translation.value}"
                                                     required="#{vocabularyRecordsBean.getDefinition(field).required}"
                                                     readonly="false"
                                                     disabled="false">
                                             </h:inputText>
-                                            <!--                                    <h:message for="#{cc.attrs.name}" showDetail="true"-->
-                                            <!--                                               styleClass="help-inline text-danger"/>-->
-                                            <!-- Help messages, inline + warning -->
-                                            <!--                                    <intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>-->
                                         </div>
                                         <!-- // CONTENT -->
-
-                                    </ui:fragment>
-                                </div>
-                            </ui:repeat>
-                        </div>
+                                    </div>
+                                </ui:repeat>
+                            </div>
+                        </ui:repeat>
                     </div>
-                </ui:repeat>
+                </div>
             </ui:repeat>
             <!--                <ui:repeat var="language"-->
             <!--                           value="#{vocabularyRecordsBean.getLanguages(vocabularyRecordsBean.getDefinition(field))}">-->
