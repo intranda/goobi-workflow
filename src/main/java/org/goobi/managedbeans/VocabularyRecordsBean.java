@@ -33,6 +33,7 @@ import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.Vocabulary;
+import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
@@ -49,6 +50,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -113,12 +115,16 @@ public class VocabularyRecordsBean implements Serializable {
         System.err.println(currentRecord);
         // TODO: Maybe replace current record
         try {
+            VocabularyRecord newRecord;
             if (currentRecord.getId() != null) {
-                api.vocabularyRecords().change(currentRecord);
+                newRecord = api.vocabularyRecords().change(currentRecord);
             } else {
-                api.vocabularyRecords().create(currentRecord);
+                newRecord = api.vocabularyRecords().create(currentRecord);
             }
             paginator.reload();
+            paginator.getItems().stream()
+                    .filter(r -> Objects.equals(r.getId(), newRecord.getId()))
+                    .findFirst().ifPresent(r -> currentRecord = r);
         } catch (APIException e) {
             Helper.setFehlerMeldung(e);
         }
