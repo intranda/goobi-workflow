@@ -6,6 +6,7 @@
         xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
 >
 
     <composite:interface>
@@ -43,7 +44,6 @@
                                                         labelFor="field1"/>
                                             </div>
                                             <!-- // LANGUAGE -->
-
                                             <!-- CONTENT -->
                                             <div class="col-12 col-md-11">
                                                 <h:inputText
@@ -51,14 +51,14 @@
                                                         styleClass="form-control form__input"
                                                         value="#{translation.value}"
                                                         readonly="false"
-                                                        disabled="false">
-                                                </h:inputText>
+                                                        disabled="false"
+                                                />
                                             </div>
                                             <!-- // CONTENT -->
                                         </div>
                                     </ui:fragment>
                                     <!-- // Simple text type -->
-                                    <!-- Simple text type -->
+                                    <!-- Text area type -->
                                     <ui:fragment
                                             rendered="#{vocabularyRecordsBean.getType(field).selectableValues.size() == 0 and vocabularyRecordsBean.getType(field).large == true}">
                                         <div class="row col-12 border-0">
@@ -69,54 +69,53 @@
                                                         labelFor="field2"/>
                                             </div>
                                             <!-- // LANGUAGE -->
-
                                             <!-- CONTENT -->
                                             <div class="col-12 col-md-11">
-                                                <intranda:formInputTextArea
-                                                        name="field2"
-                                                        field="#{translation.value}"
-                                                        readonly="false">
-                                                </intranda:formInputTextArea>
+                                                <h:inputTextarea
+                                                        id="field2"
+                                                        styleClass="form-control metsEditorTextArea"
+                                                        value="#{translation.value}"
+                                                        rows="6"
+                                                />
                                             </div>
                                             <!-- // CONTENT -->
                                         </div>
                                     </ui:fragment>
-                                    <!-- // Simple text type -->
+                                    <!-- // Text area  type -->
+                                    <!-- Single select type -->
+                                    <ui:fragment
+                                            rendered="#{vocabularyRecordsBean.getType(field).selectableValues.size() > 0}">
+                                        <div class="row col-12 border-0">
+                                            <!-- LANGUAGE -->
+                                            <div class="col-12 col-md-1" tabindex="-1">
+                                                <intranda:formLabel
+                                                        label="#{translation.language != null ? translation.language : ''}"
+                                                        labelFor="field3"/>
+                                            </div>
+                                            <!-- // LANGUAGE -->
+                                            <!-- CONTENT -->
+                                            <div class="col-12 col-md-11">
+                                                <h:selectOneMenu
+                                                        id="field3"
+                                                        styleClass="form-control form__input"
+                                                        value="#{translation.value}">
+                                                    <f:selectItem
+                                                            itemValue="null"
+                                                            itemLabel="#{msgs.bitteAuswaehlen}"/>
+                                                    <f:selectItems
+                                                            value="#{vocabularyRecordsBean.getType(field).selectableValues}"/>
+                                                </h:selectOneMenu>
+                                            </div>
+                                            <!-- // CONTENT -->
+                                        </div>
+                                    </ui:fragment>
+                                    <!-- // Single select  type -->
                                 </ui:repeat>
                             </div>
                         </ui:repeat>
                     </div>
                 </div>
             </ui:repeat>
-            <!--                <ui:repeat var="language"-->
-            <!--                           value="#{vocabularyRecordsBean.getLanguages(vocabularyRecordsBean.getDefinition(field))}">-->
-
-
-            <!--                label="#{vocabularyRecordsBean.getDefinition(field).name} (#{language})"/>-->
-            <!--                </ui:repeat>-->
-            <!--                label="#{cc.getDefinition(field).name} #{cc.getDefinition(field).language != '' ? msgs[field.displayLanguageKey] : ''}"-->
-            <!--                validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
-            <!--                idForValidator="#{field.label}"-->
-            <!--                <ui:fragment rendered="#{field.definition.type eq 'input'}">-->
-            <!--                    <intranda:formInputText-->
-            <!--                            name="field1"-->
-            <!--                            field="#{field.value}"-->
-            <!--                            required="#{field.definition.required}"-->
-            <!--                            displayAsRequired="#{field.definition.required}"-->
-            <!--                            label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
-            <!--                            validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
-            <!--                            idForValidator="#{field.label}"/>-->
-            <!--                </ui:fragment>-->
-            <!--                            <ui:fragment rendered="#{field.definition.type eq 'textarea'}">-->
-            <!--                                <intranda:formInputTextArea-->
-            <!--                                        name="field2"-->
-            <!--                                        field="#{field.value}"-->
-            <!--                                        required="#{field.definition.required}"-->
-            <!--                                        displayAsRequired="#{field.definition.required}"-->
-            <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
-            <!--                                        validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
-            <!--                                        idForValidator="#{field.label}"/>-->
-            <!--                            </ui:fragment>-->
             <!--                            <ui:fragment rendered="#{field.definition.type eq 'select1'}">-->
             <!--                                <intranda:formInputDropDown-->
             <!--                                        name="field3"-->
@@ -133,16 +132,6 @@
             <!--                                        name="field4"-->
             <!--                                        field="#{field.valueMultiSelect}"-->
             <!--                                        selectItems="#{field.definition.selectList}"-->
-            <!--                                        required="#{field.definition.required}"-->
-            <!--                                        displayAsRequired="#{field.definition.required}"-->
-            <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
-            <!--                                        validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
-            <!--                                        idForValidator="#{field.label}"/>-->
-            <!--                            </ui:fragment>-->
-            <!--                            <ui:fragment rendered="#{field.definition.type eq 'html'}">-->
-            <!--                                <intranda:formInputTextArea-->
-            <!--                                        name="field5"-->
-            <!--                                        field="#{field.value}"-->
             <!--                                        required="#{field.definition.required}"-->
             <!--                                        displayAsRequired="#{field.definition.required}"-->
             <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
