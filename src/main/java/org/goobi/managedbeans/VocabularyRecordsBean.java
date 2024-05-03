@@ -90,8 +90,9 @@ public class VocabularyRecordsBean implements Serializable {
         return RETURN_PAGE_OVERVIEW;
     }
 
-    public void edit(JSFVocabularyRecord vocabularyRecord) {
-        this.currentRecord = vocabularyRecord;
+    public void edit(JSFVocabularyRecord record) {
+        this.currentRecord = record;
+        prepareEmptyFieldsForEditing(record);
     }
 
     public FieldDefinition getDefinition(FieldInstance field) {
@@ -135,7 +136,6 @@ public class VocabularyRecordsBean implements Serializable {
     private void loadRecord(JSFVocabularyRecord record) {
         record.load(schema);
         record.setLanguage(language);
-        prepareEmptyFieldsForEditing(record);
     }
 
     private void prepareEmptyFieldsForEditing(JSFVocabularyRecord record) {
@@ -148,13 +148,22 @@ public class VocabularyRecordsBean implements Serializable {
         missingFields.forEach(d -> {
             FieldInstance field = new FieldInstance();
             FieldValue value = new FieldValue();
-            definitionsIdMap.get(d).getTranslationDefinitions().forEach(t -> {
+            FieldDefinition fieldDefinition = definitionsIdMap.get(d);
+            if (!fieldDefinition.getTranslationDefinitions().isEmpty()) {
+                fieldDefinition.getTranslationDefinitions().forEach(t -> {
+                    TranslationInstance translation = new TranslationInstance();
+                    translation.setLanguage(t.getLanguage());
+                    translation.setValue("");
+                    value.getTranslations().add(translation);
+                });
+            } else {
                 TranslationInstance translation = new TranslationInstance();
-                translation.setLanguage(t.getLanguage());
                 translation.setValue("");
                 value.getTranslations().add(translation);
-            });
+            }
+            field.setDefinitionId(d);
             field.getValues().add(value);
+            record.getFields().add(field);
         });
     }
 

@@ -30,20 +30,19 @@
                     </div>
                     <div class="col-12 col-md-9">
                         <ui:repeat var="value" value="#{field.values}">
-                            <div class="row border-1">
+                            <div class="row border-0">
                                 <ui:repeat var="translation" value="#{value.translations}">
                                     <div class="row col-12 border-0">
                                         <!-- LANGUAGE -->
-                                        <div class="col-12 col-md-2" tabindex="-1">
+                                        <div class="col-12 col-md-1" tabindex="-1">
                                             <intranda:formLabel
-                                                    rendered="#{translation.language != null}"
-                                                    label="#{translation.language}"
+                                                    label="#{translation.language != null ? translation.language : ''}"
                                                     labelFor="field"/>
                                         </div>
                                         <!-- // LANGUAGE -->
 
                                         <!-- CONTENT -->
-                                        <div class="col-12 col-md-10">
+                                        <div class="col-12 col-md-11">
                                             <h:inputText
                                                     id="field"
                                                     styleClass="form-control form__input"
