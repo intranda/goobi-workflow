@@ -113,12 +113,12 @@ public class VocabularyRecordsBean implements Serializable {
         System.err.println(currentRecord);
         // TODO: Maybe replace current record
         try {
-            api.vocabularyRecords().change(currentRecord);
             if (currentRecord.getId() != null) {
                 api.vocabularyRecords().change(currentRecord);
             } else {
                 api.vocabularyRecords().create(currentRecord);
             }
+            paginator.reload();
         } catch (APIException e) {
             Helper.setFehlerMeldung(e);
         }

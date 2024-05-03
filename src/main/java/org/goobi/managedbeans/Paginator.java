@@ -3,6 +3,8 @@ package org.goobi.managedbeans;
 import java.util.List;
 
 public interface Paginator<T> {
+    void reload();
+
     List<T> getItems();
 
     long getPageSize();

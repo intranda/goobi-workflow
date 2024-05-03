@@ -78,6 +78,11 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
     }
 
     @Override
+    public void reload() {
+        request(currentPage.get_links().get("self").getHref());
+    }
+
+    @Override
     public long getCurrentPage() {
         return currentPage.getPage().getNumber() + 1;
     }
