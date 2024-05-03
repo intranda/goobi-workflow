@@ -59,6 +59,10 @@ pipeline {
           branch 'master'
           branch 'release_*'
           branch 'sonar_*'
+          allOf {
+            branch 'PR-*'
+            expression { env.CHANGE_BRANCH.startsWith("release_") }
+          }
         }
       }
       steps {
@@ -117,7 +121,7 @@ pipeline {
       dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     }
     success {
-      archiveArtifacts artifacts: '**/*.war, **/*.jar, install/db/goobi.sql', fingerprint: true
+      archiveArtifacts artifacts: 'target/*.war, target/*.jar, install/db/goobi.sql', fingerprint: true
     }
     changed {
       emailext(
