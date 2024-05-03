@@ -98,7 +98,10 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     public void saveRecord() {
+        // TODO: Remove this verbose test
         System.err.println(currentRecord);
+        // TODO: Maybe replace current record
+        api.vocabularyRecords().change(currentRecord);
     }
 
     public FieldDefinition getDefinition(FieldInstance field) {

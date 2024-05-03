@@ -49,6 +49,14 @@ public class VocabularyRecordAPI {
         }
     }
 
+    public VocabularyRecord change(VocabularyRecord vocabularyRecord) {
+        long id = vocabularyRecord.getId();
+        vocabularyRecord.setId(null);
+        VocabularyRecord newRecord = restApi.put(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, id);
+        vocabularyRecord.setId(id);
+        return newRecord;
+    }
+
     public void delete(VocabularyRecord vocabularyRecord) {
         restApi.delete(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord.getId());
     }
