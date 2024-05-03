@@ -2,6 +2,7 @@ package io.goobi.workflow.api.vocabulary;
 
 import io.goobi.vocabulary.exchange.FieldInstance;
 import io.goobi.vocabulary.exchange.Language;
+import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.workflow.api.vocabulary.hateoas.FieldTypePageResult;
 import io.goobi.workflow.api.vocabulary.hateoas.LanguagePageResult;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularySchemaPageResult;
@@ -79,8 +80,9 @@ public class VocabularyAPITest {
                 .map(r -> r.getFields().stream()
                         .sorted(Comparator.comparing(FieldInstance::getDefinitionId))
                         .flatMap(f -> f.getValues().stream())
-                        .flatMap(v -> v.getTranslations().values().stream())
-                                .collect(Collectors.joining(", ")))
+                        .flatMap(v -> v.getTranslations().stream())
+                        .map(TranslationInstance::getValue)
+                        .collect(Collectors.joining(", ")))
                 .forEach(System.out::println);
     }
 }
