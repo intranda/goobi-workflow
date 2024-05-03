@@ -34,6 +34,7 @@ import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
+import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
@@ -101,7 +102,11 @@ public class VocabularyRecordsBean implements Serializable {
         // TODO: Remove this verbose test
         System.err.println(currentRecord);
         // TODO: Maybe replace current record
-        api.vocabularyRecords().change(currentRecord);
+        try {
+            api.vocabularyRecords().change(currentRecord);
+        } catch (APIException e) {
+            Helper.setFehlerMeldung(e);
+        }
     }
 
     public FieldDefinition getDefinition(FieldInstance field) {
