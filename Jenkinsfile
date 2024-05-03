@@ -59,6 +59,10 @@ pipeline {
           branch 'master'
           branch 'release_*'
           branch 'sonar_*'
+          allOf {
+            branch 'PR-*'
+            expression { env.CHANGE_BRANCH.startsWith("release_") }
+          }
         }
       }
       steps {
