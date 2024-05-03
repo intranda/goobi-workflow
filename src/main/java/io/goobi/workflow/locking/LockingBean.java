@@ -132,6 +132,24 @@ public class LockingBean implements Serializable {
     }
 
     /**
+     * check if an object is locked by another user
+     *
+     */
+
+    public static boolean isLockedByAnotherUser(String objectId, String userName) {
+        if (lockedSessions.containsKey(objectId)) {
+            Map<String, String> map = lockedSessions.get(objectId);
+            String otherUser = map.get(USER);
+            if (otherUser.equals(userName)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * remove all active lockings
      */
 
