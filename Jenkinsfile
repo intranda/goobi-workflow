@@ -24,7 +24,14 @@ pipeline {
     stage('build-snapshot') {
       when {
         not {
-          branch 'master'
+          anyOf {
+            branch 'master'
+            branch 'release_*'
+            allOf {
+              branch 'PR-*'
+              expression { env.CHANGE_BRANCH.startsWith("release_") }
+            }
+          }
         }
       }
       steps {
@@ -35,6 +42,11 @@ pipeline {
       when {
         anyOf {
           branch 'master'
+          branch 'release_*'
+          allOf {
+            branch 'PR-*'
+            expression { env.CHANGE_BRANCH.startsWith("release_") }
+          }
         }
       }
       steps {
