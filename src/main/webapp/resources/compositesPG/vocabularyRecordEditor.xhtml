@@ -32,28 +32,56 @@
                         <ui:repeat var="value" value="#{field.values}">
                             <div class="row border-0">
                                 <ui:repeat var="translation" value="#{value.translations}">
-                                    <div class="row col-12 border-0">
-                                        <!-- LANGUAGE -->
-                                        <div class="col-12 col-md-1" tabindex="-1">
-                                            <intranda:formLabel
-                                                    label="#{translation.language != null ? translation.language : ''}"
-                                                    labelFor="field"/>
-                                        </div>
-                                        <!-- // LANGUAGE -->
+                                    <!-- Simple text type -->
+                                    <ui:fragment
+                                            rendered="#{vocabularyRecordsBean.getType(field).selectableValues.size() == 0 and vocabularyRecordsBean.getType(field).large == false}">
+                                        <div class="row col-12 border-0">
+                                            <!-- LANGUAGE -->
+                                            <div class="col-12 col-md-1" tabindex="-1">
+                                                <intranda:formLabel
+                                                        label="#{translation.language != null ? translation.language : ''}"
+                                                        labelFor="field1"/>
+                                            </div>
+                                            <!-- // LANGUAGE -->
 
-                                        <!-- CONTENT -->
-                                        <div class="col-12 col-md-11">
-                                            <h:inputText
-                                                    id="field"
-                                                    styleClass="form-control form__input"
-                                                    value="#{translation.value}"
-                                                    required="#{vocabularyRecordsBean.getDefinition(field).required}"
-                                                    readonly="false"
-                                                    disabled="false">
-                                            </h:inputText>
+                                            <!-- CONTENT -->
+                                            <div class="col-12 col-md-11">
+                                                <h:inputText
+                                                        id="field1"
+                                                        styleClass="form-control form__input"
+                                                        value="#{translation.value}"
+                                                        readonly="false"
+                                                        disabled="false">
+                                                </h:inputText>
+                                            </div>
+                                            <!-- // CONTENT -->
                                         </div>
-                                        <!-- // CONTENT -->
-                                    </div>
+                                    </ui:fragment>
+                                    <!-- // Simple text type -->
+                                    <!-- Simple text type -->
+                                    <ui:fragment
+                                            rendered="#{vocabularyRecordsBean.getType(field).selectableValues.size() == 0 and vocabularyRecordsBean.getType(field).large == true}">
+                                        <div class="row col-12 border-0">
+                                            <!-- LANGUAGE -->
+                                            <div class="col-12 col-md-1" tabindex="-1">
+                                                <intranda:formLabel
+                                                        label="#{translation.language != null ? translation.language : ''}"
+                                                        labelFor="field2"/>
+                                            </div>
+                                            <!-- // LANGUAGE -->
+
+                                            <!-- CONTENT -->
+                                            <div class="col-12 col-md-11">
+                                                <intranda:formInputTextArea
+                                                        name="field2"
+                                                        field="#{translation.value}"
+                                                        readonly="false">
+                                                </intranda:formInputTextArea>
+                                            </div>
+                                            <!-- // CONTENT -->
+                                        </div>
+                                    </ui:fragment>
+                                    <!-- // Simple text type -->
                                 </ui:repeat>
                             </div>
                         </ui:repeat>

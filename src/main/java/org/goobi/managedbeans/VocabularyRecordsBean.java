@@ -28,6 +28,7 @@ package org.goobi.managedbeans;
 import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.FieldInstance;
+import io.goobi.vocabulary.exchange.FieldType;
 import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
@@ -78,6 +79,7 @@ public class VocabularyRecordsBean implements Serializable {
     @Getter
     private transient List<FieldDefinition> definitions;
     private transient Map<Long, FieldDefinition> definitionsIdMap;
+    private transient Map<Long, FieldType> typeIdMap;
     private final String language = transformToThreeCharacterAbbreviation(Helper.getSessionLocale().getLanguage());
 
     public String load(Vocabulary vocabulary) {
@@ -95,8 +97,16 @@ public class VocabularyRecordsBean implements Serializable {
         prepareEmptyFieldsForEditing(record);
     }
 
+    public void saveRecord() {
+        System.err.println(currentRecord);
+    }
+
     public FieldDefinition getDefinition(FieldInstance field) {
         return definitionsIdMap.get(field.getDefinitionId());
+    }
+
+    public FieldType getType(FieldInstance field) {
+        return typeIdMap.get(definitionsIdMap.get(field.getDefinitionId()).getTypeId());
     }
 
 //    public String getValue(FieldInstance field) {
@@ -170,11 +180,7 @@ public class VocabularyRecordsBean implements Serializable {
     private void loadSchema() {
         this.schema = api.vocabularySchemas().get(this.vocabulary.getSchemaId());
         loadFieldDefinitions();
-    }
-
-    private void loadFirstRecord() {
-        // TODO: Fix if empty
-        this.currentRecord = this.paginator.getItems().get(0);
+        loadTypes();
     }
 
     private void loadFieldDefinitions() {
@@ -191,6 +197,12 @@ public class VocabularyRecordsBean implements Serializable {
         }
     }
 
+
+    private void loadTypes() {
+        this.typeIdMap = new HashMap<>();
+        this.definitions.forEach(d -> this.typeIdMap.put(d.getTypeId(), api.fieldTypes().get(d.getTypeId())));
+    }
+
     private String transformToThreeCharacterAbbreviation(String language) {
         switch (language) {
             case "en":
@@ -204,7 +216,8 @@ public class VocabularyRecordsBean implements Serializable {
         }
     }
 
-    public void saveRecord() {
-        System.err.println(currentRecord);
+    private void loadFirstRecord() {
+        // TODO: Fix if empty
+        this.currentRecord = this.paginator.getItems().get(0);
     }
 }
