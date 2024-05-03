@@ -46,6 +46,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -98,12 +99,26 @@ public class VocabularyRecordsBean implements Serializable {
         prepareEmptyFieldsForEditing(record);
     }
 
+    public void createEmpty() {
+        JSFVocabularyRecord record = new JSFVocabularyRecord();
+        record.setVocabularyId(vocabulary.getId());
+        record.setFields(new HashSet<>());
+        loadRecord(record);
+        this.currentRecord = record;
+        prepareEmptyFieldsForEditing(record);
+    }
+
     public void saveRecord() {
         // TODO: Remove this verbose test
         System.err.println(currentRecord);
         // TODO: Maybe replace current record
         try {
             api.vocabularyRecords().change(currentRecord);
+            if (currentRecord.getId() != null) {
+                api.vocabularyRecords().change(currentRecord);
+            } else {
+                api.vocabularyRecords().create(currentRecord);
+            }
         } catch (APIException e) {
             Helper.setFehlerMeldung(e);
         }

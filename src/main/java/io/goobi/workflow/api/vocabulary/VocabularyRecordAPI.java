@@ -43,7 +43,11 @@ public class VocabularyRecordAPI {
 
     public VocabularyRecord create(VocabularyRecord vocabularyRecord) {
         if (vocabularyRecord.getParentId() == null) {
-            return restApi.post(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecord.class, vocabularyRecord);
+            long vocabularyId = vocabularyRecord.getVocabularyId();
+            vocabularyRecord.setVocabularyId(null);
+            VocabularyRecord newRecord = restApi.post(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyId);
+            vocabularyRecord.setId(vocabularyId);
+            return newRecord;
         } else {
             return restApi.post(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyRecord.getParentId());
         }

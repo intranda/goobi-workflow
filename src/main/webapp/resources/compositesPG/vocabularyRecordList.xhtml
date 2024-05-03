@@ -5,6 +5,7 @@
         template="/uii/templatePG/templatePG.html"
         xmlns:composite="http://xmlns.jcp.org/jsf/composite"
         xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
 >
 
     <composite:interface>
@@ -160,27 +161,27 @@
             <div class="box__actions">
 
                 <!-- add new record -->
-                <!--                <button jsf:id="new_record" jsf:action="#{vocabularyBean.addRecord}"-->
-                <!--                        class="btn btn-primary-400 me-auto"-->
-                <!--                        title="#{msgs.vocabularyManager_addRecord}">-->
-                <!--                    <i aria-hidden="true" class="fa fa-plus margin-right-5"/>-->
-                <!--                    <span>-->
-                <!--                          <h:outputText value="#{msgs.vocabularyManager_addRecord}"/>-->
-                <!--                      </span>-->
-                <!--                </button>-->
+                <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty()}"
+                        class="btn btn-primary-400 me-auto"
+                        title="#{msgs.vocabularyManager_addRecord}">
+                    <i aria-hidden="true" class="fa fa-plus margin-right-5"/>
+                    <span>
+                        <h:outputText value="#{msgs.vocabularyManager_addRecord}"/>
+                    </span>
+                </button>
 
                 <intranda:paginator id="record" paginator="#{vocabularyRecordsBean.paginator}"/>
             </div> <!-- /box__actions -->
 
             <!-- Cancel (go back to vocab overview)-->
-            <!--            <button-->
-            <!--                    class="btn btn-blank mt-4"-->
-            <!--                    jsf:id="abbrechen"-->
-            <!--                    jsf:type="cancel"-->
-            <!--                    jsf:action="#{vocabularyBean.cancelRecordEdition}"-->
-            <!--                    jsf:immediate="true">-->
-            <!--                <h:outputText value="#{msgs.vocabularyManager_backToVocabularies}"/>-->
-            <!--            </button>-->
+            <button
+                    class="btn btn-blank mt-4"
+                    jsf:id="abbrechen"
+                    jsf:type="cancel"
+                    jsf:action="vocabulary_overview"
+                    jsf:immediate="true">
+                <h:outputText value="#{msgs.vocabularyManager_backToVocabularies}"/>
+            </button>
         </intranda:box>
     </composite:implementation>
 </ui:composition>
