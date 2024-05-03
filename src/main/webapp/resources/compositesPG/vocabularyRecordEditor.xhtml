@@ -7,6 +7,7 @@
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:c="http://java.sun.com/jsp/jstl/core"
 >
 
     <composite:interface>
@@ -142,46 +143,46 @@
             <div class="box__actions">
 
                 <!-- Delete -->
-                <!--                                            <c:if test="#{vocabularyBeanLEGACY.currentVocabRecord.id != null}">-->
-                <!--                                                <a-->
-                <!--                                                        id="delete"-->
-                <!--                                                        href="#"-->
-                <!--                                                        class="btn btn-hot me-auto"-->
-                <!--                                                        data-bs-toggle="modal"-->
-                <!--                                                        data-bs-target="#deleteModal">-->
-                <!--                                                    <i class="fa fa-trash-o" title="#{msgs.vocabularyManager_deleteRecord}"/>-->
-                <!--                                                    <span>-->
-                <!--                                                        <h:outputText value="#{msgs.loeschen}"/>-->
-                <!--                                                      </span>-->
-                <!--                                                </a>-->
+                <c:if test="#{vocabularyRecordsBean.currentRecord.id != null}">
+                    <a
+                            id="delete"
+                            href="#"
+                            class="btn btn-hot me-auto"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                        <i class="fa fa-trash-o" title="#{msgs.vocabularyManager_deleteRecord}"/>
+                        <span>
+                            <h:outputText value="#{msgs.loeschen}"/>
+                        </span>
+                    </a>
 
-                <!--                                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"-->
-                <!--                                     aria-labelledby="myModalLabel">-->
-                <!--                                    <div class="modal-dialog" role="document">-->
-                <!--                                        <div class="modal-content">-->
-                <!--                                            <div class="modal-header bg-primary-400 text-white">-->
-                <!--                                                <h4 class="modal-title" id="myModalLabel">-->
-                <!--                                                    <h:outputText value="#{msgs.loeschen}"/>-->
-                <!--                                                </h4>-->
-                <!--                                            </div>-->
-                <!--                                            <div class="modal-body">-->
-                <!--                                                <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>-->
-                <!--                                            </div>-->
-                <!--                                            <div class="modal-footer">-->
-                <!--                                                <button type="button" class="btn btn-blank" data-bs-dismiss="modal"-->
-                <!--                                                        aria-hidden="true">#{msgs.abbrechen}</button>-->
-                <!--                                                <button jsf:id="confirmDelete" class="btn btn-hot"-->
-                <!--                                                        jsf:action="#{vocabularyBeanLEGACY.deleteRecord}">-->
-                <!--                                                    <span class="fa fa-trash-o"/>-->
-                <!--                                                    <span>-->
-                <!--                                                    <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>-->
-                <!--                                                  </span>-->
-                <!--                                                </button>-->
-                <!--                                            </div>-->
-                <!--                                        </div>-->
-                <!--                                    </div>-->
-                <!--                                </div>-->
-                <!--                            </c:if>-->
+                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary-400 text-white">
+                                    <h4 class="modal-title" id="myModalLabel">
+                                        <h:outputText value="#{msgs.loeschen}"/>
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-blank" data-bs-dismiss="modal"
+                                            aria-hidden="true">#{msgs.abbrechen}</button>
+                                    <button jsf:id="confirmDelete" class="btn btn-hot"
+                                            jsf:action="#{vocabularyRecordsBean.deleteRecord}">
+                                        <span class="fa fa-trash-o"/>
+                                        <span>
+                                            <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
 
                 <!--                            &lt;!&ndash; Save &ndash;&gt;-->
                 <!--                            <f:event listener="#{vocabularyBeanLEGACY.resetValidationResults}" type="preRenderView"/>-->

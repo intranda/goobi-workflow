@@ -110,6 +110,16 @@ public class VocabularyRecordsBean implements Serializable {
         prepareEmptyFieldsForEditing(record);
     }
 
+    public void deleteRecord() {
+        try {
+            api.vocabularyRecords().delete(currentRecord);
+            paginator.reload();
+            loadFirstRecord();
+        } catch (APIException e) {
+            Helper.setFehlerMeldung(e);
+        }
+    }
+
     public void saveRecord() {
         // TODO: Remove this verbose test
         System.err.println(currentRecord);
