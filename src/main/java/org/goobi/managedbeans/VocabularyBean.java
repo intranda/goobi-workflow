@@ -27,6 +27,7 @@ package org.goobi.managedbeans;
 
 import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.Vocabulary;
+import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
@@ -52,14 +53,19 @@ public class VocabularyBean implements Serializable {
     private transient Paginator<Vocabulary> paginator;
 
     public String load() {
-        paginator = new HATEOASPaginator<>(
-                VocabularyPageResult.class,
-                api.vocabularies().list(
-                        Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
-                        Optional.empty()
-                ),
-                null
-        );
-        return RETURN_PAGE_OVERVIEW;
+        try {
+            paginator = new HATEOASPaginator<>(
+                    VocabularyPageResult.class,
+                    api.vocabularies().list(
+                            Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
+                            Optional.empty()
+                    ),
+                    null
+            );
+            return RETURN_PAGE_OVERVIEW;
+        } catch (APIException e) {
+            Helper.setFehlerMeldung(e);
+            return "index";
+        }
     }
 }

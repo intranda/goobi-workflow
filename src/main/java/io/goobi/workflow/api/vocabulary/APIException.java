@@ -10,7 +10,7 @@ public class APIException extends RuntimeException {
     private final String reason;
 
     public APIException(String url, String method, int statusCode, String reason) {
-        super("API call was not successful with status code [" + statusCode + "]: " + method + " -> " + url + ", Reason:\n" + reason);
+        super("API call was not successful" + (statusCode >= 0 ? " with status code [" + statusCode + "]" : "") + ": " + method + " -> " + url + ", Reason:\n" + reason);
         this.url = url;
         this.method = method;
         this.statusCode = statusCode;
