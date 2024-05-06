@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 public class JSFVocabularyRecord extends VocabularyRecord {
     private VocabularySchema schema;
     private Map<Long, FieldDefinition> fieldDefinitions;
+
+    @Getter
+    private String mainValue;
     @Getter
     private List<String> titleValues;
     @Setter
@@ -48,6 +51,10 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
                 .map(this::getFieldValue)
                 .collect(Collectors.toList());
+        this.mainValue = schema.getDefinitions().stream()
+                .filter(d -> Boolean.TRUE.equals(d.getMainEntry()))
+                .map(this::getFieldValue)
+                .findAny().orElseThrow(() -> new RuntimeException("Record has no main value defined"));
     }
 
 //    private List<JSFFieldInstance> transform(FieldInstance field) {

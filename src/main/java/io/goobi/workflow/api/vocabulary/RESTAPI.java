@@ -5,6 +5,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RESTAPI {
     private final Client client = ClientBuilder.newClient();
@@ -16,8 +18,16 @@ public class RESTAPI {
 
     private String generateUrl(String endpoint, Object... parameters) {
         String url = baseUrl + endpoint;
+        List<String> queryParams = new ArrayList<>();
         for (int i = 0; i < parameters.length; i++) {
-            url = url.replace("{{" + i + "}}", parameters[i].toString());
+            if (url.contains("{{" + i + "}}")) {
+                url = url.replace("{{" + i + "}}", parameters[i].toString());
+            } else {
+                queryParams.add(parameters[i].toString());
+            }
+        }
+        if (!queryParams.isEmpty()) {
+            url = url + "?" + String.join("&", queryParams);
         }
         return url;
     }

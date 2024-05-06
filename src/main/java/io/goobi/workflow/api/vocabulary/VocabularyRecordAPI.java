@@ -41,6 +41,10 @@ public class VocabularyRecordAPI {
         return restApi.get(INSTANCE_ENDPOINT, VocabularyRecord.class, id);
     }
 
+    public VocabularyRecordPageResult search(long vocabularyId, String query) {
+        return restApi.get(IN_VOCABULARY_SEARCH_ENDPOINT, VocabularyRecordPageResult.class, vocabularyId, "query=" + query);
+    }
+
     public VocabularyRecord create(VocabularyRecord vocabularyRecord) {
         long vocabularyId = vocabularyRecord.getVocabularyId();
         vocabularyRecord.setVocabularyId(null);

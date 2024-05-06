@@ -5,7 +5,7 @@ import io.goobi.vocabulary.exchange.Identifiable;
 import java.util.Optional;
 
 public abstract class CRUDAPI<InstanceType extends Identifiable, PageResultType> {
-    private final RESTAPI restApi;
+    protected final RESTAPI restApi;
     private final Class<InstanceType> instanceTypeClass;
     private final Class<PageResultType> pageResultTypeClass;
     private final String commonEndpoint;
