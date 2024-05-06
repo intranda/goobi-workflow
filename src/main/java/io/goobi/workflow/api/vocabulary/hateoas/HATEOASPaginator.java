@@ -8,6 +8,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +24,16 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
 
     private final Client client = ClientBuilder.newClient();
     private final Optional<Consumer<T>> consumeCallback;
+    private final Optional<Comparator<T>> comparator;
 
     private Class<PageT> pageClass;
     private PageT currentPage;
 
-    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Consumer<T> consumeCallback) {
+    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Consumer<T> consumeCallback, Comparator<T> comparator) {
         this.pageClass = pageClass;
         this.currentPage = initialPage;
         this.consumeCallback = Optional.ofNullable(consumeCallback);
+        this.comparator = Optional.ofNullable(comparator);
     }
 
     private void request(String url) {
@@ -48,6 +51,7 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
             }
             currentPage = response.readEntity(pageClass);
             this.consumeCallback.ifPresent(callback -> currentPage.getContent().forEach(callback));
+            this.comparator.ifPresent(tComparator -> currentPage.getContent().sort(tComparator));
         }
     }
 
@@ -80,6 +84,12 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
     @Override
     public void reload() {
         request(currentPage.get_links().get("self").getHref());
+    }
+
+    @Override
+    public void postLoad(T item, int index) {
+        currentPage.getContent().add(index, item);
+        comparator.ifPresent(tComparator -> currentPage.getContent().sort(tComparator));
     }
 
     @Override

@@ -37,6 +37,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Optional;
 
 @Named
@@ -60,7 +61,8 @@ public class VocabularyBean implements Serializable {
                             Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
                             Optional.empty()
                     ),
-                    null
+                    null,
+                    Comparator.comparing(Vocabulary::getId)
             );
             return RETURN_PAGE_OVERVIEW;
         } catch (APIException e) {

@@ -23,6 +23,15 @@ public class JSFVocabularyRecord extends VocabularyRecord {
     private String language;
     @Getter
     private List<JSFFieldInstance> jsfFields;
+    @Getter
+    @Setter
+    private boolean expanded;
+    @Getter
+    @Setter
+    private boolean shown;
+    @Getter
+    @Setter
+    private int level;
 
     public void load(VocabularySchema schema) {
         this.schema = schema;

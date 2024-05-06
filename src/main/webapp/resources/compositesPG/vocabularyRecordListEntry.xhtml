@@ -15,7 +15,19 @@
     </composite:interface>
 
     <composite:implementation>
-        <tr>
+        <tr class="level-#{cc.attrs.record.level}">
+            <td class="level-#{cc.attrs.record.level}">
+                <h:commandLink
+                        rendered="#{cc.attrs.record.children.size() > 0 and cc.attrs.record.expanded == false}"
+                        action="#{vocabularyRecordsBean.expandRecord(cc.attrs.record)}">
+                    <i class="fa fa-caret-right"/>
+                </h:commandLink>
+                <h:commandLink
+                        rendered="#{cc.attrs.record.children.size() > 0 and cc.attrs.record.expanded == true}"
+                        action="#{vocabularyRecordsBean.collapseRecord(cc.attrs.record)}">
+                    <i class="fa fa-caret-down"/>
+                </h:commandLink>
+            </td>
             <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}">
                 <td class="tableColumnOverflow maxWidth150">
                     <h:outputText value="#{titleValue}"/>

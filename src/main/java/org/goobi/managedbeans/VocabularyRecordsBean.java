@@ -89,8 +89,8 @@ public class VocabularyRecordsBean implements Serializable {
     public String load(Vocabulary vocabulary) {
         this.vocabulary = vocabulary;
 
-        loadPaginator();
         loadSchema();
+        loadPaginator();
         loadFirstRecord();
 
         return RETURN_PAGE_OVERVIEW;
@@ -121,8 +121,6 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     public void saveRecord() {
-        // TODO: Remove this verbose test
-        System.err.println(currentRecord);
         // TODO: Maybe replace current record
         try {
             VocabularyRecord newRecord;
@@ -138,6 +136,52 @@ public class VocabularyRecordsBean implements Serializable {
         } catch (APIException e) {
             Helper.setFehlerMeldung(e);
         }
+    }
+
+    public void expandRecord(JSFVocabularyRecord record) {
+        int parentIndex = paginator.getItems().indexOf(record);
+        int childIndexShift = 1;
+        for (long childId : record.getChildren()) {
+            int finalChildIndexShift = childIndexShift;
+            JSFVocabularyRecord child = paginator.getItems().stream()
+                    .filter(r -> r.getId() == childId)
+                    .findFirst()
+                    .orElseGet(() -> loadChild(childId, record.getLevel() + 1, parentIndex + finalChildIndexShift));
+            childIndexShift += 1;
+            child.setShown(true);
+        }
+        record.setExpanded(true);
+    }
+
+    private JSFVocabularyRecord loadChild(long childId, int level, int index) {
+        JSFVocabularyRecord newChild = transform(api.vocabularyRecords().get(childId));
+        newChild.load(schema);
+        newChild.setLanguage(language);
+        newChild.setLevel(level);
+        paginator.postLoad(newChild, index);
+        return newChild;
+    }
+
+    public void collapseRecord(JSFVocabularyRecord record) {
+        paginator.getItems().stream()
+                .filter(c -> record.getChildren().contains(c.getId()))
+                .forEach(c -> {
+                    c.setShown(false);
+                    if (c.getChildren() != null) {
+                        collapseRecord(c);
+                    }
+                });
+        record.setExpanded(false);
+    }
+
+    private JSFVocabularyRecord transform(VocabularyRecord record) {
+        JSFVocabularyRecord result = new JSFVocabularyRecord();
+        result.setId(record.getId());
+        result.setVocabularyId(record.getVocabularyId());
+        result.setFields(record.getFields());
+        result.setParentId(record.getParentId());
+        result.setChildren(record.getChildren());
+        return result;
     }
 
     public FieldDefinition getDefinition(FieldInstance field) {
@@ -178,13 +222,19 @@ public class VocabularyRecordsBean implements Serializable {
                         Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
                         Optional.empty()
                 ),
-                this::loadRecord
+                this::loadRecord,
+//                new JSFVocabularyRecordComparator()
+                null
         );
+        // Initial record loading, as the initial page does not use the paginators callback
+        this.paginator.getItems().forEach(this::loadRecord);
+//        this.paginator.getItems().sort(new JSFVocabularyRecordComparator());
     }
 
     private void loadRecord(JSFVocabularyRecord record) {
         record.load(schema);
         record.setLanguage(language);
+        record.setShown(true);
     }
 
     private void prepareEmptyFieldsForEditing(JSFVocabularyRecord record) {
@@ -257,6 +307,8 @@ public class VocabularyRecordsBean implements Serializable {
 
     private void loadFirstRecord() {
         // TODO: Fix if empty
-        this.currentRecord = this.paginator.getItems().get(0);
+        if (!this.paginator.getItems().isEmpty()) {
+            this.currentRecord = this.paginator.getItems().get(0);
+        }
     }
 }

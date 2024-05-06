@@ -7,6 +7,92 @@
         xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
 >
+    <style>
+        .table tr.level-0 td {
+            margin-left: 0;
+        }
+
+        .table tr.level-1, .table td.level-1 {
+            margin-left: 20px;
+        }
+
+        .table tr.level-1 td {
+            padding-left: 35px;
+        }
+
+        .table tr.level-2, .table td.level-2 {
+            padding-left: 20px;
+        }
+
+        .table tr.level-2 td {
+            padding-left: 45px;
+        }
+
+        .table tr.level-3, .table td.level-3 {
+            padding-left: 30px;
+        }
+
+        .table tr.level-3 td {
+            padding-left: 60px;
+        }
+
+        .table tr.level-4, .table td.level-4 {
+            padding-left: 40px;
+        }
+
+        .table tr.level-4 td {
+            padding-left: 75px;
+        }
+
+        .table tr.level-5, .table td.level-5 {
+            padding-left: 50px;
+        }
+
+        .table tr.level-5 td {
+            padding-left: 90px;
+        }
+
+        .table tr.level-6, .table td.level-6 {
+            padding-left: 60px;
+        }
+
+        .table tr.level-6 td {
+            padding-left: 105px
+        }
+
+        .table tr.level-7, .table td.level-7 {
+            padding-left: 70px;
+        }
+
+        .table tr.level-7 td {
+            padding-left: 120px
+        }
+
+        .table tr.level-8, .table td.level-8 {
+            padding-left: 80px;
+        }
+
+        .table tr.level-8 td {
+            padding-left: 135px
+        }
+
+        .table tr.level-9, .table td.level-9 {
+            padding-left: 90px;
+        }
+
+        .table tr.level-9 td {
+            padding-left: 150px
+        }
+
+        .table tr.level-10, .table td.level-10 {
+            padding-left: 100px;
+        }
+
+        .table tr.level-10 td {
+            padding-left: 165px
+        }
+
+    </style>
 
     <composite:interface>
         <composite:attribute
@@ -119,7 +205,7 @@
 
                         <thead>
                         <tr role="row">
-
+                            <th class="gw-table" scope="col" role="columnheader"/>
                             <ui:repeat var="definition" value="#{vocabularyRecordsBean.titleFields}">
                                 <th scope="col" role="columnheader">
                                     <!--                                    <button-->
@@ -148,9 +234,11 @@
                         </tr>
                         </thead>
 
-                        <tbody>
+                        <tbody class="table">
                         <ui:repeat varStatus="status" var="record" value="#{vocabularyRecordsBean.paginator.items}">
-                            <intranda:vocabularyRecordListEntry record="#{record}"/>
+                            <ui:fragment rendered="#{record.shown}">
+                                <intranda:vocabularyRecordListEntry record="#{record}"/>
+                            </ui:fragment>
                         </ui:repeat>
                         </tbody>
                     </table>
