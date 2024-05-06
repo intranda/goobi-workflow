@@ -42,15 +42,20 @@ public class VocabularyRecordAPI {
     }
 
     public VocabularyRecord create(VocabularyRecord vocabularyRecord) {
+        long vocabularyId = vocabularyRecord.getVocabularyId();
+        vocabularyRecord.setVocabularyId(null);
+        VocabularyRecord newRecord;
         if (vocabularyRecord.getParentId() == null) {
-            long vocabularyId = vocabularyRecord.getVocabularyId();
-            vocabularyRecord.setVocabularyId(null);
-            VocabularyRecord newRecord = restApi.post(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyId);
-            vocabularyRecord.setId(vocabularyId);
-            return newRecord;
+            newRecord = restApi.post(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyId);
+
         } else {
-            return restApi.post(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyRecord.getParentId());
+            long parentId = vocabularyRecord.getParentId();
+            vocabularyRecord.setParentId(null);
+            newRecord = restApi.post(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, parentId);
+            vocabularyRecord.setParentId(parentId);
         }
+        vocabularyRecord.setId(vocabularyId);
+        return newRecord;
     }
 
     public VocabularyRecord change(VocabularyRecord vocabularyRecord) {

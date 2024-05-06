@@ -34,22 +34,22 @@
                 </td>
             </ui:repeat>
             <td>
-
+                <!-- EDIT -->
                 <button
                         jsf:id="switch"
                         title="#{msgs.bearbeiten}"
                         class="btn #{vocabularyRecordsBean.currentRecord != cc.attrs.record ? 'btn-blank' : 'btn-primary-400'}"
                         jsf:action="#{vocabularyRecordsBean.edit(cc.attrs.record)}"
                         data-bs-toggle="tooltip">
-                    <!-- These belong in the button -->
-                    <!--                        class="btn #{vocabularyRecordListBean.currentVocabRecord != cc.attrs.record ? 'btn-blank' : 'btn-primary-400'}"-->
-                    <!--                        jsf:action="#{vocabularyBean.Reload}"-->
                     <i class="font-size-s fa fa-pencil"/>
-                    <!--                    <f:setPropertyActionListener-->
-                    <!--                            value="#{cc.attrs.record}"-->
-                    <!--                            target="#{vocabularyBean.currentVocabRecord}"/>-->
                     <!--                    <f:ajax execute="@this" render="@form"/>-->
                     <!--                    <f:passThroughAttribute name="aria-label" value="#{cc.attrs.record.id}"/>-->
+                </button>
+                <!-- ADD CHILD -->
+                <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty(cc.attrs.record.id)}"
+                        class="btn btn-primary-400 margin-left-3"
+                        title="#{msgs.vocabularyManager_addRecord}">
+                    <i aria-hidden="true" class="fa fa-plus"/>
                 </button>
             </td>
         </tr>

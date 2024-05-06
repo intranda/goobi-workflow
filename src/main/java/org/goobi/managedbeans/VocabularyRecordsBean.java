@@ -101,9 +101,10 @@ public class VocabularyRecordsBean implements Serializable {
         prepareEmptyFieldsForEditing(record);
     }
 
-    public void createEmpty() {
+    public void createEmpty(Long parent) {
         JSFVocabularyRecord record = new JSFVocabularyRecord();
         record.setVocabularyId(vocabulary.getId());
+        record.setParentId(parent);
         record.setFields(new HashSet<>());
         loadRecord(record);
         this.currentRecord = record;
