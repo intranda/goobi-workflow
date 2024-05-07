@@ -155,6 +155,10 @@ public class VocabularyRecordsBean implements Serializable {
         record.setExpanded(true);
     }
 
+    public boolean isHierarchical() {
+        return Boolean.TRUE.equals(this.schema.getHierarchicalRecords());
+    }
+
     private JSFVocabularyRecord loadChild(long childId, int level, int index) {
         JSFVocabularyRecord newChild = transform(api.vocabularyRecords().get(childId));
         newChild.load(schema);
