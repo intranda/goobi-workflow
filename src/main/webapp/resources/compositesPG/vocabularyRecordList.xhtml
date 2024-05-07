@@ -185,7 +185,7 @@
                                         jsf:id="FilterAlle2"
                                         jsf:forceId="true"
                                         class="btn btn-blank"
-                                        jsf:action="#{vocabularyRecordsBean.paginator.reload()}">
+                                        jsf:action="#{vocabularyRecordsBean.reload()}">
                                     <f:ajax render="@form" execute="@form"></f:ajax>
                                     #{msgs.search}
                                 </button>
@@ -195,7 +195,7 @@
                                     id="FilterAlle"
                                     forceId="true"
                                     style="display: none;"
-                                    action="#{vocabularyRecordsBean.paginator.reload()}">
+                                    action="#{vocabularyRecordsBean.reload()}">
                                 <f:ajax render="@form" execute="@form"></f:ajax>
                             </x:commandButton>
                         </div> <!-- /__search-bar -->

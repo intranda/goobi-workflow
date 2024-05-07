@@ -96,6 +96,11 @@ public class VocabularyRecordsBean implements Serializable {
         return RETURN_PAGE_OVERVIEW;
     }
 
+    public void reload() {
+        paginator.reload();
+        loadFirstRecord();
+    }
+
     public void edit(JSFVocabularyRecord record) {
         this.currentRecord = record;
         record.setShown(true);
