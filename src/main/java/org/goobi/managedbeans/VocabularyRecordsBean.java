@@ -332,7 +332,7 @@ public class VocabularyRecordsBean implements Serializable {
     private void loadFirstRecord() {
         // TODO: Fix if empty
         if (!this.paginator.getItems().isEmpty()) {
-            this.currentRecord = this.paginator.getItems().get(0);
+            edit(this.paginator.getItems().get(0));
         }
     }
 }
