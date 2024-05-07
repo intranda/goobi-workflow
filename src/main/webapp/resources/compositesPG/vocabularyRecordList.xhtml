@@ -6,6 +6,9 @@
         xmlns:composite="http://xmlns.jcp.org/jsf/composite"
         xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:x="http://myfaces.apache.org/tomahawk"
 >
     <style>
         .table tr.level-0 td {
@@ -153,49 +156,49 @@
 
                     <div class="gw-table__search__length">
                         <!-- TODO: Calculate the filtered result size -->
-                        <h:outputText value="#{msgs.treffer}: #{vocabularyRecordsBean.paginator.totalResults}"/>
+                        <h:outputText
+                                value="#{msgs.treffer}: #{vocabularyRecordsBean.paginator.totalResults}"
+                        />
                         <!--                        <h:outputText-->
-                        <!--                                rendered="#{vocabularyBean.currentVocabularyLEGACY.searchValue != null and vocabularyBean.currentVocabularyLEGACY.searchValue ne ''}"-->
-                        <!--                                value=" #{msgs.von} #{vocabularyBean.currentVocabularyLEGACY.records.size()}"/>-->
+                        <!--                                rendered="#{vocabularyRecordsBean.paginator.searchParameter != null or vocabularyRecordsBean.paginator.searchParameter ne ''}"-->
+                        <!--                                value=" #{msgs.von} #{vocabularyBean.paginator.totalResults}"/>-->
                     </div>
 
                     <div class="gw-table__filters">
                         <!-- Search box -->
-                        <!--                        <div class="gw-table__filters__search-bar">-->
-
-                        <!--                            <div class="input-group input-group">-->
-
-                        <!--                          <span class="input-group-text">-->
-                        <!--                              <span class="fa fa-search"/>-->
-                        <!--                          </span>-->
-                        <!--                                <h:inputText-->
-                        <!--                                        id="searchField"-->
-                        <!--                                        pt:aria-label="search"-->
-                        <!--                                        styleClass="form-control searchfield"-->
-                        <!--                                        value="#{vocabularyRecordBean.searchValue}">-->
-                        <!--                                    <f:passThroughAttribute-->
-                        <!--                                            name="placeholder"-->
-                        <!--                                            value="#{msgs.search}"/>-->
-                        <!--                                </h:inputText>-->
-                        <!--                                <button-->
-                        <!--                                        type="button"-->
-                        <!--                                        jsf:id="FilterAlle2"-->
-                        <!--                                        jsf:forceId="true"-->
-                        <!--                                        class="btn btn-blank"-->
-                        <!--                                        jsf:action="#{vocabularyBean.currentVocabularyLEGACY.runFilter}">-->
-                        <!--                                    <f:ajax render="@form" execute="@form"></f:ajax>-->
-                        <!--                                    #{msgs.search}-->
-                        <!--                                </button>-->
-                        <!--                            </div>-->
-                        <!--                            <x:commandButton-->
-                        <!--                                    type="submit"-->
-                        <!--                                    id="FilterAlle"-->
-                        <!--                                    forceId="true"-->
-                        <!--                                    style="display: none;"-->
-                        <!--                                    action="#{vocabularyBean.currentVocabularyLEGACY.runFilter}">-->
-                        <!--                                <f:ajax render="@form" execute="@form"></f:ajax>-->
-                        <!--                            </x:commandButton>-->
-                        <!--                        </div> &lt;!&ndash; /__search-bar &ndash;&gt;-->
+                        <div class="gw-table__filters__search-bar">
+                            <div class="input-group input-group">
+                                <span class="input-group-text">
+                                    <span class="fa fa-search"/>
+                                </span>
+                                <h:inputText
+                                        id="searchField"
+                                        pt:aria-label="search"
+                                        styleClass="form-control searchfield"
+                                        value="#{vocabularyRecordsBean.paginator.searchParameter}">
+                                    <f:passThroughAttribute
+                                            name="placeholder"
+                                            value="#{msgs.search}"/>
+                                </h:inputText>
+                                <button
+                                        type="button"
+                                        jsf:id="FilterAlle2"
+                                        jsf:forceId="true"
+                                        class="btn btn-blank"
+                                        jsf:action="#{vocabularyRecordsBean.paginator.reload()}">
+                                    <f:ajax render="@form" execute="@form"></f:ajax>
+                                    #{msgs.search}
+                                </button>
+                            </div>
+                            <x:commandButton
+                                    type="submit"
+                                    id="FilterAlle"
+                                    forceId="true"
+                                    style="display: none;"
+                                    action="#{vocabularyRecordsBean.paginator.reload()}">
+                                <f:ajax render="@form" execute="@form"></f:ajax>
+                            </x:commandButton>
+                        </div> <!-- /__search-bar -->
                     </div> <!-- /__filters -->
                 </div> <!-- /__search -->
 

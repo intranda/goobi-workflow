@@ -21,10 +21,12 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
     public static final String NAVIGATE_NEXT = "next";
     public static final String NAVIGATE_FIRST = "first";
     public static final String NAVIGATE_LAST = "last";
+    public static final String SEARCH_ENDPOINT = "/search";
 
     private final Client client = ClientBuilder.newClient();
     private final Optional<Consumer<T>> consumeCallback;
     private final Optional<Comparator<T>> comparator;
+    private Optional<String> searchParameter = Optional.empty();
 
     private Class<PageT> pageClass;
     private PageT currentPage;
@@ -36,12 +38,23 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
         this.comparator = Optional.ofNullable(comparator);
     }
 
+    public void setSearchParameter(String searchParameter) {
+        if (searchParameter.isBlank()) {
+            searchParameter = null;
+        }
+        this.searchParameter = Optional.ofNullable(searchParameter);
+    }
+
+    public String getSearchParameter() {
+        return searchParameter.orElse(null);
+    }
+
     private void request(String url) {
         request(url, Optional.empty(), Optional.empty());
     }
 
     private void request(String url, Optional<Long> pageSize, Optional<Long> pageNumber) {
-        url = updatePageAndSizeUrlParameters(url, pageSize, pageNumber);
+        url = updatePageAndSizeUrlParameters(url, pageSize, pageNumber, searchParameter);
         try (Response response = client
                 .target(url)
                 .request(MediaType.APPLICATION_JSON)
@@ -55,29 +68,35 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
         }
     }
 
-    private static String updatePageAndSizeUrlParameters(String url, Optional<Long> pageSize, Optional<Long> pageNumber) {
-        if (pageSize.isPresent() || pageNumber.isPresent()) {
-            Map<String, String> parameters = new HashMap<>();
-            int questionMarkIndex = url.indexOf('?');
-            if (questionMarkIndex > 0) {
-                String[] parts = url.substring(questionMarkIndex + 1).split("&");
-                for (String part : parts) {
-                    String[] keyValue = part.split("=");
-                    if (keyValue.length == 2) {
-                        parameters.put(keyValue[0], keyValue[1]);
-                    }
+    private static String updatePageAndSizeUrlParameters(String url, Optional<Long> pageSize, Optional<Long> pageNumber, Optional<String> searchParameter) {
+        Map<String, String> parameters = new HashMap<>();
+        int questionMarkIndex = url.indexOf('?');
+        if (questionMarkIndex > 0) {
+            String[] parts = url.substring(questionMarkIndex + 1).split("&");
+            for (String part : parts) {
+                String[] keyValue = part.split("=");
+                if (keyValue.length == 2) {
+                    parameters.put(keyValue[0], keyValue[1]);
                 }
             }
-            pageSize.ifPresent(value -> parameters.put("size", String.valueOf(value)));
-            pageNumber.ifPresent(value -> parameters.put("page", String.valueOf(value)));
-            if (questionMarkIndex < 0) {
-                url += "?";
-                questionMarkIndex = url.length() - 1;
-            }
-            url = url.substring(0, questionMarkIndex + 1) + parameters.entrySet().stream()
-                    .map(e -> e.getKey() + "=" + e.getValue())
-                    .collect(Collectors.joining("&"));
         }
+        searchParameter.ifPresent(s -> parameters.put("query", s));
+        pageSize.ifPresent(value -> parameters.put("size", String.valueOf(value)));
+        pageNumber.ifPresent(value -> parameters.put("page", String.valueOf(value)));
+        if (questionMarkIndex < 0) {
+            url += "?";
+            questionMarkIndex = url.length() - 1;
+        }
+        if (searchParameter.isPresent() && !url.substring(0, questionMarkIndex).endsWith(SEARCH_ENDPOINT)) {
+            url = url.substring(0, questionMarkIndex) + SEARCH_ENDPOINT + "?";
+            questionMarkIndex = url.length() - 1;
+        } else if (searchParameter.isEmpty() && url.substring(0, questionMarkIndex).endsWith(SEARCH_ENDPOINT)) {
+            url = url.substring(0, questionMarkIndex).replace(SEARCH_ENDPOINT, "") + "?";
+            questionMarkIndex = url.length() - 1;
+        }
+        url = url.substring(0, questionMarkIndex + 1) + parameters.entrySet().stream()
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .collect(Collectors.joining("&"));
         return url;
     }
 

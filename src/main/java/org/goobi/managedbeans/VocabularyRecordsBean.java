@@ -65,7 +65,7 @@ public class VocabularyRecordsBean implements Serializable {
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     @Getter
-    private transient Paginator<JSFVocabularyRecord> paginator;
+    private transient HATEOASPaginator<JSFVocabularyRecord, VocabularyRecordPageResult> paginator;
 
     @Getter
     private transient Vocabulary vocabulary;

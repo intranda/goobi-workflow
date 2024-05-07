@@ -168,7 +168,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     // search in vocabulary
     private VocabularyAPIManager vocabularyAPI = VocabularyAPIManager.getInstance();
     private List<SelectItem> vocabularySearchFields;
-    private String currentVocabularySearchField;
+    private long currentVocabularySearchField;
     private String vocabularySearchQuery;
     private String vocabularyName;
     private List<JSFVocabularyRecord> records;
@@ -256,11 +256,16 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             searchRequest.newGroup();
         } else if (metadataDisplaytype == DisplayType.vocabularySearch) {
             vocabularyName = myValues.getItemList().get(0).getSource();
-            String fields = myValues.getItemList().get(0).getField();
-
-            vocabularySearchFields = Stream.of(fields.split(";"))
+            Set<String> fieldsNames = Stream.of(myValues.getItemList().get(0).getField().split(";"))
                     .map(String::trim)
-                    .map(f -> new SelectItem(f))
+                    .collect(Collectors.toSet());
+
+            io.goobi.vocabulary.exchange.Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyName);
+            VocabularySchema vocabularySchema = vocabularyAPI.vocabularySchemas().get(currentVocabulary.getSchemaId());
+            
+            vocabularySearchFields = vocabularySchema.getDefinitions().stream()
+                    .filter(d -> fieldsNames.contains(d.getName()))
+                    .map(d -> new SelectItem(d.getId(), d.getName()))
                     .collect(Collectors.toList());
         } else if (metadataDisplaytype == DisplayType.vocabularyList) {
 
