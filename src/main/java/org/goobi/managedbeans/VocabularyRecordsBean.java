@@ -333,6 +333,8 @@ public class VocabularyRecordsBean implements Serializable {
         // TODO: Fix if empty
         if (!this.paginator.getItems().isEmpty()) {
             edit(this.paginator.getItems().get(0));
+        } else {
+            createEmpty(null);
         }
     }
 }
