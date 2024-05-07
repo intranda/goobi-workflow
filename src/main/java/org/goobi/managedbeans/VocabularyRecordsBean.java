@@ -125,6 +125,7 @@ public class VocabularyRecordsBean implements Serializable {
         // TODO: Maybe replace current record
         try {
             VocabularyRecord newRecord;
+            cleanUpRecord(currentRecord);
             if (currentRecord.getId() != null) {
                 newRecord = api.vocabularyRecords().change(currentRecord);
             } else {
@@ -265,6 +266,28 @@ public class VocabularyRecordsBean implements Serializable {
             field.getValues().add(value);
             record.getFields().add(field);
         });
+    }
+
+    private void cleanUpRecord(JSFVocabularyRecord currentRecord) {
+        for (FieldInstance field : currentRecord.getFields()) {
+            for (FieldValue value : field.getValues()) {
+                value.getTranslations().removeIf(this::translationIsEmpty);
+            }
+            field.getValues().removeIf(this::valueIsEmpty);
+        }
+        currentRecord.getFields().removeIf(this::fieldIsEmpty);
+    }
+
+    private boolean translationIsEmpty(TranslationInstance translationInstance) {
+        return translationInstance.getValue().isEmpty();
+    }
+
+    private boolean valueIsEmpty(FieldValue fieldValue) {
+        return fieldValue.getTranslations().isEmpty();
+    }
+
+    private boolean fieldIsEmpty(FieldInstance fieldInstance) {
+        return fieldInstance.getValues().isEmpty();
     }
 
     private void loadSchema() {
