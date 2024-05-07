@@ -98,6 +98,8 @@ public class VocabularyRecordsBean implements Serializable {
 
     public void edit(JSFVocabularyRecord record) {
         this.currentRecord = record;
+        record.setShown(true);
+        expandParents(record);
         prepareEmptyFieldsForEditing(record);
     }
 
@@ -132,9 +134,15 @@ public class VocabularyRecordsBean implements Serializable {
                 newRecord = api.vocabularyRecords().create(currentRecord);
             }
             paginator.reload();
-            paginator.getItems().stream()
-                    .filter(r -> Objects.equals(r.getId(), newRecord.getId()))
-                    .findFirst().ifPresent(r -> currentRecord = r);
+            Optional<JSFVocabularyRecord> parent = findLoadedRecord(currentRecord.getParentId());
+            int newLevel = parent.map(record -> record.getLevel() + 1).orElse(0);
+            int newIndex = parent.map(record -> paginator.getItems().indexOf(record) + 1).orElseGet(() -> paginator.getItems().size());
+            loadChild(
+                    newRecord.getId(),
+                    newLevel,
+                    newIndex
+            );
+            findLoadedRecord(newRecord.getId()).ifPresent(this::edit);
         } catch (APIException e) {
             Helper.setFehlerMeldung(e);
         }
@@ -157,6 +165,25 @@ public class VocabularyRecordsBean implements Serializable {
 
     public boolean isHierarchical() {
         return Boolean.TRUE.equals(this.schema.getHierarchicalRecords());
+    }
+
+    private void expandParents(JSFVocabularyRecord record) {
+        if (record.getParentId() != null) {
+            findLoadedRecord(record.getParentId()).ifPresent(p -> {
+                p.setShown(true);
+                p.setExpanded(true);
+                expandParents(p);
+            });
+        }
+    }
+
+    private Optional<JSFVocabularyRecord> findLoadedRecord(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return paginator.getItems().stream()
+                .filter(r -> Objects.equals(r.getId(), id))
+                .findFirst();
     }
 
     private JSFVocabularyRecord loadChild(long childId, int level, int index) {
