@@ -31,6 +31,7 @@ import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
+import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabulary;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
@@ -51,7 +52,7 @@ public class VocabularyBean implements Serializable {
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     @Getter
-    private transient Paginator<Vocabulary> paginator;
+    private transient Paginator<JSFVocabulary> paginator;
 
     public String load() {
         try {
@@ -61,9 +62,10 @@ public class VocabularyBean implements Serializable {
                             Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
                             Optional.empty()
                     ),
-                    null,
+                    JSFVocabulary::load,
                     Comparator.comparing(Vocabulary::getId)
             );
+            paginator.getItems().forEach(JSFVocabulary::load);
             return RETURN_PAGE_OVERVIEW;
         } catch (APIException e) {
             Helper.setFehlerMeldung(e);

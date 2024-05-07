@@ -114,6 +114,22 @@
                                                         name="aria-label"
                                                         value="#{msgs.vocabularyManager_editVocabulary}"/>
                                             </button>
+
+                                            <ui:fragment
+                                                    rendered="#{item.skosExportPossible}">
+                                                <a
+                                                        href="#{item.rdfXmlExport()}"
+                                                        target="_blank"
+                                                        class="btn btn-primary-400 margin-left-3">
+                                                    <i aria-hidden="true" class="fa fa-file"/>
+                                                </a>
+                                                <a
+                                                        href="#{item.rdfTurtleExport()}"
+                                                        target="_blank"
+                                                        class="btn btn-primary-400 margin-left-3">
+                                                    <i aria-hidden="true" class="fa fa-file-archive-o"/>
+                                                </a>
+                                            </ui:fragment>
                                         </div>
 
                                     </x:column>
