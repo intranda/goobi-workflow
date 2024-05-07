@@ -38,7 +38,6 @@ import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.request.SearchRequest;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
-import org.goobi.production.cli.helper.StringPair;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.filter.Filters;
@@ -65,6 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -167,7 +167,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     // search in vocabulary
     private VocabularyAPIManager vocabularyAPI = VocabularyAPIManager.getInstance();
-    private List<StringPair> vocabularySearchFields;
+    private List<SelectItem> vocabularySearchFields;
+    private String currentVocabularySearchField;
+    private String vocabularySearchQuery;
     private String vocabularyName;
     private List<JSFVocabularyRecord> records;
     private String vocabularyUrl;
@@ -213,7 +215,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 //
         Vocabulary vocabulary = vocabularyAPI.vocabularies().findByName(this.vocabulary);
         VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocabulary.getSchemaId());
-        records = vocabularyAPI.vocabularyRecords().search(vocabulary.getId(), vocabularySearchFields.get(0).getOne() + ":" + vocabularySearchFields.get(0).getTwo()).getContent();
+        records = vocabularyAPI.vocabularyRecords().search(vocabulary.getId(), currentVocabularySearchField + ":" + vocabularySearchQuery).getContent();
         showNotHits = records == null || records.isEmpty();
         if (!showNotHits) {
             records.forEach(r -> r.load(schema));
@@ -256,13 +258,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             vocabularyName = myValues.getItemList().get(0).getSource();
             String fields = myValues.getItemList().get(0).getField();
 
-            String[] fieldNames = fields.split(";");
-            vocabularySearchFields = new ArrayList<>();
-            for (String fieldname : fieldNames) {
-                StringPair sp = new StringPair(fieldname.trim(), "");
-                vocabularySearchFields.add(sp);
-            }
-
+            vocabularySearchFields = Stream.of(fields.split(";"))
+                    .map(String::trim)
+                    .map(f -> new SelectItem(f))
+                    .collect(Collectors.toList());
         } else if (metadataDisplaytype == DisplayType.vocabularyList) {
 
             String vocabularyTitle = myValues.getItemList().get(0).getSource();
