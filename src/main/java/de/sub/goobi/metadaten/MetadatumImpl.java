@@ -213,7 +213,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 //
         Vocabulary vocabulary = vocabularyAPI.vocabularies().findByName(this.vocabulary);
         VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocabulary.getSchemaId());
-        records = vocabularyAPI.vocabularyRecords().search(vocabulary.getId(), vocabularySearchFields.get(0).getTwo()).getContent();
+        records = vocabularyAPI.vocabularyRecords().search(vocabulary.getId(), vocabularySearchFields.get(0).getOne() + ":" + vocabularySearchFields.get(0).getTwo()).getContent();
         showNotHits = records == null || records.isEmpty();
         if (!showNotHits) {
             records.forEach(r -> r.load(schema));
