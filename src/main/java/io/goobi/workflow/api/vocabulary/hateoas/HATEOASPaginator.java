@@ -27,6 +27,7 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
     private final Optional<Consumer<T>> consumeCallback;
     private final Optional<Comparator<T>> comparator;
     private Optional<String> searchParameter = Optional.empty();
+    private Optional<String> sortField = Optional.empty();
 
     private Class<PageT> pageClass;
     private PageT currentPage;
@@ -49,12 +50,23 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
         return searchParameter.orElse(null);
     }
 
+    public void setSortField(String sortField) {
+        if (sortField.isBlank()) {
+            sortField = null;
+        }
+        this.sortField = Optional.ofNullable(sortField);
+    }
+
+    public String getSortField() {
+        return sortField.orElse(null);
+    }
+
     private void request(String url) {
         request(url, Optional.empty(), Optional.empty());
     }
 
     private void request(String url, Optional<Long> pageSize, Optional<Long> pageNumber) {
-        url = updatePageAndSizeUrlParameters(url, pageSize, pageNumber, searchParameter);
+        url = updatePageAndSizeUrlParameters(url, pageSize, pageNumber, sortField, searchParameter);
         try (Response response = client
                 .target(url)
                 .request(MediaType.APPLICATION_JSON)
@@ -68,7 +80,7 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
         }
     }
 
-    private static String updatePageAndSizeUrlParameters(String url, Optional<Long> pageSize, Optional<Long> pageNumber, Optional<String> searchParameter) {
+    private static String updatePageAndSizeUrlParameters(String url, Optional<Long> pageSize, Optional<Long> pageNumber, Optional<String> sortField, Optional<String> searchParameter) {
         Map<String, String> parameters = new HashMap<>();
         int questionMarkIndex = url.indexOf('?');
         if (questionMarkIndex > 0) {
@@ -80,9 +92,10 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
                 }
             }
         }
-        searchParameter.ifPresent(s -> parameters.put("query", s));
         pageSize.ifPresent(value -> parameters.put("size", String.valueOf(value)));
         pageNumber.ifPresent(value -> parameters.put("page", String.valueOf(value)));
+        sortField.ifPresent(s -> parameters.put("sort", s));
+        searchParameter.ifPresent(s -> parameters.put("query", s));
         if (questionMarkIndex < 0) {
             url += "?";
             questionMarkIndex = url.length() - 1;

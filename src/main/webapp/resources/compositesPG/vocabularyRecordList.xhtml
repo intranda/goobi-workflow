@@ -211,22 +211,22 @@
                             <th class="gw-table" scope="col" role="columnheader"/>
                             <ui:repeat var="definition" value="#{vocabularyRecordsBean.titleFields}">
                                 <th scope="col" role="columnheader">
-                                    <!--                                    <button-->
-                                    <!--                                            jsf:id="changeOrderLabel"-->
-                                    <!--                                            class="button-link"-->
-                                    <!--                                            style="width: 100%; text-align: left;"-->
-                                    <!--                                            jsf:action="#{vocabularyBean.currentVocabularyLEGACY.changeOrder}"-->
-                                    <!--                                            aria-label="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}">-->
-                                    <h:outputText
-                                            value="#{definition.name}"/>
-                                    <!--                                            value="#{definition.name} #{definition.language != '' ? msgs[definition.language] : ''}"/>-->
+                                    <button
+                                            jsf:id="changeOrderLabel"
+                                            class="button-link"
+                                            style="width: 100%; text-align: left;"
+                                            jsf:action="#{vocabularyRecordsBean.reload()}"
+                                    >
+                                        <h:outputText
+                                                value="#{definition.name}"/>
+                                        <!--                                            value="#{definition.name} #{definition.language != '' ? msgs[definition.language] : ''}"/>-->
 
-                                    <!--                                        <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabularyLEGACY.sortfield==definition.idAsString.concat('Desc')?'fa-sort-desc':vocabularyBean.currentVocabularyLEGACY.sortfield==definition.idAsString.concat('Asc')?'fa-sort-asc':'fa-sort'}"></span>-->
-                                    <!--                                        <f:setPropertyActionListener-->
-                                    <!--                                                target="#{vocabularyBean.currentVocabularyLEGACY.sortfield}"-->
-                                    <!--                                                value="#{vocabularyBean.currentVocabularyLEGACY.sortfield==definition.idAsString.concat('Asc')?definition.idAsString.concat('Desc'):definition.idAsString.concat('Asc')}"/>-->
-                                    <!--                                        <f:ajax render="@form"/>-->
-                                    <!--                                    </button>-->
+                                        <span class="pull-right table-sort-icon fa #{vocabularyRecordsBean.paginator.sortField.endsWith('ASC')?'fa-sort-asc':vocabularyRecordsBean.paginator.sortField.endsWith('DESC')?'fa-sort-desc':'fa-sort'}"/>
+                                        <f:setPropertyActionListener
+                                                target="#{vocabularyRecordsBean.paginator.sortField}"
+                                                value="#{vocabularyRecordsBean.paginator.sortField.endsWith('ASC')?definition.id.toString().concat(',DESC'):definition.id.toString().concat(',ASC')}"/>
+                                        <f:ajax render="@form"/>
+                                    </button>
                                 </th>
 
                             </ui:repeat>
