@@ -15,44 +15,80 @@
     </composite:interface>
 
     <composite:implementation>
-        <tr class="level-#{cc.attrs.record.level}">
-            <td class="level-#{cc.attrs.record.level}">
-                <h:commandLink
-                        rendered="#{cc.attrs.record.children.size() > 0 and cc.attrs.record.expanded == false}"
-                        action="#{vocabularyRecordsBean.expandRecord(cc.attrs.record)}">
-                    <i class="fa fa-caret-right"/>
-                </h:commandLink>
-                <h:commandLink
-                        rendered="#{cc.attrs.record.children.size() > 0 and cc.attrs.record.expanded == true}"
-                        action="#{vocabularyRecordsBean.collapseRecord(cc.attrs.record)}">
-                    <i class="fa fa-caret-down"/>
-                </h:commandLink>
-            </td>
-            <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}">
-                <td class="tableColumnOverflow maxWidth150">
-                    <h:outputText value="#{titleValue}"/>
-                </td>
-            </ui:repeat>
-            <td>
-                <!-- EDIT -->
+        <tr role="row">
+            <td class="p-0">
                 <button
-                        jsf:id="switch"
-                        title="#{msgs.bearbeiten}"
-                        class="btn #{vocabularyRecordsBean.currentRecord != cc.attrs.record ? 'btn-blank' : 'btn-primary-400'}"
-                        jsf:action="#{vocabularyRecordsBean.edit(cc.attrs.record)}"
-                        data-bs-toggle="tooltip">
-                    <i class="font-size-s fa fa-pencil"/>
-                    <!--                    <f:ajax execute="@this" render="@form"/>-->
-                    <!--                    <f:passThroughAttribute name="aria-label" value="#{cc.attrs.record.id}"/>-->
+                    class="btn btn-outline treeView-item"
+                    style="--level: #{cc.attrs.record.level + 1}"
+                    rendered="#{cc.attrs.record.children.size() > 0 and cc.attrs.record.expanded == false}"
+                    jsf:action="#{vocabularyRecordsBean.expandRecord(cc.attrs.record)}">
+                    <div class="spacer" />
+                    <div class="toggle">
+                        <span class="fa fa-caret-right"/>
+                    </div>
+                    <div class="content">
+                        <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}">
+                            <h:outputText value="#{titleValue}"/>
+                        </ui:repeat>
+                    </div>
                 </button>
-                <!-- ADD CHILD -->
-                <ui:fragment rendered="#{vocabularyRecordsBean.isHierarchical() == true}">
-                    <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty(cc.attrs.record.id)}"
-                            class="btn btn-primary-400 margin-left-3"
-                            title="#{msgs.vocabularyManager_addRecord}">
-                        <i aria-hidden="true" class="fa fa-plus"/>
-                    </button>
+                <button
+                    class="btn btn-outline treeView-item"
+                    style="--level: #{cc.attrs.record.level + 1}"
+                    rendered="#{cc.attrs.record.children.size() > 0 and cc.attrs.record.expanded == true}"
+                    jsf:action="#{vocabularyRecordsBean.collapseRecord(cc.attrs.record)}">
+                    <div class="spacer" />
+                    <div class="toggle">
+                        <span class="fa fa-caret-down"/>
+                    </div>
+                    <div class="content">
+                        <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}">
+                            <h:outputText value="#{titleValue}"/>
+                        </ui:repeat>
+                    </div>
+                </button>
+                <ui:fragment rendered="#{cc.attrs.record.children.size() == null}">
+                    <button class="btn btn-outline bg-transparent border-0 opacity-100 text-black treeView-item" disabled="true"
+                    style="--level: #{cc.attrs.record.level + 1}">
+                    <div class="spacer" />
+                    <div class="toggle" />
+                    <div class="content">
+                        <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}">
+                            <h:outputText value="#{titleValue}"/>
+                        </ui:repeat>
+                    </div>
+                </button>
                 </ui:fragment>
+                <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}" offset="1">
+                    <td>
+                        <h:outputText value="#{titleValue}"/>
+                    </td>
+                </ui:repeat>
+
+            </td>
+            <td>
+                <div class="gw-table__actions__container">
+                    <!-- EDIT -->
+                    <button
+                            jsf:id="switch"
+                            title="#{msgs.bearbeiten}"
+                            class="btn #{vocabularyRecordsBean.currentRecord != cc.attrs.record ? 'btn-blank' : 'btn-primary'}"
+                            jsf:action="#{vocabularyRecordsBean.edit(cc.attrs.record)}"
+                            data-bs-toggle="tooltip">
+                        <span class="fa fa-pencil"/>
+                        <!--                    <f:ajax execute="@this" render="@form"/>-->
+                        <!--                    <f:passThroughAttribute name="aria-label" value="#{cc.attrs.record.id}"/>-->
+                    </button>
+                    <!-- ADD CHILD -->
+                    <ui:fragment rendered="#{vocabularyRecordsBean.isHierarchical() == true}">
+                        <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty(cc.attrs.record.id)}"
+                                class="btn btn-blank"
+                                title="#{msgs.vocabularyManager_addRecord}"
+                                data-bs-toggle="tooltip">
+                            <span aria-hidden="true" class="fa fa-plus"/>
+                        </button>
+                    </ui:fragment>
+                </div>
             </td>
         </tr>
     </composite:implementation>
