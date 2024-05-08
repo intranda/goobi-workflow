@@ -221,10 +221,10 @@
                                                 value="#{definition.name}"/>
                                         <!--                                            value="#{definition.name} #{definition.language != '' ? msgs[definition.language] : ''}"/>-->
 
-                                        <span class="pull-right table-sort-icon fa #{vocabularyRecordsBean.paginator.sortField.endsWith('ASC')?'fa-sort-asc':vocabularyRecordsBean.paginator.sortField.endsWith('DESC')?'fa-sort-desc':'fa-sort'}"/>
+                                        <span class="pull-right table-sort-icon fa #{vocabularyRecordsBean.paginator.sortField==definition.id.toString().concat(',ASC')?'fa-sort-asc':vocabularyRecordsBean.paginator.sortField==definition.id.toString().concat(',DESC')?'fa-sort-desc':'fa-sort'}"/>
                                         <f:setPropertyActionListener
                                                 target="#{vocabularyRecordsBean.paginator.sortField}"
-                                                value="#{vocabularyRecordsBean.paginator.sortField.endsWith('ASC')?definition.id.toString().concat(',DESC'):definition.id.toString().concat(',ASC')}"/>
+                                                value="#{vocabularyRecordsBean.paginator.sortField==definition.id.toString().concat(',ASC')?definition.id.toString().concat(',DESC'):definition.id.toString().concat(',ASC')}"/>
                                         <f:ajax render="@form"/>
                                     </button>
                                 </th>
