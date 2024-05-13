@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,6 +36,8 @@ public class JSFVocabularyRecord extends VocabularyRecord {
     @Getter
     @Setter
     private int level;
+    @Getter
+    private List<String> parents;
 
     public JSFVocabularyRecord() {
     }
@@ -57,6 +60,7 @@ public class JSFVocabularyRecord extends VocabularyRecord {
 //                .map(this::transform)
 //                .flatMap(Collection::stream)
 //                .collect(Collectors.toList());
+        this.parents = new LinkedList<>();
         this.titleValues = schema.getDefinitions().stream()
                 .sorted(Comparator.comparingLong(FieldDefinition::getId))
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
@@ -66,6 +70,10 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                 .filter(d -> Boolean.TRUE.equals(d.getMainEntry()))
                 .map(this::getFieldValue)
                 .findAny().orElseThrow(() -> new RuntimeException("Record has no main value defined"));
+    }
+
+    public void addParent(String parent) {
+        parents.add(0, parent);
     }
 
 //    private List<JSFFieldInstance> transform(FieldInstance field) {

@@ -218,7 +218,23 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         records = vocabularyAPI.vocabularyRecords().search(vocabulary.getId(), currentVocabularySearchField + ":" + vocabularySearchQuery).getContent();
         showNotHits = records == null || records.isEmpty();
         if (!showNotHits) {
-            records.forEach(r -> r.load(schema));
+            records.stream().collect(Collectors.toList()).forEach(r -> loadRecord(schema, r));
+        }
+    }
+
+    private void loadRecord(VocabularySchema schema, JSFVocabularyRecord record) {
+        record.load(schema);
+        if (record.getParentId() != null) {
+            loadParentHierarchy(schema, record, record.getParentId());
+        }
+    }
+
+    private void loadParentHierarchy(VocabularySchema schema, JSFVocabularyRecord record, long parentId) {
+        JSFVocabularyRecord parent = new JSFVocabularyRecord(vocabularyAPI.vocabularyRecords().get(parentId));
+        parent.load(schema);
+        record.addParent(parent.getMainValue());
+        if (parent.getParentId() != null) {
+            loadParentHierarchy(schema, record, parent.getParentId());
         }
     }
 
@@ -262,7 +278,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
             io.goobi.vocabulary.exchange.Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyName);
             VocabularySchema vocabularySchema = vocabularyAPI.vocabularySchemas().get(currentVocabulary.getSchemaId());
-            
+
             vocabularySearchFields = vocabularySchema.getDefinitions().stream()
                     .filter(d -> fieldsNames.contains(d.getName()))
                     .map(d -> new SelectItem(d.getId(), d.getName()))

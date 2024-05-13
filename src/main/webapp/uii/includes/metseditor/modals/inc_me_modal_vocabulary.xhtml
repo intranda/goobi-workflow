@@ -104,9 +104,18 @@
                                             value="#{Metadaten.currentMetadataToPerformSearch.records}"
                                             var="record">
                                         <div class="row">
+                                            <div class="col-12">
+                                                <ui:repeat var="parent" value="#{record.parents}">
+                                                    <h:outputText value="#{parent} "/>
+                                                    <span class="fa fa-caret-right"/>
+                                                    <h:outputText value=" "/>
+                                                </ui:repeat>
+                                            </div>
+                                        </div>
+                                        <div class="row">
                                             <div class="col-11">
                                                 <ui:repeat var="titleValue" value="#{record.titleValues}">
-                                                    <h:outputText value="#{titleValue}"/>
+                                                    <h:outputText value="#{titleValue} "/>
                                                 </ui:repeat>
                                             </div>
                                             <!--                                            <div class="col-11">-->
