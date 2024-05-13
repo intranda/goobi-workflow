@@ -109,6 +109,7 @@ public class VocabularyRecordsBean implements Serializable {
         record.setShown(true);
         expandParents(record);
         prepareEmptyFieldsForEditing(record);
+        record.load(schema);
     }
 
     public void createEmpty(Long parent) {

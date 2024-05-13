@@ -70,6 +70,9 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                 .filter(d -> Boolean.TRUE.equals(d.getMainEntry()))
                 .map(this::getFieldValue)
                 .findAny().orElseThrow(() -> new RuntimeException("Record has no main value defined"));
+
+        // Sort languages to show same order for in record editor
+        this.getFields().forEach(f -> f.getValues().forEach(v -> v.getTranslations().sort((t1, t2) -> t1.getLanguage().compareToIgnoreCase(t2.getLanguage()))));
     }
 
     public void addParent(String parent) {
