@@ -62,6 +62,7 @@ public class VocabularyBean implements Serializable {
                             Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
                             Optional.empty()
                     ),
+                    null,
                     JSFVocabulary::load,
                     Comparator.comparing(Vocabulary::getId)
             );

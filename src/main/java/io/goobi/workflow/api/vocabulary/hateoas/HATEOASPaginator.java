@@ -24,6 +24,7 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
     public static final String SEARCH_ENDPOINT = "/search";
 
     private final Client client = ClientBuilder.newClient();
+    private final Optional<Runnable> resetCallback;
     private final Optional<Consumer<T>> consumeCallback;
     private final Optional<Comparator<T>> comparator;
     private Optional<String> searchParameter = Optional.empty();
@@ -32,9 +33,10 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
     private Class<PageT> pageClass;
     private PageT currentPage;
 
-    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Consumer<T> consumeCallback, Comparator<T> comparator) {
+    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Runnable resetCallback, Consumer<T> consumeCallback, Comparator<T> comparator) {
         this.pageClass = pageClass;
         this.currentPage = initialPage;
+        this.resetCallback = Optional.ofNullable(resetCallback);
         this.consumeCallback = Optional.ofNullable(consumeCallback);
         this.comparator = Optional.ofNullable(comparator);
     }
@@ -75,7 +77,9 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
                 throw new APIException(url, "GET", response.getStatus(), response.readEntity(String.class));
             }
             currentPage = response.readEntity(pageClass);
-            this.consumeCallback.ifPresent(callback -> currentPage.getContent().forEach(callback));
+            this.resetCallback.ifPresent(Runnable::run);
+            // This intermediate stream is necessary to avoid concurrent modification of getContent list
+            this.consumeCallback.ifPresent(callback -> currentPage.getContent().stream().collect(Collectors.toList()).forEach(callback));
             this.comparator.ifPresent(tComparator -> currentPage.getContent().sort(tComparator));
         }
     }
@@ -119,8 +123,12 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
     }
 
     @Override
-    public void postLoad(T item, int index) {
-        currentPage.getContent().add(index, item);
+    public void postLoad(T item) {
+        if (currentPage.getContent().contains(item)) {
+            return;
+        }
+        currentPage.getContent().add(item);
+        consumeCallback.ifPresent(callback -> callback.accept(item));
         comparator.ifPresent(tComparator -> currentPage.getContent().sort(tComparator));
     }
 

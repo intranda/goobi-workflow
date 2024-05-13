@@ -39,6 +39,7 @@ import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
+import io.goobi.workflow.api.vocabulary.helper.HierarchicalRecordComparator;
 import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -85,10 +86,12 @@ public class VocabularyRecordsBean implements Serializable {
     private transient Map<Long, FieldDefinition> definitionsIdMap;
     private transient Map<Long, FieldType> typeIdMap;
     private final String language = transformToThreeCharacterAbbreviation(Helper.getSessionLocale().getLanguage());
+    private transient HierarchicalRecordComparator comparator;
 
     public String load(Vocabulary vocabulary) {
         this.vocabulary = vocabulary;
 
+        comparator = new HierarchicalRecordComparator();
         loadSchema();
         loadPaginator();
         loadFirstRecord();
@@ -139,13 +142,8 @@ public class VocabularyRecordsBean implements Serializable {
                 newRecord = api.vocabularyRecords().create(currentRecord);
             }
             paginator.reload();
-            Optional<JSFVocabularyRecord> parent = findLoadedRecord(currentRecord.getParentId());
-            int newLevel = parent.map(record -> record.getLevel() + 1).orElse(0);
-            int newIndex = parent.map(record -> paginator.getItems().indexOf(record) + 1).orElseGet(() -> paginator.getItems().size());
             loadChild(
-                    newRecord.getId(),
-                    newLevel,
-                    newIndex
+                    newRecord.getId()
             );
             findLoadedRecord(newRecord.getId()).ifPresent(this::edit);
         } catch (APIException e) {
@@ -154,15 +152,11 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     public void expandRecord(JSFVocabularyRecord record) {
-        int parentIndex = paginator.getItems().indexOf(record);
-        int childIndexShift = 1;
         for (long childId : record.getChildren()) {
-            int finalChildIndexShift = childIndexShift;
             JSFVocabularyRecord child = paginator.getItems().stream()
                     .filter(r -> r.getId() == childId)
                     .findFirst()
-                    .orElseGet(() -> loadChild(childId, record.getLevel() + 1, parentIndex + finalChildIndexShift));
-            childIndexShift += 1;
+                    .orElseGet(() -> loadChild(childId));
             child.setShown(true);
         }
         record.setExpanded(true);
@@ -191,12 +185,11 @@ public class VocabularyRecordsBean implements Serializable {
                 .findFirst();
     }
 
-    private JSFVocabularyRecord loadChild(long childId, int level, int index) {
+    private JSFVocabularyRecord loadChild(long childId) {
         JSFVocabularyRecord newChild = transform(api.vocabularyRecords().get(childId));
         newChild.load(schema);
         newChild.setLanguage(language);
-        newChild.setLevel(level);
-        paginator.postLoad(newChild, index);
+        paginator.postLoad(newChild);
         return newChild;
     }
 
@@ -260,9 +253,9 @@ public class VocabularyRecordsBean implements Serializable {
                         Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
                         Optional.empty()
                 ),
+                () -> comparator.clear(),
                 this::loadRecord,
-//                new JSFVocabularyRecordComparator()
-                null
+                comparator
         );
         // Initial record loading, as the initial page does not use the paginators callback
         this.paginator.getItems().forEach(this::loadRecord);
@@ -273,6 +266,12 @@ public class VocabularyRecordsBean implements Serializable {
         record.load(schema);
         record.setLanguage(language);
         record.setShown(true);
+        if (record.getParentId() != null) {
+            JSFVocabularyRecord parent = transform(api.vocabularyRecords().get(record.getParentId()));
+            parent.setExpanded(true);
+            this.paginator.postLoad(parent);
+        }
+        comparator.add(record);
     }
 
     private void prepareEmptyFieldsForEditing(JSFVocabularyRecord record) {

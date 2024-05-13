@@ -5,7 +5,7 @@ import java.util.List;
 public interface Paginator<T> {
     void reload();
 
-    void postLoad(T item, int index);
+    void postLoad(T item);
 
     List<T> getItems();
 
