@@ -12,6 +12,7 @@ import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.KulturNavImporter;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.APIException;
@@ -62,6 +63,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -197,22 +199,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     public void searchVocabulary() {
-//        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-//        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-//        String contextPath = request.getContextPath();
-//        String scheme = request.getScheme(); // http
-//        String serverName = request.getServerName(); // hostname.com
-//        int serverPort = request.getServerPort(); // 80
-//        String reqUrl = scheme + "://" + serverName + contextPath;
-//        // if there is a port lower than the typical ones (443) don't show it in the url (http://mygoobi.io/xyz instead of http://mygoobi.io:80/xyz)
-//        if (serverPort > 443) {
-//            reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
-//        }
-//        UriBuilder ub = UriBuilder.fromUri(reqUrl);
-//        vocabularyUrl = ub.path("api").path("vocabulary").path("records").build().toString();
-//
-//        records = VocabularyManager.findRecords(vocabulary, vocabularySearchFields);
-//
         Vocabulary vocabulary = vocabularyAPI.vocabularies().findByName(this.vocabulary);
         vocabularyUrl = vocabulary.get_links().get("self").getHref();
         VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocabulary.getSchemaId());
@@ -291,10 +277,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
             if (StringUtils.isBlank(fields)) {
                 try {
-                    io.goobi.vocabulary.exchange.Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyTitle);
+                    Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyTitle);
 
-                    // TODO: All records and not only first page
-                    List<JSFVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords().list(currentVocabulary.getId()).getContent();
+                    // Assume there are not than 1000 hits, otherwise it is not useful anyway..
+                    List<JSFVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords().list(currentVocabulary.getId(), Optional.of(1000), Optional.empty()).getContent();
                     ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                     List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
 
@@ -323,39 +309,58 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     myValues.overwriteConfiguredElement(myProcess, md.getType());
                 }
             } else {
-//                String[] fieldNames = fields.split(";");
-//                vocabularySearchFields = new ArrayList<>();
-//                for (String fieldname : fieldNames) {
-//                    String[] parts = fieldname.trim().split("=");
-//                    if (parts.length > 1) {
-//                        String name = parts[0];
-//                        String value = parts[1];
-//                        StringPair sp = new StringPair(name, value);
-//                        vocabularySearchFields.add(sp);
-//                    }
-//                }
-//                List<VocabRecord> recordList = VocabularyManager.findRecords(vocabularyTitle, vocabularySearchFields);
-//                Collections.sort(recordList);
-//
-//                if (recordList != null && !recordList.isEmpty()) {
-//                    ArrayList<Item> itemList = new ArrayList<>(recordList.size());
-//                    List<SelectItem> selectItems = new ArrayList<>(recordList.size());
-//                    for (VocabRecord vr : recordList) {
-//                        for (Field f : vr.getFields()) {
-//                            if (f.getDefinition().isMainEntry()) {
-//                                selectItems.add(new SelectItem(f.getValue(), f.getValue()));
-//                                itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    setPossibleItems(selectItems);
-//                    myValues.setItemList(itemList);
-//                } else {
-//                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyTitle));
-//                    metadataDisplaytype = DisplayType.input;
-//                    myValues.overwriteConfiguredElement(myProcess, md.getType());
-//                }
+                if (fields.contains(";")) {
+                    Helper.setFehlerMeldung("vocabularyList with multiple fields is not supported right now");
+                    return;
+                }
+
+                String[] parts = fields.trim().split("=");
+                if (parts.length != 2) {
+                    Helper.setFehlerMeldung("Wrong field format");
+                    return;
+                }
+
+                String name = parts[0];
+                String value = parts[1];
+
+                Vocabulary vocabulary = vocabularyAPI.vocabularies().findByName(vocabularyTitle);
+                VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocabulary.getSchemaId());
+                Optional<FieldDefinition> searchField = schema.getDefinitions().stream()
+                        .filter(d -> d.getName().equals(name))
+                        .findFirst();
+
+                if (searchField.isEmpty()) {
+                    Helper.setFehlerMeldung("Field " + name + " not found in vocabulary " + vocabulary.getName());
+                    return;
+                }
+
+
+                // Assume there are not than 1000 hits, otherwise it is not useful anyway..
+                List<JSFVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
+                        .search(vocabulary.getId(), searchField.get().getId() + ":" + value)
+                        .getContent();
+                ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
+                List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
+
+                String defaultLabel = myValues.getItemList().get(0).getLabel();
+                if (StringUtils.isNotBlank(defaultLabel)) {
+                    List<String> defaultitems = new ArrayList<>();
+                    defaultitems.add(defaultLabel);
+                    setDefaultItems(defaultitems);
+                }
+                itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
+                selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+
+                for (JSFVocabularyRecord vr : recordList) {
+                    selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
+                    Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
+                    if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
+                        item.setSelected(true);
+                    }
+                    itemList.add(item);
+                }
+                setPossibleItems(selectItems);
+                myValues.setItemList(itemList);
             }
         } else if (metadataDisplaytype == DisplayType.generate) {
             for (Item item : myValues.getItemList()) {
@@ -510,7 +515,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         String value = this.md.getValue();
         if (value != null && value.length() != 0) {
             for (Item i : this.myValues.getItemList()) {
-                if (i.getValue().equals(value)) {
+                if (value.equals(i.getValue())) {
                     return i.getLabel();
                 }
             }
