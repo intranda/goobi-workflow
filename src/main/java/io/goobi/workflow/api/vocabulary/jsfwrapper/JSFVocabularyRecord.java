@@ -36,6 +36,17 @@ public class JSFVocabularyRecord extends VocabularyRecord {
     @Setter
     private int level;
 
+    public JSFVocabularyRecord() {
+    }
+
+    public JSFVocabularyRecord(VocabularyRecord legacy) {
+        setId(legacy.getId());
+        setVocabularyId(legacy.getVocabularyId());
+        setFields(legacy.getFields());
+        setParentId(legacy.getParentId());
+        setChildren(legacy.getChildren());
+    }
+
     public void load(VocabularySchema schema) {
         this.schema = schema;
         this.fieldDefinitions = new HashMap<>();

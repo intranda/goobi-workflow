@@ -186,7 +186,7 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     private JSFVocabularyRecord loadChild(long childId) {
-        JSFVocabularyRecord newChild = transform(api.vocabularyRecords().get(childId));
+        JSFVocabularyRecord newChild = new JSFVocabularyRecord(api.vocabularyRecords().get(childId));
         newChild.load(schema);
         newChild.setLanguage(language);
         paginator.postLoad(newChild);
@@ -203,16 +203,6 @@ public class VocabularyRecordsBean implements Serializable {
                     }
                 });
         record.setExpanded(false);
-    }
-
-    private JSFVocabularyRecord transform(VocabularyRecord record) {
-        JSFVocabularyRecord result = new JSFVocabularyRecord();
-        result.setId(record.getId());
-        result.setVocabularyId(record.getVocabularyId());
-        result.setFields(record.getFields());
-        result.setParentId(record.getParentId());
-        result.setChildren(record.getChildren());
-        return result;
     }
 
     public FieldDefinition getDefinition(FieldInstance field) {
@@ -267,7 +257,7 @@ public class VocabularyRecordsBean implements Serializable {
         record.setLanguage(language);
         record.setShown(true);
         if (record.getParentId() != null) {
-            JSFVocabularyRecord parent = transform(api.vocabularyRecords().get(record.getParentId()));
+            JSFVocabularyRecord parent = new JSFVocabularyRecord(api.vocabularyRecords().get(record.getParentId()));
             parent.setExpanded(true);
             this.paginator.postLoad(parent);
         }
