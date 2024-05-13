@@ -274,23 +274,30 @@ public class VocabularyRecordsBean implements Serializable {
                 .collect(Collectors.toList());
         missingFields.forEach(d -> {
             FieldInstance field = new FieldInstance();
-            FieldValue value = new FieldValue();
-            FieldDefinition fieldDefinition = definitionsIdMap.get(d);
-            if (!fieldDefinition.getTranslationDefinitions().isEmpty()) {
-                fieldDefinition.getTranslationDefinitions().forEach(t -> {
-                    TranslationInstance translation = new TranslationInstance();
-                    translation.setLanguage(t.getLanguage());
-                    translation.setValue("");
-                    value.getTranslations().add(translation);
-                });
-            } else {
-                TranslationInstance translation = new TranslationInstance();
-                translation.setValue("");
-                value.getTranslations().add(translation);
-            }
             field.setDefinitionId(d);
-            field.getValues().add(value);
             record.getFields().add(field);
+        });
+        record.getFields().forEach(f -> {
+            if (f.getValues().isEmpty()) {
+                f.getValues().add(new FieldValue());
+            }
+            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
+            f.getValues().forEach(v -> {
+                if (!definition.getTranslationDefinitions().isEmpty()) {
+                    definition.getTranslationDefinitions().stream()
+                            .filter(t -> v.getTranslations().stream().noneMatch(t2 -> t2.getLanguage().equals(t.getLanguage())))
+                            .forEach(t -> {
+                                TranslationInstance translation = new TranslationInstance();
+                                translation.setLanguage(t.getLanguage());
+                                translation.setValue("");
+                                v.getTranslations().add(translation);
+                            });
+                } else if (v.getTranslations().isEmpty()) {
+                    TranslationInstance translation = new TranslationInstance();
+                    translation.setValue("");
+                    v.getTranslations().add(translation);
+                }
+            });
         });
     }
 
