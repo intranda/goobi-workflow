@@ -27,9 +27,7 @@
                         <span class="fa fa-caret-right"/>
                     </div>
                     <div class="content">
-                        <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}">
-                            <h:outputText value="#{titleValue}"/>
-                        </ui:repeat>
+                        <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
                     </div>
                 </button>
                 <button
@@ -42,9 +40,7 @@
                         <span class="fa fa-caret-down"/>
                     </div>
                     <div class="content">
-                        <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}">
-                            <h:outputText value="#{titleValue}"/>
-                        </ui:repeat>
+                        <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
                     </div>
                 </button>
                 <ui:fragment rendered="#{cc.attrs.record.children.size() == null}">
@@ -53,9 +49,7 @@
                     <div class="spacer" />
                     <div class="toggle" />
                     <div class="content">
-                        <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}">
-                            <h:outputText value="#{titleValue}"/>
-                        </ui:repeat>
+                        <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
                     </div>
                 </button>
                 </ui:fragment>
