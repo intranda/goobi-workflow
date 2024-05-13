@@ -214,6 +214,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 //        records = VocabularyManager.findRecords(vocabulary, vocabularySearchFields);
 //
         Vocabulary vocabulary = vocabularyAPI.vocabularies().findByName(this.vocabulary);
+        vocabularyUrl = vocabulary.get_links().get("self").getHref();
         VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocabulary.getSchemaId());
         records = vocabularyAPI.vocabularyRecords().search(vocabulary.getId(), currentVocabularySearchField + ":" + vocabularySearchQuery).getContent();
         showNotHits = records == null || records.isEmpty();
@@ -775,19 +776,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 easydbSearch.getMetadata(md);
                 break;
             case vocabularySearch:
-                // TODO: Localization?
                 md.setValue(selectedVocabularyRecord.getMainValue());
-                // TODO: AutoriyFile might be omitted, as the record ID contains all information
                 md.setAuthorityID(selectedVocabularyRecord.getVocabularyId().toString());
-//                String url = ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl();
-//                String user = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();
-//                long vocabularyId = selectedVocabularyRecord.getVocabularyId();
-//                long recordId = selectedVocabularyRecord.getId();
-//                if (StringUtils.isNotBlank(user) && StringUtils.isNotBlank(url)) {
-//                    md.setAutorityFile(vocabulary, url, url + user + "/vocabularies/" + vocabularyId + "/records/" + recordId);
-//                } else {
-//                    md.setAutorityFile(vocabulary, vocabularyUrl, vocabularyUrl + "/jskos/" + vocabularyId + "/" + recordId);
-//                }
+                md.setAuthorityFile(vocabulary, vocabularyUrl, selectedVocabularyRecord.get_links().get("self").getHref());
                 break;
             default:
                 break;
