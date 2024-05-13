@@ -42,7 +42,10 @@ public class VocabularyRecordAPI {
     }
 
     public VocabularyRecordPageResult search(long vocabularyId, String query) {
-        return restApi.get(IN_VOCABULARY_SEARCH_ENDPOINT, VocabularyRecordPageResult.class, vocabularyId, "query=" + query);
+        VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId).getSchemaId());
+        VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_SEARCH_ENDPOINT, VocabularyRecordPageResult.class, vocabularyId, "query=" + query);
+        result.getContent().forEach(r -> r.load(schema));
+        return result;
     }
 
     public VocabularyRecord create(VocabularyRecord vocabularyRecord) {
