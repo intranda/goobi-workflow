@@ -1,5 +1,6 @@
 package io.goobi.workflow.api.vocabulary.hateoas;
 
+import io.goobi.vocabulary.exchange.Identifiable;
 import io.goobi.workflow.api.vocabulary.APIException;
 import org.apache.commons.lang3.NotImplementedException;
 import org.goobi.managedbeans.Paginator;
@@ -16,7 +17,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Paginator<T> {
+public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResult<T>> implements Paginator<T> {
     public static final String NAVIGATE_PREVIOUS = "prev";
     public static final String NAVIGATE_NEXT = "next";
     public static final String NAVIGATE_FIRST = "first";
@@ -124,7 +125,7 @@ public class HATEOASPaginator<T, PageT extends BasePageResult<T>> implements Pag
 
     @Override
     public void postLoad(T item) {
-        if (currentPage.getContent().contains(item)) {
+        if (currentPage.getContent().stream().anyMatch(r -> r.getId().equals(item.getId()))) {
             return;
         }
         currentPage.getContent().add(item);
