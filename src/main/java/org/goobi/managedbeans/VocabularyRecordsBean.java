@@ -85,12 +85,13 @@ public class VocabularyRecordsBean implements Serializable {
     private transient List<FieldDefinition> definitions;
     private transient Map<Long, FieldDefinition> definitionsIdMap;
     private transient Map<Long, FieldType> typeIdMap;
-    private final String language = transformToThreeCharacterAbbreviation(Helper.getSessionLocale().getLanguage());
+    private transient String language;
     private transient HierarchicalRecordComparator comparator;
 
     public String load(Vocabulary vocabulary) {
         this.vocabulary = vocabulary;
 
+        language = transformToThreeCharacterAbbreviation(Helper.getSessionLocale().getLanguage());
         comparator = new HierarchicalRecordComparator();
         loadSchema();
         loadPaginator();
@@ -188,8 +189,8 @@ public class VocabularyRecordsBean implements Serializable {
 
     private JSFVocabularyRecord loadChild(long childId) {
         JSFVocabularyRecord newChild = new JSFVocabularyRecord(api.vocabularyRecords().get(childId));
-        newChild.load(schema);
         newChild.setLanguage(language);
+        newChild.load(schema);
         paginator.postLoad(newChild);
         return newChild;
     }
@@ -254,8 +255,8 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     private void loadRecord(JSFVocabularyRecord record) {
-        record.load(schema);
         record.setLanguage(language);
+        record.load(schema);
         record.setShown(true);
         if (record.getParentId() != null) {
             JSFVocabularyRecord parent = new JSFVocabularyRecord(api.vocabularyRecords().get(record.getParentId()));

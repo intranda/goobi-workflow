@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JSFVocabularyRecord extends VocabularyRecord {
@@ -53,9 +54,7 @@ public class JSFVocabularyRecord extends VocabularyRecord {
     public void load(VocabularySchema schema) {
         this.schema = schema;
         this.fieldDefinitions = new HashMap<>();
-        this.schema.getDefinitions().forEach(d -> {
-            this.fieldDefinitions.put(d.getId(), d);
-        });
+        this.schema.getDefinitions().forEach(d -> this.fieldDefinitions.put(d.getId(), d));
 //        this.jsfFields = getFields().stream()
 //                .map(this::transform)
 //                .flatMap(Collection::stream)
@@ -115,10 +114,20 @@ public class JSFVocabularyRecord extends VocabularyRecord {
     private String extractValue(FieldInstance field) {
         return field.getValues().stream()
                 .map(
-                        v -> v.getTranslations().stream()
-                                .map(TranslationInstance::getValue)
-                                .findFirst()
-                                .orElse("")
+                        v -> {
+                            Optional<String> preferredLanguage = v.getTranslations().stream()
+                                    .filter(t -> t.getLanguage().equals(language))
+                                    .map(TranslationInstance::getValue)
+                                    .findFirst();
+                            if (preferredLanguage.isPresent() && !preferredLanguage.get().isBlank()) {
+                                return preferredLanguage.get();
+                            }
+                            // TODO: Show correct fallback language
+                            return v.getTranslations().stream()
+                                    .map(TranslationInstance::getValue)
+                                    .findFirst()
+                                    .orElse("");
+                        }
                 ).collect(Collectors.joining("|"));
     }
 
