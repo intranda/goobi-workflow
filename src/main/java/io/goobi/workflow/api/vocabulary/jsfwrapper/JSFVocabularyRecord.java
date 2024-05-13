@@ -2,6 +2,7 @@ package io.goobi.workflow.api.vocabulary.jsfwrapper;
 
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.FieldInstance;
+import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
@@ -122,11 +123,16 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                             if (preferredLanguage.isPresent() && !preferredLanguage.get().isBlank()) {
                                 return preferredLanguage.get();
                             }
-                            // TODO: Show correct fallback language
+                            String fallbackLanguage = fieldDefinitions.get(field.getDefinitionId()).getTranslationDefinitions().stream()
+                                    .filter(t -> Boolean.TRUE.equals(t.getFallback()))
+                                    .map(TranslationDefinition::getLanguage)
+                                    .findFirst()
+                                    .orElseThrow();
                             return v.getTranslations().stream()
+                                    .filter(t -> fallbackLanguage.equals(t.getLanguage()))
                                     .map(TranslationInstance::getValue)
                                     .findFirst()
-                                    .orElse("");
+                                    .orElseThrow();
                         }
                 ).collect(Collectors.joining("|"));
     }
