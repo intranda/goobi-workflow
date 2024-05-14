@@ -72,7 +72,12 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                 .findAny().orElseThrow(() -> new RuntimeException("Record has no main value defined"));
 
         // Sort languages to show same order for in record editor
-        this.getFields().forEach(f -> f.getValues().forEach(v -> v.getTranslations().sort((t1, t2) -> t1.getLanguage().compareToIgnoreCase(t2.getLanguage()))));
+        this.getFields().forEach(f -> f.getValues().forEach(v -> v.getTranslations().sort((t1, t2) -> {
+            if (t1.getLanguage() == null || t2.getLanguage() == null) {
+                return 0;
+            }
+            return t1.getLanguage().compareToIgnoreCase(t2.getLanguage());
+        })));
     }
 
     public void addParent(String parent) {
@@ -117,7 +122,7 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                 .map(
                         v -> {
                             Optional<String> preferredLanguage = v.getTranslations().stream()
-                                    .filter(t -> t.getLanguage().equals(language))
+                                    .filter(t -> language != null && language.equals(t.getLanguage()))
                                     .map(TranslationInstance::getValue)
                                     .findFirst();
                             if (preferredLanguage.isPresent() && !preferredLanguage.get().isBlank()) {
@@ -127,7 +132,14 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                                     .filter(t -> Boolean.TRUE.equals(t.getFallback()))
                                     .map(TranslationDefinition::getLanguage)
                                     .findFirst()
-                                    .orElseThrow();
+                                    .orElse(null);
+                            if (fallbackLanguage == null) {
+                                return v.getTranslations().stream()
+                                        .filter(t -> t.getLanguage() == null)
+                                        .map(TranslationInstance::getValue)
+                                        .findFirst()
+                                        .orElseThrow();
+                            }
                             return v.getTranslations().stream()
                                     .filter(t -> fallbackLanguage.equals(t.getLanguage()))
                                     .map(TranslationInstance::getValue)
