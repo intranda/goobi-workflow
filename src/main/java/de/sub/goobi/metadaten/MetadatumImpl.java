@@ -274,11 +274,16 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             try {
                 String vocabularyTitle = myValues.getItemList().get(0).getSource();
                 String fields = myValues.getItemList().get(0).getField();
+                Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyTitle);
+                VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(currentVocabulary.getSchemaId());
+
+                if (Boolean.TRUE.equals(schema.getHierarchicalRecords())) {
+                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyListHierarchical", md.getType().getName(), vocabularyTitle));
+                    return;
+                }
 
                 if (StringUtils.isBlank(fields)) {
                     try {
-                        Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyTitle);
-
                         // Assume there are not than 1000 hits, otherwise it is not useful anyway..
                         List<JSFVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords().list(currentVocabulary.getId(), Optional.of(1000), Optional.empty()).getContent();
                         ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
@@ -323,21 +328,19 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     String name = parts[0];
                     String value = parts[1];
 
-                    Vocabulary vocabulary = vocabularyAPI.vocabularies().findByName(vocabularyTitle);
-                    VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocabulary.getSchemaId());
                     Optional<FieldDefinition> searchField = schema.getDefinitions().stream()
                             .filter(d -> d.getName().equals(name))
                             .findFirst();
 
                     if (searchField.isEmpty()) {
-                        Helper.setFehlerMeldung("Field " + name + " not found in vocabulary " + vocabulary.getName());
+                        Helper.setFehlerMeldung("Field " + name + " not found in vocabulary " + currentVocabulary.getName());
                         return;
                     }
 
 
                     // Assume there are not than 1000 hits, otherwise it is not useful anyway..
                     List<JSFVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
-                            .search(vocabulary.getId(), searchField.get().getId() + ":" + value)
+                            .search(currentVocabulary.getId(), searchField.get().getId() + ":" + value)
                             .getContent();
                     ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                     List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
