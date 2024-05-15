@@ -3,11 +3,14 @@ package io.goobi.workflow.api.vocabulary;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
+import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
 
+import java.util.List;
 import java.util.Optional;
 
 public class VocabularyRecordAPI {
     private static final String IN_VOCABULARY_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records";
+    private static final String IN_VOCABULARY_ALL_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records/all";
     private static final String IN_VOCABULARY_SEARCH_ENDPOINT = "/api/v1/vocabularies/{{0}}/records/search";
     private static final String INSTANCE_ENDPOINT = "/api/v1/records/{{0}}";
 
@@ -15,6 +18,10 @@ public class VocabularyRecordAPI {
 
     public VocabularyRecordAPI(String host, int port) {
         this.restApi = new RESTAPI(host, port);
+    }
+
+    public List<JSFVocabularyRecord> all(long vocabularyId) {
+        return restApi.get(IN_VOCABULARY_ALL_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, vocabularyId).getContent();
     }
 
     public VocabularyRecordPageResult list(long vocabularyId) {
