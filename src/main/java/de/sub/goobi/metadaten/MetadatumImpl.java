@@ -59,6 +59,7 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -174,6 +175,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private String vocabularySearchQuery;
     private String vocabularyName;
     private List<JSFVocabularyRecord> records;
+    private List<FieldDefinition> definitions;
     private String vocabularyUrl;
     private JSFVocabularyRecord selectedVocabularyRecord;
 
@@ -202,6 +204,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         Vocabulary vocabulary = vocabularyAPI.vocabularies().findByName(this.vocabulary);
         vocabularyUrl = vocabulary.get_links().get("self").getHref();
         VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocabulary.getSchemaId());
+        definitions = schema.getDefinitions().stream()
+                .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
+                .sorted(Comparator.comparingLong(FieldDefinition::getId))
+                .collect(Collectors.toList());
         records = vocabularyAPI.vocabularyRecords().search(vocabulary.getId(), currentVocabularySearchField + ":" + vocabularySearchQuery).getContent();
         showNotHits = records == null || records.isEmpty();
         if (!showNotHits) {

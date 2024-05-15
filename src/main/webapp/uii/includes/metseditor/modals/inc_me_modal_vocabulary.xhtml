@@ -21,73 +21,73 @@
                 aria-labelledby="vocabularySearchBoxLabel"
                 aria-hidden="true">
             <div
-                class="modal-dialog"
-                role="document">
+                    class="modal-dialog"
+                    role="document">
                 <h:panelGroup
-                    styleClass="modal-content"
-                    id="vocabularySearchModalContent">
+                        styleClass="modal-content"
+                        id="vocabularySearchModalContent">
                     <div class="modal-header">
                         <h5
-                            class="modal-title"
-                            id="vocabularySearchBoxLabel">#{msgs.NORM_vocabularySearch}: #{msgs[Metadaten.currentMetadataToPerformSearch.vocabularyName]}</h5>
+                                class="modal-title"
+                                id="vocabularySearchBoxLabel">#{msgs.NORM_vocabularySearch}: #{msgs[Metadaten.currentMetadataToPerformSearch.vocabularyName]}</h5>
 
                         <button
-                            type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close">
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close">
                             <span aria-hidden="true">
                                 <h:outputText
-                                    value="&amp;times;"
-                                    escape="false"/>
+                                        value="&amp;times;"
+                                        escape="false"/>
                             </span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <p>
                             <h:outputText
-                                value="#{msgs.NORM_helpVocabularySearch}"
-                                escape="false"/>
+                                    value="#{msgs.NORM_helpVocabularySearch}"
+                                    escape="false"/>
                         </p>
                         <div class="row form-group">
                             <div class="col-3">
                                 <intranda:formInputDropDown
-                                    classLeft="invisible"
-                                    name="searchField"
-                                    field="#{Metadaten.currentMetadataToPerformSearch.currentVocabularySearchField}"
-                                    fieldStyle="form-control form-control--select"
-                                    selectItems="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchFields}"
+                                        classLeft="invisible"
+                                        name="searchField"
+                                        field="#{Metadaten.currentMetadataToPerformSearch.currentVocabularySearchField}"
+                                        fieldStyle="form-control form-control--select"
+                                        selectItems="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchFields}"
                                 />
                             </div>
                             <div class="col-9">
                                 <x:inputText
-                                    id="vocabularySearchInput"
-                                    styleClass="form-control"
-                                    value="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchQuery}"/>
+                                        id="vocabularySearchInput"
+                                        styleClass="form-control"
+                                        value="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchQuery}"/>
                             </div>
                         </div>
                         <div class="text-right">
                             <button
-                                jsf:id="vocabularySearchAction"
-                                class="btn btn--white btn--loader"
-                                jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchVocabulary}">
+                                    jsf:id="vocabularySearchAction"
+                                    class="btn btn--white btn--loader"
+                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchVocabulary}">
                                 <span
-                                    class="fa fa-search"
-                                    aria-hidden="true" />
+                                        class="fa fa-search"
+                                        aria-hidden="true"/>
                                 #{msgs.search}
                                 <span
-                                    class="btn-ajax-loader"
-                                    aria-hidden="true">
+                                        class="btn-ajax-loader"
+                                        aria-hidden="true">
                                         <img
-                                            src="template/img/goobi/ajaxloader2.gif"
-                                            alt="Ajax Button Loader"/>
+                                                src="template/img/goobi/ajaxloader2.gif"
+                                                alt="Ajax Button Loader"/>
                                     </span>
                                 <f:passThroughAttribute
-                                    name="data-toggle"
-                                    value="tooltip"/>
+                                        name="data-toggle"
+                                        value="tooltip"/>
                                 <f:ajax
-                                    execute="@form"
-                                    render="vocabularySearchlist"/>
+                                        execute="@form"
+                                        render="vocabularySearchlist"/>
                             </button>
                         </div>
 
@@ -98,6 +98,14 @@
                                     <div class="row">
                                         <div class="col-11">
                                             <!-- hier "header" einfügen -->
+                                            <div class="row">
+                                                <ui:repeat var="definition"
+                                                           value="#{Metadaten.currentMetadataToPerformSearch.definitions}">
+                                                    <div class="col">
+                                                        <h:outputText value="#{definition.name} "/>
+                                                    </div>
+                                                </ui:repeat>
+                                            </div>
                                         </div>
                                         <div class="col-1">
                                             <b>
@@ -105,10 +113,10 @@
                                             </b>
                                         </div>
                                     </div>
-                                    <hr />
+                                    <hr/>
                                     <x:dataList
-                                        value="#{Metadaten.currentMetadataToPerformSearch.records}"
-                                        var="record">
+                                            value="#{Metadaten.currentMetadataToPerformSearch.records}"
+                                            var="record">
                                         <div class="row">
                                             <div class="col-11">
                                                 <div class="row">
