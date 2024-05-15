@@ -290,8 +290,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
                 if (StringUtils.isBlank(fields)) {
                     try {
-                        // Assume there are not than 1000 hits, otherwise it is not useful anyway..
-                        List<JSFVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords().list(currentVocabulary.getId(), Optional.of(1000), Optional.empty()).getContent();
+                        List<JSFVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords().all(currentVocabulary.getId());
                         ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                         List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
 
