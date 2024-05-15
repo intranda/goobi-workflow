@@ -17,7 +17,7 @@ const cleanup = require('rollup-plugin-cleanup');
 const terser = require('@rollup/plugin-terser');
 
 // provide custom asset location for watch task
-const customLocation = ``;
+const customLocation = `/home/florian/eclipse-workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/workflow-core/`;
 
 // source directories, files, globs
 const legacySources = {
@@ -43,7 +43,8 @@ const sources = {
         'uii/**/*.png',
         'uii/**/*.svg',
         'uii/**/*.gif',
-        'uii/**/*.ico'
+        'uii/**/*.ico',
+        'uii/**/*.riot'
     ]
 }
 // target directories
@@ -58,7 +59,8 @@ const targetFolder = {
 
 // FUNCTIONS
 function static() {
-    return src(sources.static, {since: gulp.lastRun(static)})
+	console.log("copy " + sources.static + " to " + `${customLocation}${targetFolder.static}`);
+    return src(sources.static)
         .pipe(dest(`${customLocation}${targetFolder.static}`))
 };
 
