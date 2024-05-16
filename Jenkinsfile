@@ -74,7 +74,7 @@ pipeline {
         }
       }
     }
-    stage('deployment to maven repository') {
+    stage('deploy') {
       when {
         anyOf {
         branch 'master'
@@ -88,8 +88,10 @@ pipeline {
     }
     stage('tag release') {
       when { 
-        branch 'master' 
-        branch 'hotfix_release_*'
+        anyOf {
+          branch 'master'
+          branch 'hotfix_release_*'
+        }
       }
       steps {
         withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314',
