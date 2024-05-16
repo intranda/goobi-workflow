@@ -27,6 +27,7 @@ pipeline {
           anyOf {
             branch 'master'
             branch 'release_*'
+            branch 'hotfix_release_*'
             allOf {
               branch 'PR-*'
               expression { env.CHANGE_BRANCH.startsWith("release_") }
@@ -43,6 +44,7 @@ pipeline {
         anyOf {
           branch 'master'
           branch 'release_*'
+          branch 'hotfix_release_*'
           allOf {
             branch 'PR-*'
             expression { env.CHANGE_BRANCH.startsWith("release_") }
@@ -58,6 +60,7 @@ pipeline {
         anyOf {
           branch 'master'
           branch 'release_*'
+          branch 'hotfix_release_*'
           branch 'sonar_*'
           allOf {
             branch 'PR-*'
@@ -76,6 +79,7 @@ pipeline {
         anyOf {
         branch 'master'
         branch 'develop'
+        branch 'hotfix_release_*'
         }
       }
       steps {
@@ -83,7 +87,10 @@ pipeline {
       }
     }
     stage('tag release') {
-      when { branch 'master' }
+      when { 
+        branch 'master' 
+        branch 'hotfix_release_*'
+      }
       steps {
         withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314',
                  gitToolName: 'git-tool')]) {
