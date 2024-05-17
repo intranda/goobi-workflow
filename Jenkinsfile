@@ -83,7 +83,7 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy -U'
+        sh 'mvn deploy -U'
       }
     }
     stage('tag release') {
