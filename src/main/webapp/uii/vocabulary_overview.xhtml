@@ -114,6 +114,19 @@
                                                         name="aria-label"
                                                         value="#{msgs.vocabularyManager_editVocabulary}"/>
                                             </button>
+                                            <!-- exports -->
+                                            <a
+                                                    href="#{item.jsonExport()}"
+                                                    target="_blank"
+                                                    class="btn btn-primary-400 margin-left-3">
+                                                <i aria-hidden="true" class="fa fa-file"/>
+                                            </a>
+                                            <a
+                                                    href="#{item.csvExport()}"
+                                                    target="_blank"
+                                                    class="btn btn-primary-400 margin-left-3">
+                                                <i aria-hidden="true" class="fa fa-file"/>
+                                            </a>
 
                                             <ui:fragment
                                                     rendered="#{item.skosExportPossible}">

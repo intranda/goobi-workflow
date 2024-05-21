@@ -21,4 +21,12 @@ public class JSFVocabulary extends Vocabulary {
     public String rdfTurtleExport() {
         return get_links().get("export_rdf_turtle").getHref();
     }
+
+    public String jsonExport() {
+        return get_links().get("export_json").getHref();
+    }
+
+    public String csvExport() {
+        return get_links().get("export_csv").getHref();
+    }
 }
