@@ -21,7 +21,10 @@ public class VocabularyRecordAPI {
     }
 
     public List<JSFVocabularyRecord> all(long vocabularyId) {
-        return restApi.get(IN_VOCABULARY_ALL_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, vocabularyId).getContent();
+        VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId).getSchemaId());
+        List<JSFVocabularyRecord> result = restApi.get(IN_VOCABULARY_ALL_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, vocabularyId).getContent();
+        result.forEach(r -> r.load(schema));
+        return result;
     }
 
     public VocabularyRecordPageResult list(long vocabularyId) {
