@@ -50,7 +50,9 @@ public class JSFVocabularyRecord extends VocabularyRecord {
     public JSFVocabularyRecord(VocabularyRecord legacy) {
         setId(legacy.getId());
         setVocabularyId(legacy.getVocabularyId());
-        setFields(legacy.getFields());
+        this.jsfFields = legacy.getFields().stream()
+                .map(JSFFieldInstance::new)
+                .collect(Collectors.toList());
         setParentId(legacy.getParentId());
         setChildren(legacy.getChildren());
     }
@@ -59,10 +61,16 @@ public class JSFVocabularyRecord extends VocabularyRecord {
         this.schema = schema;
         this.fieldDefinitions = new HashMap<>();
         this.schema.getDefinitions().forEach(d -> this.fieldDefinitions.put(d.getId(), d));
-//        this.jsfFields = getFields().stream()
-//                .map(this::transform)
-//                .flatMap(Collection::stream)
-//                .collect(Collectors.toList());
+        // Sort languages to show same order for in record editor
+        this.getFields().forEach(f -> f.getValues().forEach(v -> v.getTranslations().sort((t1, t2) -> {
+            if (t1.getLanguage() == null || t2.getLanguage() == null) {
+                return 0;
+            }
+            return t1.getLanguage().compareToIgnoreCase(t2.getLanguage());
+        })));
+        this.jsfFields = getFields().stream()
+                .map(JSFFieldInstance::new)
+                .collect(Collectors.toList());
         this.parents = new LinkedList<>();
         this.titleValues = schema.getDefinitions().stream()
                 .sorted(Comparator.comparingLong(FieldDefinition::getId))
@@ -73,43 +81,11 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                 .filter(d -> Boolean.TRUE.equals(d.getMainEntry()))
                 .map(this::getFieldValue)
                 .findAny().orElseThrow(() -> new RuntimeException("Record has no main value defined"));
-
-        // Sort languages to show same order for in record editor
-        this.getFields().forEach(f -> f.getValues().forEach(v -> v.getTranslations().sort((t1, t2) -> {
-            if (t1.getLanguage() == null || t2.getLanguage() == null) {
-                return 0;
-            }
-            return t1.getLanguage().compareToIgnoreCase(t2.getLanguage());
-        })));
     }
 
     public void addParent(String parent) {
         parents.add(0, parent);
     }
-
-//    private List<JSFFieldInstance> transform(FieldInstance field) {
-//        // TODO: Check if this works, transform back when saving
-//        Map<String, List<String>> languageValues = new HashMap<>();
-//        field.getValues().forEach(v -> {
-//            v.getTranslations().forEach((lang, value) -> {
-//                if (!languageValues.containsKey(lang)) {
-//                    languageValues.put(lang, new ArrayList<>());
-//                }
-//                languageValues.get(lang).add(value);
-//            });
-//        });
-//        List<JSFFieldInstance> results = new LinkedList<>();
-//        languageValues.forEach((lang, values) -> {
-//            JSFFieldInstance result = new JSFFieldInstance();
-//            result.setId(field.getId());
-//            result.setRecordId(field.getRecordId());
-//            result.setDefinitionId(field.getDefinitionId());
-//            result.setLanguage(lang);
-//            result.setValue(String.join("|", values));
-//            results.add(result);
-//        });
-//        return results;
-//    }
 
     private String getFieldValue(FieldDefinition definition) {
         // TODO: Decide which language to show
@@ -158,8 +134,8 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                 ).collect(Collectors.joining("|"));
     }
 
-    public List<FieldInstance> sortedFields() {
-        return getFields().stream()
+    public List<JSFFieldInstance> sortedFields() {
+        return getJsfFields().stream()
                 .sorted(Comparator.comparingLong(FieldInstance::getDefinitionId))
                 .collect(Collectors.toList());
     }

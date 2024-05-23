@@ -111,6 +111,10 @@ public class VocabularyRecordsBean implements Serializable {
         expandParents(record);
         prepareEmptyFieldsForEditing(record);
         record.load(schema);
+        record.getJsfFields().forEach(f -> {
+            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
+            f.load(definition, typeIdMap.getOrDefault(definition.getTypeId(), null));
+        });
     }
 
     public void createEmpty(Long parent) {
@@ -211,9 +215,9 @@ public class VocabularyRecordsBean implements Serializable {
         return definitionsIdMap.get(field.getDefinitionId());
     }
 
-    public FieldType getType(FieldInstance field) {
-        return typeIdMap.get(definitionsIdMap.get(field.getDefinitionId()).getTypeId());
-    }
+//    public FieldType getType(FieldInstance field) {
+//        return typeIdMap.get(definitionsIdMap.get(field.getDefinitionId()).getTypeId());
+//    }
 
 //    public String getValue(FieldInstance field) {
 //        return field.getValues().stream()
@@ -343,7 +347,6 @@ public class VocabularyRecordsBean implements Serializable {
             this.definitionsIdMap.put(d.getId(), d);
         }
     }
-
 
     private void loadTypes() {
         this.typeIdMap = new HashMap<>();

@@ -30,7 +30,7 @@
 
                 <div class="row">
                     <div class="col-12 col-md-3" tabindex="-1">
-                        <intranda:formLabel label="#{vocabularyRecordsBean.getDefinition(field).name}"/>
+                        <intranda:formLabel label="#{field.definition.name}"/>
 
                     </div>
                     <div class="col-12 col-md-9 p-0">
@@ -38,7 +38,7 @@
                                 <ui:repeat var="translation" value="#{value.translations}">
                                     <!-- Simple text type -->
                                     <ui:fragment
-                                            rendered="#{vocabularyRecordsBean.getType(field).selectableValues.size() == 0 and vocabularyRecordsBean.getType(field).large == false}">
+                                            rendered="#{field.selectableItems.size() == 0 and field.type.large == false}">
                                         <div class="#{translation.language != null ? 'row' : 'p-2'} col-12 border-0">
                                             <!-- LANGUAGE -->
                                             <div class="col-12 col-md-3" tabindex="-1" jsf:rendered="#{translation.language != null}">
@@ -63,7 +63,7 @@
                                     <!-- // Simple text type -->
                                     <!-- Text area type -->
                                     <ui:fragment
-                                            rendered="#{vocabularyRecordsBean.getType(field).selectableValues.size() == 0 and vocabularyRecordsBean.getType(field).large == true}">
+                                            rendered="#{field.selectableItems.size() == 0 and field.type.large == true}">
                                         <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
                                             <!-- LANGUAGE -->
                                             <div class="col-12 col-md-3" tabindex="-1" jsf:rendered="#{translation.language != null}">
@@ -87,7 +87,7 @@
                                     <!-- // Text area  type -->
                                     <!-- Single select type -->
                                     <ui:fragment
-                                            rendered="#{vocabularyRecordsBean.getType(field).selectableValues.size() > 0}">
+                                            rendered="#{field.selectableItems.size() > 0}">
                                         <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
                                             <!-- LANGUAGE -->
                                             <div class="col-12 col-md-3" tabindex="-1" jsf:rendered="#{translation.language != null}">
@@ -106,7 +106,7 @@
                                                             itemValue="null"
                                                             itemLabel="#{msgs.bitteAuswaehlen}"/>
                                                     <f:selectItems
-                                                            value="#{vocabularyRecordsBean.getType(field).selectableValues}"/>
+                                                            value="#{field.selectableItems}"/>
                                                 </h:selectOneMenu>
                                             </div>
                                             <!-- // CONTENT -->
