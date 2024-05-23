@@ -8,7 +8,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.faces.model.SelectItem;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JSFFieldInstance extends FieldInstance {
@@ -20,6 +23,33 @@ public class JSFFieldInstance extends FieldInstance {
     private FieldDefinition definition;
     @Getter
     private FieldType type;
+    @Getter
+    private String currentValue;
+    public void setCurrentValue(String newValue) {
+        if (newValue.isBlank() || allSelectedValues.containsKey(newValue)) {
+            return;
+        }
+        String label = selectableItems.stream()
+                .filter(i -> i.getValue().equals(newValue))
+                .findFirst()
+                .orElseThrow()
+                .getLabel();
+        allSelectedValues.put(label, newValue);
+        allSelectedValueKeys = allSelectedValues.keySet().stream()
+                .sorted(String::compareToIgnoreCase)
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, String> allSelectedValues = new HashMap<>();
+
+    @Getter
+    private List<String> allSelectedValueKeys = Collections.emptyList();
+
+    public void removeSelectedValue(String selection) {
+        allSelectedValues.remove(selection);
+        allSelectedValueKeys = allSelectedValues.keySet().stream()
+                .collect(Collectors.toList());
+    }
 
     private VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 

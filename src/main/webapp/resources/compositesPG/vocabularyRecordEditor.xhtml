@@ -9,6 +9,8 @@
         xmlns:f="http://xmlns.jcp.org/jsf/core"
         xmlns:c="http://java.sun.com/jsp/jstl/core"
         xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+        xmlns:x="http://myfaces.apache.org/tomahawk"
+        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
 
     <composite:interface>
@@ -85,9 +87,10 @@
                                         </div>
                                     </ui:fragment>
                                     <!-- // Text area  type -->
+                                    <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
                                     <!-- Single select type -->
                                     <ui:fragment
-                                            rendered="#{field.selectableItems.size() > 0}">
+                                            rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == false}">
                                         <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
                                             <!-- LANGUAGE -->
                                             <div class="col-12 col-md-3" tabindex="-1" jsf:rendered="#{translation.language != null}">
@@ -115,6 +118,49 @@
                                     <!-- // Single select  type -->
                                 </ui:repeat>
                         </ui:repeat>
+                        <!-- Multi select type -->
+                        <ui:fragment
+                                rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == true}">
+                            <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
+                                <!-- LANGUAGE -->
+                                <div class="col-12 col-md-3" tabindex="-1" jsf:rendered="#{translation.language != null}">
+                                    <intranda:formLabel
+                                            label="#{translation.language != null ? translation.language : ''}"
+                                            labelFor="field4"/>
+                                </div>
+                                <!-- // LANGUAGE -->
+                                <!-- CONTENT -->
+                                <h:panelGroup  layout="block">
+                                    <h:selectOneMenu
+                                            styleClass="form-select"
+                                            id="field4"
+                                            forceId="true"
+                                            value="#{field.currentValue}"
+                                            required="false">
+                                        <f:ajax execute="@this" render="multiselect-id" event="change" />
+                                        <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" />
+                                        <f:selectItems value="#{field.selectableItems}" />
+                                    </h:selectOneMenu>
+
+                                    <h:panelGroup id="multiselect-id">
+                                        <x:dataList
+                                                id="datalist-id"
+                                                value="#{field.allSelectedValueKeys}"
+                                                var="selection">
+                                            <button class="badge badge-intranda-light mt-3" jsf:action="#{field.removeSelectedValue(selection)}" title="#{msgs.removeSelectedItem}" data-bs-toggle="tooltip">
+                                                <span class="fa fa-trash fs-400"/>
+                                                <span class="fs-400">
+                                                    <h:outputText value="#{selection}" />
+                                                </span>
+                                                <f:ajax execute="@this" render="@form" />
+                                            </button>
+                                        </x:dataList>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <!-- // CONTENT -->
+                            </div>
+                        </ui:fragment>
+                        <!-- // Multi select  type -->
                     </div>
                 </div>
             </ui:repeat>
