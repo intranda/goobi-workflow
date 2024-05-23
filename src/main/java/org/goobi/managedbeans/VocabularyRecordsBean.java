@@ -347,7 +347,10 @@ public class VocabularyRecordsBean implements Serializable {
 
     private void loadTypes() {
         this.typeIdMap = new HashMap<>();
-        this.definitions.forEach(d -> this.typeIdMap.put(d.getTypeId(), api.fieldTypes().get(d.getTypeId())));
+        this.definitions.stream()
+                .map(FieldDefinition::getTypeId)
+                .filter(Objects::nonNull)
+                .forEach(t -> this.typeIdMap.put(t, api.fieldTypes().get(t)));
     }
 
     private String transformToThreeCharacterAbbreviation(String language) {
