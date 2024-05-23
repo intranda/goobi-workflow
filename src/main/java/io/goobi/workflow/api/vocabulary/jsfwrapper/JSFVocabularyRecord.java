@@ -6,6 +6,7 @@ import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,6 +41,8 @@ public class JSFVocabularyRecord extends VocabularyRecord {
     private int level;
     @Getter
     private List<String> parents;
+
+    private VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     public JSFVocabularyRecord() {
     }
@@ -110,11 +113,17 @@ public class JSFVocabularyRecord extends VocabularyRecord {
 
     private String getFieldValue(FieldDefinition definition) {
         // TODO: Decide which language to show
-        return getFields().stream()
+        String value = getFields().stream()
                 .filter(f -> f.getDefinitionId().equals(definition.getId()))
                 .map(this::extractValue)
                 .findFirst()
                 .orElse("");
+        if (!value.isBlank() && definition.getReferenceVocabularyId() != null) {
+            long id = Long.parseLong(value.strip());
+            JSFVocabularyRecord result = api.vocabularyRecords().get(id);
+            value = result.getMainValue();
+        }
+        return value;
     }
 
     private String extractValue(FieldInstance field) {
