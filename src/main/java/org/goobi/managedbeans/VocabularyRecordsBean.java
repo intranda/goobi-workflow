@@ -110,11 +110,7 @@ public class VocabularyRecordsBean implements Serializable {
         record.setShown(true);
         expandParents(record);
         prepareEmptyFieldsForEditing(record);
-        record.load(schema);
-        record.getJsfFields().forEach(f -> {
-            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
-            f.load(definition, typeIdMap.getOrDefault(definition.getTypeId(), null));
-        });
+        loadRecord(record);
     }
 
     public void createEmpty(Long parent) {
@@ -125,6 +121,7 @@ public class VocabularyRecordsBean implements Serializable {
         loadRecord(record);
         this.currentRecord = record;
         prepareEmptyFieldsForEditing(record);
+        loadRecord(record);
     }
 
     public void deleteRecord() {
@@ -194,7 +191,7 @@ public class VocabularyRecordsBean implements Serializable {
     private JSFVocabularyRecord loadChild(long childId) {
         JSFVocabularyRecord newChild = new JSFVocabularyRecord(api.vocabularyRecords().get(childId));
         newChild.setLanguage(language);
-        newChild.load(schema);
+//        newChild.load(schema);
         paginator.postLoad(newChild);
         return newChild;
     }
@@ -262,6 +259,10 @@ public class VocabularyRecordsBean implements Serializable {
         record.setLanguage(language);
         record.load(schema);
         record.setShown(true);
+        record.getJsfFields().forEach(f -> {
+            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
+            f.load(definition, typeIdMap.getOrDefault(definition.getTypeId(), null));
+        });
         if (record.getParentId() != null) {
             JSFVocabularyRecord parent = new JSFVocabularyRecord(api.vocabularyRecords().get(record.getParentId()));
             parent.setExpanded(true);
