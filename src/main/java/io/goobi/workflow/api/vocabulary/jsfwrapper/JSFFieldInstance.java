@@ -40,6 +40,7 @@ public class JSFFieldInstance extends FieldInstance {
                 .collect(Collectors.toList());
     }
 
+    @Getter
     private Map<String, String> allSelectedValues = new HashMap<>();
 
     @Getter

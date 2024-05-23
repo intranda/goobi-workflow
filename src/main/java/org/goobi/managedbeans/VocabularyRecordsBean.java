@@ -49,6 +49,7 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -138,6 +139,7 @@ public class VocabularyRecordsBean implements Serializable {
         // TODO: Maybe replace current record
         try {
             VocabularyRecord newRecord;
+            saveJsfData(currentRecord);
             cleanUpRecord(currentRecord);
             if (currentRecord.getId() != null) {
                 newRecord = api.vocabularyRecords().change(currentRecord);
@@ -152,6 +154,25 @@ public class VocabularyRecordsBean implements Serializable {
         } catch (APIException e) {
             Helper.setFehlerMeldung(e);
         }
+    }
+
+    private void saveJsfData(JSFVocabularyRecord record) {
+        record.getJsfFields()
+                .forEach(f -> {
+                    if (Boolean.TRUE.equals(f.getDefinition().getMultiValued())) {
+                        f.getValues().clear();
+                        f.getValues().addAll(f.getAllSelectedValues().values().stream()
+                                .map(v -> {
+                                    TranslationInstance ti = new TranslationInstance();
+                                    ti.setValue(v);
+                                    FieldValue fv = new FieldValue();
+                                    fv.setTranslations(new LinkedList<>(List.of(ti)));
+                                    return fv;
+                                })
+                                .collect(Collectors.toSet()));
+                    }
+                });
+        record.setFields(new HashSet<>(record.getJsfFields()));
     }
 
     public void expandRecord(JSFVocabularyRecord record) {

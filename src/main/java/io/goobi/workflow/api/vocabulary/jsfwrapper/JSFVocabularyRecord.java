@@ -10,6 +10,7 @@ import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -98,11 +99,18 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                 .findFirst()
                 .orElse("");
         if (!value.isBlank() && definition.getReferenceVocabularyId() != null) {
-            long id = Long.parseLong(value.strip());
-            JSFVocabularyRecord result = api.vocabularyRecords().get(id);
-            result.setLanguage(language);
-            result.load(null);
-            value = result.getMainValue();
+            // Process multi-valued referenced fields
+            List<Long> ids = Arrays.stream(value.strip().split("\\|"))
+                    .map(Long::parseLong)
+                    .collect(Collectors.toList());
+            List<String> values = new LinkedList<>();
+            for (long id : ids) {
+                JSFVocabularyRecord result = api.vocabularyRecords().get(id);
+                result.setLanguage(language);
+                result.load(null);
+                values.add(result.getMainValue());
+            }
+            value = String.join("|", values);
         }
         return value;
     }
