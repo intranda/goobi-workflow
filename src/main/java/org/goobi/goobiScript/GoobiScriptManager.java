@@ -293,16 +293,19 @@ public class GoobiScriptManager {
                             XSSFRow row = sheet.createRow(count);
                             row.createCell(0).setCellValue(gsr.getProcessId());
                             row.createCell(1).setCellValue(gsr.getProcessTitle());
-                            row.createCell(2).setCellValue(gsr.getCommand());
+                            row.createCell(2)
+                                    .setCellValue(gsr.getCommand() != null && gsr.getCommand().length() > 2000
+                                            ? gsr.getCommand().substring(0, 2000) : gsr.getCommand());
                             row.createCell(3).setCellValue(gsr.getUsername());
                             row.createCell(4).setCellValue(gsr.getFormattedTimestamp());
                             row.createCell(5).setCellValue(gsr.getResultType().toString());
                             // reduce length to max 2000 char to avoid 'maximum length of cell contents (text) is 32767 characters' error in xls
                             row.createCell(6)
-                            .setCellValue(gsr.getResultMessage() != null && gsr.getResultMessage().length() > 2000
-                            ? gsr.getResultMessage().substring(0, 2000) : gsr.getResultMessage());
-                            row.createCell(7).setCellValue(gsr.getErrorText() != null && gsr.getErrorText().length() > 2000
-                                    ? gsr.getErrorText().substring(0, 2000) : gsr.getErrorText());
+                                    .setCellValue(gsr.getResultMessage() != null && gsr.getResultMessage().length() > 2000
+                                            ? gsr.getResultMessage().substring(0, 2000) : gsr.getResultMessage());
+                            row.createCell(7)
+                                    .setCellValue(gsr.getErrorText() != null && gsr.getErrorText().length() > 2000
+                                            ? gsr.getErrorText().substring(0, 2000) : gsr.getErrorText());
                             count++;
                         }
                     }
@@ -322,36 +325,36 @@ public class GoobiScriptManager {
      */
     public void goobiScriptSort() {
         synchronized (goobiScriptResults) {
-            if (sort.equals("id")) {
+            if ("id".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByID(false));
-            } else if (sort.equals("id desc")) {
+            } else if ("id desc".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByID(true));
-            } else if (sort.equals("title")) {
+            } else if ("title".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByTitle(false));
-            } else if (sort.equals("title desc")) {
+            } else if ("title desc".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByTitle(true));
-            } else if (sort.equals("status")) {
+            } else if ("status".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByStatus(false));
-            } else if (sort.equals("status desc")) {
+            } else if ("status desc".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByStatus(true));
-            } else if (sort.equals("command")) {
+            } else if ("command".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByCommand(false));
-            } else if (sort.equals("command desc")) {
+            } else if ("command desc".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByCommand(true));
 
-            } else if (sort.equals("user")) {
+            } else if ("user".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByUser(false));
-            } else if (sort.equals("user desc")) {
+            } else if ("user desc".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByUser(true));
 
-            } else if (sort.equals("timestamp")) {
+            } else if ("timestamp".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByTimestamp(false));
-            } else if (sort.equals("timestamp desc")) {
+            } else if ("timestamp desc".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByTimestamp(true));
 
-            } else if (sort.equals("description")) {
+            } else if ("description".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByDescription(false));
-            } else if (sort.equals("description desc")) {
+            } else if ("description desc".equals(sort)) {
                 Collections.sort(goobiScriptResults, new SortByDescription(true));
             }
         }
