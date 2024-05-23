@@ -5,12 +5,15 @@ import io.goobi.vocabulary.exchange.FieldInstance;
 import io.goobi.vocabulary.exchange.FieldType;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.faces.model.SelectItem;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class JSFFieldInstance extends FieldInstance {
+    @Setter
+    private String language;
     @Getter
     private List<SelectItem> selectableItems;
     @Getter
@@ -37,7 +40,11 @@ public class JSFFieldInstance extends FieldInstance {
                     .collect(Collectors.toList());
         } else if (definition.getReferenceVocabularyId() != null) {
             selectableItems = api.vocabularyRecords().all(definition.getReferenceVocabularyId()).stream()
-                    .map(r -> new SelectItem(String.valueOf(r.getId()), r.getMainValue()))
+                    .map(r -> {
+                        r.setLanguage(language);
+                        r.load(null);
+                        return new SelectItem(String.valueOf(r.getId()), r.getMainValue());
+                    })
                     .collect(Collectors.toList());
         }
     }

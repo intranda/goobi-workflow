@@ -58,7 +58,9 @@ public class JSFVocabularyRecord extends VocabularyRecord {
     }
 
     public void load(VocabularySchema schema) {
-        this.schema = schema;
+        if (schema != null) {
+            this.schema = schema;
+        }
         this.fieldDefinitions = new HashMap<>();
         this.schema.getDefinitions().forEach(d -> this.fieldDefinitions.put(d.getId(), d));
         // Sort languages to show same order for in record editor
@@ -71,13 +73,14 @@ public class JSFVocabularyRecord extends VocabularyRecord {
         this.jsfFields = getFields().stream()
                 .map(JSFFieldInstance::new)
                 .collect(Collectors.toList());
+        this.jsfFields.forEach(f -> f.setLanguage(language));
         this.parents = new LinkedList<>();
-        this.titleValues = schema.getDefinitions().stream()
+        this.titleValues = this.schema.getDefinitions().stream()
                 .sorted(Comparator.comparingLong(FieldDefinition::getId))
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
                 .map(this::getFieldValue)
                 .collect(Collectors.toList());
-        this.mainValue = schema.getDefinitions().stream()
+        this.mainValue = this.schema.getDefinitions().stream()
                 .filter(d -> Boolean.TRUE.equals(d.getMainEntry()))
                 .map(this::getFieldValue)
                 .findAny().orElseThrow(() -> new RuntimeException("Record has no main value defined"));
@@ -97,6 +100,8 @@ public class JSFVocabularyRecord extends VocabularyRecord {
         if (!value.isBlank() && definition.getReferenceVocabularyId() != null) {
             long id = Long.parseLong(value.strip());
             JSFVocabularyRecord result = api.vocabularyRecords().get(id);
+            result.setLanguage(language);
+            result.load(null);
             value = result.getMainValue();
         }
         return value;
