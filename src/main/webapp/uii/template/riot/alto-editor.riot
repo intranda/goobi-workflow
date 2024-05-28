@@ -267,6 +267,11 @@
         const opts = $.extend(true, {}, config, {
             wordSelector: ".altoword",
             wordContainerSelector: ".alto-edit",
+            namedEntities: this.alto.namedEntities.map(entity => {
+                let words = this.alto.namedEntityMap[entity.id];
+                entity.words = (words ? words : []);
+                return entity;
+            }),
             changeCallback: (changesList) => {
                 //remove all changes regarding named entities. They will be replaced by the changesList
                 this.changes.namedEntities = changesList;

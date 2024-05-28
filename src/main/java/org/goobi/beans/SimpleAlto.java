@@ -44,21 +44,29 @@ import org.jdom2.xpath.XPathFactory;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlTools;
 import lombok.Data;
+import lombok.extern.log4j.Log4j2;
+import software.amazon.awssdk.utils.StringUtils;
 
 @Data
+@Log4j2
 public class SimpleAlto {
     private static Namespace altoNamespace = Namespace.getNamespace("alto", "http://www.loc.gov/standards/alto/ns-v2#");
     private static Namespace altov4Namespace = Namespace.getNamespace("alto", "http://www.loc.gov/standards/alto/ns-v4#");
     private static XPathFactory xFactory = XPathFactory.instance();
     private static XPathExpression<Element> linesXpath = xFactory.compile("//alto:TextLine", Filters.element(), null, altoNamespace);
     private static XPathExpression<Element> wordXpath = xFactory.compile("./alto:String", Filters.element(), null, altoNamespace);
+    private static XPathExpression<Element> namedEntityXpath = xFactory.compile("//alto:NamedEntityTag", Filters.element(), null, altoNamespace);
 
     private static XPathExpression<Element> linesV4Xpath = xFactory.compile("//alto:TextLine", Filters.element(), null, altov4Namespace);
     private static XPathExpression<Element> wordV4Xpath = xFactory.compile("./alto:String", Filters.element(), null, altov4Namespace);
+    private static XPathExpression<Element> namedEntityV4Xpath = xFactory.compile("//alto:NamedEntityTag", Filters.element(), null, altov4Namespace);
 
     private List<SimpleAltoLine> lines;
     private Map<String, SimpleAltoLine> lineMap = new HashMap<>();
     private Map<String, SimpleAltoWord> wordMap = new HashMap<>();
+
+    private List<NamedEntity> namedEntities = new ArrayList<>();
+    private Map<String, List<String>> namedEntityMap = new HashMap<>();
 
     public SimpleAlto() {
         super();
@@ -96,6 +104,9 @@ public class SimpleAlto {
             xmlLines = linesV4Xpath.evaluate(doc);
             useV4 = true;
         }
+
+        createNamedEntities(doc, alto);
+
         for (Element xmlLine : xmlLines) {
             SimpleAltoLine line = new SimpleAltoLine();
             line.setId(xmlLine.getAttributeValue("ID"));
@@ -119,6 +130,8 @@ public class SimpleAlto {
                 word.setWidth((int) Double.parseDouble(xmlWord.getAttributeValue("WIDTH", "0")));
                 word.setHeight((int) Double.parseDouble(xmlWord.getAttributeValue("HEIGHT", "0")));
 
+                parseNamedEntityTagRefs(alto, xmlWord);
+
                 words.add(word);
                 alto.wordMap.put(word.getId(), word);
             }
@@ -129,5 +142,36 @@ public class SimpleAlto {
         }
 
         return alto;
+    }
+
+    public static void parseNamedEntityTagRefs(SimpleAlto alto, Element xmlWord) {
+        String tagrefString = xmlWord.getAttributeValue("TAGREFS", "");
+        String[] tagrefs = tagrefString.split("[\\s,;]+");
+        for (String tagref : tagrefs) {
+            if (StringUtils.isNotBlank(tagref)) {
+                List<String> tagWordList = alto.namedEntityMap.getOrDefault((tagref), new ArrayList<>());
+                tagWordList.add(xmlWord.getAttributeValue("ID"));
+            }
+        }
+    }
+
+    public static void createNamedEntities(Document doc, SimpleAlto alto) {
+        List<Element> namedEntityElements = namedEntityXpath.evaluate(doc);
+        if (namedEntityElements.isEmpty()) {
+            namedEntityElements = namedEntityV4Xpath.evaluate(doc);
+        }
+        for (Element entityElement : namedEntityElements) {
+            String id = entityElement.getAttributeValue("ID");
+            String label = entityElement.getAttributeValue("LABEL");
+            String type = entityElement.getAttributeValue("TYPE");
+            String uri = entityElement.getAttributeValue("URI");
+            if (StringUtils.isNotBlank(id)) {
+                NamedEntity entity = new NamedEntity(id, label, type, uri);
+                alto.namedEntities.add(entity);
+                alto.namedEntityMap.put(id, new ArrayList<>());
+            } else {
+                log.warn("Found named entity without id. Entity cannot be imported and will be ignored");
+            }
+        }
     }
 }
