@@ -57,7 +57,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
         addNewActionToSampleCall(sb, "This GoobiScript allows to add a new workflow step into the workflow.");
         addParameterToSampleCall(sb, STEPTITLE, "Scanning", "Title of the workflow step to add");
         addParameterToSampleCall(sb, NUMBER, "5",
-                "This number defines where in the workflow this new step is ordered into. Numerical values or the keyword 'end' are permitted in order to insert the step at a specific position or at the end");
+                "This number defines where in the workflow this new step is ordered into. Numerical values or the keyword \"end\" are permitted in order to insert the step at a specific position or at the end");
         return sb.toString();
     }
 
