@@ -4,7 +4,7 @@
             <div id="bigImage" onclick={canvasOnClick} onmousemove={canvasOnClick}></div>
         </div>
         <div class="col-md-6{ this.alignRtl ? ' alignRight': null}">
-            <div class="alto-edit" onclick="{deselectWords}">
+            <div class="alto-edit">
                 <div each={line in lines} class="altoline" >
                     <span each={word in line.words}>
                         <span id={word.id}
@@ -14,41 +14,13 @@
                             onfocus={lockWord} 
                         	onblur={unlockWord}
                             onmousemove={highlightWord} 
-                            onclick={selectWord}
                             contenteditable="true" 
                             spellcheck="false">{word.value}</span>
                     </span>
                 <br>
                 </div>
             </div>
-            <div if="{this.opts.namedEntities.enabled}" class="authority-data-editor">
-                <div class="authority-data-editor-row" each="{entity in this.getConnectedEntities()}">
-                    <div>{entity.uri}</div>
-                    <div each={word in entity.words}>
-                        {getEntityValue(entity.uri)}
-                    </div>
-                   <div id="entityActions">
-                        <button class="btn btn--gray" type="button" onclick="{selectWordsOfEntity}">{msgs.action__set_named_entity}</button>
-                    </div>
-                </div>
-                <div class="authority-data-editor-row">
-         	        <div id="namedEntityType">
-                        <label class="form-group__label" for="namedEntityTypeSelector">{msgs.label__named_entity_type}:</label>
-                        <select disabled data-enable="select-word" id="namedEntityTypeSelector" class="form-control form-control--select">
-                            <option each="{type in this.entityTypes}" value="{type.value}">{type.label}</option>
-                        </select>
-                    </div>
-                    <div id="authorityEntity">
-                        <label class="form-group__label" for="authorityEntitySelector">{msgs.label__named_entity}:</label>
-                        <select ref="entitySelection" disabled data-enable="select-word" id="authorityEntitySelector" class="form-control form-control--select">
-                            <option each="{entity in this.namedEntities}" value="{entity.uri}">{entity.value} ({entity.uri})</option>
-                        </select>
-                    </div>
-                    <div id="entityActions">
-                        <button disabled data-enable="select-word" class="btn btn--gray" type="button" onclick="{connectEntity}">{msgs.action__set_named_entity}</button>
-                    </div>
-                </div>
-            </div>
+            <div ref="namedEntityEditorWrapper"/>
         </div>
     </div>
 
@@ -67,19 +39,6 @@
         border: 1px solid #ddd;
         padding: 15px;
     }
-    .authority-data-editor {
-    	min-height: 10vh;
-        max-height: 20vh;
-        overflow-y: scroll;
-        border: 1px solid #ddd;
-        padding: 15px;
-        margin: 15px 0 0 0;
-    }
-    .authority-data-editor-row {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-    }
     #bigImage {
         height: 82vh;
         border: 1px solid #ddd;
@@ -96,15 +55,8 @@
     .rightToLeft {
         direction: rtl;
     }
-    .alignRight {
+    .alignRight{
         text-align: right;
-    }
-    .form-control {
-    	display: inline;
-    	width: auto;
-    }
-    .form-group__label {
-    	margin-right: 10px;
     }
     .selected-word {
     	background: rgba(255,255,0,0.3);
@@ -122,91 +74,22 @@
         this.alto = JSON.parse(altoJson);
         this.lines = this.alto.lines;
         console.log(this.alto)
-        this.entityTypes = this.opts.namedEntities.types;
-        this.namedEntities = JSON.parse(this.opts.namedEntities.entities);
-        console.log("namedEntities", this.namedEntities);
         this.changes = {};
         this.oldPos = {};
-        this.msgs = this.opts.msgs;
-        this.selectedWords = [];
     })
     
     this.on('mount', () => {
     	this.initOpenseadragon();
+        if(this.opts.namedEntityEditor?.enabled) {
+            this.initNamedEntityEditor(this.refs.namedEntityEditorWrapper, this.opts.namedEntityEditor);
+        }
     	this.update();
     	
     })
 
-    selectWordsOfEntity(e) {
-        let entity = e.item.entity;
-        console.log("selectWordsOfEntity", entity);
-        let wordElements = entity.words.map(id => document.getElementById(id));
-        wordElements.forEach(ele => this.addSelectedWord(ele))
-    }
-
-    getEntityValue(uri) {
-        return this.namedEntities.find(e => e.uri == uri)?.value;
-    }
-
-    getConnectedEntities() {
-        let entities = Object.keys(this.changes).filter(key => this.changes[key].action == "connectEntity").map(key => { return {uri: key, words: this.changes[key].value};});
-        return entities;
-    }
-
-    deselectWords(e) {
-        if(e?.target?.classList?.contains("altoword")) {
-    		return;	//clicked on a word. Dont reset selected words
-    	} 
-		document.querySelectorAll("[data-enable='select-word']").forEach(ele => ele.disabled = true)
-        this.resetSelectedWords();
-        console.log("words selected:", this.selectedWords.map(ele => ele.id) );
-    }
-
-    selectWord(e) {
-        console.log("click word", e);  
-        document.querySelectorAll("[data-enable='select-word']").forEach(ele => ele.disabled = false);
-        let shiftPressed = e.shiftKey;
-        if(e.shiftKey) {
-            this.addSelectedWord(e);
-        } else {
-            this.setSelectedWord(e);
-        }
-        console.log("words selected:", this.selectedWords.map(ele => ele.id) );
-
-    }
-    
     lockWord(e) {
-        console.log("lock word", e);
     	this.wordLocked = true;
     	this.highlightWord(e);
-    	
-    }
-    
-    resetSelectedWords() {
-    	this.selectedWords.forEach(ele => ele.classList.remove('selected-word'));
-    	this.selectedWords = [];
-    }
-    
-    setSelectedWord(e) {
-    	this.resetSelectedWords();
-    	this.addSelectedWord(e);
-    }
-    
-    addSelectedWord(e) {
-
-        if(e.target) {
-            e = e.target;
-        }
-
-    	if(e.classList.toggle('selected-word')) {
-    	    this.selectedWords.push(e);
-        } else {
-            let elementToRemove = this.selectedWords.find(ele => ele.id == e.id);
-            if(elementToRemove) {
-                let indexToRemove = this.selectedWords.indexOf(e);
-                this.selectedWords.splice(indexToRemove, 1);
-            }
-        }
     }
     
     unlockWord(e) {
@@ -313,8 +196,13 @@
     	let changeArr = [];
     	for(let wordId of Object.keys(this.changes)) {
     		let change = this.changes[wordId];
-    		changeArr.push({action: change.action, value: change.value, wordId: wordId})
+            if(Array.isArray(change)) {
+                changeArr.push(...change);
+            } else {
+    		    changeArr.push({action: change.action, value: change.value, wordId: wordId});
+            }
     	}
+        console.log("get changes", changeArr);
     	return JSON.stringify(changeArr);
     }
     
@@ -374,18 +262,20 @@
         });
         
     }
-    
-    connectEntity(e) {
-    	if(this.selectedWords.length) {
-    		let entityUri = this.refs.entitySelection.value;
-    		if(!this.changes[entityUri]) {
-    			this.changes[entityUri] = {action: "connectEntity", value: []};
-    		}
-    		this.changes[entityUri].value.push(this.selectedWords.map(ele => ele.id));
-    		console.log("changed entity:", entityUri, this.changes[entityUri]);
-    	}
+
+    initNamedEntityEditor(element, config) {
+        const opts = $.extend(true, {}, config, {
+            wordSelector: ".altoword",
+            wordContainerSelector: ".alto-edit",
+            changeCallback: (changesList) => {
+                //remove all changes regarding named entities. They will be replaced by the changesList
+                console.log("add named entites changes to ", this.changes, changesList);
+                this.changes,namedEntities = changesList;
+            }
+        });
+        riot.mount(this.refs.namedEntityEditorWrapper, "named-entity-selector", opts);
     }
-    
+
     canvasOnClick(e) {
     	if(this.wordLocked && e.type === "mousemove") {
     		return;

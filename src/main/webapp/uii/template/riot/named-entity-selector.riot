@@ -1,0 +1,213 @@
+<named-entity-selector>
+
+    <div class="authority-data-editor">
+        <div class="authority-data-editor-row" each="{entity in this.entities}">
+            <div>{entity.uri}</div>
+            <div each={word in entity.words}>
+                {getEntityValue(entity)}
+            </div>
+            <div id="entityActions">
+                <button class="btn btn--gray" type="button" onclick="{selectEntity}">{msgs.action__edit_entity}</button>
+            </div>
+        </div>
+        <div class="authority-data-editor-row">
+            <div id="namedEntityType">
+                <label class="form-group__label" for="entityTypeSelector">{msgs.label__named_entity_type}:</label>
+                <select ref="entityTypeSelection" disabled data-enable="select-word" id="entityTypeSelector" class="form-control form-control--select">
+                    <option each="{type in this.entityTypes}" value="{type.value}">{type.label}</option>
+                </select>
+            </div>
+            <div id="authorityEntity">
+                <label class="form-group__label" for="entityValueSelector">{msgs.label__named_entity}:</label>
+                <select ref="entityValueSelection" disabled data-enable="select-word" id="entityValueSelector" class="form-control form-control--select">
+                    <option each="{entity in this.entityValues}" value="{entity.uri}">{entity.value} ({entity.uri})</option>
+                </select>
+            </div>
+            <div id="entityActions">
+                <button disabled data-enable="select-word" class="btn btn--gray" type="button" onclick="{createEntity}">{msgs.action__set_named_entity}</button>
+            </div>
+        </div>
+    </div>
+
+	<style>
+        .alignRight {
+            text-align: right;
+        }
+        .form-control {
+            display: inline;
+            width: auto;
+        }
+        .form-group__label {
+            margin-right: 10px;
+        }
+        .authority-data-editor {
+            min-height: 10vh;
+            max-height: 20vh;
+            overflow-y: scroll;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px 0 0 0;
+        }
+        .authority-data-editor-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+    </style>
+    
+    <script>
+
+        const SELECTED_WORD_CLASS = "selected-word";
+
+        /*
+        entity: {
+            label: "Name",
+            uri: "https://normadata/name",
+            type: "person",
+            words: ["Textword_21", "Textword_22", "Textword_23"]
+        }
+        entityType: {
+            value: "person",
+            label: "Person"
+        }
+        entityValue: {
+            value: "Name",
+            uri: "https://normadata/name"
+        }
+        */
+
+        this.on('before-mount', () => {
+            console.log("initializing named entity selector with", opts);
+            this.msgs = this.opts.msgs;
+            this.entities = [];
+            this.selectedWords = [];    //html elements
+            this.selectedEntity = undefined;
+            this.entityTypes = this.opts.types;
+            this.entityValues = JSON.parse(this.opts.entities);
+
+        })
+
+        this.on('mount', () => {
+            document.querySelectorAll(this.opts.wordSelector).forEach( wordElement => {
+                wordElement.onclick = e => {
+                    console.log("clicked on word", e.target);
+                    this.handleWordClick(e.target);
+                };
+            });
+            document.querySelector(this.opts.wordContainerSelector).onclick = e => {
+                if(!e?.target?.matches(this.opts.wordSelector)) {
+    		        this.resetSelection();
+                }
+            };
+        });
+
+        handleWordClick(element) {
+                const alreadySelected = element.classList.contains(SELECTED_WORD_CLASS);
+                if(this.selectedEntity) {
+                    if(alreadySelected) {
+                        this.removeFromEnttiy(element, this.selectedEntity)
+                    } else {
+                         this.addToEntity(element, this.selectedEntity);
+                    }
+                } else {
+                    this.activateInputElements();
+                    if(alreadySelected) {
+                         this.removeSelectedWord(element)
+                    } else {
+                         this.addSelectedWord(element);
+                    }
+                }
+        }
+
+        activateInputElements(enable) {
+            if(enable === undefined) {
+                enable = true;
+            }
+            document.querySelectorAll("[data-enable='select-word']").forEach(ele => ele.disabled = !enable);
+        }
+
+        addSelectedWord(element) {
+            element.classList.add(SELECTED_WORD_CLASS);
+            this.selectedWords.push(element);
+        }
+        
+        removeSelectedWord(element) {
+            element.classList.remove(SELECTED_WORD_CLASS);
+            let index = this.selectedWords.indexOf(element);
+            this.selectedWords.splice(index, 1);
+        }
+
+        removeFromEnttiy(element, entity) {
+            element.classList.remove(SELECTED_WORD_CLASS);
+            let id = element.id;
+            let index = entity.words.indexOf(id);
+            if(index > -1) {
+                entity.words.splice(index, 1);
+            }
+            this.saveEntities();
+        }
+
+        selectEntity(event) {
+            const entity = event.item.entity;
+            console.log("select entity" , entity);
+            this.selectedEntity = entity;
+            entity.words.map(id => document.getElementById(id)).forEach(element => this.addSelectedWord(element));
+        }
+
+        addToEntity(element, entity) {
+            element.classList.add(SELECTED_WORD_CLASS);
+            if(!entity.words) {
+                entity.words = [];
+            }
+            entity.words.push(element.id);
+            this.saveEntities();
+        }
+
+        resetSelection() {
+            if(this.selectedEntity) {
+                this.selectedEntity.words.map(id => document.getElementById(id)).forEach(ele => ele.classList.remove(SELECTED_WORD_CLASS));
+                this.selectedEntity = undefined;
+            } else {
+                this.selectedWords.forEach(ele => ele.classList.remove(SELECTED_WORD_CLASS));
+            }
+        }
+
+        createEntity() {
+            const authorityUri = this.refs.entityValueSelection.value;
+            let entity = {
+                uri : authorityUri,
+                type : this.refs.entityTypeSelection.value,
+                label : this.entityValues.find(v => v.uri === authorityUri).value,
+                words : this.selectedWords.map(w => w.id),
+            }
+            this.entities.push(entity);
+            this.saveEntities();
+            this.resetSelection();
+
+        }
+
+        saveEntities() {
+            const changesList = this.entities.map(entity => {
+                return  {
+                    action: "setNamedEntity",
+                    entity: {
+                        label: entity.label,
+                        type: entity.type,
+                        uri: entity.uri
+                    },
+                    words: entity.words 
+                }
+            })
+            this.opts.changeCallback(changesList);
+        }
+
+        getEntityValue(entity) {
+            return `${entity.label} (${entity.uri})`; 
+        }
+
+    </script>
+    
+    
+    
+	
+</named-entity-selector>

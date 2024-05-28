@@ -195,6 +195,7 @@
                 </h:panelGroup>
 
             </div>
+            <div id="test"/>
         </div>
         <script>
         function openAltoEditor(dontShowModal) {
@@ -207,13 +208,14 @@
         		altoChangesInputSelector: "#altoChanges",
         		tileSourceSelector: '#tileSource',
         		alignRtl: #{Metadaten.pagesRTL},
-        		msgs: {
-        			label__named_entity_type: "#{msgs.label__named_entity_type}",
-        			label__named_entity: "#{msgs.label__named_entity}",
-        			action__set_named_entity: "#{msgs.action__set_named_entity}"
-        		},
-        		namedEntities: {
+        		namedEntityEditor: {
         			enabled: true,
+                    msgs: {
+                        label__named_entity_type: "#{msgs.label__named_entity_type}",
+                        label__named_entity: "#{msgs.label__named_entity}",
+                        action__set_named_entity: "#{msgs.action__set_named_entity}",
+                        action__edit_entity: "#{msgs.action__edit_entity}"
+                    },
         			types: [
         				{value: "person", label: "#{msgs.person}"},
         				{value: "corporation", label: "#{msgs.corporation}"},
