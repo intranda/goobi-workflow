@@ -8,6 +8,7 @@
             </div>
             <div id="entityActions">
                 <button class="btn btn--gray" type="button" onclick="{selectEntity}">{msgs.action__edit_entity}</button>
+                <button class="btn btn--gray" type="button" onclick="{deleteEntity}">{msgs.action__delete_entity}</button>
             </div>
         </div>
         <div class="authority-data-editor-row">
@@ -85,7 +86,7 @@
         this.on('before-mount', () => {
             console.log("initializing named entity selector with", opts);
             this.msgs = this.opts.msgs;
-            this.entities = [];
+            this.entities = this.opts.namedEntities;
             this.selectedWords = [];    //html elements
             this.selectedEntity = undefined;
             this.entityTypes = this.opts.types;
@@ -171,6 +172,18 @@
             this.resetSelection();
             this.selectedEntity = entity;
             entity.words.map(id => document.getElementById(id)).forEach(element => this.addSelectedWord(element));
+        }
+        
+        deleteEntity(event) {
+            const entity = event.item.entity;
+            console.log("delete entity" , entity);
+            let entityIndex = this.entities.indexOf(entity);
+            if(entityIndex > -1) {
+                this.entities.splice(entityIndex, 1);
+            }
+            this.resetSelection();
+            this.resetEntityValueSelection();
+            this.saveEntities();
         }
 
         addToEntity(element, entity) {
