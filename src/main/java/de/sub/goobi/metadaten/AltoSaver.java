@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.AltoChange;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -60,7 +61,6 @@ public class AltoSaver {
         }
         Document doc = sax.build(altoFile.toFile());
         Namespace namespace = Namespace.getNamespace("alto", doc.getRootElement().getNamespaceURI());
-
         boolean writeTags = Arrays.stream(changes).anyMatch(change -> "setNamedEntity".equals(change.getAction()));
         //first remove all tags and tagrefs. Create new Tags element if necessary
         XPathExpression<Element> tagsXPath = xFactory.compile("//alto:Tags", Filters.element(), null, namespace);
@@ -88,9 +88,15 @@ public class AltoSaver {
                 String tagId = String.format("Tag%d", ++tagCounter);
                 Element namedEntityTag = new Element("NamedEntityTag", doc.getRootElement().getNamespace());
                 namedEntityTag.setAttribute("ID", tagId);
-                namedEntityTag.setAttribute("LABEL", change.getEntity().getLabel());
-                namedEntityTag.setAttribute("TYPE", change.getEntity().getType());
-                namedEntityTag.setAttribute("URI", change.getEntity().getUri());
+                if (StringUtils.isNotBlank(change.getEntity().getLabel())) {
+                    namedEntityTag.setAttribute("LABEL", change.getEntity().getLabel());
+                }
+                if (StringUtils.isNotBlank(change.getEntity().getType())) {
+                    namedEntityTag.setAttribute("TYPE", change.getEntity().getType());
+                }
+                if (StringUtils.isNotBlank(change.getEntity().getUri())) {
+                    namedEntityTag.setAttribute("URI", change.getEntity().getUri());
+                }
                 tagsElement.addContent(namedEntityTag);
                 change.getWords().stream().map(id -> getWordById(doc, namespace, id)).filter(Objects::nonNull).forEach(ele -> {
                     String tagRefs = Optional.ofNullable(ele.getAttributeValue("TAGREFS")).orElse("").trim();

@@ -2,9 +2,9 @@
 
     <div class="authority-data-editor">
         <div class="authority-data-editor-row" each="{entity in this.entities}">
-            <div>{entity.uri}</div>
+            <div>{getTypeLabel(entity.type)}</div>
             <div>
-               {entity.label}
+               {entity.label} ({entity.uri})
             </div>
             <div id="entityActions">
                 <button class="btn btn--gray" type="button" onclick="{selectEntity}">{msgs.action__edit_entity}</button>
@@ -14,12 +14,15 @@
             <div id="namedEntityType">
                 <label class="form-group__label" for="entityTypeSelector">{msgs.label__named_entity_type}:</label>
                 <select ref="entityTypeSelection" disabled data-enable="select-word" id="entityTypeSelector" class="form-control form-control--select">
+                    <option value="">{msgs.bitteAuswaehlen}</option>
                     <option each="{type in this.entityTypes}" value="{type.value}">{type.label}</option>
                 </select>
             </div>
             <div id="authorityEntity">
-                <label class="form-group__label" for="entityValueSelector">{msgs.label__named_entity}:</label>
-                <select ref="entityValueSelection" disabled data-enable="select-word" id="entityValueSelector" class="form-control form-control--select">
+                <label class="form-group__label" for="entityValueInput">{msgs.label__named_entity}:</label>
+                <input ref="entityValueInput" disabled data-enable="select-word" class="form-control form-control--input" onchange="{handleEntityInputChange}"/>
+                <select ref="entityValueSelection" disabled data-enable="select-word" id="entityValueSelector" class="form-control form-control--select" onchange="{handleEntitySelectChange}">
+                    <option value="">{msgs.bitteAuswaehlen}</option>
                     <option each="{entity in this.entityValues}" value="{entity.uri}">{entity.value} ({entity.uri})</option>
                 </select>
             </div>
@@ -39,6 +42,9 @@
         }
         .form-group__label {
             margin-right: 10px;
+        }
+        #entityValueSelector {
+            width: 30px;
         }
         .authority-data-editor {
             min-height: 10vh;
@@ -89,17 +95,28 @@
 
         this.on('mount', () => {
             document.querySelectorAll(this.opts.wordSelector).forEach( wordElement => {
-                wordElement.onclick = e => {
-                    console.log("clicked on word", e.target);
+                wordElement.addEventListener("click", e => {
                     this.handleWordClick(e.target);
-                };
+                });
             });
-            document.querySelector(this.opts.wordContainerSelector).onclick = e => {
+            document.querySelector(this.opts.wordContainerSelector).addEventListener("click", e => {
                 if(!e?.target?.matches(this.opts.wordSelector)) {
     		        this.resetSelection();
                 }
-            };
+            });
         });
+        
+        handleEntitySelectChange(event) {
+            console.log("selected ", event);
+            const uri = event.target.value;
+            const entityValue = this.entityValues.find(ent => ent.uri == uri);
+            this.refs.entityValueInput.value = event.target.selectedOptions[0]?.innerText;
+            this.refs.entityValueInput.dataset["uri"] = uri;
+        }
+
+        handleEntityInputChange(event) {
+            this.refs.entityValueInput.dataset["uri"] = "";
+        }
 
         handleWordClick(element) {
                 const alreadySelected = element.classList.contains(SELECTED_WORD_CLASS);
@@ -173,18 +190,39 @@
                 this.selectedWords.forEach(ele => ele.classList.remove(SELECTED_WORD_CLASS));
             }
             this.selectedWords = [];
+            this.activateInputElements(false);
+        }
+
+        resetEntityValueSelection() {
+            this.refs.entityValueInput.value = "";
+            this.refs.entityValueInput.dataset["uri"] = "";
+        }
+
+        getTypeLabel(typeValue) {
+            let type = this.entityTypes.find(t => t.value === typeValue);
+            return type ? type.label : type;
         }
 
         createEntity() {
-            const authorityUri = this.refs.entityValueSelection.value;
-            let entity = {
-                uri : authorityUri,
-                type : this.refs.entityTypeSelection.value,
-                label : this.entityValues.find(v => v.uri === authorityUri).value,
-                words : this.selectedWords.map(w => w.id),
+            const authorityUri = this.refs.entityValueInput.dataset["uri"];
+            if(authorityUri) {
+                let entity = {
+                    uri : authorityUri,
+                    type : this.refs.entityTypeSelection.value,
+                    label : this.entityValues.find(v => v.uri === authorityUri).value,
+                    words : this.selectedWords.map(w => w.id),
+                }
+                this.entities.push(entity);
+            } else {
+                let entity = {
+                    type : this.refs.entityTypeSelection.value,
+                    label : this.refs.entityValueInput.value,
+                    words : this.selectedWords.map(w => w.id),
+                }
+                this.entities.push(entity);
             }
-            this.entities.push(entity);
             this.saveEntities();
+            this.resetEntityValueSelection();
             this.resetSelection();
 
         }
@@ -203,10 +241,6 @@
                 }
             })
             this.opts.changeCallback(changesList);
-        }
-
-        getEntityValue(entity) {
-            return `${entity.label} (${entity.uri})`; 
         }
 
     </script>
