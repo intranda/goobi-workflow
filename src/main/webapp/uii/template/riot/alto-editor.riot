@@ -202,7 +202,7 @@
     		    changeArr.push({action: change.action, value: change.value, wordId: wordId});
             }
     	}
-        console.log("get changes", changeArr);
+        console.log("get changes", changeArr, this.changes);
     	return JSON.stringify(changeArr);
     }
     
@@ -269,8 +269,8 @@
             wordContainerSelector: ".alto-edit",
             changeCallback: (changesList) => {
                 //remove all changes regarding named entities. They will be replaced by the changesList
+                this.changes.namedEntities = changesList;
                 console.log("add named entites changes to ", this.changes, changesList);
-                this.changes,namedEntities = changesList;
             }
         });
         riot.mount(this.refs.namedEntityEditorWrapper, "named-entity-selector", opts);

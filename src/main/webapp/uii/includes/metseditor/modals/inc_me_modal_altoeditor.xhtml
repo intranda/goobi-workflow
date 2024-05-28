@@ -177,7 +177,7 @@
                                 <div class="col-md-6">
                                     <div class="pull-right">
                                         <h:panelGroup id="saveMessages" class="save-messages" pt:data-fadeoutmessages="true">
-                                            <h:inputText value="#{Metadaten.altoChanges}" id="c" style="display: none;"/>
+                                            <h:inputText value="#{Metadaten.altoChanges}" id="altoChanges" style="display: none;"/>
                                             <h:messages errorClass="alto-message-error" infoClass="alto-message-info" for="altoChanges" />
                                         </h:panelGroup>
                                         <button type="button" class="btn btn--icon-green" onclick="saveAltoResults()">
@@ -195,7 +195,6 @@
                 </h:panelGroup>
 
             </div>
-            <div id="test"/>
         </div>
         <script>
         function openAltoEditor(dontShowModal) {

@@ -3,8 +3,8 @@
     <div class="authority-data-editor">
         <div class="authority-data-editor-row" each="{entity in this.entities}">
             <div>{entity.uri}</div>
-            <div each={word in entity.words}>
-                {getEntityValue(entity)}
+            <div>
+               {entity.label}
             </div>
             <div id="entityActions">
                 <button class="btn btn--gray" type="button" onclick="{selectEntity}">{msgs.action__edit_entity}</button>
@@ -135,6 +135,7 @@
             element.classList.remove(SELECTED_WORD_CLASS);
             let index = this.selectedWords.indexOf(element);
             this.selectedWords.splice(index, 1);
+            console.log("removed word. selected words are " + this.selectedWords);
         }
 
         removeFromEnttiy(element, entity) {
@@ -150,6 +151,7 @@
         selectEntity(event) {
             const entity = event.item.entity;
             console.log("select entity" , entity);
+            this.resetSelection();
             this.selectedEntity = entity;
             entity.words.map(id => document.getElementById(id)).forEach(element => this.addSelectedWord(element));
         }
@@ -170,6 +172,7 @@
             } else {
                 this.selectedWords.forEach(ele => ele.classList.remove(SELECTED_WORD_CLASS));
             }
+            this.selectedWords = [];
         }
 
         createEntity() {
@@ -187,6 +190,7 @@
         }
 
         saveEntities() {
+            console.log("save entities", this.entities);
             const changesList = this.entities.map(entity => {
                 return  {
                     action: "setNamedEntity",

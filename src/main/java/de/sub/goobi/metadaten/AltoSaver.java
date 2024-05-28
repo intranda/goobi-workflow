@@ -28,6 +28,10 @@ package de.sub.goobi.metadaten;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.goobi.beans.AltoChange;
 import org.jdom2.Document;
@@ -43,7 +47,9 @@ import org.jdom2.xpath.XPathFactory;
 
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlTools;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class AltoSaver {
     private static SAXBuilder sax = XmlTools.getSAXBuilder();
     private static XPathFactory xFactory = XPathFactory.instance();
@@ -55,17 +61,55 @@ public class AltoSaver {
         Document doc = sax.build(altoFile.toFile());
         Namespace namespace = Namespace.getNamespace("alto", doc.getRootElement().getNamespaceURI());
 
+        boolean writeTags = Arrays.stream(changes).anyMatch(change -> "setNamedEntity".equals(change.getAction()));
+        //first remove all tags and tagrefs. Create new Tags element if necessary
+        XPathExpression<Element> tagsXPath = xFactory.compile("//alto:Tags", Filters.element(), null, namespace);
+        Element tagsElement = tagsXPath.evaluateFirst(doc);
+        if (writeTags) {
+            if (tagsElement == null) {
+                int layoutIndex = doc.getRootElement().indexOf(doc.getRootElement().getChild("Layout", namespace));
+                tagsElement = new Element("Tags", doc.getRootElement().getNamespace());
+                doc.getRootElement().addContent(layoutIndex, tagsElement);
+            }
+            tagsElement.removeChildren("NamedEntityTag", namespace);
+            XPathExpression<Element> stringsXPath = xFactory.compile("//alto:String", Filters.element(), null, namespace);
+            List<Element> stringElements = stringsXPath.evaluate(doc);
+            stringElements.forEach(string -> string.removeAttribute("TAGREFS"));
+        }
+        int tagCounter = 0;
+
         for (AltoChange change : changes) {
-            String xpath = String.format("//alto:String[@ID='%s']", change.getWordId());
-            XPathExpression<Element> compXpath = xFactory.compile(xpath, Filters.element(), null, namespace);
-            Element stringEl = compXpath.evaluateFirst(doc);
-            if (stringEl != null) {
-                stringEl.setAttribute("CONTENT", change.getValue());
+            Element stringEl = getWordById(doc, namespace, change.getWordId());
+            if ("changeContent".equals(change.getAction())) {
+                if (stringEl != null) {
+                    stringEl.setAttribute("CONTENT", change.getValue());
+                }
+            } else if ("setNamedEntity".equals(change.getAction())) {
+                String tagId = String.format("Tag%d", ++tagCounter);
+                Element namedEntityTag = new Element("NamedEntityTag", doc.getRootElement().getNamespace());
+                namedEntityTag.setAttribute("ID", tagId);
+                namedEntityTag.setAttribute("LABEL", change.getEntity().getLabel());
+                namedEntityTag.setAttribute("TYPE", change.getEntity().getType());
+                namedEntityTag.setAttribute("URI", change.getEntity().getUri());
+                tagsElement.addContent(namedEntityTag);
+                change.getWords().stream().map(id -> getWordById(doc, namespace, id)).filter(Objects::nonNull).forEach(ele -> {
+                    String tagRefs = Optional.ofNullable(ele.getAttributeValue("TAGREFS")).orElse("").trim();
+                    tagRefs = (tagRefs + " " + tagId).trim();
+                    ele.setAttribute("TAGREFS", tagRefs);
+                });
+            } else {
+                log.error("Cannot add alto change: Unknown action {}", change.getAction());
             }
         }
         try (OutputStream out = StorageProvider.getInstance().newOutputStream(altoFile)) {
             XMLOutputter xmlOut = new XMLOutputter(Format.getPrettyFormat());
             xmlOut.output(doc, out);
         }
+    }
+
+    public static Element getWordById(Document doc, Namespace namespace, String id) {
+        String xpath = String.format("//alto:String[@ID='%s']", id);
+        XPathExpression<Element> compXpath = xFactory.compile(xpath, Filters.element(), null, namespace);
+        return compXpath.evaluateFirst(doc);
     }
 }
