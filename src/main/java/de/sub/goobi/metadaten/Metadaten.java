@@ -3682,6 +3682,10 @@ public class Metadaten implements Serializable {
         }
     }
 
+    public boolean isShowNamedEntityEditor() {
+        return ConfigurationHelper.getInstance().isShowNamedEntityEditor();
+    }
+
     public String getOcrAddress() {
         int startseite = -1;
         int endseite = -1;

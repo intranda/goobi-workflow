@@ -1,34 +1,38 @@
 <named-entity-selector>
-
-    <div class="authority-data-editor">
-        <div class="authority-data-editor-row" each="{entity in this.entities}">
-            <div>{getTypeLabel(entity.type)}</div>
-            <div>
-               {entity.label} ({entity.uri})
-            </div>
-            <div id="entityActions">
-                <button class="btn btn--gray" type="button" onclick="{selectEntity}">{msgs.action__edit_entity}</button>
-                <button class="btn btn--gray" type="button" onclick="{deleteEntity}">{msgs.action__delete_entity}</button>
+    <h7 class="h6">{msgs.title__named_entity_editor}</h7>
+    <div class="named-entity-editor">
+        <div class="named-entity-editor-group">
+            <div class="named-entity-editor-row" each="{entity in this.entities}">
+                <div>{getTypeLabel(entity.type)}</div>
+                <div>
+                {entity.label} ({entity.uri})
+                </div>
+                <div id="entityActions">
+                    <button class="btn btn--gray" type="button" onclick="{selectEntity}">{msgs.action__edit_entity}</button>
+                    <button class="btn btn--gray" type="button" onclick="{deleteEntity}" title="{msgs.action__delete_entity}">
+                        <i class="fa fa-lg fa-trash-o" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="authority-data-editor-row">
+        <div class="named-entity-editor-row">
             <div id="namedEntityType">
                 <label class="form-group__label" for="entityTypeSelector">{msgs.label__named_entity_type}:</label>
-                <select ref="entityTypeSelection" disabled data-enable="select-word" id="entityTypeSelector" class="form-control form-control--select">
+                <select ref="entityTypeSelection" disabled data-enable="select-word" id="entityTypeSelector" class="form-control form-control--select" onchange="{checkCreateEntityButtonActive}">
                     <option value="">{msgs.bitteAuswaehlen}</option>
                     <option each="{type in this.entityTypes}" value="{type.value}">{type.label}</option>
                 </select>
             </div>
             <div id="authorityEntity">
                 <label class="form-group__label" for="entityValueInput">{msgs.label__named_entity}:</label>
-                <input ref="entityValueInput" disabled data-enable="select-word" class="form-control form-control--input" onchange="{handleEntityInputChange}"/>
-                <select ref="entityValueSelection" disabled data-enable="select-word" id="entityValueSelector" class="form-control form-control--select" onchange="{handleEntitySelectChange}">
+                <input ref="entityValueInput" disabled data-enable="select-word" class="form-control form-control--input" onchange="{handleEntityInputChange}" oninput="{checkCreateEntityButtonActive}"/>
+                <select ref="entityValueSelection" disabled data-enable="select-word" id="entityValueSelector" class="form-control form-control--select" onchange="{handleEntitySelectChange}" >
                     <option value="">{msgs.bitteAuswaehlen}</option>
                     <option each="{entity in this.entityValues}" value="{entity.uri}">{entity.value} ({entity.uri})</option>
                 </select>
             </div>
             <div id="entityActions">
-                <button disabled data-enable="select-word" class="btn btn--gray" type="button" onclick="{createEntity}">{msgs.action__set_named_entity}</button>
+                <button disabled class="btn btn--gray" type="button" ref="createEntityButton" onclick="{createEntity}">{msgs.action__set_named_entity}</button>
             </div>
         </div>
     </div>
@@ -47,24 +51,33 @@
         #entityValueSelector {
             width: 30px;
         }
-        .authority-data-editor {
-            min-height: 10vh;
-            max-height: 20vh;
-            overflow-y: scroll;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 15px 0 0 0;
+        .named-entity-editor {
+            padding-top: 5px;
         }
-        .authority-data-editor-row {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
+        .named-entity-editor-group {
+            overflow-y: scroll;
+            max-height: 6vh;
+        }
+        .named-entity-editor-row {
+            display: grid;
+            grid-template-columns: 3fr 5fr 2fr;
+            padding: 3px;
+        }
+        .named-entity-editor-row.-active {
+            border: 2px solid rgba(255,255,0,1);
+        }
+        .named-entity-editor-row input {
+            min-width: 70%;
         }
     </style>
     
     <script>
 
         const SELECTED_WORD_CLASS = "selected-word";
+        const SELECTOR_ENABLE_ON_WORD_SELECTED = "[data-enable='select-word']";
+        const SELECTOR_ENTITY_EDITOR_ROW = ".named-entity-editor-row";
+        const ACTIVE_CLASS = "-active";
+        const CHANGE_ACTION_SET_ENTITY = "setNamedEntity";
 
         /*
         entity: {
@@ -108,15 +121,15 @@
         });
         
         handleEntitySelectChange(event) {
-            console.log("selected ", event);
             const uri = event.target.value;
             const entityValue = this.entityValues.find(ent => ent.uri == uri);
             this.refs.entityValueInput.value = event.target.selectedOptions[0]?.innerText;
-            this.refs.entityValueInput.dataset["uri"] = uri;
+            this.refs.entityValueInput.dataset.uri = uri;
+            this.checkCreateEntityButtonActive();
         }
 
         handleEntityInputChange(event) {
-            this.refs.entityValueInput.dataset["uri"] = "";
+            this.refs.entityValueInput.dataset.uri = "";
         }
 
         handleWordClick(element) {
@@ -137,11 +150,17 @@
                 }
         }
 
+        checkCreateEntityButtonActive() {
+            this.refs.createEntityButton.disabled = this.refs.entityTypeSelection.disabled || !this.refs.entityTypeSelection.value || this.refs.entityValueInput.disabled || !this.refs.entityValueInput.value;
+ 
+        }
+
         activateInputElements(enable) {
             if(enable === undefined) {
                 enable = true;
             }
-            document.querySelectorAll("[data-enable='select-word']").forEach(ele => ele.disabled = !enable);
+            document.querySelectorAll(SELECTOR_ENABLE_ON_WORD_SELECTED).forEach(ele => ele.disabled = !enable);
+            this.checkCreateEntityButtonActive();
         }
 
         addSelectedWord(element) {
@@ -153,7 +172,6 @@
             element.classList.remove(SELECTED_WORD_CLASS);
             let index = this.selectedWords.indexOf(element);
             this.selectedWords.splice(index, 1);
-            console.log("removed word. selected words are " + this.selectedWords);
         }
 
         removeFromEnttiy(element, entity) {
@@ -168,15 +186,22 @@
 
         selectEntity(event) {
             const entity = event.item.entity;
-            console.log("select entity" , entity);
             this.resetSelection();
             this.selectedEntity = entity;
             entity.words.map(id => document.getElementById(id)).forEach(element => this.addSelectedWord(element));
+            this.highlightEntity(event.target);
+            
+        }
+
+        highlightEntity(element) {
+            document.querySelectorAll(SELECTOR_ENTITY_EDITOR_ROW).forEach(ele => ele.classList.remove(ACTIVE_CLASS));
+            if(element) {
+                element.closest(SELECTOR_ENTITY_EDITOR_ROW)?.classList.add(ACTIVE_CLASS);
+            }
         }
         
         deleteEntity(event) {
             const entity = event.item.entity;
-            console.log("delete entity" , entity);
             let entityIndex = this.entities.indexOf(entity);
             if(entityIndex > -1) {
                 this.entities.splice(entityIndex, 1);
@@ -204,11 +229,12 @@
             }
             this.selectedWords = [];
             this.activateInputElements(false);
+            this.highlightEntity(null);
         }
 
         resetEntityValueSelection() {
             this.refs.entityValueInput.value = "";
-            this.refs.entityValueInput.dataset["uri"] = "";
+            this.refs.entityValueInput.dataset.uri = "";
         }
 
         getTypeLabel(typeValue) {
@@ -217,7 +243,7 @@
         }
 
         createEntity() {
-            const authorityUri = this.refs.entityValueInput.dataset["uri"];
+            const authorityUri = this.refs.entityValueInput.dataset.uri;
             if(authorityUri) {
                 let entity = {
                     uri : authorityUri,
@@ -244,7 +270,7 @@
             console.log("save entities", this.entities);
             const changesList = this.entities.map(entity => {
                 return  {
-                    action: "setNamedEntity",
+                    action: CHANGE_ACTION_SET_ENTITY,
                     entity: {
                         label: entity.label,
                         type: entity.type,

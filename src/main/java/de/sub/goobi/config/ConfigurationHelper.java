@@ -1115,6 +1115,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("showOcrButton", false);
     }
 
+    public boolean isShowNamedEntityEditor() {
+        return getLocalBoolean("showNamedEntityEditor", false);
+    }
+
     public boolean isMetsEditorDisplayFileManipulation() {
         return getLocalBoolean("MetsEditorDisplayFileManipulation", false);
     }

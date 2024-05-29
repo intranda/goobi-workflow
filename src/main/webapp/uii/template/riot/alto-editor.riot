@@ -3,7 +3,7 @@
         <div class="col-md-6">
             <div id="bigImage" onclick={canvasOnClick} onmousemove={canvasOnClick}></div>
         </div>
-        <div class="col-md-6{ this.alignRtl ? ' alignRight': null}">
+        <div class="col-md-6{ this.alignRtl ? ' alignRight': null} alto-edit-wrapper">
             <div class="alto-edit">
                 <div each={line in lines} class="altoline" >
                     <span each={word in line.words}>
@@ -20,7 +20,7 @@
                 <br>
                 </div>
             </div>
-            <div ref="namedEntityEditorWrapper"/>
+            <div class="named-entity-edit" ref="namedEntityEditorWrapper"/>
         </div>
     </div>
 
@@ -32,12 +32,27 @@
     .altoword {
         padding: 3px;
     }
-    .alto-edit {
+    .alto-edit-wrapper {
         min-height: 82vh;
-        max-height: 82vh;
+        max-height: 82hv;
+        display: flex;
+        flex-direction: column;
+
+    }
+    .alto-edit {
         overflow-y: scroll;
         border: 1px solid #ddd;
         padding: 15px;
+        flex-grow: 1;
+    }
+    .named-entity-edit {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 15px 0 0 0;
+        display: none;
+    }
+    .named-entity-edit.-active {
+        display: block;
     }
     #bigImage {
         height: 82vh;
@@ -81,6 +96,7 @@
     this.on('mount', () => {
     	this.initOpenseadragon();
         if(this.opts.namedEntityEditor?.enabled) {
+            this.refs.namedEntityEditorWrapper.classList.add("-active");
             this.initNamedEntityEditor(this.refs.namedEntityEditorWrapper, this.opts.namedEntityEditor);
         }
     	this.update();
