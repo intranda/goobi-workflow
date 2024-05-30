@@ -103,7 +103,7 @@ public class Login {
                     if (StringUtils.isBlank(login)) {
                         log.error("The configured claim '{}' is not present in the response.", config.getOIDCIdClaim());
                     } else {
-                        log.debug("logging in user " + login);
+                        log.debug("logging in user ");
                         User user = UserManager.getUserBySsoId(login);
                         if (user == null) {
                             userBean.setSsoError(
@@ -194,7 +194,7 @@ public class Login {
                                     log.error("The configured claim '{}' is not present in the response.", config.getOIDCIdClaim());
                                     log.error("The following are available: {}", String.join(",", jwt.getClaims().keySet()));
                                 } else {
-                                    log.debug("logging in user " + login);
+                                    log.debug("logging in user ");
                                     User user = UserManager.getUserBySsoId(login);
                                     if (user == null) {
                                         userBean.setSsoError(
@@ -265,12 +265,12 @@ public class Login {
         LoginBean userBean = Helper.getLoginBeanFromSession(servletRequest.getSession());
         User user = UserManager.getUserBySsoId(ssoId);
         if (user == null) {
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "There is no user with ssoId \"" + ssoId + "\".");
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "There is no user with this ssoId.");
             userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
             servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
             return "";
         }
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "User \"" + user.getLogin() + "\" can be logged in via SSO:");
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "User can be logged in via SSO:");
         userBean.setSsoError(null);
         user.lazyLoad();
         userBean.setMyBenutzer(user);

@@ -217,7 +217,7 @@ public class LoginBean implements Serializable {
         // Check the password
         if (!user.istPasswortKorrekt(this.passwort)) {
             Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. Password of user with login " + this.login + " was not correct.");
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. Password was not correct.");
             return "";
         }
         log.debug(LoginBean.LOGIN_LOG_PREFIX + "Password was correct.");
@@ -232,12 +232,6 @@ public class LoginBean implements Serializable {
         this.myBenutzer = user;
         this.myBenutzer.lazyLoad();
         roles = myBenutzer.getAllUserRoles();
-
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Following user was logged in successfully:");
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login name: " + user.getLogin());
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "First name: " + user.getVorname());
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Last name: " + user.getNachname());
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login type: " + user.getLdapGruppe().getAuthenticationType());
 
         String dashboard = user.getDashboardPlugin();
         if (StringUtils.isBlank(dashboard) || "null".equals(dashboard)) {
@@ -254,11 +248,11 @@ public class LoginBean implements Serializable {
             String userString = "login='" + MySQLHelper.escapeSql(login) + "'";
             List<User> users = UserManager.getUsers(null, userString, null, null, null);
             if (users != null && users.size() == 1 && users.get(0) != null) {
-                log.debug(LoginBean.LOGIN_LOG_PREFIX + "Found user with login name " + login + " in database.");
+                log.debug(LoginBean.LOGIN_LOG_PREFIX + "Found user in database.");
                 return users.get(0);
             } else {
                 Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
-                log.error(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User with login name " + login + " does not exist.");
+                log.error(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User does not exist.");
                 return null;
             }
         } catch (DAOException exception) {
@@ -274,11 +268,11 @@ public class LoginBean implements Serializable {
             String userString = "email='" + MySQLHelper.escapeSql(email) + "'";
             List<User> users = UserManager.getUsers(null, userString, null, null, null);
             if (users != null && users.size() == 1 && users.get(0) != null) {
-                log.debug(LoginBean.LOGIN_LOG_PREFIX + "Found user with email " + email + " in database.");
+                log.debug(LoginBean.LOGIN_LOG_PREFIX + "Found user in database.");
                 return users.get(0);
             } else {
                 Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
-                log.error(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User with email " + email + " does not exist.");
+                log.error(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User does not exist.");
                 return null;
             }
         } catch (DAOException exception) {
@@ -411,7 +405,6 @@ public class LoginBean implements Serializable {
 
             ec.redirect(builder.build().toString());
         } catch (URISyntaxException | IOException e) {
-            // TODO Auto-generated catch block
             log.error(e);
         }
 
