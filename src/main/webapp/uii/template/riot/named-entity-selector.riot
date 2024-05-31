@@ -16,25 +16,25 @@
                 </div>
             </div>
         </div>
-        <div class="named-entity-editor-row named-entity-editor-input">
-            <div id="namedEntityType">
-                <label class="form-group__label" for="entityTypeSelector">{msgs.label__named_entity_type}:</label>
-                <select ref="entityTypeSelection" disabled data-enable="select-word" id="entityTypeSelector" class="form-control form-control--select" onchange="{checkCreateEntityButtonActive}">
-                    <option value="">{msgs.bitteAuswaehlen}</option>
-                    <option each="{type in this.entityTypes}" value="{type.value}">{type.label}</option>
-                </select>
-            </div>
-            <div id="authorityEntity">
-                <label class="form-group__label" for="entityValueInput">{msgs.label__named_entity}:</label>
-                <input ref="entityValueInput" disabled data-enable="select-word" class="form-control form-control--input" onchange="{handleEntityInputChange}" oninput="{checkCreateEntityButtonActive}"/>
-                <select ref="entityValueSelection" disabled data-enable="select-word" id="entityValueSelector" class="form-control form-control--select" onchange="{handleEntitySelectChange}" >
-                    <option value="">{msgs.bitteAuswaehlen}</option>
-                    <option each="{entity in this.entityValues}" value="{entity.uri}">{entity.value} ({entity.uri})</option>
-                </select>
-            </div>
-            <div id="entityActions">
-                <button disabled class="btn btn--gray ml-auto" type="button" ref="createEntityButton" onclick="{createEntity}">{msgs.action__set_named_entity}</button>
-            </div>
+    </div>
+    <div class="named-entity-editor-row named-entity-editor-input">
+        <div id="namedEntityType">
+            <label class="form-group__label" for="entityTypeSelector">{msgs.label__named_entity_type}:</label>
+            <select ref="entityTypeSelection" disabled data-enable="select-word" id="entityTypeSelector" class="form-control form-control--select" onchange="{checkCreateEntityButtonActive}">
+                <option value="">{msgs.bitteAuswaehlen}</option>
+                <option each="{type in this.entityTypes}" value="{type.value}">{type.label}</option>
+            </select>
+        </div>
+        <div id="authorityEntity" class="flex-wrap">
+            <label class="form-group__label text-nowrap" for="entityValueInput">{msgs.label__named_entity}:</label>
+            <input ref="entityValueInput" disabled data-enable="select-word" class="form-control form-control--input" onchange="{handleEntityInputChange}" oninput="{checkCreateEntityButtonActive}"/>
+            <select ref="entityValueSelection" disabled data-enable="select-word" id="entityValueSelector" class="form-control form-control--select" onchange="{handleEntitySelectChange}" >
+                <option value="">{msgs.bitteAuswaehlen}</option>
+                <option each="{entity in this.entityValues}" value="{entity.uri}">{entity.value} ({entity.uri})</option>
+            </select>
+        </div>
+        <div id="entityActions">
+            <button disabled class="btn btn--gray ml-auto" type="button" ref="createEntityButton" onclick="{createEntity}">{msgs.action__set_named_entity}</button>
         </div>
     </div>
 
@@ -54,10 +54,6 @@
         }
         .named-entity-editor {
             padding-top: 0;
-        }
-        .named-entity-editor-group {
-            /* max-height should be a multiple of 3em, as that equals one entity's height */
-            max-height: 18em;
             overflow-y: scroll;
         }
         .named-entity-editor-row {
@@ -88,9 +84,6 @@
         .named-entity-name {
             flex-grow: 1;
             text-align: initial;
-        }
-        .named-entity-editor-row input {
-            min-width: 70%;
         }
         .named-entity-editor-input {
             align-items: center;
