@@ -68,9 +68,8 @@
                 role="document">
                 <h:panelGroup id="altoEditorModalContent" class="modal-content" layout="block">
                     <div class="modal-header">
-                        <h6
-                            class="modal-title">#{msgs.editAlto}</h6>
-
+                        <h3
+                            class="h5 m-0 modal-title">#{msgs.editAlto}</h3>
                         <button
                             type="button"
                             class="close"
@@ -183,7 +182,7 @@
                                         </h:panelGroup>
                                         <button type="button" class="btn btn--icon-green" onclick="saveAltoResults()">
                                             <span class="fa fa-floppy-o" />
-                                            #{msgs.saveAltoPage}
+                                            #{msgs.save}
                                         </button>
                                     </div>
                                 </div>
@@ -207,7 +206,26 @@
         		altoDivSelector: '#jsonAlto',
         		altoChangesInputSelector: "#altoChanges",
         		tileSourceSelector: '#tileSource',
-        		alignRtl: #{Metadaten.pagesRTL}
+        		alignRtl: #{Metadaten.pagesRTL},
+        		namedEntityEditor: {
+        			enabled: #{Metadaten.showNamedEntityEditor},
+                    msgs: {
+                        title__named_entity_editor: "#{msgs.title__named_entity_editor}",
+                        label__named_entity_type: "#{msgs.label__named_entity_type}",
+                        label__named_entity: "#{msgs.label__named_entity}",
+                        action__set_named_entity: "#{msgs.action__set_named_entity}",
+                        action__edit_entity: "#{msgs.action__edit_entity}",
+                        bitteAuswaehlen: "#{msgs.bitteAuswaehlen}",
+                        action__delete_entity: "#{msgs.action__delete_entity}"
+                    },
+        			types: [
+        				{value: "person", label: "#{msgs.person}"},
+        				{value: "corporation", label: "#{msgs.corporation}"},
+        				{value: "location", label: "#{msgs.location}"},
+        				{value: "keyword", label: "#{msgs.keyword}"}
+        			],
+        			entities: '#{Metadaten.getAuthorityMetadataJSON()}'
+        		}
         	}
         	riot.mount('alto-editor', opts);
         }

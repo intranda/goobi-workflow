@@ -68,6 +68,7 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.AltoChange;
+import org.goobi.beans.AuthorityData;
 import org.goobi.beans.ImageComment;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -1826,7 +1827,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -3681,6 +3682,10 @@ public class Metadaten implements Serializable {
         }
     }
 
+    public boolean isShowNamedEntityEditor() {
+        return ConfigurationHelper.getInstance().isShowNamedEntityEditor();
+    }
+
     public String getOcrAddress() {
         int startseite = -1;
         int endseite = -1;
@@ -5184,5 +5189,36 @@ public class Metadaten implements Serializable {
 
             extension = extensions.get(0);
         }
+    }
+
+    public String getAuthorityMetadataJSON() {
+        List<Person> persons =
+                getMyPersonen().stream().filter(p -> StringUtils.isNotBlank(p.getNormdataValue())).map(MetaPerson::getP).collect(Collectors.toList());
+        List<Corporate> corporates =
+                getCorporates().stream()
+                        .filter(p -> StringUtils.isNotBlank(p.getNormdataValue()))
+                        .map(MetaCorporate::getCorporate)
+                        .collect(Collectors.toList());
+        List<Metadata> metadata =
+                getMyMetadaten().stream()
+                        .filter(p -> StringUtils.isNotBlank(p.getNormdataValue()))
+                        .map(MetadatumImpl::getMd)
+                        .collect(Collectors.toList());
+
+        List<AuthorityData> authorityList = new ArrayList<>();
+        for (Person person : persons) {
+            AuthorityData data = new AuthorityData(person.getDisplayname(), person.getAuthorityURI() + person.getAuthorityValue());
+            authorityList.add(data);
+        }
+        for (Corporate corporate : corporates) {
+            AuthorityData data = new AuthorityData(corporate.getMainName(), corporate.getAuthorityURI() + corporate.getAuthorityValue());
+            authorityList.add(data);
+        }
+        for (Metadata md : metadata) {
+            AuthorityData data = new AuthorityData(md.getValue(), md.getAuthorityURI() + md.getAuthorityValue());
+            authorityList.add(data);
+        }
+
+        return new Gson().toJson(authorityList);
     }
 }
