@@ -9,7 +9,7 @@
                         {entity.label} ({entity.uri})
                     </div>
                 </button>
-                <div id="entityActions">
+                <div id="entityActions" class="entityactions">
                     <button class="btn btn--danger" type="button" onclick="{deleteEntity}" title="{msgs.action__delete_entity}" data-toggle="tooltip">
                         <span class="fa fa-trash-o" aria-hidden="true" />
                     </button>
@@ -65,7 +65,18 @@
             padding: 3px; */
         }
         .named-entity-editor-row.-active .named-entity-entity {
+            color: black;
             font-weight: bold;
+        }
+        .entityactions {
+            align-items: center;
+            display: flex;
+        }
+        .named-entity-editor-row .btn--gray,
+        .named-entity-editor-row .btn--danger {
+            align-items: center;
+            display: flex;
+            height: 25px;
         }
         .named-entity-editor-entity {
             border-bottom: 1px solid #ddd;
@@ -87,7 +98,7 @@
         }
         .named-entity-editor-input {
             align-items: center;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid #bbb;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
