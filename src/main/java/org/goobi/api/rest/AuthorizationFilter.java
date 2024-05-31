@@ -70,7 +70,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
-        // first try to get basic authentication
+        // try to get basic authentication
         String authentication = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
         // get token, decode it, check if token exists in db
@@ -82,25 +82,17 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             String tokenHash = new Sha256Hash(keyName, ConfigurationHelper.getInstance().getApiTokenSalt(), 10000).toBase64();
 
             AuthenticationToken token = UserManager.getAuthenticationToken(tokenHash);
-            if (token == null) {
-                // token does not exist, abort
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("API Token is invalid.")
-                        .build());
-                return;
-            }
-            //if token exists, check if token has the permission to access the current request
-            String methodType = requestContext.getMethod();
-            String requestUri = req.getPathInfo();
-            for (AuthenticationMethodDescription method : token.getMethods()) {
-                if (method.isSelected() && methodType.equalsIgnoreCase(method.getMethodType()) && Pattern.matches(method.getUrl(), requestUri)) {
-                    return;
+            if (token != null) {
+
+                //if token exists, check if token has the permission to access the current request
+                String methodType = requestContext.getMethod();
+                String requestUri = req.getPathInfo();
+                for (AuthenticationMethodDescription method : token.getMethods()) {
+                    if (method.isSelected() && methodType.equalsIgnoreCase(method.getMethodType()) && Pattern.matches(method.getUrl(), requestUri)) {
+                        return;
+                    }
                 }
             }
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("The API token has no access to the Goobi REST API for " + requestUri)
-                    .build());
-            return;
         }
 
         // get token
@@ -151,7 +143,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             try {
                 conf = RestConfig.getConfigForPath(pathInfo);
             } catch (ConfigurationException e) {
-                // TODO Auto-generated catch block
                 log.error(e);
             }
             if (conf != null && !conf.getCorsMethods().isEmpty()) {

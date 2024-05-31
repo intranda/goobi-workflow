@@ -27,6 +27,7 @@ pipeline {
           anyOf {
             branch 'master'
             branch 'release_*'
+            branch 'hotfix_release_*'
             allOf {
               branch 'PR-*'
               expression { env.CHANGE_BRANCH.startsWith("release_") }
@@ -43,6 +44,7 @@ pipeline {
         anyOf {
           branch 'master'
           branch 'release_*'
+          branch 'hotfix_release_*'
           allOf {
             branch 'PR-*'
             expression { env.CHANGE_BRANCH.startsWith("release_") }
@@ -58,6 +60,7 @@ pipeline {
         anyOf {
           branch 'master'
           branch 'release_*'
+          branch 'hotfix_release_*'
           branch 'sonar_*'
           allOf {
             branch 'PR-*'
@@ -71,19 +74,25 @@ pipeline {
         }
       }
     }
-    stage('deployment to maven repository') {
+    stage('deploy') {
       when {
         anyOf {
         branch 'master'
         branch 'develop'
+        branch 'hotfix_release_*'
         }
       }
       steps {
-        sh 'mvn -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy -U'
+        sh 'mvn deploy -U'
       }
     }
     stage('tag release') {
-      when { branch 'master' }
+      when { 
+        anyOf {
+          branch 'master'
+          branch 'hotfix_release_*'
+        }
+      }
       steps {
         withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314',
                  gitToolName: 'git-tool')]) {
@@ -118,7 +127,6 @@ pipeline {
         enabledForFailure: true, aggregatingResults: false,
         tools: [checkStyle(pattern: 'target/checkstyle-result.xml', reportEncoding: 'UTF-8')]
       )
-      dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     }
     success {
       archiveArtifacts artifacts: 'target/*.war, target/*.jar, install/db/goobi.sql', fingerprint: true
