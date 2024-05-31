@@ -82,19 +82,15 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             String tokenHash = new Sha256Hash(keyName, ConfigurationHelper.getInstance().getApiTokenSalt(), 10000).toBase64();
 
             AuthenticationToken token = UserManager.getAuthenticationToken(tokenHash);
-            if (token == null) {
-                // token does not exist, abort
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("API Token is invalid.")
-                        .build());
-                return;
-            }
-            //if token exists, check if token has the permission to access the current request
-            String methodType = requestContext.getMethod();
-            String requestUri = req.getPathInfo();
-            for (AuthenticationMethodDescription method : token.getMethods()) {
-                if (method.isSelected() && methodType.equalsIgnoreCase(method.getMethodType()) && Pattern.matches(method.getUrl(), requestUri)) {
-                    return;
+            if (token != null) {
+
+                //if token exists, check if token has the permission to access the current request
+                String methodType = requestContext.getMethod();
+                String requestUri = req.getPathInfo();
+                for (AuthenticationMethodDescription method : token.getMethods()) {
+                    if (method.isSelected() && methodType.equalsIgnoreCase(method.getMethodType()) && Pattern.matches(method.getUrl(), requestUri)) {
+                        return;
+                    }
                 }
             }
         }
