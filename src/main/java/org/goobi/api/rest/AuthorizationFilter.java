@@ -70,7 +70,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
-        // first try to get basic authentication
+        // try to get basic authentication
         String authentication = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
         // get token, decode it, check if token exists in db
@@ -97,10 +97,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                     return;
                 }
             }
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("The API token has no access to the Goobi REST API for " + requestUri)
-                    .build());
-            return;
         }
 
         // get token
@@ -151,7 +147,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             try {
                 conf = RestConfig.getConfigForPath(pathInfo);
             } catch (ConfigurationException e) {
-                // TODO Auto-generated catch block
                 log.error(e);
             }
             if (conf != null && !conf.getCorsMethods().isEmpty()) {
