@@ -9,12 +9,12 @@
                     <span each={word in line.words}>
                         <span id={word.id}
                             class="altoword"
-                            onkeyup={keyup} 
-                            onkeydown={keydown} 
-                            onfocus={lockWord} 
+                            onkeyup={keyup}
+                            onkeydown={keydown}
+                            onfocus={lockWord}
                         	onblur={unlockWord}
-                            onmousemove={highlightWord} 
-                            contenteditable="true" 
+                            onmousemove={highlightWord}
+                            contenteditable="true"
                             spellcheck="false">{word.value}</span>
                     </span>
                 <br>
@@ -33,26 +33,31 @@
         padding: 3px;
     }
     .alto-edit-wrapper {
-        min-height: 82vh;
-        max-height: 82hv;
+        --alto-padding: 0.5em;
+        height: 82vh;
         display: flex;
         flex-direction: column;
-
     }
     .alto-edit {
         overflow-y: scroll;
         border: 1px solid #ddd;
-        padding: 15px;
+        padding: var(--alto-padding);
         flex-grow: 1;
     }
     .named-entity-edit {
         border: 1px solid #ddd;
-        padding: 15px;
-        margin: 15px 0 0 0;
+        margin: 1.5em 0 0 0;
+        max-height: 75%;
         display: none;
     }
+    .named-entity-edit > :first-child {
+        border-bottom: 1px solid #ddd;
+        padding: var(--alto-padding);
+    }
     .named-entity-edit.-active {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
     #bigImage {
         height: 82vh;
@@ -81,7 +86,7 @@
 <script>
     this.on('before-mount', () => {
     	this.msgs = this.opts.messages;
-        this.lines = []; 
+        this.lines = [];
         console.log(opts)
         this.alignRtl =this.opts.alignRtl;
         let altoDiv = document.querySelector(opts.altoDivSelector);
@@ -92,7 +97,7 @@
         this.changes = {};
         this.oldPos = {};
     })
-    
+
     this.on('mount', () => {
     	this.initOpenseadragon();
         if(this.opts.namedEntityEditor?.enabled) {
@@ -100,18 +105,18 @@
             this.initNamedEntityEditor(this.refs.namedEntityEditorWrapper, this.opts.namedEntityEditor);
         }
     	this.update();
-    	
+
     })
 
     lockWord(e) {
     	this.wordLocked = true;
     	this.highlightWord(e);
     }
-    
+
     unlockWord(e) {
 		this.wordLocked = false;
     }
-    
+
     highlightWord(e) {
     	if(this.wordLocked && e.type === "mousemove") {
     		return;
@@ -126,14 +131,14 @@
     	var rect = new OpenSeadragon.Rect((box.x)-add, (box.y)-add, (box.width)+add*2, (box.height)+add*2);
     	this.viewImage.overlays.unDraw("word");
         this.viewImage.overlays.drawRect(rect, "word");
-        
+
     }
-    
+
     keyup(e) {
     	e.preventUpdate = true;
         let text = e.target.innerText;
         if(text.indexOf("\n") >= 0) {
-            text = text.replace("\n", "") 
+            text = text.replace("\n", "")
             e.target.innerText = text;
         }
         let word = e.item.word
@@ -155,7 +160,7 @@
             		let prevWordSpan = previousOuterSpan.children[0];
             		let range = new Range();
             		range.setStart(prevWordSpan, 1);
-            		
+
             		document.getSelection().removeAllRanges();
             	    document.getSelection().addRange(range);
         		} else {
@@ -165,7 +170,7 @@
         				let prevWordSpan = lineWords[lineWords.length-2].children[0];
         				let range = new Range();
         				range.setStart(prevWordSpan, 1);
-                		
+
                 		document.getSelection().removeAllRanges();
                 	    document.getSelection().addRange(range);
         			}
@@ -177,7 +182,7 @@
     			e.preventDefault();
     			let range = new Range();
 				range.setStart(e.target.lastChild, e.target.innerText.length);
-        		
+
         		document.getSelection().removeAllRanges();
         	    document.getSelection().addRange(range);
         	    currentPos = 0;
@@ -188,7 +193,7 @@
             		let nextWordSpan = nextOuterSpan.children[0];
             		let range = new Range();
             		range.setStart(nextWordSpan, 0);
-            		
+
             		document.getSelection().removeAllRanges();
             	    document.getSelection().addRange(range);
         		} else {
@@ -198,7 +203,7 @@
         				let nextWordSpan = lineWords[0].children[0];
         				let range = new Range();
         				range.setStart(nextWordSpan, 0);
-                		
+
                 		document.getSelection().removeAllRanges();
                 	    document.getSelection().addRange(range);
         			}
@@ -207,7 +212,7 @@
     	}
     	this.oldPos = {position: currentPos, wordId: word.id};
     }
-    
+
     getChanges() {
     	let changeArr = [];
     	for(let wordId of Object.keys(this.changes)) {
@@ -221,16 +226,16 @@
         console.log("get changes", changeArr, this.changes);
     	return JSON.stringify(changeArr);
     }
-    
+
     isDirty() {
     	console.log(this.changes)
     	return Object.keys(this.changes).length > 0;
     }
-    
+
     saved() {
     	this.changes = {};
     }
-    
+
     initOpenseadragon() {
     	var configViewer = {
         	global: {
@@ -258,13 +263,13 @@
                 mimeType: "image/jpeg",
                 tileSource: document.querySelector(this.opts.tileSourceSelector).value
             }
-        };                                               
-        
+        };
+
         this.viewImage = new ImageView.Image( configViewer );
         this.viewImage.load()
         .then(function(image) {
             image.onFirstTileLoaded()
-            .then(function() {                                                  
+            .then(function() {
                 $('#ajaxloader_image').fadeOut(800);
             })
             .catch(function() {
@@ -276,7 +281,7 @@
             $('#ajaxloader_image').fadeOut(800);
             $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
         });
-        
+
     }
 
     initNamedEntityEditor(element, config) {
@@ -327,14 +332,14 @@
         	}
         }
     }
-    
+
     posInRect(pos, rect) {
-    	return rect.x < pos.x 
-    		&& rect.x+rect.width>pos.x 
-    		&& rect.y<pos.y 
+    	return rect.x < pos.x
+    		&& rect.x+rect.width>pos.x
+    		&& rect.y<pos.y
     		&& rect.y+rect.height>pos.y;
     }
-    
+
     this.on('before-unmount', () => {
     	this.viewImage.close();
     })

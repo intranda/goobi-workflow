@@ -1,21 +1,22 @@
 <named-entity-selector>
-    <h7 class="h6">{msgs.title__named_entity_editor}</h7>
+    <h4 class="h6 m-0">{msgs.title__named_entity_editor}</h4>
     <div class="named-entity-editor">
         <div class="named-entity-editor-group">
-            <div class="named-entity-editor-row" each="{entity in this.entities}">
-                <div>{getTypeLabel(entity.type)}</div>
-                <div>
-                {entity.label} ({entity.uri})
-                </div>
+            <div class="named-entity-editor-row named-entity-editor-entity" each="{entity in this.entities}">
+                <button class="btn named-entity-entity" type="button" onclick="{selectEntity}" title="{msgs.edit_entity}" data-toggle="tooltip">
+                    <div class="named-entity-type">{getTypeLabel(entity.type)}</div>
+                    <div class="named-entity-name">
+                        {entity.label} ({entity.uri})
+                    </div>
+                </button>
                 <div id="entityActions">
-                    <button class="btn btn--gray" type="button" onclick="{selectEntity}">{msgs.action__edit_entity}</button>
-                    <button class="btn btn--gray" type="button" onclick="{deleteEntity}" title="{msgs.action__delete_entity}">
-                        <i class="fa fa-lg fa-trash-o" aria-hidden="true"></i>
+                    <button class="btn btn--danger" type="button" onclick="{deleteEntity}" title="{msgs.action__delete_entity}" data-toggle="tooltip">
+                        <span class="fa fa-trash-o" aria-hidden="true" />
                     </button>
                 </div>
             </div>
         </div>
-        <div class="named-entity-editor-row">
+        <div class="named-entity-editor-row named-entity-editor-input">
             <div id="namedEntityType">
                 <label class="form-group__label" for="entityTypeSelector">{msgs.label__named_entity_type}:</label>
                 <select ref="entityTypeSelection" disabled data-enable="select-word" id="entityTypeSelector" class="form-control form-control--select" onchange="{checkCreateEntityButtonActive}">
@@ -32,7 +33,7 @@
                 </select>
             </div>
             <div id="entityActions">
-                <button disabled class="btn btn--gray" type="button" ref="createEntityButton" onclick="{createEntity}">{msgs.action__set_named_entity}</button>
+                <button disabled class="btn btn--gray ml-auto" type="button" ref="createEntityButton" onclick="{createEntity}">{msgs.action__set_named_entity}</button>
             </div>
         </div>
     </div>
@@ -52,25 +53,63 @@
             width: 30px;
         }
         .named-entity-editor {
-            padding-top: 5px;
+            padding-top: 0;
         }
         .named-entity-editor-group {
+            /* max-height should be a multiple of 3em, as that equals one entity's height */
+            max-height: 18em;
             overflow-y: scroll;
-            max-height: 6vh;
         }
         .named-entity-editor-row {
-            display: grid;
+            display: flex;
+            gap: 2em;
+            justify-content: space-between;
+            /* display: grid;
             grid-template-columns: 3fr 5fr 2fr;
-            padding: 3px;
+            padding: 3px; */
         }
-        .named-entity-editor-row.-active {
-            border: 2px solid rgba(255,255,0,1);
+        .named-entity-editor-row.-active .named-entity-entity {
+            font-weight: bold;
+        }
+        .named-entity-editor-entity {
+            border-bottom: 1px solid #ddd;
+            padding: var(--alto-padding);
+        }
+        .named-entity-editor-entity:last-of-type {
+            border: 0;
+        }
+        .named-entity-entity {
+            display: flex;
+            flex-grow: 2;
+        }
+        .named-entity-type {
+            width: 10%;
+        }
+        .named-entity-name {
+            flex-grow: 1;
+            text-align: initial;
         }
         .named-entity-editor-row input {
             min-width: 70%;
         }
+        .named-entity-editor-input {
+            align-items: center;
+            border-top: 1px solid #ddd;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: var(--alto-padding);
+        }
+        .named-entity-editor-input > * {
+            align-items: center;
+            display: flex;
+            flex-grow: 1;
+        }
+        .named-entity-editor-input > * > select {
+            min-width: 10em;
+        }
     </style>
-    
+
     <script>
 
         const SELECTED_WORD_CLASS = "selected-word";
@@ -119,7 +158,7 @@
                 }
             });
         });
-        
+
         handleEntitySelectChange(event) {
             const uri = event.target.value;
             const entityValue = this.entityValues.find(ent => ent.uri == uri);
@@ -152,7 +191,7 @@
 
         checkCreateEntityButtonActive() {
             this.refs.createEntityButton.disabled = this.refs.entityTypeSelection.disabled || !this.refs.entityTypeSelection.value || this.refs.entityValueInput.disabled || !this.refs.entityValueInput.value;
- 
+
         }
 
         activateInputElements(enable) {
@@ -167,7 +206,7 @@
             element.classList.add(SELECTED_WORD_CLASS);
             this.selectedWords.push(element);
         }
-        
+
         removeSelectedWord(element) {
             element.classList.remove(SELECTED_WORD_CLASS);
             let index = this.selectedWords.indexOf(element);
@@ -190,7 +229,7 @@
             this.selectedEntity = entity;
             entity.words.map(id => document.getElementById(id)).forEach(element => this.addSelectedWord(element));
             this.highlightEntity(event.target);
-            
+
         }
 
         highlightEntity(element) {
@@ -199,7 +238,7 @@
                 element.closest(SELECTOR_ENTITY_EDITOR_ROW)?.classList.add(ACTIVE_CLASS);
             }
         }
-        
+
         deleteEntity(event) {
             const entity = event.item.entity;
             let entityIndex = this.entities.indexOf(entity);
@@ -276,15 +315,15 @@
                         type: entity.type,
                         uri: entity.uri
                     },
-                    words: entity.words 
+                    words: entity.words
                 }
             })
             this.opts.changeCallback(changesList);
         }
 
     </script>
-    
-    
-    
-	
+
+
+
+
 </named-entity-selector>
