@@ -94,7 +94,7 @@ public class GoobiScriptAddStepTest extends AbstractTest {
         GoobiScriptAddStep fixture = new GoobiScriptAddStep();
         assertNotNull(fixture);
         assertEquals(
-                "---\\n# This GoobiScript allows to add a new workflow step into the workflow.\\naction: addStep\\n\\n# Title of the workflow step to add\\nsteptitle: Scanning\\n\\n# This number defines where in the workflow this new step is ordered into. Numerical values or the keyword 'end' are permitted in order to insert the step at a specific position or at the end\\norder: 5",
+                "---\\n# This GoobiScript allows to add a new workflow step into the workflow.\\naction: addStep\\n\\n# Title of the workflow step to add\\nsteptitle: Scanning\\n\\n# This number defines where in the workflow this new step is ordered into. Numerical values or the keyword \"end\" are permitted in order to insert the step at a specific position or at the end\\norder: 5",
                 fixture.getSampleCall());
     }
 
