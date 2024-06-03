@@ -191,6 +191,7 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         user.setNachname("lastname");
         user.setVorname("firstname");
         user.setLogin("login");
+        user.setStandort("location");
         step.setBearbeitungsbenutzer(user);
 
         process.setSchritte(steps);
