@@ -58,6 +58,9 @@
 
 
   <Loggers>
+    <!-- ignore push related errors -->
+    <Logger level="off" name="org.omnifaces.cdi.push">
+    </Logger>  
     <!-- Goobi workflow -->
     <Logger name="org.goobi" level="TRACE" additivity="true">
       <AppenderRef ref="goobi" />
