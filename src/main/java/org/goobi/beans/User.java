@@ -252,7 +252,7 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
 
     @Getter
     @Setter
-    private String processListDefaultSortField = "titel";
+    private String processListDefaultSortField = "prozesse.titel";
     @Getter
     @Setter
     private String processListDefaultSortOrder = " asc";
@@ -301,7 +301,6 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     @Getter
     @Setter
     private AuthenticationToken token;
-
 
     @Getter
     @Setter
@@ -403,13 +402,13 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         if (inPasswort == null || inPasswort.length() == 0) {
             return false;
         } else /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
-            if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
-                LdapAuthentication myldap = new LdapAuthentication();
-                return myldap.isUserPasswordCorrect(this, inPasswort);
-            } else {
-                String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
-                return this.encryptedPassword.equals(hashedPasswordBase64);
-            }
+        if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
+            LdapAuthentication myldap = new LdapAuthentication();
+            return myldap.isUserPasswordCorrect(this, inPasswort);
+        } else {
+            String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
+            return this.encryptedPassword.equals(hashedPasswordBase64);
+        }
     }
 
     public String getPasswordHash(String plainTextPassword) {
