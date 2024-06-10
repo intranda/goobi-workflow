@@ -3608,7 +3608,7 @@
     <language name="en">Page</language>
     <language name="rusdml">page</language>
     <language name="es">Página</language>
-    <allowedchildtype>area</allowedchildtype>
+<!--     <allowedchildtype>area</allowedchildtype> -->
     <metadata num="1m">logicalPageNumber</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="1m">physPageNumber</metadata>
@@ -3638,6 +3638,10 @@
     <metadata num="1m">logicalPageNumber</metadata>
     <metadata num="1m">physPageNumber</metadata>
   </DocStrctType>
+  <!-- deactivated pare area in metadata editor. Uncomment this to enable it.
+       If area is used, it must be used for all pages within a book. 
+       Pages and areas cannot not be mixed within a record, otherwise the record cannot be imported into the DDB  -->
+<!--  
   <DocStrctType>
     <Name>area</Name>
     <language name="de">Region</language>
@@ -3648,7 +3652,8 @@
     <metadata num="1o">_SHAPE</metadata>
     <metadata num="1m">physPageNumber</metadata>
     <metadata num="1m">logicalPageNumber</metadata>
-  </DocStrctType>
+   </DocStrctType>
+    -->
   <DocStrctType>
     <Name>BoundBook</Name>
     <language name="de">Gebundenes Buch</language>

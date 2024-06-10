@@ -37,6 +37,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -99,20 +100,25 @@ public class Login {
 
                     // get the user by the configured claim from the JWT
                     String login = jwt.getClaim(config.getOIDCIdClaim()).asString();
-                    log.debug("logging in user " + login);
-                    User user = UserManager.getUserBySsoId(login);
-                    if (user == null) {
-                        userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
-                        servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
-                        return;
+                    if (StringUtils.isBlank(login)) {
+                        log.error("The configured claim '{}' is not present in the response.", config.getOIDCIdClaim());
+                    } else {
+                        log.debug("logging in user ");
+                        User user = UserManager.getUserBySsoId(login);
+                        if (user == null) {
+                            userBean.setSsoError(
+                                    "Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
+                            servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
+                            return;
+                        }
+                        userBean.setSsoError(null);
+                        user.lazyLoad();
+                        userBean.setMyBenutzer(user);
+                        userBean.setRoles(user.getAllUserRoles());
+                        userBean.setMyBenutzer(user);
+                        //add the user to the sessionform that holds information about all logged in users
+                        sessionForm.updateSessionUserName(servletRequest.getSession(), user);
                     }
-                    userBean.setSsoError(null);
-                    user.lazyLoad();
-                    userBean.setMyBenutzer(user);
-                    userBean.setRoles(user.getAllUserRoles());
-                    userBean.setMyBenutzer(user);
-                    //add the user to the sessionform that holds information about all logged in users
-                    sessionForm.updateSessionUserName(servletRequest.getSession(), user);
                 } else {
                     if (!nonce.equals(jwt.getClaim("nonce").asString())) {
                         log.error("nonce does not match. Not logging user in");
@@ -184,22 +190,26 @@ public class Login {
 
                                 // get the user by the configured claim from the JWT
                                 String login = jwt.getClaim(config.getOIDCIdClaim()).asString();
-                                log.debug("logging in user " + login);
-                                User user = UserManager.getUserBySsoId(login);
-                                System.out.println("Trying to log in user with SSOID; " + login);
-                                if (user == null) {
-                                    userBean.setSsoError(
-                                            "Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
-                                    servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
-                                    return;
+                                if (StringUtils.isBlank(login)) {
+                                    log.error("The configured claim '{}' is not present in the response.", config.getOIDCIdClaim());
+                                    log.error("The following are available: {}", String.join(",", jwt.getClaims().keySet()));
+                                } else {
+                                    log.debug("logging in user ");
+                                    User user = UserManager.getUserBySsoId(login);
+                                    if (user == null) {
+                                        userBean.setSsoError(
+                                                "Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
+                                        servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
+                                        return;
+                                    }
+                                    userBean.setSsoError(null);
+                                    user.lazyLoad();
+                                    userBean.setMyBenutzer(user);
+                                    userBean.setRoles(user.getAllUserRoles());
+                                    userBean.setMyBenutzer(user);
+                                    //add the user to the sessionform that holds information about all logged in users
+                                    sessionForm.updateSessionUserName(servletRequest.getSession(), user);
                                 }
-                                userBean.setSsoError(null);
-                                user.lazyLoad();
-                                userBean.setMyBenutzer(user);
-                                userBean.setRoles(user.getAllUserRoles());
-                                userBean.setMyBenutzer(user);
-                                //add the user to the sessionform that holds information about all logged in users
-                                sessionForm.updateSessionUserName(servletRequest.getSession(), user);
                             } else {
                                 if (!nonce.equals(jwt.getClaim("nonce").asString())) {
                                     log.error("nonce does not match. Not logging user in");
@@ -255,12 +265,12 @@ public class Login {
         LoginBean userBean = Helper.getLoginBeanFromSession(servletRequest.getSession());
         User user = UserManager.getUserBySsoId(ssoId);
         if (user == null) {
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "There is no user with ssoId \"" + ssoId + "\".");
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "There is no user with this ssoId.");
             userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
             servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
             return "";
         }
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "User \"" + user.getLogin() + "\" can be logged in via SSO:");
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "User can be logged in via SSO:");
         userBean.setSsoError(null);
         user.lazyLoad();
         userBean.setMyBenutzer(user);

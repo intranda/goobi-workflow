@@ -528,6 +528,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             if (s.getBearbeitungsbenutzer() != null && s.getBearbeitungsbenutzer().getNachVorname() != null) {
                 Element user = new Element(ELEMENT_USER, namespace);
                 user.setText(s.getBearbeitungsbenutzer().getNachVorname());
+                user.setAttribute(ATTRIBUTE_LOCATION, s.getBearbeitungsbenutzer().getStandort());
                 stepElement.addContent(user);
             }
             Element editType = new Element(ELEMENT_EDITTYPE, namespace);

@@ -48,7 +48,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testId() throws Exception {
+    public void testId() {
         User user = new User();
         assertNull(user.getId());
         user.setId(1);
@@ -56,7 +56,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testVorname() throws Exception {
+    public void testVorname() {
         User user = new User();
         assertNull(user.getVorname());
         user.setVorname("fixture");
@@ -65,7 +65,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testNachname() throws Exception {
+    public void testNachname() {
         User user = new User();
         assertNull(user.getNachname());
         user.setNachname("fixture");
@@ -73,7 +73,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testLogin() throws Exception {
+    public void testLogin() {
         User user = new User();
         assertNull(user.getLogin());
         user.setLogin("fixture");
@@ -81,7 +81,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testLdaplogin() throws Exception {
+    public void testLdaplogin() {
         User user = new User();
         assertNull(user.getLdaplogin());
         user.setLdaplogin("fixture");
@@ -89,7 +89,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testPasswort() throws Exception {
+    public void testPasswort() {
         User user = new User();
         assertNull(user.getPasswort());
         user.setPasswort("fixture");
@@ -97,7 +97,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testStandort() throws Exception {
+    public void testStandort() {
         User user = new User();
         assertNull(user.getStandort());
         user.setStandort("fixture");
@@ -105,7 +105,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testTabellengroesse() throws Exception {
+    public void testTabellengroesse() {
         User user = new User();
         assertEquals(10, user.getTabellengroesse().intValue());
 
@@ -117,7 +117,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testSessiontimeout() throws Exception {
+    public void testSessiontimeout() {
         User user = new User();
         assertEquals(14400, user.getSessiontimeout().intValue());
 
@@ -129,7 +129,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testMetadatenSprache() throws Exception {
+    public void testMetadatenSprache() {
         User user = new User();
         assertNull(user.getMetadatenSprache());
         user.setMetadatenSprache("fixture");
@@ -137,7 +137,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testBenutzergruppen() throws Exception {
+    public void testBenutzergruppen() {
         User user = new User();
         List<Usergroup> ugList = new ArrayList<>();
         Usergroup grp = new Usergroup();
@@ -148,7 +148,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testSchritte() throws Exception {
+    public void testSchritte() {
         User user = new User();
         List<Step> stepList = new ArrayList<>();
         Step step = new Step();
@@ -159,7 +159,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testBearbeitungsschritte() throws Exception {
+    public void testBearbeitungsschritte() {
         User user = new User();
         List<Step> stepList = new ArrayList<>();
         Step step = new Step();
@@ -170,7 +170,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testProjekte() throws Exception {
+    public void testProjekte() {
         User user = new User();
         List<Project> list = new ArrayList<>();
         Project p = new Project();
@@ -181,7 +181,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testEigenschaften() throws Exception {
+    public void testEigenschaften() {
         User user = new User();
         List<UserProperty> list = new ArrayList<>();
         UserProperty p = new UserProperty();
@@ -192,7 +192,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testMitMassendownload() throws Exception {
+    public void testMitMassendownload() {
         User user = new User();
         assertFalse(user.isMitMassendownload());
         user.setMitMassendownload(true);
@@ -200,7 +200,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testLdapGruppe() throws Exception {
+    public void testLdapGruppe() {
         User user = new User();
         assertNull(user.getLdapGruppe());
         Ldap ldap = new Ldap();
@@ -209,7 +209,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testCss() throws Exception {
+    public void testCss() {
         User user = new User();
         assertEquals("/css/default.css", user.getCss());
         user.setCss("fixture");
@@ -217,7 +217,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testEmail() throws Exception {
+    public void testEmail() {
         User user = new User();
         assertNull(user.getEmail());
         user.setEmail("fixture@example.com");
@@ -225,7 +225,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testShortcutPrefix() throws Exception {
+    public void testShortcutPrefix() {
         User user = new User();
         assertEquals("ctrl+shift", user.getShortcutPrefix());
         user.setShortcutPrefix("fixture");
@@ -233,7 +233,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testEncryptedPassword() throws Exception {
+    public void testEncryptedPassword() {
         User user = new User();
         assertNull(user.getEncryptedPassword());
         user.setEncryptedPassword("fixture");
@@ -241,7 +241,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testPasswordSalt() throws Exception {
+    public void testPasswordSalt() {
         User user = new User();
         assertNull(user.getPasswordSalt());
         user.setPasswordSalt("fixture");
@@ -249,7 +249,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayDeactivatedProjects() throws Exception {
+    public void testDisplayDeactivatedProjects() {
         User user = new User();
         assertFalse(user.isDisplayDeactivatedProjects());
         user.setDisplayDeactivatedProjects(true);
@@ -257,7 +257,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayFinishedProcesses() throws Exception {
+    public void testDisplayFinishedProcesses() {
         User user = new User();
         assertFalse(user.isDisplayFinishedProcesses());
         user.setDisplayFinishedProcesses(true);
@@ -265,7 +265,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplaySelectBoxes() throws Exception {
+    public void testDisplaySelectBoxes() {
         User user = new User();
         assertFalse(user.isDisplaySelectBoxes());
         user.setDisplaySelectBoxes(true);
@@ -273,7 +273,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayIdColumn() throws Exception {
+    public void testDisplayIdColumn() {
         User user = new User();
         assertFalse(user.isDisplayIdColumn());
         user.setDisplayIdColumn(true);
@@ -281,7 +281,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayBatchColumn() throws Exception {
+    public void testDisplayBatchColumn() {
         User user = new User();
         assertFalse(user.isDisplayBatchColumn());
         user.setDisplayBatchColumn(true);
@@ -289,7 +289,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayProcessDateColumn() throws Exception {
+    public void testDisplayProcessDateColumn() {
         User user = new User();
         assertFalse(user.isDisplayProcessDateColumn());
         user.setDisplayProcessDateColumn(true);
@@ -297,7 +297,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayLocksColumn() throws Exception {
+    public void testDisplayLocksColumn() {
         User user = new User();
         assertFalse(user.isDisplayLocksColumn());
         user.setDisplayLocksColumn(true);
@@ -305,7 +305,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplaySwappingColumn() throws Exception {
+    public void testDisplaySwappingColumn() {
         User user = new User();
         assertFalse(user.isDisplaySwappingColumn());
         user.setDisplaySwappingColumn(true);
@@ -313,7 +313,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayModulesColumn() throws Exception {
+    public void testDisplayModulesColumn() {
         User user = new User();
         assertFalse(user.isDisplayModulesColumn());
         user.setDisplayModulesColumn(true);
@@ -321,7 +321,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayMetadataColumn() throws Exception {
+    public void testDisplayMetadataColumn() {
         User user = new User();
         assertFalse(user.isDisplayMetadataColumn());
         user.setDisplayMetadataColumn(true);
@@ -329,7 +329,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayThumbColumn() throws Exception {
+    public void testDisplayThumbColumn() {
         User user = new User();
         assertFalse(user.isDisplayThumbColumn());
         user.setDisplayThumbColumn(true);
@@ -337,7 +337,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayGridView() throws Exception {
+    public void testDisplayGridView() {
         User user = new User();
         assertFalse(user.isDisplayGridView());
         user.setDisplayGridView(true);
@@ -345,7 +345,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayRulesetColumn() throws Exception {
+    public void testDisplayRulesetColumn() {
         User user = new User();
         assertFalse(user.isDisplayRulesetColumn());
         user.setDisplayRulesetColumn(true);
@@ -353,7 +353,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayAutomaticTasks() throws Exception {
+    public void testDisplayAutomaticTasks() {
         User user = new User();
         assertFalse(user.isDisplayAutomaticTasks());
         user.setDisplayAutomaticTasks(true);
@@ -361,7 +361,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testHideCorrectionTasks() throws Exception {
+    public void testHideCorrectionTasks() {
         User user = new User();
         assertFalse(user.isHideCorrectionTasks());
         user.setHideCorrectionTasks(true);
@@ -369,7 +369,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayOnlySelectedTasks() throws Exception {
+    public void testDisplayOnlySelectedTasks() {
         User user = new User();
         assertFalse(user.isDisplayOnlySelectedTasks());
         user.setDisplayOnlySelectedTasks(true);
@@ -377,7 +377,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayOnlyOpenTasks() throws Exception {
+    public void testDisplayOnlyOpenTasks() {
         User user = new User();
         assertFalse(user.isDisplayOnlyOpenTasks());
         user.setDisplayOnlyOpenTasks(true);
@@ -385,7 +385,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayOtherTasks() throws Exception {
+    public void testDisplayOtherTasks() {
         User user = new User();
         assertFalse(user.isDisplayOtherTasks());
         user.setDisplayOtherTasks(true);
@@ -393,7 +393,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testMetsDisplayTitle() throws Exception {
+    public void testMetsDisplayTitle() {
         User user = new User();
         assertFalse(user.isMetsDisplayTitle());
         user.setMetsDisplayTitle(true);
@@ -401,7 +401,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testMetsLinkImage() throws Exception {
+    public void testMetsLinkImage() {
         User user = new User();
         assertFalse(user.isMetsLinkImage());
         user.setMetsLinkImage(true);
@@ -409,7 +409,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testMetsDisplayPageAssignments() throws Exception {
+    public void testMetsDisplayPageAssignments() {
         User user = new User();
         assertFalse(user.isMetsDisplayPageAssignments());
         user.setMetsDisplayPageAssignments(true);
@@ -417,7 +417,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testMetsDisplayHierarchy() throws Exception {
+    public void testMetsDisplayHierarchy() {
         User user = new User();
         assertFalse(user.isMetsDisplayHierarchy());
         user.setMetsDisplayHierarchy(true);
@@ -425,7 +425,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testMetsDisplayProcessID() throws Exception {
+    public void testMetsDisplayProcessID() {
         User user = new User();
         assertFalse(user.isMetsDisplayProcessID());
         user.setMetsDisplayProcessID(true);
@@ -433,7 +433,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testMetsEditorTime() throws Exception {
+    public void testMetsEditorTime() {
         User user = new User();
         assertNull(user.getMetsEditorTime());
         user.setMetsEditorTime(10);
@@ -441,12 +441,12 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testIMAGE_SIZE() throws Exception {
+    public void testIMAGE_SIZE() {
         assertEquals(27, User.getIMAGE_SIZE());
     }
 
     @Test
-    public void testCustomColumns() throws Exception {
+    public void testCustomColumns() {
         User user = new User();
         assertNull(user.getCustomColumns());
         user.setCustomColumns("fixture");
@@ -454,7 +454,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testCustomCss() throws Exception {
+    public void testCustomCss() {
         User user = new User();
         assertNull(user.getCustomCss());
         user.setCustomCss("fixture");
@@ -462,7 +462,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testMailNotificationLanguage() throws Exception {
+    public void testMailNotificationLanguage() {
         User user = new User();
         assertNull(user.getMailNotificationLanguage());
         user.setMailNotificationLanguage("fixture");
@@ -470,7 +470,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testEmailConfiguration() throws Exception {
+    public void testEmailConfiguration() {
         User user = new User();
         List<UserProjectConfiguration> list = new ArrayList<>();
         UserProjectConfiguration p = new UserProjectConfiguration();
@@ -480,7 +480,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testInstitution() throws Exception {
+    public void testInstitution() {
         User user = new User();
         Institution in = new Institution();
         user.setInstitution(in);
@@ -488,14 +488,14 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testInstitutionId() throws Exception {
+    public void testInstitutionId() {
         User user = new User();
         user.setInstitutionId(1);
         assertEquals(1, user.getInstitutionId().intValue());
     }
 
     @Test
-    public void testSuperAdmin() throws Exception {
+    public void testSuperAdmin() {
         User user = new User();
         assertFalse(user.isSuperAdmin());
         user.setSuperAdmin(true);
@@ -503,7 +503,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayInstitutionColumn() throws Exception {
+    public void testDisplayInstitutionColumn() {
         User user = new User();
         assertFalse(user.isDisplayInstitutionColumn());
         user.setDisplayInstitutionColumn(true);
@@ -511,7 +511,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDashboardPlugin() throws Exception {
+    public void testDashboardPlugin() {
         User user = new User();
         assertNull(user.getDashboardPlugin());
         user.setDashboardPlugin("fixture");
@@ -519,7 +519,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testSsoId() throws Exception {
+    public void testSsoId() {
         User user = new User();
         assertNull(user.getSsoId());
         user.setSsoId("fixture");
@@ -527,15 +527,15 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testProcessListDefaultSortField() throws Exception {
+    public void testProcessListDefaultSortField() {
         User user = new User();
-        assertEquals("titel", user.getProcessListDefaultSortField());
+        assertEquals("prozesse.titel", user.getProcessListDefaultSortField());
         user.setProcessListDefaultSortField("fixture");
         assertEquals("fixture", user.getProcessListDefaultSortField());
     }
 
     @Test
-    public void testProcessListDefaultSortOrder() throws Exception {
+    public void testProcessListDefaultSortOrder() {
         User user = new User();
         assertEquals(" asc", user.getProcessListDefaultSortOrder());
         user.setProcessListDefaultSortOrder(" desc");
@@ -543,7 +543,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testTaskListDefaultSortingField() throws Exception {
+    public void testTaskListDefaultSortingField() {
         User user = new User();
         assertEquals("prioritaet", user.getTaskListDefaultSortingField());
         user.setTaskListDefaultSortingField("fixture");
@@ -551,7 +551,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testTaskListDefaultSortOrder() throws Exception {
+    public void testTaskListDefaultSortOrder() {
         User user = new User();
         assertEquals(" desc", user.getTaskListDefaultSortOrder());
         user.setTaskListDefaultSortOrder("Asc");
@@ -559,7 +559,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayLastEditionDate() throws Exception {
+    public void testDisplayLastEditionDate() {
         User user = new User();
         assertFalse(user.isDisplayLastEditionDate());
         user.setDisplayLastEditionDate(true);
@@ -567,7 +567,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayLastEditionUser() throws Exception {
+    public void testDisplayLastEditionUser() {
         User user = new User();
         assertFalse(user.isDisplayLastEditionUser());
         user.setDisplayLastEditionUser(true);
@@ -575,7 +575,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayLastEditionTask() throws Exception {
+    public void testDisplayLastEditionTask() {
         User user = new User();
         assertFalse(user.isDisplayLastEditionTask());
         user.setDisplayLastEditionTask(true);
@@ -583,7 +583,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDashboardConfiguration() throws Exception {
+    public void testDashboardConfiguration() {
         User user = new User();
         assertNull(user.getDashboardConfiguration());
         user.setDashboardConfiguration("fixture");
@@ -591,7 +591,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testUiMode() throws Exception {
+    public void testUiMode() {
         User user = new User();
         assertNull(user.getUiMode());
         user.setUiMode("fixture");
@@ -599,7 +599,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testAdditionalSearchFields() throws Exception {
+    public void testAdditionalSearchFields() {
         User user = new User();
         assertNull(user.getAdditionalSearchFields());
         user.setAdditionalSearchFields("fixture");
@@ -607,7 +607,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testStatus() throws Exception {
+    public void testStatus() {
         User user = new User();
         assertEquals(UserStatus.ACTIVE, user.getStatus());
         user.setStatus(UserStatus.DELETED);
@@ -615,7 +615,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testApiToken() throws Exception {
+    public void testApiToken() {
         User user = new User();
         assertTrue(user.getApiToken().isEmpty());
         List<AuthenticationToken> apiToken = new ArrayList<>();
@@ -635,7 +635,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testAdditionalData() throws Exception {
+    public void testAdditionalData() {
         User user = new User();
         assertTrue(user.getAdditionalData().isEmpty());
         Map<String, String> additionalData = new HashMap<>();
@@ -645,7 +645,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testPasswortCrypt() throws Exception {
+    public void testPasswortCrypt() {
         String password = "fixture";
         User user = new User();
         user.setPasswortCrypt(password);
@@ -655,7 +655,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testPasswortKorrekt() throws Exception {
+    public void testPasswortKorrekt() {
         User user = new User();
         Ldap ldap = new Ldap();
         ldap.setAuthenticationType("database");
@@ -669,7 +669,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testPasswordHash() throws Exception {
+    public void testPasswordHash() {
         User user = new User();
         user.setPasswordSalt("salt");
         assertEquals("MymTz74KfogfA3Uymyp+l+MRZvF4nJgeM/4qPZWMwsc=", user.getPasswordHash("fixture"));
@@ -688,7 +688,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testFirstProjectTitle() throws Exception {
+    public void testFirstProjectTitle() {
         User user = new User();
         assertEquals("", user.getFirstProjectTitle());
         List<Project> list = new ArrayList<>();
@@ -701,7 +701,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testFirstUserGroupTitle() throws Exception {
+    public void testFirstUserGroupTitle() {
         User user = new User();
         assertEquals("", user.getFirstUserGroupTitle());
         List<Usergroup> list = new ArrayList<>();
@@ -714,7 +714,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testInstitutionName() throws Exception {
+    public void testInstitutionName() {
         User user = new User();
         Institution in = new Institution();
         user.setInstitution(in);
@@ -723,7 +723,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testSessiontimeoutInMinutes() throws Exception {
+    public void testSessiontimeoutInMinutes() {
         User user = new User();
         assertEquals(240, user.getSessiontimeoutInMinutes().intValue());
         // 1 is not allowed, 5 is the lowest value
@@ -749,7 +749,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testSelfDestruct() throws Exception {
+    public void testSelfDestruct() {
         User user = new User();
         assertEquals(UserStatus.ACTIVE, user.getStatus());
         user.selfDestruct();
@@ -808,7 +808,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testImageUrl() throws Exception {
+    public void testImageUrl() {
         User user = new User();
         assertNull(user.getImageUrl());
         user.setEmail("user@example.com");
@@ -820,7 +820,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testAllUserRoles() throws Exception {
+    public void testAllUserRoles() {
         User user = new User();
         List<Usergroup> ugList = new ArrayList<>();
         user.setBenutzergruppen(ugList);
@@ -832,7 +832,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testActive() throws Exception {
+    public void testActive() {
         User user = new User();
         assertTrue(user.isActive());
         assertEquals(UserStatus.ACTIVE, user.getStatus());
@@ -844,7 +844,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testUserStatus() throws Exception {
+    public void testUserStatus() {
         assertEquals(UserStatus.REGISTERED, UserStatus.getStatusByName("registered"));
         assertEquals(UserStatus.ACTIVE, UserStatus.getStatusByName("active"));
         assertEquals(UserStatus.INACTIVE, UserStatus.getStatusByName("inactive"));
@@ -854,14 +854,14 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testDownloadFolder() throws Exception {
+    public void testDownloadFolder() {
         User user = new User();
         user.setLogin("fixture");
         assertTrue(user.getDownloadFolder().toString().endsWith("/fixture"));
     }
 
     @Test
-    public void testEntryType() throws Exception {
+    public void testEntryType() {
         User user = new User();
         assertEquals(EntryType.USER, user.getEntryType());
     }

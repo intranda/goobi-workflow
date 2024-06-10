@@ -1358,7 +1358,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             return (String) o;
         } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException
                 | InvocationTargetException exception) {
-            log.error(exception);
+            // this exception is expected
         }
 
         try {
