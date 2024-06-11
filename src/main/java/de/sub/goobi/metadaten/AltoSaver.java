@@ -56,7 +56,7 @@ public class AltoSaver {
     private static XPathFactory xFactory = XPathFactory.instance();
 
     public static void saveAltoChanges(Path altoFile, AltoChange[] changes) throws JDOMException, IOException {
-        if (changes == null || changes.length == 0) {
+        if (changes == null) {
             return;
         }
         Document doc = sax.build(altoFile.toFile());
@@ -65,17 +65,21 @@ public class AltoSaver {
         //first remove all tags and tagrefs. Create new Tags element if necessary
         XPathExpression<Element> tagsXPath = xFactory.compile("//alto:Tags", Filters.element(), null, namespace);
         Element tagsElement = tagsXPath.evaluateFirst(doc);
-        if (writeTags) {
-            if (tagsElement == null) {
-                int layoutIndex = doc.getRootElement().indexOf(doc.getRootElement().getChild("Layout", namespace));
-                tagsElement = new Element("Tags", doc.getRootElement().getNamespace());
-                doc.getRootElement().addContent(layoutIndex, tagsElement);
-            }
-            tagsElement.removeChildren("NamedEntityTag", namespace);
-            XPathExpression<Element> stringsXPath = xFactory.compile("//alto:String", Filters.element(), null, namespace);
-            List<Element> stringElements = stringsXPath.evaluate(doc);
-            stringElements.forEach(string -> string.removeAttribute("TAGREFS"));
+        if (writeTags && tagsElement == null) {
+            int layoutIndex = doc.getRootElement().indexOf(doc.getRootElement().getChild("Layout", namespace));
+            tagsElement = new Element("Tags", doc.getRootElement().getNamespace());
+            doc.getRootElement().addContent(layoutIndex, tagsElement);
+        } else if (!writeTags && tagsElement != null) {
+            doc.getRootElement().removeContent(tagsElement);
+            tagsElement = null;
         }
+        if (tagsElement != null) {
+            tagsElement.removeChildren("NamedEntityTag", namespace);
+        }
+        XPathExpression<Element> stringsXPath = xFactory.compile("//alto:String", Filters.element(), null, namespace);
+        List<Element> stringElements = stringsXPath.evaluate(doc);
+        stringElements.forEach(string -> string.removeAttribute("TAGREFS"));
+
         int tagCounter = 0;
 
         for (AltoChange change : changes) {
@@ -107,7 +111,8 @@ public class AltoSaver {
                 log.error("Cannot add alto change: Unknown action {}", change.getAction());
             }
         }
-        try (OutputStream out = StorageProvider.getInstance().newOutputStream(altoFile)) {
+        try (
+                OutputStream out = StorageProvider.getInstance().newOutputStream(altoFile)) {
             XMLOutputter xmlOut = new XMLOutputter(Format.getPrettyFormat());
             xmlOut.output(doc, out);
         }

@@ -227,13 +227,10 @@
     	return JSON.stringify(changeArr);
     }
 
-    isDirty() {
-    	console.log(this.changes)
-    	return Object.keys(this.changes).length > 0;
-    }
-
     saved() {
+    	const tempChanges = this.changes.namedEntities;
     	this.changes = {};
+    	this.changes.namedEntities = tempChanges;
     }
 
     initOpenseadragon() {
