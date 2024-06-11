@@ -161,6 +161,8 @@
     		        this.resetSelection();
                 }
             });
+            //save now to write existing entities into changes list
+            this.saveEntities();
         });
 
         handleEntitySelectChange(event) {
@@ -179,7 +181,7 @@
                 const alreadySelected = element.classList.contains(SELECTED_WORD_CLASS);
                 if(this.selectedEntity) {
                     if(alreadySelected) {
-                        this.removeFromEnttiy(element, this.selectedEntity)
+                        this.removeFromEntity(element, this.selectedEntity)
                     } else {
                          this.addToEntity(element, this.selectedEntity);
                     }
@@ -217,7 +219,7 @@
             this.selectedWords.splice(index, 1);
         }
 
-        removeFromEnttiy(element, entity) {
+        removeFromEntity(element, entity) {
             element.classList.remove(SELECTED_WORD_CLASS);
             let id = element.id;
             let index = entity.words.indexOf(id);
