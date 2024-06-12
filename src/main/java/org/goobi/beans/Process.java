@@ -1925,10 +1925,20 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             return getImagesTifDirectory(false);
         }
 
-        String imagefolder = this.getImagesDirectory();
-        String foldername = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(folderName), this);
-        if (StringUtils.isNotBlank(foldername)) {
-            return imagefolder + foldername;
+        String folder = this.getImagesDirectory();
+        String folderPath;
+        if (folderName.contains(".")) {
+            String[] split = folderName.split("\\.");
+            if (split.length != 2) {
+                throw new IllegalArgumentException("Hierarchy is not allowed for configured folders: " + folderName);
+            }
+            folder = split[0];
+            folderPath = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(split[0], split[1]), this);
+        } else {
+            folderPath = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(folderName), this);
+        }
+        if (StringUtils.isNotBlank(folderPath)) {
+            return folder + folderPath;
         }
         return null;
     }
