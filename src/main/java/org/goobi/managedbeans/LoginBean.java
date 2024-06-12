@@ -295,6 +295,11 @@ public class LoginBean implements Serializable {
         try {
             this.myBenutzer = UserManager.getUserById(loginID);
 
+            if (!currentUser.isSuperAdmin() && this.myBenutzer.isSuperAdmin()) {
+                Helper.setFehlerMeldung("Non-superadmin users are not allowed to log in as superadmin users!");
+                return "";
+            }
+
             // Creating journal entry
             currentUser.setContent("Log in as user '" + this.myBenutzer.getNachVorname() + "'.");
             currentUser.addJournalEntry();

@@ -218,7 +218,7 @@
 
 															<!-- Benutzerprofil laden-Schaltknopf -->
 															<button jsf:id="switch"
-																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
+																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch') and (LoginForm.myBenutzer.superAdmin or not item.superAdmin)}"
 																class="btn btn-blank"
 																jsf:action="#{LoginForm.EinloggenAls}"
 																title="#{msgs.benutzerprofilLaden}">
