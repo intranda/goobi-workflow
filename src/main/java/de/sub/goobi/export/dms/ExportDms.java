@@ -165,8 +165,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     return false;
                 }
             }
-            newfile.setDigitalDocument(gdzfile.getDigitalDocument());
-            gdzfile = newfile;
+            // throw away validation file and re-read the original data
+            gdzfile = myProzess.readMetadataFile();
 
         } catch (Exception exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             Helper.setFehlerMeldung(Helper.getTranslation("exportError") + myProzess.getTitel(), exception);
