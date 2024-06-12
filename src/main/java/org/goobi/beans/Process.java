@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -433,7 +434,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                 //fall back to largest thumbnail image
                 java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(masterFolder).entrySet()
                         .stream()
-                        .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
+                        .sorted(Comparator.comparing(Entry::getKey))
                         .map(Entry::getValue)
                         .map(Paths::get)
                         .filter(StorageProvider.getInstance()::isDirectory)
