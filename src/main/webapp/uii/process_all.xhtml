@@ -1333,12 +1333,21 @@
 			<!-- JAVASCRIPT -->
 			<script type="text/javascript">
 		        function showGoobiScriptModal({data, modalID = undefined} = {}) {
-		            // console.log(1)
-		            // console.log(modalID)
-		          if (!modalID) return
-		            if (data.status !== "success") return
-		          const mdl = new bootstrap.Modal(document.getElementById(modalID));
-		          mdl.show()
+					// console.log(modalID);
+		            if (!modalID) {
+					    return;
+				    }
+		            if (data.status !== "success") {
+						return;
+					}
+					const element = document.getElementById(modalID);
+					if (!element) {
+						console.log("Modal not found: " + modalID + "!");
+		          		return;
+					}
+
+					const mdl = new bootstrap.Modal(element);
+					mdl.show();
 		        }
 
 				window.onload = function() {
