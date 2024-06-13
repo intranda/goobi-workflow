@@ -5,6 +5,7 @@ import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
 import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +22,15 @@ public class VocabularyRecordAPI {
     }
 
     public List<JSFVocabularyRecord> all(long vocabularyId) {
+        return all(vocabularyId, Optional.empty());
+    }
+
+    public List<JSFVocabularyRecord> all(long vocabularyId, Optional<String> sorting) {
         VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId).getSchemaId());
-        List<JSFVocabularyRecord> result = restApi.get(IN_VOCABULARY_ALL_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, vocabularyId).getContent();
+        List<Object> urlParameters = new ArrayList<>(1 + (sorting.isPresent() ? 1 : 0));
+        urlParameters.add(vocabularyId);
+        sorting.ifPresent(s -> urlParameters.add("sort=" + s));
+        List<JSFVocabularyRecord> result = restApi.get(IN_VOCABULARY_ALL_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, urlParameters.toArray()).getContent();
         result.forEach(r -> r.load(schema));
         return result;
     }
@@ -32,6 +40,10 @@ public class VocabularyRecordAPI {
     }
 
     public VocabularyRecordPageResult list(long vocabularyId, Optional<Integer> size, Optional<Integer> page) {
+        return list(vocabularyId, size, page, Optional.empty());
+    }
+
+    public VocabularyRecordPageResult list(long vocabularyId, Optional<Integer> size, Optional<Integer> page, Optional<String> sorting) {
         String params = "";
         if (size.isPresent()) {
             params += params.isEmpty() ? "?" : "&";
@@ -40,6 +52,10 @@ public class VocabularyRecordAPI {
         if (page.isPresent()) {
             params += params.isEmpty() ? "?" : "&";
             params += "page=" + page.get();
+        }
+        if (sorting.isPresent()) {
+            params += params.isEmpty() ? "?" : "&";
+            params += "sort=" + sorting.get();
         }
         VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId).getSchemaId());
         VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + params, VocabularyRecordPageResult.class, vocabularyId);
@@ -55,8 +71,16 @@ public class VocabularyRecordAPI {
     }
 
     public VocabularyRecordPageResult search(long vocabularyId, String query) {
+        return search(vocabularyId, query, Optional.empty());
+    }
+
+    public VocabularyRecordPageResult search(long vocabularyId, String query, Optional<String> sorting) {
         VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId).getSchemaId());
-        VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_SEARCH_ENDPOINT, VocabularyRecordPageResult.class, vocabularyId, "query=" + query);
+        List<Object> urlParameters = new ArrayList<>(2 + (sorting.isPresent() ? 1 : 0));
+        urlParameters.add(vocabularyId);
+        urlParameters.add("query=" + query);
+        sorting.ifPresent(s -> urlParameters.add("sort=" + s));
+        VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_SEARCH_ENDPOINT, VocabularyRecordPageResult.class, urlParameters.toArray());
         result.getContent().forEach(r -> r.load(schema));
         return result;
     }

@@ -324,29 +324,49 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         return;
                     }
 
-                    String[] parts = fields.trim().split("=");
-                    if (parts.length != 2) {
-                        Helper.setFehlerMeldung("Wrong field format");
-                        return;
+                    String searchFilter = fields.trim();
+                    Optional<String> sorting = Optional.empty();
+                    if (searchFilter.contains("@")) {
+                        String[] parts = searchFilter.split("@");
+                        searchFilter = parts[0];
+                        sorting = Optional.of(parts[1]);
                     }
 
-                    String name = parts[0];
-                    String value = parts[1];
+                    String fieldName = searchFilter;
+                    Optional<String> fieldValueFilter = Optional.empty();
 
+                    if (fieldName.contains("=")) {
+                        String[] parts = searchFilter.split("=");
+                        fieldName = parts[0];
+                        fieldValueFilter = Optional.of(parts[1]);
+                    }
+
+                    String finalFieldName = fieldName;
                     Optional<FieldDefinition> searchField = schema.getDefinitions().stream()
-                            .filter(d -> d.getName().equals(name))
+                            .filter(d -> d.getName().equals(finalFieldName))
                             .findFirst();
 
                     if (searchField.isEmpty()) {
-                        Helper.setFehlerMeldung("Field " + name + " not found in vocabulary " + currentVocabulary.getName());
+                        Helper.setFehlerMeldung("Field " + fieldName + " not found in vocabulary " + currentVocabulary.getName());
                         return;
                     }
 
-
                     // Assume there are not than 1000 hits, otherwise it is not useful anyway..
-                    List<JSFVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
-                            .search(currentVocabulary.getId(), searchField.get().getId() + ":" + value)
-                            .getContent();
+                    Optional<String> sortingQuery = Optional.empty();
+                    if (sorting.isPresent()) {
+                        sortingQuery = Optional.of(searchField.get().getId() + "," + sorting.get());
+                    }
+                    List<JSFVocabularyRecord> recordList;
+                    if (fieldValueFilter.isPresent()) {
+                        recordList = vocabularyAPI.vocabularyRecords()
+                                .search(currentVocabulary.getId(), searchField.get().getId() + ":" + fieldValueFilter.get(), sortingQuery)
+                                .getContent();
+                    } else {
+                        recordList = vocabularyAPI.vocabularyRecords()
+                                .list(currentVocabulary.getId(), Optional.of(1000), Optional.of(0), sortingQuery)
+                                .getContent();
+                    }
+
                     ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                     List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
 
