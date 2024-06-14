@@ -117,11 +117,13 @@ pipeline {
         anyOf {
           branch 'master'
           branch 'hotfix_release_*'
+          branch 'develop'
         }
       }
       steps {
         build wait: false, job: 'goobi-workflow/goobi-docker/master', parameters: [[$class: 'StringParameterValue', name: 'UPSTREAM_BRANCH', value: String.valueOf(BRANCH_NAME)]]
       }
+    }
   }
   post {
     always {
