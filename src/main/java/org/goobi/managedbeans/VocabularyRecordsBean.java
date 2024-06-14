@@ -157,21 +157,6 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     private void saveJsfData(JSFVocabularyRecord record) {
-        record.getJsfFields()
-                .forEach(f -> {
-                    if (Boolean.TRUE.equals(f.getDefinition().getMultiValued())) {
-                        f.getValues().clear();
-                        f.getValues().addAll(f.getAllSelectedValues().values().stream()
-                                .map(v -> {
-                                    TranslationInstance ti = new TranslationInstance();
-                                    ti.setValue(v);
-                                    FieldValue fv = new FieldValue();
-                                    fv.setTranslations(new LinkedList<>(List.of(ti)));
-                                    return fv;
-                                })
-                                .collect(Collectors.toSet()));
-                    }
-                });
         record.setFields(new HashSet<>(record.getJsfFields()));
     }
 
