@@ -112,6 +112,16 @@ pipeline {
         }
       }
     }
+    stage('trigger docker build') {
+      when { 
+        anyOf {
+          branch 'master'
+          branch 'hotfix_release_*'
+        }
+      }
+      steps {
+        build wait: false, job: 'goobi-workflow/goobi-docker/master', parameters: [[$class: 'StringParameterValue', name: 'UPSTREAM_BRANCH', value: String.valueOf(BRANCH_NAME)]]
+      }
   }
   post {
     always {
