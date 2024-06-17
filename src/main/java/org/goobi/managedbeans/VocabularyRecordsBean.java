@@ -109,6 +109,9 @@ public class VocabularyRecordsBean implements Serializable {
     public void edit(JSFVocabularyRecord record) {
         this.currentRecord = record;
         record.setShown(true);
+        if (record.getParentId() != null) {
+            findLoadedRecord(record.getParentId()).ifPresent(this::expandRecord);
+        }
         expandParents(record);
         prepareEmptyFieldsForEditing(record);
         loadRecord(record);
