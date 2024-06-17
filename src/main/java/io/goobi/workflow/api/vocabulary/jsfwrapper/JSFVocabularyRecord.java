@@ -51,6 +51,7 @@ public class JSFVocabularyRecord extends VocabularyRecord {
     public JSFVocabularyRecord(VocabularyRecord legacy) {
         setId(legacy.getId());
         setVocabularyId(legacy.getVocabularyId());
+        setFields(legacy.getFields());
         this.jsfFields = legacy.getFields().stream()
                 .map(JSFFieldInstance::new)
                 .collect(Collectors.toList());
