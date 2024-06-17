@@ -95,6 +95,7 @@ public class JSFFieldInstance extends FieldInstance {
                 for (String selectedValue : getValues().stream()
                         .flatMap(v -> v.getTranslations().stream())
                         .map(TranslationInstance::getValue)
+                        .filter(v -> !v.isBlank())
                         .collect(Collectors.toList())) {
                     String label = selectableItems.stream()
                             .filter(i -> i.getValue().equals(selectedValue))
