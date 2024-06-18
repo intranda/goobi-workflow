@@ -2042,7 +2042,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {
-        if (this.id == null || !ConfigurationHelper.getInstance().isMetsEditorShowArchivedFolder()) {
+        if (this.id == null || ConfigurationHelper.getInstance().useS3()) {
             return new ArrayList<>();
         }
         List<String> filesInImages = StorageProvider.getInstance().list(this.getImagesDirectory());

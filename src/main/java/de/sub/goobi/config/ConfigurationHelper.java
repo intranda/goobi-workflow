@@ -1123,10 +1123,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorDisplayFileManipulation", false);
     }
 
-    public boolean isMetsEditorShowArchivedFolder() {
-        return getLocalBoolean("MetsEditorShowArchivedFolder", false);
-    }
-
     public boolean isMetsEditorShowMetadataPopup() {
         return getLocalBoolean("MetsEditorShowMetadataPopup", true);
     }
