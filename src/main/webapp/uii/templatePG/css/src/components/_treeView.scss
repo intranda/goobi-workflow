@@ -1,0 +1,17 @@
+.treeView-item {
+    --toggle-width: 1em;
+    --spacer-width: max(1em, var(--level) * 1em);
+    display: grid;
+    grid-template-areas: "spacer toggle content";
+    grid-template-columns: var(--spacer-width) var(--toggle-width) auto;
+    padding-inline-start: 0 !important;
+    .spacer {
+        grid-area: spacer;
+    }
+    .toggle {
+        grid-area: toggle;
+    }
+    .content {
+        grid-area: content;
+    }
+}
