@@ -92,7 +92,7 @@ public class JSFVocabularyRecord extends VocabularyRecord {
         parents.add(0, parent);
     }
 
-    private String getFieldValue(FieldDefinition definition) {
+    public String getFieldValue(FieldDefinition definition) {
         // TODO: Decide which language to show
         String value = getFields().stream()
                 .filter(f -> f.getDefinitionId().equals(definition.getId()))
