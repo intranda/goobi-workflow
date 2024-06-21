@@ -435,7 +435,7 @@ public class ProzesskopieForm implements Serializable {
         fa.setIsnotdoctype(item.getString("@isnotdoctype"));
         fa.setInitStart(item.getString("@initStart"));
         fa.setInitEnd(item.getString("@initEnd"));
-        fa.setFieldType(item.getString("type"));
+        fa.setFieldType(item.getString("@type", "text"));
 
         if (item.getBoolean("@ughbinding", false)) {
             fa.setUghbinding(true);
@@ -1353,13 +1353,13 @@ public class ProzesskopieForm implements Serializable {
                     values.add(field.getWert());
                 }
                 for (String value : values) {
-                    if ("werk".equals(field.getFrom())) {
+                    if ("work".equals(field.getFrom()) || "werk".equals(field.getFrom())) {
                         bh.EigenschaftHinzufuegen(werk, field.getTitel(), value);
                     }
-                    if ("vorlage".equals(field.getFrom())) {
+                    if ("template".equals(field.getFrom()) || "vorlage".equals(field.getFrom())) {
                         bh.EigenschaftHinzufuegen(vor, field.getTitel(), value);
                     }
-                    if ("prozess".equals(field.getFrom())) {
+                    if ("process".equals(field.getFrom()) || "prozess".equals(field.getFrom())) {
                         bh.EigenschaftHinzufuegen(this.prozessKopie, field.getTitel(), value);
                     }
                 }

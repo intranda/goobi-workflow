@@ -46,7 +46,7 @@ public class AdditionalField {
     @Getter
     private boolean required = false;
     @Getter
-    private String from = "prozess";
+    private String from = "process";
     @Getter
     @Setter
     private List<SelectItem> selectList;
