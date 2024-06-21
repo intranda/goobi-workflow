@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -75,6 +76,9 @@ import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPluginVersion2;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+import org.goobi.vocabulary.Field;
+import org.goobi.vocabulary.VocabRecord;
+import org.goobi.vocabulary.Vocabulary;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -104,6 +108,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import de.sub.goobi.persistence.managers.VocabularyManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
@@ -464,6 +469,28 @@ public class ProzesskopieForm implements Serializable {
 
             String sid = hc.getString(".");
             fa.getSelectList().add(new SelectItem(sid, svalue, null));
+        }
+
+        String vocabularyTitle = item.getString("vocabulary");
+        if (StringUtils.isNotBlank(vocabularyTitle)) {
+            Vocabulary currentVocabulary = VocabularyManager.getVocabularyByTitle(vocabularyTitle);
+            if (currentVocabulary != null && currentVocabulary.getId() != null) {
+                VocabularyManager.getAllRecords(currentVocabulary);
+                List<VocabRecord> recordList = currentVocabulary.getRecords();
+                Collections.sort(recordList);
+                List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
+                selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+
+                for (VocabRecord vr : recordList) {
+                    for (Field f : vr.getFields()) {
+                        if (f.getDefinition().isMainEntry()) {
+                            selectItems.add(new SelectItem(f.getValue(), f.getValue()));
+                            break;
+                        }
+                    }
+                }
+                fa.setSelectList(selectItems);
+            }
         }
         return fa;
     }
