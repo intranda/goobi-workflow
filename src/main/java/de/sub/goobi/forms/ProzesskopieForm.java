@@ -435,6 +435,7 @@ public class ProzesskopieForm implements Serializable {
         fa.setIsnotdoctype(item.getString("@isnotdoctype"));
         fa.setInitStart(item.getString("@initStart"));
         fa.setInitEnd(item.getString("@initEnd"));
+        fa.setFieldType(item.getString("type"));
 
         if (item.getBoolean("@ughbinding", false)) {
             fa.setUghbinding(true);
@@ -471,16 +472,14 @@ public class ProzesskopieForm implements Serializable {
             fa.getSelectList().add(new SelectItem(sid, svalue, null));
         }
 
-        String vocabularyTitle = item.getString("vocabulary");
+        String vocabularyTitle = item.getString("@vocabulary");
         if (StringUtils.isNotBlank(vocabularyTitle)) {
             Vocabulary currentVocabulary = VocabularyManager.getVocabularyByTitle(vocabularyTitle);
             if (currentVocabulary != null && currentVocabulary.getId() != null) {
                 VocabularyManager.getAllRecords(currentVocabulary);
                 List<VocabRecord> recordList = currentVocabulary.getRecords();
                 Collections.sort(recordList);
-                List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
-                selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
-
+                List<SelectItem> selectItems = new ArrayList<>(recordList.size());
                 for (VocabRecord vr : recordList) {
                     for (Field f : vr.getFields()) {
                         if (f.getDefinition().isMainEntry()) {
