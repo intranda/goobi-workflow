@@ -74,7 +74,7 @@ public class AdditionalFieldTest extends AbstractTest {
     public void testFrom() {
         AdditionalField af = new AdditionalField();
         assertNotNull(af.getFrom());
-        assertEquals("prozess", af.getFrom());
+        assertEquals("process", af.getFrom());
         af.setFrom("from");
         assertEquals("from", af.getFrom());
     }
