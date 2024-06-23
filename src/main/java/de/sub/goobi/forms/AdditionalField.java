@@ -25,13 +25,17 @@
  */
 package de.sub.goobi.forms;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -75,6 +79,9 @@ public class AdditionalField {
     @Getter
     @Setter
     private String fieldType;
+    @Getter
+    @Setter
+    private String pattern;
 
     public void setInitStart(String newValue) {
         this.initStart = newValue;
@@ -171,6 +178,44 @@ public class AdditionalField {
         wert = bld.toString();
         if (wert.endsWith(";")) {
             wert = wert.substring(0, wert.length() - 1);
+        }
+    }
+
+    public Date getValueAsDateTime() {
+        return convertValueFromStringToDate("yyyy-MM-dd hh:mm:ss", wert);
+    }
+
+    public void setValueAsDateTime(Date date) {
+        wert = convertValueFromDateToString("yyyy-MM-dd hh:mm:ss", date);
+    }
+
+    public Date getValueAsDate() {
+        return convertValueFromStringToDate("yyyy-MM-dd", wert);
+    }
+
+    public void setValueAsDate(Date date) {
+        wert = convertValueFromDateToString("yyyy-MM-dd", date);
+    }
+
+    private Date convertValueFromStringToDate(String pattern, String value) {
+        if (StringUtils.isNotBlank(value)) {
+            DateFormat dateFormat = new SimpleDateFormat(pattern);
+            try {
+                return dateFormat.parse(value);
+            } catch (ParseException e) {
+                return new Date();
+            }
+        } else {
+            return new Date();
+        }
+    }
+
+    private String convertValueFromDateToString(String pattern, Date date) {
+        DateFormat dateFormat = new SimpleDateFormat(pattern);
+        try {
+            return dateFormat.format(date);
+        } catch (Exception e) {
+            return dateFormat.format(new Date());
         }
     }
 }

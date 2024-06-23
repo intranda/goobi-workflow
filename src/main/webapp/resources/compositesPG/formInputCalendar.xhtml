@@ -18,14 +18,14 @@
 		<composite:attribute name="displayAsRequired" default="false" />
 		<composite:attribute name="classLeft" default="col-12 col-md-3" />
 		<composite:attribute name="classRight" default="col-12 col-md-9" />
-        <composite:attribute name="displayLabel" default="true" />        
-	</composite:interface>
+        <composite:attribute name="displayLabel" default="true"/> 
+        <composite:attribute name="navigation" default="false"/> 
+        <composite:attribute name="mask" default="false"/> 
+        <composite:attribute name="pattern" />
+    </composite:interface>
 
 	<composite:implementation>
 		<script type="text/javascript">PrimeFaces.locales['de'] = {
-		    closeText: 'Schließen',
-		    prevText: 'Zurück',
-		    nextText: 'Weiter',
 		    monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
 		    monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
 		    dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
@@ -46,7 +46,12 @@
 		    month: 'Monat',
 		    week: 'Woche',
 		    day: 'Tag',
-		    allDayText: 'Ganzer Tag'
+		    allDayText: 'Ganzer Tag',
+	        aria: {
+	           close: 'Schließen',
+	           previous: 'Zurück',
+	           next: 'Weiter',
+	       }
 		};
 		</script>
 		
@@ -64,10 +69,33 @@
 			
 			<!-- CONTENT -->
 			<div class="#{cc.attrs.classRight}">
-				<p:calendar id="#{cc.attrs.name}" value="#{cc.attrs.field}" styleClass="ff-goobi">
-		        	<f:passThroughAttribute name="autocomplete" value="off" />
-		        </p:calendar>
-				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
+            
+                <ui:fragment rendered="#{cc.attrs.pattern==null or cc.attrs.pattern eq ''}">
+                    <p:calendar
+                        id="#{cc.attrs.name}1" 
+                        value="#{cc.attrs.field}" 
+                        styleClass="ff-goobi" 
+                        navigator="#{cc.attrs.navigation}"
+                        mask="#{cc.attrs.mask}">
+                        <f:passThroughAttribute name="autocomplete" value="off" />
+                    </p:calendar>
+               </ui:fragment>
+               <ui:fragment rendered="#{cc.attrs.pattern!=null and cc.attrs.pattern ne ''}">
+                	<p:calendar
+                        id="#{cc.attrs.name}2" 
+                        value="#{cc.attrs.field}" 
+                        styleClass="ff-goobi" 
+                        navigator="#{cc.attrs.navigation}"
+                        mask="#{cc.attrs.mask}"
+                        showHour="true"
+                        showMinute="true"
+                        timeControlType="slider"
+                        timeInput="true"
+                        pattern="#{cc.attrs.pattern}">
+    		        	<f:passThroughAttribute name="autocomplete" value="off" />
+    		        </p:calendar>
+	           </ui:fragment>
+    			<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
 			</div>
 			<!-- // CONTENT -->
 
