@@ -61,11 +61,26 @@
                         <div class="actions d-flex">
                             <!-- download all records as csv/excel -->
                             <button
-                                    jsf:id="downloadRecords"
+                                    jsf:id="downloadRecordsCSV"
                                     class="btn d-flex align-items-center btn--title-action"
                                     jsf:rel="tooltip"
                                     jsf:action="#{vocabularyBean.downloadRecords}"
-                                    title="#{msgs.vocabularyManager_downloadRecords}"
+                                    title="#{msgs.vocabularyManager_downloadRecords} CSV"
+                                    jsf:immediate="true">
+                                <span class="fa fa-download" />
+                                <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                <f:passThroughAttribute
+                                        name="aria-label"
+                                        value="#{msgs.vocabularyManager_downloadRecords} CSV" />
+                            </button>
+                            <button
+                                    jsf:id="downloadRecordsXls"
+                                    class="btn d-flex align-items-center btn--title-action"
+                                    jsf:rel="tooltip"
+                                    jsf:action="#{vocabularyBean.downloadRecordsExcel}"
+                                    title="#{msgs.vocabularyManager_downloadRecords} Excel"
                                     jsf:immediate="true">
                                 <span class="fa fa-download" />
                                 <f:passThroughAttribute
