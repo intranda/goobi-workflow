@@ -60,28 +60,51 @@
                         icon="fa-database">
                         <div class="actions d-flex">
                             <!-- download all records as csv/excel -->
-                            <button
-                                    jsf:id="downloadRecords"
-                                    class="btn d-flex align-items-center btn--title-action"
-                                    jsf:rel="tooltip"
-                                    jsf:action="#{vocabularyBean.downloadRecords}"
-                                    title="#{msgs.vocabularyManager_downloadRecords}">
-                                <span class="fa fa-download" />
-                                <f:passThroughAttribute
-                                        name="data-toggle"
-                                        value="tooltip" />
-                                <f:passThroughAttribute
-                                        name="aria-label"
-                                        value="#{msgs.vocabularyManager_downloadRecords}" />
-                            </button>
-
+                            <div
+                                class="d-inline"
+                                title="#{msgs.vocabularyManager_downloadRecords}"
+                                data-bs-toggle="tooltip">
+                                <button
+                                    aria-label="#{msgs.vocabularyManager_downloadRecords}"
+									aria-haspopup="true"
+									aria-expanded="false"
+									class="btn h-100 text-white btn--title-action dropdown-toggle"
+									data-bs-toggle="dropdown">
+                                    <span class="fa fa-download" />
+                                </button>
+								<ul class="dropdown-menu">
+									<li>
+										<button
+											jsf:id="downloadRecordsCSV"
+											class="dropdown-item"
+											jsf:rel="tooltip"
+											jsf:action="#{vocabularyBean.downloadRecords}"
+											jsf:immediate="true">
+											<h:outputText
+												value="#{msgs.vocabularyManager_downloadRecords} (CSV)" />
+										</button>
+									</li>
+									<li>
+										<button
+												jsf:id="downloadRecordsXls"
+												class="dropdown-item"
+												jsf:rel="tooltip"
+												jsf:action="#{vocabularyBean.downloadRecordsExcel}"
+												jsf:immediate="true">
+											<h:outputText
+												value="#{msgs.vocabularyManager_downloadRecords} (Excel)" />
+										</button>
+									</li>
+								</ul>
+                              </div>
                             <!-- import all records from excel -->
                             <button
                                     jsf:id="uploadRecords"
                                     class="btn d-flex align-items-center btn--title-action"
                                     jsf:rel="tooltip"
                                     jsf:action="#{vocabularyBean.uploadRecords}"
-                                    title="#{msgs.vocabularyManager_uploadRecords}">
+                                    title="#{msgs.vocabularyManager_uploadRecords}"
+                                    jsf:immediate="true">
                                 <span class="fa fa-upload" />
                                 <f:passThroughAttribute
                                         name="data-toggle"
