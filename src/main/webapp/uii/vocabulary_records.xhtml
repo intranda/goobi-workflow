@@ -65,7 +65,8 @@
                                     class="btn d-flex align-items-center btn--title-action"
                                     jsf:rel="tooltip"
                                     jsf:action="#{vocabularyBean.downloadRecords}"
-                                    title="#{msgs.vocabularyManager_downloadRecords}">
+                                    title="#{msgs.vocabularyManager_downloadRecords}"
+                                    jsf:immediate="true">
                                 <span class="fa fa-download" />
                                 <f:passThroughAttribute
                                         name="data-toggle"
@@ -81,7 +82,8 @@
                                     class="btn d-flex align-items-center btn--title-action"
                                     jsf:rel="tooltip"
                                     jsf:action="#{vocabularyBean.uploadRecords}"
-                                    title="#{msgs.vocabularyManager_uploadRecords}">
+                                    title="#{msgs.vocabularyManager_uploadRecords}"
+                                    jsf:immediate="true">
                                 <span class="fa fa-upload" />
                                 <f:passThroughAttribute
                                         name="data-toggle"
