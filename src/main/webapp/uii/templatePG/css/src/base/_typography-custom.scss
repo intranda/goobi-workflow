@@ -17,6 +17,7 @@
   --fs-200: 0.625rem;
   --fs-400: 0.75rem;
   --fs-500: 0.875rem;
+  --fs-550: 0.9375rem;
   --fs-600: 1rem;
   --fs-800: 1.125rem;
   --bs-nav-link-font-size: var(--fs-400, 0.75rem);
@@ -62,6 +63,14 @@ a {
   font-size: var(--fs-400);
 }
 
+.fs-500 {
+  font-size: var(--fs-500);
+}
+
+.fs-550 {
+  font-size: var(--fs-550);
+}
+
 .fs-600 {
   font-size: var(--fs-600);
 }
@@ -96,4 +105,11 @@ a {
 
 .font-light{
 	color: #bbb;
+}
+.fc-primary {
+  color: var(--clr-primary-400);
+}
+
+.fw-700 {
+  font-weight: 700;
 }
