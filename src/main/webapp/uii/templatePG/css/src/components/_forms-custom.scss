@@ -153,6 +153,37 @@ body {
   border-width: 0 !important;
 }
 
+// re-implementation of forms in non-combinatory classes
+
+.form-row {
+  border-block-end: 1px solid var(--clr-neutral-300);
+  container-name: formUnit;
+  container-type: inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  > * {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    padding: 0.5rem;
+    margin: 0;
+    max-width: 100%;
+    min-height: 2.8125rem;
+    width: 100%;
+  }
+  > .form-label {
+    background: var(--clr-neutral-200);
+    border-inline-end: 1px solid var(--clr-neutral-300);
+  }
+  @container formUnit (min-width: 700px) {
+    > .form-label {
+      width: 25%;
+    }
+    > .form-input {
+      width: 75%;
+    }
+  }
+}
 
 // input elements in box titles, should be mostly search/filter inputs
 .box__title {
