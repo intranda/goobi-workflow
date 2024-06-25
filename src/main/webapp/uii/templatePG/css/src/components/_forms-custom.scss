@@ -152,3 +152,15 @@ body {
   gap: 12px;
   border-width: 0 !important;
 }
+
+
+// input elements in box titles, should be mostly search/filter inputs
+.box__title {
+  input {
+    max-width: 50%;
+    width: 15rem;
+  }
+  .form-control {
+    padding: 0.3125rem 0.75rem;
+  }
+}
