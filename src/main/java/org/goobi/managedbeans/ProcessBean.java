@@ -2738,6 +2738,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
         if (newProcessId != null) {
             myProzess = ProcessManager.getProcessById(newProcessId);
+            myNewProcessTitle = myProzess.getTitel();
         }
 
     }
@@ -2763,6 +2764,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         if (newProcessId != null) {
             myProzess = ProcessManager.getProcessById(newProcessId);
+            myNewProcessTitle = myProzess.getTitel();
         }
     }
 }

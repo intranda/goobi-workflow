@@ -25,6 +25,10 @@
   border-bottom: 0.15rem solid var(--clr-neutral-300);
   background-color: var(--clr-neutral-300);
 
+  .actions {
+    justify-content: flex-end;
+  }
+
   a,
   button {
     color: currentColor;
@@ -259,6 +263,18 @@
     --box-padding-title: 8px 8px 8px 10px;
     background: transparent;
     color: var(--bs-body-color);
+  }
+  .btn--title-action {
+    border-color: black;
+    color: black;
+
+    &:hover {
+      background-color: var(--clr-neutral-600);
+      i,
+      .fa {
+        color: #fff;
+      }
+    }
   }
   .tab {
     border-color: var(--clr-text-400);

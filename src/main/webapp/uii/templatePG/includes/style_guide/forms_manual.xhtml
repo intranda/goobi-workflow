@@ -24,17 +24,17 @@
 			icon="fa-edit">
 
 			<!-- INPUT ROW -->
-			<div class="row">
+			<div class="form-row">
 
 				<!-- LABEL -->
-				<div class="col-12 col-md-3">
+				<div class="form-label">
 					<intranda:formLabel label="#{msgs.standort}"
 					labelFor="manualFieldA"  labelRequired="true"/>
 				</div>
 				<!-- // LABEL -->
 
 				<!-- INPUT -->
-				<div class="col-12 col-md-9">
+				<div class="form-input">
 					<h:inputText
 						id="manualFieldA"
 						styleClass="form-control form__input"
@@ -59,17 +59,17 @@
 
 
 			<!-- SELECT ROW -->
-			<div class="row">
+			<div class="form-row">
 
 				<!-- LABEL -->
-				<div class="col-12 col-md-3">
+				<div class="form-label">
 					<intranda:formLabel label="#{msgs.defaultSortField}"
 						labelFor="manualFieldB"  labelRequired="true"/>
 				</div>
 				<!-- // LABEL -->
 
 				<!-- SELECT -->
-				<div class="col-12 col-md-9">
+				<div class="form-input">
 					<h:selectOneMenu
 						id="manualFieldB"
 						styleClass="form-select"
@@ -97,16 +97,16 @@
 
 
 			<!-- MULTIPLE INPUT ROW -->
-			<div class="row">
+			<div class="form-row">
 
 				<!-- LABEL -->
-				<div class="col-12 col-md-3">
+				<div class="form-label">
 					<intranda:formLabel label="#{msgs.vorname}"
 						labelFor="manualFieldC"  labelRequired="true"/>
 				</div>
 				<!-- // LABEL -->
 
-				<div class="col-12 col-md-9">
+				<div class="form-input">
 
 					<div class="row col-12 border-0">
 
@@ -158,14 +158,14 @@
 
 
 			<!-- SELECT ONE ROW -->
-			<div class="row">
-				<div class="col-12 col-md-3">
+			<div class="form-row">
+				<div class="form-label">
 					<intranda:formLabel label="#{msgs.defaultSortOrder}"
 						labelFor="processDefaultSortOrder"  labelRequired="false"/>
 				</div>
 
 				<!-- SELECT ONE -->
-				<div class="col-12 col-md-9">
+				<div class="form-input">
 					<h:selectOneRadio
 						id="processDefaultSortOrder"
 						value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
@@ -258,17 +258,17 @@
 	icon=&quot;fa-edit&quot;&gt;
 
 	&lt;!-- INPUT ROW --&gt;
-	&lt;div class=&quot;row&quot;&gt;
+	&lt;div class=&quot;form-row&quot;&gt;
 
 		&lt;!-- LABEL --&gt;
-		&lt;div class=&quot;col-12 col-md-3&quot;&gt;
+		&lt;div class=&quot;form-label&quot;&gt;
 			&lt;intranda:formLabel label=&quot;#{msgs.standort}&quot;
 			labelFor=&quot;manualFieldA&quot;  labelRequired=&quot;true&quot;/&gt;
 		&lt;/div&gt;
 		&lt;!-- // LABEL --&gt;
 
 		&lt;!-- INPUT --&gt;
-		&lt;div class=&quot;col-12 col-md-9&quot;&gt;
+		&lt;div class=&quot;form-input&quot;&gt;
 			&lt;h:inputText
 				id=&quot;manualFieldA&quot;
 				styleClass=&quot;form-control form__input&quot;
@@ -293,17 +293,17 @@
 
 
 	&lt;!-- SELECT ROW --&gt;
-	&lt;div class=&quot;row&quot;&gt;
+	&lt;div class=&quot;form-row&quot;&gt;
 
 		&lt;!-- LABEL --&gt;
-		&lt;div class=&quot;col-12 col-md-3&quot;&gt;
+		&lt;div class=&quot;form-label&quot;&gt;
 			&lt;intranda:formLabel label=&quot;#{msgs.defaultSortField}&quot;
 				labelFor=&quot;manualFieldB&quot;  labelRequired=&quot;true&quot;/&gt;
 		&lt;/div&gt;
 		&lt;!-- // LABEL --&gt;
 
 		&lt;!-- SELECT --&gt;
-		&lt;div class=&quot;col-12 col-md-9&quot;&gt;
+		&lt;div class=&quot;form-input&quot;&gt;
 			&lt;h:selectOneMenu
 				id=&quot;manualFieldB&quot;
 				styleClass=&quot;form-select&quot;
@@ -331,16 +331,16 @@
 
 
 	&lt;!-- MULTIPLE INPUT ROW --&gt;
-	&lt;div class=&quot;row&quot;&gt;
+	&lt;div class=&quot;form-row&quot;&gt;
 
 		&lt;!-- LABEL --&gt;
-		&lt;div class=&quot;col-12 col-md-3&quot;&gt;
+		&lt;div class=&quot;form-label&quot;&gt;
 			&lt;intranda:formLabel label=&quot;#{msgs.vorname}&quot;
 				labelFor=&quot;manualFieldC&quot;  labelRequired=&quot;true&quot;/&gt;
 		&lt;/div&gt;
 		&lt;!-- // LABEL --&gt;
 
-		&lt;div class=&quot;col-12 col-md-9&quot;&gt;
+		&lt;div class=&quot;form-input&quot;&gt;
 
 			&lt;div class=&quot;row col-12 border-0&quot;&gt;
 
@@ -392,14 +392,14 @@
 
 
 	&lt;!-- SELECT ONE ROW --&gt;
-	&lt;div class=&quot;row&quot;&gt;
-		&lt;div class=&quot;col-12 col-md-3&quot;&gt;
+	&lt;div class=&quot;form-row&quot;&gt;
+		&lt;div class=&quot;form-label&quot;&gt;
 			&lt;intranda:formLabel label=&quot;#{msgs.defaultSortOrder}&quot;
 				labelFor=&quot;processDefaultSortOrder&quot;  labelRequired=&quot;false&quot;/&gt;
 		&lt;/div&gt;
 
 		&lt;!-- SELECT ONE --&gt;
-		&lt;div class=&quot;col-12 col-md-9&quot;&gt;
+		&lt;div class=&quot;form-input&quot;&gt;
 			&lt;h:selectOneRadio
 				id=&quot;processDefaultSortOrder&quot;
 				value=&quot;#{LoginForm.myBenutzer.processListDefaultSortOrder}&quot;

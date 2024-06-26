@@ -29,6 +29,10 @@
     }
   }
 
+[class*="badge-inverse"] {
+  color: var(--clr-white);
+}
+
   // pillshaped badges
   [class^="badge badge-intranda-"] {
     color: var(--clr-white);

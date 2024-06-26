@@ -117,8 +117,11 @@
                                                     execute="@this"
                                                     render="mainimagearea" />
                                                 <f:passThroughAttribute
-	                                                name="data-toggle"
-	                                                value="tooltip" />
+                                                    name="data-toggle"
+                                                    value="tooltip" />
+                                                <f:passThroughAttribute
+                                                    name="data-placement"
+                                                    value="left" />
                                             </button>
                                             <button
                                                 class="btn btn--icon star"
@@ -137,6 +140,9 @@
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
+                                                <f:passThroughAttribute
+                                                    name="data-placement"
+                                                    value="right" />
                                                 <i
                                                     class="fa fa-star #{page.representative?'active':''}"
                                                     aria-hidden="true"></i>
