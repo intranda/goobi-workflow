@@ -29,4 +29,8 @@ public class JSFVocabulary extends Vocabulary {
     public String csvExport() {
         return get_links().get("export_csv").getHref();
     }
+
+    public String excelExport() {
+        return get_links().get("export_excel").getHref();
+    }
 }
