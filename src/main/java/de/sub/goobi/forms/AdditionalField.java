@@ -25,12 +25,11 @@
  */
 package de.sub.goobi.forms;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
@@ -181,43 +180,34 @@ public class AdditionalField {
         }
     }
 
-    public Date getValueAsDateTime() {
-        return convertValueFromStringToDate("yyyy-MM-dd hh:mm:ss", wert);
-    }
-
-    public void setValueAsDateTime(Date date) {
-        wert = convertValueFromDateToString("yyyy-MM-dd hh:mm:ss", date);
-    }
-
-    public Date getValueAsDate() {
-        return convertValueFromStringToDate("yyyy-MM-dd", wert);
-    }
-
-    public void setValueAsDate(Date date) {
-        wert = convertValueFromDateToString("yyyy-MM-dd", date);
-    }
-
-    private Date convertValueFromStringToDate(String pattern, String value) {
-        if (StringUtils.isNotBlank(value)) {
-            DateFormat dateFormat = new SimpleDateFormat(pattern);
-            try {
-                return dateFormat.parse(value);
-            } catch (ParseException e) {
-                return new Date();
-            }
+    public LocalDateTime getValueAsDateTime() {
+        if (StringUtils.isNotBlank(wert)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+            return LocalDateTime.from(formatter.parse(wert));
         } else {
-            return new Date();
+            return LocalDateTime.now();
         }
     }
 
-    private String convertValueFromDateToString(String pattern, Date date) {
-        DateFormat dateFormat = new SimpleDateFormat(pattern);
-        try {
-            return dateFormat.format(date);
-        } catch (Exception e) {
-            return dateFormat.format(new Date());
+    public void setValueAsDateTime(LocalDateTime date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+        wert = formatter.format(date);
+    }
+
+    public LocalDate getValueAsDate() {
+        if (StringUtils.isNotBlank(wert)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return LocalDate.from(formatter.parse(wert));
+        } else {
+            return LocalDate.now();
         }
     }
+
+    public void setValueAsDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        wert = formatter.format(date);
+    }
+
 }
 
 /* =============================================================== */
