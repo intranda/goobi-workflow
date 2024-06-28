@@ -270,7 +270,7 @@ public class Login {
             servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
             return "";
         }
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "User can be logged in via SSO:");
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "User can be logged in via SSO");
         userBean.setSsoError(null);
         user.lazyLoad();
         userBean.setMyBenutzer(user);

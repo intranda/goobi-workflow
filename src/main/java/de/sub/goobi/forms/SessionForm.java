@@ -24,8 +24,6 @@ import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -279,7 +277,7 @@ public class SessionForm implements Serializable {
         SessionInfo knownSession = this.getSessionInfoById(id);
 
         if (knownSession == null) {
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Created new session for user.");
+            log.trace(LoginBean.LOGIN_LOG_PREFIX + "Created new session for user.");
             SessionInfo newSession = new SessionInfo();
             newSession.setUserName(LOGGED_OUT);
             newSession.setUserId(0);
@@ -290,8 +288,6 @@ public class SessionForm implements Serializable {
         }
 
         if (updatedUser == null) {
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Following user will be logged out:");
-            SessionForm.logUserInformation(knownSession);
             knownSession.setUserName(LOGGED_OUT);
             updatedSession.setAttribute("User", LOGGED_OUT);
             knownSession.setUserId(0);
@@ -308,7 +304,7 @@ public class SessionForm implements Serializable {
         knownSession.setUserId(updatedUser.getId());
         knownSession.setUserTimeout(timeout);
         updatedSession.setMaxInactiveInterval(timeout);
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Removing old sessions...");
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Removing old sessions...");
         this.removeAbandonedSessions(true);
         log.trace(LoginBean.LOGIN_LOG_PREFIX + "Sessions list is up to date.");
     }
@@ -345,10 +341,6 @@ public class SessionForm implements Serializable {
             boolean noAddress = session.getUserIpAddress() == null;
 
             if (overTimeout || loggedOut || noAddress) {
-                if (overTimeout) {
-                    log.debug(LoginBean.LOGIN_LOG_PREFIX + "Following user will be logged out because timeout is exceeded:");
-                    log.debug(LoginBean.LOGIN_LOG_PREFIX + "User name: " + session.getUserName());
-                }
                 message.append("\nSession " + counter + " will be removed because timeout is exceeded or session is abandoned.");
                 log.trace(message.toString());
                 this.sessions.remove(index);
@@ -359,26 +351,6 @@ public class SessionForm implements Serializable {
                 }
                 index++;
             }
-        }
-    }
-
-    /**
-     * Prints the login name, the first name and the last name of the user in the given session object to the debug log output. If the user is
-     * unknown, no log is printed.
-     *
-     * @param session The object that contains the session information and the user information
-     */
-    public static void logUserInformation(SessionInfo session) {
-        try {
-            User user = UserManager.getUserById(session.getUserId());
-            if (user == null) {
-                return;
-            }
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login name: " + user.getLogin());
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "First name: " + user.getVorname());
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Last name: " + user.getNachname());
-        } catch (DAOException daoException) {
-            log.trace(daoException);
         }
     }
 
