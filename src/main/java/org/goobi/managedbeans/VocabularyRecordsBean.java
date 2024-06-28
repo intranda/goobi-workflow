@@ -47,6 +47,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -359,6 +360,7 @@ public class VocabularyRecordsBean implements Serializable {
                 .collect(Collectors.toList());
         this.titleFields = this.definitions.stream()
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
+                .sorted(Comparator.comparing(FieldDefinition::getId))
                 .collect(Collectors.toList());
         this.definitionsIdMap = new HashMap<>();
         for (FieldDefinition d : this.definitions) {
