@@ -97,7 +97,6 @@
                                                         name="aria-label"
                                                         value="#{msgs.vocabularyManager_editRecords}"/>
                                             </button>
-
 <!--                                            &lt;!&ndash; edit vocabulary &ndash;&gt;-->
 <!--                                            <button-->
 <!--                                                    jsf:id="edit"-->
@@ -114,41 +113,6 @@
 <!--                                                        name="aria-label"-->
 <!--                                                        value="#{msgs.vocabularyManager_editVocabulary}"/>-->
 <!--                                            </button>-->
-                                            <!-- exports -->
-                                            <a
-                                                    href="#{item.jsonExport()}"
-                                                    target="_blank"
-                                                    class="btn btn-primary-400 margin-left-3">
-                                                <i aria-hidden="true" class="fa fa-download"/>
-                                            </a>
-                                            <a
-                                                    href="#{item.csvExport()}"
-                                                    target="_blank"
-                                                    class="btn btn-primary-400 margin-left-3">
-                                                <i aria-hidden="true" class="fa fa-download"/>
-                                            </a>
-                                            <a
-                                                    href="#{item.excelExport()}"
-                                                    target="_blank"
-                                                    class="btn btn-primary-400 margin-left-3">
-                                                <i aria-hidden="true" class="fa fa-download"/>
-                                            </a>
-
-                                            <ui:fragment
-                                                    rendered="#{item.skosExportPossible}">
-                                                <a
-                                                        href="#{item.rdfXmlExport()}"
-                                                        target="_blank"
-                                                        class="btn btn-primary-400 margin-left-3">
-                                                    <i aria-hidden="true" class="fa fa-file"/>
-                                                </a>
-                                                <a
-                                                        href="#{item.rdfTurtleExport()}"
-                                                        target="_blank"
-                                                        class="btn btn-primary-400 margin-left-3">
-                                                    <i aria-hidden="true" class="fa fa-file-archive-o"/>
-                                                </a>
-                                            </ui:fragment>
                                         </div>
 
                                     </x:column>

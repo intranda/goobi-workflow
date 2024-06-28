@@ -32,7 +32,6 @@ import io.goobi.vocabulary.exchange.FieldType;
 import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
-import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.APIException;
@@ -40,6 +39,7 @@ import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
 import io.goobi.workflow.api.vocabulary.helper.HierarchicalRecordComparator;
+import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabulary;
 import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -49,7 +49,6 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -70,7 +69,7 @@ public class VocabularyRecordsBean implements Serializable {
     private transient HATEOASPaginator<JSFVocabularyRecord, VocabularyRecordPageResult> paginator;
 
     @Getter
-    private transient Vocabulary vocabulary;
+    private transient JSFVocabulary vocabulary;
 
     private transient VocabularySchema schema;
 
@@ -89,7 +88,7 @@ public class VocabularyRecordsBean implements Serializable {
     private transient String language;
     private transient HierarchicalRecordComparator comparator;
 
-    public String load(Vocabulary vocabulary) {
+    public String load(JSFVocabulary vocabulary) {
         this.vocabulary = vocabulary;
 
         language = transformToThreeCharacterAbbreviation(Helper.getSessionLocale().getLanguage());
