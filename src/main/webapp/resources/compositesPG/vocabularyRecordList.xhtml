@@ -115,6 +115,22 @@
                     title="#{cc.attrs.vocabulary.name}"
                     icon="fa-database">
                 <div class="actions d-flex">
+                    <!-- import -->
+                    <button
+                            jsf:id="uploadRecords"
+                            class="btn d-flex align-items-center btn&#45;&#45;title-action"
+                            jsf:rel="tooltip"
+                            jsf:action="#{vocabularyRecordsBean.uploadRecords}"
+                            title="#{msgs.vocabularyManager_uploadRecords}">
+                        <span class="fa fa-upload"/>
+                        <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip"/>
+                        <f:passThroughAttribute
+                                name="aria-label"
+                                value="#{msgs.vocabularyManager_uploadRecords}"/>
+                    </button>
+                    <!-- export -->
                     <h:outputLink
                             styleClass="btn d-flex align-items-center btn&#45;&#45;title-action"
                             value="#{cc.attrs.vocabulary.jsonExport()}"
@@ -158,21 +174,6 @@
                             <span aria-hidden="true" class="fa fa-download ms-1"/>
                         </h:outputLink>
                     </ui:fragment>
-                    <!-- import all records from excel -->
-                    <!--                    <button-->
-                    <!--                            jsf:id="uploadRecords"-->
-                    <!--                            class="btn d-flex align-items-center btn&#45;&#45;title-action"-->
-                    <!--                            jsf:rel="tooltip"-->
-                    <!--                            jsf:action="#{vocabularyBean.uploadRecords}"-->
-                    <!--                            title="#{msgs.vocabularyManager_uploadRecords}">-->
-                    <!--                        <span class="fa fa-upload"/>-->
-                    <!--                        <f:passThroughAttribute-->
-                    <!--                                name="data-toggle"-->
-                    <!--                                value="tooltip"/>-->
-                    <!--                        <f:passThroughAttribute-->
-                    <!--                                name="aria-label"-->
-                    <!--                                value="#{msgs.vocabularyManager_uploadRecords}"/>-->
-                    <!--                    </button>-->
                 </div>
                 <!-- /actions -->
             </intranda:boxTitle>

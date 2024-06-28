@@ -62,6 +62,7 @@ public class VocabularyRecordsBean implements Serializable {
     private static final long serialVersionUID = 5672948572345L;
 
     private static final String RETURN_PAGE_OVERVIEW = "vocabulary_records";
+    private static final String RETURN_PAGE_UPLOAD = "vocabulary_upload";
 
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
@@ -156,6 +157,14 @@ public class VocabularyRecordsBean implements Serializable {
         } catch (APIException e) {
             Helper.setFehlerMeldung(e);
         }
+    }
+
+    public String uploadRecords() {
+        return RETURN_PAGE_UPLOAD;
+    }
+
+    public void importRecords() {
+        System.err.println("Import done");
     }
 
     private void saveJsfData(JSFVocabularyRecord record) {
