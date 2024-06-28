@@ -122,7 +122,7 @@
                             jsf:rel="tooltip"
                             jsf:action="#{vocabularyRecordsBean.uploadRecords}"
                             title="#{msgs.vocabularyManager_uploadRecords}">
-                        <span class="fa fa-upload"/>
+                        <span class="fa fa-upload me-1"/>
                         <f:passThroughAttribute
                                 name="data-toggle"
                                 value="tooltip"/>
@@ -136,24 +136,24 @@
                             value="#{cc.attrs.vocabulary.jsonExport()}"
                             title="#{msgs.vocabularyManager_downloadRecordsAsJson}"
                     >
+                        <span aria-hidden="true" class="fa fa-download me-1"/>
                         JSON
-                        <span aria-hidden="true" class="fa fa-download ms-1"/>
                     </h:outputLink>
                     <h:outputLink
                             styleClass="btn d-flex align-items-center btn&#45;&#45;title-action"
                             value="#{cc.attrs.vocabulary.excelExport()}"
                             title="#{msgs.vocabularyManager_downloadRecordsAsExcel}"
                     >
+                        <span aria-hidden="true" class="fa fa-download me-1"/>
                         Excel
-                        <span aria-hidden="true" class="fa fa-download ms-1"/>
                     </h:outputLink>
                     <h:outputLink
                             styleClass="btn d-flex align-items-center btn&#45;&#45;title-action"
                             value="#{cc.attrs.vocabulary.csvExport()}"
                             title="#{msgs.vocabularyManager_downloadRecordsAsCsv}"
                     >
+                        <span aria-hidden="true" class="fa fa-download me-1"/>
                         CSV
-                        <span aria-hidden="true" class="fa fa-download ms-1"/>
                     </h:outputLink>
                     <ui:fragment
                             rendered="#{cc.attrs.vocabulary.skosExportPossible}">
@@ -162,16 +162,16 @@
                                 value="#{cc.attrs.vocabulary.rdfXmlExport()}"
                                 title="#{msgs.vocabularyManager_downloadRecordsAsRdfXml}"
                         >
+                            <span aria-hidden="true" class="fa fa-download me-1"/>
                             RDF/XML
-                            <span aria-hidden="true" class="fa fa-download ms-1"/>
                         </h:outputLink>
                         <h:outputLink
                                 styleClass="btn d-flex align-items-center btn&#45;&#45;title-action"
                                 value="#{cc.attrs.vocabulary.rdfTurtleExport()}"
                                 title="#{msgs.vocabularyManager_downloadRecordsAsRdfTurtle}"
                         >
+                            <span aria-hidden="true" class="fa fa-download me-1"/>
                             RDF/Turtle
-                            <span aria-hidden="true" class="fa fa-download ms-1"/>
                         </h:outputLink>
                     </ui:fragment>
                 </div>
