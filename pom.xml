@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>io.goobi.vocabulary</groupId>
-            <artifactId>exchange</artifactId>
+            <artifactId>vocabulary-server-exchange</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
