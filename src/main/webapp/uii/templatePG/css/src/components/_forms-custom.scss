@@ -175,6 +175,9 @@ body {
     background: var(--clr-neutral-200);
     border-inline-end: 1px solid var(--clr-neutral-300);
   }
+  > .form-input {
+    background: var(--clr-white);
+  }
   @container formUnit (min-width: 700px) {
     > .form-label {
       width: 25%;
