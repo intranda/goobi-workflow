@@ -42,10 +42,12 @@ import io.goobi.workflow.api.vocabulary.helper.HierarchicalRecordComparator;
 import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabulary;
 import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import javax.inject.Named;
+import javax.servlet.http.Part;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -89,6 +91,14 @@ public class VocabularyRecordsBean implements Serializable {
     private transient Map<Long, FieldType> typeIdMap;
     private transient String language;
     private transient HierarchicalRecordComparator comparator;
+
+    @Getter
+    @Setter
+    private Part uploadedFile;
+
+    @Getter
+    @Setter
+    private boolean clearBeforeImport;
 
     public String load(JSFVocabulary vocabulary) {
         this.vocabulary = vocabulary;
@@ -164,8 +174,32 @@ public class VocabularyRecordsBean implements Serializable {
         return RETURN_PAGE_UPLOAD;
     }
 
-    public void importRecords() {
-        System.err.println("Import done");
+    public String importRecords() {
+        if (uploadedFile == null) {
+            return "";
+        }
+        System.err.println(uploadedFile);
+        String fileExtension = uploadedFile.getSubmittedFileName().substring(uploadedFile.getSubmittedFileName().lastIndexOf("."));
+        switch (fileExtension) {
+            case ".csv":
+                if (clearBeforeImport) {
+                    api.vocabularies().cleanImportCsv(this.vocabulary.getId(), uploadedFile);
+                } else {
+                    api.vocabularies().importCsv(this.vocabulary.getId(), uploadedFile);
+                }
+                break;
+            case ".xlsx":
+                if (clearBeforeImport) {
+                api.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile);
+            } else {
+                api.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile);
+            }
+                break;
+            default:
+                throw new IllegalArgumentException("Unrecognized file type: \"" + fileExtension + "\"");
+        }
+
+        return load(this.vocabulary);
     }
 
     private void saveJsfData(JSFVocabularyRecord record) {

@@ -1,15 +1,26 @@
 package io.goobi.workflow.api.vocabulary;
 
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
+
+import javax.servlet.http.Part;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RESTAPI {
-    private final Client client = ClientBuilder.newClient();
+    private final Client client = ClientBuilder.newBuilder()
+            .register(MultiPartFeature.class)
+            .register(FileDataBodyPart.class)
+            .build();
     private String baseUrl;
 
     protected RESTAPI(String host, int port) {
@@ -77,6 +88,46 @@ public class RESTAPI {
             }
         } catch (RuntimeException e) {
             throw new APIException(generateUrl(endpoint, parameters), "PUT", -1, e.getMessage());
+        }
+    }
+
+    public Response put(String endpoint, Part part, Object... parameters) {
+        try {
+            StreamDataBodyPart body = new StreamDataBodyPart("file", part.getInputStream());
+            try (MultiPart multiPart = new FormDataMultiPart()) {
+                multiPart.bodyPart(body);
+                try (Response response = client
+                        .target(generateUrl(endpoint, parameters))
+                        .request(MediaType.MULTIPART_FORM_DATA)
+                        .put(Entity.entity(multiPart, multiPart.getMediaType()), Response.class)) {
+                    if (response.getStatus() / 100 != 2) {
+                        throw new APIException(generateUrl(endpoint, parameters), "PUT", response.getStatus(), response.readEntity(String.class));
+                    }
+                    return response.readEntity(Response.class);
+                }
+            }
+        } catch (RuntimeException | IOException e) {
+            throw new APIException(generateUrl(endpoint, parameters), "PUT", -1, e.getMessage());
+        }
+    }
+
+    public Response post(String endpoint, Part part, Object... parameters) {
+        try {
+            StreamDataBodyPart body = new StreamDataBodyPart("file", part.getInputStream());
+            try (MultiPart multiPart = new FormDataMultiPart()) {
+                multiPart.bodyPart(body);
+                try (Response response = client
+                        .target(generateUrl(endpoint, parameters))
+                        .request(MediaType.MULTIPART_FORM_DATA)
+                        .post(Entity.entity(multiPart, multiPart.getMediaType()), Response.class)) {
+                    if (response.getStatus() / 100 != 2) {
+                        throw new APIException(generateUrl(endpoint, parameters), "POST", response.getStatus(), response.readEntity(String.class));
+                    }
+                    return response.readEntity(Response.class);
+                }
+            }
+        } catch (RuntimeException | IOException e) {
+            throw new APIException(generateUrl(endpoint, parameters), "POST", -1, e.getMessage());
         }
     }
 
