@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/standards/alto/ns-v2# http://www.loc.gov/standards/alto/alto.xsd">
+  <Description>
+    <MeasurementUnit>pixel</MeasurementUnit>
+    <sourceImageInformation />
+    <OCRProcessing ID="OCR_1">
+      <preProcessingStep>
+        <processingDateTime>2019-06-20T02:46:23</processingDateTime>
+        <processingAgency>intranda GmbH, www.intranda.com</processingAgency>
+        <processingSoftware>
+          <softwareCreator>intranda GmbH, Germany</softwareCreator>
+          <softwareName>intranda OCR Module for TaskManager</softwareName>
+          <softwareVersion>1.0r42</softwareVersion>
+        </processingSoftware>
+      </preProcessingStep>
+      <ocrProcessingStep>
+        <processingSoftware>
+          <softwareCreator>Tesseract contributors</softwareCreator>
+          <softwareName>Tesseract Open Source OCR Engine</softwareName>
+          <softwareVersion>4.0.0-beta.1-270-g5a56</softwareVersion>
+        </processingSoftware>
+      </ocrProcessingStep>
+    </OCRProcessing>
+  </Description>
+  <Layout>
+    <Page ID="PAGE_1" HEIGHT="1680" WIDTH="1272" PHYSICAL_IMG_NR="1">
+      <PrintSpace ID="PrintSpace_1" HPOS="0" VPOS="0" HEIGHT="1680" WIDTH="1272">
+        <TextBlock ID="TextBlock_1" HPOS="91" VPOS="1426" HEIGHT="70" WIDTH="159">
+          <TextLine ID="TextLine_1" HPOS="91" VPOS="1426" HEIGHT="70" WIDTH="159">
+            <String ID="Textword_1" HPOS="91" VPOS="1426" HEIGHT="70" WIDTH="159" CONTENT="WIE" WC="0,38" />
+          </TextLine>
+        </TextBlock>
+        <TextBlock ID="TextBlock_2" HPOS="122" VPOS="1467" HEIGHT="37" WIDTH="31">
+          <TextLine ID="TextLine_2" HPOS="122" VPOS="1500" HEIGHT="4" WIDTH="14">
+            <String ID="Textword_2" HPOS="122" VPOS="1500" HEIGHT="4" WIDTH="14" CONTENT="3" WC="0,66" />
+          </TextLine>
+          <TextLine ID="TextLine_3" HPOS="140" VPOS="1467" HEIGHT="11" WIDTH="13">
+            <String ID="Textword_3" HPOS="140" VPOS="1467" HEIGHT="11" WIDTH="13" CONTENT="Lf" WC="0,05" />
+          </TextLine>
+        </TextBlock>
+        <TextBlock ID="TextBlock_3" HPOS="1191" VPOS="700" HEIGHT="928" WIDTH="45">
+          <TextLine ID="TextLine_4" HPOS="1191" VPOS="700" HEIGHT="928" WIDTH="45">
+            <String ID="Textword_4" HPOS="1191" VPOS="700" HEIGHT="928" WIDTH="45" CONTENT=" " WC="0,95" />
+          </TextLine>
+        </TextBlock>
+      </PrintSpace>
+    </Page>
+  </Layout>
+</alto>

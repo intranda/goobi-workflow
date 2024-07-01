@@ -235,6 +235,12 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
+    public void testGetAdditionalProcessFolderName() {
+        assertEquals("", ConfigurationHelper.getInstance().getAdditionalProcessFolderName("ocr", "fixture"));
+        assertEquals("existing", ConfigurationHelper.getInstance().getAdditionalProcessFolderName("images", "existing"));
+    }
+
+    @Test
     public void testGetProcessOcrTxtDirectoryName() {
         assertEquals("{processtitle}_txt", ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName());
     }
