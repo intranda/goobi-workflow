@@ -213,7 +213,12 @@
                                     </h4>
                                 </div>
                                 <div class="modal-body">
-                                    <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+                                    <c:if test="#{vocabularyRecordsBean.currentRecord.children == null or vocabularyRecordsBean.currentRecord.children.isEmpty() == true}">
+                                        <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+                                    </c:if>
+                                    <c:if test="#{vocabularyRecordsBean.currentRecord.children.isEmpty() == false}">
+                                        <p>#{msgs.vocabularyManager_deleteChildRecordsPrompt}</p>
+                                    </c:if>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-blank" data-bs-dismiss="modal"
