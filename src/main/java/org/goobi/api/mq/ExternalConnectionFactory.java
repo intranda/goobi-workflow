@@ -84,7 +84,7 @@ public class ExternalConnectionFactory {
             String accessKey = "x";
             String secretKey = "x";
             client = AmazonSQSClientBuilder.standard()
-                    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey))) //NOSONAR: this not a real pw, its only a placeholder
                     .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
                     .build();
         } else {
