@@ -187,6 +187,10 @@ public class VocabularyRecordsBean implements Serializable {
         return Boolean.TRUE.equals(this.schema.getHierarchicalRecords());
     }
 
+    public boolean isRootRecordCreationPossible() {
+        return Boolean.FALSE.equals(this.schema.getSingleRootElement()) || this.paginator.getTotalResults() == 0L;
+    }
+
     private void expandParents(JSFVocabularyRecord record) {
         if (record.getParentId() != null) {
             findLoadedRecord(record.getParentId()).ifPresent(p -> {

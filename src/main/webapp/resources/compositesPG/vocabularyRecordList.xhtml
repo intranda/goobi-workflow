@@ -279,14 +279,16 @@
                     <div class="box__actions">
 
                         <!-- add new record -->
-                        <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty(null)}"
-                                class="btn btn-primary me-auto"
-                                title="#{msgs.vocabularyManager_addRecord}">
-                            <span aria-hidden="true" class="fa fa-plus"/>
-                            <span>
-                                <h:outputText value="#{msgs.vocabularyManager_addRecord}"/>
-                            </span>
-                        </button>
+                        <ui:fragment rendered="#{vocabularyRecordsBean.isRootRecordCreationPossible() == true}">
+                            <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty(null)}"
+                                    class="btn btn-primary me-auto"
+                                    title="#{msgs.vocabularyManager_addRecord}">
+                                <span aria-hidden="true" class="fa fa-plus"/>
+                                <span>
+                                    <h:outputText value="#{msgs.vocabularyManager_addRecord}"/>
+                                </span>
+                            </button>
+                        </ui:fragment>
 
                         <!-- Cancel (go back to vocab overview)-->
                         <button
