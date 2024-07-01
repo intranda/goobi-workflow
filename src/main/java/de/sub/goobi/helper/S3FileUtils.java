@@ -762,6 +762,13 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         if (oldType == StorageType.S3 && newType == StorageType.S3) {
             // copy on s3
+            if (isDirectory(oldPath)) {
+                // copy all files in prefix, delete old files
+                copyDirectory(oldPath, newPath);
+                deleteDir(oldPath);
+            }
+        } else {
+            // copy single file
             Copy copy = transferManager.copy(getBucket(), path2Key(oldPath), getBucket(), path2Key(newPath));
             try {
                 copy.waitForCompletion();
@@ -772,7 +779,6 @@ public class S3FileUtils implements StorageProviderInterface {
                 Thread.currentThread().interrupt();
             }
         }
-
     }
 
     @Override
