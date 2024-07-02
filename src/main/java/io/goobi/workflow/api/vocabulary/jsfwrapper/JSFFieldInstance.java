@@ -72,6 +72,16 @@ public class JSFFieldInstance extends FieldInstance {
         currentlySelectableItems = allSelectableItems.stream()
                 .filter(i -> !allSelectedValues.containsValue(i.getValue()))
                 .collect(Collectors.toList());
+        getValues().clear();
+        getValues().addAll(allSelectedValues.values().stream()
+                .map(v -> {
+                    TranslationInstance ti = new TranslationInstance();
+                    ti.setValue(v);
+                    FieldValue fv = new FieldValue();
+                    fv.setTranslations(new LinkedList<>(List.of(ti)));
+                    return fv;
+                })
+                .collect(Collectors.toSet()));
     }
 
     private VocabularyAPIManager api = VocabularyAPIManager.getInstance();
