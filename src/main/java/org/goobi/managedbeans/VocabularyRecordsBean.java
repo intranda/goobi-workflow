@@ -336,6 +336,7 @@ public class VocabularyRecordsBean implements Serializable {
                 .collect(Collectors.toList());
         missingFields.forEach(d -> {
             FieldInstance field = new FieldInstance();
+            field.setRecordId(record.getId());
             field.setDefinitionId(d);
             record.getFields().add(field);
         });
