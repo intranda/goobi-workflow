@@ -21,7 +21,9 @@ public class JSFFieldInstance extends FieldInstance {
     @Setter
     private String language;
     @Getter
-    private List<SelectItem> selectableItems;
+    private List<SelectItem> allSelectableItems;
+    @Getter
+    private List<SelectItem> currentlySelectableItems;
     @Getter
     private FieldDefinition definition;
     @Getter
@@ -33,7 +35,7 @@ public class JSFFieldInstance extends FieldInstance {
         if (newValue.isBlank() || allSelectedValues.containsKey(newValue)) {
             return;
         }
-        String label = selectableItems.stream()
+        String label = allSelectableItems.stream()
                 .filter(i -> i.getValue().equals(newValue))
                 .findFirst()
                 .orElseThrow()
@@ -41,6 +43,9 @@ public class JSFFieldInstance extends FieldInstance {
         allSelectedValues.put(label, newValue);
         allSelectedValueKeys = allSelectedValues.keySet().stream()
                 .sorted(String::compareToIgnoreCase)
+                .collect(Collectors.toList());
+        currentlySelectableItems = allSelectableItems.stream()
+                .filter(i -> !allSelectedValues.containsValue(i.getValue()))
                 .collect(Collectors.toList());
         getValues().clear();
         getValues().addAll(allSelectedValues.values().stream()
@@ -64,6 +69,9 @@ public class JSFFieldInstance extends FieldInstance {
         allSelectedValues.remove(selection);
         allSelectedValueKeys = allSelectedValues.keySet().stream()
                 .collect(Collectors.toList());
+        currentlySelectableItems = allSelectableItems.stream()
+                .filter(i -> !allSelectedValues.containsValue(i.getValue()))
+                .collect(Collectors.toList());
     }
 
     private VocabularyAPIManager api = VocabularyAPIManager.getInstance();
@@ -80,11 +88,11 @@ public class JSFFieldInstance extends FieldInstance {
         this.definition = definition;
         this.type = type;
         if (type != null) {
-            selectableItems = type.getSelectableValues().stream()
+            allSelectableItems = type.getSelectableValues().stream()
                     .map(SelectItem::new)
                     .collect(Collectors.toList());
         } else if (definition.getReferenceVocabularyId() != null) {
-            selectableItems = api.vocabularyRecords().all(definition.getReferenceVocabularyId()).stream()
+            allSelectableItems = api.vocabularyRecords().all(definition.getReferenceVocabularyId()).stream()
                     .map(r -> {
                         r.setLanguage(language);
                         r.load(null);
@@ -97,7 +105,7 @@ public class JSFFieldInstance extends FieldInstance {
                         .map(TranslationInstance::getValue)
                         .filter(v -> !v.isBlank())
                         .collect(Collectors.toList())) {
-                    String label = selectableItems.stream()
+                    String label = allSelectableItems.stream()
                             .filter(i -> i.getValue().equals(selectedValue))
                             .findFirst()
                             .orElseThrow()
@@ -109,5 +117,8 @@ public class JSFFieldInstance extends FieldInstance {
                         .collect(Collectors.toList());
             }
         }
+        currentlySelectableItems = allSelectableItems.stream()
+                .filter(i -> !allSelectedValues.containsValue(i.getValue()))
+                .collect(Collectors.toList());
     }
 }

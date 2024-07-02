@@ -40,7 +40,7 @@
                                 <ui:repeat var="translation" value="#{value.translations}">
                                     <!-- Simple text type -->
                                     <ui:fragment
-                                            rendered="#{field.selectableItems.size() == 0 and field.type.large == false}">
+                                            rendered="#{field.allSelectableItems.size() == 0 and field.type.large == false}">
                                         <div class="#{translation.language != null ? 'row' : 'p-2'} col-12 border-0">
                                             <!-- LANGUAGE -->
                                             <div class="col-12 col-md-3" tabindex="-1" jsf:rendered="#{translation.language != null}">
@@ -65,7 +65,7 @@
                                     <!-- // Simple text type -->
                                     <!-- Text area type -->
                                     <ui:fragment
-                                            rendered="#{field.selectableItems.size() == 0 and field.type.large == true}">
+                                            rendered="#{field.allSelectableItems.size() == 0 and field.type.large == true}">
                                         <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
                                             <!-- LANGUAGE -->
                                             <div class="col-12 col-md-3" tabindex="-1" jsf:rendered="#{translation.language != null}">
@@ -90,7 +90,7 @@
                                     <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
                                     <!-- Single select type -->
                                     <ui:fragment
-                                            rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == false}">
+                                            rendered="#{field.allSelectableItems.size() > 0 and field.definition.multiValued == false}">
                                         <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
                                             <!-- LANGUAGE -->
                                             <div class="col-12 col-md-3" tabindex="-1" jsf:rendered="#{translation.language != null}">
@@ -109,7 +109,7 @@
                                                             itemValue="null"
                                                             itemLabel="#{msgs.bitteAuswaehlen}"/>
                                                     <f:selectItems
-                                                            value="#{field.selectableItems}"/>
+                                                            value="#{field.currentlySelectableItems}"/>
                                                 </h:selectOneMenu>
                                             </div>
                                             <!-- // CONTENT -->
@@ -120,7 +120,7 @@
                         </ui:repeat>
                         <!-- Multi select type -->
                         <ui:fragment
-                                rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == true}">
+                                rendered="#{field.allSelectableItems.size() > 0 and field.definition.multiValued == true}">
                             <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
                                 <!-- LANGUAGE -->
                                 <div class="col-12 col-md-3" tabindex="-1" jsf:rendered="#{translation.language != null}">
@@ -137,9 +137,9 @@
                                             forceId="true"
                                             value="#{field.currentValue}"
                                             required="false">
-                                        <f:ajax execute="@this" render="multiselect-id" event="change" />
+                                        <f:ajax execute="@form" render="@form" event="change"/>
                                         <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" />
-                                        <f:selectItems value="#{field.selectableItems}" />
+                                        <f:selectItems value="#{field.currentlySelectableItems}" />
                                     </h:selectOneMenu>
 
                                     <h:panelGroup id="multiselect-id">
@@ -152,7 +152,7 @@
                                                 <span class="fs-400">
                                                     <h:outputText value="#{selection}" />
                                                 </span>
-                                                <f:ajax execute="@this" render="@form" />
+                                                <f:ajax execute="@form" render="@form" />
                                             </button>
                                         </x:dataList>
                                     </h:panelGroup>
