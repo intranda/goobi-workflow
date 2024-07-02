@@ -82,7 +82,7 @@ public class PluginsBean implements Serializable {
 
     private static final long serialVersionUID = 9152658727528258005L;
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     HelperForm helperForm;
 
     @Getter

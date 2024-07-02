@@ -137,85 +137,60 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
          * ==============
          */
 
-        // what do we do here?
-        // okay ... first we find out how many steps the selected set has
-        // finding lowest step and highest step (no step name discrimination)
-        Integer uBound;
-        Integer uBoundOpen = getMaxStepCount(HistoryEventType.stepOpen);
-        Integer uBoundDone = getMaxStepCount(HistoryEventType.stepDone);
-        if (uBoundOpen < uBoundDone) {
-            uBound = uBoundDone;
-        } else {
-            uBound = uBoundOpen;
-        }
-
-        Integer lBound;
-        Integer lBoundOpen = getMinStepCount(HistoryEventType.stepOpen);
-        Integer lBoundDone = getMinStepCount(HistoryEventType.stepDone);
-
-        if (lBoundOpen < lBoundDone) {
-            lBound = lBoundDone;
-        } else {
-            lBound = lBoundOpen;
-        }
-
         // then for each step we get both the open and the done count within the
         // selected intervalls and merge it within one table
-        for (Integer i = lBound; i <= uBound; i++) {
 
-            DataTable tableStepOpen;
-            tableStepOpen = getSpecificSteps(i, HistoryEventType.stepOpen);
+        DataTable tableStepOpen;
+        tableStepOpen = getSpecificSteps(0, HistoryEventType.stepOpen);
 
-            tableStepOpen.setShowableInTable(true);
+        tableStepOpen.setShowableInTable(true);
 
-            DataTable tableStepDone;
-            tableStepDone = getSpecificSteps(i, HistoryEventType.stepDone);
+        DataTable tableStepDone;
+        tableStepDone = getSpecificSteps(0, HistoryEventType.stepDone);
 
-            tableStepDone.setShowableInTable(true);
+        tableStepDone.setShowableInTable(true);
 
-            // to merge we just take each table and dump the entire content in a
-            // row for the open step
-            DataRow rowOpenSteps = new DataRow(Helper.getTranslation("openSteps") + " " + i.toString());
-            for (DataRow dtr : tableStepOpen.getDataRows()) {
-                rowOpenSteps.addValue(dtr.getName(), dtr.getValue(0));
-            }
-
-            // adding the first row
-            String title = "";
-            if (tableStepOpen.getName().length() > 0) {
-                title = tableStepOpen.getName();
-            } else {
-                title = tableStepDone.getName();
-            }
-
-            tableStepOpenAndDone = new DataTable(Helper.getTranslation("throughput") + " " + Helper.getTranslation("steps") + " " + title);
-            tableStepOpenAndDone.addDataRow(rowOpenSteps);
-
-            // row for the done step
-            rowOpenSteps = new DataRow(Helper.getTranslation("doneSteps") + " " + i.toString());
-            for (DataRow dtr : tableStepDone.getDataRows()) {
-                rowOpenSteps.addValue(dtr.getName(), dtr.getValue(0));
-            }
-
-            // adding that row
-            tableStepOpenAndDone.addDataRow(rowOpenSteps);
-
-            // turning off table rendering
-            tableStepOpenAndDone.setShowableInTable(false);
-
-            // inverting the orientation
-            tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
-            tableStepOpenAndDone.setUnitLabel(Helper.getTranslation(this.timeGrouping.getSingularTitle()));
-
-            // Dates may not be all in the right order because of it's
-            // composition from 2 tables
-            List<DataRow> allTempRows = tableStepOpenAndDone.getDataRows();
-            // this fixes the sorting problem
-            Collections.sort(allTempRows, new DataTableComparator());
-
-            allTables.add(tableStepOpenAndDone);
-
+        // to merge we just take each table and dump the entire content in a
+        // row for the open step
+        DataRow rowOpenSteps = new DataRow(Helper.getTranslation("openSteps") + " " + 0);
+        for (DataRow dtr : tableStepOpen.getDataRows()) {
+            rowOpenSteps.addValue(dtr.getName(), dtr.getValue(0));
         }
+
+        // adding the first row
+        String title = "";
+        if (tableStepOpen.getName().length() > 0) {
+            title = tableStepOpen.getName();
+        } else {
+            title = tableStepDone.getName();
+        }
+
+        tableStepOpenAndDone = new DataTable(Helper.getTranslation("throughput") + " " + Helper.getTranslation("steps") + " " + title);
+        tableStepOpenAndDone.addDataRow(rowOpenSteps);
+
+        // row for the done step
+        rowOpenSteps = new DataRow(Helper.getTranslation("doneSteps") + " " + 0);
+        for (DataRow dtr : tableStepDone.getDataRows()) {
+            rowOpenSteps.addValue(dtr.getName(), dtr.getValue(0));
+        }
+
+        // adding that row
+        tableStepOpenAndDone.addDataRow(rowOpenSteps);
+
+        // turning off table rendering
+        tableStepOpenAndDone.setShowableInTable(false);
+
+        // inverting the orientation
+        tableStepOpenAndDone = tableStepOpenAndDone.getDataTableInverted();
+        tableStepOpenAndDone.setUnitLabel(Helper.getTranslation(this.timeGrouping.getSingularTitle()));
+
+        // Dates may not be all in the right order because of it's
+        // composition from 2 tables
+        List<DataRow> allTempRows = tableStepOpenAndDone.getDataRows();
+        // this fixes the sorting problem
+        Collections.sort(allTempRows, new DataTableComparator());
+
+        allTables.add(tableStepOpenAndDone);
 
         return allTables;
     }
@@ -412,23 +387,4 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 
         return dtbl;
     }
-
-    /**
-     * method retrieves the highest step order in the requested history range
-     * 
-     * @param requestedType
-     */
-    private Integer getMaxStepCount(HistoryEventType requestedType) {
-        return 0;
-    }
-
-    /**
-     * method retrieves the lowest step order in the requested history range
-     * 
-     * @param requestedType
-     */
-    private Integer getMinStepCount(HistoryEventType requestedType) {
-        return 0;
-    }
-
 }

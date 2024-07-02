@@ -99,7 +99,7 @@ public class MassImportForm implements Serializable {
 
     private static final String docStructsGetter = "getCurrentDocStructs";
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private GoobiScriptManager goobiScriptManager;
     private ImportFormat format = null;
     private final ImportPluginLoader ipl = new ImportPluginLoader();
@@ -168,7 +168,7 @@ public class MassImportForm implements Serializable {
     @Getter
     private Batch batch;
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private NavigationForm bean;
 
     @Getter

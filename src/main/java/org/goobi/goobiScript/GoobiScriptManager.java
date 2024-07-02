@@ -84,7 +84,7 @@ public class GoobiScriptManager {
 
     private Map<String, IGoobiScript> actionToScriptImplMap;
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     @Push
     PushContext goobiscriptUpdateChannel;
     private LocalDateTime lastPush;

@@ -73,9 +73,13 @@ public class Login {
     @Setter
     private HttpServletResponse servletResponse;
 
-    @Inject
     @Setter
     private SessionForm sessionForm;
+
+    @Inject
+    public Login(SessionForm sessionForm) {
+        this.sessionForm = sessionForm;
+    }
 
     @POST
     @Path("/openid/implicitflow")

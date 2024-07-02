@@ -57,7 +57,7 @@ public class JobTypesBean implements Serializable {
     private static final String RETURN_PAGE_ALL = "admin_jobtypes_all.xhtml";
     private static final String RETURN_PAGE_EDIT = "admin_jobtypes_edit.xhtml";
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private JobTypesCache jobTypesCache;
     private List<String> stepTitles;
     private List<String> availableStepTitles;

@@ -84,7 +84,7 @@ public class PluginInstallBean implements Serializable {
     private static XPathFactory xFactory = XPathFactory.instance();
     private static XPathExpression<Element> versionXpath = xFactory.compile("//version", Filters.element());
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private HelperForm helperForm;
 
     @Getter

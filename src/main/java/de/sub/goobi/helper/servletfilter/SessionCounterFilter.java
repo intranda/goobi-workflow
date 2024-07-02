@@ -46,7 +46,7 @@ import lombok.extern.log4j.Log4j2;
 public class SessionCounterFilter implements Filter {
     ServletContext servletContext;
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private SessionForm sf;
 
     @Override

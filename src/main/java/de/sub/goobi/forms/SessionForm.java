@@ -97,7 +97,7 @@ public class SessionForm implements Serializable {
     /**
      * The request object of the current session
      */
-    @Inject
+    @Inject //NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private HttpServletRequest request;
 
     /**
@@ -109,11 +109,11 @@ public class SessionForm implements Serializable {
     @Getter
     private String sessionListErrorTime = "";
 
-    @Inject
+    @Inject //NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     @Push
     PushContext adminMessageChannel;
 
-    @Inject
+    @Inject //NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     @Getter
     private GoobiScriptManager gsm;
 
