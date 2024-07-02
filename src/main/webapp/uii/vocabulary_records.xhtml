@@ -43,7 +43,11 @@
                 </div>
 
                 <div class="col-12 col-lg-6">
-                    <intranda:vocabularyRecordEditor/>
+                    <intranda:vocabularyRecordEditor
+                            record="#{vocabularyRecordsBean.currentRecord}"
+                            saveRecordAction="#{vocabularyRecordsBean.saveRecord(vocabularyRecordsBean.currentRecord)}"
+                            deleteRecordAction="#{vocabularyRecordsBean.deleteRecord(vocabularyRecordsBean.currentRecord)}"
+                            showDelete="true"/>
                 </div>
             </div>
         </h:form>

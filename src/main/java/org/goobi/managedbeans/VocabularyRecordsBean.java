@@ -139,9 +139,9 @@ public class VocabularyRecordsBean implements Serializable {
         loadRecord(record);
     }
 
-    public void deleteRecord() {
+    public void deleteRecord(JSFVocabularyRecord rec) {
         try {
-            api.vocabularyRecords().delete(currentRecord);
+            api.vocabularyRecords().delete(rec);
             paginator.reload();
             loadFirstRecord();
         } catch (APIException e) {
@@ -149,16 +149,16 @@ public class VocabularyRecordsBean implements Serializable {
         }
     }
 
-    public void saveRecord() {
+    public void saveRecord(JSFVocabularyRecord rec) {
         // TODO: Maybe replace current record
         try {
             VocabularyRecord newRecord;
-            saveJsfData(currentRecord);
-            cleanUpRecord(currentRecord);
-            if (currentRecord.getId() != null) {
-                newRecord = api.vocabularyRecords().change(currentRecord);
+            saveJsfData(rec);
+            cleanUpRecord(rec);
+            if (rec.getId() != null) {
+                newRecord = api.vocabularyRecords().change(rec);
             } else {
-                newRecord = api.vocabularyRecords().create(currentRecord);
+                newRecord = api.vocabularyRecords().create(rec);
             }
             paginator.reload();
             loadChild(
