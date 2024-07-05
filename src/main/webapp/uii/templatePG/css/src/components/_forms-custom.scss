@@ -154,13 +154,11 @@ body {
 }
 
 // re-implementation of forms in non-combinatory classes
-
 .form-row {
   border-block-end: 1px solid var(--clr-neutral-300);
-  container-name: formUnit;
-  container-type: inline-size;
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
   > * {
     display: flex;
     flex: 0 0 auto;
@@ -174,16 +172,54 @@ body {
   > .form-label {
     background: var(--clr-neutral-200);
     border-inline-end: 1px solid var(--clr-neutral-300);
+    > .btn {
+      margin-inline-start: auto;
+    }
   }
   > .form-input {
     background: var(--clr-white);
   }
-  @container formUnit (min-width: 700px) {
+  @media (min-width: 768px) {
     > .form-label {
       width: 25%;
     }
     > .form-input {
       width: 75%;
+    }
+  }
+}
+
+.field-set {
+  background: var(--clr-neutral-200);
+  border-block-end: 1px solid var(--clr-neutral-300);
+  padding: 0 0 0.25rem 0;
+  > .fieldSet-legend {
+    font-size: var(--fs-400);
+    padding: 0.5rem;
+    width: 100%;
+  }
+  > .form-rows {
+    border-block-start: 1px solid var(--clr-neutral-300);
+    margin: 0 0.5rem;
+    padding: 0 0 0.25rem 0;
+    .form-label {
+      background: var(--clr-neutral-200);
+      border-inline-start: 1px solid var(--clr-neutral-300);
+    }
+    .form-input {
+      border-inline: 1px solid var(--clr-neutral-300);
+    }
+  }
+  @media (min-width: 768px) {
+    > .fieldSet-legend {
+      width: 25%;
+    }
+    > .form-rows {
+      padding: 0;
+      margin: 0;
+      .form-input {
+        border-inline: 0;
+      }
     }
   }
 }

@@ -219,6 +219,7 @@
 /* Layout for boxes with forms */
 .box.form-box {
   .row {
+    background: var(--clr-white);
     border-bottom: 1px solid var(--clr-neutral-300);
   }
 
