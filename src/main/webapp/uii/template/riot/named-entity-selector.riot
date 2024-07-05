@@ -26,14 +26,16 @@
             </select>
         </div>
         <div id="authorityEntity" class="flex-wrap">
-            <label class="form-group__label text-nowrap" for="entityValueInput">{msgs.label__named_entity}:</label>
-            <input ref="entityValueInput" disabled data-enable="select-word" class="form-control form-control--input" onchange="{handleEntityInputChange}" oninput="{checkCreateEntityButtonActive}"/>
-            <select ref="entityValueSelection" disabled data-enable="select-word" id="entityValueSelector" class="form-control form-control--select" onchange="{handleEntitySelectChange}" >
-                <option value="">{msgs.bitteAuswaehlen}</option>
-                <option each="{entity in this.entityValues}" value="{entity.uri}">{entity.value} ({entity.uri})</option>
-            </select>
+            <label class="form-group__label text-nowrap align-self-flex-start" for="entityValueInput">{msgs.label__named_entity}:</label>
+            <div class="input-stack">
+                <select ref="entityValueSelection" disabled data-enable="select-word" id="entityValueSelector" class="form-control form-control--select" onchange="{handleEntitySelectChange}" >
+                    <option value="">{msgs.bitteAuswaehlen}</option>
+                    <option each="{entity in this.entityValues}" value="{entity.uri}">{entity.value} ({entity.uri})</option>
+                </select>
+                <input ref="entityValueInput" disabled data-enable="select-word" class="form-control form-control--input" onchange="{handleEntityInputChange}" oninput="{checkCreateEntityButtonActive}"/>
+            </div>
         </div>
-        <div id="entityActions">
+        <div id="entityActions" class="mt-auto">
             <button disabled class="btn btn--gray ml-auto" type="button" ref="createEntityButton" onclick="{createEntity}">{msgs.action__set_named_entity}</button>
         </div>
     </div>
@@ -42,6 +44,9 @@
         .alignRight {
             text-align: right;
         }
+        .align-self-flex-start {
+            align-self: flex-start;
+        }
         .form-control {
             display: inline;
             width: auto;
@@ -49,8 +54,9 @@
         .form-group__label {
             margin-right: 10px;
         }
-        #entityValueSelector {
-            width: 30px;
+        .input-stack {
+            display: flex;
+            flex-direction: column;
         }
         .named-entity-editor {
             padding-top: 0;
@@ -106,6 +112,7 @@
         }
         .named-entity-editor-input > * {
             align-items: center;
+            align-self: flex-start;
             display: flex;
             flex-grow: 1;
         }
