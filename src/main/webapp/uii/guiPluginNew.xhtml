@@ -52,7 +52,7 @@
 
     <ui:define name="content">
         <c:forEach
-                items="#{AktuelleSchritteForm.myPlugin.cssPaths}"
+                items="#{AktuelleSchritteForm.myPlugin.getCssPaths()}"
                 var="cssPath"
         >
             <link
@@ -79,7 +79,7 @@
             window[pluginTitle] = options;
         </script>
         <c:forEach
-                items="#{AktuelleSchritteForm.myPlugin.jsPaths}"
+                items="#{AktuelleSchritteForm.myPlugin.getJsPaths()}"
                 var="jsPath"
         >
             <script
