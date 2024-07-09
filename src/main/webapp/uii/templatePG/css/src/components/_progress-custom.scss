@@ -5,6 +5,10 @@
   margin-top: 0.4375rem;
 }
 
+.progress {
+  --bs-progress-bar-bg: var(--clr-primary);
+}
+
 .progress-bar {
   width: var(--progress);
 }
