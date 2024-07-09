@@ -97,22 +97,22 @@
                                                         name="aria-label"
                                                         value="#{msgs.vocabularyManager_editRecords}"/>
                                             </button>
-<!--                                            &lt;!&ndash; edit vocabulary &ndash;&gt;-->
-<!--                                            <button-->
-<!--                                                    jsf:id="edit"-->
-<!--                                                    class="btn btn-blank"-->
-<!--                                                    jsf:rel="tooltip"-->
-<!--                                                    jsf:action="#{vocabularyEditBean.load(item)}"-->
-<!--                                                    jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"-->
-<!--                                                    title="#{msgs.vocabularyManager_editVocabulary}">-->
-<!--                                                <span class="fa fa-pencil"/>-->
-<!--                                                <f:passThroughAttribute-->
-<!--                                                        name="data-toggle"-->
-<!--                                                        value="tooltip"/>-->
-<!--                                                <f:passThroughAttribute-->
-<!--                                                        name="aria-label"-->
-<!--                                                        value="#{msgs.vocabularyManager_editVocabulary}"/>-->
-<!--                                            </button>-->
+                                            <!-- edit vocabulary -->
+                                            <button
+                                                    jsf:id="edit"
+                                                    class="btn btn-blank"
+                                                    jsf:rel="tooltip"
+                                                    jsf:action="#{vocabularyEditBean.load(item)}"
+                                                    jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
+                                                    title="#{msgs.vocabularyManager_editVocabulary}">
+                                                <span class="fa fa-pencil"/>
+                                                <f:passThroughAttribute
+                                                        name="data-toggle"
+                                                        value="tooltip"/>
+                                                <f:passThroughAttribute
+                                                        name="aria-label"
+                                                        value="#{msgs.vocabularyManager_editVocabulary}"/>
+                                            </button>
                                         </div>
 
                                     </x:column>

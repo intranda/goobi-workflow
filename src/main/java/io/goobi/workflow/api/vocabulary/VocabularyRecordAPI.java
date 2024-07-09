@@ -13,6 +13,7 @@ public class VocabularyRecordAPI {
     private static final String IN_VOCABULARY_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records";
     private static final String IN_VOCABULARY_ALL_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records/all";
     private static final String IN_VOCABULARY_SEARCH_ENDPOINT = "/api/v1/vocabularies/{{0}}/records/search";
+    private static final String METADATA_ENDPOINT = "/api/v1/vocabularies/{{0}}/metadata";
     private static final String INSTANCE_ENDPOINT = "/api/v1/records/{{0}}";
 
     private final RESTAPI restApi;
@@ -112,5 +113,12 @@ public class VocabularyRecordAPI {
 
     public void delete(VocabularyRecord vocabularyRecord) {
         restApi.delete(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord.getId());
+    }
+
+    public JSFVocabularyRecord getMetadata(Long id) {
+        JSFVocabularyRecord result = restApi.get(METADATA_ENDPOINT, JSFVocabularyRecord.class, id);
+        VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(result.getVocabularyId()).getMetadataSchemaId());
+        result.load(schema);
+        return result;
     }
 }

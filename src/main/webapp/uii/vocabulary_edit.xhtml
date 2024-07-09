@@ -5,6 +5,7 @@
 		xmlns:f="http://xmlns.jcp.org/jsf/core"
 		template="/uii/templatePG/templatePG.html"
 		xmlns:x="http://myfaces.apache.org/tomahawk"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
 		xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 >
 
@@ -69,311 +70,57 @@
                                 help="#{msgs.help_vocabulary_description}"
                                 required="false"/>
 
-                        <div
-                                style="border-top: 2px solid #E8860C; border-bottom: 1px solid #ddd;">
-
-                            <div class="box__body box__body--padded">
-                                <h3>
-                                    <h:outputText
-                                            value="#{msgs.vocabularyManager_fieldDefinitions}"/>
-                                </h3>
-
-                                <div class="gw-table gw-table-fixed">
-                                    <div class="gw-table__wrapper">
-
-                                        <x:dataTable
-                                                styleClass="table table-hover table-bordered"
-                                                value="#{vocabularyEditBean.schema.definitions}"
-                                                var="definition"
-                                                rendered="#{vocabularyEditBean.schema.definitions.size() > 0}"
-                                                forceId="true">
-
-                                            <h:column>
-                                                <div class="input-group input-group">
-                                                    <f:facet name="header">
-                                                        <h:outputText value="#{msgs.vocabularyManager_label}"/>
-                                                    </f:facet>
-                                                    <h:inputText
-                                                            id="description"
-                                                            name="descriptionName"
-                                                            styleClass="form-control"
-                                                            value="#{definition.name}">
-                                                        <f:passThroughAttribute
-                                                                name="aria-label"
-                                                                value="#{msgs.vocabularyManager_label}"/>
-                                                    </h:inputText>
-                                                    <f:facet name="footer">
-                                                        <intranda:formHelp content="#{msgs.help_vocabulary_label}"/>
-                                                    </f:facet>
-                                                </div>
-                                            </h:column>
-                                            <!--                                            <h:column>-->
-                                            <!--                                                <f:facet name="header">-->
-                                            <!--                                                    <h:outputText-->
-                                            <!--                                                            value="#{msgs.vocabularyManager_languageSelection}"/>-->
-                                            <!--                                                </f:facet>-->
-                                            <!--                                                <h:selectOneMenu-->
-                                            <!--                                                        value="#{definition.language}"-->
-                                            <!--                                                        styleClass="form-select">-->
-                                            <!--                                                    <f:selectItem-->
-                                            <!--                                                            itemLabel="-"-->
-                                            <!--                                                            itemValue=""/>-->
-                                            <!--                                                    <f:selectItem-->
-                                            <!--                                                            itemLabel="#{msgs.vocabularyManager_language_english}"-->
-                                            <!--                                                            itemValue="eng"/>-->
-                                            <!--                                                    <f:selectItem-->
-                                            <!--                                                            itemLabel="#{msgs.vocabularyManager_language_german}"-->
-                                            <!--                                                            itemValue="ger"/>-->
-                                            <!--                                                    <f:selectItem-->
-                                            <!--                                                            itemLabel="#{msgs.vocabularyManager_language_french}"-->
-                                            <!--                                                            itemValue="fre"/>-->
-                                            <!--                                                    <f:selectItem-->
-                                            <!--                                                            itemLabel="#{msgs.vocabularyManager_language_spanish}"-->
-                                            <!--                                                            itemValue="spa"/>-->
-                                            <!--                                                    <f:passThroughAttribute-->
-                                            <!--                                                            name="aria-label"-->
-                                            <!--                                                            value="#{msgs.vocabularyManager_languageSelection}"/>-->
-                                            <!--                                                </h:selectOneMenu>-->
-
-                                            <!--                                                <f:facet name="footer">-->
-                                            <!--                                                    <intranda:formHelp-->
-                                            <!--                                                            content="#{msgs.help_vocabulary_languageSelecion}"/>-->
-                                            <!--                                                </f:facet>-->
-                                            <!--                                            </h:column>-->
-                                            <!--                                            <h:column>-->
-                                            <!--                                                <f:facet name="header">-->
-                                            <!--                                                    <h:outputText value="#{msgs.vocabularyManager_type}"/>-->
-                                            <!--                                                </f:facet>-->
-                                            <!--                                                <h:selectOneMenu-->
-                                            <!--                                                        value="#{definition.type}"-->
-                                            <!--                                                        styleClass="form-select"-->
-                                            <!--                                                        id="fieldname">-->
-                                            <!--                                                    <f:selectItems-->
-                                            <!--                                                            var="fieldname"-->
-                                            <!--                                                            value="#{vocabularyBeanLEGACY.possibleDefinitionTypes}"-->
-                                            <!--                                                            itemValue="#{fieldname}"-->
-                                            <!--                                                            itemLabel="#{fieldname}"/>-->
-                                            <!--                                                    <f:ajax-->
-                                            <!--                                                            render="@form"-->
-                                            <!--                                                            execute="@form"/>-->
-                                            <!--                                                    <f:passThroughAttribute-->
-                                            <!--                                                            name="aria-label"-->
-                                            <!--                                                            value="#{msgs.vocabularyManager_type}"/>-->
-                                            <!--                                                </h:selectOneMenu>-->
-                                            <!--                                                <f:facet name="footer">-->
-                                            <!--                                                    <intranda:formHelp-->
-                                            <!--                                                            content="#{msgs.help_vocabulary_typeSelecion}"/>-->
-                                            <!--                                                </f:facet>-->
-                                            <!--                                            </h:column>-->
-
-                                            <!--                                            <h:column>-->
-                                            <!--                                                <f:facet name="header">-->
-                                            <!--                                                    <h:outputText value="#{msgs.vocabularyManager_validation}"/>-->
-                                            <!--                                                </f:facet>-->
-                                            <!--                                                <h:inputText-->
-                                            <!--                                                        value="#{definition.validation}"-->
-                                            <!--                                                        styleClass="form-control">-->
-                                            <!--                                                    <f:passThroughAttribute-->
-                                            <!--                                                            name="aria-label"-->
-                                            <!--                                                            value="#{msgs.vocabularyManager_validation}"/>-->
-                                            <!--                                                </h:inputText>-->
-                                            <!--                                                <f:facet name="footer">-->
-                                            <!--                                                    <intranda:formHelp-->
-                                            <!--                                                            content="#{msgs.help_vocabulary_fieldValidation}"/>-->
-                                            <!--                                                </f:facet>-->
-                                            <!--                                            </h:column>-->
-                                            <h:column headerClass="gw-col-check">
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.vocabularyManager_required}"/>
-                                                </f:facet>
-                                                <h:selectBooleanCheckbox value="#{definition.required}">
-                                                    <f:passThroughAttribute
-                                                            name="aria-label"
-                                                            value="#{msgs.vocabularyManager_required}"/>
-                                                </h:selectBooleanCheckbox>
-                                                <f:facet name="footer">
-                                                    <intranda:formHelp
-                                                            content="#{msgs.help_vocabulary_fieldRequired}"/>
-                                                </f:facet>
-                                            </h:column>
-                                            <h:column headerClass="gw-col-check">
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.vocabularyManager_mainEntry}"/>
-                                                </f:facet>
-                                                <!-- TODO uncheck others as ajax or javascript -->
-                                                <h:selectBooleanCheckbox value="#{definition.mainEntry}">
-                                                    <f:passThroughAttribute
-                                                            name="aria-label"
-                                                            value="#{msgs.vocabularyManager_mainEntry}"/>
-                                                </h:selectBooleanCheckbox>
-                                                <f:facet name="footer">
-                                                    <intranda:formHelp
-                                                            content="#{msgs.help_vocabulary_fieldIsMainEntry}"/>
-                                                </f:facet>
-                                            </h:column>
-                                            <h:column headerClass="gw-col-check">
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.vocabularyManager_unique}"/>
-                                                </f:facet>
-                                                <h:selectBooleanCheckbox value="#{definition.unique}">
-                                                    <f:passThroughAttribute
-                                                            name="aria-label"
-                                                            value="#{msgs.vocabularyManager_unique}"/>
-                                                </h:selectBooleanCheckbox>
-                                                <f:facet name="footer">
-                                                    <intranda:formHelp
-                                                            content="#{msgs.help_vocabulary_fieldIsUnique}"/>
-                                                </f:facet>
-                                            </h:column>
-
-                                            <h:column headerClass="gw-col-check">
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.vocabularyManager_titleField}"/>
-                                                </f:facet>
-                                                <h:selectBooleanCheckbox value="#{definition.titleField}">
-                                                    <f:passThroughAttribute
-                                                            name="aria-label"
-                                                            value="#{msgs.vocabularyManager_titleField}"/>
-                                                </h:selectBooleanCheckbox>
-                                                <f:facet name="footer">
-                                                    <intranda:formHelp
-                                                            content="#{msgs.help_vocabulary_fieldTitleField}"/>
-                                                </f:facet>
-                                            </h:column>
-                                            <h:column headerClass="gw-col-check">
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.vocabularyManager_multiValued}"/>
-                                                </f:facet>
-                                                <h:selectBooleanCheckbox value="#{definition.multiValued}">
-                                                    <f:passThroughAttribute
-                                                            name="aria-label"
-                                                            value="#{msgs.vocabularyManager_multiValued}"/>
-                                                </h:selectBooleanCheckbox>
-                                                <f:facet name="footer">
-                                                    <intranda:formHelp
-                                                            content="#{msgs.help_vocabulary_multiValued}"/>
-                                                </f:facet>
-                                            </h:column>
-
-                                            <!--                                            <h:column>-->
-                                            <!--                                                <f:facet name="header">-->
-                                            <!--                                                    <h:outputText value="#{msgs.vocabularyManager_select}"/>-->
-                                            <!--                                                </f:facet>-->
-                                            <!--                                                <h:inputText-->
-                                            <!--                                                        id="value"-->
-                                            <!--                                                        name="value"-->
-                                            <!--                                                        styleClass="form-control"-->
-                                            <!--                                                        value="#{definition.selection}">-->
-                                            <!--                                                    <f:passThroughAttribute-->
-                                            <!--                                                            name="aria-label"-->
-                                            <!--                                                            value="#{msgs.vocabularyManager_select}"/>-->
-                                            <!--                                                </h:inputText>-->
-                                            <!--                                                <f:facet name="footer">-->
-                                            <!--                                                    <intranda:formHelp-->
-                                            <!--                                                            content="#{msgs.help_vocabulary_valueSelection}"/>-->
-                                            <!--                                                </f:facet>-->
-                                            <!--                                            </h:column>-->
-
-
-                                            <x:column headerClass="gw-table-fixed__actions">
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.auswahl}"/>
-                                                </f:facet>
-
-                                                <!--                                                <div class="gw-table__actions__container">-->
-                                                <!--                                                    <button-->
-                                                <!--                                                            jsf:id="delete"-->
-                                                <!--                                                            class="btn btn-hot"-->
-                                                <!--                                                            title="#{msgs.vocabularyManager_deleteDefinition}"-->
-                                                <!--                                                            jsf:action="#{vocabularyEditBean.deleteDefinition}"-->
-                                                <!--                                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"-->
-                                                <!--                                                            jsf:immediate="true">-->
-                                                <!--                                                        <f:setPropertyActionListener-->
-                                                <!--                                                                target="#{vocabularyBeanLEGACY.currentDefinition}"-->
-                                                <!--                                                                value="#{definition}"/>-->
-                                                <!--                                                        <span class="fa fa-trash-o font-bold"/>-->
-                                                <!--                                                    </button>-->
-                                                <!--                                                </div>-->
-
-                                            </x:column>
-                                        </x:dataTable>
-                                    </div>
-                                </div>
-
-
-                                <div class="box__actions">
-                                    <!--                                    <button-->
-                                    <!--                                            jsf:id="new_def"-->
-                                    <!--                                            class="btn btn-primary-400 me-auto"-->
-                                    <!--                                            jsf:action="#{vocabularyBeanLEGACY.addDefinition}"-->
-                                    <!--                                            title="#{msgs.vocabularyManager_addDefinition}">-->
-                                    <!--                                        <i-->
-                                    <!--                                                aria-hidden="true"-->
-                                    <!--                                                class="fa fa-plus"></i>-->
-                                    <!--                                        <span>-->
-                                    <!--											<h:outputText value="#{msgs.vocabularyManager_addDefinition}"/>-->
-                                    <!--										</span>-->
-                                    <!--                                    </button>-->
-                                </div>
-                                <!-- /box__actions -->
-
-                            </div>
-                            <!-- /box__body -->
-
-                        </div>
-
-                        <div class="box__body">
-                            <div class="box__actions">
-                                <!-- Cancel -->
-                                <!--                                <a-->
-                                <!--                                        class="btn btn-blank submitOnEnter"-->
-                                <!--                                        jsf:id="abbrechen"-->
-                                <!--                                        jsf:type="cancel"-->
-                                <!--                                        jsf:action="#{vocabularyEditBean.cancelEdition}"-->
-                                <!--                                        jsf:immediate="true">-->
-                                <!--									<span>-->
-                                <!--										<h:outputText value="#{msgs.abbrechen}"/>-->
-                                <!--									</span>-->
-                                <!--                                </a>-->
-
-                                <!-- Save -->
-                                <!--                                <button-->
-                                <!--                                        class="btn btn-success submitOnEnter"-->
-                                <!--                                        jsf:id="absenden"-->
-                                <!--                                        type="submit"-->
-                                <!--                                        jsf:action="#{vocabularyBeanLEGACY.saveVocabulary}">-->
-                                <!--                                    <span class="fa fa-save"/>-->
-                                <!--                                    <span>-->
-                                <!--										<h:outputText value="#{msgs.speichern}"/>-->
-                                <!--									</span>-->
-                                <!--                                </button>-->
-
-                                <!--                                <button-->
-                                <!--                                        jsf:id="delete"-->
-                                <!--                                        jsf:action="#{vocabularyBeanLEGACY.deleteVocabulary}"-->
-                                <!--                                        class="btn btn-hot trigger-delete"-->
-                                <!--                                        onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"-->
-                                <!--                                        jsf:rendered="#{vocabularyBeanLEGACY.currentVocabularyLEGACY.id != null}">-->
-                                <!--                                    <span class="fa fa-trash-o"/>-->
-                                <!--                                    <span>-->
-                                <!--										<h:outputText value="#{msgs.loeschen}"/>-->
-                                <!--									</span>-->
-                                <!--                                </button>-->
-
-                            </div>
-                        </div>
 
                     </intranda:box>
 
+
+                    <intranda:vocabularyRecordEditor
+                            record="#{vocabularyEditBean.metadataRecord}"
+                            saveRecordAction="#{vocabularyRecordsBean.saveRecord(vocabularyRecordsBean.currentRecord)}"
+                    />
+
+                    <div class="box__body">
+                        <div class="box__actions">
+                            <!-- Cancel -->
+                            <a
+                                    class="btn btn-blank submitOnEnter"
+                                    jsf:id="abbrechen"
+                                    jsf:type="cancel"
+                                    jsf:action="#{vocabularyBean.load()}"
+                                    jsf:immediate="true">
+									<span>
+										<h:outputText value="#{msgs.abbrechen}" />
+									</span>
+                            </a>
+
+                            <!-- Save -->
+                            <button
+                                    class="btn btn-success submitOnEnter"
+                                    jsf:id="absenden"
+                                    type="submit"
+                                    jsf:action="#{vocabularyEditBean.saveVocabulary}">
+                                <span class="fa fa-save" />
+                                <span>
+										<h:outputText value="#{msgs.speichern}" />
+									</span>
+                            </button>
+
+                            <button
+                                    jsf:id="delete"
+                                    jsf:action="#{vocabularyEditBean.deleteVocabulary}"
+                                    class="btn btn-hot trigger-delete"
+                                    onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+                                    jsf:rendered="#{vocabularyEditBean.vocabulary != null}">
+                                <span class="fa fa-trash-o" />
+                                <span>
+										<h:outputText value="#{msgs.loeschen}" />
+									</span>
+                            </button>
+
+                        </div>
+                    </div>
                 </div>
             </div>
-
-
-            <!-- Information about the definitions -->
-
-            <!-- new definition -->
-
-
         </h:form>
 
     </ui:define>
