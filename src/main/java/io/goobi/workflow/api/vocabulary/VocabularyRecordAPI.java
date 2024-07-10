@@ -121,4 +121,20 @@ public class VocabularyRecordAPI {
         result.load(schema);
         return result;
     }
+
+    public VocabularyRecord changeMetadata(VocabularyRecord metadataRecord) {
+        if (!Boolean.TRUE.equals(metadataRecord.getMetadata())) {
+            throw new IllegalArgumentException("Cannot perform changeMetadata on normal record");
+        }
+        long id = metadataRecord.getId();
+        long vocabularyId = metadataRecord.getVocabularyId();
+        metadataRecord.setId(null);
+        metadataRecord.setVocabularyId(null);
+        metadataRecord.setMetadata(null);
+        VocabularyRecord newRecord = restApi.put(METADATA_ENDPOINT, VocabularyRecord.class, metadataRecord, vocabularyId);
+        metadataRecord.setId(id);
+        metadataRecord.setVocabularyId(vocabularyId);
+        metadataRecord.setMetadata(true);
+        return newRecord;
+    }
 }

@@ -18,6 +18,12 @@
                 required="true"
         />
         <composite:attribute
+                name="showID"
+                type="boolean"
+                default="true"
+                required="false"
+        />
+        <composite:attribute
                 name="showDelete"
                 type="boolean"
                 default="false"
@@ -29,9 +35,15 @@
                 required="false"
         />
         <composite:attribute
+                name="showSave"
+                type="boolean"
+                default="false"
+                required="false"
+        />
+        <composite:attribute
                 name="saveRecordAction"
                 method-signature="void saveRecord(io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord)"
-                required="true"
+                required="false"
         />
     </composite:interface>
 
@@ -42,9 +54,11 @@
                 boxPadding="false"
                 icon="fa-file-o">
 
-            <intranda:formOutputText label="#{msgs.id}"
-                                     field="#{cc.attrs.record.id}"
-                                     name="recordid"/>
+            <c:if test="#{cc.attrs.showID}">
+                <intranda:formOutputText label="#{msgs.id}"
+                                         field="#{cc.attrs.record.id}"
+                                         name="recordid"/>
+            </c:if>
 
             <ui:repeat var="field" value="#{cc.attrs.record.sortedFields()}">
 
@@ -211,74 +225,75 @@
             <!--                                        idForValidator="#{field.label}"/>-->
             <!--                            </ui:fragment>-->
 
-            <div class="box__actions">
-                <c:if test="#{cc.attrs.record.id != null and cc.attrs.showDelete == true}">
-                    <a
-                            id="delete"
-                            href="#"
-                            class="btn btn-hot me-auto"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deleteModal">
-                        <i class="fa fa-trash-o" title="#{msgs.vocabularyManager_deleteRecord}"/>
-                        <span>
+            <c:if test="#{(cc.attrs.record.id != null and cc.attrs.showDelete == true) or cc.attrs.showSave}">
+                <div class="box__actions">
+                    <c:if test="#{cc.attrs.record.id != null and cc.attrs.showDelete == true}">
+                        <a
+                                id="delete"
+                                href="#"
+                                class="btn btn-hot me-auto"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal">
+                            <i class="fa fa-trash-o" title="#{msgs.vocabularyManager_deleteRecord}"/>
+                            <span>
                             <h:outputText value="#{msgs.loeschen}"/>
                         </span>
-                    </a>
+                        </a>
 
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
-                         aria-labelledby="myModalLabel">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header bg-primary-400 text-white">
-                                    <h4 class="modal-title" id="myModalLabel">
-                                        <h:outputText value="#{msgs.loeschen}"/>
-                                    </h4>
-                                </div>
-                                <div class="modal-body">
-                                    <c:if test="#{cc.attrs.record.children == null or cc.attrs.record.children.isEmpty() == true}">
-                                        <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
-                                    </c:if>
-                                    <c:if test="#{cc.attrs.record.children.isEmpty() == false}">
-                                        <p>#{msgs.vocabularyManager_deleteChildRecordsPrompt}</p>
-                                    </c:if>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-blank" data-bs-dismiss="modal"
-                                            aria-hidden="true">#{msgs.abbrechen}
-                                    </button>
-                                    <!-- <button> will not work with method references, <a> or <h:commandButton> do work however!!! -->
-                                    <a
-                                            jsf:id="deleteButton"
-                                            class="btn btn-hot"
-                                            jsf:action="#{cc.attrs.deleteRecordAction}"
-                                    >
+                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+                             aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary-400 text-white">
+                                        <h4 class="modal-title" id="myModalLabel">
+                                            <h:outputText value="#{msgs.loeschen}"/>
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <c:if test="#{cc.attrs.record.children == null or cc.attrs.record.children.isEmpty() == true}">
+                                            <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+                                        </c:if>
+                                        <c:if test="#{cc.attrs.record.children.isEmpty() == false}">
+                                            <p>#{msgs.vocabularyManager_deleteChildRecordsPrompt}</p>
+                                        </c:if>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-blank" data-bs-dismiss="modal"
+                                                aria-hidden="true">#{msgs.abbrechen}
+                                        </button>
+                                        <!-- <button> will not work with method references, <a> or <h:commandButton> do work however!!! -->
+                                        <a
+                                                jsf:id="deleteButton"
+                                                class="btn btn-hot"
+                                                jsf:action="#{cc.attrs.deleteRecordAction}"
+                                        >
                                         <span>
                                             <span class="fa fa-trash-o"/>
                                             <span>
                                                 <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>
                                             </span>
                                         </span>
-                                    </a>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </c:if>
+                    </c:if>
 
-                <!--                            &lt;!&ndash; Save &ndash;&gt;-->
-                <!--                            <f:event listener="#{vocabularyBeanLEGACY.resetValidationResults}" type="preRenderView"/>-->
-                <button
-                        class="btn btn-success submitOnEnter"
-                        jsf:id="absenden"
-                        type="submit"
-                        jsf:action="#{cc.attrs.saveRecordAction}">
-                    <span class="fa fa-save"/>
-                    <span>
+                    <c:if test="#{cc.attrs.showSave == true}">
+                        <button
+                                class="btn btn-success submitOnEnter"
+                                jsf:id="absenden"
+                                type="submit"
+                                jsf:action="#{cc.attrs.saveRecordAction}">
+                            <span class="fa fa-save"/>
+                            <span>
                         <h:outputText value="#{msgs.speichern}"/>
                     </span>
-                </button>
-
-            </div>
+                        </button>
+                    </c:if>
+                </div>
+            </c:if>
 
         </intranda:box>
     </composite:implementation>
