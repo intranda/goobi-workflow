@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -51,6 +52,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
+import net.sf.saxon.lib.FeatureKeys;
 
 /**
  * This class provides generating a docket based on the generated xml log
@@ -189,11 +191,15 @@ public class XsltToPdf {
         // transform xml
         try {
             Transformer xslfoTransformer;
+            TransformerFactory factory = TransformerFactory.newInstance();
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            factory.setAttribute(FeatureKeys.ALLOW_EXTERNAL_FUNCTIONS, false);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             foUserAgent.setTargetResolution(dpi);
             Fop fop;
             if (isList) {
-                xslfoTransformer = TransformerFactory.newInstance().newTransformer(transformSource);
+                xslfoTransformer = factory.newTransformer(transformSource);
             } else {
                 xslfoTransformer = XsltToPdf.getTransformer(transformSource);
             }

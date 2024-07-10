@@ -5,7 +5,7 @@
 // default color (applied if no other color is defined)
 .badge {
     color: var(--clr-neutral-400);
-    font-size: var(--fs-200, 0.5rem);
+    font-size: var(--fs-400, 0.75rem);
   }
 
   button.badge,
@@ -28,6 +28,10 @@
       margin-inline-end: 2px;
     }
   }
+
+[class*="badge-inverse"] {
+  color: var(--clr-white);
+}
 
   // pillshaped badges
   [class^="badge badge-intranda-"] {

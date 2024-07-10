@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -433,7 +434,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                 //fall back to largest thumbnail image
                 java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(masterFolder).entrySet()
                         .stream()
-                        .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
+                        .sorted(Comparator.comparing(Entry::getKey))
                         .map(Entry::getValue)
                         .map(Paths::get)
                         .filter(StorageProvider.getInstance()::isDirectory)
@@ -481,13 +482,16 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public String getImagesDirectory() throws IOException, SwapException {
-        String pfad = getProcessDataDirectory() + "images" + FileSystems.getDefault().getSeparator();
+        return getDirectory("images");
+    }
+
+    public String getDirectory(String folder) throws IOException, SwapException {
+        String pfad = getProcessDataDirectory() + folder + FileSystems.getDefault().getSeparator();
         try {
             FilesystemHelper.createDirectory(pfad);
         } catch (InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             log.error(e);
         }
-
         return pfad;
     }
 
@@ -1924,11 +1928,22 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             return getImagesTifDirectory(false);
         }
 
-        String imagefolder = this.getImagesDirectory();
-        String foldername = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(folderName), this);
-        if (StringUtils.isNotBlank(foldername)) {
-            return imagefolder + foldername;
+        String folder = this.getImagesDirectory();
+        String folderPath;
+        if (folderName.contains(".")) {
+            String[] split = folderName.split("\\.");
+            if (split.length != 2) {
+                throw new IllegalArgumentException("Hierarchy is not allowed for configured folders: " + folderName);
+            }
+            folder = this.getDirectory(split[0]);
+            folderPath = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(split[0], split[1]), this);
+        } else {
+            folderPath = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(folderName), this);
         }
+        if (StringUtils.isNotBlank(folderPath)) {
+            return folder + folderPath;
+        }
+        // TODO: fix this NPE
         return null;
     }
 
@@ -2041,7 +2056,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {
-        if (this.id == null || !ConfigurationHelper.getInstance().isMetsEditorShowArchivedFolder()) {
+        if (this.id == null || ConfigurationHelper.getInstance().useS3()) {
             return new ArrayList<>();
         }
         List<String> filesInImages = StorageProvider.getInstance().list(this.getImagesDirectory());

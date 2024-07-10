@@ -100,7 +100,7 @@ public class NavigationForm implements Serializable {
     private HashMap<String, String> uiStatus = new HashMap<>();
     private String currentTheme = "/uii";
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     @Push
     PushContext workflowPluginPush;
 

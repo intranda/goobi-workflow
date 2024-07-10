@@ -506,7 +506,7 @@ public class VariableReplacer {
             try {
                 String value = process.getConfiguredImageFolder(folderName);
                 inString = inString.replace(r.group(), value);
-            } catch (IOException | SwapException | DAOException e) {
+            } catch (IllegalArgumentException | IOException | SwapException | DAOException e) {
                 log.error(e);
             }
         }

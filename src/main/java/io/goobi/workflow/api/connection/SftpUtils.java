@@ -128,6 +128,9 @@ public class SftpUtils implements ConnectionProvider {
             throw new IOException(e);
         }
         for (LsEntry entry : lsList) {
+            if (".".equals(entry.getFilename()) || "..".equals(entry.getFilename())) {
+                continue;
+            }
             content.add(entry.getFilename());
         }
         Collections.sort(content);
@@ -197,6 +200,13 @@ public class SftpUtils implements ConnectionProvider {
         } catch (SftpException e) {
             throw new IOException(e);
         }
+    }
 
+    public void deleteFolder(String filename) throws IOException {
+        try {
+            sftpChannel.rmdir(filename);
+        } catch (SftpException e) {
+            throw new IOException(e);
+        }
     }
 }

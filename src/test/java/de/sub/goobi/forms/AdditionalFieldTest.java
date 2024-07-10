@@ -21,8 +21,10 @@ package de.sub.goobi.forms;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +76,7 @@ public class AdditionalFieldTest extends AbstractTest {
     public void testFrom() {
         AdditionalField af = new AdditionalField();
         assertNotNull(af.getFrom());
-        assertEquals("prozess", af.getFrom());
+        assertEquals("process", af.getFrom());
         af.setFrom("from");
         assertEquals("from", af.getFrom());
     }
@@ -178,6 +180,36 @@ public class AdditionalFieldTest extends AbstractTest {
         assertFalse(af.isMultiselect());
         af.setMultiselect(true);
         assertTrue(af.isMultiselect());
+    }
+
+    @Test
+    public void testFieldType() {
+        AdditionalField af = new AdditionalField();
+        assertNull(af.getFieldType());
+        af.setFieldType("type");
+        assertEquals("type", af.getFieldType());
+    }
+
+    @Test
+    public void testPattern() {
+        AdditionalField af = new AdditionalField();
+        assertNull(af.getPattern());
+        af.setPattern("pattern");
+        assertEquals("pattern", af.getPattern());
+    }
+
+    @Test
+    public void testValueAsDateTime() {
+        AdditionalField af = new AdditionalField();
+        assertNotNull(af.getValueAsDateTime());
+    }
+
+    @Test
+    public void testValueAsDate() {
+        AdditionalField af = new AdditionalField();
+        assertNotNull(af.getValueAsDate());
+        af.setValueAsDate(LocalDate.of(2000, 1, 1));
+        assertEquals(2000, af.getValueAsDate().getYear());
     }
 
 }

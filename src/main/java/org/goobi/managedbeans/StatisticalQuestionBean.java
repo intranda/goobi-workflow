@@ -90,7 +90,7 @@ public class StatisticalQuestionBean implements Serializable {
     private TimeUnit sourceTimeUnit;
     private int sourceNumberOfTimeUnits = 0;
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     @Push
     PushContext statisticsPluginPush;
 
@@ -144,6 +144,7 @@ public class StatisticalQuestionBean implements Serializable {
     }
 
     public void setData(String data) {
+        // do nothing
     }
 
     /**

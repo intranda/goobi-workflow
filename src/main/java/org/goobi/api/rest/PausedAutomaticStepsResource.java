@@ -35,8 +35,12 @@ import org.goobi.managedbeans.JobTypesCache;
 
 @Path("/stepspaused")
 public class PausedAutomaticStepsResource {
-    @Inject
     private JobTypesCache pausedJobsBean;
+
+    @Inject
+    public PausedAutomaticStepsResource(JobTypesCache pausedJobsBean) {
+        this.pausedJobsBean = pausedJobsBean;
+    }
 
     @GET
     @Path("/{stepName}")

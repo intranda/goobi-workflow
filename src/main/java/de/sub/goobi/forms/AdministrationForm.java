@@ -63,7 +63,7 @@ public class AdministrationForm implements Serializable {
     @Setter
     private IAdministrationPlugin administrationPlugin;
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     @Push
     PushContext adminPluginPush;
 

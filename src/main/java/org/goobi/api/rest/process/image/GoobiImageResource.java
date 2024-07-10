@@ -195,7 +195,7 @@ public class GoobiImageResource {
     public Boolean isInCache(@PathParam("process") String processIdString, @PathParam("folder") String folder, @PathParam("filename") String filename,
             @PathParam("region") String region, @PathParam("size") String size, @PathParam("rotation") String rotation,
             @PathParam("quality") String quality, @PathParam("format") String format, @PathParam("cacheCommand") String command)
-                    throws ContentLibException {
+            throws ContentLibException {
         try {
             filename = URLDecoder.decode(filename, UTF_8);
         } catch (UnsupportedEncodingException e) {
@@ -248,11 +248,15 @@ public class GoobiImageResource {
 
     private ImageResource createImageResource(String processIdString, String folder, String filename)
             throws IllegalRequestException, ContentLibException {
-        ImageResource imageResource = new ImageResource(context, request, response, folder, filename);
-        Path processFolder = metadataFolderPath.resolve(processIdString);
-        imageResource.setResourceURI(createGoobiResourceURI(request, processIdString, folder, filename));
-        imageResource.setImageURI(createGoobiImageURI(request, processFolder, folder, filename));
+        ImageResource imageResource = new ImageResource(context, request, response, getFilename(folder), getFilename(filename));
+        Path processFolder = metadataFolderPath.resolve(getFilename(processIdString));
+        imageResource.setResourceURI(createGoobiResourceURI(request, getFilename(processIdString), getFilename(folder), getFilename(filename)));
+        imageResource.setImageURI(createGoobiImageURI(request, processFolder, getFilename(folder), getFilename(filename)));
         return imageResource;
+    }
+
+    public String getFilename(String folder) {
+        return Path.of(folder).getFileName().toString();
     }
 
     private URI createGoobiImageURI(HttpServletRequest request, Path processFolder, String folder, String filename) throws ContentLibException {
@@ -301,8 +305,8 @@ public class GoobiImageResource {
                             // size on the original image
                             Dimension size = requestedImageSize.orElse(null);
                             getThumbnailSize(imagePath.getParent().getFileName().toString())
-                            .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
-                            .ifPresent(scale -> setThumbnailScale(scale, request));
+                                    .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
+                                    .ifPresent(scale -> setThumbnailScale(scale, request));
                             log.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
                                     requestedImageSize.map(Object::toString).orElse("max"),
                                     requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
@@ -723,10 +727,10 @@ public class GoobiImageResource {
         List<Path> thumbFolderPaths = getMatchingThumbnailFolders(imageFolder, thumbsFolder);
         availableThumbnailFolders.put(imageFolder.toString(),
                 thumbFolderPaths.stream()
-                .map(Path::getFileName)
-                .map(Path::toString)
-                .sorted((name1, name2) -> getSize(name1).compareTo(getSize(name2)))
-                .collect(Collectors.toList()));
+                        .map(Path::getFileName)
+                        .map(Path::toString)
+                        .sorted((name1, name2) -> getSize(name1).compareTo(getSize(name2)))
+                        .collect(Collectors.toList()));
     }
 
     private List<ImageTile> getImageTiles(List<Integer> tileSizes, List<Integer> scales) {

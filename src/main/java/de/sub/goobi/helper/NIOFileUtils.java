@@ -151,9 +151,7 @@ public class NIOFileUtils implements StorageProviderInterface {
             /* --------------------------------
              * die Images zählen
              * --------------------------------*/
-            anzahl = list(dir.toString(), path -> {
-                return Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix));
-            }
+            anzahl = list(dir.toString(), path -> Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix))
 
             ).size();
 
@@ -264,9 +262,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         return this.list(folder, folderFilter);
     }
 
-    public static final DirectoryStream.Filter<Path> imageNameFilter = path -> {
-        return checkImageType(path.getFileName().toString());
-    };
+    public static final DirectoryStream.Filter<Path> imageNameFilter = path -> checkImageType(path.getFileName().toString());
 
     public static final DirectoryStream.Filter<Path> objectNameFilter = path -> {
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
@@ -333,13 +329,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
     };
 
-    public static final DirectoryStream.Filter<Path> folderFilter = path -> {
-        return path.toFile().isDirectory();
-    };
+    public static final DirectoryStream.Filter<Path> folderFilter = path -> path.toFile().isDirectory();
 
-    public static final DirectoryStream.Filter<Path> fileFilter = path -> {
-        return path.toFile().isFile();
-    };
+    public static final DirectoryStream.Filter<Path> fileFilter = path -> path.toFile().isFile();
 
     public static final DirectoryStream.Filter<Path> DATA_FILTER = path -> {
         String name = path.getFileName().toString();

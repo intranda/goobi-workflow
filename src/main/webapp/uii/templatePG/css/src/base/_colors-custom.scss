@@ -109,6 +109,13 @@ $colors-status: (
   }
 }
 
+// inverse badges
+@each $name, $color in $colors-badges {
+  .badge.badge-inverse-#{$name} {
+    background-color: var(--clr-badge-#{$name});
+  }
+}
+
 // pillshaped badges
 @each $name, $color in $colors-intranda-badges {
   .badge.badge-#{$name} {

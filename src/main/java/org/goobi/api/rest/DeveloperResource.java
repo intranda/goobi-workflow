@@ -33,8 +33,12 @@ import org.goobi.managedbeans.DeveloperModeBean;
 @Path("developer")
 public class DeveloperResource {
 
-    @Inject
     DeveloperModeBean devModeBean;
+
+    @Inject
+    public DeveloperResource(DeveloperModeBean devModeBean) {
+        this.devModeBean = devModeBean;
+    }
 
     @POST
     @Path("/reload")

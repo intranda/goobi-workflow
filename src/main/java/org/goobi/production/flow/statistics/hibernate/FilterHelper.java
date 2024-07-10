@@ -105,33 +105,18 @@ public class FilterHelper {
         /* only assigned projects */
 
         answer.append(
-                " AND schritte.ProzesseID in (select ProzesseID from prozesse where prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
+                " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
                         + userId + ") ");
-        if (!user.isSuperAdmin()) {
-            //             limit result to institution of current user
-
-            answer.append(" and prozesse.ProjekteID in (select ProjekteID from projekte WHERE institution_id = ");
-            answer.append(user.getInstitution().getId());
-            answer.append(") ");
-        }
-        answer.append(")");
 
         /*
          * only steps assigned to the user groups the current user is member of
          */
 
-        answer.append(" AND schritte.SchritteID in (select distinct schritte.SchritteID from schritte join schritteberechtigtegruppen on ");
-        answer.append("schritte.SchritteID = schritteberechtigtegruppen.schritteID where (schritteberechtigtegruppen.BenutzerGruppenID in ");
-        answer.append("(SELECT benutzergruppenmitgliedschaft.BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE ");
-        answer.append("benutzergruppenmitgliedschaft.BenutzerID = " + userId + "))");
-        answer.append("UNION (SELECT DISTINCT ");
-        answer.append("        schritte.SchritteID ");
-        answer.append("    FROM ");
-        answer.append("       schritte ");
-        answer.append("    LEFT JOIN schritteberechtigtebenutzer ON schritte.SchritteID = schritteberechtigtebenutzer.schritteID ");
-        answer.append("    WHERE ");
-        answer.append("        schritteberechtigtebenutzer.BenutzerID = " + userId + ")) ");
-
+        answer.append(" AND schritte.SchritteID IN (SELECT DISTINCT schritteberechtigtegruppen.SchritteID FROM ");
+        answer.append("schritteberechtigtegruppen WHERE (schritteberechtigtegruppen.BenutzerGruppenID IN (SELECT ");
+        answer.append("benutzergruppenmitgliedschaft.BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE ");
+        answer.append("benutzergruppenmitgliedschaft.BenutzerID = " + userId + ")) UNION (SELECT DISTINCT schritteberechtigtebenutzer.SchritteID ");
+        answer.append(" FROM schritteberechtigtebenutzer WHERE schritteberechtigtebenutzer.BenutzerID = " + userId + ")) ");
         return answer.toString();
 
     }
@@ -385,7 +370,7 @@ public class FilterHelper {
         String login = tok.substring(tok.indexOf(":") + 1).replace("\\_", "_");
 
         return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = '"
-        + login + "'))";
+                + login + "'))";
     }
 
     /**
@@ -758,7 +743,7 @@ public class FilterHelper {
         if (isStep) {
             flagSteps = true;
             filter = checkStringBuilder(filter, true);
-            filter.append(" prozesse.prozesseId not in (select prozesse.prozesseID from prozesse where prozesse.istTemplate = true) ");
+            filter.append(" prozesse.istTemplate = false ");
         }
 
         // preparation to filter for step dates
@@ -973,7 +958,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith(FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterInstitution(tok, false));
@@ -995,7 +980,7 @@ public class FilterHelper {
                     } else {
                         filter = checkStringBuilder(filter, true);
                         filter.append(" batches.batchName like '" + leftTruncationCharacter + MySQLHelper.escapeSql(substring)
-                        + rightTruncationCharacter + "'");
+                                + rightTruncationCharacter + "'");
                     }
 
                 } catch (NumberFormatException e) {
@@ -1092,7 +1077,7 @@ public class FilterHelper {
                     } else {
                         filter = checkStringBuilder(filter, true);
                         filter.append(" batches.batchName not like '" + leftTruncationCharacter + MySQLHelper.escapeSql(substring)
-                        + rightTruncationCharacter + "' OR batches.batchName IS NULL OR prozesse.batchID IS NULL ");
+                                + rightTruncationCharacter + "' OR batches.batchName IS NULL OR prozesse.batchID IS NULL ");
                     }
 
                 } catch (NumberFormatException e) {
@@ -1101,7 +1086,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '" + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             }
 
             // USE OR
@@ -1177,7 +1162,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESS) || tok.toLowerCase().startsWith("|" + FilterString.PROZESS)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith("|" + FilterString.BATCH) || tok.toLowerCase().startsWith("|" + FilterString.GRUPPE)) {
                 try {
                     String substring = tok.substring(tok.indexOf(":") + 1);
@@ -1191,7 +1176,7 @@ public class FilterHelper {
                     } else {
                         filter = checkStringBuilder(filter, false);
                         filter.append(" batches.batchName like '" + leftTruncationCharacter + MySQLHelper.escapeSql(substring)
-                        + rightTruncationCharacter + "'");
+                                + rightTruncationCharacter + "'");
                     }
 
                 } catch (NumberFormatException e) {
@@ -1200,11 +1185,11 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("|")) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             }
             if (newFilterGroup && !currentDateFilter.isStepFilterPresent() && !currentDateFilter.getDateFilter().isEmpty()) {
                 newFilterGroup = false;

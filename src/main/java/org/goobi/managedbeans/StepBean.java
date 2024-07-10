@@ -177,7 +177,7 @@ public class StepBean extends BasicBean implements Serializable {
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     @Push
     PushContext stepPluginPush;
 

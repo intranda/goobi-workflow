@@ -150,9 +150,11 @@
 								jsf:id="runPluginNoGUI"
 								jsf:rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}"
 								jsf:action="#{AktuelleSchritteForm.runPlugin}"
-								class="btn btn-neutral-600 btn-link btn-link-task d-block"
+								class="btn btn-link btn-link-task d-block"
 								onclick="preventDoubleSubmit(this);">
-								<span class="fa fa-puzzle-piece" />
+								<span class="btn btn-blank">
+									<span class="fa fa-puzzle-piece" />
+								</span>
 								<span>
 									<h:outputText
 										value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
@@ -372,17 +374,19 @@
 
 								<h:panelGroup
 									rendered="#{currentStep.prozess.temporaryMetadataFiles}">
-									<a
-										class="btn btn-neutral-600 text_head"
+									<button
+										class="btn btn-link btn-link-task d-block"
 										title="#{msgs.metadatenBearbeiten}"
-										href="#"
+										type="button"
 										data-bs-toggle="modal"
 										data-bs-target="#myModal">
-										<span class="fa fa-book" />
+										<span class="btn btn-blank">
+											<span class="fa fa-book" />
+										</span>
 										<span>
 											<h:outputText value="#{msgs.metadatenBearbeiten}" />
 										</span>
-									</a>
+									</button>
 								</h:panelGroup>
 								<div
 									class="modal fade"

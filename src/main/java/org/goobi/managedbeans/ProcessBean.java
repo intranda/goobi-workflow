@@ -339,10 +339,10 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private StepBean bean;
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private GoobiScriptManager goobiScriptManager;
 
     public ProcessBean() {
@@ -2738,6 +2738,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
         if (newProcessId != null) {
             myProzess = ProcessManager.getProcessById(newProcessId);
+            myNewProcessTitle = myProzess.getTitel();
         }
 
     }
@@ -2763,6 +2764,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         if (newProcessId != null) {
             myProzess = ProcessManager.getProcessById(newProcessId);
+            myNewProcessTitle = myProzess.getTitel();
         }
     }
 }

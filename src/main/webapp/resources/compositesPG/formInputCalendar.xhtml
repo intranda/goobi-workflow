@@ -18,37 +18,89 @@
 		<composite:attribute name="displayAsRequired" default="false" />
 		<composite:attribute name="classLeft" default="col-12 col-md-3" />
 		<composite:attribute name="classRight" default="col-12 col-md-9" />
-        <composite:attribute name="displayLabel" default="true" />        
-	</composite:interface>
+        <composite:attribute name="displayLabel" default="true"/> 
+        <composite:attribute name="navigation" default="false"/> 
+        <composite:attribute name="mask" default="false"/> 
+        <composite:attribute name="pattern" />
+    </composite:interface>
 
 	<composite:implementation>
-		<script type="text/javascript">PrimeFaces.locales['de'] = {
-		    closeText: 'Schließen',
-		    prevText: 'Zurück',
-		    nextText: 'Weiter',
-		    monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
-		    monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
-		    dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-		    dayNamesShort: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
-		    dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
-		    weekHeader: 'Woche',
-		    firstDay: 1,
-		    isRTL: false,
-		    showMonthAfterYear: false,
-		    yearSuffix: '',
-		    timeOnlyTitle: 'Nur Zeit',
-		    timeText: 'Zeit',
-		    hourText: 'Stunde',
-		    minuteText: 'Minute',
-		    secondText: 'Sekunde',
-		    currentText: 'Aktuelles Datum',
-		    ampm: false,
-		    month: 'Monat',
-		    week: 'Woche',
-		    day: 'Tag',
-		    allDayText: 'Ganzer Tag'
-		};
-		</script>
+
+        <script type="text/javascript">
+        
+        PrimeFaces.locales['de'] = {
+            monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+            monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+            dayNamesMin: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+            aria: {
+                close: 'Schließen',
+                previous: 'Zurück',
+                next: 'Weiter',
+           }
+        };
+		
+        PrimeFaces.locales['en'] = {
+        	    monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        	    monthNamesShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                dayNamesMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+    			aria: {
+                	close: 'Close',
+                    previous: 'Previous',
+                    next: 'Next',
+               }
+            };
+        PrimeFaces.locales['es'] = {
+        		monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+        	    monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+        	    dayNamesMin: ["D", "L", "M", "M", "J", "V", "S"],
+        	    aria: {
+                	close: 'Cerrar',
+                    previous: 'Anterior',
+                    next: 'Siguiente',
+               }
+            };
+        PrimeFaces.locales['it'] = {
+        		monthNames: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+        	    monthNamesShort: ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"],
+        	    dayNamesMin: ["Do", "Lu", "Ma", "Me", "Gi", "Ve", "Sa"],
+        	    aria: {
+                	close: 'Chiudi',
+                    previous: 'Precedente',
+                    next: 'Successivo',
+               }
+            };
+        PrimeFaces.locales['nl'] = {
+        		monthNames: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
+        	    monthNamesShort: ["jan", "feb", "mar", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"],
+        	    dayNamesMin: ["zo", "ma", "di", "wo", "do", "vr", "za"],
+        	    aria: {
+                	close: 'Sluit',
+                    previous: 'Vorige',
+                    next: 'Volgende',
+               }
+            };
+        PrimeFaces.locales['ar'] = {
+        		monthNames: ["يناير", "فبراير", "مارس", "ابريل", "مايو", "يونيو", "يوليو", "اغسطس", "سبتمبر", "اكتوبر", "نوفمبر", "ديسمبر"],
+        	    monthNamesShort: ["يناير", "فبراير", "مارس", "ابريل", "مايو", "يونيو", "يوليو", "اغسطس", "سبتمبر", "اكتوبر", "نوفمبر", "ديسمبر"],
+        	    dayNamesMin: ["الأحد", "الإثنين", "الثلاثاء", "الاربعاء", "الخميس", "الجمعة", "السبت"],
+				aria: {
+					close: "اغلاق",
+					previous: "السابق",
+                    next: "التالي",
+               }
+            };
+        PrimeFaces.locales['iw'] = {
+        		monthNames: ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"],
+        	    monthNamesShort: ["ינו", "פבר", "מרץ", "אפר", "מאי", "יונ", "יול", "אוג", "ספט", "אוק", "נוב", "דצמ"],
+        	    dayNamesMin: ["א", "ב", "ג", "ד", "ה", "ו", "ש"],
+        	    aria: {
+        	    	close: "סגור",
+        	    	previous: "קודם",
+					next: "הבא",
+               }
+            };
+        </script>
+
 		
 		<!-- ROW -->
 		<div class="row">
@@ -64,10 +116,35 @@
 			
 			<!-- CONTENT -->
 			<div class="#{cc.attrs.classRight}">
-				<p:calendar id="#{cc.attrs.name}" value="#{cc.attrs.field}" styleClass="ff-goobi">
-		        	<f:passThroughAttribute name="autocomplete" value="off" />
-		        </p:calendar>
-				<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
+            
+                <ui:fragment rendered="#{cc.attrs.pattern==null or cc.attrs.pattern eq ''}">
+                    <p:calendar
+                        id="#{cc.attrs.name}1" 
+                        value="#{cc.attrs.field}" 
+                        styleClass="ff-goobi" 
+                        navigator="#{cc.attrs.navigation}"
+                        mask="#{cc.attrs.mask}"
+                        yearRange="-100:+100">
+                        <f:passThroughAttribute name="autocomplete" value="off" />
+                    </p:calendar>
+               </ui:fragment>
+               <ui:fragment rendered="#{cc.attrs.pattern!=null and cc.attrs.pattern ne ''}">
+                	<p:calendar
+                        id="#{cc.attrs.name}2" 
+                        value="#{cc.attrs.field}" 
+                        styleClass="ff-goobi" 
+                        navigator="#{cc.attrs.navigation}"
+                        mask="#{cc.attrs.mask}"
+                        yearRange="-100:+100"
+                        showHour="true"
+                        showMinute="true"
+                        timeControlType="slider"
+                        timeInput="true"
+                        pattern="#{cc.attrs.pattern}">
+    		        	<f:passThroughAttribute name="autocomplete" value="off" />
+    		        </p:calendar>
+	           </ui:fragment>
+    			<intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
 			</div>
 			<!-- // CONTENT -->
 

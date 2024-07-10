@@ -43,7 +43,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 
 public class SecurityCheckFilter implements Filter {
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private LoginBean userBean;
 
     public SecurityCheckFilter() { //called once. no method arguments allowed here!
@@ -51,10 +51,12 @@ public class SecurityCheckFilter implements Filter {
 
     @Override
     public void init(FilterConfig conf) throws ServletException {
+        // do nothing
     }
 
     @Override
     public void destroy() {
+        // do nothing
     }
 
     /** Creates a new instance of SecurityCheckFilter */

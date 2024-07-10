@@ -25,6 +25,9 @@
  */
 package de.sub.goobi.forms;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +49,7 @@ public class AdditionalField {
     @Getter
     private boolean required = false;
     @Getter
-    private String from = "prozess";
+    private String from = "process";
     @Getter
     @Setter
     private List<SelectItem> selectList;
@@ -71,6 +74,13 @@ public class AdditionalField {
     @Getter
     @Setter
     private boolean multiselect = false;
+
+    @Getter
+    @Setter
+    private String fieldType;
+    @Getter
+    @Setter
+    private String pattern;
 
     public void setInitStart(String newValue) {
         this.initStart = newValue;
@@ -169,6 +179,35 @@ public class AdditionalField {
             wert = wert.substring(0, wert.length() - 1);
         }
     }
+
+    public LocalDateTime getValueAsDateTime() {
+        if (StringUtils.isNotBlank(wert)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+            return LocalDateTime.from(formatter.parse(wert));
+        } else {
+            return LocalDateTime.now();
+        }
+    }
+
+    public void setValueAsDateTime(LocalDateTime date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+        wert = formatter.format(date);
+    }
+
+    public LocalDate getValueAsDate() {
+        if (StringUtils.isNotBlank(wert)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return LocalDate.from(formatter.parse(wert));
+        } else {
+            return LocalDate.now();
+        }
+    }
+
+    public void setValueAsDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        wert = formatter.format(date);
+    }
+
 }
 
 /* =============================================================== */

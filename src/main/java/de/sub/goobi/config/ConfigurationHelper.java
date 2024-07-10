@@ -361,7 +361,11 @@ public class ConfigurationHelper implements Serializable {
      * This method is used to get information about custom processes. The process name is part of the configuration key.
      */
     public String getAdditionalProcessFolderName(String foldername) {
-        return getLocalString("process.folder.images." + foldername, "");
+        return getAdditionalProcessFolderName("images", foldername);
+    }
+
+    public String getAdditionalProcessFolderName(String folder, String foldername) {
+        return getLocalString("process.folder." + folder + "." + foldername, "");
     }
 
     public String getProcessOcrTxtDirectoryName() {
@@ -1121,10 +1125,6 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isMetsEditorDisplayFileManipulation() {
         return getLocalBoolean("MetsEditorDisplayFileManipulation", false);
-    }
-
-    public boolean isMetsEditorShowArchivedFolder() {
-        return getLocalBoolean("MetsEditorShowArchivedFolder", false);
     }
 
     public boolean isMetsEditorShowMetadataPopup() {

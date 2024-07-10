@@ -40,7 +40,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.fileformats.json.JsonFileformat;
 
 @HarvesterGoobiImport(description = "Import Json Records")
-@Path("/metadata/json")
 public class JsonImportParser extends MetadataService implements MetadataParser, IRestAuthentication {
 
     @Override

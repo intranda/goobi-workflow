@@ -59,13 +59,24 @@ public abstract class AbstractGoobiJob implements Job, IGoobiJob {
             log.trace("Start scheduled Job: " + getJobName());
             if (!running) {
                 setRunning(true);
-                execute();
                 BackgroundJob details = new BackgroundJob();
                 details.setJobName(getJobName());
                 details.setJobType("quartz");
-                details.setJobStatus(JobStatus.FINISH);
-                BackgroundJobManager.saveBackgroundJob(details);
-                setRunning(false);
+                try {
+                    execute();
+                    details.setJobStatus(JobStatus.FINISH);
+                    BackgroundJobManager.saveBackgroundJob(details);
+                    setRunning(false);
+                } catch (Exception e) {
+                    details.setJobStatus(JobStatus.ERROR);
+                    BackgroundJobManager.saveBackgroundJob(details);
+                    setRunning(false);
+                    log.error(e);
+                    JobExecutionException jee = new JobExecutionException(e);
+                    jee.setRefireImmediately(false);
+                    jee.setUnscheduleFiringTrigger(true);
+                    throw jee;
+                }
             }
             log.trace("End scheduled Job: " + getJobName());
         }

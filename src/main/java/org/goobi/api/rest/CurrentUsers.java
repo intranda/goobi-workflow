@@ -44,9 +44,13 @@ import lombok.Setter;
 @Path("/currentusers")
 public class CurrentUsers {
 
-    @Inject
     @Setter
     private SessionForm sessionForm;
+
+    @Inject
+    public CurrentUsers(SessionForm sessionForm) {
+        this.sessionForm = sessionForm;
+    }
 
     /**
      * Returns the list of current users. The list of current users is stored in SessionForm. The list is of type List<SessionInfo>. All irrelevant

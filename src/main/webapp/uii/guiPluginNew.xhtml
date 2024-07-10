@@ -1,0 +1,91 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        template="#{AktuelleSchritteForm.myPlugin.title eq 'intranda_step_ocrselector'
+        ? '/uii/template/template.html' : '/uii/templatePG/templatePG.html'}"
+>
+    <ui:param
+            name="myPageTitle"
+            value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}"/>
+
+    <ui:define name="title">
+        <h:outputText value="#{myPageTitle}"/>
+    </ui:define>
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+                id="id2"
+                label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+                action="index"
+                navId="a0"/>
+
+        <c:if test="#{LoginForm.hasRole('Workflow_Processes') and NavigationForm.uiStatus.pluginSimulation == true}">
+            <intranda:breadcrumb
+                    id="processAll"
+                    label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.aktuelleProzesse:msgs.prozessvorlagen}"
+                    action="process_all"
+                    navId="a1"/>
+            <intranda:breadcrumb
+                    id="processEdit"
+                    label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessDetails:msgs.process_templateDetails}"
+                    action="process_edit"/>
+        </c:if>
+
+        <c:if test="#{NavigationForm.uiStatus.pluginSimulation != true}">
+            <intranda:breadcrumb
+                    label="#{msgs.aktuelleSchritte}"
+                    action="#{AktuelleSchritteForm.paginator.returnToPreviousPage}"/>
+            <intranda:breadcrumb
+                    label="#{AktuelleSchritteForm.mySchritt.prozess.titel}"
+                    action="#{AktuelleSchritteForm.myPlugin.cancel}"/>
+        </c:if>
+
+        <intranda:breadcrumb
+                label="#{myPageTitle}"
+                noSeparator="#{true}"/>
+    </ui:define>
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+        <c:forEach
+                items="#{AktuelleSchritteForm.myPlugin.getCssPaths()}"
+                var="cssPath"
+        >
+            <link
+                    type="text/css"
+                    rel="stylesheet"
+                    href="#{HelperForm.applicationWebsiteUrl}dist/#{AktuelleSchritteForm.myPlugin.title}/css/#{cssPath}"/>
+        </c:forEach>
+        <h:form prependId="false">
+            <h:commandLink id="restPluginFinishLink" action="#{AktuelleSchritteForm.myPlugin.finish}" style="display:none;"></h:commandLink>
+            <h:commandLink id="restPluginCancelLink" action="#{AktuelleSchritteForm.myPlugin.cancel}" style="display:none;"></h:commandLink>
+            <h:commandLink id="restPluginCloseStepLink" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" style="display:none;"></h:commandLink>
+        </h:form>
+        <app id="root"></app>
+        <script>
+            var pluginTitle = "#{AktuelleSchritteForm.myPlugin.title}";
+            var options = {
+                stepId: #{AktuelleSchritteForm.myPlugin.step.id},
+                processId: #{AktuelleSchritteForm.myPlugin.step.prozess.id},
+                userId: #{LoginForm.myBenutzer.id},
+                language: "#{SpracheForm.locale.language}",
+                pluginSimulation: #{NavigationForm.uiStatus.pluginSimulation}
+            };
+            window["plugin_name"] = pluginTitle;
+            window[pluginTitle] = options;
+        </script>
+        <c:forEach
+                items="#{AktuelleSchritteForm.myPlugin.getJsPaths()}"
+                var="jsPath"
+        >
+            <script
+                    src="#{HelperForm.applicationWebsiteUrl}dist/#{AktuelleSchritteForm.myPlugin.title}/js/#{jsPath}"
+                    type="text/javascript"
+            ></script>
+        </c:forEach>
+    </ui:define>
+</ui:composition>

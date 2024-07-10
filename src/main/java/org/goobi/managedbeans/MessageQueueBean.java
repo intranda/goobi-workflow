@@ -400,8 +400,8 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             hbarDataSetVolumes.setLabel(Helper.getTranslation("volumes"));
             hbarDataSetVolumes.setBorderColor("rgb(54, 142, 224)");
             hbarDataSetVolumes.setBackgroundColor("rgb(54, 142, 224)");
-            List<Number> pageValues = new ArrayList<>();
-            List<Number> volumeValues = new ArrayList<>();
+            List<Object> pageValues = new ArrayList<>();
+            List<Object> volumeValues = new ArrayList<>();
 
             List<String> labels = new ArrayList<>();
 

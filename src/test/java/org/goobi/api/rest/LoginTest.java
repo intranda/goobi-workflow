@@ -64,7 +64,7 @@ public class LoginTest extends AbstractTest {
 
     @Before
     public void setUp() {
-        login = new Login();
+        login = new Login(new SessionForm());
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("EnableHeaderLogin", "true");
         ConfigurationHelper.getInstance().setParameter("OIDCClientID", "OIDCClientID");
@@ -130,7 +130,7 @@ public class LoginTest extends AbstractTest {
 
     @Test
     public void testConstructor() {
-        Login login = new Login();
+        Login login = new Login(new SessionForm());
         assertNotNull(login);
     }
 

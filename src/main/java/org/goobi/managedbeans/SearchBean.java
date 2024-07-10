@@ -60,7 +60,7 @@ public class SearchBean implements Serializable {
 
     private static final String NOT_SELECTED = "notSelected";
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private ProcessBean processBean;
 
     @Getter

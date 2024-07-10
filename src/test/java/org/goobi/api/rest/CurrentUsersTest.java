@@ -36,7 +36,7 @@ public class CurrentUsersTest extends AbstractTest {
 
     @Test
     public void testCurrentUsers() {
-        CurrentUsers fixture = new CurrentUsers();
+        CurrentUsers fixture = new CurrentUsers(new SessionForm());
         assertNotNull(fixture);
 
         List<SessionInfo> list = fixture.getCurrentUsers();

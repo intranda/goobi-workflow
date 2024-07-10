@@ -73,9 +73,13 @@ public class Login {
     @Setter
     private HttpServletResponse servletResponse;
 
-    @Inject
     @Setter
     private SessionForm sessionForm;
+
+    @Inject
+    public Login(SessionForm sessionForm) {
+        this.sessionForm = sessionForm;
+    }
 
     @POST
     @Path("/openid/implicitflow")
@@ -270,7 +274,7 @@ public class Login {
             servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
             return "";
         }
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "User can be logged in via SSO:");
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "User can be logged in via SSO");
         userBean.setSsoError(null);
         user.lazyLoad();
         userBean.setMyBenutzer(user);
