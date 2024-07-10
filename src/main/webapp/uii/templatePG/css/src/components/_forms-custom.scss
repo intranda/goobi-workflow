@@ -153,7 +153,8 @@ body {
   border-width: 0 !important;
 }
 
-fieldSet:disabled .badge {
+fieldSet:disabled .badge,
+fieldSet:disabled .badge > a {
   opacity: var(--bs-btn-disabled-opacity);
   pointer-events: none;
 }
