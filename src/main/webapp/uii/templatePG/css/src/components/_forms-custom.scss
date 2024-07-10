@@ -153,6 +153,11 @@ body {
   border-width: 0 !important;
 }
 
+fieldSet:disabled .badge {
+  opacity: var(--bs-btn-disabled-opacity);
+  pointer-events: none;
+}
+
 // re-implementation of forms in non-combinatory classes
 .form-row {
   border-block-end: 1px solid var(--clr-neutral-300);
