@@ -1,0 +1,39 @@
+.notification-area {
+    bottom: 1rem;
+    position: fixed;
+    right: 1rem;
+    > .btn {
+        border-radius: 100%;
+        bottom: 0;
+        height: 3rem;
+        position: absolute;
+        right: 0;
+        width: 3rem;
+        z-index: 1;
+    }
+}
+
+.notification-wrapper {
+    background: hsla(0, 0%, 86.67%, 0.75);
+    border: 1px solid var(--clr-primary);
+    border-radius: 0 0 2rem;
+    max-width: 50vw;
+    padding-block-end: 3rem;
+    width: 30rem;
+    .messages {
+        margin-inline-start: 0.5em;
+        max-height: 50vh;
+        overflow-y: auto;
+        padding-inline-end: 0.5em;
+    }
+}
+
+.notification-header {
+    align-items: center;
+    background: var(--clr-primary);
+    color: var(--clr-white);
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--fs-400);
+    padding: 1em;
+}
