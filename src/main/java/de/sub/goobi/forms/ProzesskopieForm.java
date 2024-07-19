@@ -25,32 +25,39 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
-import java.util.regex.PatternSyntaxException;
-
-import javax.enterprise.inject.Default;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-import javax.naming.NamingException;
-import javax.servlet.http.Part;
-
+import de.schlichtherle.io.FileOutputStream;
+import de.sub.goobi.config.ConfigProjects;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.BeanHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.ProcessTitleGenerator;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.XmlTools;
+import de.sub.goobi.helper.enums.ManipulationType;
+import de.sub.goobi.helper.enums.StepEditType;
+import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.metadaten.TempImage;
+import de.sub.goobi.persistence.managers.JournalManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.RulesetManager;
+import de.sub.goobi.persistence.managers.StepManager;
+import de.unigoettingen.sub.search.opac.ConfigOpac;
+import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
+import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import io.goobi.vocabulary.exchange.Vocabulary;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -76,47 +83,12 @@ import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPluginVersion2;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-import org.goobi.vocabulary.Field;
-import org.goobi.vocabulary.VocabRecord;
-import org.goobi.vocabulary.Vocabulary;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
-
-import de.schlichtherle.io.FileOutputStream;
-import de.sub.goobi.config.ConfigProjects;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.BeanHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.ProcessTitleGenerator;
-import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
-import de.sub.goobi.helper.StorageProvider;
-import de.sub.goobi.helper.UghHelper;
-import de.sub.goobi.helper.XmlTools;
-import de.sub.goobi.helper.enums.ManipulationType;
-import de.sub.goobi.helper.enums.StepEditType;
-import de.sub.goobi.helper.enums.StepStatus;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.metadaten.TempImage;
-import de.sub.goobi.persistence.managers.JournalManager;
-import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.ProjectManager;
-import de.sub.goobi.persistence.managers.RulesetManager;
-import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.VocabularyManager;
-import de.unigoettingen.sub.search.opac.ConfigOpac;
-import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
-import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -134,6 +106,31 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
+
+import javax.enterprise.inject.Default;
+import javax.faces.model.SelectItem;
+import javax.inject.Named;
+import javax.naming.NamingException;
+import javax.servlet.http.Part;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 @Named("ProzesskopieForm")
 @WindowScoped
@@ -475,22 +472,15 @@ public class ProzesskopieForm implements Serializable {
 
         String vocabularyTitle = item.getString("@vocabulary");
         if (StringUtils.isNotBlank(vocabularyTitle)) {
-            Vocabulary currentVocabulary = VocabularyManager.getVocabularyByTitle(vocabularyTitle);
-            if (currentVocabulary != null && currentVocabulary.getId() != null) {
-                VocabularyManager.getAllRecords(currentVocabulary);
-                List<VocabRecord> recordList = currentVocabulary.getRecords();
-                Collections.sort(recordList);
-                List<SelectItem> selectItems = new ArrayList<>(recordList.size());
-                for (VocabRecord vr : recordList) {
-                    for (Field f : vr.getFields()) {
-                        if (f.getDefinition().isMainEntry()) {
-                            selectItems.add(new SelectItem(f.getValue(), f.getValue()));
-                            break;
-                        }
-                    }
-                }
-                fa.setSelectList(selectItems);
-            }
+            Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyTitle);
+            List<JSFVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords().all(vocabulary.getId());
+            fa.setSelectList(
+                    records.stream()
+                            .map(JSFVocabularyRecord::getMainValue)
+                            .sorted()
+                            .map(v -> new SelectItem(v, v))
+                            .collect(Collectors.toList())
+            );
         }
         return fa;
     }
