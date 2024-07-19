@@ -71,6 +71,13 @@ public class VocabularyRecordAPI {
         return result;
     }
 
+    public JSFVocabularyRecord get(String url) {
+        JSFVocabularyRecord result = restApi.get(url, JSFVocabularyRecord.class);
+        VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(result.getVocabularyId()).getSchemaId());
+        result.load(schema);
+        return result;
+    }
+
     public VocabularyRecordPageResult search(long vocabularyId, String query) {
         return search(vocabularyId, query, Optional.empty());
     }
