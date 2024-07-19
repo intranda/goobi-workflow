@@ -2,6 +2,7 @@ package io.goobi.workflow.api.vocabulary.jsfwrapper;
 
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.FieldInstance;
+import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
@@ -27,6 +28,7 @@ public class JSFVocabularyRecord extends VocabularyRecord {
     private String mainValue;
     @Getter
     private List<String> titleValues;
+    @Getter
     @Setter
     private String language;
     @Getter
@@ -146,6 +148,33 @@ public class JSFVocabularyRecord extends VocabularyRecord {
                                     .orElseThrow();
                         }
                 ).collect(Collectors.joining("|"));
+    }
+
+    public void addFieldValue(JSFFieldInstance field) {
+        FieldValue value = new FieldValue();
+        if (field.getDefinition().getTranslationDefinitions().isEmpty()) {
+            TranslationInstance translationInstance = new TranslationInstance();
+            translationInstance.setValue("");
+            value.getTranslations().add(translationInstance);
+        } else {
+            for (TranslationDefinition translationDefinition : field.getDefinition().getTranslationDefinitions()) {
+                TranslationInstance translationInstance = new TranslationInstance();
+                translationInstance.setLanguage(translationDefinition.getLanguage());
+                translationInstance.setValue("");
+                value.getTranslations().add(translationInstance);
+            }
+        }
+        field.getValues().add(value);
+        this.getFields().forEach(f -> f.getValues().forEach(v -> v.getTranslations().sort((t1, t2) -> {
+            if (t1.getLanguage() == null || t2.getLanguage() == null) {
+                return 0;
+            }
+            return t1.getLanguage().compareToIgnoreCase(t2.getLanguage());
+        })));
+    }
+
+    public void deleteFieldValue(JSFFieldInstance field, FieldValue value) {
+        field.getValues().remove(value);
     }
 
     public List<JSFFieldInstance> sortedFields() {

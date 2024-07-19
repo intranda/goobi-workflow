@@ -7,7 +7,6 @@
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
-        xmlns:c="http://java.sun.com/jsp/jstl/core"
         xmlns:x="http://myfaces.apache.org/tomahawk"
 >
 
@@ -54,11 +53,11 @@
                 boxPadding="false"
                 icon="fa-file-o">
 
-            <c:if test="#{cc.attrs.showID}">
+            <ui:fragment rendered="#{cc.attrs.showID}">
                 <intranda:formOutputText label="#{msgs.id}"
                                          field="#{cc.attrs.record.id}"
                                          name="recordid"/>
-            </c:if>
+            </ui:fragment>
 
             <ui:repeat var="field" value="#{cc.attrs.record.sortedFields()}">
 
@@ -152,6 +151,11 @@
                                 </ui:fragment>
                                 <!-- // Single select  type -->
                             </ui:repeat>
+                            <ui:fragment rendered="#{field.values.size() > 1}">
+                                <h:commandButton action="#{cc.attrs.record.deleteFieldValue(field, value)}" value="Delete value">
+                                    <f:ajax render="@form" execute="@form"/>
+                                </h:commandButton>
+                            </ui:fragment>
                         </ui:repeat>
                         <!-- Multi select type -->
                         <ui:fragment
@@ -199,6 +203,11 @@
                             </div>
                         </ui:fragment>
                         <!-- // Multi select  type -->
+                        <ui:fragment rendered="#{field.definition.multiValued == true}">
+                            <h:commandButton action="#{cc.attrs.record.addFieldValue(field)}" value="Add value">
+                                <f:ajax render="@form" execute="@form"/>
+                            </h:commandButton>
+                        </ui:fragment>
                     </div>
                 </div>
             </ui:repeat>
@@ -225,9 +234,9 @@
             <!--                                        idForValidator="#{field.label}"/>-->
             <!--                            </ui:fragment>-->
 
-            <c:if test="#{(cc.attrs.record.id != null and cc.attrs.showDelete == true) or cc.attrs.showSave}">
+            <ui:fragment rendered="#{(cc.attrs.record.id != null and cc.attrs.showDelete == true) or cc.attrs.showSave}">
                 <div class="box__actions">
-                    <c:if test="#{cc.attrs.record.id != null and cc.attrs.showDelete == true}">
+                    <ui:fragment rendered="#{cc.attrs.record.id != null and cc.attrs.showDelete == true}">
                         <a
                                 id="delete"
                                 href="#"
@@ -250,12 +259,12 @@
                                         </h4>
                                     </div>
                                     <div class="modal-body">
-                                        <c:if test="#{cc.attrs.record.children == null or cc.attrs.record.children.isEmpty() == true}">
+                                        <ui:fragment rendered="#{cc.attrs.record.children == null or cc.attrs.record.children.isEmpty() == true}">
                                             <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
-                                        </c:if>
-                                        <c:if test="#{cc.attrs.record.children.isEmpty() == false}">
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{cc.attrs.record.children.isEmpty() == false}">
                                             <p>#{msgs.vocabularyManager_deleteChildRecordsPrompt}</p>
-                                        </c:if>
+                                        </ui:fragment>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-blank" data-bs-dismiss="modal"
@@ -278,9 +287,9 @@
                                 </div>
                             </div>
                         </div>
-                    </c:if>
+                    </ui:fragment>
 
-                    <c:if test="#{cc.attrs.showSave == true}">
+                    <ui:fragment rendered="#{cc.attrs.showSave == true}">
                         <button
                                 class="btn btn-success submitOnEnter"
                                 jsf:id="absenden"
@@ -291,10 +300,9 @@
                         <h:outputText value="#{msgs.speichern}"/>
                     </span>
                         </button>
-                    </c:if>
+                    </ui:fragment>
                 </div>
-            </c:if>
-
+            </ui:fragment>
         </intranda:box>
     </composite:implementation>
 </ui:composition>
