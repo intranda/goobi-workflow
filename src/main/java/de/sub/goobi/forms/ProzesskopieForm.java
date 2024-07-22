@@ -470,18 +470,19 @@ public class ProzesskopieForm implements Serializable {
             fa.getSelectList().add(new SelectItem(sid, svalue, null));
         }
 
-        String vocabularyTitle = item.getString("@vocabulary");
-        if (StringUtils.isNotBlank(vocabularyTitle)) {
-            Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyTitle);
-            List<JSFVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords().all(vocabulary.getId());
-            fa.setSelectList(
-                    records.stream()
-                            .map(JSFVocabularyRecord::getMainValue)
-                            .sorted()
-                            .map(v -> new SelectItem(v, v))
-                            .collect(Collectors.toList())
-            );
-        }
+//        String vocabularyTitle = item.getString("@vocabulary");
+//        if (StringUtils.isNotBlank(vocabularyTitle)) {
+//            Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyTitle);
+//            List<JSFVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords().all(vocabulary.getId());
+//            fa.setSelectList(
+//                    records.stream()
+//                            .map(JSFVocabularyRecord::getMainValue)
+//                            .sorted()
+//                            .map(v -> new SelectItem(v, v))
+//                            .collect(Collectors.toList())
+//            );
+//        }
+        // TODO: FIX
         return fa;
     }
 

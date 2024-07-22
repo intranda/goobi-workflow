@@ -1,5 +1,6 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
+import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class HierarchicalRecordComparator implements Comparator<JSFVocabularyRecord> {
+public class HierarchicalRecordComparator implements Comparator<VocabularyRecord> {
     @Data
     static class Node {
         private JSFVocabularyRecord record;
@@ -65,7 +66,7 @@ public class HierarchicalRecordComparator implements Comparator<JSFVocabularyRec
     }
 
     @Override
-    public int compare(JSFVocabularyRecord o1, JSFVocabularyRecord o2) {
+    public int compare(VocabularyRecord o1, VocabularyRecord o2) {
         return orderedIds.indexOf(o1.getId()) - orderedIds.indexOf(o2.getId());
     }
 }

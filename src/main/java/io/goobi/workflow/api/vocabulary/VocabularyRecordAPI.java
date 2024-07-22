@@ -22,17 +22,17 @@ public class VocabularyRecordAPI {
         this.restApi = new RESTAPI(host, port);
     }
 
-    public List<JSFVocabularyRecord> all(long vocabularyId) {
+    public List<VocabularyRecord> all(long vocabularyId) {
         return all(vocabularyId, Optional.empty());
     }
 
-    public List<JSFVocabularyRecord> all(long vocabularyId, Optional<String> sorting) {
+    public List<VocabularyRecord> all(long vocabularyId, Optional<String> sorting) {
         VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId).getSchemaId());
         List<Object> urlParameters = new ArrayList<>(1 + (sorting.isPresent() ? 1 : 0));
         urlParameters.add(vocabularyId);
         sorting.ifPresent(s -> urlParameters.add("sort=" + s));
-        List<JSFVocabularyRecord> result = restApi.get(IN_VOCABULARY_ALL_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, urlParameters.toArray()).getContent();
-        result.forEach(r -> r.load(schema));
+        List<VocabularyRecord> result = restApi.get(IN_VOCABULARY_ALL_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, urlParameters.toArray()).getContent();
+//        result.forEach(r -> r.load(schema));
         return result;
     }
 
@@ -58,9 +58,9 @@ public class VocabularyRecordAPI {
             params += params.isEmpty() ? "?" : "&";
             params += "sort=" + sorting.get();
         }
-        VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId).getSchemaId());
+//        VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId).getSchemaId());
         VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + params, VocabularyRecordPageResult.class, vocabularyId);
-        result.getContent().forEach(r -> r.load(schema));
+//        result.getContent().forEach(r -> r.load(schema));
         return result;
     }
 
@@ -89,7 +89,7 @@ public class VocabularyRecordAPI {
         urlParameters.add("query=" + query);
         sorting.ifPresent(s -> urlParameters.add("sort=" + s));
         VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_SEARCH_ENDPOINT, VocabularyRecordPageResult.class, urlParameters.toArray());
-        result.getContent().forEach(r -> r.load(schema));
+//        result.getContent().forEach(r -> r.load(schema));
         return result;
     }
 

@@ -70,7 +70,7 @@ public class VocabularyRecordsBean implements Serializable {
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     @Getter
-    private transient HATEOASPaginator<JSFVocabularyRecord, VocabularyRecordPageResult> paginator;
+    private transient HATEOASPaginator<VocabularyRecord, VocabularyRecordPageResult> paginator;
 
     @Getter
     private transient JSFVocabulary vocabulary;
@@ -78,7 +78,7 @@ public class VocabularyRecordsBean implements Serializable {
     private transient VocabularySchema schema;
 
     @Getter
-    private transient JSFVocabularyRecord currentRecord;
+    private transient VocabularyRecord currentRecord;
 
     @Getter
     private transient List<FieldDefinition> mainFields;
@@ -117,9 +117,9 @@ public class VocabularyRecordsBean implements Serializable {
         loadFirstRecord();
     }
 
-    public void edit(JSFVocabularyRecord record) {
+    public void edit(VocabularyRecord record) {
         this.currentRecord = record;
-        record.setShown(true);
+//        record.setShown(true);
         if (record.getParentId() != null) {
             findLoadedRecord(record.getParentId()).ifPresent(this::expandRecord);
         }
@@ -139,7 +139,7 @@ public class VocabularyRecordsBean implements Serializable {
         loadRecord(record);
     }
 
-    public void deleteRecord(JSFVocabularyRecord rec) {
+    public void deleteRecord(VocabularyRecord rec) {
         try {
             api.vocabularyRecords().delete(rec);
             paginator.reload();
@@ -149,7 +149,7 @@ public class VocabularyRecordsBean implements Serializable {
         }
     }
 
-    public void saveRecord(JSFVocabularyRecord rec) {
+    public void saveRecord(VocabularyRecord rec) {
         // TODO: Maybe replace current record
         try {
             VocabularyRecord newRecord;
@@ -202,19 +202,19 @@ public class VocabularyRecordsBean implements Serializable {
         return load(this.vocabulary);
     }
 
-    private void saveJsfData(JSFVocabularyRecord record) {
-        record.setFields(new HashSet<>(record.getJsfFields()));
+    private void saveJsfData(VocabularyRecord record) {
+//        record.setFields(new HashSet<>(record.getJsfFields()));
     }
 
-    public void expandRecord(JSFVocabularyRecord record) {
+    public void expandRecord(VocabularyRecord record) {
         for (long childId : record.getChildren()) {
-            JSFVocabularyRecord child = paginator.getItems().stream()
+            VocabularyRecord child = paginator.getItems().stream()
                     .filter(r -> r.getId() == childId)
                     .findFirst()
                     .orElseGet(() -> loadChild(childId));
-            child.setShown(true);
+//            child.setShown(true);
         }
-        record.setExpanded(true);
+//        record.setExpanded(true);
     }
 
     public boolean isHierarchical() {
@@ -225,17 +225,17 @@ public class VocabularyRecordsBean implements Serializable {
         return Boolean.FALSE.equals(this.schema.getSingleRootElement()) || this.paginator.getTotalResults() == 0L;
     }
 
-    private void expandParents(JSFVocabularyRecord record) {
+    private void expandParents(VocabularyRecord record) {
         if (record.getParentId() != null) {
             findLoadedRecord(record.getParentId()).ifPresent(p -> {
-                p.setShown(true);
-                p.setExpanded(true);
-                expandParents(p);
+//                p.setShown(true);
+//                p.setExpanded(true);
+//                expandParents(p);
             });
         }
     }
 
-    private Optional<JSFVocabularyRecord> findLoadedRecord(Long id) {
+    private Optional<VocabularyRecord> findLoadedRecord(Long id) {
         if (id == null) {
             return Optional.empty();
         }
@@ -244,7 +244,7 @@ public class VocabularyRecordsBean implements Serializable {
                 .findFirst();
     }
 
-    private JSFVocabularyRecord loadChild(long childId) {
+    private VocabularyRecord loadChild(long childId) {
         JSFVocabularyRecord newChild = new JSFVocabularyRecord(api.vocabularyRecords().get(childId));
         newChild.setLanguage(language);
 //        newChild.load(schema);
@@ -252,16 +252,16 @@ public class VocabularyRecordsBean implements Serializable {
         return newChild;
     }
 
-    public void collapseRecord(JSFVocabularyRecord record) {
+    public void collapseRecord(VocabularyRecord record) {
         paginator.getItems().stream()
                 .filter(c -> record.getChildren().contains(c.getId()))
                 .forEach(c -> {
-                    c.setShown(false);
+//                    c.setShown(false);
                     if (c.getChildren() != null) {
                         collapseRecord(c);
                     }
                 });
-        record.setExpanded(false);
+//        record.setExpanded(false);
     }
 
     public FieldDefinition getDefinition(FieldInstance field) {
@@ -311,23 +311,23 @@ public class VocabularyRecordsBean implements Serializable {
 //        this.paginator.getItems().sort(new JSFVocabularyRecordComparator());
     }
 
-    private void loadRecord(JSFVocabularyRecord record) {
-        record.setLanguage(language);
-        record.load(schema);
-        record.setShown(true);
-        record.getJsfFields().forEach(f -> {
-            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
-            f.load(definition, typeIdMap.getOrDefault(definition.getTypeId(), null));
-        });
+    private void loadRecord(VocabularyRecord record) {
+//        record.setLanguage(language);
+//        record.load(schema);
+//        record.setShown(true);
+//        record.getJsfFields().forEach(f -> {
+//            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
+//            f.load(definition, typeIdMap.getOrDefault(definition.getTypeId(), null));
+//        });
         if (record.getParentId() != null) {
             JSFVocabularyRecord parent = new JSFVocabularyRecord(api.vocabularyRecords().get(record.getParentId()));
             parent.setExpanded(true);
             this.paginator.postLoad(parent);
         }
-        comparator.add(record);
+//        comparator.add(record);
     }
 
-    private void prepareEmptyFieldsForEditing(JSFVocabularyRecord record) {
+    private void prepareEmptyFieldsForEditing(VocabularyRecord record) {
         List<Long> existingFields = record.getFields().stream()
                 .map(FieldInstance::getDefinitionId)
                 .collect(Collectors.toList());
@@ -364,7 +364,7 @@ public class VocabularyRecordsBean implements Serializable {
         });
     }
 
-    private void cleanUpRecord(JSFVocabularyRecord currentRecord) {
+    private void cleanUpRecord(VocabularyRecord currentRecord) {
         for (FieldInstance field : currentRecord.getFields()) {
             for (FieldValue value : field.getValues()) {
                 value.getTranslations().removeIf(this::translationIsEmpty);

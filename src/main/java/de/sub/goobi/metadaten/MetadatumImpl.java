@@ -14,6 +14,7 @@ import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.Vocabulary;
+import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
@@ -174,10 +175,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private long currentVocabularySearchField;
     private String vocabularySearchQuery;
     private String vocabularyName;
-    private List<JSFVocabularyRecord> records;
+    private List<VocabularyRecord> records;
     private List<FieldDefinition> definitions;
     private String vocabularyUrl;
-    private JSFVocabularyRecord selectedVocabularyRecord;
+    private VocabularyRecord selectedVocabularyRecord;
 
     private boolean validationErrorPresent;
     private String validationMessage;
@@ -215,11 +216,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         }
     }
 
-    private void loadRecord(VocabularySchema schema, JSFVocabularyRecord record) {
-        record.load(schema);
-        if (record.getParentId() != null) {
-            loadParentHierarchy(schema, record, record.getParentId());
-        }
+    private void loadRecord(VocabularySchema schema, VocabularyRecord record) {
+//        record.load(schema);
+//        if (record.getParentId() != null) {
+//            loadParentHierarchy(schema, record, record.getParentId());
+//        }
     }
 
     private void loadParentHierarchy(VocabularySchema schema, JSFVocabularyRecord record, long parentId) {
@@ -290,7 +291,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
                 if (StringUtils.isBlank(fields)) {
                     try {
-                        List<JSFVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords().all(currentVocabulary.getId());
+                        List<VocabularyRecord> recordList = vocabularyAPI.vocabularyRecords().all(currentVocabulary.getId());
                         ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                         List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
 
@@ -303,13 +304,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
                         selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
 
-                        for (JSFVocabularyRecord vr : recordList) {
-                            selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
-                            Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
-                            if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
-                                item.setSelected(true);
-                            }
-                            itemList.add(item);
+                        for (VocabularyRecord vr : recordList) {
+                            // TODO: FIX
+//                            selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
+//                            Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
+//                            if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
+//                                item.setSelected(true);
+//                            }
+//                            itemList.add(item);
                         }
                         setPossibleItems(selectItems);
                         myValues.setItemList(itemList);
@@ -356,7 +358,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     if (sorting.isPresent()) {
                         sortingQuery = Optional.of(searchField.get().getId() + "," + sorting.get());
                     }
-                    List<JSFVocabularyRecord> recordList;
+                    List<VocabularyRecord> recordList;
                     if (fieldValueFilter.isPresent()) {
                         recordList = vocabularyAPI.vocabularyRecords()
                                 .search(currentVocabulary.getId(), searchField.get().getId() + ":" + fieldValueFilter.get(), sortingQuery)
@@ -379,13 +381,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
                     selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
 
-                    for (JSFVocabularyRecord vr : recordList) {
-                        selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
-                        Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
-                        if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
-                            item.setSelected(true);
-                        }
-                        itemList.add(item);
+                    for (VocabularyRecord vr : recordList) {
+                        // TODO: FIX
+//                        selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
+//                        Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
+//                        if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
+//                            item.setSelected(true);
+//                        }
+//                        itemList.add(item);
                     }
                     setPossibleItems(selectItems);
                     myValues.setItemList(itemList);
@@ -812,7 +815,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 easydbSearch.getMetadata(md);
                 break;
             case vocabularySearch:
-                md.setValue(selectedVocabularyRecord.getMainValue());
+                // TODO: FIX
+//                md.setValue(selectedVocabularyRecord.getMainValue());
                 md.setAuthorityID(selectedVocabularyRecord.getVocabularyId().toString());
                 md.setAuthorityFile(vocabulary, vocabularyUrl, selectedVocabularyRecord.get_links().get("self").getHref());
                 break;

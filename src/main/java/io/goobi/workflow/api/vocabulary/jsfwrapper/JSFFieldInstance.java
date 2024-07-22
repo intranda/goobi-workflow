@@ -104,9 +104,11 @@ public class JSFFieldInstance extends FieldInstance {
         } else if (definition.getReferenceVocabularyId() != null) {
             allSelectableItems = api.vocabularyRecords().all(definition.getReferenceVocabularyId()).stream()
                     .map(r -> {
-                        r.setLanguage(language);
-                        r.load(null);
-                        return new SelectItem(String.valueOf(r.getId()), r.getMainValue());
+                        // TODO: FIX
+//                        r.setLanguage(language);
+//                        r.load(null);
+//                        return new SelectItem(String.valueOf(r.getId()), r.getMainValue());
+                        return new SelectItem(null);
                     })
                     .collect(Collectors.toList());
             if (Boolean.TRUE.equals(definition.getMultiValued())) {
