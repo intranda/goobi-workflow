@@ -4,6 +4,7 @@
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         template="/uii/templatePG/templatePG.html"
         xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
 >
 
     <ui:param
@@ -43,12 +44,86 @@
                 </div>
 
                 <div class="col-12 col-lg-6">
-                    <intranda:vocabularyRecordEditor
-                            record="#{vocabularyRecordsBean.currentRecord}"
-                            saveRecordAction="#{vocabularyRecordsBean.saveRecord(vocabularyRecordsBean.currentRecord)}"
-                            showSave="true"
-                            deleteRecordAction="#{vocabularyRecordsBean.deleteRecord(vocabularyRecordsBean.currentRecord)}"
-                            showDelete="true"/>
+                    <intranda:box
+                            boxType="action"
+                            boxForm="true"
+                            boxPadding="false"
+                            icon="fa-file-o">
+                        <intranda:vocabularyRecordEditor
+                                record="#{vocabularyRecordsBean.currentRecord}"
+                        />
+                        <ui:fragment rendered="#{vocabularyRecordsBean.currentRecord.id != null}">
+                            <div class="box__actions">
+                                <ui:fragment rendered="#{vocabularyRecordsBean.currentRecord.id != null}">
+                                    <a
+                                            id="delete"
+                                            href="#"
+                                            class="btn btn-hot me-auto"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal">
+                                        <i class="fa fa-trash-o" title="#{msgs.vocabularyManager_deleteRecord}"/>
+                                        <span>
+                            <h:outputText value="#{msgs.loeschen}"/>
+                        </span>
+                                    </a>
+
+                                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+                                         aria-labelledby="myModalLabel">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary-400 text-white">
+                                                    <h4 class="modal-title" id="myModalLabel">
+                                                        <h:outputText value="#{msgs.loeschen}"/>
+                                                    </h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <ui:fragment
+                                                            rendered="#{vocabularyRecordsBean.currentRecord.children == null or vocabularyRecordsBean.currentRecord.children.isEmpty() == true}">
+                                                        <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+                                                    </ui:fragment>
+                                                    <ui:fragment
+                                                            rendered="#{vocabularyRecordsBean.currentRecord.children.isEmpty() == false}">
+                                                        <p>#{msgs.vocabularyManager_deleteChildRecordsPrompt}</p>
+                                                    </ui:fragment>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-blank" data-bs-dismiss="modal"
+                                                            aria-hidden="true">#{msgs.abbrechen}
+                                                    </button>
+                                                    <!-- <button> will not work with method references, <a> or <h:commandButton> do work however!!! -->
+                                                    <a
+                                                            jsf:id="deleteButton"
+                                                            class="btn btn-hot"
+                                                            jsf:action="#{vocabularyRecordsBean.deleteRecord(vocabularyRecordsBean.currentRecord)}"
+                                                    >
+                                        <span>
+                                            <span class="fa fa-trash-o"/>
+                                            <span>
+                                                <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>
+                                            </span>
+                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ui:fragment>
+
+                                <ui:fragment>
+                                    <button
+                                            class="btn btn-success submitOnEnter"
+                                            jsf:id="absenden"
+                                            type="submit"
+                                            jsf:action="#{vocabularyRecordsBean.saveRecord(vocabularyRecordsBean.currentRecord)}">
+                                        <span class="fa fa-save"/>
+                                        <span>
+                        <h:outputText value="#{msgs.speichern}"/>
+                    </span>
+                                    </button>
+                                </ui:fragment>
+                            </div>
+                        </ui:fragment>
+                    </intranda:box>
                 </div>
             </div>
         </h:form>

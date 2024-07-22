@@ -13,7 +13,7 @@
     <composite:interface>
         <composite:attribute
                 name="record"
-                type="io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord"
+                type="io.goobi.vocabulary.exchange.VocabularyRecord"
                 required="true"
         />
         <composite:attribute
@@ -22,287 +22,167 @@
                 default="true"
                 required="false"
         />
-        <composite:attribute
-                name="showDelete"
-                type="boolean"
-                default="false"
-                required="false"
-        />
-        <composite:attribute
-                name="deleteRecordAction"
-                method-signature="void deleteRecord(io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord)"
-                required="false"
-        />
-        <composite:attribute
-                name="showSave"
-                type="boolean"
-                default="false"
-                required="false"
-        />
-        <composite:attribute
-                name="saveRecordAction"
-                method-signature="void saveRecord(io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord)"
-                required="false"
-        />
     </composite:interface>
 
     <composite:implementation>
-        <intranda:box
-                boxType="action"
-                boxForm="true"
-                boxPadding="false"
-                icon="fa-file-o">
+        <ui:fragment rendered="#{cc.attrs.showID}">
+            <intranda:formOutputText label="#{msgs.id}"
+                                     field="#{cc.attrs.record.id}"
+                                     name="recordid"/>
+        </ui:fragment>
 
-            <ui:fragment rendered="#{cc.attrs.showID}">
-                <intranda:formOutputText label="#{msgs.id}"
-                                         field="#{cc.attrs.record.id}"
-                                         name="recordid"/>
-            </ui:fragment>
+        <ui:repeat var="field" value="#{cc.attrs.record.sortedFields()}">
 
-            <ui:repeat var="field" value="#{cc.attrs.record.sortedFields()}">
+            <div class="row">
+                <div class="col-12 col-md-3" tabindex="-1">
+                    <intranda:formLabel label="#{field.definition.name}"/>
 
-                <div class="row">
-                    <div class="col-12 col-md-3" tabindex="-1">
-                        <intranda:formLabel label="#{field.definition.name}"/>
-
-                    </div>
-                    <div class="col-12 col-md-9 p-0">
-                        <ui:repeat var="value" value="#{field.values}">
-                            <ui:repeat var="translation" value="#{value.translations}">
-                                <!-- Simple text type -->
-                                <ui:fragment
-                                        rendered="#{field.allSelectableItems.size() == 0 and field.type.large == false}">
-                                    <div class="#{translation.language != null ? 'row' : 'p-2'} col-12 border-0">
-                                        <!-- LANGUAGE -->
-                                        <div class="col-12 col-md-3" tabindex="-1"
-                                             jsf:rendered="#{translation.language != null}">
-                                            <intranda:formLabel
-                                                    label="#{translation.language != null ? translation.language : ''}"
-                                                    labelFor="field1"/>
-                                        </div>
-                                        <!-- // LANGUAGE -->
-                                        <!-- CONTENT -->
-                                        <div class="#{translation.language != null ? 'col-12 col-md-9' : ''}">
-                                            <h:inputText
-                                                    id="field1"
-                                                    styleClass="form-control form__input"
-                                                    value="#{translation.value}"
-                                                    readonly="false"
-                                                    disabled="false"
-                                            />
-                                        </div>
-                                        <!-- // CONTENT -->
+                </div>
+                <div class="col-12 col-md-9 p-0">
+                    <ui:repeat var="value" value="#{field.values}">
+                        <ui:repeat var="translation" value="#{value.translations}">
+                            <!-- Simple text type -->
+                            <ui:fragment
+                                    rendered="#{field.allSelectableItems.size() == 0 and field.type.large == false}">
+                                <div class="#{translation.language != null ? 'row' : 'p-2'} col-12 border-0">
+                                    <!-- LANGUAGE -->
+                                    <div class="col-12 col-md-3" tabindex="-1"
+                                         jsf:rendered="#{translation.language != null}">
+                                        <intranda:formLabel
+                                                label="#{translation.language != null ? translation.language : ''}"
+                                                labelFor="field1"/>
                                     </div>
-                                </ui:fragment>
-                                <!-- // Simple text type -->
-                                <!-- Text area type -->
-                                <ui:fragment
-                                        rendered="#{field.allSelectableItems.size() == 0 and field.type.large == true}">
-                                    <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
-                                        <!-- LANGUAGE -->
-                                        <div class="col-12 col-md-3" tabindex="-1"
-                                             jsf:rendered="#{translation.language != null}">
-                                            <intranda:formLabel
-                                                    label="#{translation.language != null ? translation.language : ''}"
-                                                    labelFor="field2"/>
-                                        </div>
-                                        <!-- // LANGUAGE -->
-                                        <!-- CONTENT -->
-                                        <div class="#{translation.language != null ? 'col-12 col-md-9' : ''}">
-                                            <h:inputTextarea
-                                                    id="field2"
-                                                    styleClass="form-control metsEditorTextArea"
-                                                    value="#{translation.value}"
-                                                    rows="6"
-                                            />
-                                        </div>
-                                        <!-- // CONTENT -->
+                                    <!-- // LANGUAGE -->
+                                    <!-- CONTENT -->
+                                    <div class="#{translation.language != null ? 'col-12 col-md-9' : ''}">
+                                        <h:inputText
+                                                id="field1"
+                                                styleClass="form-control form__input"
+                                                value="#{translation.value}"
+                                                readonly="false"
+                                                disabled="false"
+                                        />
                                     </div>
-                                </ui:fragment>
-                                <!-- // Text area  type -->
-                                <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
-                                <!-- Single select type -->
-                                <ui:fragment
-                                        rendered="#{field.allSelectableItems.size() > 0 and field.definition.multiValued == false}">
-                                    <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
-                                        <!-- LANGUAGE -->
-                                        <div class="col-12 col-md-3" tabindex="-1"
-                                             jsf:rendered="#{translation.language != null}">
-                                            <intranda:formLabel
-                                                    label="#{translation.language != null ? translation.language : ''}"
-                                                    labelFor="field3"/>
-                                        </div>
-                                        <!-- // LANGUAGE -->
-                                        <!-- CONTENT -->
-                                        <div class="#{translation.language != null ? 'col-12 col-md-9' : ''}">
-                                            <h:selectOneMenu
-                                                    id="field3"
-                                                    styleClass="form-control form__input"
-                                                    value="#{translation.value}">
-                                                <f:selectItem
-                                                        itemValue="null"
-                                                        itemLabel="#{msgs.bitteAuswaehlen}"/>
-                                                <f:selectItems
-                                                        value="#{field.currentlySelectableItems}"/>
-                                            </h:selectOneMenu>
-                                        </div>
-                                        <!-- // CONTENT -->
-                                    </div>
-                                </ui:fragment>
-                                <!-- // Single select  type -->
-                            </ui:repeat>
-                            <ui:fragment rendered="#{field.values.size() > 1}">
-                                <h:commandButton action="#{cc.attrs.record.deleteFieldValue(field, value)}" value="Delete value">
-                                    <f:ajax render="@form" execute="@form"/>
-                                </h:commandButton>
-                            </ui:fragment>
-                        </ui:repeat>
-                        <!-- Multi select type -->
-                        <ui:fragment
-                                rendered="#{field.allSelectableItems.size() > 0 and field.definition.multiValued == true}">
-                            <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
-                                <!-- LANGUAGE -->
-                                <div class="col-12 col-md-3" tabindex="-1"
-                                     jsf:rendered="#{translation.language != null}">
-                                    <intranda:formLabel
-                                            label="#{translation.language != null ? translation.language : ''}"
-                                            labelFor="field4"/>
+                                    <!-- // CONTENT -->
                                 </div>
-                                <!-- // LANGUAGE -->
-                                <!-- CONTENT -->
-                                <h:panelGroup layout="block">
-                                    <h:selectOneMenu
-                                            styleClass="form-select"
-                                            id="field4"
-                                            forceId="true"
-                                            value="#{field.currentValue}"
-                                            required="false">
-                                        <f:ajax execute="@form" render="@form" event="change"/>
-                                        <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}"/>
-                                        <f:selectItems value="#{field.currentlySelectableItems}"/>
-                                    </h:selectOneMenu>
-
-                                    <h:panelGroup id="multiselect-id">
-                                        <x:dataList
-                                                id="datalist-id"
-                                                value="#{field.allSelectedValueKeys}"
-                                                var="selection">
-                                            <button class="badge badge-intranda-light mt-3"
-                                                    jsf:action="#{field.removeSelectedValue(selection)}"
-                                                    title="#{msgs.removeSelectedItem}" data-bs-toggle="tooltip">
-                                                <span class="fa fa-trash fs-400"/>
-                                                <span class="fs-400">
-                                                    <h:outputText value="#{selection}"/>
-                                                </span>
-                                                <f:ajax execute="@form" render="@form"/>
-                                            </button>
-                                        </x:dataList>
-                                    </h:panelGroup>
-                                </h:panelGroup>
-                                <!-- // CONTENT -->
-                            </div>
-                        </ui:fragment>
-                        <!-- // Multi select  type -->
-                        <ui:fragment rendered="#{field.definition.multiValued == true}">
-                            <h:commandButton action="#{cc.attrs.record.addFieldValue(field)}" value="Add value">
+                            </ui:fragment>
+                            <!-- // Simple text type -->
+                            <!-- Text area type -->
+                            <ui:fragment
+                                    rendered="#{field.allSelectableItems.size() == 0 and field.type.large == true}">
+                                <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
+                                    <!-- LANGUAGE -->
+                                    <div class="col-12 col-md-3" tabindex="-1"
+                                         jsf:rendered="#{translation.language != null}">
+                                        <intranda:formLabel
+                                                label="#{translation.language != null ? translation.language : ''}"
+                                                labelFor="field2"/>
+                                    </div>
+                                    <!-- // LANGUAGE -->
+                                    <!-- CONTENT -->
+                                    <div class="#{translation.language != null ? 'col-12 col-md-9' : ''}">
+                                        <h:inputTextarea
+                                                id="field2"
+                                                styleClass="form-control metsEditorTextArea"
+                                                value="#{translation.value}"
+                                                rows="6"
+                                        />
+                                    </div>
+                                    <!-- // CONTENT -->
+                                </div>
+                            </ui:fragment>
+                            <!-- // Text area  type -->
+                            <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
+                            <!-- Single select type -->
+                            <ui:fragment
+                                    rendered="#{field.allSelectableItems.size() > 0 and field.definition.multiValued == false}">
+                                <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
+                                    <!-- LANGUAGE -->
+                                    <div class="col-12 col-md-3" tabindex="-1"
+                                         jsf:rendered="#{translation.language != null}">
+                                        <intranda:formLabel
+                                                label="#{translation.language != null ? translation.language : ''}"
+                                                labelFor="field3"/>
+                                    </div>
+                                    <!-- // LANGUAGE -->
+                                    <!-- CONTENT -->
+                                    <div class="#{translation.language != null ? 'col-12 col-md-9' : ''}">
+                                        <h:selectOneMenu
+                                                id="field3"
+                                                styleClass="form-control form__input"
+                                                value="#{translation.value}">
+                                            <f:selectItem
+                                                    itemValue="null"
+                                                    itemLabel="#{msgs.bitteAuswaehlen}"/>
+                                            <f:selectItems
+                                                    value="#{field.currentlySelectableItems}"/>
+                                        </h:selectOneMenu>
+                                    </div>
+                                    <!-- // CONTENT -->
+                                </div>
+                            </ui:fragment>
+                            <!-- // Single select  type -->
+                        </ui:repeat>
+                        <ui:fragment rendered="#{field.values.size() > 1}">
+                            <h:commandButton action="#{cc.attrs.record.deleteFieldValue(field, value)}"
+                                             value="Delete value">
                                 <f:ajax render="@form" execute="@form"/>
                             </h:commandButton>
                         </ui:fragment>
-                    </div>
-                </div>
-            </ui:repeat>
-            <!--                            <ui:fragment rendered="#{field.definition.type eq 'select1'}">-->
-            <!--                                <intranda:formInputDropDown-->
-            <!--                                        name="field3"-->
-            <!--                                        field="#{field.value}"-->
-            <!--                                        selectItems="#{field.definition.selecteableValues}"-->
-            <!--                                        required="#{field.definition.required}"-->
-            <!--                                        displayAsRequired="#{field.definition.required}"-->
-            <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
-            <!--                                        validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
-            <!--                                        idForValidator="#{field.label}"/>-->
-            <!--                            </ui:fragment>-->
-            <!--                            <ui:fragment rendered="#{field.definition.type eq 'select'}">-->
-            <!--                                <intranda:formInputSelectMany-->
-            <!--                                        name="field4"-->
-            <!--                                        field="#{field.valueMultiSelect}"-->
-            <!--                                        selectItems="#{field.definition.selectList}"-->
-            <!--                                        required="#{field.definition.required}"-->
-            <!--                                        displayAsRequired="#{field.definition.required}"-->
-            <!--                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"-->
-            <!--                                        validationMethod="#{vocabularyBeanLEGACY.validateFieldValue}"-->
-            <!--                                        idForValidator="#{field.label}"/>-->
-            <!--                            </ui:fragment>-->
-
-            <ui:fragment rendered="#{(cc.attrs.record.id != null and cc.attrs.showDelete == true) or cc.attrs.showSave}">
-                <div class="box__actions">
-                    <ui:fragment rendered="#{cc.attrs.record.id != null and cc.attrs.showDelete == true}">
-                        <a
-                                id="delete"
-                                href="#"
-                                class="btn btn-hot me-auto"
-                                data-bs-toggle="modal"
-                                data-bs-target="#deleteModal">
-                            <i class="fa fa-trash-o" title="#{msgs.vocabularyManager_deleteRecord}"/>
-                            <span>
-                            <h:outputText value="#{msgs.loeschen}"/>
-                        </span>
-                        </a>
-
-                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
-                             aria-labelledby="myModalLabel">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-primary-400 text-white">
-                                        <h4 class="modal-title" id="myModalLabel">
-                                            <h:outputText value="#{msgs.loeschen}"/>
-                                        </h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <ui:fragment rendered="#{cc.attrs.record.children == null or cc.attrs.record.children.isEmpty() == true}">
-                                            <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
-                                        </ui:fragment>
-                                        <ui:fragment rendered="#{cc.attrs.record.children.isEmpty() == false}">
-                                            <p>#{msgs.vocabularyManager_deleteChildRecordsPrompt}</p>
-                                        </ui:fragment>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-blank" data-bs-dismiss="modal"
-                                                aria-hidden="true">#{msgs.abbrechen}
-                                        </button>
-                                        <!-- <button> will not work with method references, <a> or <h:commandButton> do work however!!! -->
-                                        <a
-                                                jsf:id="deleteButton"
-                                                class="btn btn-hot"
-                                                jsf:action="#{cc.attrs.deleteRecordAction}"
-                                        >
-                                        <span>
-                                            <span class="fa fa-trash-o"/>
-                                            <span>
-                                                <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>
-                                            </span>
-                                        </span>
-                                        </a>
-                                    </div>
-                                </div>
+                    </ui:repeat>
+                    <!-- Multi select type -->
+                    <ui:fragment
+                            rendered="#{field.allSelectableItems.size() > 0 and field.definition.multiValued == true}">
+                        <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
+                            <!-- LANGUAGE -->
+                            <div class="col-12 col-md-3" tabindex="-1"
+                                 jsf:rendered="#{translation.language != null}">
+                                <intranda:formLabel
+                                        label="#{translation.language != null ? translation.language : ''}"
+                                        labelFor="field4"/>
                             </div>
+                            <!-- // LANGUAGE -->
+                            <!-- CONTENT -->
+                            <h:panelGroup layout="block">
+                                <h:selectOneMenu
+                                        styleClass="form-select"
+                                        id="field4"
+                                        forceId="true"
+                                        value="#{field.currentValue}"
+                                        required="false">
+                                    <f:ajax execute="@form" render="@form" event="change"/>
+                                    <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}"/>
+                                    <f:selectItems value="#{field.currentlySelectableItems}"/>
+                                </h:selectOneMenu>
+
+                                <h:panelGroup id="multiselect-id">
+                                    <x:dataList
+                                            id="datalist-id"
+                                            value="#{field.allSelectedValueKeys}"
+                                            var="selection">
+                                        <button class="badge badge-intranda-light mt-3"
+                                                jsf:action="#{field.removeSelectedValue(selection)}"
+                                                title="#{msgs.removeSelectedItem}" data-bs-toggle="tooltip">
+                                            <span class="fa fa-trash fs-400"/>
+                                            <span class="fs-400">
+                                                    <h:outputText value="#{selection}"/>
+                                                </span>
+                                            <f:ajax execute="@form" render="@form"/>
+                                        </button>
+                                    </x:dataList>
+                                </h:panelGroup>
+                            </h:panelGroup>
+                            <!-- // CONTENT -->
                         </div>
                     </ui:fragment>
-
-                    <ui:fragment rendered="#{cc.attrs.showSave == true}">
-                        <button
-                                class="btn btn-success submitOnEnter"
-                                jsf:id="absenden"
-                                type="submit"
-                                jsf:action="#{cc.attrs.saveRecordAction}">
-                            <span class="fa fa-save"/>
-                            <span>
-                        <h:outputText value="#{msgs.speichern}"/>
-                    </span>
-                        </button>
+                    <!-- // Multi select  type -->
+                    <ui:fragment rendered="#{field.definition.multiValued == true}">
+                        <h:commandButton action="#{cc.attrs.record.addFieldValue(field)}" value="Add value">
+                            <f:ajax render="@form" execute="@form"/>
+                        </h:commandButton>
                     </ui:fragment>
                 </div>
-            </ui:fragment>
-        </intranda:box>
+            </div>
+        </ui:repeat>
     </composite:implementation>
 </ui:composition>
