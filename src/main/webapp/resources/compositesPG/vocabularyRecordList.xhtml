@@ -267,9 +267,7 @@
 
                                 <tbody>
                                 <ui:repeat varStatus="status" var="record" value="#{vocabularyRecordsBean.paginator.items}">
-                                    <ui:fragment rendered="#{record.shown}">
-                                        <intranda:vocabularyRecordListEntry record="#{record}"/>
-                                    </ui:fragment>
+                                    <intranda:vocabularyRecordListEntry record="#{record}"/>
                                 </ui:repeat>
                                 </tbody>
                             </table>
