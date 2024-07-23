@@ -120,6 +120,7 @@
             aria-labelledby="geonamesSearchBox"
             aria-hidden="true">
             <div
+                style="width: 50%; max-width: 50%;"
                 class="modal-dialog modal-xl modal-dialog-scrollable"
                 role="document">
                 <h:panelGroup
@@ -127,10 +128,9 @@
                     layout="block"
                     id="geonamesSearchBoxContent">
 
-                    <div class="modal-header bg-primary text-white">
+                    <div class="modal-header bg-primary-400 text-white">
                         <h4
-                            class="modal-title"
-                            style="width: 90%">#{msgs.NORM_geonamesSearch}</h4>
+                            class="modal-title h6">#{msgs.NORM_geonamesSearch}</h4>
                         <button
                             type="button"
                             class="btn text-white"
@@ -147,13 +147,13 @@
                         </p>
                         <div class="row">
 
-                            <div class="col-12 col-md-10">
+                            <div class="col-12 col-md-11">
                                 <x:inputText
                                     id="geonamesSearch"
                                     styleClass="form-control"
                                     value="#{cc.attrs.field.searchValue}"
-                                    
-                                    onkeypress="searchGeonames(event)"   
+
+                                    onkeypress="searchGeonames(event)"
                                      />
 
                                 <h:message
@@ -161,14 +161,16 @@
                                     showDetail="true"
                                     styleClass="help-inline font-danger" />
                             </div>
-                            <div class="col-12 col-md-2">
+                            <div class="col-12 col-md-1">
                                 <button
                                     jsf:id="geonamesSearchButton"
                                     class="btn btn-blank"
                                     jsf:action="#{cc.attrs.field.searchGeonames}">
                                     <i
                                         class="fa fa-search"
-                                        aria-hidden="true"></i> <span> <h:outputText value="#{msgs.search}" />
+                                        aria-hidden="true"></i>
+                                    <span>
+                                        <h:outputText value="#{msgs.search}" />
                                     </span>
                                     <f:ajax
                                         execute="@form"
@@ -176,9 +178,6 @@
                                 </button>
                             </div>
                         </div>
-
-
-<hr/>
 
                         <!-- GEONAMES LIST -->
                         <h:panelGroup id="geonamesList">
@@ -294,7 +293,6 @@
                                         </div>
                                     </div>
 
-                                    <hr />
                                 </x:dataList>
                             </h:panelGroup>
 

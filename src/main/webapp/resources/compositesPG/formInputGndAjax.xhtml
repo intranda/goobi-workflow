@@ -122,10 +122,9 @@
                     styleClass="modal-content"
                     layout="block"
                     id="gndSearchBoxContent">
-                    <div class="modal-header bg-primary text-white">
+                    <div class="modal-header bg-primary-400 text-white">
                         <h4
-                            class="modal-title"
-                            style="width: 90%">#{msgs.NORM_gndSearch}</h4>
+                            class="modal-title h6">#{msgs.NORM_gndSearch}</h4>
                         <button
                             type="button"
                             class="btn text-white"
@@ -141,7 +140,7 @@
                                 escape="false" />
                         </p>
                         <div class="row">
-                            <div class="col-12 col-md-3">
+                            <div class="col-12 col-md-3 bg-white border-0">
                                 <h:selectOneMenu
                                     styleClass="form-control form-select"
                                     value="#{cc.attrs.field.searchOption}"
@@ -163,16 +162,16 @@
                                         itemValue="Tg*" />
                                 </h:selectOneMenu>
                             </div>
-                            <div class="col-12 col-md-7">
+                            <div class="col-12 col-md-8">
                                 <x:inputText
                                     id="gndSearchInput"
                                     pt:aria-label="#{msgs.suchbegriff}"
                                     styleClass="form-control"
-                                    value="#{cc.attrs.field.searchValue}" 
+                                    value="#{cc.attrs.field.searchValue}"
                                     onkeypress="if(event.key == 'Enter') {event.preventDefault();$(this).parent().next().children('.btn').click();}"
                                     />
                             </div>
-                            <div class="col-12 col-md-2">
+                            <div class="col-12 col-md-1">
                                 <button
                                     jsf:id="gndSearchButton"
                                     class="btn btn-blank"
@@ -187,7 +186,6 @@
                                 </button>
                             </div>
                         </div>
-                        <hr/>
 
                         <h:panelGroup
                             id="gndSearchlist"
@@ -201,17 +199,17 @@
                                         <x:dataList
                                             value="#{normdataList}"
                                             var="normdata">
-                                            <div class="row">
-                                                <div class="col-4">
+                                            <div class="row border-0">
+                                                <div class="col-4 min-height-reset p-0">
                                                     <h:outputText value="#{msgs[normdata.key]}" />
                                                 </div>
 
-                                                <div class="col-8">
+                                                <div class="col-8 min-height-reset p-0">
                                                     <x:dataList
                                                         value="#{normdata.values}"
                                                         var="value">
-                                                        <div class="row">
-                                                            <div class="col-sm-12">
+                                                        <div class="row border-0">
+                                                            <div class="col-sm-12 min-height-reset p-0">
                                                                 <h:outputLink
                                                                     rendered="#{value.url != null}"
                                                                     target="_blank"
@@ -256,14 +254,13 @@
                                         </button>
                                     </div>
                                 </div>
-                                <hr />
                             </x:dataList>
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>
             </div>
         </h:panelGroup>
-        
+
     </composite:implementation>
 
 </ui:composition>

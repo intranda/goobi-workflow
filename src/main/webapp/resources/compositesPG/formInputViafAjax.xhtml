@@ -31,39 +31,6 @@
 
 <!--TODO move this to css file -->
         <style>
-.searchgroup__container {
-    position: relative;
-    margin-bottom: 10px;
-    padding: 25px 10px 10px 10px;
-    border: 1px solid #ddd;
-}
-
-.searchgroup__container-close {
-    position: absolute;
-    top: 0;
-    right: 7px;
-    display: inline-block;
-    padding: 5px 10px;
-    color: #2a2a2a;
-}
-
-.searchgroup__container .row {
-    margin-bottom: 5px;
-    align-items: center;
-}
-
-.modal__viaf-list-link {
-    margin-bottom: 5px;
-    padding-right: 10px;
-    text-align: right;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.modal__viaf-list a {
-    text-decoration: none;
-}
-
 .viaf-flag {
     display: flex;
     width: 28px;
@@ -89,7 +56,6 @@
 }
 
 .btn--link {
-    padding: 0;
     color: #31708f;
     border: none;
 }
@@ -173,25 +139,24 @@
 
         <!-- VIAF MODAL -->
         <h:panelGroup
-            styleClass="modal p-4 py-md-5"
+            styleClass="modal fade"
             layout="block"
             id="viafSearchBox"
             tabindex="-1"
             role="dialog"
-            aria-labelledby="viafSearchBox"
+            aria-labelledby="viafSearchBoxTitle"
             aria-hidden="true">
             <div
-                style="width: 90%; max-width: 90%;"
-                class="modal-dialog modal-dialog-scrollable"
+                class="modal-dialog modal-xl modal-dialog-scrollable"
                 role="document">
                 <h:panelGroup
                     styleClass="modal-content"
                     layout="block"
                     id="viafSearchBoxContent">
-                    <div class="modal-header bg-primary text-white">
+                    <div class="modal-header bg-primary-400 text-white">
                         <h4
-                            class="modal-title"
-                            style="width: 90%">#{msgs.NORM_viafSearch}</h4>
+                            class="modal-title h6"
+                            id="viafSearchBoxTitle">#{msgs.NORM_viafSearch}</h4>
                         <button
                             type="button"
                             class="btn text-white"
@@ -206,25 +171,28 @@
                                 value="#{msgs.NORM_helpViafSearch}"
                                 escape="false" />
                         </p>
-                        <h:panelGroup id="viaf_search">
+                        <h:panelGroup
+                            id="viaf_search"
+                            layout="block">
                             <ui:repeat
                                 value="#{cc.attrs.field.viafSearch.viafSearchRequest.searchParameterGroups}"
                                 var="group"
                                 varStatus="globStatus">
-                                <div class="searchgroup__container">
+                                <div class="border mb-3">
+                                    <div class="w-100 d-flex justify-content-end">
                                     <button
                                         jsf:id="removeGroup"
                                         aria-label="#{msgs.removeGroup}"
                                         class="btn searchgroup__container-close"
                                         jsf:action="#{cc.attrs.field.viafSearch.viafSearchRequest.deleteGroup(globStatus.index)}">
-                                        <i
+                                        <span
                                             class="fa fa-times"
-                                            aria-hidden="true"></i>
+                                            aria-hidden="true" />
                                         <f:ajax
                                             execute="@this viaf_search"
                                             render=":#{cc.clientId}:viaf_search" />
                                     </button>
-
+                                    </div>
                                     <ui:repeat
                                         var="filter"
                                         value="#{group.parameterList}"
@@ -263,8 +231,8 @@
                                                             pt:aria-label="#{msgs.suchbegriff}"
                                                             styleClass="form-control"
                                                             pt:dir="auto"
-                                                            value="#{filter.searchValue}" 
-                                                            onkeypress="searchViaf(event)"   
+                                                            value="#{filter.searchValue}"
+                                                            onkeypress="searchViaf(event)"
                                                             />
                                                     </ui:fragment>
 
@@ -282,15 +250,15 @@
                                                     </ui:fragment>
                                                 </h:panelGroup>
                                             </div>
-                                            <div class="col-12 col-md-1 text-right">
+                                            <div class="col-12 col-md-1">
                                                 <button
                                                     jsf:id="removeFilter"
                                                     aria-label="#{msgs.removeFilter}"
-                                                    class="btn btn--icon-light"
+                                                    class="btn btn-blank"
                                                     jsf:action="#{group.deleteFilter(status.index)}">
-                                                    <i
+                                                    <span
                                                         class="fa fa-trash"
-                                                        aria-hidden="true"></i>
+                                                        aria-hidden="true" />
                                                     <f:ajax
                                                         execute="@this viaf_search"
                                                         render=":#{cc.clientId}:viaf_search" />
@@ -299,14 +267,15 @@
                                         </div>
                                     </ui:repeat>
 
-                                    <div class="row">
+                                    <div class="row border-0">
                                         <ui:fragment rendered="#{group.numFilters gt 1}">
                                             <div class="col-12 col-md-8 group-conjunction">
-                                                <strong> <h:outputText value="#{msgs.NORM_filterconjunction}:" />
+                                                <strong>
+                                                    <h:outputText value="#{msgs.NORM_filterconjunction}:" />
                                                 </strong>
                                                 <h:selectOneRadio
                                                     value="#{group.conjunctive}"
-                                                    styleClass="table__radio">
+                                                    styleClass="select-radio">
                                                     <f:selectItem
                                                         itemValue="true"
                                                         itemLabel="#{msgs.NORM_conjunctive}" />
@@ -333,66 +302,66 @@
                             </ui:repeat>
 
                             <!-- GROUP CONJUNCTION -->
-                            <div class="modal__viaf-conjunction">
-                                <div class="row">
-                                    <ui:fragment rendered="#{cc.attrs.field.viafSearch.viafSearchRequest.numGroups gt 1}">
-                                        <div class="col-12 col-md-4">
-                                            <strong>#{msgs.NORM_groupconjunction}:</strong>
-
-                                            <h:selectOneRadio
-                                                styleClass="select-radio"
-                                                value="#{cc.attrs.field.viafSearch.viafSearchRequest.conjunctive}">
-                                                <f:selectItem
-                                                    itemValue="true"
-                                                    itemLabel="#{msgs.NORM_conjunctive}" />
-                                                <f:selectItem
-                                                    itemValue="false"
-                                                    itemLabel="#{msgs.NORM_disjunctive}" />
-                                                <f:ajax />
-                                            </h:selectOneRadio>
-                                        </div>
-                                    </ui:fragment>
-
-                                    <div class="#{cc.attrs.field.viafSearch.viafSearchRequest.numGroups gt 1 ? 'col-12 col-md-4' : 'col-12 col-md-8'}">
-                                        <strong>#{msgs.NORM_authorityViafSortOrder}:</strong>
+                            <div class="row">
+                                <ui:fragment rendered="#{cc.attrs.field.viafSearch.viafSearchRequest.numGroups gt 1}">
+                                    <div class="col-12 col-md-4">
+                                        <strong>#{msgs.NORM_groupconjunction}:</strong>
 
                                         <h:selectOneRadio
                                             styleClass="select-radio"
-                                            value="#{cc.attrs.field.viafSearch.sorting}">
+                                            value="#{cc.attrs.field.viafSearch.viafSearchRequest.conjunctive}">
                                             <f:selectItem
                                                 itemValue="true"
-                                                itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />
+                                                itemLabel="#{msgs.NORM_conjunctive}" />
                                             <f:selectItem
                                                 itemValue="false"
-                                                itemLabel="#{msgs.NORM_authorityViafSortOptionHoldingCount}" />
+                                                itemLabel="#{msgs.NORM_disjunctive}" />
                                             <f:ajax />
                                         </h:selectOneRadio>
-
-                                        <p>#{msgs.NORM_authorityViafSortOrderDescription}</p>
                                     </div>
+                                </ui:fragment>
 
-                                    <div class="col-12 col-md-4 text-right">
-                                        <button
-                                            jsf:id="newGroup"
-                                            class="btn btn--link float-end"
-                                            jsf:action="#{cc.attrs.field.viafSearch.viafSearchRequest.newGroup}">
-                                            <f:ajax
-                                                execute="@this viaf_search"
-                                                render="viaf_search" />
-                                            #{msgs.NORM_newGroup}
-                                        </button>
-                                    </div>
+                                <div class="#{cc.attrs.field.viafSearch.viafSearchRequest.numGroups gt 1 ? 'col-12 col-md-4' : 'col-12 col-md-8'}">
+                                    <strong>#{msgs.NORM_authorityViafSortOrder}:</strong>
+
+                                    <h:selectOneRadio
+                                        styleClass="select-radio"
+                                        value="#{cc.attrs.field.viafSearch.sorting}">
+                                        <f:selectItem
+                                            itemValue="true"
+                                            itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />
+                                        <f:selectItem
+                                            itemValue="false"
+                                            itemLabel="#{msgs.NORM_authorityViafSortOptionHoldingCount}" />
+                                        <f:ajax />
+                                    </h:selectOneRadio>
+
+                                    <p>#{msgs.NORM_authorityViafSortOrderDescription}</p>
+                                </div>
+
+                                <div class="col-12 col-md-4 text-right">
+                                    <button
+                                        jsf:id="newGroup"
+                                        class="btn btn--link float-end"
+                                        jsf:action="#{cc.attrs.field.viafSearch.viafSearchRequest.newGroup}">
+                                        <f:ajax
+                                            execute="@this viaf_search"
+                                            render="viaf_search" />
+                                        #{msgs.NORM_newGroup}
+                                    </button>
                                 </div>
                             </div>
 
-                            <div class="text-right">
+                            <div class="p-2 w-100 d-flex justify-content-end border-bottom">
                                 <button
                                     jsf:id="viafSearch"
-                                    class="btn btn-blank float-end"
+                                    class="btn btn-blank"
                                     jsf:action="#{cc.attrs.field.searchViaf}">
-                                    <i
+                                    <span
                                         class="fa fa-search"
-                                        aria-hidden="true"></i> <span> <h:outputText value="#{msgs.search}" />
+                                        aria-hidden="true"/>
+                                    <span>
+                                        <h:outputText value="#{msgs.search}" />
                                     </span>
                                     <f:ajax
                                         execute="@form"
@@ -400,110 +369,106 @@
                                 </button>
                             </div>
                         </h:panelGroup>
-
-
-<hr/>
-
                         <h:panelGroup
                             id="viafSearchlist"
                             layout="block"
                             styleClass="modal-dialog-scrollable modal-results">
 
                             <ui:fragment rendered="#{cc.attrs.field.viafSearch.records.size() gt 0}">
-                                <div class="modal__viaf-list ">
+                                <div class="pt-2 ">
                                     <x:dataList
                                         value="#{cc.attrs.field.viafSearch.records}"
                                         var="record">
-                                        <div class="modal__viaf-list-link">
-                                            <a
-                                                href="#{record.getFieldValues('024','7',' ','a').get(0)}"
-                                                target="_blank"
-                                                class="viaf-flag"
-                                                rel="noopener"
-                                                title="#{msgs.NORM_authorityShowClusterFileInViaf}"
-                                                data-toggle="tooltip"> <img
-                                                src="template/img/Icons_Viaf_color.png"
-                                                alt="viaf logo" />
-                                            </a>
-                                        </div>
-
-                                        <x:dataList
-                                            value="#{record.displayableData}"
-                                            var="normdata">
-                                            <div class="row">
-                                                <div class="col-12 col-md-4">
-                                                    <h:outputText value="#{msgs[normdata.key]}:" />
-                                                </div>
-
-                                                <div class="col-12 col-md-8">
-                                                    <x:dataList
-                                                        value="#{normdata.values}"
-                                                        var="value">
-                                                        <h:outputText value="#{value.text}" />
-                                                    </x:dataList>
-                                                </div>
+                                        <div class="border-bottom py-2">
+                                            <div class="w-100 d-flex justify-content-end">
+                                                <a
+                                                    href="#{record.getFieldValues('024','7',' ','a').get(0)}"
+                                                    target="_blank"
+                                                    class="viaf-flag"
+                                                    rel="noopener"
+                                                    title="#{msgs.NORM_authorityShowClusterFileInViaf}"
+                                                    data-toggle="tooltip"> <img
+                                                    src="template/img/Icons_Viaf_color.png"
+                                                    alt="viaf logo" />
+                                                </a>
                                             </div>
-                                        </x:dataList>
 
-                                        <x:dataList
-                                            value="#{record.authorityDatabaseUrls}"
-                                            var="database">
-                                            <div class="row">
-                                                <div class="col-12 col-md-4">
-                                                    <h:outputText value="#{msgs.NORM_authorityData} " />
-                                                    <h:outputText value="#{msgs[database.databaseCode]}:" />
+                                            <x:dataList
+                                                value="#{record.displayableData}"
+                                                var="normdata">
+                                                <div class="row border-0">
+                                                    <div class="col-12 col-md-4 min-height-reset p-0">
+                                                        <h:outputText value="#{msgs[normdata.key]}:" />
+                                                    </div>
+
+                                                    <div class="col-12 col-md-8 min-height-reset p-0">
+                                                        <x:dataList
+                                                            value="#{normdata.values}"
+                                                            var="value">
+                                                            <h:outputText value="#{value.text}" />
+                                                        </x:dataList>
+                                                    </div>
                                                 </div>
-                                                <div class="col-12 col-md-6">
-                                                    <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
-                                                </div>
+                                            </x:dataList>
 
-                                                <div class="col-12 col-md-2">
-                                                    <button
-                                                        jsf:id="select"
-                                                        aria-label="#{msgs.selectFile}"
-                                                        class="btn btn-success float-end"
-                                                        jsf:onclick="$(this).parent().parent().parent().parent().parent().parent().parent().parent().modal('hide');;"
-                                                        jsf:action="#{cc.attrs.field.importViafData}">
-                                                        <f:setPropertyActionListener
-                                                            value="#{database}"
-                                                            target="#{cc.attrs.field.viafSearch.currentDatabase}" />
-                                                        <f:setPropertyActionListener
-                                                            value="#{record.getFieldValues('024','7',' ','a').get(0)}"
-                                                            target="#{cc.attrs.field.viafSearch.currentCluster}" />
-                                                        <span class="fa fa-check" />
-                                                        <f:ajax
-                                                            execute="@this"
-                                                            render="#{cc.attrs.render}" />
-                                                    </button>
+                                            <x:dataList
+                                                value="#{record.authorityDatabaseUrls}"
+                                                var="database">
+                                                <div class="row border-0">
+                                                    <div class="col-12 col-md-4 min-height-reset p-0">
+                                                        <h:outputText value="#{msgs.NORM_authorityData} " />
+                                                        <h:outputText value="#{msgs[database.databaseCode]}:" />
+                                                    </div>
+                                                    <div class="col-12 col-md-6 min-height-reset p-0">
+                                                        <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
+                                                    </div>
 
-                                                    <a
-                                                        class="viaf-flag float-end"
-                                                        href="#{database.uiUrl}"
-                                                        target="_blank"
-                                                        rel="noopener"
-                                                        title="#{msgs.NORM_authorityShowInViaf}"
-                                                        data-toggle="tooltip"> <img
-                                                        alt="viaf"
-                                                        src="template/img/Icons_Viaf_color.png" />
-                                                    </a>
-                                                    <ui:fragment rendered="#{database.localAuthorityUrl != ''}">
+                                                    <div class="col-12 col-md-2 min-height-reset p-0">
+                                                        <button
+                                                            jsf:id="select"
+                                                            aria-label="#{msgs.selectFile}"
+                                                            class="btn btn-success float-end"
+                                                            jsf:onclick="$(this).parent().parent().parent().parent().parent().parent().parent().parent().modal('hide');;"
+                                                            jsf:action="#{cc.attrs.field.importViafData}">
+                                                            <f:setPropertyActionListener
+                                                                value="#{database}"
+                                                                target="#{cc.attrs.field.viafSearch.currentDatabase}" />
+                                                            <f:setPropertyActionListener
+                                                                value="#{record.getFieldValues('024','7',' ','a').get(0)}"
+                                                                target="#{cc.attrs.field.viafSearch.currentCluster}" />
+                                                            <span class="fa fa-check" />
+                                                            <f:ajax
+                                                                execute="@this"
+                                                                render="#{cc.attrs.render}" />
+                                                        </button>
+
                                                         <a
-                                                            class="float-end authority-flag"
-                                                            href="#{database.localAuthorityUrl}"
+                                                            class="viaf-flag float-end"
+                                                            href="#{database.uiUrl}"
                                                             target="_blank"
                                                             rel="noopener"
-                                                            title="#{msgs.NORM_authorityShowInLocalAuthority}"
+                                                            title="#{msgs.NORM_authorityShowInViaf}"
                                                             data-toggle="tooltip"> <img
-                                                            alt="#{database.databaseCode}"
-                                                            src="template/img/viaf/#{database.databaseCode}.png"
-                                                            style="height: 28px; padding-top: 2px; padding-bottom: 2px;" />
+                                                            alt="viaf"
+                                                            src="template/img/Icons_Viaf_color.png" />
                                                         </a>
-                                                    </ui:fragment>
+                                                        <ui:fragment rendered="#{database.localAuthorityUrl != ''}">
+                                                            <a
+                                                                class="float-end authority-flag"
+                                                                href="#{database.localAuthorityUrl}"
+                                                                target="_blank"
+                                                                rel="noopener"
+                                                                title="#{msgs.NORM_authorityShowInLocalAuthority}"
+                                                                data-toggle="tooltip"> <img
+                                                                alt="#{database.databaseCode}"
+                                                                src="template/img/viaf/#{database.databaseCode}.png"
+                                                                style="height: 28px; padding-top: 2px; padding-bottom: 2px;" />
+                                                            </a>
+                                                        </ui:fragment>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </x:dataList>
-
-                                        <hr />
+                                            </x:dataList>
+                                        </div>
                                     </x:dataList>
                                 </div>
                             </ui:fragment>
