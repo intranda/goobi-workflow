@@ -1,0 +1,8 @@
+.modal {
+    --bs-modal-border-radius: var(--border-radius);
+    --bs-modal-inner-border-radius: 0;
+    --bs-modal-header-padding: 1em;
+    .modal-header {
+        justify-content: space-between;
+    }
+}

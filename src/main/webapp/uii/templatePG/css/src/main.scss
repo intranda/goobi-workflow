@@ -23,6 +23,7 @@
 @use "components/progress-custom";
 @use "components/buttons";
 @use "components/journal";
+@use "components/modals";
 @use "components/toasts-custom";
 @use "components/tooltip-custom";
 @use "components/file-upload";
@@ -42,7 +43,8 @@
 @use "pages/process-edit";
 
 @use "utility/flex";
-@use "utility/scroll-container.scss";
+@use "utility/highlight";
+@use "utility/resets";
 
 // plugins
 @use "plugins/dashboard";

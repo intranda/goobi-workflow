@@ -175,10 +175,14 @@ fieldSet:disabled .badge > a {
     min-height: 2.8125rem;
     width: 100%;
   }
+  > .form-row {
+    border: 0;
+    padding: 0;
+  }
   > .form-label {
     background: var(--clr-neutral-200);
     border-inline-end: 1px solid var(--clr-neutral-300);
-    > .btn {
+    > .btn:first-of-type {
       margin-inline-start: auto;
     }
   }
