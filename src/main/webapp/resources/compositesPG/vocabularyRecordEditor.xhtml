@@ -47,11 +47,6 @@
     </composite:interface>
 
     <composite:implementation>
-        <intranda:box
-                boxType="action"
-                boxForm="true"
-                boxPadding="false"
-                icon="fa-file-o">
 
             <ui:fragment rendered="#{cc.attrs.showID}">
                 <intranda:formOutputText label="#{msgs.id}"
@@ -60,21 +55,20 @@
             </ui:fragment>
 
             <ui:repeat var="field" value="#{cc.attrs.record.sortedFields()}">
-
-                <div class="row">
-                    <div class="col-12 col-md-3" tabindex="-1">
+                <div class="form-row">
+                    <div class="form-label" tabindex="-1">
                         <intranda:formLabel label="#{field.definition.name}"/>
 
                     </div>
-                    <div class="col-12 col-md-9 p-0">
+                    <div class="form-input">
                         <ui:repeat var="value" value="#{field.values}">
                             <ui:repeat var="translation" value="#{value.translations}">
                                 <!-- Simple text type -->
                                 <ui:fragment
                                         rendered="#{field.allSelectableItems.size() == 0 and field.type.large == false}">
-                                    <div class="#{translation.language != null ? 'row' : 'p-2'} col-12 border-0">
+                                    <div class="form-row">
                                         <!-- LANGUAGE -->
-                                        <div class="col-12 col-md-3" tabindex="-1"
+                                        <div class="form-label" tabindex="-1"
                                              jsf:rendered="#{translation.language != null}">
                                             <intranda:formLabel
                                                     label="#{translation.language != null ? translation.language : ''}"
@@ -82,7 +76,7 @@
                                         </div>
                                         <!-- // LANGUAGE -->
                                         <!-- CONTENT -->
-                                        <div class="#{translation.language != null ? 'col-12 col-md-9' : ''}">
+                                        <div class="form-input">
                                             <h:inputText
                                                     id="field1"
                                                     styleClass="form-control form__input"
@@ -98,9 +92,9 @@
                                 <!-- Text area type -->
                                 <ui:fragment
                                         rendered="#{field.allSelectableItems.size() == 0 and field.type.large == true}">
-                                    <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
+                                    <div class="form-row">
                                         <!-- LANGUAGE -->
-                                        <div class="col-12 col-md-3" tabindex="-1"
+                                        <div class="form-label" tabindex="-1"
                                              jsf:rendered="#{translation.language != null}">
                                             <intranda:formLabel
                                                     label="#{translation.language != null ? translation.language : ''}"
@@ -108,7 +102,7 @@
                                         </div>
                                         <!-- // LANGUAGE -->
                                         <!-- CONTENT -->
-                                        <div class="#{translation.language != null ? 'col-12 col-md-9' : ''}">
+                                        <div class="form-input">
                                             <h:inputTextarea
                                                     id="field2"
                                                     styleClass="form-control metsEditorTextArea"
@@ -124,9 +118,9 @@
                                 <!-- Single select type -->
                                 <ui:fragment
                                         rendered="#{field.allSelectableItems.size() > 0 and field.definition.multiValued == false}">
-                                    <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
+                                    <div class="form-row">
                                         <!-- LANGUAGE -->
-                                        <div class="col-12 col-md-3" tabindex="-1"
+                                        <div class="form-label" tabindex="-1"
                                              jsf:rendered="#{translation.language != null}">
                                             <intranda:formLabel
                                                     label="#{translation.language != null ? translation.language : ''}"
@@ -134,10 +128,10 @@
                                         </div>
                                         <!-- // LANGUAGE -->
                                         <!-- CONTENT -->
-                                        <div class="#{translation.language != null ? 'col-12 col-md-9' : ''}">
+                                        <div class="form-input">
                                             <h:selectOneMenu
                                                     id="field3"
-                                                    styleClass="form-control form__input"
+                                                    styleClass="form-select form__input"
                                                     value="#{translation.value}">
                                                 <f:selectItem
                                                         itemValue="null"
@@ -160,9 +154,9 @@
                         <!-- Multi select type -->
                         <ui:fragment
                                 rendered="#{field.allSelectableItems.size() > 0 and field.definition.multiValued == true}">
-                            <div class="#{translation.language != null ? 'row' : 'p-2'}  col-12 border-0">
+                            <div class="form-row">
                                 <!-- LANGUAGE -->
-                                <div class="col-12 col-md-3" tabindex="-1"
+                                <div class="form-label" tabindex="-1"
                                      jsf:rendered="#{translation.language != null}">
                                     <intranda:formLabel
                                             label="#{translation.language != null ? translation.language : ''}"
@@ -170,7 +164,7 @@
                                 </div>
                                 <!-- // LANGUAGE -->
                                 <!-- CONTENT -->
-                                <h:panelGroup layout="block">
+                                <h:panelGroup layout="block" styleClass="form-input">
                                     <h:selectOneMenu
                                             styleClass="form-select"
                                             id="field4"
@@ -303,6 +297,5 @@
                     </ui:fragment>
                 </div>
             </ui:fragment>
-        </intranda:box>
     </composite:implementation>
 </ui:composition>
