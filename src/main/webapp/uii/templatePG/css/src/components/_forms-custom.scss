@@ -277,6 +277,24 @@ fieldSet:disabled .badge > a {
   .form-row:last-of-type {
     border-block-end: 0;
   }
+  &:has(.form-fieldset-remove) {
+    border: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    > * {
+      width: calc(100% - 4em);
+      > .form-row:last-child {
+        // border-block-end: 0;
+      }
+    }
+  }
+  > .form-fieldset-remove {
+    border-inline-end: 1px solid var(--clr-neutral-300);
+    width: 4em;
+    > .btn {
+      height: 100%;
+    }
+  }
   @media (min-width: 768px) {
     .form-label {
       width: 15%;
