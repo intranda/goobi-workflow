@@ -62,6 +62,8 @@
                     </div>
                     <div class="form-input">
                         <ui:repeat var="value" value="#{field.values}">
+                            <fieldSet class="field-set">
+                                <div>
                             <ui:repeat var="translation" value="#{value.translations}">
                                 <!-- Simple text type -->
                                 <ui:fragment
@@ -145,11 +147,45 @@
                                 </ui:fragment>
                                 <!-- // Single select  type -->
                             </ui:repeat>
+                            </div>
                             <ui:fragment rendered="#{field.values.size() > 1}">
-                                <h:commandButton action="#{cc.attrs.record.deleteFieldValue(field, value)}" value="Delete value">
+                            <div class="form-fieldset-remove">
+                                <button
+                                    jsf:id="deleteValue"
+                                    jsf:action="#{cc.attrs.record.deleteFieldValue(field, value)}"
+                                    class="btn btn-blank w-100"
+                                    data-bs-toggle="tooltip"
+                                    title="Delete value">
+                                    <span class="fa fa-minus" />
                                     <f:ajax render="@form" execute="@form"/>
-                                </h:commandButton>
+                                </button>
+                            </div>
+                        </ui:fragment>
+                        </fieldSet>
+                            <!-- <ui:fragment rendered="#{field.values.size() > 1}">
+                                <div
+                                class="mx-3 #{field.values.size() > 1 ? '' : ''}">
+                            </div>
+                        </ui:fragment> -->
+                            <ui:fragment rendered="#{field.values.size() > 1}">
+                                <div class="form-row">
+                                    <div class="form-input p-0 min-height-reset">
+                                        <!-- <button
+                                            jsf:id="deleteValue"
+                                            jsf:action="#{cc.attrs.record.deleteFieldValue(field, value)}"
+                                            class="btn btn-blank w-100"
+                                            data-bs-toggle="tooltip"
+                                            title="Delete value">
+                                            <span class="fa fa-minus" />
+                                            <f:ajax render="@form" execute="@form"/>
+                                        </button> -->
+                                        <!-- <h:commandButton action="#{cc.attrs.record.deleteFieldValue(field, value)}" value="Delete value" styleClass="btn btn-blank m-2">
+                                            <f:ajax render="@form" execute="@form"/>
+                                        </h:commandButton> -->
+                                    </div>
+                                </div>
                             </ui:fragment>
+
                         </ui:repeat>
                         <!-- Multi select type -->
                         <ui:fragment
@@ -196,12 +232,25 @@
                                 <!-- // CONTENT -->
                             </div>
                         </ui:fragment>
-                        <!-- // Multi select  type -->
                         <ui:fragment rendered="#{field.definition.multiValued == true}">
-                            <h:commandButton action="#{cc.attrs.record.addFieldValue(field)}" value="Add value">
-                                <f:ajax render="@form" execute="@form"/>
-                            </h:commandButton>
+                            <div class="form-row">
+                                <div class="form-input p-0 min-height-reset">
+                                <button
+                                    jsf:id="addValue"
+                                    class="btn btn-blank w-100"
+                                    data-bs-toggle="tooltip"
+                                    jsf:action="#{cc.attrs.record.addFieldValue(field)}"
+                                    title="Add value">
+                                    <span class="fa fa-plus" />
+                                    <f:ajax render="@form" execute="@form"/>
+                                </button>
+                                <!-- <h:commandButton action="#{cc.attrs.record.addFieldValue(field)}" value="Add value" styleClass="btn btn-blank m-2">
+                                    <f:ajax render="@form" execute="@form"/>
+                                </h:commandButton> -->
+                                </div>
+                            </div>
                         </ui:fragment>
+                        <!-- // Multi select  type -->
                     </div>
                 </div>
             </ui:repeat>
