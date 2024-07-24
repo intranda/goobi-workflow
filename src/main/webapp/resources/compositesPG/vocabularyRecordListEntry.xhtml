@@ -29,7 +29,7 @@
                             <span class="fa fa-caret-right"/>
                         </div>
                         <div class="content">
-                            <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
+                            <h:outputText value="#{cc.titleValues[0]}"/>
                         </div>
                     </button>
                     <button
@@ -45,7 +45,7 @@
                             <h:outputText value="#{cc.titleValues[0]}"/>
                         </div>
                     </button>
-                    <ui:fragment rendered="#{cc.attrs.record.children.size() == null}">
+                    <ui:fragment rendered="#{cc.hasChildren == false}">
                         <button class="btn btn-outline bg-transparent border-0 opacity-100 text-black treeView-item"
                                 disabled="true"
                                 style="--level: #{cc.level + 1}">

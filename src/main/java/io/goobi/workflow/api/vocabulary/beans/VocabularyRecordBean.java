@@ -5,6 +5,8 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UINamingContainer;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @FacesComponent("io.goobi.workflow.api.vocabulary.beans.VocabularyRecordBean")
@@ -24,7 +26,6 @@ public class VocabularyRecordBean extends UINamingContainer {
     private Optional<ExtendedVocabularyRecord> extendedVocabularyRecord = Optional.empty();
 
     public void init() {
-        System.err.println("Bean [" + this + "] init: " + getAttributes().get("record"));
         VocabularyRecord r = (VocabularyRecord) getAttributes().get("record");
         if (r != null) {
             extendedVocabularyRecord =  Optional.of(new ExtendedVocabularyRecord(r));
@@ -32,7 +33,9 @@ public class VocabularyRecordBean extends UINamingContainer {
     }
 
     public Boolean getHasChildren() {
-        return (Boolean) getStateHelper().eval(PropertyKeys.hasChildren, Boolean.FALSE);
+        return extendedVocabularyRecord.map(ExtendedVocabularyRecord::getChildren)
+                .map(children -> !children.isEmpty())
+                .orElse(false);
     }
 
     public Boolean getIsExpanded() {
@@ -43,7 +46,7 @@ public class VocabularyRecordBean extends UINamingContainer {
         return extendedVocabularyRecord.map(ExtendedVocabularyRecord::getLevel).orElse(0);
     }
 
-    public String[] getTitleValues() {
-        return (String[]) getStateHelper().eval(PropertyKeys.titleValues, new String[]{"1st", "2nd"});
+    public List<String> getTitleValues() {
+        return extendedVocabularyRecord.map(ExtendedVocabularyRecord::getTitleValues).orElse(Collections.emptyList());
     }
 }

@@ -10,7 +10,7 @@
         xmlns:x="http://myfaces.apache.org/tomahawk"
 >
 
-    <composite:interface>
+    <composite:interface componentType="io.goobi.workflow.api.vocabulary.beans.VocabularyRecordEditorBean">
         <composite:attribute
                 name="record"
                 type="io.goobi.vocabulary.exchange.VocabularyRecord"
@@ -25,13 +25,14 @@
     </composite:interface>
 
     <composite:implementation>
+        <f:event type="postAddToView" listener="#{cc.init}"/>
         <ui:fragment rendered="#{cc.attrs.showID}">
             <intranda:formOutputText label="#{msgs.id}"
                                      field="#{cc.attrs.record.id}"
                                      name="recordid"/>
         </ui:fragment>
 
-        <ui:repeat var="field" value="#{cc.attrs.record.sortedFields()}">
+        <ui:repeat var="field" value="#{cc.sortedExtendedFields}">
 
             <div class="row">
                 <div class="col-12 col-md-3" tabindex="-1">
@@ -124,7 +125,7 @@
                             <!-- // Single select  type -->
                         </ui:repeat>
                         <ui:fragment rendered="#{field.values.size() > 1}">
-                            <h:commandButton action="#{cc.attrs.record.deleteFieldValue(field, value)}"
+                            <h:commandButton action="#{field.deleteFieldValue(value)}"
                                              value="Delete value">
                                 <f:ajax render="@form" execute="@form"/>
                             </h:commandButton>
@@ -177,7 +178,7 @@
                     </ui:fragment>
                     <!-- // Multi select  type -->
                     <ui:fragment rendered="#{field.definition.multiValued == true}">
-                        <h:commandButton action="#{cc.attrs.record.addFieldValue(field)}" value="Add value">
+                        <h:commandButton action="#{field.addFieldValue()}" value="Add value">
                             <f:ajax render="@form" execute="@form"/>
                         </h:commandButton>
                     </ui:fragment>
