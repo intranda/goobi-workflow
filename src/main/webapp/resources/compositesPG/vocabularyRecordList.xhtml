@@ -2,6 +2,7 @@
         xmlns="http://www.w3.org/1999/xhtml"
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:c="http://java.sun.com/jsp/jstl/core"
         template="/uii/templatePG/templatePG.html"
         xmlns:composite="http://xmlns.jcp.org/jsf/composite"
         xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
@@ -266,9 +267,9 @@
                                 </thead>
 
                                 <tbody>
-                                <ui:repeat varStatus="status" var="record" value="#{vocabularyRecordsBean.paginator.items}">
+                                <c:forEach varStatus="status" var="record" items="#{vocabularyRecordsBean.paginator.items}">
                                     <intranda:vocabularyRecordListEntry record="#{record}"/>
-                                </ui:repeat>
+                                </c:forEach>
                                 </tbody>
                             </table>
                         </div>
