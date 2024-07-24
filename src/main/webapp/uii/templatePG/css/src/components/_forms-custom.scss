@@ -160,6 +160,7 @@ fieldSet:disabled .badge > a {
 }
 
 // re-implementation of forms in non-combinatory classes
+// TODO: stacked form-rows need styling similar to fieldsets on small screens
 .form-row {
   border-block-end: 1px solid var(--clr-neutral-300);
   display: flex;
@@ -188,12 +189,18 @@ fieldSet:disabled .badge > a {
   }
   > .form-input {
     background: var(--clr-white);
+    &:has(.form-row) {
+      padding: 0;
+    }
+    > .form-row:last-child {
+      border-block-end: 0;
+    }
   }
   @media (min-width: 768px) {
     > .form-label {
       width: 25%;
     }
-    > .form-input {
+    > .form-label+.form-input {
       width: 75%;
     }
   }
