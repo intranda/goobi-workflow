@@ -18,11 +18,6 @@ public class VocabularyRecordBean extends UINamingContainer {
         titleValues
     }
 
-    @Override
-    public String getFamily() {
-        return UINamingContainer.COMPONENT_FAMILY;
-    }
-
     private Optional<ExtendedVocabularyRecord> extendedVocabularyRecord = Optional.empty();
 
     public void init() {

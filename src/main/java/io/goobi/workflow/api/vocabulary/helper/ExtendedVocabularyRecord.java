@@ -2,9 +2,8 @@ package io.goobi.workflow.api.vocabulary.helper;
 
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.FieldInstance;
-import io.goobi.vocabulary.exchange.FieldValue;
-import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
+import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import lombok.Getter;
 
@@ -16,6 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 public class ExtendedVocabularyRecord extends VocabularyRecord {
     private Function<Long, VocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
+    private Function<VocabularyRecord, VocabularySchema> schemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::get;
 
     private int level;
     private String mainValue;
@@ -32,8 +32,10 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         setChildren(orig.getChildren());
 
         postInit();
+        prepareEmpty();
     }
 
+    // TODO: Think about recreation / updating these values in case the record changes..
     private void postInit() {
         this.level = calculateLevel(this);
         this.extendedFields = getFields().stream()
@@ -47,45 +49,28 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         this.mainValue = this.extendedFields.stream()
                 .filter(f -> Boolean.TRUE.equals(f.getDefinition().getMainEntry()))
                 .map(ExtendedFieldInstance::getFieldValue)
-                .findAny().orElseThrow(() -> new RuntimeException("Record has no main value defined"));
+                .findAny()
+                .orElse("");
+        prepareEmpty();
     }
 
-    // TODO: Perform logic here
-    private void prepareEmptyFieldsForEditing(VocabularyRecord record) {
-//        List<Long> existingFields = record.getFields().stream()
-//                .map(FieldInstance::getDefinitionId)
-//                .collect(Collectors.toList());
-//        List<Long> missingFields = definitionsIdMap.keySet()
-//                .stream().filter(i -> !existingFields.contains(i))
-//                .collect(Collectors.toList());
-//        missingFields.forEach(d -> {
-//            FieldInstance field = new FieldInstance();
-//            field.setRecordId(record.getId());
-//            field.setDefinitionId(d);
-//            record.getFields().add(field);
-//        });
-//        record.getFields().forEach(f -> {
-//            if (f.getValues().isEmpty()) {
-//                f.getValues().add(new FieldValue());
-//            }
-//            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
-//            f.getValues().forEach(v -> {
-//                if (!definition.getTranslationDefinitions().isEmpty()) {
-//                    definition.getTranslationDefinitions().stream()
-//                            .filter(t -> v.getTranslations().stream().noneMatch(t2 -> t2.getLanguage().equals(t.getLanguage())))
-//                            .forEach(t -> {
-//                                TranslationInstance translation = new TranslationInstance();
-//                                translation.setLanguage(t.getLanguage());
-//                                translation.setValue("");
-//                                v.getTranslations().add(translation);
-//                            });
-//                } else if (v.getTranslations().isEmpty()) {
-//                    TranslationInstance translation = new TranslationInstance();
-//                    translation.setValue("");
-//                    v.getTranslations().add(translation);
-//                }
-//            });
-//        });
+    private void prepareEmpty() {
+        List<Long> existingFields = getFields().stream()
+                .map(FieldInstance::getDefinitionId)
+                .collect(Collectors.toList());
+        List<Long> missingFields = schemaResolver.apply(this).getDefinitions().stream()
+                .map(FieldDefinition::getId)
+                .filter(i -> !existingFields.contains(i))
+                .collect(Collectors.toList());
+        missingFields.forEach(d -> {
+            FieldInstance field = new FieldInstance();
+            field.setRecordId(getId());
+            field.setDefinitionId(d);
+            getFields().add(field);
+        });
+        if (!missingFields.isEmpty()) {
+            postInit();
+        }
     }
 
     private int calculateLevel(VocabularyRecord record) {

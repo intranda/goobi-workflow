@@ -9,12 +9,12 @@ import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFFieldInstance;
 import lombok.Getter;
 
 import javax.faces.model.SelectItem;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -42,28 +42,46 @@ public class ExtendedFieldInstance extends FieldInstance {
         setValues(orig.getValues());
 
         postInit();
+        prepareEmpty();
+        sortTranslations();
     }
 
     private void postInit() {
         this.definition = definitionResolver.apply(getDefinitionId());
-        this.type = typeResolver.apply(this.definition.getTypeId());
+        if (this.definition.getTypeId() != null) {
+            this.type = typeResolver.apply(this.definition.getTypeId());
+        }
+    }
+
+    private void prepareEmpty() {
+        if (getValues().isEmpty()) {
+            getValues().add(new FieldValue());
+        }
+        getValues().forEach(v -> {
+            if (!definition.getTranslationDefinitions().isEmpty()) {
+                definition.getTranslationDefinitions().stream()
+                        .filter(t -> v.getTranslations().stream().noneMatch(t2 -> t2.getLanguage().equals(t.getLanguage())))
+                        .forEach(t -> {
+                            TranslationInstance translation = new TranslationInstance();
+                            translation.setLanguage(t.getLanguage());
+                            translation.setValue("");
+                            v.getTranslations().add(translation);
+                        });
+            } else if (v.getTranslations().isEmpty()) {
+                TranslationInstance translation = new TranslationInstance();
+                translation.setValue("");
+                v.getTranslations().add(translation);
+            }
+        });
+    }
+
+    private void sortTranslations() {
+        getValues().forEach(v -> Collections.sort(v.getTranslations(), Comparator.comparing(TranslationInstance::getLanguage)));
     }
 
     public void addFieldValue() {
-        FieldValue value = new FieldValue();
-        if (getDefinition().getTranslationDefinitions().isEmpty()) {
-            TranslationInstance translationInstance = new TranslationInstance();
-            translationInstance.setValue("");
-            value.getTranslations().add(translationInstance);
-        } else {
-            for (TranslationDefinition translationDefinition : getDefinition().getTranslationDefinitions()) {
-                TranslationInstance translationInstance = new TranslationInstance();
-                translationInstance.setLanguage(translationDefinition.getLanguage());
-                translationInstance.setValue("");
-                value.getTranslations().add(translationInstance);
-            }
-        }
-        getValues().add(value);
+        getValues().add(new FieldValue());
+        prepareEmpty();
     }
 
     public void deleteFieldValue(FieldValue value) {

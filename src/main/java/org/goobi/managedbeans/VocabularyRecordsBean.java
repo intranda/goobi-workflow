@@ -38,6 +38,7 @@ import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import io.goobi.workflow.api.vocabulary.helper.HierarchicalRecordComparator;
 import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabulary;
 import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
@@ -78,7 +79,7 @@ public class VocabularyRecordsBean implements Serializable {
     private transient VocabularySchema schema;
 
     @Getter
-    private transient VocabularyRecord currentRecord;
+    private transient ExtendedVocabularyRecord currentRecord;
 
     @Getter
     private transient List<FieldDefinition> mainFields;
@@ -118,25 +119,23 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     public void edit(VocabularyRecord record) {
-        this.currentRecord = record;
+        this.currentRecord = new ExtendedVocabularyRecord(record);
 //        record.setShown(true);
         if (record.getParentId() != null) {
             findLoadedRecord(record.getParentId()).ifPresent(this::expandRecord);
         }
         expandParents(record);
-        prepareEmptyFieldsForEditing(record);
         loadRecord(record);
     }
 
     public void createEmpty(Long parent) {
-        JSFVocabularyRecord record = new JSFVocabularyRecord();
+        VocabularyRecord record = new VocabularyRecord();
         record.setVocabularyId(vocabulary.getId());
         record.setParentId(parent);
         record.setFields(new HashSet<>());
-        loadRecord(record);
-        this.currentRecord = record;
-        prepareEmptyFieldsForEditing(record);
-        loadRecord(record);
+//        loadRecord(record);
+        this.currentRecord = new ExtendedVocabularyRecord(record);
+//        loadRecord(record);
     }
 
     public void deleteRecord(VocabularyRecord rec) {
@@ -325,43 +324,6 @@ public class VocabularyRecordsBean implements Serializable {
             this.paginator.postLoad(parent);
         }
 //        comparator.add(record);
-    }
-
-    private void prepareEmptyFieldsForEditing(VocabularyRecord record) {
-        List<Long> existingFields = record.getFields().stream()
-                .map(FieldInstance::getDefinitionId)
-                .collect(Collectors.toList());
-        List<Long> missingFields = definitionsIdMap.keySet()
-                .stream().filter(i -> !existingFields.contains(i))
-                .collect(Collectors.toList());
-        missingFields.forEach(d -> {
-            FieldInstance field = new FieldInstance();
-            field.setRecordId(record.getId());
-            field.setDefinitionId(d);
-            record.getFields().add(field);
-        });
-        record.getFields().forEach(f -> {
-            if (f.getValues().isEmpty()) {
-                f.getValues().add(new FieldValue());
-            }
-            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
-            f.getValues().forEach(v -> {
-                if (!definition.getTranslationDefinitions().isEmpty()) {
-                    definition.getTranslationDefinitions().stream()
-                            .filter(t -> v.getTranslations().stream().noneMatch(t2 -> t2.getLanguage().equals(t.getLanguage())))
-                            .forEach(t -> {
-                                TranslationInstance translation = new TranslationInstance();
-                                translation.setLanguage(t.getLanguage());
-                                translation.setValue("");
-                                v.getTranslations().add(translation);
-                            });
-                } else if (v.getTranslations().isEmpty()) {
-                    TranslationInstance translation = new TranslationInstance();
-                    translation.setValue("");
-                    v.getTranslations().add(translation);
-                }
-            });
-        });
     }
 
     private void cleanUpRecord(VocabularyRecord currentRecord) {
