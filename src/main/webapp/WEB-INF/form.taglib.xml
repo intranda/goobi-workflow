@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
+    version="2.0">
+    <namespace>http://goobi.io/form</namespace>
+    <tag>
+        <tag-name>fieldSet</tag-name>
+        <source>../resources/form/fieldSet.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>fieldSet-content</tag-name>
+        <source>../resources/form/fieldSet-content.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>legend</tag-name>
+        <source>../resources/form/legend.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>row</tag-name>
+        <source>../resources/form/row.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>label</tag-name>
+        <source>../resources/form/label.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>input</tag-name>
+        <source>../resources/form/input.xhtml</source>
+    </tag>
+</facelet-taglib>

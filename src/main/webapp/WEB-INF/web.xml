@@ -42,6 +42,7 @@
             /WEB-INF/taglibs/properties.taglib.xml;
             /WEB-INF/taglibs/section.taglib.xml;
             /WEB-INF/taglibs/table.taglib.xml;
+            /WEB-INF/form.taglib.xml
         </param-value>
     </context-param>
     <servlet>
