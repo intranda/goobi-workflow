@@ -151,14 +151,7 @@ public class VocabularyRecordsBean implements Serializable {
     public void saveRecord(VocabularyRecord rec) {
         // TODO: Maybe replace current record
         try {
-            VocabularyRecord newRecord;
-            saveJsfData(rec);
-            cleanUpRecord(rec);
-            if (rec.getId() != null) {
-                newRecord = api.vocabularyRecords().change(rec);
-            } else {
-                newRecord = api.vocabularyRecords().create(rec);
-            }
+            VocabularyRecord newRecord = api.vocabularyRecords().save(rec);
             paginator.reload();
             loadChild(
                     newRecord.getId()
@@ -267,25 +260,6 @@ public class VocabularyRecordsBean implements Serializable {
         return definitionsIdMap.get(field.getDefinitionId());
     }
 
-//    public FieldType getType(FieldInstance field) {
-//        return typeIdMap.get(definitionsIdMap.get(field.getDefinitionId()).getTypeId());
-//    }
-
-//    public String getValue(FieldInstance field) {
-//        return field.getValues().stream()
-//                .flatMap(v -> v.getTranslations().values().stream())
-//                .collect(Collectors.joining(" :: "));
-//    }
-//
-//    public String getValue(FieldInstance field, String language) {
-//        return field.getValues().stream()
-//                .flatMap(v -> v.getTranslations().entrySet().stream()
-//                        .filter(t -> t.getKey().equals(language))
-//                        .map(Map.Entry::getValue)
-//                )
-//                .collect(Collectors.joining("|"));
-//    }
-
     public List<String> getLanguages(FieldDefinition definition) {
         return definition.getTranslationDefinitions().stream()
                 .map(TranslationDefinition::getLanguage)
@@ -324,28 +298,6 @@ public class VocabularyRecordsBean implements Serializable {
             this.paginator.postLoad(parent);
         }
 //        comparator.add(record);
-    }
-
-    private void cleanUpRecord(VocabularyRecord currentRecord) {
-        for (FieldInstance field : currentRecord.getFields()) {
-            for (FieldValue value : field.getValues()) {
-                value.getTranslations().removeIf(this::translationIsEmpty);
-            }
-            field.getValues().removeIf(this::valueIsEmpty);
-        }
-        currentRecord.getFields().removeIf(this::fieldIsEmpty);
-    }
-
-    private boolean translationIsEmpty(TranslationInstance translationInstance) {
-        return translationInstance.getValue().isEmpty();
-    }
-
-    private boolean valueIsEmpty(FieldValue fieldValue) {
-        return fieldValue.getTranslations().isEmpty();
-    }
-
-    private boolean fieldIsEmpty(FieldInstance fieldInstance) {
-        return fieldInstance.getValues().isEmpty();
     }
 
     private void loadSchema() {

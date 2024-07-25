@@ -1,5 +1,8 @@
 package io.goobi.workflow.api.vocabulary;
 
+import io.goobi.vocabulary.exchange.FieldInstance;
+import io.goobi.vocabulary.exchange.FieldValue;
+import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
@@ -93,6 +96,15 @@ public class VocabularyRecordAPI {
         return result;
     }
 
+    public VocabularyRecord save(VocabularyRecord vocabularyRecord) {
+        cleanUpRecord(vocabularyRecord);
+        if (vocabularyRecord.getId() != null) {
+            return change(vocabularyRecord);
+        } else {
+            return create(vocabularyRecord);
+        }
+    }
+
     public VocabularyRecord create(VocabularyRecord vocabularyRecord) {
         long vocabularyId = vocabularyRecord.getVocabularyId();
         vocabularyRecord.setVocabularyId(null);
@@ -144,4 +156,27 @@ public class VocabularyRecordAPI {
         metadataRecord.setMetadata(true);
         return newRecord;
     }
+
+    private void cleanUpRecord(VocabularyRecord currentRecord) {
+        for (FieldInstance field : currentRecord.getFields()) {
+            for (FieldValue value : field.getValues()) {
+                value.getTranslations().removeIf(this::translationIsEmpty);
+            }
+            field.getValues().removeIf(this::valueIsEmpty);
+        }
+        currentRecord.getFields().removeIf(this::fieldIsEmpty);
+    }
+
+    private boolean translationIsEmpty(TranslationInstance translationInstance) {
+        return translationInstance.getValue().isEmpty();
+    }
+
+    private boolean valueIsEmpty(FieldValue fieldValue) {
+        return fieldValue.getTranslations().isEmpty();
+    }
+
+    private boolean fieldIsEmpty(FieldInstance fieldInstance) {
+        return fieldInstance.getValues().isEmpty();
+    }
+
 }
