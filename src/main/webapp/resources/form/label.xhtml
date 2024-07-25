@@ -1,5 +1,15 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
     <div class="form-label">
+        <ui:fragment rendered="#{required}">
+            <span
+                aria-hidden="true"
+                class="form-label-required"
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                title="#{msgs.requiredField}">
+                <span class="fa fa-asterisk" />
+            </span>
+        </ui:fragment>
         <ui:insert />
     </div>
 </ui:composition>

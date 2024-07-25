@@ -24,6 +24,12 @@
     <tag>
         <tag-name>label</tag-name>
         <source>../resources/form/label.xhtml</source>
+        <attribute>
+            <description>Determine whether the label should be displayed as required</description>
+            <name>required</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>input</tag-name>
