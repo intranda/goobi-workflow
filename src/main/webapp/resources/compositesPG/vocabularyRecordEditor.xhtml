@@ -61,7 +61,7 @@
 
             <ui:repeat var="field" value="#{cc.attrs.record.sortedFields()}">
                 <fieldSet class="field-set">
-                    <legend class="fieldSet-legend">
+                    <legend class="field-set-legend">
                         <h:outputText value="#{field.definition.name}"/>
                         <ui:fragment rendered="#{field.definition.multiValued == true}">
                                 <button
@@ -75,10 +75,10 @@
                                 </button>
                         </ui:fragment>
                     </legend>
-                    <div class="fieldSet-content">
+                    <div class="field-set-content">
                         <ui:repeat var="value" value="#{field.values}">
                             <fieldSet class="field-set">
-                                <legend class="fieldSet-legend">
+                                <legend class="field-set-legend">
                                     <button
                                         jsf:id="deleteValue"
                                         jsf:action="#{cc.attrs.record.deleteFieldValue(field, value)}"
@@ -89,7 +89,7 @@
                                         <f:ajax render="@form" execute="@form"/>
                                     </button>
                                 </legend>
-                                <div class="fieldSet-content">
+                                <div class="field-set-content">
                                     <ui:repeat var="translation" value="#{value.translations}">
                                         <!-- Simple text type -->
                                         <ui:fragment
