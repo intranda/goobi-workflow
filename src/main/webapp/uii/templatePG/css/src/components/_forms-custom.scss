@@ -183,8 +183,11 @@ fieldSet:disabled .badge > a {
   > .form-label {
     background: var(--clr-neutral-200);
     border-inline-end: 1px solid var(--clr-neutral-300);
-    > .btn:first-of-type {
-      margin-inline-start: auto;
+    > .btn{
+      padding-block-start: 0;
+      &:first-of-type {
+        margin-inline-start: auto;
+      }
     }
   }
   > .form-input {
@@ -206,20 +209,36 @@ fieldSet:disabled .badge > a {
   }
 }
 
+.fieldSet-content {
+  > .field-set {
+    padding-inline: 1em;
+    > .fieldSet-content {
+      border-inline-end: 1px solid var(--clr-neutral-300);
+    }
+  }
+}
+
 .field-set {
   background: var(--clr-neutral-200);
   border-block-end: 1px solid var(--clr-neutral-300);
   width: 100%;
   padding: 0 0 0.25rem 0;
-  &:has(.fieldSet-legend) {
-  }
   > .fieldSet-legend {
+    display: flex;
     font-size: var(--fs-400);
+    justify-content: space-between;
     padding: 0.5rem;
     width: 100%;
+    > .btn {
+      padding-block-start: 0;
+    }
   }
-  > .form-rows {
+  > .form-rows,
+  > .fieldSet-content {
     border-block-start: 1px solid var(--clr-neutral-300);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     margin: 0 0.5rem;
     padding: 0 0 0.25rem 0;
     .form-label {
@@ -230,7 +249,7 @@ fieldSet:disabled .badge > a {
       border-inline: 1px solid var(--clr-neutral-300);
     }
   }
-  &:has(.form-fieldset-remove) {
+  &:has(>.form-fieldset-remove) {
     border: 0;
     display: flex;
     flex-wrap: nowrap;
@@ -243,7 +262,7 @@ fieldSet:disabled .badge > a {
   }
   > .form-fieldset-remove {
     border-inline-end: 1px solid var(--clr-neutral-300);
-    width: 4em;
+    width: 3em;
     > .btn {
       height: 100%;
     }
@@ -252,7 +271,8 @@ fieldSet:disabled .badge > a {
     > .fieldSet-legend {
       width: 25%;
     }
-    > .form-rows {
+    > .form-rows,
+    > .fieldSet-content {
       padding: 0;
       margin: 0;
       .form-input {
