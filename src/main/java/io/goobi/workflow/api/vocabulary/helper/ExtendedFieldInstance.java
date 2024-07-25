@@ -25,15 +25,16 @@ import java.util.stream.Collectors;
 @Getter
 public class ExtendedFieldInstance extends FieldInstance {
     private Function<Long, VocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
+    private Function<Long, List<VocabularyRecord>> recordsResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::all;
     private Function<Long, FieldDefinition> definitionResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getDefinition;
     private Function<Long, FieldType> typeResolver = VocabularyAPIManager.getInstance().fieldTypes()::get;
     private Supplier<String> languageSupplier = Helper.getLanguageBean().getLocale()::getLanguage;
 
     private FieldDefinition definition;
     private FieldType type;
-    private List<SelectItem> allSelectableItems = Collections.emptyList();
-    private List<SelectItem> currentlySelectableItems;
-    private List<String> allSelectedValueKeys = Collections.emptyList();
+
+    private List<SelectItem> selectableItems;
+    private List<SelectItem> selection;
 
     public ExtendedFieldInstance(FieldInstance orig) {
         setId(orig.getId());
@@ -50,6 +51,38 @@ public class ExtendedFieldInstance extends FieldInstance {
         this.definition = definitionResolver.apply(getDefinitionId());
         if (this.definition.getTypeId() != null) {
             this.type = typeResolver.apply(this.definition.getTypeId());
+        }
+        if (this.type != null) {
+            this.selectableItems = this.type.getSelectableValues().stream()
+                    .map(v -> new SelectItem(v, v))
+                    .collect(Collectors.toList());
+        } else if (this.definition.getReferenceVocabularyId() != null) {
+            // TODO: make this common logic
+            this.selectableItems = recordsResolver.apply(this.definition.getReferenceVocabularyId()).stream()
+                    .map(ExtendedVocabularyRecord::new)
+                    .map(r -> new SelectItem(Long.toString(r.getId()), r.getMainValue()))
+                    .collect(Collectors.toList());
+        }
+        determineSelectedValues();
+    }
+
+    private void determineSelectedValues() {
+        if (this.selectableItems.isEmpty()) {
+            this.selection = Collections.emptyList();
+            return;
+        }
+
+        this.selection = new LinkedList<>();
+        for (String selectedValue : getValues().stream()
+                .flatMap(v -> v.getTranslations().stream())
+                .map(TranslationInstance::getValue)
+                .filter(v -> !v.isBlank())
+                .collect(Collectors.toList())) {
+            SelectItem item = this.selectableItems.stream()
+                    .filter(i -> i.getValue().equals(selectedValue))
+                    .findFirst()
+                    .orElseThrow();
+            this.selection.add(item);
         }
     }
 
@@ -75,6 +108,15 @@ public class ExtendedFieldInstance extends FieldInstance {
         });
     }
 
+    public List<SelectItem> getSelection() {
+        return this.selection;
+    }
+
+    public void setSelection(List<SelectItem> selection) {
+        this.selection = selection;
+        System.err.println("New selection: " + this.selection);
+    }
+
     private void sortTranslations() {
         getValues().forEach(v -> Collections.sort(v.getTranslations(), Comparator.comparing(TranslationInstance::getLanguage)));
     }
@@ -82,10 +124,12 @@ public class ExtendedFieldInstance extends FieldInstance {
     public void addFieldValue() {
         getValues().add(new FieldValue());
         prepareEmpty();
+        determineSelectedValues();
     }
 
     public void deleteFieldValue(FieldValue value) {
         getValues().remove(value);
+        determineSelectedValues();
     }
 
     public String getFieldValue() {

@@ -1,0 +1,58 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        template="/uii/templatePG/templatePG.html"
+        xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:x="http://myfaces.apache.org/tomahawk"
+>
+
+    <composite:interface componentType="org.goobi.managedbeans.FormInputDropdownBadgesBean">
+        <composite:attribute
+                name="selectableItems"
+                type="java.util.List"
+                required="true"
+        />
+        <composite:attribute
+                name="selectedItems"
+                type="java.util.List"
+                required="true"
+        />
+    </composite:interface>
+
+    <composite:implementation>
+        <div id="#{cc.clientId}">
+            <h:panelGroup layout="block">
+                <h:selectOneMenu
+                        styleClass="form-select"
+                        id="field4"
+                        forceId="true"
+                        value="#{cc.currentSelection}"
+                        required="false">
+                    <f:ajax execute="#{cc.clientId}" render="#{cc.clientId}" event="change"/>
+                    <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}"/>
+                    <f:selectItems value="#{cc.currentlySelectableItems}"/>
+                </h:selectOneMenu>
+
+                <h:panelGroup id="multiselect-id">
+                    <x:dataList
+                            id="datalist-id"
+                            value="#{cc.attrs.selectedItems}"
+                            var="selection">
+                        <button class="badge badge-intranda-light mt-3"
+                                jsf:action="#{cc.removeSelection(selection)}"
+                                title="#{msgs.removeSelectedItem}" data-bs-toggle="tooltip">
+                            <span class="fa fa-trash fs-400"/>
+                            <span class="fs-400">
+                            <h:outputText value="#{selection.label}"/>
+                        </span>
+                            <f:ajax execute="#{cc.clientId}" render="#{cc.clientId}"/>
+                        </button>
+                    </x:dataList>
+                </h:panelGroup>
+            </h:panelGroup>
+        </div>
+    </composite:implementation>
+</ui:composition>
