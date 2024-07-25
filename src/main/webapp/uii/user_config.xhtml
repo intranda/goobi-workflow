@@ -10,7 +10,8 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:form="http://goobi.io/form">
 
     <ui:param
         name="myPageTitle"
@@ -151,48 +152,63 @@
 
                             <!-- TAB 1 -->
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6' and NavigationForm.uiStatus.user_config ne 'tab7'}">
-                                <intranda:formInputText
-                                    label="#{msgs.vorname}"
-                                    id="firstname"
-                                    field="#{LoginForm.myBenutzer.vorname}"
-                                    help="#{msgs.helpVorname}"
-                                    name="vorname"
-                                    readonly="false" />
-
-                                <intranda:formInputText
-                                    label="#{msgs.nachname}"
-                                    id="lastname"
-                                    field="#{LoginForm.myBenutzer.nachname}"
-                                    help="#{msgs.helpNachname}"
-                                    name="nachname"
-                                    readonly="false" />
-
-                                <intranda:formInputText
-                                    label="#{msgs.standort}"
-                                    id="location"
-                                    field="#{LoginForm.myBenutzer.standort}"
-                                    help="#{msgs.helpStandort}"
-                                    name="standort"
-                                    required="false"
-                                    readonly="true" />
-
-                                <intranda:formInputText
-                                    label="#{msgs.email}"
-                                    id="email"
-                                    field="#{LoginForm.myBenutzer.email}"
-                                    help="#{msgs.helpEmail}"
-                                    required="false"
-                                    name="emailName" />
-
-                                <div class="row">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{msgs.projekte}"
-                                            labelFor="up"
-                                            labelRequired="false" />
-                                    </div>
-
-                                    <div class="col-12 col-md-9">
+                                <form:row>
+                                    <form:label required="true">
+                                        #{msgs.vorname}
+                                    </form:label>
+                                    <form:input>
+                                        <h:inputText
+                                            id="firstname"
+                                            class="form-control"
+                                            value="#{LoginForm.myBenutzer.vorname}"
+                                            readonly="false" />
+                                        <form:help>#{msgs.helpVorname}</form:help>
+                                    </form:input>
+                                </form:row>
+                                <form:row>
+                                    <form:label required="true">
+                                        #{msgs.nachname}
+                                    </form:label>
+                                    <form:input>
+                                        <h:inputText
+                                            id="lastname"
+                                            class="form-control"
+                                            value="#{LoginForm.myBenutzer.nachname}"
+                                            readonly="false" />
+                                        <form:help>#{msgs.helpNachname}</form:help>
+                                    </form:input>
+                                </form:row>
+                                <form:row>
+                                    <form:label>
+                                        #{msgs.standort}
+                                    </form:label>
+                                    <form:input>
+                                        <h:inputText
+                                            id="location"
+                                            class="form-control"
+                                            value="#{LoginForm.myBenutzer.standort}"
+                                            readonly="true" />
+                                        <form:help>#{msgs.helpStandort}</form:help>
+                                    </form:input>
+                                </form:row>
+                                <form:row>
+                                    <form:label>
+                                        #{msgs.email}
+                                    </form:label>
+                                    <form:input>
+                                        <h:inputText
+                                            id="email"
+                                            class="form-control"
+                                            value="#{LoginForm.myBenutzer.email}"
+                                            readonly="true" />
+                                        <form:help>#{msgs.helpEmail}</form:help>
+                                    </form:input>
+                                </form:row>
+                                <form:row>
+                                    <form:label>
+                                        #{msgs.projekte}
+                                    </form:label>
+                                    <form:input>
                                         <x:dataList
                                             id="up"
                                             var="intern"
@@ -207,22 +223,14 @@
                                                 value=","
                                                 rendered="#{rowIndex + 1 lt rowCount}" />
                                         </x:dataList>
-
-                                        <intranda:formHelp
-                                            content="#{msgs.helpProjects}"
-                                            msgFor="up" />
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{msgs.benutzergruppen}"
-                                            labelFor="ug"
-                                            labelRequired="false" />
-                                    </div>
-
-                                    <div class="col-12 col-md-9">
+                                        <form:help>#{msgs.helpProjects}</form:help>
+                                    </form:input>
+                                </form:row>
+                                <form:row>
+                                    <form:label>
+                                        #{msgs.benutzergruppen}
+                                    </form:label>
+                                    <form:input>
                                         <x:dataList
                                             id="ug"
                                             var="intern"
@@ -237,23 +245,14 @@
                                                 value=","
                                                 rendered="#{rowIndex + 1 lt rowCount}" />
                                         </x:dataList>
-
-                                        <intranda:formHelp
-                                            content="#{msgs.helpUsergroups}"
-                                            msgFor="ug" />
-                                    </div>
-                                </div>
-
-
-                                <div class="row">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{msgs.usergroup_assignedRoles}"
-                                            labelFor="ur"
-                                            labelRequired="false" />
-                                    </div>
-
-                                    <div class="col-12 col-md-9">
+                                        <form:help>#{msgs.helpUsergroups}</form:help>
+                                    </form:input>
+                                </form:row>
+                                <form:row>
+                                    <form:label>
+                                        #{msgs.usergroup_assignedRoles}
+                                    </form:label>
+                                    <form:input>
                                         <ui:repeat
                                             var="role"
                                             value="#{LoginForm.myBenutzer.allUserRoles}"
@@ -274,12 +273,11 @@
                                                     value="-1" />
                                             </h:outputText>
                                         </ui:repeat>
-
-                                        <intranda:formHelp
-                                            content="#{msgs.helpUserRoles}"
-                                            msgFor="ur" />
-                                    </div>
-                                </div>
+                                        <form:help>
+                                            #{msgs.helpUserRoles}
+                                        </form:help>
+                                    </form:input>
+                                </form:row>
                             </h:panelGroup>
 
 
