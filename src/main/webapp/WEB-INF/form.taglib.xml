@@ -35,4 +35,8 @@
         <tag-name>input</tag-name>
         <source>../resources/form/input.xhtml</source>
     </tag>
+    <tag>
+        <tag-name>help</tag-name>
+        <source>../resources/form/help.xhtml</source>
+    </tag>
 </facelet-taglib>
