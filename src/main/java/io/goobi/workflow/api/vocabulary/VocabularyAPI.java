@@ -25,7 +25,7 @@ public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     }
 
     @Override
-    public Vocabulary get(long id) {
+    public ExtendedVocabulary get(long id) {
         return this.singleLookupCache.getCached(id);
     }
 

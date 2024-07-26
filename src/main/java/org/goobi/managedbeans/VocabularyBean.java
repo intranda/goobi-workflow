@@ -26,7 +26,6 @@
 package org.goobi.managedbeans;
 
 import de.sub.goobi.helper.Helper;
-import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
@@ -38,7 +37,6 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.Optional;
 
 @Named
@@ -47,7 +45,7 @@ import java.util.Optional;
 public class VocabularyBean implements Serializable {
     private static final long serialVersionUID = 5672948572345L;
 
-    private static final String RETURN_PAGE_OVERVIEW = "vocabulary_overview";
+    private static final String RETURN_PAGE_OVERVIEW = "vocabulary_all";
 
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
@@ -62,9 +60,10 @@ public class VocabularyBean implements Serializable {
                             Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
                             Optional.empty()
                     ),
-                    null,
                     ExtendedVocabulary::new,
-                    Comparator.comparing(Vocabulary::getId)
+                    null,
+                    null,
+                    api.vocabularies()::get
             );
             return RETURN_PAGE_OVERVIEW;
         } catch (APIException e) {

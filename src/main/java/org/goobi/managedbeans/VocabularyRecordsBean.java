@@ -35,7 +35,6 @@ import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
-import io.goobi.workflow.api.vocabulary.helper.HierarchicalRecordComparator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -47,7 +46,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -64,24 +62,16 @@ public class VocabularyRecordsBean implements Serializable {
 
     @Getter
     private transient HATEOASPaginator<VocabularyRecord, ExtendedVocabularyRecord, VocabularyRecordPageResult> paginator;
-
     @Getter
     private transient ExtendedVocabulary vocabulary;
-
     private transient VocabularySchema schema;
-
     @Getter
     private transient ExtendedVocabularyRecord currentRecord;
-
     @Getter
     private transient List<FieldDefinition> titleFields;
-
-    private transient HierarchicalRecordComparator comparator;
-
     @Getter
     @Setter
     private Part uploadedFile;
-
     @Getter
     @Setter
     private boolean clearBeforeImport;
@@ -89,7 +79,6 @@ public class VocabularyRecordsBean implements Serializable {
     public String load(ExtendedVocabulary vocabulary) {
         this.vocabulary = vocabulary;
 
-        comparator = new HierarchicalRecordComparator();
         loadSchema();
         loadPaginator();
         loadFirstRecord();
@@ -97,17 +86,47 @@ public class VocabularyRecordsBean implements Serializable {
         return RETURN_PAGE_OVERVIEW;
     }
 
+    private void loadPaginator() {
+        // TODO: Unclean to have static Helper access to user here..
+        this.paginator = new HATEOASPaginator<>(
+                VocabularyRecordPageResult.class,
+                api.vocabularyRecords().list(
+                        this.vocabulary.getId(),
+                        Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
+                        Optional.empty()
+                ),
+                ExtendedVocabularyRecord::new,
+                ExtendedVocabularyRecord::getChildren,
+                ExtendedVocabularyRecord::getParentId,
+                api.vocabularyRecords()::get
+        );
+    }
+
+    private void loadSchema() {
+        this.schema = api.vocabularySchemas().get(this.vocabulary.getSchemaId());
+        this.titleFields = this.schema.getDefinitions().stream()
+                .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
+                .sorted(Comparator.comparing(FieldDefinition::getId))
+                .collect(Collectors.toList());
+    }
+
+    private void loadFirstRecord() {
+        // TODO: Fix if empty
+        if (!this.paginator.getItems().isEmpty()) {
+            edit(this.paginator.getItems().get(0));
+        } else {
+            createEmpty(null);
+        }
+    }
+
     public void reload() {
         paginator.reload();
         loadFirstRecord();
     }
 
-    public void edit(VocabularyRecord record) {
-        this.currentRecord = new ExtendedVocabularyRecord(record);
-        if (record.getParentId() != null) {
-            findLoadedRecord(record.getParentId()).ifPresent(this::expandRecord);
-        }
-        expandParents(record);
+    public void edit(ExtendedVocabularyRecord record) {
+        this.currentRecord = record;
+        paginator.postLoad(record);
     }
 
     public void createEmpty(Long parent) {
@@ -133,10 +152,10 @@ public class VocabularyRecordsBean implements Serializable {
         try {
             VocabularyRecord newRecord = api.vocabularyRecords().save(rec);
             paginator.reload();
-            loadChild(
-                    newRecord.getId()
-            );
-            findLoadedRecord(newRecord.getId()).ifPresent(this::edit);
+            // TODO: Find correct reference in paginator to avoid identity issues with current record
+            ExtendedVocabularyRecord newExtendedRecord = new ExtendedVocabularyRecord(newRecord);
+            paginator.postLoad(newExtendedRecord);
+            edit(newExtendedRecord);
         } catch (APIException e) {
             Helper.setFehlerMeldung(e);
         }
@@ -150,7 +169,6 @@ public class VocabularyRecordsBean implements Serializable {
         if (uploadedFile == null) {
             return "";
         }
-        System.err.println(uploadedFile);
         String fileExtension = uploadedFile.getSubmittedFileName().substring(uploadedFile.getSubmittedFileName().lastIndexOf("."));
         switch (fileExtension) {
             case ".csv":
@@ -174,15 +192,16 @@ public class VocabularyRecordsBean implements Serializable {
         return load(this.vocabulary);
     }
 
-    public void expandRecord(VocabularyRecord record) {
-        for (long childId : record.getChildren()) {
-            VocabularyRecord child = paginator.getItems().stream()
-                    .filter(r -> r.getId() == childId)
-                    .findFirst()
-                    .orElseGet(() -> loadChild(childId));
-//            child.setShown(true);
-        }
-//        record.setExpanded(true);
+    public void expandRecord(ExtendedVocabularyRecord record) {
+        this.paginator.expand(record);
+    }
+
+    public void collapseRecord(ExtendedVocabularyRecord record) {
+        this.paginator.collapse(record);
+    }
+
+    public boolean isExpanded(ExtendedVocabularyRecord record) {
+        return this.paginator.isExpanded(record);
     }
 
     public boolean isHierarchical() {
@@ -191,75 +210,5 @@ public class VocabularyRecordsBean implements Serializable {
 
     public boolean isRootRecordCreationPossible() {
         return Boolean.FALSE.equals(this.schema.getSingleRootElement()) || this.paginator.getTotalResults() == 0L;
-    }
-
-    private void expandParents(VocabularyRecord record) {
-        if (record.getParentId() != null) {
-            findLoadedRecord(record.getParentId()).ifPresent(p -> {
-//                p.setShown(true);
-//                p.setExpanded(true);
-//                expandParents(p);
-            });
-        }
-    }
-
-    private Optional<ExtendedVocabularyRecord> findLoadedRecord(Long id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-        return paginator.getItems().stream()
-                .filter(r -> Objects.equals(r.getId(), id))
-                .findFirst();
-    }
-
-    private ExtendedVocabularyRecord loadChild(long childId) {
-        ExtendedVocabularyRecord newChild = new ExtendedVocabularyRecord(api.vocabularyRecords().get(childId));
-        paginator.postLoad(newChild);
-        return newChild;
-    }
-
-    public void collapseRecord(VocabularyRecord record) {
-        paginator.getItems().stream()
-                .filter(c -> record.getChildren().contains(c.getId()))
-                .forEach(c -> {
-//                    c.setShown(false);
-                    if (c.getChildren() != null) {
-                        collapseRecord(c);
-                    }
-                });
-//        record.setExpanded(false);
-    }
-
-    private void loadPaginator() {
-        // TODO: Unclean to have static Helper access to user here..
-        this.paginator = new HATEOASPaginator<>(
-                VocabularyRecordPageResult.class,
-                api.vocabularyRecords().list(
-                        this.vocabulary.getId(),
-                        Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
-                        Optional.empty()
-                ),
-                () -> comparator.clear(),
-                ExtendedVocabularyRecord::new,
-                comparator
-        );
-//        this.paginator.getItems().sort(new JSFVocabularyRecordComparator());
-    }
-
-    private void loadSchema() {
-        this.schema = api.vocabularySchemas().get(this.vocabulary.getSchemaId());
-        this.titleFields = this.schema.getDefinitions().stream()
-                .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
-                .sorted(Comparator.comparing(FieldDefinition::getId))
-                .collect(Collectors.toList());
-    }
-
-    private void loadFirstRecord() {
-        // TODO: Fix if empty
-        if (!this.paginator.getItems().isEmpty()) {
-            edit(this.paginator.getItems().get(0));
-        } else {
-            createEmpty(null);
-        }
     }
 }

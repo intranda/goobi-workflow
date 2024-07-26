@@ -3,60 +3,58 @@
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:composite="http://xmlns.jcp.org/jsf/composite"
         xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
 >
 
-    <composite:interface componentType="io.goobi.workflow.api.vocabulary.beans.VocabularyRecordBean">
+    <composite:interface>
         <composite:attribute
                 name="record"
-                type="io.goobi.vocabulary.exchange.VocabularyRecord"
+                type="io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord"
                 required="true"
         />
     </composite:interface>
 
     <composite:implementation>
-        <f:event type="postAddToView" listener="#{cc.init}"/>
-<!--        <ui:fragment rendered="#{cc.attrs.record.shown}">-->
             <tr id="#{cc.clientId}" role="row">
                 <td class="p-0">
                     <button
                             class="btn btn-outline treeView-item"
-                            style="--level: #{cc.level + 1}"
-                            rendered="#{cc.hasChildren == true and cc.isExpanded == false}"
+                            style="--level: #{cc.attrs.record.level + 1}"
+                            rendered="#{cc.attrs.record.children ne null and cc.attrs.record.children.isEmpty() == false and vocabularyRecordsBean.isExpanded(cc.attrs.record) == false}"
                             jsf:action="#{vocabularyRecordsBean.expandRecord(cc.attrs.record)}">
                         <div class="spacer"/>
                         <div class="toggle">
                             <span class="fa fa-caret-right"/>
                         </div>
                         <div class="content">
-                            <h:outputText value="#{cc.titleValues[0]}"/>
+                            <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
                         </div>
                     </button>
                     <button
                             class="btn btn-outline treeView-item"
-                            style="--level: #{cc.level + 1}"
-                            rendered="#{cc.hasChildren == true and cc.isExpanded == true}"
+                            style="--level: #{cc.attrs.record.level + 1}"
+                            rendered="#{cc.attrs.record.children ne null and cc.attrs.record.children.isEmpty() == false and vocabularyRecordsBean.isExpanded(cc.attrs.record) == true}"
                             jsf:action="#{vocabularyRecordsBean.collapseRecord(cc.attrs.record)}">
                         <div class="spacer"/>
                         <div class="toggle">
                             <span class="fa fa-caret-down"/>
                         </div>
                         <div class="content">
-                            <h:outputText value="#{cc.titleValues[0]}"/>
+                            <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
                         </div>
                     </button>
-                    <ui:fragment rendered="#{cc.hasChildren == false}">
+                    <ui:fragment rendered="#{cc.attrs.record.children == null or cc.attrs.record.children.isEmpty() == true}">
                         <button class="btn btn-outline bg-transparent border-0 opacity-100 text-black treeView-item"
                                 disabled="true"
-                                style="--level: #{cc.level + 1}">
+                                style="--level: #{cc.attrs.record.level + 1}">
                             <div class="spacer"/>
                             <div class="toggle"/>
                             <div class="content">
-                                <h:outputText value="#{cc.titleValues[0]}"/>
+                                <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
                             </div>
                         </button>
                     </ui:fragment>
-                    <ui:repeat var="titleValue" value="#{cc.titleValues}" offset="1">
+                    <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}" offset="1">
                         <td>
                             <h:outputText value="#{titleValue}"/>
                         </td>

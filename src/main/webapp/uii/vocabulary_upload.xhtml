@@ -8,7 +8,7 @@
 
     <ui:param
             name="myPageTitle"
-            value="#{msgs.vocabularyManager_uploadVocabulary}: #{vocabularyBeanLEGACY.currentVocabularyLEGACY.title}"/>
+            value="#{msgs.vocabularyManager_uploadVocabulary}: #{vocabularyRecordsBean.vocabulary.name}"/>
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
@@ -19,7 +19,7 @@
         <intranda:breadcrumb
                 id="admin"
                 label="#{msgs.intranda_administration_vocabularies}"
-                action="vocabulary_overview"/>
+                action="vocabulary_all"/>
         <intranda:breadcrumb
                 id="edit"
                 label="#{msgs.vocabularyManager_uploadVocabulary}"
