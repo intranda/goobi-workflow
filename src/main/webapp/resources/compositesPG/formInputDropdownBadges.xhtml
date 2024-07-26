@@ -9,15 +9,10 @@
         xmlns:x="http://myfaces.apache.org/tomahawk"
 >
 
-    <composite:interface componentType="org.goobi.managedbeans.FormInputDropdownBadgesBean">
+    <composite:interface>
         <composite:attribute
-                name="selectableItems"
-                type="java.util.List"
-                required="true"
-        />
-        <composite:attribute
-                name="selectedItems"
-                type="java.util.List"
+                name="selectionBean"
+                type="org.goobi.managedbeans.FormInputMultiSelectBean"
                 required="true"
         />
     </composite:interface>
@@ -29,26 +24,26 @@
                         styleClass="form-select"
                         id="field4"
                         forceId="true"
-                        value="#{cc.currentSelection}"
+                        value="#{cc.attrs.selectionBean.currentSelection}"
                         required="false">
-                    <f:ajax execute="#{cc.clientId}" render="#{cc.clientId}" event="change"/>
+                    <f:ajax execute="@form" render="@form" event="change"/>
                     <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}"/>
-                    <f:selectItems value="#{cc.currentlySelectableItems}"/>
+                    <f:selectItems value="#{cc.attrs.selectionBean.currentlySelectableItems}"/>
                 </h:selectOneMenu>
 
                 <h:panelGroup id="multiselect-id">
                     <x:dataList
                             id="datalist-id"
-                            value="#{cc.attrs.selectedItems}"
+                            value="#{cc.attrs.selectionBean.selection}"
                             var="selection">
                         <button class="badge badge-intranda-light mt-3"
-                                jsf:action="#{cc.removeSelection(selection)}"
+                                jsf:action="#{cc.attrs.selectionBean.removeSelection(selection)}"
                                 title="#{msgs.removeSelectedItem}" data-bs-toggle="tooltip">
                             <span class="fa fa-trash fs-400"/>
                             <span class="fs-400">
                             <h:outputText value="#{selection.label}"/>
                         </span>
-                            <f:ajax execute="#{cc.clientId}" render="#{cc.clientId}"/>
+                            <f:ajax execute="@form" render="@form"/>
                         </button>
                     </x:dataList>
                 </h:panelGroup>

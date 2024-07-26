@@ -30,6 +30,7 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         setMetadata(orig.getMetadata());
         setFields(orig.getFields());
         setChildren(orig.getChildren());
+        set_links(orig.get_links());
 
         postInit();
         prepareEmpty();
@@ -39,6 +40,7 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
     private void postInit() {
         this.level = calculateLevel(this);
         this.extendedFields = getFields().stream()
+                .sorted(Comparator.comparingLong(FieldInstance::getDefinitionId))
                 .map(ExtendedFieldInstance::new)
                 .collect(Collectors.toList());
         this.titleValues = this.extendedFields.stream()

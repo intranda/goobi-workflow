@@ -5,6 +5,7 @@ import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularySchemaPageResult;
+import io.goobi.workflow.api.vocabulary.helper.CachedLookup;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,13 +16,19 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
 
     // TODO: Make this generic
     private Map<Long, FieldDefinition> definitionMap = new HashMap<>();
+    private final CachedLookup<VocabularySchema> singleLookupCache;
 
     public VocabularySchemaAPI(String host, int port) {
         super(host, port, VocabularySchema.class, VocabularySchemaPageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
+        this.singleLookupCache = new CachedLookup<>(this::request);
     }
 
     @Override
     public VocabularySchema get(long id) {
+        return this.singleLookupCache.getCached(id);
+    }
+
+    private VocabularySchema request(long id) {
         VocabularySchema schema = super.get(id);
         schema.getDefinitions().forEach(d -> definitionMap.put(d.getId(), d));
         return schema;
@@ -34,5 +41,9 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
     public VocabularySchema get(VocabularyRecord vocabularyRecord) {
         Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().get(vocabularyRecord.getVocabularyId());
         return get(vocabulary.getSchemaId());
+    }
+
+    public VocabularySchema get(Vocabulary vocabulary) {
+        return get(VocabularyAPIManager.getInstance().vocabularies().get(vocabulary.getId()).getSchemaId());
     }
 }

@@ -1,7 +1,5 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
-import io.goobi.vocabulary.exchange.VocabularyRecord;
-import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
 import lombok.Data;
 
 import java.util.Comparator;
@@ -10,10 +8,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class HierarchicalRecordComparator implements Comparator<VocabularyRecord> {
+public class HierarchicalRecordComparator implements Comparator<ExtendedVocabularyRecord> {
     @Data
     static class Node {
-        private JSFVocabularyRecord record;
+        private ExtendedVocabularyRecord record;
         private List<Node> children = new LinkedList<>();
     }
 
@@ -26,7 +24,7 @@ public class HierarchicalRecordComparator implements Comparator<VocabularyRecord
         map.clear();
     }
 
-    public void add(JSFVocabularyRecord item) {
+    public void add(ExtendedVocabularyRecord item) {
         if (map.containsKey(item.getId())) {
             return;
         }
@@ -40,7 +38,7 @@ public class HierarchicalRecordComparator implements Comparator<VocabularyRecord
             throw new IllegalArgumentException("Parent is not loaded yet!");
         }
         map.put(item.getId(), node);
-        node.getRecord().setLevel(calculateLevel(node.getRecord()));
+//        node.getRecord().setLevel(calculateLevel(node.getRecord()));
         recalculateOrder();
     }
 
@@ -58,7 +56,7 @@ public class HierarchicalRecordComparator implements Comparator<VocabularyRecord
         }
     }
 
-    private int calculateLevel(JSFVocabularyRecord record) {
+    private int calculateLevel(ExtendedVocabularyRecord record) {
         if (record.getParentId() == null) {
             return 0;
         }
@@ -66,7 +64,7 @@ public class HierarchicalRecordComparator implements Comparator<VocabularyRecord
     }
 
     @Override
-    public int compare(VocabularyRecord o1, VocabularyRecord o2) {
+    public int compare(ExtendedVocabularyRecord o1, ExtendedVocabularyRecord o2) {
         return orderedIds.indexOf(o1.getId()) - orderedIds.indexOf(o2.getId());
     }
 }

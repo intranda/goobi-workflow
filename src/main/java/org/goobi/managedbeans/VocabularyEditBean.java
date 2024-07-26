@@ -33,7 +33,7 @@ import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
@@ -62,7 +62,7 @@ public class VocabularyEditBean implements Serializable {
     @Getter
     private VocabularySchema metadataSchema;
     @Getter
-    private JSFVocabularyRecord metadataRecord;
+    private ExtendedVocabularyRecord metadataRecord;
 
     @Inject
     private VocabularyBean vocabularyBean;
@@ -101,7 +101,7 @@ public class VocabularyEditBean implements Serializable {
 
 
     // COPY & PASTA
-    private void cleanUpRecord(JSFVocabularyRecord currentRecord) {
+    private void cleanUpRecord(ExtendedVocabularyRecord currentRecord) {
         for (FieldInstance field : currentRecord.getFields()) {
             for (FieldValue value : field.getValues()) {
                 value.getTranslations().removeIf(this::translationIsEmpty);
@@ -138,7 +138,7 @@ public class VocabularyEditBean implements Serializable {
                 .filter(Objects::nonNull)
                 .forEach(t -> this.typeIdMap.put(t, api.fieldTypes().get(t)));
     }
-    private void prepareEmptyFieldsForEditing(JSFVocabularyRecord record) {
+    private void prepareEmptyFieldsForEditing(ExtendedVocabularyRecord record) {
         List<Long> existingFields = record.getFields().stream()
                 .map(FieldInstance::getDefinitionId)
                 .collect(Collectors.toList());
@@ -174,13 +174,13 @@ public class VocabularyEditBean implements Serializable {
             });
         });
     }
-    private void loadRecord(JSFVocabularyRecord record) {
-        record.setLanguage("eng");
-        record.load(metadataSchema);
-        record.setShown(true);
-        record.getJsfFields().forEach(f -> {
-            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
-            f.load(definition, typeIdMap.getOrDefault(definition.getTypeId(), null));
-        });
+    private void loadRecord(ExtendedVocabularyRecord record) {
+//        record.setLanguage("eng");
+//        record.load(metadataSchema);
+//        record.setShown(true);
+//        record.getJsfFields().forEach(f -> {
+//            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
+//            f.load(definition, typeIdMap.getOrDefault(definition.getTypeId(), null));
+//        });
     }
 }

@@ -27,21 +27,15 @@ package org.goobi.managedbeans;
 
 import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.FieldDefinition;
-import io.goobi.vocabulary.exchange.FieldInstance;
-import io.goobi.vocabulary.exchange.FieldType;
-import io.goobi.vocabulary.exchange.FieldValue;
-import io.goobi.vocabulary.exchange.TranslationDefinition;
-import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import io.goobi.workflow.api.vocabulary.helper.HierarchicalRecordComparator;
-import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabulary;
-import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -51,10 +45,8 @@ import javax.inject.Named;
 import javax.servlet.http.Part;
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -71,10 +63,10 @@ public class VocabularyRecordsBean implements Serializable {
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     @Getter
-    private transient HATEOASPaginator<VocabularyRecord, VocabularyRecordPageResult> paginator;
+    private transient HATEOASPaginator<VocabularyRecord, ExtendedVocabularyRecord, VocabularyRecordPageResult> paginator;
 
     @Getter
-    private transient JSFVocabulary vocabulary;
+    private transient ExtendedVocabulary vocabulary;
 
     private transient VocabularySchema schema;
 
@@ -82,15 +74,8 @@ public class VocabularyRecordsBean implements Serializable {
     private transient ExtendedVocabularyRecord currentRecord;
 
     @Getter
-    private transient List<FieldDefinition> mainFields;
-    @Getter
     private transient List<FieldDefinition> titleFields;
 
-    @Getter
-    private transient List<FieldDefinition> definitions;
-    private transient Map<Long, FieldDefinition> definitionsIdMap;
-    private transient Map<Long, FieldType> typeIdMap;
-    private transient String language;
     private transient HierarchicalRecordComparator comparator;
 
     @Getter
@@ -101,10 +86,9 @@ public class VocabularyRecordsBean implements Serializable {
     @Setter
     private boolean clearBeforeImport;
 
-    public String load(JSFVocabulary vocabulary) {
+    public String load(ExtendedVocabulary vocabulary) {
         this.vocabulary = vocabulary;
 
-        language = transformToThreeCharacterAbbreviation(Helper.getSessionLocale().getLanguage());
         comparator = new HierarchicalRecordComparator();
         loadSchema();
         loadPaginator();
@@ -120,12 +104,10 @@ public class VocabularyRecordsBean implements Serializable {
 
     public void edit(VocabularyRecord record) {
         this.currentRecord = new ExtendedVocabularyRecord(record);
-//        record.setShown(true);
         if (record.getParentId() != null) {
             findLoadedRecord(record.getParentId()).ifPresent(this::expandRecord);
         }
         expandParents(record);
-        loadRecord(record);
     }
 
     public void createEmpty(Long parent) {
@@ -133,9 +115,7 @@ public class VocabularyRecordsBean implements Serializable {
         record.setVocabularyId(vocabulary.getId());
         record.setParentId(parent);
         record.setFields(new HashSet<>());
-//        loadRecord(record);
         this.currentRecord = new ExtendedVocabularyRecord(record);
-//        loadRecord(record);
     }
 
     public void deleteRecord(VocabularyRecord rec) {
@@ -182,20 +162,16 @@ public class VocabularyRecordsBean implements Serializable {
                 break;
             case ".xlsx":
                 if (clearBeforeImport) {
-                api.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile);
-            } else {
-                api.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile);
-            }
+                    api.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile);
+                } else {
+                    api.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Unrecognized file type: \"" + fileExtension + "\"");
         }
 
         return load(this.vocabulary);
-    }
-
-    private void saveJsfData(VocabularyRecord record) {
-//        record.setFields(new HashSet<>(record.getJsfFields()));
     }
 
     public void expandRecord(VocabularyRecord record) {
@@ -227,7 +203,7 @@ public class VocabularyRecordsBean implements Serializable {
         }
     }
 
-    private Optional<VocabularyRecord> findLoadedRecord(Long id) {
+    private Optional<ExtendedVocabularyRecord> findLoadedRecord(Long id) {
         if (id == null) {
             return Optional.empty();
         }
@@ -236,10 +212,8 @@ public class VocabularyRecordsBean implements Serializable {
                 .findFirst();
     }
 
-    private VocabularyRecord loadChild(long childId) {
-        JSFVocabularyRecord newChild = new JSFVocabularyRecord(api.vocabularyRecords().get(childId));
-        newChild.setLanguage(language);
-//        newChild.load(schema);
+    private ExtendedVocabularyRecord loadChild(long childId) {
+        ExtendedVocabularyRecord newChild = new ExtendedVocabularyRecord(api.vocabularyRecords().get(childId));
         paginator.postLoad(newChild);
         return newChild;
     }
@@ -256,16 +230,6 @@ public class VocabularyRecordsBean implements Serializable {
 //        record.setExpanded(false);
     }
 
-    public FieldDefinition getDefinition(FieldInstance field) {
-        return definitionsIdMap.get(field.getDefinitionId());
-    }
-
-    public List<String> getLanguages(FieldDefinition definition) {
-        return definition.getTranslationDefinitions().stream()
-                .map(TranslationDefinition::getLanguage)
-                .collect(Collectors.toList());
-    }
-
     private void loadPaginator() {
         // TODO: Unclean to have static Helper access to user here..
         this.paginator = new HATEOASPaginator<>(
@@ -276,70 +240,18 @@ public class VocabularyRecordsBean implements Serializable {
                         Optional.empty()
                 ),
                 () -> comparator.clear(),
-                this::loadRecord,
+                ExtendedVocabularyRecord::new,
                 comparator
         );
-        // Initial record loading, as the initial page does not use the paginators callback
-        this.paginator.getItems().forEach(this::loadRecord);
 //        this.paginator.getItems().sort(new JSFVocabularyRecordComparator());
-    }
-
-    private void loadRecord(VocabularyRecord record) {
-//        record.setLanguage(language);
-//        record.load(schema);
-//        record.setShown(true);
-//        record.getJsfFields().forEach(f -> {
-//            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
-//            f.load(definition, typeIdMap.getOrDefault(definition.getTypeId(), null));
-//        });
-        if (record.getParentId() != null) {
-            JSFVocabularyRecord parent = new JSFVocabularyRecord(api.vocabularyRecords().get(record.getParentId()));
-            parent.setExpanded(true);
-            this.paginator.postLoad(parent);
-        }
-//        comparator.add(record);
     }
 
     private void loadSchema() {
         this.schema = api.vocabularySchemas().get(this.vocabulary.getSchemaId());
-        loadFieldDefinitions();
-        loadTypes();
-    }
-
-    private void loadFieldDefinitions() {
-        this.definitions = this.schema.getDefinitions();
-        this.mainFields = this.definitions.stream()
-                .filter(d -> Boolean.TRUE.equals(d.getMainEntry()))
-                .collect(Collectors.toList());
-        this.titleFields = this.definitions.stream()
+        this.titleFields = this.schema.getDefinitions().stream()
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
                 .sorted(Comparator.comparing(FieldDefinition::getId))
                 .collect(Collectors.toList());
-        this.definitionsIdMap = new HashMap<>();
-        for (FieldDefinition d : this.definitions) {
-            this.definitionsIdMap.put(d.getId(), d);
-        }
-    }
-
-    private void loadTypes() {
-        this.typeIdMap = new HashMap<>();
-        this.definitions.stream()
-                .map(FieldDefinition::getTypeId)
-                .filter(Objects::nonNull)
-                .forEach(t -> this.typeIdMap.put(t, api.fieldTypes().get(t)));
-    }
-
-    private String transformToThreeCharacterAbbreviation(String language) {
-        switch (language) {
-            case "en":
-                return "eng";
-            case "de":
-                return "ger";
-            case "fr":
-                return "fre";
-            default:
-                throw new IllegalArgumentException("Unknown language: \"" + language + "\"");
-        }
     }
 
     private void loadFirstRecord() {

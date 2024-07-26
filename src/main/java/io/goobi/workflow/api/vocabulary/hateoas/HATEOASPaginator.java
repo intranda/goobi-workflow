@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResult<T>> implements Paginator<T> {
+public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, PageT extends BasePageResult<T>> implements Paginator<E> {
     public static final String NAVIGATE_PREVIOUS = "prev";
     public static final String NAVIGATE_NEXT = "next";
     public static final String NAVIGATE_FIRST = "first";
@@ -25,20 +25,27 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
 
     private final Client client = ClientBuilder.newClient();
     private final Optional<Runnable> resetCallback;
-    private final Optional<Consumer<T>> consumeCallback;
-    private final Optional<Comparator<T>> comparator;
+    private final Function<T,E> transformFunction;
+    private final Optional<Comparator<E>> comparator;
     private Optional<String> searchParameter = Optional.empty();
     private Optional<String> sortField = Optional.empty();
 
     private Class<PageT> pageClass;
     private PageT currentPage;
+    private List<E> items;
 
-    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Runnable resetCallback, Consumer<T> consumeCallback, Comparator<T> comparator) {
+    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Runnable resetCallback, Function<T,E> transform, Comparator<E> comparator) {
         this.pageClass = pageClass;
-        this.currentPage = initialPage;
         this.resetCallback = Optional.ofNullable(resetCallback);
-        this.consumeCallback = Optional.ofNullable(consumeCallback);
+        this.transformFunction = transform;
         this.comparator = Optional.ofNullable(comparator);
+        setCurrentPage(initialPage);
+    }
+
+    private void setCurrentPage(PageT page) {
+        this.currentPage = page;
+        this.items = this.currentPage.getContent().stream().map(this.transformFunction).collect(Collectors.toList());
+        this.comparator.ifPresent(tComparator -> this.items.sort(tComparator));
     }
 
     public void setSearchParameter(String searchParameter) {
@@ -76,11 +83,8 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
             if (response.getStatus() / 100 != 2) {
                 throw new APIException(url, "GET", response.getStatus(), response.readEntity(String.class));
             }
-            currentPage = response.readEntity(pageClass);
+            setCurrentPage(response.readEntity(pageClass));
             this.resetCallback.ifPresent(Runnable::run);
-            // This intermediate stream is necessary to avoid concurrent modification of getContent list
-            this.consumeCallback.ifPresent(callback -> currentPage.getContent().stream().collect(Collectors.toList()).forEach(callback));
-            this.comparator.ifPresent(tComparator -> currentPage.getContent().sort(tComparator));
         }
     }
 
@@ -119,13 +123,12 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
     }
 
     @Override
-    public void postLoad(T item) {
+    public void postLoad(E item) {
         if (currentPage.getContent().stream().anyMatch(r -> r.getId().equals(item.getId()))) {
             return;
         }
-        currentPage.getContent().add(item);
-        consumeCallback.ifPresent(callback -> callback.accept(item));
-        comparator.ifPresent(tComparator -> currentPage.getContent().sort(tComparator));
+        getItems().add(item);
+        comparator.ifPresent(tComparator -> items.sort(tComparator));
     }
 
     @Override
@@ -147,8 +150,8 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
     }
 
     @Override
-    public List<T> getItems() {
-        return currentPage.getContent();
+    public List<E> getItems() {
+        return this.items;
     }
 
     @Override

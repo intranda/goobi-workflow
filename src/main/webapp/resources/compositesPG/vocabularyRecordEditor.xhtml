@@ -7,13 +7,12 @@
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
-        xmlns:x="http://myfaces.apache.org/tomahawk"
 >
 
-    <composite:interface componentType="io.goobi.workflow.api.vocabulary.beans.VocabularyRecordEditorBean">
+    <composite:interface>
         <composite:attribute
                 name="record"
-                type="io.goobi.vocabulary.exchange.VocabularyRecord"
+                type="io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord"
                 required="true"
         />
         <composite:attribute
@@ -25,14 +24,13 @@
     </composite:interface>
 
     <composite:implementation>
-        <f:event type="postAddToView" listener="#{cc.init}"/>
         <ui:fragment rendered="#{cc.attrs.showID}">
             <intranda:formOutputText label="#{msgs.id}"
                                      field="#{cc.attrs.record.id}"
                                      name="recordid"/>
         </ui:fragment>
 
-        <ui:repeat var="field" value="#{cc.sortedExtendedFields}">
+        <ui:repeat var="field" value="#{cc.attrs.record.extendedFields}">
 
             <div class="row">
                 <div class="col-12 col-md-3" tabindex="-1">
@@ -124,7 +122,7 @@
                             </ui:fragment>
                             <!-- // Single select  type -->
                         </ui:repeat>
-                        <ui:fragment rendered="#{field.values.size() > 1}">
+                        <ui:fragment rendered="#{field.values.size() > 1 and field.selectableItems.size() == 0}">
                             <h:commandButton action="#{field.deleteFieldValue(value)}"
                                              value="Delete value">
                                 <f:ajax render="@form" execute="@form"/>
@@ -145,8 +143,7 @@
                             <!-- // LANGUAGE -->
                             <!-- CONTENT -->
                             <intranda:formInputDropdownBadges
-                                    selectableItems="#{field.selectableItems}"
-                                    selectedItems="#{field.selection}"
+                                    selectionBean="#{field.selectionBean}"
                             />
                             <!-- // CONTENT -->
                         </div>

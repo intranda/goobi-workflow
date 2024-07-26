@@ -1,16 +1,24 @@
-package io.goobi.workflow.api.vocabulary.jsfwrapper;
+package io.goobi.workflow.api.vocabulary.helper;
 
 import io.goobi.vocabulary.exchange.Vocabulary;
 import lombok.Getter;
 
-public class JSFVocabulary extends Vocabulary {
+public class ExtendedVocabulary extends Vocabulary {
     @Getter
     private boolean skosExportPossible;
 
-    public void setSkosExportPossible(boolean skosExportPossible) {
+    public ExtendedVocabulary(Vocabulary orig) {
+        setId(orig.getId());
+        setSchemaId(orig.getSchemaId());
+        setMetadataSchemaId(orig.getMetadataSchemaId());
+        setName(orig.getName());
+        setDescription(orig.getDescription());
+        set_links(orig.get_links());
+
+        postInit();
     }
 
-    public void load() {
+    private void postInit() {
         this.skosExportPossible = get_links().keySet().stream().anyMatch(link -> link.startsWith("export_rdf"));
     }
 

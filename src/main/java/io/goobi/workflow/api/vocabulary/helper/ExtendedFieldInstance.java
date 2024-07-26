@@ -7,9 +7,10 @@ import io.goobi.vocabulary.exchange.FieldType;
 import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
-import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import lombok.Getter;
+import org.goobi.managedbeans.FormInputMultiSelectBean;
+import org.goobi.managedbeans.FormInputMultiSelectHelper;
 
 import javax.faces.model.SelectItem;
 import java.util.Arrays;
@@ -18,14 +19,16 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Getter
 public class ExtendedFieldInstance extends FieldInstance {
-    private Function<Long, VocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
-    private Function<Long, List<VocabularyRecord>> recordsResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::all;
+    private Function<Long, ExtendedVocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
+    private Function<Long, List<ExtendedVocabularyRecord>> recordsResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::all;
+    private Consumer<Long> vocabularyDefinitionLoader = this::loadVocabularyDefinitions;
     private Function<Long, FieldDefinition> definitionResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getDefinition;
     private Function<Long, FieldType> typeResolver = VocabularyAPIManager.getInstance().fieldTypes()::get;
     private Supplier<String> languageSupplier = Helper.getLanguageBean().getLocale()::getLanguage;
@@ -33,8 +36,12 @@ public class ExtendedFieldInstance extends FieldInstance {
     private FieldDefinition definition;
     private FieldType type;
 
+    private FormInputMultiSelectBean selectionBean;
     private List<SelectItem> selectableItems;
-    private List<SelectItem> selection;
+
+    private void loadVocabularyDefinitions(Long vocabularyId) {
+        VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
+    }
 
     public ExtendedFieldInstance(FieldInstance orig) {
         setId(orig.getId());
@@ -57,33 +64,15 @@ public class ExtendedFieldInstance extends FieldInstance {
                     .map(v -> new SelectItem(v, v))
                     .collect(Collectors.toList());
         } else if (this.definition.getReferenceVocabularyId() != null) {
+            // Load vocabulary schema to implicitly find definitions in API
+            this.vocabularyDefinitionLoader.accept(this.definition.getReferenceVocabularyId());
             // TODO: make this common logic
             this.selectableItems = recordsResolver.apply(this.definition.getReferenceVocabularyId()).stream()
                     .map(ExtendedVocabularyRecord::new)
                     .map(r -> new SelectItem(Long.toString(r.getId()), r.getMainValue()))
                     .collect(Collectors.toList());
         }
-        determineSelectedValues();
-    }
-
-    private void determineSelectedValues() {
-        if (this.selectableItems.isEmpty()) {
-            this.selection = Collections.emptyList();
-            return;
-        }
-
-        this.selection = new LinkedList<>();
-        for (String selectedValue : getValues().stream()
-                .flatMap(v -> v.getTranslations().stream())
-                .map(TranslationInstance::getValue)
-                .filter(v -> !v.isBlank())
-                .collect(Collectors.toList())) {
-            SelectItem item = this.selectableItems.stream()
-                    .filter(i -> i.getValue().equals(selectedValue))
-                    .findFirst()
-                    .orElseThrow();
-            this.selection.add(item);
-        }
+        this.selectionBean = new FormInputMultiSelectHelper(() -> this.selectableItems, this::getSelection, this::setSelection);
     }
 
     private void prepareEmpty() {
@@ -108,28 +97,55 @@ public class ExtendedFieldInstance extends FieldInstance {
         });
     }
 
+    public FormInputMultiSelectBean getSelectionBean() {
+        return this.selectionBean;
+    }
+
     public List<SelectItem> getSelection() {
-        return this.selection;
+        if (this.selectableItems.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<SelectItem> selection = new LinkedList<>();
+        for (String selectedValue : getValues().stream()
+                .flatMap(v -> v.getTranslations().stream())
+                .map(TranslationInstance::getValue)
+                .filter(v -> !v.isBlank() && !v.equals("null"))
+                .collect(Collectors.toList())) {
+            // TODO: Single selects are directly bound to value translations and might set "null"
+            SelectItem item = this.selectableItems.stream()
+                    .filter(i -> i.getValue().equals(selectedValue))
+                    .findFirst()
+                    .orElseThrow();
+            selection.add(item);
+        }
+        return selection;
     }
 
     public void setSelection(List<SelectItem> selection) {
-        this.selection = selection;
-        System.err.println("New selection: " + this.selection);
+        List<String> selectedValues = selection.stream()
+                .map(s -> (String) s.getValue())
+                .collect(Collectors.toList());
+        getValues().clear();
+        selectedValues.forEach(v -> {
+            FieldValue fieldValue = addFieldValue();
+            fieldValue.getTranslations().get(0).setValue(v);
+        });
     }
 
     private void sortTranslations() {
         getValues().forEach(v -> Collections.sort(v.getTranslations(), Comparator.comparing(TranslationInstance::getLanguage)));
     }
 
-    public void addFieldValue() {
-        getValues().add(new FieldValue());
+    public FieldValue addFieldValue() {
+        FieldValue value = new FieldValue();
+        getValues().add(value);
         prepareEmpty();
-        determineSelectedValues();
+        return value;
     }
 
     public void deleteFieldValue(FieldValue value) {
         getValues().remove(value);
-        determineSelectedValues();
     }
 
     public String getFieldValue() {
