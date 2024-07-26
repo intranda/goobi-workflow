@@ -261,7 +261,6 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
         Node node = new Node();
         node.setId(item.getId());
         node.setData(item);
-//        node.setVisible(true);
         node.prepareChildren();
 
         if (parentId == null) {
