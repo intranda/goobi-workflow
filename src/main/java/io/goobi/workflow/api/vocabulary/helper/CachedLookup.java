@@ -12,7 +12,10 @@ public class CachedLookup<T> {
         this.lookupFunction = lookupFunction;
     }
 
-    public T getCached(Long id) {
-        return cache.computeIfAbsent(id, this.lookupFunction);
+    public synchronized T getCached(Long id) {
+        if (!cache.containsKey(id)) {
+            cache.put(id, this.lookupFunction.apply(id));
+        }
+        return cache.get(id);
     }
 }
