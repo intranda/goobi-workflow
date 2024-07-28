@@ -135,13 +135,18 @@ public class ExtendedFieldInstance extends FieldInstance {
     }
 
     private void sortTranslations() {
-        getValues().forEach(v -> Collections.sort(v.getTranslations(), Comparator.comparing(TranslationInstance::getLanguage)));
+        getValues().forEach(this::sortTranslations);
+    }
+
+    private void sortTranslations(FieldValue value) {
+        Collections.sort(value.getTranslations(), Comparator.comparing(TranslationInstance::getLanguage));
     }
 
     public FieldValue addFieldValue() {
         FieldValue value = new FieldValue();
         getValues().add(value);
         prepareEmpty();
+        sortTranslations(value);
         return value;
     }
 
