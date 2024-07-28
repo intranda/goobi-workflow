@@ -122,7 +122,7 @@
                                                 <div class="row">
                                                     <div class="col-12 pb-1 text-muted small">
                                                         <ui:repeat var="parent" value="#{record.parents}">
-                                                            <h:outputText value="#{parent} "/>
+                                                            <h:outputText value="#{parent.mainValue} "/>
                                                             <span class="fa fa-caret-right mr-2"/>
                                                         </ui:repeat>
                                                     </div>
@@ -133,25 +133,6 @@
                                                             <h:outputText value="#{titleValue} "/>
                                                         </div>
                                                     </ui:repeat>
-                                                    <!--                                            <div class="col-11">-->
-                                                    <!--                                                <x:dataList-->
-                                                    <!--                                                        value="#{record.fields}"-->
-                                                    <!--                                                        var="field">-->
-                                                    <!--                                                    <div class="row">-->
-                                                    <!--                                                        &lt;!&ndash;	                                                    <div class="col-4">&ndash;&gt;-->
-                                                    <!--                                                        &lt;!&ndash;	                                                        <h:outputText value="#{msgs[field.label]} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}" />&ndash;&gt;-->
-                                                    <!--                                                        &lt;!&ndash;	                                                    </div>&ndash;&gt;-->
-                                                    <!--                                                        <div class="col-8">-->
-                                                    <!--                                                            <h:outputText value="#{field}"/>-->
-                                                    <!--                                                            <ui:repeat var="titleValue" value="#{record.titleValues}">-->
-                                                    <!--                                                                <h:outputText value="#{titleValue}"/>-->
-                                                    <!--                                                            </ui:repeat>-->
-                                                    <!--                                                        </div>-->
-                                                    <!--                                                    </div>-->
-                                                    <!--                                                </x:dataList>-->
-                                                    <!--                                            </div>-->
-
-
                                                 </div>
                                             </div>
                                             <div class="col-1 d-flex align-items-center">

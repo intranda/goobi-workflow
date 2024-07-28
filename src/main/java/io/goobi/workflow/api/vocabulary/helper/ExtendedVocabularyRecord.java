@@ -6,22 +6,28 @@ import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import lombok.Getter;
+import ugh.dl.Metadata;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Getter
 public class ExtendedVocabularyRecord extends VocabularyRecord {
-    private Function<Long, VocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
+    private Function<Long, ExtendedVocabulary> vocabularyResolver = VocabularyAPIManager.getInstance().vocabularies()::get;
+    private Function<Long, ExtendedVocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
     private Function<VocabularyRecord, VocabularySchema> schemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getSchema;
-    private Function<VocabularyRecord, VocabularySchema> metadataSchemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getMetadataSchema;
+    private Function<VocabularyRecord, Optional<VocabularySchema>> metadataSchemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getMetadataSchema;
 
     private int level;
     private String mainValue;
     private List<String> titleValues;
     private List<ExtendedFieldInstance> extendedFields;
+    private List<ExtendedVocabularyRecord> parents;
 
     public ExtendedVocabularyRecord(VocabularyRecord orig) {
         // TODO: Make generic solution for this
@@ -39,7 +45,8 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
 
     // TODO: Think about recreation / updating these values in case the record changes..
     private void postInit() {
-        this.level = calculateLevel(this);
+        initParents();
+        this.level = this.parents.size();
         this.extendedFields = getFields().stream()
                 .sorted(Comparator.comparingLong(FieldInstance::getDefinitionId))
                 .map(ExtendedFieldInstance::new)
@@ -57,15 +64,26 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         prepareEmpty();
     }
 
+    private void initParents() {
+        if (this.getParentId() != null) {
+            ExtendedVocabularyRecord parent = recordResolver.apply(this.getParentId());
+            this.parents = new LinkedList<>(parent.getParents());
+            this.parents.add(parent);
+        } else {
+            this.parents = Collections.emptyList();
+        }
+    }
+
     private void prepareEmpty() {
         List<Long> existingFields = getFields().stream()
                 .map(FieldInstance::getDefinitionId)
                 .collect(Collectors.toList());
-        VocabularySchema schema = Boolean.TRUE.equals(this.getMetadata()) ? metadataSchemaResolver.apply(this) : schemaResolver.apply(this);
-        List<Long> missingFields = schema.getDefinitions().stream()
+        Optional<VocabularySchema> schema = Boolean.TRUE.equals(this.getMetadata()) ? metadataSchemaResolver.apply(this) : Optional.of(schemaResolver.apply(this));
+        List<Long> missingFields = schema.map(s -> s.getDefinitions().stream()
                 .map(FieldDefinition::getId)
                 .filter(i -> !existingFields.contains(i))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
         missingFields.forEach(d -> {
             FieldInstance field = new FieldInstance();
             field.setRecordId(getId());
@@ -77,10 +95,9 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         }
     }
 
-    private int calculateLevel(VocabularyRecord record) {
-        if (record.getParentId() == null) {
-            return 0;
-        }
-        return calculateLevel(recordResolver.apply(record.getParentId())) + 1;
+    public void writeReferenceMetadata(Metadata meta) {
+        ExtendedVocabulary vocabulary = vocabularyResolver.apply(getVocabularyId());
+        meta.setValue(getMainValue());
+        meta.setAuthorityFile(vocabulary.getName(), vocabulary.get_links().get("self").getHref(), get_links().get("self").getHref());
     }
 }

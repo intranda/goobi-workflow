@@ -14,11 +14,10 @@ import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.Vocabulary;
-import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.CollectionUtils;
@@ -175,10 +174,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private long currentVocabularySearchField;
     private String vocabularySearchQuery;
     private String vocabularyName;
-    private List<VocabularyRecord> records;
+    private List<ExtendedVocabularyRecord> records;
     private List<FieldDefinition> definitions;
     private String vocabularyUrl;
-    private VocabularyRecord selectedVocabularyRecord;
+    private ExtendedVocabularyRecord selectedVocabularyRecord;
 
     private boolean validationErrorPresent;
     private String validationMessage;
@@ -209,27 +208,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
                 .sorted(Comparator.comparingLong(FieldDefinition::getId))
                 .collect(Collectors.toList());
-        records = vocabularyAPI.vocabularyRecords().search(vocabulary.getId(), currentVocabularySearchField + ":" + vocabularySearchQuery).getContent();
-        showNotHits = records == null || records.isEmpty();
-        if (!showNotHits) {
-            records.stream().collect(Collectors.toList()).forEach(r -> loadRecord(schema, r));
-        }
-    }
-
-    private void loadRecord(VocabularySchema schema, VocabularyRecord record) {
-//        record.load(schema);
-//        if (record.getParentId() != null) {
-//            loadParentHierarchy(schema, record, record.getParentId());
-//        }
-    }
-
-    private void loadParentHierarchy(VocabularySchema schema, JSFVocabularyRecord record, long parentId) {
-        JSFVocabularyRecord parent = new JSFVocabularyRecord(vocabularyAPI.vocabularyRecords().get(parentId));
-        parent.load(schema);
-        record.addParent(parent.getMainValue());
-        if (parent.getParentId() != null) {
-            loadParentHierarchy(schema, record, parent.getParentId());
-        }
+        records = vocabularyAPI.vocabularyRecords().search(vocabulary.getId(), currentVocabularySearchField + ":" + vocabularySearchQuery)
+                .getContent()
+                .stream()
+                .map(ExtendedVocabularyRecord::new)
+                .collect(Collectors.toList());
+        showNotHits = records.isEmpty();
     }
 
     private void initializeValues() {
@@ -291,7 +275,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
                 if (StringUtils.isBlank(fields)) {
                     try {
-                        List<VocabularyRecord> recordList = vocabularyAPI.vocabularyRecords().all(currentVocabulary.getId());
+                        List<ExtendedVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords().all(currentVocabulary.getId());
                         ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                         List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
 
@@ -304,14 +288,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
                         selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
 
-                        for (VocabularyRecord vr : recordList) {
-                            // TODO: FIX
-//                            selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
-//                            Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
-//                            if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
-//                                item.setSelected(true);
-//                            }
-//                            itemList.add(item);
+                        for (ExtendedVocabularyRecord vr : recordList) {
+                            selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
+                            Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
+                            if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
+                                item.setSelected(true);
+                            }
+                            itemList.add(item);
                         }
                         setPossibleItems(selectItems);
                         myValues.setItemList(itemList);
@@ -358,15 +341,21 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     if (sorting.isPresent()) {
                         sortingQuery = Optional.of(searchField.get().getId() + "," + sorting.get());
                     }
-                    List<VocabularyRecord> recordList;
+                    List<ExtendedVocabularyRecord> recordList;
                     if (fieldValueFilter.isPresent()) {
                         recordList = vocabularyAPI.vocabularyRecords()
                                 .search(currentVocabulary.getId(), searchField.get().getId() + ":" + fieldValueFilter.get(), sortingQuery)
-                                .getContent();
+                                .getContent()
+                                .stream()
+                                .map(ExtendedVocabularyRecord::new)
+                                .collect(Collectors.toList());
                     } else {
                         recordList = vocabularyAPI.vocabularyRecords()
                                 .list(currentVocabulary.getId(), Optional.of(1000), Optional.of(0), sortingQuery)
-                                .getContent();
+                                .getContent()
+                                .stream()
+                                .map(ExtendedVocabularyRecord::new)
+                                .collect(Collectors.toList());
                     }
 
                     ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
@@ -381,14 +370,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
                     selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
 
-                    for (VocabularyRecord vr : recordList) {
-                        // TODO: FIX
-//                        selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
-//                        Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
-//                        if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
-//                            item.setSelected(true);
-//                        }
-//                        itemList.add(item);
+                    for (ExtendedVocabularyRecord vr : recordList) {
+                        selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
+                        Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
+                        if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
+                            item.setSelected(true);
+                        }
+                        itemList.add(item);
                     }
                     setPossibleItems(selectItems);
                     myValues.setItemList(itemList);
@@ -815,10 +803,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 easydbSearch.getMetadata(md);
                 break;
             case vocabularySearch:
-                // TODO: FIX
-//                md.setValue(selectedVocabularyRecord.getMainValue());
-                md.setAuthorityID(selectedVocabularyRecord.getVocabularyId().toString());
-                md.setAuthorityFile(vocabulary, vocabularyUrl, selectedVocabularyRecord.get_links().get("self").getHref());
+                selectedVocabularyRecord.writeReferenceMetadata(md);
                 break;
             default:
                 break;
