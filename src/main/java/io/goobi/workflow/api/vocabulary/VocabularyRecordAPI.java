@@ -90,6 +90,9 @@ public class VocabularyRecordAPI {
 
     public VocabularyRecord save(VocabularyRecord vocabularyRecord) {
         cleanUpRecord(vocabularyRecord);
+        if (Boolean.TRUE.equals(vocabularyRecord.getMetadata())) {
+            return changeMetadata(vocabularyRecord);
+        }
         if (vocabularyRecord.getId() != null) {
             return change(vocabularyRecord);
         } else {
@@ -97,7 +100,7 @@ public class VocabularyRecordAPI {
         }
     }
 
-    public VocabularyRecord create(VocabularyRecord vocabularyRecord) {
+    private VocabularyRecord create(VocabularyRecord vocabularyRecord) {
         long vocabularyId = vocabularyRecord.getVocabularyId();
         vocabularyRecord.setVocabularyId(null);
         VocabularyRecord newRecord;
@@ -115,7 +118,7 @@ public class VocabularyRecordAPI {
         return newRecord;
     }
 
-    public VocabularyRecord change(VocabularyRecord vocabularyRecord) {
+    private VocabularyRecord change(VocabularyRecord vocabularyRecord) {
         long id = vocabularyRecord.getId();
         vocabularyRecord.setId(null);
         VocabularyRecord newRecord = restApi.put(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, id);
@@ -130,10 +133,15 @@ public class VocabularyRecordAPI {
     }
 
     public ExtendedVocabularyRecord getMetadata(Long id) {
-        return new ExtendedVocabularyRecord(restApi.get(METADATA_ENDPOINT, VocabularyRecord.class, id));
+        // TODO: Make this more elegant
+        try {
+            return new ExtendedVocabularyRecord(restApi.get(METADATA_ENDPOINT, VocabularyRecord.class, id));
+        } catch (APIException e) {
+            return null;
+        }
     }
 
-    public VocabularyRecord changeMetadata(VocabularyRecord metadataRecord) {
+    private VocabularyRecord changeMetadata(VocabularyRecord metadataRecord) {
         if (!Boolean.TRUE.equals(metadataRecord.getMetadata())) {
             throw new IllegalArgumentException("Cannot perform changeMetadata on normal record");
         }

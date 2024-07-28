@@ -38,12 +38,21 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
         return this.definitionMap.get(definitionId);
     }
 
-    public VocabularySchema get(VocabularyRecord vocabularyRecord) {
+    public VocabularySchema getSchema(VocabularyRecord vocabularyRecord) {
         Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().get(vocabularyRecord.getVocabularyId());
         return get(vocabulary.getSchemaId());
     }
 
-    public VocabularySchema get(Vocabulary vocabulary) {
+    public VocabularySchema getSchema(Vocabulary vocabulary) {
         return get(VocabularyAPIManager.getInstance().vocabularies().get(vocabulary.getId()).getSchemaId());
+    }
+
+    public VocabularySchema getMetadataSchema(VocabularyRecord vocabularyRecord) {
+        Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().get(vocabularyRecord.getVocabularyId());
+        return get(vocabulary.getMetadataSchemaId());
+    }
+
+    public VocabularySchema getMetadataSchema(Vocabulary vocabulary) {
+        return get(VocabularyAPIManager.getInstance().vocabularies().get(vocabulary.getId()).getMetadataSchemaId());
     }
 }

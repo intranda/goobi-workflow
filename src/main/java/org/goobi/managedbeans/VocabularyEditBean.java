@@ -70,23 +70,28 @@ public class VocabularyEditBean implements Serializable {
 
     public String load(Vocabulary vocabulary) {
         this.vocabulary = vocabulary;
-        if (vocabulary.getMetadataSchemaId() != null) {
-            this.metadataSchema = api.vocabularySchemas().get(vocabulary.getMetadataSchemaId());
-        }
-        // COPY & PASTA
-        loadFieldDefinitions();
-        loadTypes();
-        metadataRecord = api.vocabularyRecords().getMetadata(vocabulary.getId());
-        prepareEmptyFieldsForEditing(metadataRecord);
-        loadRecord(metadataRecord);
+
+        loadMetadata();
 
         return RETURN_PAGE_EDIT;
     }
 
+    private void loadMetadata() {
+        if (vocabulary.getMetadataSchemaId() == null) {
+            this.metadataSchema = null;
+            this.metadataRecord = null;
+            return;
+        }
+
+        this.metadataSchema = api.vocabularySchemas().get(vocabulary.getMetadataSchemaId());
+        this.metadataRecord = api.vocabularyRecords().getMetadata(vocabulary.getId());
+    }
+
     public String saveVocabulary() {
         api.vocabularies().change(vocabulary);
-        cleanUpRecord(metadataRecord);
-        api.vocabularyRecords().changeMetadata(metadataRecord);
+        if (metadataRecord != null) {
+            api.vocabularyRecords().save(metadataRecord);
+        }
         return cancel();
     }
 
@@ -97,90 +102,5 @@ public class VocabularyEditBean implements Serializable {
 
     public String cancel() {
         return vocabularyBean.load();
-    }
-
-
-    // COPY & PASTA
-    private void cleanUpRecord(ExtendedVocabularyRecord currentRecord) {
-        for (FieldInstance field : currentRecord.getFields()) {
-            for (FieldValue value : field.getValues()) {
-                value.getTranslations().removeIf(this::translationIsEmpty);
-            }
-            field.getValues().removeIf(this::valueIsEmpty);
-        }
-        currentRecord.getFields().removeIf(this::fieldIsEmpty);
-    }
-
-    private boolean translationIsEmpty(TranslationInstance translationInstance) {
-        return translationInstance.getValue().isEmpty();
-    }
-
-    private boolean valueIsEmpty(FieldValue fieldValue) {
-        return fieldValue.getTranslations().isEmpty();
-    }
-
-    private boolean fieldIsEmpty(FieldInstance fieldInstance) {
-        return fieldInstance.getValues().isEmpty();
-    }
-
-    private transient Map<Long, FieldDefinition> definitionsIdMap;
-    private transient Map<Long, FieldType> typeIdMap;
-    private void loadFieldDefinitions() {
-        this.definitionsIdMap = new HashMap<>();
-        for (FieldDefinition d : this.metadataSchema.getDefinitions()) {
-            this.definitionsIdMap.put(d.getId(), d);
-        }
-    }
-    private void loadTypes() {
-        this.typeIdMap = new HashMap<>();
-        this.metadataSchema.getDefinitions().stream()
-                .map(FieldDefinition::getTypeId)
-                .filter(Objects::nonNull)
-                .forEach(t -> this.typeIdMap.put(t, api.fieldTypes().get(t)));
-    }
-    private void prepareEmptyFieldsForEditing(ExtendedVocabularyRecord record) {
-        List<Long> existingFields = record.getFields().stream()
-                .map(FieldInstance::getDefinitionId)
-                .collect(Collectors.toList());
-        List<Long> missingFields = definitionsIdMap.keySet()
-                .stream().filter(i -> !existingFields.contains(i))
-                .collect(Collectors.toList());
-        missingFields.forEach(d -> {
-            FieldInstance field = new FieldInstance();
-            field.setRecordId(record.getId());
-            field.setDefinitionId(d);
-            record.getFields().add(field);
-        });
-        record.getFields().forEach(f -> {
-            if (f.getValues().isEmpty()) {
-                f.getValues().add(new FieldValue());
-            }
-            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
-            f.getValues().forEach(v -> {
-                if (!definition.getTranslationDefinitions().isEmpty()) {
-                    definition.getTranslationDefinitions().stream()
-                            .filter(t -> v.getTranslations().stream().noneMatch(t2 -> t2.getLanguage().equals(t.getLanguage())))
-                            .forEach(t -> {
-                                TranslationInstance translation = new TranslationInstance();
-                                translation.setLanguage(t.getLanguage());
-                                translation.setValue("");
-                                v.getTranslations().add(translation);
-                            });
-                } else if (v.getTranslations().isEmpty()) {
-                    TranslationInstance translation = new TranslationInstance();
-                    translation.setValue("");
-                    v.getTranslations().add(translation);
-                }
-            });
-        });
-    }
-    private void loadRecord(ExtendedVocabularyRecord record) {
-//        record.setLanguage("eng");
-//        record.load(metadataSchema);
-//        record.setShown(true);
-//        record.getJsfFields().forEach(f -> {
-//            FieldDefinition definition = definitionsIdMap.get(f.getDefinitionId());
-//            f.load(definition, typeIdMap.getOrDefault(definition.getTypeId(), null));
-//        });
     }
 }
