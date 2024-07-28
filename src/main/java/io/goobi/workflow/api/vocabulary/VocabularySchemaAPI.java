@@ -9,6 +9,7 @@ import io.goobi.workflow.api.vocabulary.helper.CachedLookup;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySchemaPageResult> {
     private static final String COMMON_ENDPOINT = "/api/v1/schemas";
@@ -39,20 +40,21 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
     }
 
     public VocabularySchema getSchema(VocabularyRecord vocabularyRecord) {
-        Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().get(vocabularyRecord.getVocabularyId());
-        return get(vocabulary.getSchemaId());
+        return getSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyRecord.getVocabularyId()));
     }
 
     public VocabularySchema getSchema(Vocabulary vocabulary) {
-        return get(VocabularyAPIManager.getInstance().vocabularies().get(vocabulary.getId()).getSchemaId());
+        return get(vocabulary.getSchemaId());
     }
 
-    public VocabularySchema getMetadataSchema(VocabularyRecord vocabularyRecord) {
-        Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().get(vocabularyRecord.getVocabularyId());
-        return get(vocabulary.getMetadataSchemaId());
+    public Optional<VocabularySchema> getMetadataSchema(VocabularyRecord vocabularyRecord) {
+        return getMetadataSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyRecord.getVocabularyId()));
     }
 
-    public VocabularySchema getMetadataSchema(Vocabulary vocabulary) {
-        return get(VocabularyAPIManager.getInstance().vocabularies().get(vocabulary.getId()).getMetadataSchemaId());
+    public Optional<VocabularySchema> getMetadataSchema(Vocabulary vocabulary) {
+        if (vocabulary.getMetadataSchemaId() == null) {
+            return Optional.empty();
+        }
+        return Optional.of(get(vocabulary.getMetadataSchemaId()));
     }
 }

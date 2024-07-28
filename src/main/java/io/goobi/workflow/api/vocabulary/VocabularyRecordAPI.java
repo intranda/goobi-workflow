@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public class VocabularyRecordAPI {
     private static final String IN_VOCABULARY_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records";
     private static final String IN_VOCABULARY_ALL_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records/all";
-    private static final String IN_VOCABULARY_SEARCH_ENDPOINT = "/api/v1/vocabularies/{{0}}/records/search";
     private static final String METADATA_ENDPOINT = "/api/v1/vocabularies/{{0}}/metadata";
     private static final String INSTANCE_ENDPOINT = "/api/v1/records/{{0}}";
 
@@ -83,9 +82,9 @@ public class VocabularyRecordAPI {
     public VocabularyRecordPageResult search(long vocabularyId, String query, Optional<String> sorting) {
         List<Object> urlParameters = new ArrayList<>(2 + (sorting.isPresent() ? 1 : 0));
         urlParameters.add(vocabularyId);
-        urlParameters.add("query=" + query);
+        urlParameters.add("search=" + query);
         sorting.ifPresent(s -> urlParameters.add("sort=" + s));
-        return restApi.get(IN_VOCABULARY_SEARCH_ENDPOINT, VocabularyRecordPageResult.class, urlParameters.toArray());
+        return restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, urlParameters.toArray());
     }
 
     public VocabularyRecord save(VocabularyRecord vocabularyRecord) {
@@ -130,6 +129,9 @@ public class VocabularyRecordAPI {
     public void delete(VocabularyRecord vocabularyRecord) {
         restApi.delete(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord.getId());
         this.singleLookupCache.invalidate(vocabularyRecord.getId());
+        if (vocabularyRecord.getParentId() != null) {
+            this.singleLookupCache.invalidate(vocabularyRecord.getParentId());
+        }
     }
 
     public ExtendedVocabularyRecord getMetadata(Long id) {
