@@ -52,7 +52,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.jsfwrapper.JSFVocabularyRecord;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -470,18 +470,18 @@ public class ProzesskopieForm implements Serializable {
             fa.getSelectList().add(new SelectItem(sid, svalue, null));
         }
 
-//        String vocabularyTitle = item.getString("@vocabulary");
-//        if (StringUtils.isNotBlank(vocabularyTitle)) {
-//            Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyTitle);
-//            List<JSFVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords().all(vocabulary.getId());
-//            fa.setSelectList(
-//                    records.stream()
-//                            .map(JSFVocabularyRecord::getMainValue)
-//                            .sorted()
-//                            .map(v -> new SelectItem(v, v))
-//                            .collect(Collectors.toList())
-//            );
-//        }
+        String vocabularyTitle = item.getString("@vocabulary");
+        if (StringUtils.isNotBlank(vocabularyTitle)) {
+            Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyTitle);
+            List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords().all(vocabulary.getId());
+            fa.setSelectList(
+                    records.stream()
+                            .map(ExtendedVocabularyRecord::getMainValue)
+                            .sorted()
+                            .map(v -> new SelectItem(v, v))
+                            .collect(Collectors.toList())
+            );
+        }
         // TODO: FIX
         return fa;
     }
