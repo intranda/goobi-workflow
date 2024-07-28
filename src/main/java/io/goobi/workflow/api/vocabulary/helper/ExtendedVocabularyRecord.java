@@ -15,7 +15,8 @@ import java.util.stream.Collectors;
 @Getter
 public class ExtendedVocabularyRecord extends VocabularyRecord {
     private Function<Long, VocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
-    private Function<VocabularyRecord, VocabularySchema> schemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::get;
+    private Function<VocabularyRecord, VocabularySchema> schemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getSchema;
+    private Function<VocabularyRecord, VocabularySchema> metadataSchemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getMetadataSchema;
 
     private int level;
     private String mainValue;
@@ -60,7 +61,8 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         List<Long> existingFields = getFields().stream()
                 .map(FieldInstance::getDefinitionId)
                 .collect(Collectors.toList());
-        List<Long> missingFields = schemaResolver.apply(this).getDefinitions().stream()
+        VocabularySchema schema = Boolean.TRUE.equals(this.getMetadata()) ? metadataSchemaResolver.apply(this) : schemaResolver.apply(this);
+        List<Long> missingFields = schema.getDefinitions().stream()
                 .map(FieldDefinition::getId)
                 .filter(i -> !existingFields.contains(i))
                 .collect(Collectors.toList());
