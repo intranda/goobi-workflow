@@ -18,4 +18,8 @@ public class CachedLookup<T> {
         }
         return cache.get(id);
     }
+
+    public synchronized void invalidate(Long id) {
+        this.cache.remove(id);
+    }
 }

@@ -111,6 +111,7 @@ public class VocabularyRecordAPI {
             vocabularyRecord.setParentId(parentId);
         }
         vocabularyRecord.setId(vocabularyId);
+        this.singleLookupCache.invalidate(vocabularyRecord.getId());
         return newRecord;
     }
 
@@ -119,11 +120,13 @@ public class VocabularyRecordAPI {
         vocabularyRecord.setId(null);
         VocabularyRecord newRecord = restApi.put(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, id);
         vocabularyRecord.setId(id);
+        this.singleLookupCache.invalidate(vocabularyRecord.getId());
         return newRecord;
     }
 
     public void delete(VocabularyRecord vocabularyRecord) {
         restApi.delete(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord.getId());
+        this.singleLookupCache.invalidate(vocabularyRecord.getId());
     }
 
     public ExtendedVocabularyRecord getMetadata(Long id) {

@@ -35,6 +35,19 @@ public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Vocabulary change(Vocabulary vocabulary) {
+        Vocabulary result = super.change(vocabulary);
+        this.singleLookupCache.invalidate(vocabulary.getId());
+        return result;
+    }
+
+    @Override
+    public void delete(Vocabulary vocabulary) {
+        super.delete(vocabulary);
+        this.singleLookupCache.invalidate(vocabulary.getId());
+    }
+
     public ExtendedVocabulary findByName(String name) {
         return new ExtendedVocabulary(restApi.get(FIND_INSTANCE_ENDPOINT, Vocabulary.class, name));
     }
