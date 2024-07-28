@@ -40,7 +40,8 @@ public class ExtendedFieldInstance extends FieldInstance {
     private List<SelectItem> selectableItems;
 
     private void loadVocabularyDefinitions(Long vocabularyId) {
-        VocabularyAPIManager.getInstance().vocabularySchemas().get(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
+        VocabularyAPIManager.getInstance().vocabularySchemas().getSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
+        VocabularyAPIManager.getInstance().vocabularySchemas().getMetadataSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
     }
 
     public ExtendedFieldInstance(FieldInstance orig) {
