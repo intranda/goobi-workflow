@@ -44,7 +44,6 @@ import javax.inject.Named;
 import javax.servlet.http.Part;
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
