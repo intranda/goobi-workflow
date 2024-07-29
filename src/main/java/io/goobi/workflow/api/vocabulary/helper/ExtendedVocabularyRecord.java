@@ -100,4 +100,20 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         meta.setValue(getMainValue());
         meta.setAuthorityFile(vocabulary.getName(), vocabulary.get_links().get("self").getHref(), get_links().get("self").getHref());
     }
+
+    public String getFieldValueForDefinition(FieldDefinition definition) {
+        return getExtendedFields().stream()
+                .filter(f -> f.getDefinitionId().equals(definition.getId()))
+                .findFirst()
+                .map(ExtendedFieldInstance::getFieldValue)
+                .orElseThrow();
+    }
+
+    public String getFieldValueForDefinitionName(String definitionName) {
+        return getExtendedFields().stream()
+                .filter(f -> f.getDefinition().getName().equals(definitionName))
+                .findFirst()
+                .map(ExtendedFieldInstance::getFieldValue)
+                .orElseThrow();
+    }
 }
