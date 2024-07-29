@@ -19,6 +19,10 @@ public class CachedLookup<T> {
         return cache.get(id);
     }
 
+    public synchronized void update(Long id, T item) {
+        this.cache.put(id, item);
+    }
+
     public synchronized void invalidate(Long id) {
         this.cache.remove(id);
     }

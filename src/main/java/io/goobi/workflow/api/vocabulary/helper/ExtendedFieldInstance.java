@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Getter
 public class ExtendedFieldInstance extends FieldInstance {
     private Function<Long, ExtendedVocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
-    private Function<Long, List<ExtendedVocabularyRecord>> recordsResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::all;
+    private Function<Long, List<ExtendedVocabularyRecord>> recordsResolver = this::getAllRecords;
     private Consumer<Long> vocabularyDefinitionLoader = this::loadVocabularyDefinitions;
     private Function<Long, FieldDefinition> definitionResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getDefinition;
     private Function<Long, FieldType> typeResolver = VocabularyAPIManager.getInstance().fieldTypes()::get;
@@ -42,6 +42,14 @@ public class ExtendedFieldInstance extends FieldInstance {
     private void loadVocabularyDefinitions(Long vocabularyId) {
         VocabularyAPIManager.getInstance().vocabularySchemas().getSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
         VocabularyAPIManager.getInstance().vocabularySchemas().getMetadataSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
+    }
+
+    private List<ExtendedVocabularyRecord> getAllRecords(Long vocabularyId) {
+        return VocabularyAPIManager.getInstance().vocabularyRecords()
+                .list(vocabularyId)
+                .all()
+                .request()
+                .getContent();
     }
 
     public ExtendedFieldInstance(FieldInstance orig) {
@@ -69,7 +77,6 @@ public class ExtendedFieldInstance extends FieldInstance {
             this.vocabularyDefinitionLoader.accept(this.definition.getReferenceVocabularyId());
             // TODO: make this common logic
             this.selectableItems = recordsResolver.apply(this.definition.getReferenceVocabularyId()).stream()
-                    .map(ExtendedVocabularyRecord::new)
                     .map(r -> new SelectItem(Long.toString(r.getId()), r.getMainValue()))
                     .collect(Collectors.toList());
         }

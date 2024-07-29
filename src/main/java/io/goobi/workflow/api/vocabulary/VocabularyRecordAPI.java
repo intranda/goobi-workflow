@@ -6,51 +6,94 @@ import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
 import io.goobi.workflow.api.vocabulary.helper.CachedLookup;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Log4j2
 public class VocabularyRecordAPI {
     private static final String IN_VOCABULARY_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records";
-    private static final String IN_VOCABULARY_ALL_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records/all";
     private static final String METADATA_ENDPOINT = "/api/v1/vocabularies/{{0}}/metadata";
     private static final String INSTANCE_ENDPOINT = "/api/v1/records/{{0}}";
 
     private final RESTAPI restApi;
     private final CachedLookup<ExtendedVocabularyRecord> singleLookupCache;
 
+    public class VocabularyRecordQueryBuilder {
+        private final long vocabularyId;
+        private Optional<Integer> page = Optional.empty();
+        private Optional<Integer> pageSize = Optional.empty();
+        private Optional<String> sorting = Optional.empty();
+        private Optional<String> search = Optional.empty();
+        private Optional<Boolean> all = Optional.empty();
+
+        private VocabularyRecordQueryBuilder(long vocabularyId) {
+            this.vocabularyId = vocabularyId;
+        }
+
+        public VocabularyRecordQueryBuilder page(int page) {
+            this.page = Optional.of(page);
+            return this;
+        }
+
+        public VocabularyRecordQueryBuilder page(Optional<Integer> page) {
+            this.page = page;
+            return this;
+        }
+
+        public VocabularyRecordQueryBuilder pageSize(int pageSize) {
+            this.pageSize = Optional.of(pageSize);
+            return this;
+        }
+
+        public VocabularyRecordQueryBuilder pageSize(Optional<Integer> pageSize) {
+            this.pageSize = pageSize;
+            return this;
+        }
+
+        public VocabularyRecordQueryBuilder sorting(String sorting) {
+            this.sorting = Optional.of(sorting);
+            return this;
+        }
+
+        public VocabularyRecordQueryBuilder sorting(Optional<String> sorting) {
+            this.sorting = sorting;
+            return this;
+        }
+
+        public VocabularyRecordQueryBuilder search(String search) {
+            this.search = Optional.of(search);
+            return this;
+        }
+
+        public VocabularyRecordQueryBuilder search(Optional<String> search) {
+            this.search = search;
+            return this;
+        }
+
+        public VocabularyRecordQueryBuilder all() {
+            this.all = Optional.of(true);
+            return this;
+        }
+
+        public VocabularyRecordPageResult request() {
+            return list(this.vocabularyId, this.pageSize, this.page, this.sorting, this.search, this.all);
+        }
+    }
+
     public VocabularyRecordAPI(String host, int port) {
         this.restApi = new RESTAPI(host, port);
         this.singleLookupCache = new CachedLookup<>(id -> new ExtendedVocabularyRecord(restApi.get(INSTANCE_ENDPOINT, VocabularyRecord.class, id)));
     }
 
-    public List<ExtendedVocabularyRecord> all(long vocabularyId) {
-        return all(vocabularyId, Optional.empty());
+    public VocabularyRecordQueryBuilder list(long vocabularyId) {
+        return new VocabularyRecordQueryBuilder(vocabularyId);
     }
 
-    public List<ExtendedVocabularyRecord> all(long vocabularyId, Optional<String> sorting) {
-         List<Object> urlParameters = new ArrayList<>(1 + (sorting.isPresent() ? 1 : 0));
-        urlParameters.add(vocabularyId);
-        sorting.ifPresent(s -> urlParameters.add("sort=" + s));
-        return restApi.get(IN_VOCABULARY_ALL_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, urlParameters.toArray()).getContent().stream()
-                .map(ExtendedVocabularyRecord::new)
-                .collect(Collectors.toList());
-    }
-
-    public VocabularyRecordPageResult list(long vocabularyId) {
-        return list(vocabularyId, Optional.empty(), Optional.empty());
-    }
-
-    public VocabularyRecordPageResult list(long vocabularyId, Optional<Integer> size, Optional<Integer> page) {
-        return list(vocabularyId, size, page, Optional.empty());
-    }
-
-    public VocabularyRecordPageResult list(long vocabularyId, Optional<Integer> size, Optional<Integer> page, Optional<String> sorting) {
+    private VocabularyRecordPageResult list(long vocabularyId, Optional<Integer> size, Optional<Integer> page, Optional<String> sorting, Optional<String> search, Optional<Boolean> all) {
         String params = "";
         if (size.isPresent()) {
             params += params.isEmpty() ? "?" : "&";
@@ -64,7 +107,20 @@ public class VocabularyRecordAPI {
             params += params.isEmpty() ? "?" : "&";
             params += "sort=" + sorting.get();
         }
-        return restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + params, VocabularyRecordPageResult.class, vocabularyId);
+        if (search.isPresent()) {
+            params += params.isEmpty() ? "?" : "&";
+            params += "search=" + search.get();
+        }
+        if (all.isPresent() && Boolean.TRUE.equals(all.get())) {
+            params += params.isEmpty() ? "?" : "&";
+            params += "all=1";
+        }
+        // Load schema to populate definition resolver
+        VocabularyAPIManager.getInstance().vocabularySchemas().getSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
+
+        VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + params, VocabularyRecordPageResult.class, vocabularyId);
+        result.getContent().forEach(r -> this.singleLookupCache.update(r.getId(), r));
+        return result;
     }
 
     public ExtendedVocabularyRecord get(long id) {
@@ -75,19 +131,7 @@ public class VocabularyRecordAPI {
         return new ExtendedVocabularyRecord(restApi.get(url, VocabularyRecord.class));
     }
 
-    public VocabularyRecordPageResult search(long vocabularyId, String query) {
-        return search(vocabularyId, query, Optional.empty());
-    }
-
-    public VocabularyRecordPageResult search(long vocabularyId, String query, Optional<String> sorting) {
-        List<Object> urlParameters = new ArrayList<>(2 + (sorting.isPresent() ? 1 : 0));
-        urlParameters.add(vocabularyId);
-        urlParameters.add("search=" + query);
-        sorting.ifPresent(s -> urlParameters.add("sort=" + s));
-        return restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecordPageResult.class, urlParameters.toArray());
-    }
-
-    public VocabularyRecord save(VocabularyRecord vocabularyRecord) {
+    public ExtendedVocabularyRecord save(VocabularyRecord vocabularyRecord) {
         cleanUpRecord(vocabularyRecord);
         if (Boolean.TRUE.equals(vocabularyRecord.getMetadata())) {
             return changeMetadata(vocabularyRecord);
@@ -99,30 +143,30 @@ public class VocabularyRecordAPI {
         }
     }
 
-    private VocabularyRecord create(VocabularyRecord vocabularyRecord) {
+    private ExtendedVocabularyRecord create(VocabularyRecord vocabularyRecord) {
         long vocabularyId = vocabularyRecord.getVocabularyId();
         vocabularyRecord.setVocabularyId(null);
-        VocabularyRecord newRecord;
+        ExtendedVocabularyRecord newRecord;
         if (vocabularyRecord.getParentId() == null) {
-            newRecord = restApi.post(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyId);
-
+            newRecord = new ExtendedVocabularyRecord(restApi.post(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyId));
         } else {
             long parentId = vocabularyRecord.getParentId();
             vocabularyRecord.setParentId(null);
-            newRecord = restApi.post(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, parentId);
+            newRecord = new ExtendedVocabularyRecord(restApi.post(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, parentId));
             vocabularyRecord.setParentId(parentId);
+            this.singleLookupCache.invalidate(vocabularyRecord.getParentId());
         }
         vocabularyRecord.setId(vocabularyId);
-        this.singleLookupCache.invalidate(vocabularyRecord.getId());
+        this.singleLookupCache.update(newRecord.getId(), newRecord);
         return newRecord;
     }
 
-    private VocabularyRecord change(VocabularyRecord vocabularyRecord) {
+    private ExtendedVocabularyRecord change(VocabularyRecord vocabularyRecord) {
         long id = vocabularyRecord.getId();
         vocabularyRecord.setId(null);
-        VocabularyRecord newRecord = restApi.put(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, id);
+        ExtendedVocabularyRecord newRecord = new ExtendedVocabularyRecord(restApi.put(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, id));
         vocabularyRecord.setId(id);
-        this.singleLookupCache.invalidate(vocabularyRecord.getId());
+        this.singleLookupCache.update(newRecord.getId(), newRecord);
         return newRecord;
     }
 
@@ -139,24 +183,40 @@ public class VocabularyRecordAPI {
         try {
             return new ExtendedVocabularyRecord(restApi.get(METADATA_ENDPOINT, VocabularyRecord.class, id));
         } catch (APIException e) {
-            return null;
+            // Ignore 404 for now and just continue with empty record creation
         }
+        ExtendedVocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().get(id);
+        return createEmptyRecord(vocabulary.getId(), null, true);
     }
 
-    private VocabularyRecord changeMetadata(VocabularyRecord metadataRecord) {
+    private ExtendedVocabularyRecord changeMetadata(VocabularyRecord metadataRecord) {
         if (!Boolean.TRUE.equals(metadataRecord.getMetadata())) {
             throw new IllegalArgumentException("Cannot perform changeMetadata on normal record");
         }
-        long id = metadataRecord.getId();
+        Long id = metadataRecord.getId();
         long vocabularyId = metadataRecord.getVocabularyId();
         metadataRecord.setId(null);
         metadataRecord.setVocabularyId(null);
         metadataRecord.setMetadata(null);
-        VocabularyRecord newRecord = restApi.put(METADATA_ENDPOINT, VocabularyRecord.class, metadataRecord, vocabularyId);
+        ExtendedVocabularyRecord newRecord;
+        if (id == null) {
+            newRecord = new ExtendedVocabularyRecord(restApi.post(METADATA_ENDPOINT, VocabularyRecord.class, metadataRecord, vocabularyId));
+        } else {
+            newRecord = new ExtendedVocabularyRecord(restApi.put(METADATA_ENDPOINT, VocabularyRecord.class, metadataRecord, vocabularyId));
+        }
         metadataRecord.setId(id);
         metadataRecord.setVocabularyId(vocabularyId);
         metadataRecord.setMetadata(true);
         return newRecord;
+    }
+
+    public ExtendedVocabularyRecord createEmptyRecord(long vocabularyId, Long parentId, boolean metadata) {
+        VocabularyRecord record = new VocabularyRecord();
+        record.setVocabularyId(vocabularyId);
+        record.setParentId(parentId);
+        record.setMetadata(metadata);
+        record.setFields(new HashSet<>());
+        return new ExtendedVocabularyRecord(record);
     }
 
     private void cleanUpRecord(VocabularyRecord currentRecord) {
@@ -180,5 +240,4 @@ public class VocabularyRecordAPI {
     private boolean fieldIsEmpty(FieldInstance fieldInstance) {
         return fieldInstance.getValues().isEmpty();
     }
-
 }

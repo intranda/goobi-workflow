@@ -473,7 +473,11 @@ public class ProzesskopieForm implements Serializable {
         String vocabularyTitle = item.getString("@vocabulary");
         if (StringUtils.isNotBlank(vocabularyTitle)) {
             Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyTitle);
-            List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords().all(vocabulary.getId());
+            List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords()
+                    .list(vocabulary.getId())
+                    .all()
+                    .request()
+                    .getContent();
             fa.setSelectList(
                     records.stream()
                             .map(ExtendedVocabularyRecord::getMainValue)

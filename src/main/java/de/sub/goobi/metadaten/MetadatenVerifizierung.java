@@ -492,7 +492,11 @@ public class MetadatenVerifizierung {
                     break;
                 }
                 ExtendedVocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(allowedItems.get(0).getSource());
-                List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords().all(vocabulary.getId());
+                List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords()
+                        .list(vocabulary.getId())
+                        .all()
+                        .request()
+                        .getContent();
                 List<String> allowedValues = records.stream()
                         .map(ExtendedVocabularyRecord::getMainValue)
                         .collect(Collectors.toList());

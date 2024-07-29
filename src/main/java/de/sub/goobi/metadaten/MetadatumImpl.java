@@ -208,11 +208,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
                 .sorted(Comparator.comparingLong(FieldDefinition::getId))
                 .collect(Collectors.toList());
-        records = vocabularyAPI.vocabularyRecords().search(vocabulary.getId(), currentVocabularySearchField + ":" + vocabularySearchQuery)
-                .getContent()
-                .stream()
-                .map(ExtendedVocabularyRecord::new)
-                .collect(Collectors.toList());
+        records = vocabularyAPI.vocabularyRecords().list(vocabulary.getId())
+                .search(currentVocabularySearchField + ":" + vocabularySearchQuery)
+                .request()
+                .getContent();
         showNotHits = records.isEmpty();
     }
 
@@ -275,7 +274,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
                 if (StringUtils.isBlank(fields)) {
                     try {
-                        List<ExtendedVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords().all(currentVocabulary.getId());
+                        List<ExtendedVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
+                                .list(currentVocabulary.getId())
+                                .all()
+                                .request()
+                                .getContent();
                         ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                         List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
 
@@ -336,27 +339,20 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         return;
                     }
 
-                    // Assume there are not than 1000 hits, otherwise it is not useful anyway..
                     Optional<String> sortingQuery = Optional.empty();
                     if (sorting.isPresent()) {
                         sortingQuery = Optional.of(searchField.get().getId() + "," + sorting.get());
                     }
-                    List<ExtendedVocabularyRecord> recordList;
+                    Optional<String> searchQuery = Optional.empty();
                     if (fieldValueFilter.isPresent()) {
-                        recordList = vocabularyAPI.vocabularyRecords()
-                                .search(currentVocabulary.getId(), searchField.get().getId() + ":" + fieldValueFilter.get(), sortingQuery)
-                                .getContent()
-                                .stream()
-                                .map(ExtendedVocabularyRecord::new)
-                                .collect(Collectors.toList());
-                    } else {
-                        recordList = vocabularyAPI.vocabularyRecords()
-                                .list(currentVocabulary.getId(), Optional.of(1000), Optional.of(0), sortingQuery)
-                                .getContent()
-                                .stream()
-                                .map(ExtendedVocabularyRecord::new)
-                                .collect(Collectors.toList());
+                        searchQuery = Optional.of(searchField.get().getId() + ":" + fieldValueFilter.get());
                     }
+                    List<ExtendedVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
+                                .list(currentVocabulary.getId())
+                                .search(searchQuery)
+                                .sorting(sortingQuery)
+                                .request()
+                                .getContent();
 
                     ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                     List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);

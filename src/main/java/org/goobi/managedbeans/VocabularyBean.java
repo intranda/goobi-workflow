@@ -60,7 +60,6 @@ public class VocabularyBean implements Serializable {
                             Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
                             Optional.empty()
                     ),
-                    ExtendedVocabulary::new,
                     null,
                     null,
                     api.vocabularies()::get

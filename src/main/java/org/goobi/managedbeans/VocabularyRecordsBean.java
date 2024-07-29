@@ -61,7 +61,7 @@ public class VocabularyRecordsBean implements Serializable {
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
     @Getter
-    private transient HATEOASPaginator<VocabularyRecord, ExtendedVocabularyRecord, VocabularyRecordPageResult> paginator;
+    private transient HATEOASPaginator<ExtendedVocabularyRecord, VocabularyRecordPageResult> paginator;
     @Getter
     private transient ExtendedVocabulary vocabulary;
     private transient VocabularySchema schema;
@@ -90,12 +90,10 @@ public class VocabularyRecordsBean implements Serializable {
         // TODO: Unclean to have static Helper access to user here..
         this.paginator = new HATEOASPaginator<>(
                 VocabularyRecordPageResult.class,
-                api.vocabularyRecords().list(
-                        this.vocabulary.getId(),
-                        Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
-                        Optional.empty()
-                ),
-                ExtendedVocabularyRecord::new,
+                api.vocabularyRecords()
+                        .list(this.vocabulary.getId())
+                        .pageSize(Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()))
+                        .request(),
                 ExtendedVocabularyRecord::getChildren,
                 ExtendedVocabularyRecord::getParentId,
                 api.vocabularyRecords()::get
@@ -129,12 +127,8 @@ public class VocabularyRecordsBean implements Serializable {
         paginator.postLoad(record);
     }
 
-    public void createEmpty(Long parent) {
-        VocabularyRecord record = new VocabularyRecord();
-        record.setVocabularyId(vocabulary.getId());
-        record.setParentId(parent);
-        record.setFields(new HashSet<>());
-        this.currentRecord = new ExtendedVocabularyRecord(record);
+    public void createEmpty(Long parentId) {
+        this.currentRecord = api.vocabularyRecords().createEmptyRecord(this.vocabulary.getId(), parentId, false);
     }
 
     public void deleteRecord(VocabularyRecord rec) {

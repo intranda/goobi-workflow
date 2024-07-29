@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, PageT extends BasePageResult<T>> implements Paginator<E> {
+public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResult<T>> implements Paginator<T> {
     public static final String NAVIGATE_PREVIOUS = "prev";
     public static final String NAVIGATE_NEXT = "next";
     public static final String NAVIGATE_FIRST = "first";
@@ -28,7 +28,7 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
     @Data
     class Node {
         private Long id;
-        private E data;
+        private T data;
         private List<Node> children;
         private boolean visible = false;
 
@@ -62,10 +62,9 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
     }
 
     private final Client client = ClientBuilder.newClient();
-    private final Function<T, E> transformFunction;
-    private final Optional<Function<E, Collection<Long>>> childrenExtractor;
-    private final Optional<Function<E, Long>> parentExtractor;
-    private final Function<Long, E> postLoader;
+    private final Optional<Function<T, Collection<Long>>> childrenExtractor;
+    private final Optional<Function<T, Long>> parentExtractor;
+    private final Function<Long, T> postLoader;
     private Optional<String> searchParameter = Optional.empty();
     private Optional<String> sortField = Optional.empty();
 
@@ -73,11 +72,10 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
     private PageT currentPage;
     private List<Node> tree;
     private Map<Long, Node> treeMap = new HashMap<>();
-    private List<E> items = new LinkedList<>();
+    private List<T> items = new LinkedList<>();
 
-    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Function<T, E> transform, Function<E, Collection<Long>> childrenExtractor, Function<E, Long> parentExtractor, Function<Long, E> postLoader) {
+    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Function<T, Collection<Long>> childrenExtractor, Function<T, Long> parentExtractor, Function<Long, T> postLoader) {
         this.pageClass = pageClass;
-        this.transformFunction = transform;
         this.childrenExtractor = Optional.ofNullable(childrenExtractor);
         this.parentExtractor = Optional.ofNullable(parentExtractor);
         this.postLoader = postLoader;
@@ -87,7 +85,6 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
     private void setCurrentPage(PageT page) {
         this.currentPage = page;
         this.tree = this.currentPage.getContent().stream()
-                .map(this.transformFunction)
                 .map(d -> {
                     Node n = new Node();
                     n.setId(d.getId());
@@ -118,7 +115,7 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
         }
     }
 
-    public void expand(E entry) {
+    public void expand(T entry) {
         Node node = this.treeMap.get(entry.getId());
         node.getChildren().forEach(child -> {
             child.load();
@@ -127,7 +124,7 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
         rebuildTree();
     }
 
-    public void collapse(E entry) {
+    public void collapse(T entry) {
         Node node = this.treeMap.get(entry.getId());
         this.recursiveCollapseChildren(node);
         rebuildTree();
@@ -157,7 +154,7 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
         });
     }
 
-    public boolean isExpanded(E entry) {
+    public boolean isExpanded(T entry) {
         List<Node> children = this.treeMap.get(entry.getId()).getChildren();
         if (children == null) {
             return false;
@@ -239,7 +236,7 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
     }
 
     @Override
-    public void postLoad(E item) {
+    public void postLoad(T item) {
         if (!this.treeMap.containsKey(item.getId())) {
             this.insertElement(item);
         }
@@ -252,7 +249,7 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
         this.rebuildTree();
     }
 
-    private void insertElement(E item) {
+    private void insertElement(T item) {
         Long parentId = null;
         if (this.parentExtractor.isPresent()) {
             parentId = this.parentExtractor.get().apply(item);
@@ -273,7 +270,7 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
 
     private Node getOrCreateParent(Long parentId) {
         if (!this.treeMap.containsKey(parentId)) {
-            E parentData = postLoader.apply(parentId);
+            T parentData = postLoader.apply(parentId);
             insertElement(parentData);
         }
         Node result = this.treeMap.get(parentId);
@@ -300,7 +297,7 @@ public class HATEOASPaginator<T extends Identifiable, E extends Identifiable, Pa
     }
 
     @Override
-    public List<E> getItems() {
+    public List<T> getItems() {
         return this.items;
     }
 
