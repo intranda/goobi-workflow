@@ -70,7 +70,7 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
 
     private Class<PageT> pageClass;
     private PageT currentPage;
-    private List<Node> tree;
+    private List<Node> tree = new LinkedList<>();
     private Map<Long, Node> treeMap = new HashMap<>();
     private List<T> items = new LinkedList<>();
 
@@ -84,16 +84,8 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
 
     private void setCurrentPage(PageT page) {
         this.currentPage = page;
-        this.tree = this.currentPage.getContent().stream()
-                .map(d -> {
-                    Node n = new Node();
-                    n.setId(d.getId());
-                    n.setData(d);
-                    n.setVisible(true); // Top most level is always visible
-                    n.prepareChildren();
-                    return n;
-                })
-                .collect(Collectors.toList());
+        this.tree.clear();
+        this.currentPage.getContent().forEach(this::innerPostLoad);
         rebuildTree();
     }
 
@@ -148,7 +140,7 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
             if (parentId == null) {
                 return;
             }
-            Node parent = this.treeMap.get(parentId);
+            Node parent = getOrCreateParent(parentId);
             parent.setVisible(true);
             recursiveParentExpanding(parent);
         });
@@ -237,6 +229,11 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
 
     @Override
     public void postLoad(T item) {
+        this.innerPostLoad(item);
+        this.rebuildTree();
+    }
+
+    private void innerPostLoad(T item) {
         if (!this.treeMap.containsKey(item.getId())) {
             this.insertElement(item);
         }
@@ -245,8 +242,6 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
         node.load();
         node.setVisible(true);
         recursiveParentExpanding(node);
-
-        this.rebuildTree();
     }
 
     private void insertElement(T item) {
