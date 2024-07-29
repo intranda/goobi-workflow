@@ -28,7 +28,10 @@ public class RESTAPI {
     }
 
     private String generateUrl(String endpoint, Object... parameters) {
-        String url = baseUrl + endpoint;
+        String url = endpoint;
+        if (!url.startsWith(baseUrl)) {
+            url = baseUrl + url;
+        }
         List<String> queryParams = new ArrayList<>();
         for (int i = 0; i < parameters.length; i++) {
             if (url.contains("{{" + i + "}}")) {
