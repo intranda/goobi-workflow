@@ -57,4 +57,8 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
         }
         return Optional.of(get(vocabulary.getMetadataSchemaId()));
     }
+
+    public void load(long vocabularyId) {
+        getSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
+    }
 }

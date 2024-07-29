@@ -9,6 +9,7 @@ import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import org.goobi.managedbeans.FormInputMultiSelectBean;
 import org.goobi.managedbeans.FormInputMultiSelectHelper;
 
@@ -19,16 +20,15 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Getter
+@Log4j2
 public class ExtendedFieldInstance extends FieldInstance {
     private Function<Long, ExtendedVocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
     private Function<Long, List<ExtendedVocabularyRecord>> recordsResolver = this::getAllRecords;
-    private Consumer<Long> vocabularyDefinitionLoader = this::loadVocabularyDefinitions;
     private Function<Long, FieldDefinition> definitionResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getDefinition;
     private Function<Long, FieldType> typeResolver = VocabularyAPIManager.getInstance().fieldTypes()::get;
     private Supplier<String> languageSupplier = Helper.getLanguageBean().getLocale()::getLanguage;
@@ -38,11 +38,6 @@ public class ExtendedFieldInstance extends FieldInstance {
 
     private FormInputMultiSelectBean selectionBean;
     private List<SelectItem> selectableItems;
-
-    private void loadVocabularyDefinitions(Long vocabularyId) {
-        VocabularyAPIManager.getInstance().vocabularySchemas().getSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
-        VocabularyAPIManager.getInstance().vocabularySchemas().getMetadataSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
-    }
 
     private List<ExtendedVocabularyRecord> getAllRecords(Long vocabularyId) {
         return VocabularyAPIManager.getInstance().vocabularyRecords()
@@ -73,9 +68,6 @@ public class ExtendedFieldInstance extends FieldInstance {
                     .map(v -> new SelectItem(v, v))
                     .collect(Collectors.toList());
         } else if (this.definition.getReferenceVocabularyId() != null) {
-            // Load vocabulary schema to implicitly find definitions in API
-            this.vocabularyDefinitionLoader.accept(this.definition.getReferenceVocabularyId());
-            // TODO: make this common logic
             this.selectableItems = recordsResolver.apply(this.definition.getReferenceVocabularyId()).stream()
                     .map(r -> new SelectItem(Long.toString(r.getId()), r.getMainValue()))
                     .collect(Collectors.toList());

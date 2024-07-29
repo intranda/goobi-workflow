@@ -86,7 +86,11 @@ public class VocabularyRecordAPI {
 
     public VocabularyRecordAPI(String host, int port) {
         this.restApi = new RESTAPI(host, port);
-        this.singleLookupCache = new CachedLookup<>(id -> new ExtendedVocabularyRecord(restApi.get(INSTANCE_ENDPOINT, VocabularyRecord.class, id)));
+        this.singleLookupCache = new CachedLookup<>(id -> {
+            VocabularyRecord r = restApi.get(INSTANCE_ENDPOINT, VocabularyRecord.class, id);
+            VocabularyAPIManager.getInstance().vocabularySchemas().load(r.getVocabularyId());
+            return new ExtendedVocabularyRecord(r);
+        });
     }
 
     public VocabularyRecordQueryBuilder list(long vocabularyId) {
@@ -116,7 +120,7 @@ public class VocabularyRecordAPI {
             params += "all=1";
         }
         // Load schema to populate definition resolver
-        VocabularyAPIManager.getInstance().vocabularySchemas().getSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
+        VocabularyAPIManager.getInstance().vocabularySchemas().load(vocabularyId);
 
         VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + params, VocabularyRecordPageResult.class, vocabularyId);
         result.getContent().forEach(r -> this.singleLookupCache.update(r.getId(), r));
