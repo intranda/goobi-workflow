@@ -176,7 +176,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private String vocabularyName;
     private List<ExtendedVocabularyRecord> records;
     private List<FieldDefinition> definitions;
-    private String vocabularyUrl;
     private ExtendedVocabularyRecord selectedVocabularyRecord;
 
     private boolean validationErrorPresent;
@@ -202,7 +201,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     public void searchVocabulary() {
         Vocabulary vocabulary = vocabularyAPI.vocabularies().findByName(this.vocabulary);
-        vocabularyUrl = vocabulary.get_links().get("self").getHref();
         VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocabulary.getSchemaId());
         definitions = schema.getDefinitions().stream()
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
@@ -253,7 +251,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     .map(String::trim)
                     .collect(Collectors.toSet());
 
-            io.goobi.vocabulary.exchange.Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyName);
+            Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyName);
             VocabularySchema vocabularySchema = vocabularyAPI.vocabularySchemas().get(currentVocabulary.getSchemaId());
 
             vocabularySearchFields = vocabularySchema.getDefinitions().stream()
