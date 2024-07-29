@@ -144,10 +144,12 @@ public class VocabularyRecordsBean implements Serializable {
     public void saveRecord(VocabularyRecord rec) {
         // TODO: Maybe replace current record
         try {
-            VocabularyRecord newRecord = api.vocabularyRecords().save(rec);
+            ExtendedVocabularyRecord newRecord = api.vocabularyRecords().save(rec);
             paginator.reload();
-            // TODO: Find correct reference in paginator to avoid identity issues with current record
-            ExtendedVocabularyRecord newExtendedRecord = new ExtendedVocabularyRecord(newRecord);
+            ExtendedVocabularyRecord newExtendedRecord = paginator.getItems().stream()
+                    .filter(r -> r.getId().equals(newRecord.getId()))
+                    .findFirst()
+                    .orElse(newRecord);
             paginator.postLoad(newExtendedRecord);
             edit(newExtendedRecord);
         } catch (APIException e) {
