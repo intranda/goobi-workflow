@@ -85,8 +85,19 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
     private void setCurrentPage(PageT page) {
         this.currentPage = page;
         this.tree.clear();
-        this.currentPage.getContent().forEach(this::innerPostLoad);
+        this.currentPage.getContent().forEach(this::insertElement);
+        this.tree.forEach(this::recursiveShow);
         rebuildTree();
+    }
+
+    private void recursiveShow(Node node) {
+        if (node.getData() == null) {
+            return;
+        }
+        node.setVisible(true);
+        if (node.getChildren() != null) {
+            node.getChildren().forEach(this::recursiveShow);
+        }
     }
 
     private void rebuildTree() {
