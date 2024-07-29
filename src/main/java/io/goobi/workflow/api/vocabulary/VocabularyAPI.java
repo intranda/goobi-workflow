@@ -7,11 +7,9 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 
 import javax.servlet.http.Part;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     private static final String COMMON_ENDPOINT = "/api/v1/vocabularies";
-    private static final String ALL_ENDPOINT = "/api/v1/vocabularies/all";
     private static final String FIND_INSTANCE_ENDPOINT = "/api/v1/vocabularies/find/{{0}}";
     private static final String IMPORT_CSV_ENDPOINT = "/api/v1/vocabularies/{{0}}/import/csv";
     private static final String IMPORT_EXCEL_ENDPOINT = "/api/v1/vocabularies/{{0}}/import/excel";
@@ -30,15 +28,13 @@ public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     }
 
     public List<ExtendedVocabulary> all() {
-        return restApi.get(ALL_ENDPOINT, VocabularyPageResult.class).getContent().stream()
-                .map(ExtendedVocabulary::new)
-                .collect(Collectors.toList());
+        return restApi.get(COMMON_ENDPOINT, VocabularyPageResult.class, "all=1").getContent();
     }
 
     @Override
-    public Vocabulary change(Vocabulary vocabulary) {
-        Vocabulary result = super.change(vocabulary);
-        this.singleLookupCache.invalidate(vocabulary.getId());
+    public ExtendedVocabulary change(Vocabulary vocabulary) {
+        ExtendedVocabulary result = new ExtendedVocabulary(super.change(vocabulary));
+        this.singleLookupCache.update(vocabulary.getId(), result);
         return result;
     }
 
