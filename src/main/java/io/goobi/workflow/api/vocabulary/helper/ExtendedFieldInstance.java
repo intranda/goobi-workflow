@@ -162,8 +162,11 @@ public class ExtendedFieldInstance extends FieldInstance {
     }
 
     public String getFieldValue() {
-        // TODO: Decide which language to show
-        String value = extractValue(this);
+        return getFieldValue(transformToThreeCharacterAbbreviation(this.languageSupplier.get()));
+    }
+
+    public String getFieldValue(String language) {
+        String value = extractValue(this, language);
         if (!value.isBlank() && definition.getReferenceVocabularyId() != null) {
             // Process multi-valued referenced fields
             List<Long> ids = Arrays.stream(value.strip().split("\\|"))
@@ -179,12 +182,12 @@ public class ExtendedFieldInstance extends FieldInstance {
         return value;
     }
 
-    private String extractValue(FieldInstance field) {
+    private String extractValue(FieldInstance field, String language) {
         return field.getValues().stream()
                 .map(
                         v -> {
                             Optional<String> preferredLanguage = v.getTranslations().stream()
-                                    .filter(t -> languageSupplier.get() != null && transformToThreeCharacterAbbreviation(languageSupplier.get()).equals(t.getLanguage()))
+                                    .filter(t -> language != null && language.equals(t.getLanguage()))
                                     .map(TranslationInstance::getValue)
                                     .findFirst();
                             if (preferredLanguage.isPresent() && !preferredLanguage.get().isBlank()) {
@@ -220,7 +223,8 @@ public class ExtendedFieldInstance extends FieldInstance {
             case "fr":
                 return "fre";
             default:
-                throw new IllegalArgumentException("Unknown language: \"" + language + "\"");
+                log.warn("Unknown language \"{}\", falling back to \"eng\"", language);
+                return "eng";
         }
     }
 }
