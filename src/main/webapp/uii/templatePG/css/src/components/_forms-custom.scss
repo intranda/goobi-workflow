@@ -258,6 +258,9 @@ fieldSet:disabled .badge > a {
       padding: 0;
       margin: 0;
       .form-input {
+        border-inline-end: 0;
+      }
+      .form-label + .form-input {
         border-inline: 0;
       }
     }
