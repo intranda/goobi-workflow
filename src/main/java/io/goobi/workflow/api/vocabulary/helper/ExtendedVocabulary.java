@@ -22,6 +22,10 @@ public class ExtendedVocabulary extends Vocabulary {
         this.skosExportPossible = get_links().keySet().stream().anyMatch(link -> link.startsWith("export_rdf"));
     }
 
+    public String getURI() {
+        return get_links().get("self").getHref();
+    }
+
     public String rdfXmlExport() {
         return get_links().get("export_rdf_xml").getHref();
     }

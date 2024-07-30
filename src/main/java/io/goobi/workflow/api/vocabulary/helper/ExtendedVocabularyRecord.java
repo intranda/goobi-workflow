@@ -64,6 +64,32 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         prepareEmpty();
     }
 
+    public String getURI() {
+        return get_links().get("self").getHref();
+    }
+
+    public String getFieldValueForDefinition(FieldDefinition definition) {
+        return getExtendedFields().stream()
+                .filter(f -> f.getDefinitionId().equals(definition.getId()))
+                .findFirst()
+                .map(ExtendedFieldInstance::getFieldValue)
+                .orElseThrow();
+    }
+
+    public String getFieldValueForDefinitionName(String definitionName) {
+        return getExtendedFields().stream()
+                .filter(f -> f.getDefinition().getName().equals(definitionName))
+                .findFirst()
+                .map(ExtendedFieldInstance::getFieldValue)
+                .orElseThrow();
+    }
+
+    public void writeReferenceMetadata(Metadata meta) {
+        ExtendedVocabulary vocabulary = vocabularyResolver.apply(getVocabularyId());
+        meta.setValue(getMainValue());
+        meta.setAuthorityFile(vocabulary.getName(), vocabulary.get_links().get("self").getHref(), get_links().get("self").getHref());
+    }
+
     private void initParents() {
         if (this.getParentId() != null) {
             ExtendedVocabularyRecord parent = recordResolver.apply(this.getParentId());
@@ -93,27 +119,5 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         if (!missingFields.isEmpty()) {
             postInit();
         }
-    }
-
-    public void writeReferenceMetadata(Metadata meta) {
-        ExtendedVocabulary vocabulary = vocabularyResolver.apply(getVocabularyId());
-        meta.setValue(getMainValue());
-        meta.setAuthorityFile(vocabulary.getName(), vocabulary.get_links().get("self").getHref(), get_links().get("self").getHref());
-    }
-
-    public String getFieldValueForDefinition(FieldDefinition definition) {
-        return getExtendedFields().stream()
-                .filter(f -> f.getDefinitionId().equals(definition.getId()))
-                .findFirst()
-                .map(ExtendedFieldInstance::getFieldValue)
-                .orElseThrow();
-    }
-
-    public String getFieldValueForDefinitionName(String definitionName) {
-        return getExtendedFields().stream()
-                .filter(f -> f.getDefinition().getName().equals(definitionName))
-                .findFirst()
-                .map(ExtendedFieldInstance::getFieldValue)
-                .orElseThrow();
     }
 }
