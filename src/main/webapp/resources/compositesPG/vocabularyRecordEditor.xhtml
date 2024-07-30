@@ -53,13 +53,14 @@
                         </button>
                     </ui:fragment>
                 </legend>
-                <div class="field-set-content">
+                <div class="#{field.definition.multiValued == true ? 'field-set-content' : ''}">
                     <ui:repeat var="value" value="#{field.values}">
                         <fieldSet class="field-set">
                             <legend class="field-set-legend">
                                 <button
                                         jsf:id="deleteValue"
                                         jsf:action="#{field.deleteFieldValue(value)}"
+                                        jsf:rendered="#{field.definition.multiValued == true}"
                                         class="btn"
                                         data-bs-toggle="tooltip"
                                         title="Delete value">

@@ -231,6 +231,9 @@ fieldSet:disabled .badge > a {
     width: 100%;
     > .btn {
       padding-block-start: 0;
+      &:first-of-type {
+        margin-inline-start: auto;
+      }
     }
   }
   > .form-rows,
@@ -265,6 +268,11 @@ fieldSet:disabled .badge > a {
       }
     }
   }
+}
+
+.field-set:has(.field-set) {
+  padding: 0;
+  border-block-end: 0;
 }
 
 // input elements in box titles, should be mostly search/filter inputs
