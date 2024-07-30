@@ -3,6 +3,8 @@ package io.goobi.workflow.api.vocabulary.helper;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import lombok.Getter;
 
+import java.util.Optional;
+
 public class ExtendedVocabulary extends Vocabulary {
     @Getter
     private boolean skosExportPossible;
@@ -19,7 +21,9 @@ public class ExtendedVocabulary extends Vocabulary {
     }
 
     private void postInit() {
-        this.skosExportPossible = get_links().keySet().stream().anyMatch(link -> link.startsWith("export_rdf"));
+        this.skosExportPossible = Optional.ofNullable(get_links())
+                .map(m -> m.keySet().stream().anyMatch(link -> link.startsWith("export_rdf")))
+                .orElse(false);
     }
 
     public String getURI() {
