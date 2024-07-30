@@ -10,8 +10,12 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.extern.log4j.Log4j2;
 
+import javax.faces.model.SelectItem;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class VocabularyRecordAPI {
@@ -243,5 +247,35 @@ public class VocabularyRecordAPI {
 
     private boolean fieldIsEmpty(FieldInstance fieldInstance) {
         return fieldInstance.getValues().isEmpty();
+    }
+
+    public List<String> getRecordMainValues(long vocabularyId) {
+        return getRecordMainValues(list(vocabularyId));
+    }
+
+    public List<String> getRecordMainValues(VocabularyRecordQueryBuilder query) {
+        return query
+                .all()
+                .request()
+                .getContent()
+                .stream()
+                .map(ExtendedVocabularyRecord::getMainValue)
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public List<SelectItem> getRecordSelectItems(long vocabularyId) {
+        return getRecordSelectItems(list(vocabularyId));
+    }
+
+    public List<SelectItem> getRecordSelectItems(VocabularyRecordQueryBuilder query) {
+        return query
+                .all()
+                .request()
+                .getContent()
+                .stream()
+                .map(r -> new SelectItem(String.valueOf(r.getId()), r.getMainValue()))
+                .sorted(Comparator.comparing(SelectItem::getLabel))
+                .collect(Collectors.toList());
     }
 }
