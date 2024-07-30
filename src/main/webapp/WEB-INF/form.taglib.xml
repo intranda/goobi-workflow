@@ -18,8 +18,8 @@
         <source>../resources/form/legend.xhtml</source>
     </tag>
     <tag>
-        <tag-name>row</tag-name>
-        <source>../resources/form/row.xhtml</source>
+        <tag-name>field</tag-name>
+        <source>../resources/form/field.xhtml</source>
     </tag>
     <tag>
         <tag-name>label</tag-name>

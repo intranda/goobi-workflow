@@ -152,7 +152,7 @@
 
                             <!-- TAB 1 -->
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6' and NavigationForm.uiStatus.user_config ne 'tab7'}">
-                                <form:row>
+                                <form:field>
                                     <form:label required="true">
                                         #{msgs.vorname}
                                     </form:label>
@@ -164,8 +164,8 @@
                                             readonly="false" />
                                         <form:help>#{msgs.helpVorname}</form:help>
                                     </form:input>
-                                </form:row>
-                                <form:row>
+                                </form:field>
+                                <form:field>
                                     <form:label required="true">
                                         #{msgs.nachname}
                                     </form:label>
@@ -177,8 +177,8 @@
                                             readonly="false" />
                                         <form:help>#{msgs.helpNachname}</form:help>
                                     </form:input>
-                                </form:row>
-                                <form:row>
+                                </form:field>
+                                <form:field>
                                     <form:label>
                                         #{msgs.standort}
                                     </form:label>
@@ -190,8 +190,8 @@
                                             readonly="true" />
                                         <form:help>#{msgs.helpStandort}</form:help>
                                     </form:input>
-                                </form:row>
-                                <form:row>
+                                </form:field>
+                                <form:field>
                                     <form:label>
                                         #{msgs.email}
                                     </form:label>
@@ -203,8 +203,8 @@
                                             readonly="true" />
                                         <form:help>#{msgs.helpEmail}</form:help>
                                     </form:input>
-                                </form:row>
-                                <form:row>
+                                </form:field>
+                                <form:field>
                                     <form:label>
                                         #{msgs.projekte}
                                     </form:label>
@@ -225,8 +225,8 @@
                                         </x:dataList>
                                         <form:help>#{msgs.helpProjects}</form:help>
                                     </form:input>
-                                </form:row>
-                                <form:row>
+                                </form:field>
+                                <form:field>
                                     <form:label>
                                         #{msgs.benutzergruppen}
                                     </form:label>
@@ -247,8 +247,8 @@
                                         </x:dataList>
                                         <form:help>#{msgs.helpUsergroups}</form:help>
                                     </form:input>
-                                </form:row>
-                                <form:row>
+                                </form:field>
+                                <form:field>
                                     <form:label>
                                         #{msgs.usergroup_assignedRoles}
                                     </form:label>
@@ -277,7 +277,7 @@
                                             #{msgs.helpUserRoles}
                                         </form:help>
                                     </form:input>
-                                </form:row>
+                                </form:field>
                             </h:panelGroup>
 
 
