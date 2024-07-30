@@ -34,94 +34,88 @@
     <ui:define name="content">
 
         <h:form
-                id="myform"
-                styleClass="form-horizontal form-bordered"
-                onkeypress="submitOnEnter(event);"
-                rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}">
+			id="myform"
+			styleClass="form-horizontal form-bordered"
+			onkeypress="submitOnEnter(event);"
+			rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}">
+			<intranda:box
+				boxType="action"
+				boxTitle="false"
+				boxForm="true"
+				boxPadding="false">
+				<intranda:boxTitle
+					title="#{myPageTitle}"
+					icon="fa-database"/>
 
-            <div
-                    class="row"
-                    role="main">
-                <div class="col-12">
+				<intranda:formOutputText
+					label="#{msgs.id}"
+					field="#{vocabularyEditBean.vocabulary.id}"
+					name="vocabularyId"/>
+				<intranda:formInputText
+					id="title"
+					name="titel"
+					label="#{msgs.vocabularyManager_vocabulary}"
+					field="#{vocabularyEditBean.vocabulary.name}"
+					help="#{msgs.help_vocabulary_title}"/>
 
-                    <intranda:box
-                            boxType="action"
-                            boxTitle="false"
-                            boxForm="true"
-                            boxPadding="false">
-                        <intranda:boxTitle
-                                title="#{myPageTitle}"
-                                icon="fa-database"/>
+				<intranda:formInputTextArea
+					id="file"
+					name="fileName"
+					label="#{msgs.vocabularyManager_description}"
+					field="#{vocabularyEditBean.vocabulary.description}"
+					help="#{msgs.help_vocabulary_description}"
+					required="false"/>
 
-                        <intranda:formOutputText label="#{msgs.id}"
-                                                 field="#{vocabularyEditBean.vocabulary.id}"
-                                                 name="vocabularyId"/>
-                        <intranda:formInputText
-                                id="title"
-                                name="titel"
-                                label="#{msgs.vocabularyManager_vocabulary}"
-                                field="#{vocabularyEditBean.vocabulary.name}"
-                                help="#{msgs.help_vocabulary_title}"/>
+				<!-- OPTIONAL METADATA -->
+				<ui:fragment rendered="#{vocabularyEditBean.metadataRecord != null}">
+						<intranda:vocabularyRecordEditor
+							record="#{vocabularyEditBean.metadataRecord}"
+							showID="false"
+						/>
+				</ui:fragment>
+				<div class="box__actions">
+					<!-- Cancel -->
+					<a
+						class="btn btn-blank submitOnEnter"
+						jsf:id="abbrechen"
+						jsf:type="cancel"
+						jsf:action="#{vocabularyBean.load()}"
+						jsf:immediate="true">
+						<span>
+							<h:outputText value="#{msgs.abbrechen}"/>
+						</span>
+					</a>
 
-                        <intranda:formInputTextArea
-                                id="file"
-                                name="fileName"
-                                label="#{msgs.vocabularyManager_description}"
-                                field="#{vocabularyEditBean.vocabulary.description}"
-                                help="#{msgs.help_vocabulary_description}"
-                                required="false"/>
+					<!-- Save -->
+					<button
+						class="btn btn-success submitOnEnter"
+						jsf:id="absenden"
+						type="submit"
+						jsf:action="#{vocabularyEditBean.saveVocabulary}">
+						<span
+							aria-hidden="true"
+							class="fa fa-save"/>
+						<span>
+							<h:outputText value="#{msgs.speichern}"/>
+						</span>
+					</button>
+					<button
+						jsf:id="delete"
+						jsf:action="#{vocabularyEditBean.deleteVocabulary}"
+						class="btn btn-hot trigger-delete"
+						onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+						jsf:rendered="#{vocabularyEditBean.vocabulary != null}">
+						<span
+							aria-hidden="true"
+							class="fa fa-trash-o"/>
+						<span>
+							<h:outputText value="#{msgs.loeschen}"/>
+						</span>
+					</button>
 
-                        <!-- OPTIONAL METADATA -->
-                        <ui:fragment rendered="#{vocabularyEditBean.metadataRecord != null}">
-                            <intranda:vocabularyRecordEditor
-                                    record="#{vocabularyEditBean.metadataRecord}"
-                                    showID="false"
-                            />
-                        </ui:fragment>
-                    </intranda:box>
+				</div>
+			</intranda:box>
 
-                    <div class="box__body">
-                        <div class="box__actions">
-                            <!-- Cancel -->
-                            <a
-                                    class="btn btn-blank submitOnEnter"
-                                    jsf:id="abbrechen"
-                                    jsf:type="cancel"
-                                    jsf:action="#{vocabularyBean.load()}"
-                                    jsf:immediate="true">
-									<span>
-										<h:outputText value="#{msgs.abbrechen}"/>
-									</span>
-                            </a>
-
-                            <!-- Save -->
-                            <button
-                                    class="btn btn-success submitOnEnter"
-                                    jsf:id="absenden"
-                                    type="submit"
-                                    jsf:action="#{vocabularyEditBean.saveVocabulary}">
-                                <span class="fa fa-save"/>
-                                <span>
-										<h:outputText value="#{msgs.speichern}"/>
-									</span>
-                            </button>
-
-                            <button
-                                    jsf:id="delete"
-                                    jsf:action="#{vocabularyEditBean.deleteVocabulary}"
-                                    class="btn btn-hot trigger-delete"
-                                    onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
-                                    jsf:rendered="#{vocabularyEditBean.vocabulary != null}">
-                                <span class="fa fa-trash-o"/>
-                                <span>
-										<h:outputText value="#{msgs.loeschen}"/>
-									</span>
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
         </h:form>
 
     </ui:define>

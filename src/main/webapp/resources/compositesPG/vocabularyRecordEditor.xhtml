@@ -46,7 +46,9 @@
                                 data-bs-toggle="tooltip"
                                 jsf:action="#{field.addFieldValue()}"
                                 title="Add value">
-                            <span class="fa fa-plus"/>
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-plus"/>
                             <f:ajax render="@form" execute="@form"/>
                         </button>
                     </ui:fragment>
@@ -61,7 +63,9 @@
                                         class="btn"
                                         data-bs-toggle="tooltip"
                                         title="Delete value">
-                                    <span class="fa fa-minus"/>
+                                    <span
+                                        aria-hidden="true"
+                                        class="fa fa-minus"/>
                                     <f:ajax render="@form" execute="@form"/>
                                 </button>
                             </legend>

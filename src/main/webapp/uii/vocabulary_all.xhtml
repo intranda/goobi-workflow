@@ -89,7 +89,9 @@
                                                     jsf:rel="tooltip"
                                                     jsf:action="#{vocabularyRecordsBean.load(item)}"
                                                     title="#{msgs.vocabularyManager_editRecords}">
-                                                <span class="fa fa-list"/>
+                                                <span
+                                                    aria-hidden="true"
+                                                    class="fa fa-list"/>
                                                 <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip"/>
@@ -105,7 +107,9 @@
                                                     jsf:action="#{vocabularyEditBean.load(item)}"
                                                     jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
                                                     title="#{msgs.vocabularyManager_editVocabulary}">
-                                                <span class="fa fa-pencil"/>
+                                                <span
+                                                    aria-hidden="true"
+                                                    class="fa fa-pencil"/>
                                                 <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip"/>

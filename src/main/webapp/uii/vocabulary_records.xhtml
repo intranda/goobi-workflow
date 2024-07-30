@@ -33,10 +33,10 @@
 
     <ui:define name="content">
         <h:form
-                id="myform"
-                styleClass="form-horizontal form-bordered"
-                onkeypress="submitOnEnter(event);"
-                rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
+            id="myform"
+            styleClass="form-horizontal form-bordered"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
 
             <div class="row" role="main">
                 <div class="col-12 col-lg-6 mb-4">
@@ -45,34 +45,41 @@
 
                 <div class="col-12 col-lg-6">
                     <intranda:box
-                            boxType="action"
-                            boxForm="true"
-                            boxPadding="false"
-                            icon="fa-file-o">
+                        boxType="action"
+                        boxForm="true"
+                        boxPadding="false"
+                        icon="fa-file-o">
                         <intranda:vocabularyRecordEditor
-                                record="#{vocabularyRecordsBean.currentRecord}"
+                            record="#{vocabularyRecordsBean.currentRecord}"
                         />
                         <ui:fragment rendered="#{vocabularyRecordsBean.currentRecord != null}">
                             <div class="box__actions">
                                 <ui:fragment rendered="#{vocabularyRecordsBean.currentRecord.id != null}">
                                     <a
-                                            id="delete"
-                                            href="#"
-                                            class="btn btn-hot me-auto"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal">
-                                        <i class="fa fa-trash-o" title="#{msgs.vocabularyManager_deleteRecord}"/>
+                                        id="delete"
+                                        href="#"
+                                        class="btn btn-hot me-auto"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal"
+                                        title="#{msgs.vocabularyManager_deleteRecord}">
+                                        <span
+                                            aria-hidden="true"
+                                            class="fa fa-trash-o" />
                                         <span>
-                            <h:outputText value="#{msgs.loeschen}"/>
-                        </span>
+                                        <h:outputText value="#{msgs.loeschen}"/>
+                                        </span>
                                     </a>
 
-                                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
-                                         aria-labelledby="myModalLabel">
+                                    <div
+                                        class="modal fade"
+                                        id="deleteModal"
+                                        tabindex="-1"
+                                        role="dialog"
+                                        aria-labelledby="myModalLabel">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-primary-400 text-white">
-                                                    <h4 class="modal-title" id="myModalLabel">
+                                                    <h4 class="h6 modal-title" id="myModalLabel">
                                                         <h:outputText value="#{msgs.loeschen}"/>
                                                     </h4>
                                                 </div>
@@ -87,21 +94,25 @@
                                                     </ui:fragment>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-blank" data-bs-dismiss="modal"
-                                                            aria-hidden="true">#{msgs.abbrechen}
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-blank"
+                                                        data-bs-dismiss="modal">#{msgs.abbrechen}
                                                     </button>
                                                     <!-- <button> will not work with method references, <a> or <h:commandButton> do work however!!! -->
                                                     <a
-                                                            jsf:id="deleteButton"
-                                                            class="btn btn-hot"
-                                                            jsf:action="#{vocabularyRecordsBean.deleteRecord(vocabularyRecordsBean.currentRecord)}"
+                                                        jsf:id="deleteButton"
+                                                        class="btn btn-hot"
+                                                        jsf:action="#{vocabularyRecordsBean.deleteRecord(vocabularyRecordsBean.currentRecord)}"
                                                     >
-                                        <span>
-                                            <span class="fa fa-trash-o"/>
-                                            <span>
-                                                <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>
-                                            </span>
-                                        </span>
+                                                        <span>
+                                                            <span
+                                                                aria-hidden="true"
+                                                                class="fa fa-trash-o"/>
+                                                            <span>
+                                                                <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>
+                                                            </span>
+                                                        </span>
                                                     </a>
                                                 </div>
                                             </div>
@@ -111,14 +122,14 @@
 
                                 <ui:fragment>
                                     <button
-                                            class="btn btn-success submitOnEnter"
-                                            jsf:id="absenden"
-                                            type="submit"
-                                            jsf:action="#{vocabularyRecordsBean.saveRecord(vocabularyRecordsBean.currentRecord)}">
+                                        class="btn btn-success submitOnEnter"
+                                        jsf:id="absenden"
+                                        type="submit"
+                                        jsf:action="#{vocabularyRecordsBean.saveRecord(vocabularyRecordsBean.currentRecord)}">
                                         <span class="fa fa-save"/>
                                         <span>
-                        <h:outputText value="#{msgs.speichern}"/>
-                    </span>
+                                        <h:outputText value="#{msgs.speichern}"/>
+                                    </span>
                                     </button>
                                 </ui:fragment>
                             </div>
