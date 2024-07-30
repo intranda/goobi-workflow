@@ -77,11 +77,25 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
                 .map(ExtendedFieldInstance::getFieldValue);
     }
 
+    public Optional<String> getFieldValueForDefinition(FieldDefinition definition, String language) {
+        return getExtendedFields().stream()
+                .filter(f -> f.getDefinitionId().equals(definition.getId()))
+                .findFirst()
+                .map(f -> f.getFieldValue(language));
+    }
+
     public Optional<String> getFieldValueForDefinitionName(String definitionName) {
         return getExtendedFields().stream()
                 .filter(f -> f.getDefinition().getName().equals(definitionName))
                 .findFirst()
                 .map(ExtendedFieldInstance::getFieldValue);
+    }
+
+    public Optional<String> getFieldValueForDefinitionName(String definitionName, String language) {
+        return getExtendedFields().stream()
+                .filter(f -> f.getDefinition().getName().equals(definitionName))
+                .findFirst()
+                .map(f -> f.getFieldValue(language));
     }
 
     public void writeReferenceMetadata(Metadata meta) {
