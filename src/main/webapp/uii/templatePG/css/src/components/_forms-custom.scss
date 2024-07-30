@@ -419,6 +419,11 @@ fieldSet:disabled .badge > a {
   }
 }
 
+.field-set:has(.field-set) {
+  padding: 0;
+  border-block-end: 0;
+}
+
 // input elements in box titles, should be mostly search/filter inputs
 .box__title {
   input {
