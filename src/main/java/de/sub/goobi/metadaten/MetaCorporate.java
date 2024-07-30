@@ -25,20 +25,6 @@
  */
 package de.sub.goobi.metadaten;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.faces.model.SelectItem;
-
-import org.apache.commons.lang3.StringUtils;
-import org.geonames.Toponym;
-import org.goobi.api.display.enums.DisplayType;
-import org.goobi.api.display.helper.NormDatabase;
-import org.goobi.beans.Process;
-import org.goobi.production.cli.helper.StringPair;
-import org.goobi.vocabulary.VocabRecord;
-
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
@@ -46,12 +32,24 @@ import de.intranda.digiverso.normdataimporter.model.TagDescription;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
+import org.geonames.Toponym;
+import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.NormDatabase;
+import org.goobi.beans.Process;
+import org.goobi.production.cli.helper.StringPair;
 import ugh.dl.Corporate;
 import ugh.dl.HoldingElement;
 import ugh.dl.MetadataType;
 import ugh.dl.NamePart;
 import ugh.dl.Prefs;
+
+import javax.faces.model.SelectItem;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class MetaCorporate implements SearchableMetadata {
@@ -83,9 +81,9 @@ public class MetaCorporate implements SearchableMetadata {
     private EasyDBSearch easydbSearch = new EasyDBSearch();
     private List<StringPair> vocabularySearchFields;
     private String vocabularyName;
-    private List<VocabRecord> records;
+    private List<ExtendedVocabularyRecord> records;
     private String vocabularyUrl;
-    private VocabRecord selectedVocabularyRecord;
+    private ExtendedVocabularyRecord selectedVocabularyRecord;
 
     /**
      * constructor
