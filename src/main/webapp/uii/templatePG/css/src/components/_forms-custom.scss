@@ -160,6 +160,7 @@ fieldSet:disabled .badge > a {
 }
 
 // re-implementation of forms in non-combinatory classes
+// TODO: stacked form-rows need styling similar to fieldsets on small screens
 .form-row {
   border-block-end: 1px solid var(--clr-neutral-300);
   display: flex;
@@ -182,19 +183,37 @@ fieldSet:disabled .badge > a {
   > .form-label {
     background: var(--clr-neutral-200);
     border-inline-end: 1px solid var(--clr-neutral-300);
-    > .btn:first-of-type {
-      margin-inline-start: auto;
+    > .btn{
+      padding-block-start: 0;
+      &:first-of-type {
+        margin-inline-start: auto;
+      }
     }
   }
   > .form-input {
     background: var(--clr-white);
+    &:has(.form-row) {
+      padding: 0;
+    }
+    > .form-row:last-child {
+      border-block-end: 0;
+    }
   }
   @media (min-width: 768px) {
     > .form-label {
       width: 25%;
     }
-    > .form-input {
+    > .form-label+.form-input {
       width: 75%;
+    }
+  }
+}
+
+.field-set-content {
+  > .field-set {
+    padding-inline: 1em;
+    > .field-set-content {
+      border-inline-end: 1px solid var(--clr-neutral-300);
     }
   }
 }
@@ -202,14 +221,24 @@ fieldSet:disabled .badge > a {
 .field-set {
   background: var(--clr-neutral-200);
   border-block-end: 1px solid var(--clr-neutral-300);
+  width: 100%;
   padding: 0 0 0.25rem 0;
-  > .fieldSet-legend {
+  > .field-set-legend {
+    display: flex;
     font-size: var(--fs-400);
+    justify-content: space-between;
     padding: 0.5rem;
     width: 100%;
+    > .btn {
+      padding-block-start: 0;
+    }
   }
-  > .form-rows {
+  > .form-rows,
+  > .field-set-content {
     border-block-start: 1px solid var(--clr-neutral-300);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     margin: 0 0.5rem;
     padding: 0 0 0.25rem 0;
     .form-label {
@@ -221,10 +250,11 @@ fieldSet:disabled .badge > a {
     }
   }
   @media (min-width: 768px) {
-    > .fieldSet-legend {
+    > .field-set-legend {
       width: 25%;
     }
-    > .form-rows {
+    > .form-rows,
+    > .field-set-content {
       padding: 0;
       margin: 0;
       .form-input {
