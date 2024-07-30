@@ -16,10 +16,10 @@
 
     <composite:implementation>
             <tr id="#{cc.clientId}" role="row">
-                <td class="p-0">
+                <td>
                     <button
                             class="btn btn-outline treeView-item"
-                            style="--level: #{cc.attrs.record.level + 1}"
+                            style="--level: #{cc.attrs.record.level}"
                             rendered="#{cc.attrs.record.children ne null and cc.attrs.record.children.isEmpty() == false and vocabularyRecordsBean.isExpanded(cc.attrs.record) == false}"
                             jsf:action="#{vocabularyRecordsBean.expandRecord(cc.attrs.record)}">
                         <div class="spacer"/>
@@ -32,7 +32,7 @@
                     </button>
                     <button
                             class="btn btn-outline treeView-item"
-                            style="--level: #{cc.attrs.record.level + 1}"
+                            style="--level: #{cc.attrs.record.level}"
                             rendered="#{cc.attrs.record.children ne null and cc.attrs.record.children.isEmpty() == false and vocabularyRecordsBean.isExpanded(cc.attrs.record) == true}"
                             jsf:action="#{vocabularyRecordsBean.collapseRecord(cc.attrs.record)}">
                         <div class="spacer"/>
@@ -43,16 +43,18 @@
                             <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
                         </div>
                     </button>
-                    <ui:fragment rendered="#{cc.attrs.record.children == null or cc.attrs.record.children.isEmpty() == true}">
-                        <button class="btn btn-outline bg-transparent border-0 opacity-100 text-black treeView-item"
-                                disabled="true"
-                                style="--level: #{cc.attrs.record.level + 1}">
+                    <ui:fragment rendered="#{vocabularyRecordsBean.isHierarchical() == true and cc.attrs.record.children == null or cc.attrs.record.children.isEmpty() == true}">
+                        <div class="treeView-item"
+                                style="--level: #{cc.attrs.record.level}">
                             <div class="spacer"/>
                             <div class="toggle"/>
                             <div class="content">
                                 <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
                             </div>
-                        </button>
+                        </div>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{vocabularyRecordsBean.isHierarchical() != true}">
+                        <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
                     </ui:fragment>
                     <ui:repeat var="titleValue" value="#{cc.attrs.record.titleValues}" offset="1">
                         <td>
