@@ -1,5 +1,6 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.FieldInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
@@ -64,6 +65,7 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         prepareEmpty();
     }
 
+    @JsonIgnore
     public String getURI() {
         return get_links().get("self").getHref();
     }
