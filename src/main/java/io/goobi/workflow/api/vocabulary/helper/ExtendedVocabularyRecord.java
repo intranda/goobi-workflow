@@ -71,31 +71,35 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
     }
 
     public Optional<String> getFieldValueForDefinition(FieldDefinition definition) {
-        return getExtendedFields().stream()
-                .filter(f -> f.getDefinitionId().equals(definition.getId()))
-                .findFirst()
+        return getFieldForDefinition(definition)
                 .map(ExtendedFieldInstance::getFieldValue);
     }
 
     public Optional<String> getFieldValueForDefinition(FieldDefinition definition, String language) {
-        return getExtendedFields().stream()
-                .filter(f -> f.getDefinitionId().equals(definition.getId()))
-                .findFirst()
+        return getFieldForDefinition(definition)
                 .map(f -> f.getFieldValue(language));
     }
 
     public Optional<String> getFieldValueForDefinitionName(String definitionName) {
-        return getExtendedFields().stream()
-                .filter(f -> f.getDefinition().getName().equals(definitionName))
-                .findFirst()
+        return getFieldForDefinitionName(definitionName)
                 .map(ExtendedFieldInstance::getFieldValue);
     }
 
     public Optional<String> getFieldValueForDefinitionName(String definitionName, String language) {
+        return getFieldForDefinitionName(definitionName)
+                .map(f -> f.getFieldValue(language));
+    }
+
+    public Optional<ExtendedFieldInstance> getFieldForDefinition(FieldDefinition definition) {
+        return getExtendedFields().stream()
+                .filter(f -> f.getDefinitionId().equals(definition.getId()))
+                .findFirst();
+    }
+
+    public Optional<ExtendedFieldInstance> getFieldForDefinitionName(String definitionName) {
         return getExtendedFields().stream()
                 .filter(f -> f.getDefinition().getName().equals(definitionName))
-                .findFirst()
-                .map(f -> f.getFieldValue(language));
+                .findFirst();
     }
 
     public void writeReferenceMetadata(Metadata meta) {

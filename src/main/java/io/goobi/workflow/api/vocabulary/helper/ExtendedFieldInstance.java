@@ -174,6 +174,12 @@ public class ExtendedFieldInstance extends FieldInstance {
         return value;
     }
 
+    public void setFieldValue(String value) {
+        getValues().clear();
+        FieldValue fieldValue = addFieldValue();
+        fieldValue.getTranslations().forEach(t -> t.setValue(value));
+    }
+
     private String extractValue(FieldInstance field, String language) {
         return field.getValues().stream()
                 .map(
