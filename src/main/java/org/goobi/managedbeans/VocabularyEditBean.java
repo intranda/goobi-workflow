@@ -25,13 +25,10 @@
  */
 package org.goobi.managedbeans;
 
-import io.goobi.vocabulary.exchange.FieldDefinition;
-import io.goobi.vocabulary.exchange.FieldInstance;
-import io.goobi.vocabulary.exchange.FieldType;
-import io.goobi.vocabulary.exchange.FieldValue;
-import io.goobi.vocabulary.exchange.TranslationInstance;
+import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
+import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Getter;
@@ -41,11 +38,6 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Named
 @WindowScoped
@@ -90,7 +82,17 @@ public class VocabularyEditBean implements Serializable {
     public String saveVocabulary() {
         api.vocabularies().change(vocabulary);
         if (metadataRecord != null) {
-            api.vocabularyRecords().save(metadataRecord);
+            long recordId = metadataRecord.getId();
+            try {
+                api.vocabularyRecords().save(metadataRecord);
+            } catch (APIException e) {
+                Helper.setFehlerMeldung(e);
+                metadataRecord.setId(recordId);
+                metadataRecord.setVocabularyId(vocabulary.getId());
+                metadataRecord.setMetadata(true);
+                metadataRecord = new ExtendedVocabularyRecord(metadataRecord);
+                return "";
+            }
         }
         return cancel();
     }
