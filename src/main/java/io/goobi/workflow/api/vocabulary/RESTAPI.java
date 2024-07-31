@@ -1,5 +1,6 @@
 package io.goobi.workflow.api.vocabulary;
 
+import io.goobi.vocabulary.exception.VocabularyException;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -53,12 +54,14 @@ public class RESTAPI {
                     .request(MediaType.APPLICATION_JSON)
                     .get()) {
                 if (response.getStatus() / 100 != 2) {
-                    throw new APIException(generateUrl(endpoint, parameters), "GET", response.getStatus(), response.readEntity(String.class));
+                    throw new APIException(generateUrl(endpoint, parameters), "GET", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
                 }
                 return response.readEntity(clazz);
             }
+        } catch (APIException e) {
+            throw e;
         } catch (RuntimeException e) {
-            throw new APIException(generateUrl(endpoint, parameters), "GET", -1, e.getMessage());
+            throw new APIException(generateUrl(endpoint, parameters), "GET", -1, e.getMessage(), null, e);
         }
     }
 
@@ -69,12 +72,14 @@ public class RESTAPI {
                     .request(MediaType.APPLICATION_JSON)
                     .post(Entity.json(obj))) {
                 if (response.getStatus() / 100 != 2) {
-                    throw new APIException(generateUrl(endpoint, parameters), "POST", response.getStatus(), response.readEntity(String.class));
+                    throw new APIException(generateUrl(endpoint, parameters), "POST", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
                 }
                 return response.readEntity(clazz);
             }
+        } catch (APIException e) {
+            throw e;
         } catch (RuntimeException e) {
-            throw new APIException(generateUrl(endpoint, parameters), "POST", -1, e.getMessage());
+            throw new APIException(generateUrl(endpoint, parameters), "POST", -1, e.getMessage(), null, e);
         }
     }
 
@@ -85,12 +90,14 @@ public class RESTAPI {
                     .request(MediaType.APPLICATION_JSON)
                     .put(Entity.json(obj))) {
                 if (response.getStatus() / 100 != 2) {
-                    throw new APIException(generateUrl(endpoint, parameters), "PUT", response.getStatus(), response.readEntity(String.class));
+                    throw new APIException(generateUrl(endpoint, parameters), "PUT", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
                 }
                 return response.readEntity(clazz);
             }
+        } catch (APIException e) {
+            throw e;
         } catch (RuntimeException e) {
-            throw new APIException(generateUrl(endpoint, parameters), "PUT", -1, e.getMessage());
+            throw new APIException(generateUrl(endpoint, parameters), "PUT", -1, e.getMessage(), null, e);
         }
     }
 
@@ -104,13 +111,15 @@ public class RESTAPI {
                         .request(MediaType.MULTIPART_FORM_DATA)
                         .put(Entity.entity(multiPart, multiPart.getMediaType()), Response.class)) {
                     if (response.getStatus() / 100 != 2) {
-                        throw new APIException(generateUrl(endpoint, parameters), "PUT", response.getStatus(), response.readEntity(String.class));
+                        throw new APIException(generateUrl(endpoint, parameters), "PUT", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
                     }
                     return response.readEntity(Response.class);
                 }
             }
+        } catch (APIException e) {
+            throw e;
         } catch (RuntimeException | IOException e) {
-            throw new APIException(generateUrl(endpoint, parameters), "PUT", -1, e.getMessage());
+            throw new APIException(generateUrl(endpoint, parameters), "PUT", -1, e.getMessage(), null, e);
         }
     }
 
@@ -124,13 +133,15 @@ public class RESTAPI {
                         .request(MediaType.MULTIPART_FORM_DATA)
                         .post(Entity.entity(multiPart, multiPart.getMediaType()), Response.class)) {
                     if (response.getStatus() / 100 != 2) {
-                        throw new APIException(generateUrl(endpoint, parameters), "POST", response.getStatus(), response.readEntity(String.class));
+                        throw new APIException(generateUrl(endpoint, parameters), "POST", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
                     }
                     return response.readEntity(Response.class);
                 }
             }
+        } catch (APIException e) {
+            throw e;
         } catch (RuntimeException | IOException e) {
-            throw new APIException(generateUrl(endpoint, parameters), "POST", -1, e.getMessage());
+            throw new APIException(generateUrl(endpoint, parameters), "POST", -1, e.getMessage(), null, e);
         }
     }
 
@@ -141,12 +152,14 @@ public class RESTAPI {
                     .request(MediaType.APPLICATION_JSON)
                     .delete()) {
                 if (response.getStatus() / 100 != 2) {
-                    throw new APIException(generateUrl(endpoint, parameters), "DELETE", response.getStatus(), response.readEntity(String.class));
+                    throw new APIException(generateUrl(endpoint, parameters), "DELETE", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
                 }
                 return response.readEntity(clazz);
             }
+        } catch (APIException e) {
+            throw e;
         } catch (RuntimeException e) {
-            throw new APIException(generateUrl(endpoint, parameters), "DELETE", -1, e.getMessage());
+            throw new APIException(generateUrl(endpoint, parameters), "DELETE", -1, e.getMessage(), null, e);
         }
     }
 }

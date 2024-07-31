@@ -1,5 +1,6 @@
 package io.goobi.workflow.api.vocabulary.hateoas;
 
+import io.goobi.vocabulary.exception.VocabularyException;
 import io.goobi.vocabulary.exchange.Identifiable;
 import io.goobi.workflow.api.vocabulary.APIException;
 import lombok.Data;
@@ -198,7 +199,7 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
                 .request(MediaType.APPLICATION_JSON)
                 .get()) {
             if (response.getStatus() / 100 != 2) {
-                throw new APIException(url, "GET", response.getStatus(), response.readEntity(String.class));
+                throw new APIException(url, "GET", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
             }
             setCurrentPage(response.readEntity(pageClass));
         }
