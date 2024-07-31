@@ -94,7 +94,10 @@
                     class="btn btn-blank me-2 float-end"
                     title="#{msgs.NORM_geonamesSearch}"
                     aria-label="#{msgs.NORM_gndSearch}"
-                    jsf:onclick="$(this).parent().parent().next().modal('show');"
+                    jsf:onclick="
+                        const modal = document.getElementById('#{cc.clientId}:geonamesSearchBox');
+                        const instance = new bootstrap.Modal(modal);
+                        instance.show();"
                     onfocus="#{cc.attrs.onfocus}"
                     type="button"
                     data-toggle="tooltip">
@@ -288,7 +291,10 @@
                                                 <button
                                                     jsf:id="importGeonamesData"
                                                     class="btn btn-success float-end"
-                                                    jsf:onclick="$(this).parent().parent().parent().parent().parent().parent().parent().parent().parent().modal('hide');"
+                                                    jsf:onclick="
+                                                        const modal = document.getElementById('#{cc.clientId}:geonamesSearchBox');
+                                                        const instance = bootstrap.Modal.getInstance(modal);
+                                                        instance.hide();"
                                                     jsf:action="#{cc.attrs.submitDataAction}">
                                                     <f:setPropertyActionListener
                                                         value="#{geonames}"

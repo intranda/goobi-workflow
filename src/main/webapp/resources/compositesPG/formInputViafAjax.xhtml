@@ -121,7 +121,10 @@
                     class="btn btn-blank me-2 float-end"
                     title="#{msgs.NORM_viafSearch}"
                     aria-label="#{msgs.NORM_viafSearch}"
-                    jsf:onclick="$(this).parent().parent().next().modal('show');"
+                    jsf:onclick="
+                        const modal = document.getElementById('#{cc.clientId}:viafSearchBox');
+                        const instance = new bootstrap.Modal(modal);
+                        instance.show();"
                     onfocus="#{cc.attrs.onfocus}"
                     type="button"
                     data-toggle="tooltip">
@@ -428,7 +431,11 @@
                                                             jsf:id="select"
                                                             aria-label="#{msgs.selectFile}"
                                                             class="btn btn-success float-end"
-                                                            jsf:onclick="$(this).parent().parent().parent().parent().parent().parent().parent().parent().modal('hide');;"
+                                                            title="#{cc.clientId}"
+                                                            jsf:onclick="
+                                                                const modal = document.getElementById('#{cc.clientId}:viafSearchBox');
+                                                                const instance = bootstrap.Modal.getInstance(modal);
+                                                                instance.hide();"
                                                             jsf:action="#{cc.attrs.field.importViafData}">
                                                             <f:setPropertyActionListener
                                                                 value="#{database}"
@@ -459,10 +466,11 @@
                                                                 target="_blank"
                                                                 rel="noopener"
                                                                 title="#{msgs.NORM_authorityShowInLocalAuthority}"
-                                                                data-toggle="tooltip"> <img
-                                                                alt="#{database.databaseCode}"
-                                                                src="template/img/viaf/#{database.databaseCode}.png"
-                                                                style="height: 28px; padding-top: 2px; padding-bottom: 2px;" />
+                                                                data-toggle="tooltip">
+                                                                <img
+                                                                    alt="#{database.databaseCode}"
+                                                                    src="template/img/viaf/#{database.databaseCode}.png"
+                                                                    style="height: 28px; padding-top: 2px; padding-bottom: 2px;" />
                                                             </a>
                                                         </ui:fragment>
                                                     </div>
