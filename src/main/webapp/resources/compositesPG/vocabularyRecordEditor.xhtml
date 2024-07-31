@@ -36,12 +36,164 @@
         </ui:fragment>
 
         <ui:repeat var="field" value="#{cc.attrs.record.extendedFields}">
-            <fieldSet class="field-set">
-                <legend class="field-set-legend">
-                    <h:outputText value="#{field.definition.name}"/>
-                    <ui:fragment rendered="#{field.definition.multiValued == true}">
+            <ui:repeat var="value" value="#{field.values}">
+                <ui:fragment rendered="#{field.values.size() == 1 and value.translations.size() == 1}">
+                    <ui:repeat var="translation" value="#{value.translations}">
+                        <!-- Simple text type -->
+                        <div class="form-row">
+                            <div class="form-label" tabindex="-1">
+                                <intranda:formLabel
+                                        label="#{field.definition.name}"
+                                        labelFor="field1"/>
+                            </div>
+                            <div class="form-input">
+                                <!-- Simple text type -->
+                                <ui:fragment
+                                    rendered="#{field.selectableItems.size() == 0 and field.type.large == false}">
+                                    <h:inputText
+                                        id="field1"
+                                        styleClass="form-control form__input"
+                                        value="#{translation.value}"
+                                        readonly="false"
+                                        disabled="false"
+                                    />
+                                        <!-- // CONTENT -->
+                                </ui:fragment>
+                                <!-- // Simple text type -->
+                                <!-- Text area type -->
+                                <ui:fragment
+                                    rendered="#{field.selectableItems.size() == 0 and field.type.large == true}">
+                                    <h:inputTextarea
+                                        id="field2"
+                                        styleClass="form-control metsEditorTextArea"
+                                        value="#{translation.value}"
+                                        rows="6"
+                                        />
+                                </ui:fragment>
+                                <!-- // Text area  type -->
+                                <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
+                                <!-- Single select type -->
+                                <ui:fragment
+                                    rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == false}">
+                                    <h:selectOneMenu
+                                            id="field3"
+                                            styleClass="form-select form__input"
+                                            value="#{translation.value}">
+                                        <f:selectItem
+                                                itemValue="null"
+                                                itemLabel="#{msgs.bitteAuswaehlen}"/>
+                                        <f:selectItems
+                                                value="#{field.selectableItems}"/>
+                                    </h:selectOneMenu>
+                                </ui:fragment>
+                                <!-- // Single select  type -->
+                                <!-- Multi select type -->
+                                <ui:fragment
+                                    rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == true}">
+                                    <div class="form-row">
+                                        <!-- LANGUAGE -->
+                                        <div class="form-label" tabindex="-1"
+                                                jsf:rendered="#{translation.language != null}">
+                                            <intranda:formLabel
+                                                    label="#{translation.language != null ? translation.language : ''}"
+                                                    labelFor="field4"/>
+                                        </div>
+                                        <!-- // LANGUAGE -->
+                                        <!-- CONTENT -->
+                                        <intranda:formInputDropdownBadges selectionBean="#{field.selectionBean}"/>
+                                        <!-- // CONTENT -->
+                                    </div>
+                                </ui:fragment>
+                                <!-- // Multi select  type -->
+                            </div>
+                        </div>
+                    </ui:repeat>
+                </ui:fragment>
+                <ui:fragment rendered="#{field.values.size() == 1 and value.translations.size() > 1 and field.definition.multiValued == false}">
+                    <fieldSet class="field-set">
+                        <legend class="field-set-legend">
+                            <h:outputText value="#{field.definition.name}"/>
+                        </legend>
+                        <div class="field-set-content">
+                            <ui:repeat var="translation" value="#{value.translations}">
+                                <div class="form-row">
+                                    <div class="form-label">
+                                        <intranda:formLabel
+                                            label="#{translation.language}"
+                                            labelFor="field1"/>
+                                    </div>
+                                    <div class="form-input">
+                                        <!-- Simple text type -->
+                                        <ui:fragment
+                                            rendered="#{field.selectableItems.size() == 0 and field.type.large == false}">
+                                            <h:inputText
+                                                id="field1"
+                                                styleClass="form-control form__input"
+                                                value="#{translation.value}"
+                                                readonly="false"
+                                                disabled="false"
+                                            />
+                                                <!-- // CONTENT -->
+                                        </ui:fragment>
+                                        <!-- // Simple text type -->
+                                        <!-- Text area type -->
+                                        <ui:fragment
+                                            rendered="#{field.selectableItems.size() == 0 and field.type.large == true}">
+                                            <h:inputTextarea
+                                                id="field2"
+                                                styleClass="form-control metsEditorTextArea"
+                                                value="#{translation.value}"
+                                                rows="6"
+                                                />
+                                        </ui:fragment>
+                                        <!-- // Text area  type -->
+                                        <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
+                                        <!-- Single select type -->
+                                        <ui:fragment
+                                            rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == false}">
+                                            <h:selectOneMenu
+                                                    id="field3"
+                                                    styleClass="form-select form__input"
+                                                    value="#{translation.value}">
+                                                <f:selectItem
+                                                        itemValue="null"
+                                                        itemLabel="#{msgs.bitteAuswaehlen}"/>
+                                                <f:selectItems
+                                                        value="#{field.selectableItems}"/>
+                                            </h:selectOneMenu>
+                                        </ui:fragment>
+                                        <!-- // Single select  type -->
+                                        <!-- Multi select type -->
+                                        <ui:fragment
+                                            rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == true}">
+                                            <div class="form-row">
+                                                <!-- LANGUAGE -->
+                                                <div class="form-label" tabindex="-1"
+                                                        jsf:rendered="#{translation.language != null}">
+                                                    <intranda:formLabel
+                                                            label="#{translation.language != null ? translation.language : ''}"
+                                                            labelFor="field4"/>
+                                                </div>
+                                                <!-- // LANGUAGE -->
+                                                <!-- CONTENT -->
+                                                <intranda:formInputDropdownBadges selectionBean="#{field.selectionBean}"/>
+                                                <!-- // CONTENT -->
+                                            </div>
+                                        </ui:fragment>
+                                        <!-- // Multi select  type -->
+                                    </div>
+                                </div>
+                            </ui:repeat>
+                        </div>
+                    </fieldSet>
+                </ui:fragment>
+            </ui:repeat>
+            <ui:fragment rendered="#{field.definition.multiValued == true and field.selectableItems.size() == 0}">
+                <fieldSet class="field-set">
+                    <legend class="field-set-legend">
+                        <h:outputText value="#{field.definition.name}"/>
                         <button
-                                jsf:id="addValue"
+                                jsf:id="addValue1"
                                 class="btn"
                                 data-bs-toggle="tooltip"
                                 jsf:action="#{field.addFieldValue()}"
@@ -51,132 +203,66 @@
                                 class="fa fa-plus"/>
                             <f:ajax render="@form" execute="@form"/>
                         </button>
-                    </ui:fragment>
-                </legend>
-                <div class="#{field.definition.multiValued == true ? 'field-set-content' : ''}">
-                    <ui:repeat var="value" value="#{field.values}">
-                        <fieldSet class="field-set">
-                            <legend class="field-set-legend">
-                                <button
+                    </legend>
+                    <div class="field-set-content">
+                        <ui:repeat var="value" value="#{field.values}">
+                            <div class="field-set">
+                                <legend class="field-set-legend">
+                                    <button
                                         jsf:id="deleteValue"
                                         jsf:action="#{field.deleteFieldValue(value)}"
-                                        jsf:rendered="#{field.definition.multiValued == true}"
+                                        jsf:rendered="#{field.values.size() > 1}"
                                         class="btn"
                                         data-bs-toggle="tooltip"
                                         title="Delete value">
-                                    <span
-                                        aria-hidden="true"
-                                        class="fa fa-minus"/>
-                                    <f:ajax render="@form" execute="@form"/>
-                                </button>
-                            </legend>
-                            <div class="field-set-content">
-                                <ui:repeat var="translation" value="#{value.translations}">
-                                    <!-- Simple text type -->
-                                    <ui:fragment
-                                            rendered="#{field.selectableItems.size() == 0 and field.type.large == false}">
+                                        <span
+                                            aria-hidden="true"
+                                            class="fa fa-minus"/>
+                                        <f:ajax render="@form" execute="@form"/>
+                                    </button>
+                                </legend>
+                                <div class="field-set-content">
+                                    <ui:repeat var="translation" value="#{value.translations}">
                                         <div class="form-row">
-                                            <!-- LANGUAGE -->
-                                            <div class="form-label" tabindex="-1"
-                                                 jsf:rendered="#{translation.language != null}">
+                                            <div class="form-label">
                                                 <intranda:formLabel
-                                                        label="#{translation.language != null ? translation.language : ''}"
-                                                        labelFor="field1"/>
+                                                    label="#{translation.language}"
+                                                    labelFor="field1"/>
                                             </div>
-                                            <!-- // LANGUAGE -->
-                                            <!-- CONTENT -->
                                             <div class="form-input">
-                                                <h:inputText
+                                                <!-- Simple text type -->
+                                                <ui:fragment
+                                                    rendered="#{field.selectableItems.size() == 0 and field.type.large == false}">
+                                                    <h:inputText
                                                         id="field1"
                                                         styleClass="form-control form__input"
                                                         value="#{translation.value}"
                                                         readonly="false"
                                                         disabled="false"
-                                                />
-                                            </div>
-                                            <!-- // CONTENT -->
-                                        </div>
-                                    </ui:fragment>
-                                    <!-- // Simple text type -->
-                                    <!-- Text area type -->
-                                    <ui:fragment
-                                            rendered="#{field.selectableItems.size() == 0 and field.type.large == true}">
-                                        <div class="form-row">
-                                            <!-- LANGUAGE -->
-                                            <div class="form-label" tabindex="-1"
-                                                 jsf:rendered="#{translation.language != null}">
-                                                <intranda:formLabel
-                                                        label="#{translation.language != null ? translation.language : ''}"
-                                                        labelFor="field2"/>
-                                            </div>
-                                            <!-- // LANGUAGE -->
-                                            <!-- CONTENT -->
-                                            <div class="form-input">
-                                                <h:inputTextarea
+                                                    />
+                                                        <!-- // CONTENT -->
+                                                </ui:fragment>
+                                                <!-- // Simple text type -->
+                                                <!-- Text area type -->
+                                                <ui:fragment
+                                                    rendered="#{field.selectableItems.size() == 0 and field.type.large == true}">
+                                                    <h:inputTextarea
                                                         id="field2"
                                                         styleClass="form-control metsEditorTextArea"
                                                         value="#{translation.value}"
                                                         rows="6"
-                                                />
+                                                        />
+                                                </ui:fragment>
+                                                <!-- // Text area  type -->
                                             </div>
-                                            <!-- // CONTENT -->
                                         </div>
-                                    </ui:fragment>
-                                    <!-- // Text area  type -->
-                                    <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
-                                    <!-- Single select type -->
-                                    <ui:fragment
-                                            rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == false}">
-                                        <div class="form-row">
-                                            <!-- LANGUAGE -->
-                                            <div class="form-label" tabindex="-1"
-                                                 jsf:rendered="#{translation.language != null}">
-                                                <intranda:formLabel
-                                                        label="#{translation.language != null ? translation.language : ''}"
-                                                        labelFor="field3"/>
-                                            </div>
-                                            <!-- // LANGUAGE -->
-                                            <!-- CONTENT -->
-                                            <div class="form-input">
-                                                <h:selectOneMenu
-                                                        id="field3"
-                                                        styleClass="form-select form__input"
-                                                        value="#{translation.value}">
-                                                    <f:selectItem
-                                                            itemValue="null"
-                                                            itemLabel="#{msgs.bitteAuswaehlen}"/>
-                                                    <f:selectItems
-                                                            value="#{field.selectableItems}"/>
-                                                </h:selectOneMenu>
-                                            </div>
-                                            <!-- // CONTENT -->
-                                        </div>
-                                    </ui:fragment>
-                                    <!-- // Single select  type -->
-                                </ui:repeat>
+                                    </ui:repeat>
+                                </div>
                             </div>
-                        </fieldSet>
-                    </ui:repeat>
-                    <!-- Multi select type -->
-                    <ui:fragment
-                            rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == true}">
-                        <div class="form-row">
-                            <!-- LANGUAGE -->
-                            <div class="form-label" tabindex="-1"
-                                 jsf:rendered="#{translation.language != null}">
-                                <intranda:formLabel
-                                        label="#{translation.language != null ? translation.language : ''}"
-                                        labelFor="field4"/>
-                            </div>
-                            <!-- // LANGUAGE -->
-                            <!-- CONTENT -->
-                            <intranda:formInputDropdownBadges selectionBean="#{field.selectionBean}"/>
-                            <!-- // CONTENT -->
-                        </div>
-                    </ui:fragment>
-                    <!-- // Multi select  type -->
-                </div>
-            </fieldSet>
+                        </ui:repeat>
+                    </div>
+                </fieldSet>
+            </ui:fragment>
         </ui:repeat>
     </composite:implementation>
 </ui:composition>
