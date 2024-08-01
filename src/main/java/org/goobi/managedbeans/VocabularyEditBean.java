@@ -82,7 +82,7 @@ public class VocabularyEditBean implements Serializable {
     public String saveVocabulary() {
         api.vocabularies().change(vocabulary);
         if (metadataRecord != null) {
-            long recordId = metadataRecord.getId();
+            Long recordId = metadataRecord.getId();
             try {
                 api.vocabularyRecords().save(metadataRecord);
             } catch (APIException e) {
