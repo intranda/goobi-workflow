@@ -1,5 +1,6 @@
 package io.goobi.workflow.api.vocabulary;
 
+import io.goobi.vocabulary.exception.VocabularyException;
 import io.goobi.vocabulary.exchange.FieldInstance;
 import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.TranslationInstance;
@@ -191,7 +192,10 @@ public class VocabularyRecordAPI {
         try {
             return new ExtendedVocabularyRecord(restApi.get(METADATA_ENDPOINT, VocabularyRecord.class, id));
         } catch (APIException e) {
-            // Ignore 404 for now and just continue with empty record creation
+            // Throw all exceptions that are not missing metadata, ignore missing metadata and just continue with empty record creation
+            if (e.getVocabularyCause() == null || e.getVocabularyCause().getErrorType() != VocabularyException.ErrorCode.EntityNotFound) {
+                throw e;
+            }
         }
         ExtendedVocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().get(id);
         return createEmptyRecord(vocabulary.getId(), null, true);
