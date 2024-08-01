@@ -1,6 +1,7 @@
 package io.goobi.workflow.api.vocabulary;
 
 import io.goobi.vocabulary.exception.VocabularyException;
+import lombok.Setter;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -18,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RESTAPI {
-    private final Client client = ClientBuilder.newBuilder()
+    @Setter
+    private static Client client = ClientBuilder.newBuilder()
             .register(MultiPartFeature.class)
             .register(FileDataBodyPart.class)
             .build();
