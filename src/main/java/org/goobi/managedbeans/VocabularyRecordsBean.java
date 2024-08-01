@@ -33,6 +33,7 @@ import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
+import io.goobi.workflow.api.vocabulary.helper.APIExceptionExtractor;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Getter;
@@ -136,7 +137,8 @@ public class VocabularyRecordsBean implements Serializable {
             paginator.reload();
             loadFirstRecord();
         } catch (APIException e) {
-            Helper.setFehlerMeldung(e);
+            APIExceptionExtractor extractor = new APIExceptionExtractor(e);
+            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
         }
     }
 
@@ -152,7 +154,8 @@ public class VocabularyRecordsBean implements Serializable {
             paginator.postLoad(newExtendedRecord);
             edit(newExtendedRecord);
         } catch (APIException e) {
-            Helper.setFehlerMeldung(e);
+            APIExceptionExtractor extractor = new APIExceptionExtractor(e);
+            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
             // Reset vocabulary id (got cleared during save)
             rec.setVocabularyId(vocabularyId);
             this.currentRecord = new ExtendedVocabularyRecord(rec);

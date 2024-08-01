@@ -30,6 +30,7 @@ import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
+import io.goobi.workflow.api.vocabulary.helper.APIExceptionExtractor;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -66,7 +67,8 @@ public class VocabularyBean implements Serializable {
             );
             return RETURN_PAGE_OVERVIEW;
         } catch (APIException e) {
-            Helper.setFehlerMeldung(e);
+            APIExceptionExtractor extractor = new APIExceptionExtractor(e);
+            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
             return "index";
         }
     }

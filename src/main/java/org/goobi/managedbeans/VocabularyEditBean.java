@@ -30,6 +30,7 @@ import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.APIExceptionExtractor;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -38,6 +39,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.Locale;
 
 @Named
 @WindowScoped
@@ -86,7 +88,8 @@ public class VocabularyEditBean implements Serializable {
             try {
                 api.vocabularyRecords().save(metadataRecord);
             } catch (APIException e) {
-                Helper.setFehlerMeldung(e);
+                APIExceptionExtractor extractor = new APIExceptionExtractor(e);
+                Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
                 metadataRecord.setId(recordId);
                 metadataRecord.setVocabularyId(vocabulary.getId());
                 metadataRecord.setMetadata(true);
