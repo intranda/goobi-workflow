@@ -101,7 +101,13 @@ public class VocabularyEditBean implements Serializable {
     }
 
     public String deleteVocabulary() {
-        api.vocabularies().delete(vocabulary);
+        try {
+            api.vocabularies().delete(vocabulary);
+        } catch (APIException e) {
+            APIExceptionExtractor extractor = new APIExceptionExtractor(e);
+            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
+            return "";
+        }
         return cancel();
     }
 

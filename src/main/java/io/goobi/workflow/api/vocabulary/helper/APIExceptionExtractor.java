@@ -46,13 +46,32 @@ public class APIExceptionExtractor {
     private Optional<String> getLocalizedMessage(VocabularyException.ErrorCode errorType, Map<String, String> params) {
         String message = null;
         String messageKey = MESSAGE_PREFIX + errorType.toString();
+        List<String> orderedParameters = null;
         switch (errorType) {
+            case DataIntegrityViolation:
+                orderedParameters = List.of("reason");
+                break;
+            case EntityNotFound:
+                orderedParameters = List.of("type", "id");
+                break;
+            case FieldValueIsNotUnique:
+                orderedParameters = List.of("definitionName", "duplicateValues");
+                break;
             case FieldValuesDoNotMatchSpecifiedValidationRegex:
-                message = Helper.getTranslation(messageKey, params.get("definitionName"), params.get("values"), params.get("regex"));
+                orderedParameters = List.of("definitionName", "values", "regex");
+                break;
+            case RecordValidationMissingRequiredFields:
+                orderedParameters = List.of("missingFieldNames");
+                break;
+            case RecordImportUnsupportedExcelCellType:
+                orderedParameters = List.of("cellType");
+                break;
+            case DeletionOfReferencedVocabulary:
+                orderedParameters = List.of("vocabularyId", "referencingVocabularyIds");
                 break;
             case DeletionOfReferencedVocabularyRecord:
                 if (params.containsKey("referencingRecordIds")) {
-                    message = Helper.getTranslation(messageKey, params.get("recordId"), params.get("referencingRecordIds"));
+                    orderedParameters = List.of("recordId", "referencingRecordIds");
                 }
                 break;
             case GenericValidation:
@@ -62,6 +81,16 @@ public class APIExceptionExtractor {
                 log.warn("No translation for vocabulary exception type \"{}\" given, parameters: {}", errorType, params);
                 break;
         }
+        if (orderedParameters == null) {
+            return Optional.empty();
+        }
+
+        String[] rawParams = new String[orderedParameters.size()];
+        orderedParameters.stream()
+                .map(params::get)
+                .collect(Collectors.toList())
+                .toArray(rawParams);
+        message = Helper.getTranslation(messageKey, rawParams);
         return Optional.ofNullable(message);
     }
 }
