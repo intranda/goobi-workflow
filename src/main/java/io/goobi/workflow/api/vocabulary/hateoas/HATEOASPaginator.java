@@ -4,6 +4,7 @@ import io.goobi.vocabulary.exception.VocabularyException;
 import io.goobi.vocabulary.exchange.Identifiable;
 import io.goobi.workflow.api.vocabulary.APIException;
 import lombok.Data;
+import lombok.Setter;
 import org.apache.commons.lang3.NotImplementedException;
 import org.goobi.managedbeans.Paginator;
 
@@ -62,7 +63,8 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
         }
     }
 
-    private final Client client = ClientBuilder.newClient();
+    @Setter
+    private Client client = ClientBuilder.newClient();
     private final Optional<Function<T, Collection<Long>>> childrenExtractor;
     private final Optional<Function<T, Long>> parentExtractor;
     private final Function<Long, T> postLoader;
