@@ -37,7 +37,7 @@
 
         <ui:repeat var="field" value="#{cc.attrs.record.extendedFields}">
             <ui:repeat var="value" value="#{field.values}">
-                <ui:fragment rendered="#{field.values.size() == 1 and value.translations.size() == 1}">
+                <ui:fragment rendered="#{field.values.size() == 1 and value.translations.size() == 1 and field.definition.multiValued == false}">
                     <ui:repeat var="translation" value="#{value.translations}">
                         <!-- Simple text type -->
                         <div class="form-row">
@@ -74,7 +74,7 @@
                                 <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
                                 <!-- Single select type -->
                                 <ui:fragment
-                                    rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == false}">
+                                    rendered="#{field.selectableItems.size() > 0}">
                                     <h:selectOneMenu
                                             id="field3"
                                             styleClass="form-select form__input"
@@ -87,24 +87,6 @@
                                     </h:selectOneMenu>
                                 </ui:fragment>
                                 <!-- // Single select  type -->
-                                <!-- Multi select type -->
-                                <ui:fragment
-                                    rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == true}">
-                                    <div class="form-row">
-                                        <!-- LANGUAGE -->
-                                        <div class="form-label" tabindex="-1"
-                                                jsf:rendered="#{translation.language != null}">
-                                            <intranda:formLabel
-                                                    label="#{translation.language != null ? translation.language : ''}"
-                                                    labelFor="field4"/>
-                                        </div>
-                                        <!-- // LANGUAGE -->
-                                        <!-- CONTENT -->
-                                        <intranda:formInputDropdownBadges selectionBean="#{field.selectionBean}"/>
-                                        <!-- // CONTENT -->
-                                    </div>
-                                </ui:fragment>
-                                <!-- // Multi select  type -->
                             </div>
                         </div>
                     </ui:repeat>
@@ -163,24 +145,6 @@
                                             </h:selectOneMenu>
                                         </ui:fragment>
                                         <!-- // Single select  type -->
-                                        <!-- Multi select type -->
-                                        <ui:fragment
-                                            rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == true}">
-                                            <div class="form-row">
-                                                <!-- LANGUAGE -->
-                                                <div class="form-label" tabindex="-1"
-                                                        jsf:rendered="#{translation.language != null}">
-                                                    <intranda:formLabel
-                                                            label="#{translation.language != null ? translation.language : ''}"
-                                                            labelFor="field4"/>
-                                                </div>
-                                                <!-- // LANGUAGE -->
-                                                <!-- CONTENT -->
-                                                <intranda:formInputDropdownBadges selectionBean="#{field.selectionBean}"/>
-                                                <!-- // CONTENT -->
-                                            </div>
-                                        </ui:fragment>
-                                        <!-- // Multi select  type -->
                                     </div>
                                 </div>
                             </ui:repeat>
@@ -188,6 +152,27 @@
                     </fieldSet>
                 </ui:fragment>
             </ui:repeat>
+            <!-- Multi select type -->
+            <ui:fragment
+                rendered="#{field.selectableItems.size() > 0 and field.definition.multiValued == true}">
+                <div class="form-row">
+                    <!-- LANGUAGE -->
+                    <div class="form-label" tabindex="-1">
+                        <intranda:formLabel
+                            label="#{field.definition.name}"
+                            labelFor="field4"/>
+                    </div>
+                    <!-- // LANGUAGE -->
+                    <!-- CONTENT -->
+                    <div class="form-input">
+                        <div class="form-row">
+                            <intranda:formInputDropdownBadges selectionBean="#{field.selectionBean}"/>
+                        </div>
+                    </div>
+                    <!-- // CONTENT -->
+                </div>
+            </ui:fragment>
+            <!-- // Multi select  type -->
             <ui:fragment rendered="#{field.definition.multiValued == true and field.selectableItems.size() == 0}">
                 <fieldSet class="field-set">
                     <legend class="field-set-legend">
