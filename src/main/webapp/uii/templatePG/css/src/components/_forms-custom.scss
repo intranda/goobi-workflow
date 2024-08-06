@@ -166,7 +166,8 @@ fieldSet:disabled .badge > a {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  > * {
+  > .form-input,
+  > .form-label {
     display: flex;
     flex: 0 0 auto;
     flex-wrap: wrap;
