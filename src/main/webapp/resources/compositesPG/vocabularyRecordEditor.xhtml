@@ -57,7 +57,9 @@
                                         readonly="false"
                                         disabled="false"
                                     />
-                                        <!-- // CONTENT -->
+                                    <intranda:formHelp
+                                        content="dummy text"
+                                        msgFor="field1"/>
                                 </ui:fragment>
                                 <!-- // Simple text type -->
                                 <!-- Text area type -->
@@ -69,6 +71,9 @@
                                         value="#{translation.value}"
                                         rows="6"
                                         />
+                                        <intranda:formHelp
+                                            content="dummy text"
+                                            msgFor="field2"/>
                                 </ui:fragment>
                                 <!-- // Text area  type -->
                                 <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
@@ -85,6 +90,9 @@
                                         <f:selectItems
                                                 value="#{field.selectableItems}"/>
                                     </h:selectOneMenu>
+                                    <intranda:formHelp
+                                        content="dummy text"
+                                        msgFor="field3"/>
                                 </ui:fragment>
                                 <!-- // Single select  type -->
                             </div>
@@ -115,6 +123,9 @@
                                                 readonly="false"
                                                 disabled="false"
                                             />
+                                            <intranda:formHelp
+                                                content="dummy text"
+                                                msgFor="field1"/>
                                                 <!-- // CONTENT -->
                                         </ui:fragment>
                                         <!-- // Simple text type -->
@@ -127,6 +138,9 @@
                                                 value="#{translation.value}"
                                                 rows="6"
                                                 />
+                                                <intranda:formHelp
+                                                    content="dummy text"
+                                                    msgFor="field2"/>
                                         </ui:fragment>
                                         <!-- // Text area  type -->
                                         <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
@@ -143,6 +157,9 @@
                                                 <f:selectItems
                                                         value="#{field.selectableItems}"/>
                                             </h:selectOneMenu>
+                                            <intranda:formHelp
+                                                content="dummy text"
+                                                msgFor="field3"/>
                                         </ui:fragment>
                                         <!-- // Single select  type -->
                                     </div>
@@ -167,6 +184,9 @@
                     <div class="form-input">
                         <div class="form-row">
                             <intranda:formInputDropdownBadges selectionBean="#{field.selectionBean}"/>
+                            <intranda:formHelp
+                                content="dummy text"
+                                msgFor="field4"/>
                         </div>
                     </div>
                     <!-- // CONTENT -->
