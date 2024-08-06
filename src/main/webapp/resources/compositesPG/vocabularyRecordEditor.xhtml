@@ -44,7 +44,8 @@
                             <div class="form-label" tabindex="-1">
                                 <intranda:formLabel
                                         label="#{field.definition.name}"
-                                        labelFor="field1"/>
+                                        labelFor="field1"
+                                        labelRequired="#{field.definition.required}" />
                             </div>
                             <div class="form-input">
                                 <!-- Simple text type -->
@@ -56,7 +57,9 @@
                                         value="#{translation.value}"
                                         readonly="false"
                                         disabled="false"
+                                        required="#{field.definition.required}"
                                     />
+			                        <h:message for="field1" showDetail="true" styleClass="text-danger"/>
                                 </ui:fragment>
                                 <!-- // Simple text type -->
                                 <!-- Text area type -->
@@ -67,7 +70,9 @@
                                         styleClass="form-control metsEditorTextArea"
                                         value="#{translation.value}"
                                         rows="6"
-                                        />
+                                        required="#{field.definition.required}"
+                                    />
+                                    <h:message for="field2" showDetail="true" styleClass="text-danger"/>
                                 </ui:fragment>
                                 <!-- // Text area  type -->
                                 <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
@@ -75,15 +80,18 @@
                                 <ui:fragment
                                     rendered="#{field.selectableItems.size() > 0}">
                                     <h:selectOneMenu
-                                            id="field3"
-                                            styleClass="form-select form__input"
-                                            value="#{translation.value}">
+                                        id="field3"
+                                        styleClass="form-select form__input"
+                                        value="#{translation.value}"
+                                        required="#{field.definition.required}"
+                                        >
                                         <f:selectItem
-                                                itemValue="null"
-                                                itemLabel="#{msgs.bitteAuswaehlen}"/>
+                                        itemValue="null"
+                                        itemLabel="#{msgs.bitteAuswaehlen}"/>
                                         <f:selectItems
-                                                value="#{field.selectableItems}"/>
+                                        value="#{field.selectableItems}"/>
                                     </h:selectOneMenu>
+                                    <h:message for="field3" showDetail="true" styleClass="text-danger"/>
                                 </ui:fragment>
                                 <!-- // Single select  type -->
                             </div>
@@ -101,7 +109,8 @@
                                     <div class="form-label">
                                         <intranda:formLabel
                                             label="#{translation.language}"
-                                            labelFor="field1"/>
+                                            labelFor="field1"
+                                            labelRequired="#{field.definition.required}" />
                                     </div>
                                     <div class="form-input">
                                         <!-- Simple text type -->
@@ -113,7 +122,9 @@
                                                 value="#{translation.value}"
                                                 readonly="false"
                                                 disabled="false"
+                                                required="#{field.definition.required}"
                                             />
+                                            <h:message for="field1" showDetail="true" styleClass="text-danger"/>
                                                 <!-- // CONTENT -->
                                         </ui:fragment>
                                         <!-- // Simple text type -->
@@ -125,7 +136,9 @@
                                                 styleClass="form-control metsEditorTextArea"
                                                 value="#{translation.value}"
                                                 rows="6"
-                                                />
+                                                required="#{field.definition.required}"
+                                            />
+                                            <h:message for="field2" showDetail="true" styleClass="text-danger"/>
                                         </ui:fragment>
                                         <!-- // Text area  type -->
                                         <!-- Vocabulary record references are handled as simple selection types, the magic happens in the JSF vocabulary wrapper classes -->
@@ -135,13 +148,16 @@
                                             <h:selectOneMenu
                                                     id="field3"
                                                     styleClass="form-select form__input"
-                                                    value="#{translation.value}">
+                                                    value="#{translation.value}"
+                                                    required="#{field.definition.required}"
+                                                >
                                                 <f:selectItem
-                                                        itemValue="null"
-                                                        itemLabel="#{msgs.bitteAuswaehlen}"/>
+                                                itemValue="null"
+                                                itemLabel="#{msgs.bitteAuswaehlen}"/>
                                                 <f:selectItems
-                                                        value="#{field.selectableItems}"/>
+                                                value="#{field.selectableItems}"/>
                                             </h:selectOneMenu>
+                                            <h:message for="field3" showDetail="true" styleClass="text-danger"/>
                                         </ui:fragment>
                                         <!-- // Single select  type -->
                                     </div>
@@ -159,7 +175,8 @@
                     <div class="form-label" tabindex="-1">
                         <intranda:formLabel
                             label="#{field.definition.name}"
-                            labelFor="field4"/>
+                            labelFor="field4"
+                            labelRequired="#{field.definition.required}" />
                     </div>
                     <!-- // LANGUAGE -->
                     <!-- CONTENT -->
@@ -209,7 +226,8 @@
                                             <div class="form-label">
                                                 <intranda:formLabel
                                                     label="#{translation.language}"
-                                                    labelFor="field1"/>
+                                                    labelFor="field1"
+                                                    labelRequired="#{field.definition.required}" />
                                             </div>
                                             <div class="form-input">
                                                 <!-- Simple text type -->
@@ -222,6 +240,7 @@
                                                         readonly="false"
                                                         disabled="false"
                                                     />
+                                                    <h:message for="field1" showDetail="true" styleClass="text-danger"/>
                                                         <!-- // CONTENT -->
                                                 </ui:fragment>
                                                 <!-- // Simple text type -->
@@ -233,7 +252,8 @@
                                                         styleClass="form-control metsEditorTextArea"
                                                         value="#{translation.value}"
                                                         rows="6"
-                                                        />
+                                                    />
+                                                    <h:message for="field2" showDetail="true" styleClass="text-danger"/>
                                                 </ui:fragment>
                                                 <!-- // Text area  type -->
                                             </div>
