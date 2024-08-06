@@ -30,22 +30,22 @@
                     icon="fa-database">
                 <div class="actions d-flex">
                     <!-- import -->
-                    <button
-                        jsf:id="uploadRecords"
-                        class="btn btn&#45;&#45;title-action"
-                        jsf:rel="tooltip"
-                        jsf:action="#{vocabularyRecordsBean.uploadRecords}"
+                    <div
+                        class="d-inline btn&#45;&#45;title-action"
+                        data-bs-toggle="tooltip"
+                        jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
                         title="#{msgs.vocabularyManager_uploadRecords}">
-                        <span
-                            aria-hidden="true"
-                            class="fa fa-upload"/>
-                        <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip"/>
-                        <f:passThroughAttribute
-                                name="aria-label"
-                                value="#{msgs.vocabularyManager_uploadRecords}"/>
-                    </button>
+                        <button
+                            id="uploadRecords"
+                            class="btn"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#uploadModal">
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-upload"/>
+                        </button>
+                    </div>
                     <div
                         class="d-inline btn&#45;&#45;title-action"
                         data-bs-toggle="tooltip"
@@ -250,5 +250,59 @@
                 </div>
             </h:panelGroup>
         </intranda:box>
+        <div class="modal" tabindex="-1" id="uploadModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header bg-primary-400 text-white">
+                  <h5 class="modal-title h6">
+                    <span class="fa fa-database me-2" />
+                    <span>
+                        #{myPageTitle}
+                    </span>
+                  </h5>
+                  <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="fa fa-times text-white"></span>
+                  </button>
+                </div>
+                <h:form id="uploadform" prependId="false" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="row mt-3">
+                            <div class="col-12 d-flex">
+                                <h:inputFile styleClass="form-control" title="Test"
+                                             value="#{vocabularyRecordsBean.uploadedFile}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <label class="btn">
+                            <input type="checkbox" jsf:value="#{vocabularyRecordsBean.clearBeforeImport}" />
+                            Clear before import
+                        </label>
+                        <!-- Cancel -->
+                        <a
+                                class="btn btn-blank"
+                                jsf:id="abbrechen"
+                                type="cancel"
+                                jsf:action="#{vocabularyRecordsBean.load(vocabularyRecordsBean.vocabulary)}"
+                                jsf:immediate="true">
+                            <h:outputText value="#{msgs.abbrechen}"/>
+                        </a>
+                        <!-- Save -->
+                        <button
+                                class="btn btn-success"
+                                jsf:id="absenden"
+                                type="submit"
+                                jsf:action="#{vocabularyRecordsBean.importRecords}"
+                        >
+                            <span class="fa fa-save"/>
+                            <span>
+                                <h:outputText value="#{msgs.vocabularyManager_excelImport_importRecords}"/>
+                            </span>
+                        </button>
+                    </div>
+                </h:form>
+              </div>
+            </div>
+          </div>
     </composite:implementation>
 </ui:composition>
