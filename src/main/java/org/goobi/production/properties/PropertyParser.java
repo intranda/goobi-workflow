@@ -250,6 +250,8 @@ public class PropertyParser {
                     pp.setValidation(config.getString(property + "/validation"));
                     // type
                     pp.setType(Type.getTypeByName(config.getString(property + "/type")));
+                    // pattern
+                    pp.setPattern(config.getString(property + "/pattern", "dd.MM.yyyy"));
                     // (default) value
                     String defaultValue = config.getString(property + "/defaultvalue");
                     if (Type.METADATA.equals(pp.getType())) {
@@ -378,6 +380,8 @@ public class PropertyParser {
                 pp.setValidation(config.getString(property + "/validation"));
                 // type
                 pp.setType(Type.getTypeByName(config.getString(property + "/type")));
+                // pattern
+                pp.setPattern(config.getString(property + "/pattern", "dd.MM.yyyy"));
                 // (default) value
                 String defaultValue = config.getString(property + "/defaultvalue");
                 if (Type.METADATA.equals(pp.getType())) {

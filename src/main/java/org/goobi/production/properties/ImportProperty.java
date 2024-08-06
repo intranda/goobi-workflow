@@ -63,6 +63,9 @@ public class ImportProperty implements IProperty {
     @Getter
     @Setter
     private boolean required = false;
+    @Getter
+    @Setter
+    private String pattern = "dd.MM.yyyy";
 
     public ImportProperty() {
         this.possibleValues = new ArrayList<>();
@@ -127,7 +130,7 @@ public class ImportProperty implements IProperty {
     }
 
     public boolean getBooleanValue() {
-        return this.value.equalsIgnoreCase("true");
+        return "true".equalsIgnoreCase(this.value);
     }
 
     public void setBooleanValue(boolean val) {
@@ -140,13 +143,13 @@ public class ImportProperty implements IProperty {
 
     @Override
     public void setDateValue(Date inDate) {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
         value = format.format(inDate);
     }
 
     @Override
     public Date getDateValue() {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
         try {
             Calendar cal = Calendar.getInstance();
             cal.setTime(format.parse(value));
