@@ -2,20 +2,20 @@ package de.sub.goobi.forms;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ * <p>
  * Visit the websites for more information.
- *             - https://goobi.io
- *             - https://www.intranda.com
- * 
+ * - https://goobi.io
+ * - https://www.intranda.com
+ * <p>
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ * <p>
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -25,6 +25,7 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 
+import com.lowagie.text.Meta;
 import de.schlichtherle.io.FileOutputStream;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -122,8 +123,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -138,7 +141,7 @@ import java.util.stream.Collectors;
 @Log4j2
 public class ProzesskopieForm implements Serializable {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 2579641488883675182L;
     private Helper help = new Helper();
@@ -562,7 +565,7 @@ public class ProzesskopieForm implements Serializable {
 
     /**
      * die Eingabefelder für die Eigenschaften mit Inhalten aus der RDF-Datei füllen
-     * 
+     *
      * @throws PreferencesException
      */
     private void fillFieldsFromMetadataFile() throws PreferencesException {
@@ -661,7 +664,7 @@ public class ProzesskopieForm implements Serializable {
 
     /**
      * Auswahl des Processes auswerten
-     * 
+     *
      * @throws DAOException
      * @throws NamingException
      * @throws SQLException ============================================================== ==
@@ -686,25 +689,32 @@ public class ProzesskopieForm implements Serializable {
         if (tempProcess.getEigenschaftenSize() > 0) {
             fillTemplateFromProperties(tempProcess);
         }
+
         try {
             this.myRdf = tempProcess.readMetadataAsTemplateFile();
+
+            /* falls ein erstes Kind vorhanden ist, sind die Collectionen dafür */
+            try {
+                DocStruct colStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
+
+                List<Metadata> firstChildMetadata = colStruct.getAllChildren().isEmpty() ? Collections.emptyList() : colStruct.getAllChildren().get(0).getAllMetadata();
+                fillTemplateFromMetadata(colStruct.getAllMetadata(), firstChildMetadata);
+
+                // TODO: No idea what the following code does..
+                removeCollections(colStruct);
+                colStruct = colStruct.getAllChildren().get(0);
+                removeCollections(colStruct);
+            } catch (PreferencesException e) {
+                Helper.setFehlerMeldung("Error on creating process", e);
+                log.error("Error on creating process", e);
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                /*
+                 * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
+                 */
+            }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Error on reading template-metadata ", e);
-        }
-
-        /* falls ein erstes Kind vorhanden ist, sind die Collectionen dafür */
-        try {
-            DocStruct colStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
-            removeCollections(colStruct);
-            colStruct = colStruct.getAllChildren().get(0);
-            removeCollections(colStruct);
-        } catch (PreferencesException e) {
-            Helper.setFehlerMeldung("Error on creating process", e);
-            log.error("Error on creating process", e);
-        } catch (RuntimeException e) {
-            /*
-             * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
-             */
         }
 
         return "";
@@ -714,14 +724,7 @@ public class ProzesskopieForm implements Serializable {
         for (Processproperty pe : tempProcess.getEigenschaften()) {
             for (AdditionalField field : this.additionalFields) {
                 if (field.getTitel().equals(pe.getTitel())) {
-                    // multiselect
-                    if (field.isMultiselect()) {
-                        List<String> existingValues = field.getValues();
-                        existingValues.add(pe.getWert());
-                        field.setValues(existingValues);
-                    } else {
-                        field.setWert(pe.getWert());
-                    }
+                   setFieldValue(field, pe.getWert());
                 }
             }
             if ("digitalCollection".equals(pe.getTitel())) {
@@ -736,14 +739,7 @@ public class ProzesskopieForm implements Serializable {
         for (Templateproperty eig : vor.getEigenschaften()) {
             for (AdditionalField field : this.additionalFields) {
                 if (field.getTitel().equals(eig.getTitel())) {
-                    // multiselect
-                    if (field.isMultiselect()) {
-                        List<String> existingValues = field.getValues();
-                        existingValues.add(eig.getWert());
-                        field.setValues(existingValues);
-                    } else {
-                        field.setWert(eig.getWert());
-                    }
+                    setFieldValue(field, eig.getWert());
                 }
             }
         }
@@ -754,14 +750,7 @@ public class ProzesskopieForm implements Serializable {
         for (Masterpieceproperty eig : werk.getEigenschaften()) {
             for (AdditionalField field : this.additionalFields) {
                 if (field.getTitel().equals(eig.getTitel())) {
-                    // multiselect
-                    if (field.isMultiselect()) {
-                        List<String> existingValues = new ArrayList<>(field.getValues());
-                        existingValues.add(eig.getWert());
-                        field.setValues(existingValues);
-                    } else {
-                        field.setWert(eig.getWert());
-                    }
+                    setFieldValue(field, eig.getWert());
                 }
                 if ("DocType".equals(eig.getTitel())) {
                     docType = eig.getWert();
@@ -770,9 +759,37 @@ public class ProzesskopieForm implements Serializable {
         }
     }
 
+    private void fillTemplateFromMetadata(List<Metadata> topstruct, List<Metadata> firstChild) {
+        for (Metadata m : topstruct) {
+            this.additionalFields.stream()
+                    .filter(f -> "topstruct".equals(f.getDocstruct()))
+                    .filter(f -> f.getMetadata() != null && f.getMetadata().equals(m.getType().getName()))
+                    .findFirst()
+                    .ifPresent(f -> setFieldValue(f, m.getValue()));
+        }
+
+        for (Metadata m : firstChild) {
+            this.additionalFields.stream()
+                    .filter(f -> "firstchild".equals(f.getDocstruct()))
+                    .filter(f -> f.getMetadata() != null && f.getMetadata().equals(m.getType().getName()))
+                    .findFirst()
+                    .ifPresent(f -> setFieldValue(f, m.getValue()));
+        }
+    }
+
+    private void setFieldValue(AdditionalField field, String value) {
+        if (field.isMultiselect()) {
+            List<String> existingValues = field.getValues();
+            existingValues.add(value);
+            field.setValues(existingValues);
+        } else {
+            field.setWert(value);
+        }
+    }
+
     /**
      * Validierung der Eingaben
-     * 
+     *
      * @return sind Fehler bei den Eingaben vorhanden? ================================================================
      */
     private boolean isContentValid() {
@@ -836,7 +853,7 @@ public class ProzesskopieForm implements Serializable {
 
     /**
      * print the infos of the existing process
-     * 
+     *
      * @param processName title that has already been used by some process
      */
     @SuppressWarnings("unused")
@@ -907,7 +924,7 @@ public class ProzesskopieForm implements Serializable {
 
     /**
      * Anlegen des Processes und Speichern der Metadaten ================================================================
-     * 
+     *
      * @throws DAOException
      * @throws SwapException
      * @throws WriteException
@@ -1447,7 +1464,7 @@ public class ProzesskopieForm implements Serializable {
 
     /*
      * this is needed for GUI, render multiple select only if this is false if this is true use the only choice
-     * 
+     *
      * @author Wulf
      */
     public boolean isSingleChoiceCollection() {
@@ -1457,7 +1474,7 @@ public class ProzesskopieForm implements Serializable {
 
     /*
      * this is needed for GUI, render multiple select only if this is false if isSingleChoiceCollection is true use this choice
-     * 
+     *
      * @author Wulf
      */
     public String getDigitalCollectionIfSingleChoice() {
@@ -1971,7 +1988,7 @@ public class ProzesskopieForm implements Serializable {
 
     /**
      * Get get temporary folder to upload to
-     * 
+     *
      * @return path to temporary folder
      */
     private Path getTemporaryFolder() {
@@ -1987,7 +2004,7 @@ public class ProzesskopieForm implements Serializable {
 
     /**
      * Handle the upload of a file
-     * 
+     *
      * @param event
      */
     public void uploadFile(FileUploadEvent event) {
@@ -2001,7 +2018,7 @@ public class ProzesskopieForm implements Serializable {
 
     /**
      * Save the uploaded file temporary in the tmp-folder inside of goobi in a subfolder for the user
-     * 
+     *
      * @param fileName
      * @param in
      * @throws IOException
