@@ -9,7 +9,8 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:ds="http://deltaspike.apache.org/jsf"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:notification="http://goobi.io/notification">
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -121,7 +122,7 @@
 
 <ui:insert name="metadata" />
 
-<h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right'} templatePG" style="#{LoginForm.myBenutzer == null?'height:300px;':''}">
+<h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right content-flow'} templatePG" style="#{LoginForm.myBenutzer == null?'height:300px;':''}">
    <ds:windowId/>
     <f:view locale="#{SpracheForm.locale}">
 
@@ -255,79 +256,6 @@
 						            </nav>
                         <!-- // BREADCRUMB -->
 
-                        <!-- <ui:fragment rendered="#{not empty facesContext.messageList}"> -->
-                            <!-- MESSAGE CONTAINER -->
-                            <!-- <div class="toast-container border-bottom-0 position-fixed top-0 start-50 w-25 translate-middle-x">
-                              <div
-                                class="collapse #{not empty facesContext.messageList ? 'show' : ''}"
-                                id="messageContainer">
-                                <ol role="list" class="list-group-flush ps-0 mt-3">
-                                  <o:messages var="message" globalOnly="true">
-                                    <li
-                                    role="item"
-                                         data-bs-autohide="false"
-                                         class="toast show align-items-center text-white list-group-item mt-2 mx-5 color-box #{message.severity.ordinal == 0 ? 'bg-primary' : 'bg-hot'}">
-                                         <div class="toast-body my-2">
-                                           <h:outputText value="#{message.detail}: " rendered="#{message.detail ne ''}"/>
-                                           <h:outputText value="#{message.summary}"/>
-                                          </div>
-                                        </li>
-                                      </o:messages>
-                                    </ol>
-                                  </div>
-                                  <button
-                                  class="btn btn-action position-absolute top-100 start-50 translate-middle toast-button"
-                                  type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#messageContainer"
-                                aria-expanded="#{not empty facesContext.messageList ? 'show' : ''}"
-                                aria-controls="messageContainer">
-                                <span class="fa fa-angle-up toast-expanded" />
-                                <span class="toast-expanded">
-                                      <h:outputText value="#{msgs.messagesHide}"/>
-                                    </span>
-                                    <span class="fa fa-angle-down toast-collapsed" />
-                                    <span class="toast-collapsed">
-                                      <h:outputText value="#{fn:length(facesContext.messageList)} #{msgs.messagesShow}"/>
-                                    </span>
-                                  </button>
-                                </div> -->
-                                <!-- // MESSAGE CONTAINER -->
-
-                              <!-- </ui:fragment> -->
-                            <!-- // MESSAGES -->
-                            <section class="notification-area">
-                              <!-- BUTTON TO HIDE MESSAGES -->
-                              <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#notificationArea" role="button" aria-expanded="#{not empty facesContext.messageList ? 'true' : 'false'}" aria-controls="notificationArea">
-                                <span class="fa fa-#{
-                                  empty facesContext.messageList ? 'plus' : 'exclamation'
-                                }" />
-                              </button>
-                              <!-- // BUTTON TO HIDE MESSAGES -->
-                              <div class="notification-wrapper collapse #{not empty facesContext.messageList ? 'show' : ''}" id="notificationArea">
-                                <h4 class="notification-header">
-                                  <h:outputText value="#{msgs.messages}" />
-                                  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#notificationArea" role="button" aria-expanded="#{not empty facesContext.messageList ? 'true' : 'false'}" aria-controls="notificationArea">
-                                    <span class="fa fa-minus" />
-                                  </button>
-                                </h4>
-                                <!-- MESSAGE LIST -->
-                                <h:panelGroup id="globalMessage">
-                                  <h:messages escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
-                                </h:panelGroup>
-                                <!-- // MESSAGE LIST -->
-                              </div>
-                            </section>
-
-
-                        <!-- MESSAGES -->
-                        <!-- <div role="complementary">
-                          <h:panelGroup id="globalMessage" style="display: inline">
-                            <h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
-                          </h:panelGroup>
-                        </div> -->
-                        <!-- // MESSAGES -->
-
                         <!-- CONTENT -->
                         <div jsf:id="main-content" tabindex="-1">
                           <ui:insert name="content" />
@@ -337,6 +265,32 @@
                     </div>
                 </div>
             </div>
+            <footer class="footer">
+              <div class="d-flex gap-3 justify-content-start align-items-center">
+                <a class="footer-text" href="https://github.com/intranda/goobi-workflow" target="_blank">
+                  <span class="fa fa-github fa-lg" />
+                  <span>
+                    GitHub
+                  </span>
+                </a>
+                <a class="footer-text" href="" target="_blank">
+                  License
+                </a>
+                <a class="footer-text " href="https://goobi.io/" target="_blank">
+                   Goobi workflow - developed by intranda
+                </a>
+                <h:outputText
+                    styleClass="footer-text"
+                    value="#{msgs.version} #{HelperForm.version}" />
+              </div>
+              <ui:fragment rendered="#{not empty facesContext.messageList}">
+                <notification:area>
+                  <notification:toggle />
+                  <notification:messages>
+                  </notification:messages>
+                </notification:area>
+              </ui:fragment>
+            </footer>
 
         </c:if>
 
