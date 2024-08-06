@@ -1,0 +1,19 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
+    <button
+        class="btn btn-primary toggle"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#notificationArea"
+        role="button"
+        aria-expanded="#{not empty facesContext.messageList ? 'true' : 'false'}"
+        aria-controls="notificationArea">
+        <span
+            aria-hidden="true"
+            class="toggle-show fa fa-#{
+                empty facesContext.messageList ? 'plus' : 'exclamation'
+                }" />
+        <span
+            aria-hidden="true"
+            class="toggle-hide fa fa-times" />
+    </button>
+</ui:composition>
