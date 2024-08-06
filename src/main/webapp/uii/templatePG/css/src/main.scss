@@ -8,6 +8,9 @@
 @use "lib/font-awesome.css";
 @use "lib/codemirror.css";
 
+// COMPOSITION
+@use "composition/content-flow";
+
 // COMPONENTS
 @use "components/collapse";
 @use "components/nav-custom";
@@ -17,11 +20,13 @@
 @use "components/breadcrumbs";
 @use "components/boxes";
 @use "components/dropdowns";
+@use "components/footer";
 @use "components/tables-custom";
 @use "components/forms-custom";
 @use "components/notification-area";
 @use "components/progressbar";
 @use "components/progress-custom";
+@use "components/switcher";
 @use "components/buttons";
 @use "components/journal";
 @use "components/modals";
@@ -49,6 +54,7 @@
 @use "utility/scroll-container";
 @use "utility/scroll-target";
 @use "utility/highlight";
+@use "utility/toggle";
 @use "utility/resets";
 
 // plugins
