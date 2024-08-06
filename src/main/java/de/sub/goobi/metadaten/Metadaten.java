@@ -211,7 +211,7 @@ public class Metadaten implements Serializable {
     private Process myProzess;
     @Getter
     @Setter
-    private Optional<Step> myStep;
+    private transient Optional<Step> myStep;
     @Getter
     private Prefs myPrefs;
     @Setter
@@ -1906,7 +1906,7 @@ public class Metadaten implements Serializable {
                 this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
-                lsCorp.add(new MetaCorporate((Corporate) metadata, myPrefs, inStrukturelement, myProzess, this));
+                lsCorp.add(new MetaCorporate((Corporate) metadata, myPrefs, inStrukturelement, this));
             }
         }
 
@@ -4703,7 +4703,7 @@ public class Metadaten implements Serializable {
                         MetadataTypes.CORPORATE, this.myProzess, displayHiddenMetadata);
                 if (myTempMetadata != null) {
                     for (Metadata metadata : myTempMetadata) {
-                        addableCorporates.add(new MetaCorporate((Corporate) metadata, myPrefs, ds, myProzess, this));
+                        addableCorporates.add(new MetaCorporate((Corporate) metadata, myPrefs, ds, this));
                     }
                 }
             } catch (TypeNotAllowedForParentException e) {

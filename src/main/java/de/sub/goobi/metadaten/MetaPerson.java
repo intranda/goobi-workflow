@@ -25,6 +25,22 @@
  */
 package de.sub.goobi.metadaten;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.faces.model.SelectItem;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.geonames.Toponym;
+import org.goobi.api.display.DisplayCase;
+import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.NormDatabase;
+import org.goobi.beans.Process;
+import org.goobi.production.cli.helper.StringPair;
+
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
@@ -35,26 +51,12 @@ import de.sub.goobi.metadaten.search.KulturNavImporter;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Data;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.geonames.Toponym;
-import org.goobi.api.display.DisplayCase;
-import org.goobi.api.display.enums.DisplayType;
-import org.goobi.api.display.helper.NormDatabase;
-import org.goobi.beans.Process;
-import org.goobi.production.cli.helper.StringPair;
 import ugh.dl.DocStruct;
 import ugh.dl.HoldingElement;
 import ugh.dl.MetadataType;
 import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
-
-import javax.faces.model.SelectItem;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
@@ -224,7 +226,6 @@ public class MetaPerson implements SearchableMetadata {
     }
 
     public List<String> getPossibleNamePartTypes() {
-        // TODO configurable?
         List<String> possibleNamePartTypes = new ArrayList<>();
         possibleNamePartTypes.add("date");
         possibleNamePartTypes.add("termsOfAddress");
@@ -319,7 +320,7 @@ public class MetaPerson implements SearchableMetadata {
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if ("URI".equals(normdata.getKey())) {
                         String uriValue = normdata.getValues().get(0).getText();
-                        p.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
+                        p.setAuthorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
                         break;
                     }
                 }
@@ -334,7 +335,7 @@ public class MetaPerson implements SearchableMetadata {
         } else {
             for (NormData normdata : currentData) {
                 if ("NORM_IDENTIFIER".equals(normdata.getKey())) {
-                    p.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
+                    p.setAuthorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
                 } else if ("NORM_NAME".equals(normdata.getKey())) {
                     mainValue = normdata.getValues().get(0).getText().replace("\\x152", "").replace("\\x156", "");
                 }
@@ -393,5 +394,18 @@ public class MetaPerson implements SearchableMetadata {
 
     @Override
     public void clearResults() {
+        // do nithing
+    }
+
+    public boolean isDisplayRestrictions() {
+        return p.getType().isAllowAccessRestriction();
+    }
+
+    public boolean isRestricted() {
+        return p.isAccessRestrict();
+    }
+
+    public void setRestricted(boolean restricted) {
+        p.setAccessRestrict(restricted);
     }
 }

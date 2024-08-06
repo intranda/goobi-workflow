@@ -40,9 +40,7 @@ import javax.faces.model.SelectItem;
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -53,6 +51,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.DocStruct;
+import ugh.dl.MetadataType;
 import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
@@ -67,9 +66,6 @@ public class MetaPersonTest extends AbstractTest {
     private DocStruct docstruct;
 
     private static final String METADATA_TYPE = "junitPerson";
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
@@ -231,5 +227,29 @@ public class MetaPersonTest extends AbstractTest {
         assertTrue(mp.isNormdata());
         p.getType().setAllowNormdata(false);
         assertFalse(mp.isNormdata());
+    }
+
+    @Test
+    public void testDisplayRestrictions() throws Exception {
+        MetadataType type = prefs.getMetadataTypeByName(METADATA_TYPE);
+        Person p = new Person(type);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
+
+        assertFalse(mp.isDisplayRestrictions());
+        type.setAllowAccessRestriction(true);
+        assertTrue(mp.isDisplayRestrictions());
+
+    }
+
+    @Test
+    public void testRestricted() throws Exception {
+        MetadataType type = prefs.getMetadataTypeByName(METADATA_TYPE);
+        type.setAllowAccessRestriction(true);
+        Person p = new Person(type);
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
+
+        assertFalse(mp.isRestricted());
+        mp.setRestricted(true);
+        assertTrue(mp.isRestricted());
     }
 }
