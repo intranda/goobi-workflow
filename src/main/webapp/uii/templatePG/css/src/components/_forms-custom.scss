@@ -212,7 +212,6 @@ fieldSet:disabled .badge > a {
 
 .field-set-content {
   > .field-set {
-    padding-inline: 1em;
     > .field-set-content {
       border-inline-end: 1px solid var(--clr-neutral-300);
     }
@@ -274,6 +273,11 @@ fieldSet:disabled .badge > a {
 .field-set:has(.field-set) {
   padding: 0;
   border-block-end: 0;
+}
+
+// no border for nested fieldsets without legends
+.field-set-content .field-set:not(:has(.field-set-legend)) .field-set-content {
+  border-block-start: 0;
 }
 
 // input elements in box titles, should be mostly search/filter inputs

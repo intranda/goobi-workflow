@@ -206,11 +206,12 @@
                     <div class="field-set-content">
                         <ui:repeat var="value" value="#{field.values}">
                             <div class="field-set">
-                                <legend class="field-set-legend">
+                                <legend
+                                    class="field-set-legend"
+                                    jsf:rendered="#{field.values.size() > 1}">
                                     <button
                                         jsf:id="deleteValue"
                                         jsf:action="#{field.deleteFieldValue(value)}"
-                                        jsf:rendered="#{field.values.size() > 1}"
                                         class="btn"
                                         data-bs-toggle="tooltip"
                                         title="Delete value">
