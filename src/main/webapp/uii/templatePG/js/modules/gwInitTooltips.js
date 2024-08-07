@@ -55,15 +55,19 @@ export default gwInitTooltips = ( function() {
 
 /**
  * Function to hide all open Bootstrap tooltips in the document
+ *
+ * @param {*} element The element that triggered the currently processed tooltip
  */
-const hideAllTooltips = () => {
+const hideAllTooltips = (element) => {
   const tooltips = document.querySelectorAll('[aria-describedby*="tooltip"]');
   tooltips.forEach((tooltip) => {
     const tooltipId = tooltip.getAttribute('aria-describedby');
     const tooltipElement = document.getElementById(tooltipId);
     const tooltipInstance = bootstrap.Tooltip.getInstance(tooltipElement);
 
-    if (tooltipInstance) {
+    // only hide tooltips that do not relate to the currently hovered element
+    // this is necessary so that users can hover over the tooltip and then return to its base element without hiding the tooltip
+    if (tooltip != element && tooltipInstance) {
       tooltipInstance.hide();
     }
   });
@@ -94,7 +98,8 @@ const hideAllPopovers = () => {
 */
 export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(element) {
   let tooltip = new bootstrap.Tooltip(element, {
-    trigger: 'manual'
+    trigger: 'manual',
+    offset: [4, 4],
   });
   let tooltipTimeOut;
 
@@ -104,7 +109,7 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
       event.stopPropagation;
 
       // make sure no tooltips are open before opening a new one
-      hideAllTooltips();
+      hideAllTooltips(element);
 
       clearTimeout(tooltipTimeOut);
       tooltip.show();
@@ -113,7 +118,7 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
         event.preventDefault;
         event.stopPropagation;
 
-        tooltip.hide();
+        tooltipTimeOut = timeout(tooltip, element, 200);
       });
 
       window.addEventListener('keydown', (event) => {
@@ -133,11 +138,7 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
       event.preventDefault;
       event.stopPropagation;
 
-      tooltipTimeOut = setTimeout(() => {
-        if (!tooltip.tip?.matches(':hover')) {
-          tooltip.hide();
-        }
-      }, 200);
+      tooltipTimeOut = timeout(tooltip, element, 200);
 
     });
   });
@@ -188,13 +189,17 @@ const hoverablePopover = function keepPopoverOpenOnHoverOverContent(element) {
     element.addEventListener(eventType, (event) => {
       event.preventDefault;
       event.stopPropagation;
-      popoverTimeOut = setTimeout(() => {
-        if (!popover.tip.matches(':hover')) {
-          popover.hide();
-        }
-      }, 200);
+      popoverTimeOut = timeout(popover, element, 200);
     });
   });
 
   return popover;
+};
+
+const timeout = function setTimeoutForHiding(target, element, duration) {
+  setTimeout(() => {
+    if (!target.tip?.matches(':hover') && !element.matches(':hover')) {
+      target.hide();
+    }
+  }, duration);
 };
