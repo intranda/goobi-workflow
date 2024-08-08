@@ -74,11 +74,9 @@ public class APIExceptionExtractor {
                     orderedParameters = List.of("recordId", "referencingRecordIds");
                 }
                 break;
-            case GenericValidation:
-            case FieldInstanceIssues:
-            case FieldInstanceValueIssues:
             default:
                 log.warn("No translation for vocabulary exception type \"{}\" given, parameters: {}", errorType, params);
+                orderedParameters = List.of(errorType.toString());
                 break;
         }
         if (orderedParameters == null) {
