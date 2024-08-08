@@ -23,15 +23,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
 
+import java.time.LocalDateTime;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ DateTimeHelper.class })
+@PowerMockIgnore({ "javax.management.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.net.ssl.*", "jdk.internal.reflect.*", "javax.crypto.*" })
 public class VariableReplacerTest extends AbstractTest {
 
     private Prefs prefs;
@@ -115,7 +126,25 @@ public class VariableReplacerTest extends AbstractTest {
 
         assertTrue(replacer.replace("{iiifMediaFolder}").contains("api/process/image/1/testprocess_media/00000001.tif"));
         assertTrue(replacer.replace("{iiifMasterFolder}").contains("api/process/image/1/testprocess_master/00000001.tif"));
+    }
 
+    @Test
+    public void testDateTimeReplacement() {
+        LocalDateTime mockDate = LocalDateTime.of(2020, 11, 3, 13, 37, 55, 123456789);
+
+        PowerMock.mockStatic(DateTimeHelper.class);
+        EasyMock.expect(DateTimeHelper.localDateTimeNow()).andReturn(mockDate).anyTimes();
+        PowerMock.replayAll();
+
+        VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
+
+        assertEquals("2020", replacer.replace("{datetime.yyyy}"));
+        assertEquals("2020-11-03", replacer.replace("{datetime.yyyy-MM-dd}"));
+        assertEquals("13:37:55", replacer.replace("{datetime.HH:mm:ss}"));
+        assertEquals("03.11.2020", replacer.replace("{datetime.dd.MM.yyyy}"));
+        assertEquals("13_37_55_123456789", replacer.replace("{datetime.HH_mm_ss_n}"));
+        // Don't replace on broken pattern
+        assertEquals("{datetime.abcdefghijk}", replacer.replace("{datetime.abcdefghijk}"));
     }
 
     //    @Test
