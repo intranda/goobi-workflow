@@ -72,6 +72,10 @@ public interface IProperty {
 
     public Date getDateValue();
 
+    public abstract String getPattern();
+
+    public abstract void setPattern(String pattern);
+
     public abstract IProperty getClone(int containerNumber);
 
     public abstract void transfer();

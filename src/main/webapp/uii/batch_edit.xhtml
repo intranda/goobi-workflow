@@ -663,10 +663,18 @@
                                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
                                         </div>
                                         <div class="col-12 col-md-9">
-                                            <p:calendar
-                                                id="date"
-                                                value="#{myprocess_item.dateValue}"
-                                                locale="#{SpracheForm.locale}" />
+                                             <p:calendar
+                                                id="date" 
+                                                value="#{myprocess_item.dateValue}" 
+                                                locale="#{SpracheForm.locale}"
+                                                styleClass="ff-goobi" 
+                                                mask="true"
+                                                navigator="true"
+                                                yearRange="-100:+100"
+                                                pattern="#{myprocess_item.pattern}">
+                                                <f:passThroughAttribute name="autocomplete" value="off" />
+                                            </p:calendar>
+                                                
                                             <h:message
                                                 for="date"
                                                 showDetail="true"

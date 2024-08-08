@@ -204,6 +204,10 @@ public class AdditionalField {
     }
 
     public void setValueAsDate(LocalDate date) {
+        if (date == null) {
+            return;
+        }
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         wert = formatter.format(date);
     }
