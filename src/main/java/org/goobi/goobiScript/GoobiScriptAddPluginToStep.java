@@ -118,7 +118,7 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
             }
         }
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
-            gsr.setResultType(GoobiScriptResultType.OK);
+            gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setResultMessage("Step not found: " + parameters.get(STEPTITLE));
         }
         gsr.updateTimestamp();
