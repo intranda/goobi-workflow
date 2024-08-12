@@ -234,11 +234,11 @@
                     </li>
                     <li>
                         <!-- DOWNLOAD PDF FILE -->
-                        <button
-                            jsf:action="#{ProzessverwaltungForm.exportPdf}"
-                            jsf:id="action20"
+                        <h:commandLink target="_blank"
+                            action="#{ProzessverwaltungForm.exportPdf}"
+                            id="action20"
                             onclick="preventDoubleSubmit(this);"
-                            jsf:rendered="#{item.displayPDFButton}"
+                            rendered="#{item.displayPDFButton}"
                             class="dropdown-item">
                             <span class="fa fa-file-pdf-o" />
                             <span>
@@ -248,7 +248,7 @@
                             <x:updateActionListener
                                 property="#{ProzessverwaltungForm.myProzess}"
                                 value="#{item}" />
-                        </button>
+                        </h:commandLink>
                     </li>
 
                     <li>
