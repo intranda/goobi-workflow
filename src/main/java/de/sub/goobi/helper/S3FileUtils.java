@@ -47,12 +47,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
-
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
 import de.unigoettingen.sub.commons.util.PathConverter;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
@@ -93,8 +91,10 @@ import software.amazon.awssdk.transfer.s3.progress.LoggingTransferListener;
 @Log4j2
 public class S3FileUtils implements StorageProviderInterface {
 
+    @Getter
     private S3TransferManager transferManager;
 
+    @Getter
     private S3AsyncClient s3;
 
     private NIOFileUtils nio;
@@ -184,8 +184,7 @@ public class S3FileUtils implements StorageProviderInterface {
         return ConfigurationHelper.getInstance().getS3Bucket();
     }
 
-    private void copyS3Object(String sourcePrefix, String targetPrefix, S3Object os)
-            throws AmazonServiceException, AmazonClientException {
+    private void copyS3Object(String sourcePrefix, String targetPrefix, S3Object os) {
         String sourceKey = os.key();
         String destinationKey = targetPrefix + sourceKey.replace(sourcePrefix, "");
 
@@ -602,19 +601,16 @@ public class S3FileUtils implements StorageProviderInterface {
                 nio.copyFile(srcFile, destFile);
             } else {
                 // src local, dest s3 => upload file
-                try {
-                    UploadFileRequest uploadFileRequest = UploadFileRequest.builder()
-                            .putObjectRequest(req -> req.bucket(getBucket()).key(path2Key(destFile)))
-                            .addTransferListener(LoggingTransferListener.create())
-                            .source(srcFile)
-                            .build();
 
-                    FileUpload upload = transferManager.uploadFile(uploadFileRequest);
-                    upload.completionFuture().join();
+                UploadFileRequest uploadFileRequest = UploadFileRequest.builder()
+                        .putObjectRequest(req -> req.bucket(getBucket()).key(path2Key(destFile)))
+                        .addTransferListener(LoggingTransferListener.create())
+                        .source(srcFile)
+                        .build();
 
-                } catch (AmazonClientException e) {
-                    throw new IOException(e);
-                }
+                FileUpload upload = transferManager.uploadFile(uploadFileRequest);
+                upload.completionFuture().join();
+
             }
         } else if (getPathStorageType(destFile) == StorageType.S3) {
             // both on s3 => standard copy on s3
@@ -625,11 +621,8 @@ public class S3FileUtils implements StorageProviderInterface {
                     .destinationKey(path2Key(destFile))
                     .build();
 
-            try {
-                s3.copyObject(copyReq);
-            } catch (AmazonClientException e) {
-                throw new IOException(e);
-            }
+            s3.copyObject(copyReq);
+
         } else {
             // src on s3 and dest local => download file from s3 to local location
 
@@ -800,21 +793,19 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         if (oldType == StorageType.LOCAL && (newType == StorageType.S3 || newType == StorageType.BOTH)) {
             // new path is on s3. Upload object
-            try {
-                // use multipart upload for larger files larger than 1GB
-                UploadFileRequest uploadFileRequest = UploadFileRequest.builder()
-                        .putObjectRequest(req -> req.bucket(getBucket()).key(path2Key(newPath)))
-                        .addTransferListener(LoggingTransferListener.create())
-                        .source(oldPath)
-                        .build();
 
-                FileUpload upload = transferManager.uploadFile(uploadFileRequest);
-                upload.completionFuture().join();
+            // use multipart upload for larger files larger than 1GB
+            UploadFileRequest uploadFileRequest = UploadFileRequest.builder()
+                    .putObjectRequest(req -> req.bucket(getBucket()).key(path2Key(newPath)))
+                    .addTransferListener(LoggingTransferListener.create())
+                    .source(oldPath)
+                    .build();
 
-                Files.delete(oldPath);
-            } catch (AmazonClientException e) {
-                throw new IOException(e);
-            }
+            FileUpload upload = transferManager.uploadFile(uploadFileRequest);
+            upload.completionFuture().join();
+
+            Files.delete(oldPath);
+
         }
         if ((oldType == StorageType.S3 || oldType == StorageType.BOTH) && newType == StorageType.LOCAL) {
             // download object
