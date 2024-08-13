@@ -1,25 +1,27 @@
 <ui:composition
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-        template="/uii/templatePG/templatePG.html"
-        xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-        xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-        xmlns:h="http://xmlns.jcp.org/jsf/html"
-        xmlns:jsf="http://xmlns.jcp.org/jsf"
-        xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
 >
 
     <composite:interface>
         <composite:attribute
-                name="record"
-                type="io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord"
-                required="true"
+            name="record"
+            type="io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord"
+            required="true"
         />
         <composite:attribute
-                name="showID"
-                type="boolean"
-                default="true"
-                required="false"
+            name="showID"
+            type="boolean"
+            default="true"
+            required="false"
         />
     </composite:interface>
 
@@ -43,9 +45,9 @@
                         <div class="form-row">
                             <div class="form-label" tabindex="-1">
                                 <intranda:formLabel
-                                        label="#{field.definition.name}"
-                                        labelFor="field1"
-                                        labelRequired="#{field.definition.required}" />
+                                    label="#{field.definition.name}"
+                                    labelFor="field1"
+                                    labelRequired="#{field.definition.required}" />
                             </div>
                             <div class="form-input">
                                 <!-- Simple text type -->
@@ -206,30 +208,21 @@
                     <div class="field-set-content">
                         <ui:repeat var="value" value="#{field.values}">
                             <div class="field-set">
-                                <legend
+                                <!-- <legend
                                     class="field-set-legend"
                                     jsf:rendered="#{field.values.size() > 1}">
-                                    <button
-                                        jsf:id="deleteValue"
-                                        jsf:action="#{field.deleteFieldValue(value)}"
-                                        class="btn"
-                                        data-bs-toggle="tooltip"
-                                        title="Delete value">
-                                        <span
-                                            aria-hidden="true"
-                                            class="fa fa-minus"/>
-                                        <f:ajax render="@form" execute="@form"/>
-                                    </button>
-                                </legend>
+                                </legend> -->
                                 <div class="field-set-content">
                                     <ui:repeat var="translation" value="#{value.translations}">
                                         <div class="form-row">
-                                            <div class="form-label">
-                                                <intranda:formLabel
-                                                    label="#{translation.language}"
-                                                    labelFor="field1"
-                                                    labelRequired="#{field.definition.required}" />
-                                            </div>
+                                            <ui:fragment rendered="#{translation.language != null}">
+                                                <div class="form-label">
+                                                    <intranda:formLabel
+                                                        label="#{msgs['lang_'.concat(translation.language)]}"
+                                                        labelFor="field1"
+                                                        labelRequired="#{field.definition.required}" />
+                                                </div>
+                                            </ui:fragment>
                                             <div class="form-input">
                                                 <!-- Simple text type -->
                                                 <ui:fragment
@@ -260,6 +253,17 @@
                                             </div>
                                         </div>
                                     </ui:repeat>
+                                    <button
+                                        jsf:id="deleteValue"
+                                        jsf:action="#{field.deleteFieldValue(value)}"
+                                        class="btn"
+                                        data-bs-toggle="tooltip"
+                                        title="Delete value">
+                                        <span
+                                            aria-hidden="true"
+                                            class="fa fa-trash"/>
+                                        <f:ajax render="@form" execute="@form"/>
+                                    </button>
                                 </div>
                             </div>
                         </ui:repeat>
