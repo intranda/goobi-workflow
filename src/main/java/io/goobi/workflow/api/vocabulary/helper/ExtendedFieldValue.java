@@ -1,6 +1,7 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
 import io.goobi.vocabulary.exchange.FieldValue;
+import io.goobi.vocabulary.exchange.HateoasHref;
 import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
 import lombok.Getter;
@@ -16,15 +17,53 @@ import java.util.stream.Collectors;
 @Getter
 @Log4j2
 public class ExtendedFieldValue extends FieldValue {
+    private final FieldValue wrapped;
     private List<ExtendedTranslationInstance> extendedTranslations;
 
     ExtendedFieldValue(FieldValue orig, Set<TranslationDefinition> definitions) {
-        setId(orig.getId());
-        setFieldId(orig.getFieldId());
-        setTranslations(orig.getTranslations());
-        set_links(orig.get_links());
+        this.wrapped = orig;
 
         postInit(definitions);
+    }
+
+    @Override
+    public Long getId() {
+        return wrapped.getId();
+    }
+
+    @Override
+    public void setId(Long id) {
+        wrapped.setId(id);
+    }
+
+    @Override
+    public Long getFieldId() {
+        return wrapped.getFieldId();
+    }
+
+    @Override
+    public void setFieldId(Long fieldId) {
+        wrapped.setFieldId(fieldId);
+    }
+
+    @Override
+    public List<TranslationInstance> getTranslations() {
+        return wrapped.getTranslations();
+    }
+
+    @Override
+    public void setTranslations(List<TranslationInstance> translations) {
+        wrapped.setTranslations(translations);
+    }
+
+    @Override
+    public Map<String, HateoasHref> get_links() {
+        return wrapped.get_links();
+    }
+
+    @Override
+    public void set_links(Map<String, HateoasHref> _links) {
+        wrapped.set_links(_links);
     }
 
     private void postInit(Set<TranslationDefinition> definitions) {

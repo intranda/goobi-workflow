@@ -14,15 +14,35 @@ import java.util.function.Function;
 public class ExtendedTranslationInstance extends TranslationInstance {
     private Function<String, Language> languageNameResolver = VocabularyAPIManager.getInstance().languages()::findByAbbreviation;
 
+    private final TranslationInstance wrapped;
     private TranslationDefinition definition;
     private String languageName;
 
     ExtendedTranslationInstance(TranslationInstance orig, TranslationDefinition definition) {
-        setValue(orig.getValue());
-        setLanguage(orig.getLanguage());
+        this.wrapped = orig;
         this.definition = definition;
 
         postInit();
+    }
+
+    @Override
+    public String getLanguage() {
+        return wrapped.getLanguage();
+    }
+
+    @Override
+    public void setLanguage(String language) {
+        wrapped.setLanguage(language);
+    }
+
+    @Override
+    public String getValue() {
+        return wrapped.getValue();
+    }
+
+    @Override
+    public void setValue(String value) {
+        wrapped.setValue(value);
     }
 
     private void postInit() {
