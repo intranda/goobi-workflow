@@ -15,7 +15,7 @@ public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     private static final String IMPORT_EXCEL_ENDPOINT = "/api/v1/vocabularies/{{0}}/import/excel";
     private static final String INSTANCE_ENDPOINT = COMMON_ENDPOINT + "/{{0}}";
 
-    private final CachedLookup<ExtendedVocabulary> singleLookupCache;
+    private final CachedLookup<Long, ExtendedVocabulary> singleLookupCache;
 
     public VocabularyAPI(String host, int port) {
         super(host, port, Vocabulary.class, VocabularyPageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);

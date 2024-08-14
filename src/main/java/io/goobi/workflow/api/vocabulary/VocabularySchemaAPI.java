@@ -17,7 +17,7 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
 
     // TODO: Make this generic
     private Map<Long, FieldDefinition> definitionMap = new HashMap<>();
-    private final CachedLookup<VocabularySchema> singleLookupCache;
+    private final CachedLookup<Long, VocabularySchema> singleLookupCache;
 
     public VocabularySchemaAPI(String host, int port) {
         super(host, port, VocabularySchema.class, VocabularySchemaPageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);

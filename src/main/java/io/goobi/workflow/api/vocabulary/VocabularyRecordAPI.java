@@ -25,7 +25,7 @@ public class VocabularyRecordAPI {
     private static final String INSTANCE_ENDPOINT = "/api/v1/records/{{0}}";
 
     private final RESTAPI restApi;
-    private final CachedLookup<ExtendedVocabularyRecord> singleLookupCache;
+    private final CachedLookup<Long, ExtendedVocabularyRecord> singleLookupCache;
 
     public class VocabularyRecordQueryBuilder {
         private final long vocabularyId;
