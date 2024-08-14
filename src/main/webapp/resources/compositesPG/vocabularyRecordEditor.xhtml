@@ -104,6 +104,13 @@
                     <fieldSet class="field-set">
                         <legend class="field-set-legend">
                             <h:outputText value="#{field.definition.name}"/>
+                            <span
+                                class="ms-2 text-primary fa fa-asterisk"
+                                aria-hidden="true"
+                                title="#{msgs.requiredField}"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="right"
+                                jsf:rendered="#{field.definition.required}" />
                         </legend>
                         <div class="field-set-content">
                             <ui:repeat var="translation" value="#{value.translations}">
@@ -111,8 +118,7 @@
                                     <div class="form-label">
                                         <intranda:formLabel
                                             label="#{translation.language}"
-                                            labelFor="field1"
-                                            labelRequired="#{field.definition.required}" />
+                                            labelFor="field1" />
                                     </div>
                                     <div class="form-input">
                                         <!-- Simple text type -->
