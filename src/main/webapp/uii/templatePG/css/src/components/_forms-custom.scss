@@ -166,94 +166,99 @@ fieldSet:disabled .badge > a {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  > * {
-    display: flex;
-    flex: 0 0 auto;
-    flex-wrap: wrap;
-    padding: 0.5rem;
-    margin: 0;
-    max-width: 100%;
-    min-height: 2.8125rem;
-    width: 100%;
-  }
   > .form-row {
     border: 0;
     padding: 0;
   }
-  > .form-label {
-    background: var(--clr-neutral-200);
-    border-inline-end: 1px solid var(--clr-neutral-300);
-    > .btn{
-      padding-block-start: 0;
-      &:first-of-type {
-        margin-inline-start: auto;
-      }
-    }
-  }
-  > .form-input {
-    background: var(--clr-white);
-    &:has(.form-row) {
-      padding: 0;
-    }
-    > .form-row:last-child {
-      border-block-end: 0;
-    }
-  }
-  @media (min-width: 768px) {
-    > .form-label {
-      width: 25%;
-    }
-    > .form-label+.form-input {
-      width: 75%;
+}
+
+.form-input,
+.form-label {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  padding: 0.5rem;
+  margin: 0;
+  max-width: 100%;
+  min-height: 2.8125rem;
+  width: 100%;
+}
+
+.form-label {
+  background: var(--clr-neutral-200);
+  border-inline-end: 1px solid var(--clr-neutral-300);
+  > .btn{
+    padding-block-start: 0;
+    &:first-of-type {
+      margin-inline-start: auto;
     }
   }
 }
 
-.field-set-content {
-  > .field-set {
-    padding-inline: 1em;
-    > .field-set-content {
-      border-inline-end: 1px solid var(--clr-neutral-300);
-    }
+.form-input {
+  background: var(--clr-white);
+  &:has(.form-row) {
+    padding: 0;
+  }
+  > .form-row:last-child {
+    border-block-end: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  > .form-label {
+    width: 25%;
+  }
+  > .form-label+.form-input {
+    width: 75%;
   }
 }
 
 .field-set {
   background: var(--clr-neutral-200);
   border-block-end: 1px solid var(--clr-neutral-300);
+  display: flex;
   width: 100%;
-  padding: 0 0 0.25rem 0;
   > .field-set-legend {
+    border-inline-end: 1px solid var(--clr-neutral-300);
     display: flex;
     font-size: var(--fs-400);
-    justify-content: space-between;
+    margin: 0;
     padding: 0.5rem;
-    width: 100%;
     > .btn {
       padding-block-start: 0;
       &:first-of-type {
+        margin-block-end: auto;
         margin-inline-start: auto;
       }
     }
   }
   > .form-rows,
   > .field-set-content {
-    border-block-start: 1px solid var(--clr-neutral-300);
     display: flex;
+    flex: 1 0 auto;
     flex-direction: column;
     justify-content: space-between;
-    margin: 0 0.5rem;
-    padding: 0 0 0.25rem 0;
+    width: 75%;
     .form-label {
       background: var(--clr-neutral-200);
-      border-inline-start: 1px solid var(--clr-neutral-300);
     }
-    .form-input {
+    .form-label + .form-input {
       border-inline: 1px solid var(--clr-neutral-300);
     }
   }
+  .form-row:last-of-type {
+    border-block-end: 0;
+  }
   @media (min-width: 768px) {
+    .form-label {
+      width: 15%;
+    }
+    .form-label+.form-input {
+      width: 85%;
+    }
     > .field-set-legend {
+      flex: 0 0 auto;
       width: 25%;
     }
     > .form-rows,
@@ -270,9 +275,39 @@ fieldSet:disabled .badge > a {
   }
 }
 
-.field-set:has(.field-set) {
-  padding: 0;
-  border-block-end: 0;
+
+.field-set .field-set {
+  border-block: 0;
+  &:has(.form-label) {
+    padding-block: 0.125em;
+    .field-set-content > .form-row:first-of-type {
+      border-block-start: 1px solid var(--clr-neutral-300);
+    }
+
+    .field-set-content > .form-row:last-of-type {
+      border-block-end: 1px solid var(--clr-neutral-300);
+    }
+  }
+}
+
+
+.field-set:not(:has(>.field-set-legend)) .form-label {
+  border-inline-start: 0;
+}
+
+.field-set-content:has(>.btn) {
+  position: relative;
+  .form-input {
+    padding-inline-end: 2.5rem;
+  }
+  > .btn {
+    border-block: 1px solid var(--clr-neutral-300);
+    border-inline-start: 1px solid var(--clr-neutral-300);
+    height: 100%;
+    right: 0;
+    position: absolute;
+    width: 2rem;
+  }
 }
 
 // input elements in box titles, should be mostly search/filter inputs

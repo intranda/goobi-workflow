@@ -30,22 +30,22 @@
                     icon="fa-database">
                 <div class="actions d-flex">
                     <!-- import -->
-                    <button
-                        jsf:id="uploadRecords"
-                        class="btn btn&#45;&#45;title-action"
-                        jsf:rel="tooltip"
-                        jsf:action="#{vocabularyRecordsBean.uploadRecords}"
+                    <div
+                        class="d-inline btn&#45;&#45;title-action"
+                        data-bs-toggle="tooltip"
+                        jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
                         title="#{msgs.vocabularyManager_uploadRecords}">
-                        <span
-                            aria-hidden="true"
-                            class="fa fa-upload"/>
-                        <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip"/>
-                        <f:passThroughAttribute
-                                name="aria-label"
-                                value="#{msgs.vocabularyManager_uploadRecords}"/>
-                    </button>
+                        <button
+                            id="uploadRecords"
+                            class="btn"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#uploadModal">
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-upload"/>
+                        </button>
+                    </div>
                     <div
                         class="d-inline btn&#45;&#45;title-action"
                         data-bs-toggle="tooltip"
@@ -222,19 +222,6 @@
                     </div>
                     <!-- navigation buttons to flip through all records -->
                     <div class="box__actions">
-
-                        <!-- add new record -->
-                        <ui:fragment rendered="#{vocabularyRecordsBean.isRootRecordCreationPossible() == true}">
-                            <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty(null)}"
-                                    class="btn btn-primary me-auto"
-                                    title="#{msgs.vocabularyManager_addRecord}">
-                                <span aria-hidden="true" class="fa fa-plus"/>
-                                <span>
-                                    <h:outputText value="#{msgs.vocabularyManager_addRecord}"/>
-                                </span>
-                            </button>
-                        </ui:fragment>
-
                         <!-- Cancel (go back to vocab overview)-->
                         <button
                                 class="btn btn-blank"
@@ -244,6 +231,19 @@
                                 jsf:immediate="true">
                             <h:outputText value="#{msgs.vocabularyManager_backToVocabularies}"/>
                         </button>
+
+                        <!-- add new record -->
+                        <ui:fragment rendered="#{vocabularyRecordsBean.isRootRecordCreationPossible() == true}">
+                            <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty(null)}"
+                                    class="btn btn-primary"
+                                    title="#{msgs.vocabularyManager_addRecord}">
+                                <span aria-hidden="true" class="fa fa-plus"/>
+                                <span>
+                                    <h:outputText value="#{msgs.vocabularyManager_addRecord}"/>
+                                </span>
+                            </button>
+                        </ui:fragment>
+
 
                         <intranda:paginator id="record" paginator="#{vocabularyRecordsBean.paginator}"/>
                     </div> <!-- /box__actions -->
