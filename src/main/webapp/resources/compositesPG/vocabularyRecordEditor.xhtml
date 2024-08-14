@@ -54,7 +54,7 @@
                     </ui:fragment>
                 </legend>
                 <div class="#{field.definition.multiValued == true ? 'field-set-content' : ''}">
-                    <ui:repeat var="value" value="#{field.values}">
+                    <ui:repeat var="value" value="#{field.extendedValues}">
                         <fieldSet class="field-set">
                             <legend class="field-set-legend">
                                 <button
@@ -71,7 +71,7 @@
                                 </button>
                             </legend>
                             <div class="field-set-content">
-                                <ui:repeat var="translation" value="#{value.translations}">
+                                <ui:repeat var="translation" value="#{value.extendedTranslations}">
                                     <!-- Simple text type -->
                                     <ui:fragment
                                             rendered="#{field.selectableItems.size() == 0 and field.type.large == false}">
@@ -80,7 +80,7 @@
                                             <div class="form-label" tabindex="-1"
                                                  jsf:rendered="#{translation.language != null}">
                                                 <intranda:formLabel
-                                                        label="#{translation.language != null ? translation.language : ''}"
+                                                        label="#{translation.languageName != null ? translation.languageName : ''}"
                                                         labelFor="field1"/>
                                             </div>
                                             <!-- // LANGUAGE -->

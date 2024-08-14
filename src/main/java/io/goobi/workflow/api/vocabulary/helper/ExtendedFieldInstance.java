@@ -24,6 +24,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static io.goobi.workflow.api.vocabulary.helper.ExtendedTranslationInstance.transformToThreeCharacterAbbreviation;
+
 @Getter
 @Log4j2
 public class ExtendedFieldInstance extends FieldInstance {
@@ -77,24 +79,8 @@ public class ExtendedFieldInstance extends FieldInstance {
 
     private void prepareEmpty() {
         if (getValues().isEmpty()) {
-            getValues().add(new FieldValue());
+            getValues().add(new ExtendedFieldValue(new FieldValue(), definition.getTranslationDefinitions()));
         }
-        getValues().forEach(v -> {
-            if (!definition.getTranslationDefinitions().isEmpty()) {
-                definition.getTranslationDefinitions().stream()
-                        .filter(t -> v.getTranslations().stream().noneMatch(t2 -> t2.getLanguage().equals(t.getLanguage())))
-                        .forEach(t -> {
-                            TranslationInstance translation = new TranslationInstance();
-                            translation.setLanguage(t.getLanguage());
-                            translation.setValue("");
-                            v.getTranslations().add(translation);
-                        });
-            } else if (v.getTranslations().isEmpty()) {
-                TranslationInstance translation = new TranslationInstance();
-                translation.setValue("");
-                v.getTranslations().add(translation);
-            }
-        });
     }
 
     public FormInputMultiSelectBean getSelectionBean() {
@@ -142,7 +128,7 @@ public class ExtendedFieldInstance extends FieldInstance {
     }
 
     public FieldValue addFieldValue() {
-        FieldValue value = new FieldValue();
+        FieldValue value = new ExtendedFieldValue(new FieldValue(), definition.getTranslationDefinitions());
         getValues().add(value);
         prepareEmpty();
         sortTranslations(value);
@@ -212,17 +198,9 @@ public class ExtendedFieldInstance extends FieldInstance {
                 ).collect(Collectors.joining("|"));
     }
 
-    private static String transformToThreeCharacterAbbreviation(String language) {
-        switch (language) {
-            case "en":
-                return "eng";
-            case "de":
-                return "ger";
-            case "fr":
-                return "fre";
-            default:
-                log.warn("Unknown language \"{}\", falling back to \"eng\"", language);
-                return "eng";
-        }
+    public List<ExtendedFieldValue> getExtendedValues() {
+        return getValues().stream()
+                .map(v -> new ExtendedFieldValue(v, definition.getTranslationDefinitions()))
+                .collect(Collectors.toList());
     }
 }
