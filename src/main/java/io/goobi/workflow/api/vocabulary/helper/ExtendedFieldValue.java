@@ -6,6 +6,7 @@ import io.goobi.vocabulary.exchange.TranslationInstance;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,7 @@ public class ExtendedFieldValue extends FieldValue {
                 .collect(Collectors.toMap(TranslationDefinition::getLanguage, Function.identity()));
         this.extendedTranslations = getTranslations().stream()
                 .map(t -> new ExtendedTranslationInstance(t, lookup.getOrDefault(t.getLanguage(), null)))
+                .sorted(Comparator.comparing(TranslationInstance::getLanguage))
                 .collect(Collectors.toList());
     }
 

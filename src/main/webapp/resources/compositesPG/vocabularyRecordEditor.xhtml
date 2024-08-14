@@ -38,9 +38,9 @@
         </ui:fragment>
 
         <ui:repeat var="field" value="#{cc.attrs.record.extendedFields}">
-            <ui:repeat var="value" value="#{field.values}">
-                <ui:fragment rendered="#{field.values.size() == 1 and value.translations.size() == 1 and field.definition.multiValued == false}">
-                    <ui:repeat var="translation" value="#{value.translations}">
+            <ui:repeat var="value" value="#{field.extendedValues}">
+                <ui:fragment rendered="#{field.values.size() == 1 and value.extendedTranslations.size() == 1 and field.definition.multiValued == false}">
+                    <ui:repeat var="translation" value="#{value.extendedTranslations}">
                         <!-- Simple text type -->
                         <div class="form-row">
                             <div class="form-label" tabindex="-1">
@@ -100,7 +100,7 @@
                         </div>
                     </ui:repeat>
                 </ui:fragment>
-                <ui:fragment rendered="#{field.values.size() == 1 and value.translations.size() > 1 and field.definition.multiValued == false}">
+                <ui:fragment rendered="#{field.values.size() == 1 and value.extendedTranslations.size() > 1 and field.definition.multiValued == false}">
                     <fieldSet class="field-set">
                         <legend class="field-set-legend">
                             <h:outputText value="#{field.definition.name}"/>
@@ -113,12 +113,13 @@
                                 jsf:rendered="#{field.definition.required}" />
                         </legend>
                         <div class="field-set-content">
-                            <ui:repeat var="translation" value="#{value.translations}">
+                            <ui:repeat var="translation" value="#{value.extendedTranslations}">
                                 <div class="form-row">
                                     <div class="form-label">
                                         <intranda:formLabel
-                                            label="#{translation.language}"
-                                            labelFor="field1" />
+                                            label="#{translation.languageName}"
+                                            labelFor="field1"
+                                            labelRequired="#{translation.definition.required}" />
                                     </div>
                                     <div class="form-input">
                                         <!-- Simple text type -->
@@ -219,14 +220,14 @@
                                     jsf:rendered="#{field.values.size() > 1}">
                                 </legend> -->
                                 <div class="field-set-content">
-                                    <ui:repeat var="translation" value="#{value.translations}">
+                                    <ui:repeat var="translation" value="#{value.extendedTranslations}">
                                         <div class="form-row">
                                             <ui:fragment rendered="#{translation.language != null}">
                                                 <div class="form-label">
                                                     <intranda:formLabel
-                                                        label="#{msgs['lang_'.concat(translation.language)]}"
-                                                        labelFor="field1"
-                                                        labelRequired="#{field.definition.required}" />
+                                                            label="#{translation.languageName}"
+                                                            labelFor="field1"
+                                                            labelRequired="#{translation.definition.required}" />
                                                 </div>
                                             </ui:fragment>
                                             <div class="form-input">
