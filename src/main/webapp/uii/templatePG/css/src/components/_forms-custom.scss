@@ -166,47 +166,51 @@ fieldSet:disabled .badge > a {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  > .form-input,
-  > .form-label {
-    display: flex;
-    flex: 0 0 auto;
-    flex-wrap: nowrap;
-    padding: 0.5rem;
-    margin: 0;
-    max-width: 100%;
-    min-height: 2.8125rem;
-    width: 100%;
-  }
   > .form-row {
     border: 0;
     padding: 0;
   }
+}
+
+.form-input,
+.form-label {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  padding: 0.5rem;
+  margin: 0;
+  max-width: 100%;
+  min-height: 2.8125rem;
+  width: 100%;
+}
+
+.form-label {
+  background: var(--clr-neutral-200);
+  border-inline-end: 1px solid var(--clr-neutral-300);
+  > .btn{
+    padding-block-start: 0;
+    &:first-of-type {
+      margin-inline-start: auto;
+    }
+  }
+}
+
+.form-input {
+  background: var(--clr-white);
+  &:has(.form-row) {
+    padding: 0;
+  }
+  > .form-row:last-child {
+    border-block-end: 0;
+  }
+}
+
+@media (min-width: 768px) {
   > .form-label {
-    background: var(--clr-neutral-200);
-    border-inline-end: 1px solid var(--clr-neutral-300);
-    > .btn{
-      padding-block-start: 0;
-      &:first-of-type {
-        margin-inline-start: auto;
-      }
-    }
+    width: 25%;
   }
-  > .form-input {
-    background: var(--clr-white);
-    &:has(.form-row) {
-      padding: 0;
-    }
-    > .form-row:last-child {
-      border-block-end: 0;
-    }
-  }
-  @media (min-width: 768px) {
-    > .form-label {
-      width: 25%;
-    }
-    > .form-label+.form-input {
-      width: 75%;
-    }
+  > .form-label+.form-input {
+    width: 75%;
   }
 }
 
@@ -216,9 +220,9 @@ fieldSet:disabled .badge > a {
   display: flex;
   width: 100%;
   > .field-set-legend {
+    border-inline-end: 1px solid var(--clr-neutral-300);
     display: flex;
     font-size: var(--fs-400);
-    justify-content: space-between;
     margin: 0;
     padding: 0.5rem;
     > .btn {
@@ -238,7 +242,6 @@ fieldSet:disabled .badge > a {
     width: 75%;
     .form-label {
       background: var(--clr-neutral-200);
-      border-inline-start: 1px solid var(--clr-neutral-300);
     }
     .form-label + .form-input {
       border-inline: 1px solid var(--clr-neutral-300);
@@ -272,32 +275,38 @@ fieldSet:disabled .badge > a {
   }
 }
 
+
 .field-set .field-set {
-  border-inline-start: 1px solid var(--clr-neutral-300);
-  padding-block: 1em;
-  &:last-of-type {
-    border-block-end: 0;
+  border-block: 0;
+  &:has(.form-label) {
+    padding-block: 0.125em;
+    .field-set-content > .form-row:first-of-type {
+      border-block-start: 1px solid var(--clr-neutral-300);
+    }
+
+    .field-set-content > .form-row:last-of-type {
+      border-block-end: 1px solid var(--clr-neutral-300);
+    }
   }
 }
+
 
 .field-set:not(:has(>.field-set-legend)) .form-label {
   border-inline-start: 0;
 }
 
 .field-set-content:has(>.btn) {
-  display: grid;
-  grid-template-columns: auto 2.125em;
-  grid-auto-rows: 1fr;
-  justify-content: stretch;
   position: relative;
-  > .form-row {
-    grid-column: 1
+  .form-input {
+    padding-inline-end: 2.5rem;
   }
   > .btn {
+    border-block: 1px solid var(--clr-neutral-300);
     border-inline-start: 1px solid var(--clr-neutral-300);
     height: 100%;
     right: 0;
     position: absolute;
+    width: 2rem;
   }
 }
 
