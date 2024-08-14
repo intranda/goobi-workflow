@@ -206,10 +206,10 @@ fieldSet:disabled .badge > a {
 }
 
 @media (min-width: 768px) {
-  > .form-label {
+  .form-label {
     width: 25%;
   }
-  > .form-label+.form-input {
+  .form-label+.form-input {
     width: 75%;
   }
 }
