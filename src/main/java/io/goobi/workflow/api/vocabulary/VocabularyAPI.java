@@ -10,7 +10,7 @@ import java.util.List;
 
 public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     private static final String COMMON_ENDPOINT = "/api/v1/vocabularies";
-    private static final String FIND_INSTANCE_ENDPOINT = "/api/v1/vocabularies/find/{{0}}";
+    private static final String FIND_INSTANCE_ENDPOINT = "/api/v1/vocabularies/by-name/{{0}}";
     private static final String IMPORT_CSV_ENDPOINT = "/api/v1/vocabularies/{{0}}/import/csv";
     private static final String IMPORT_EXCEL_ENDPOINT = "/api/v1/vocabularies/{{0}}/import/excel";
     private static final String INSTANCE_ENDPOINT = COMMON_ENDPOINT + "/{{0}}";
