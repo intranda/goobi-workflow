@@ -36,7 +36,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,7 +64,6 @@ import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.CopyObjectResponse;
-import software.amazon.awssdk.services.s3.model.Delete;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -131,7 +129,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
             AwsCredentials credentials = AwsBasicCredentials.create(conf.getS3AccessKeyID(), conf.getS3SecretAccessKey());
             AwsCredentialsProvider prov = StaticCredentialsProvider.create(credentials);
-            mys3 = S3AsyncClient.crtBuilder()
+
+            mys3 = S3AsyncClient.crtBuilder() // NOSONAR: false positive, region is set explicitly
                     .region(Region.US_EAST_1)
                     .minimumPartSizeInBytes(10 * MB)
                     .targetThroughputInGbps(20.0)
@@ -226,9 +225,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
             DeleteObjectsRequest dor = DeleteObjectsRequest.builder()
                     .bucket(getBucket())
-                    .delete(Delete.builder()
-                            .objects(toDelete)
-                            .build())
+                    .delete(d -> d.objects(toDelete))
                     .build();
 
             s3.deleteObjects(dor);
@@ -545,7 +542,6 @@ public class S3FileUtils implements StorageProviderInterface {
     @Override
     public void downloadDirectory(final Path source, final Path target) throws IOException {
         String sourcePrefix = path2Prefix(source);
-        // TODO check performance, maybe its cheaper to list files and download them one by one
         DirectoryDownload directoryDownload =
                 transferManager.downloadDirectory(
                         u -> u.destination(target).bucket(getBucket()).listObjectsV2RequestTransformer(l -> l.prefix(sourcePrefix)));
@@ -576,9 +572,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 .build());
         DeleteObjectsRequest dor = DeleteObjectsRequest.builder()
                 .bucket(getBucket())
-                .delete(Delete.builder()
-                        .objects(toDelete)
-                        .build())
+                .delete(d -> d.objects(toDelete))
                 .build();
 
         try {
@@ -739,7 +733,6 @@ public class S3FileUtils implements StorageProviderInterface {
         if (getPathStorageType(path) == StorageType.LOCAL) {
             return nio.getLastModifiedDate(path);
         }
-        // TODO test this with prefix instead of object
 
         HeadObjectRequest objectRequest = HeadObjectRequest.builder()
                 .key(path2Key(path))
@@ -774,9 +767,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
         DeleteObjectsRequest dor = DeleteObjectsRequest.builder()
                 .bucket(getBucket())
-                .delete(Delete.builder()
-                        .objects(toDelete)
-                        .build())
+                .delete(d -> d.objects(toDelete))
                 .build();
 
         s3.deleteObjects(dor);
@@ -935,43 +926,13 @@ public class S3FileUtils implements StorageProviderInterface {
     }
 
     /**
-     * @deprecated Use methods with different parameters instead
-     *
-     * @path The path of the file to create
-     */
-    @Override
-    @Deprecated(since = "23.05", forRemoval = true)
-    public void createFile(Path path) throws IOException {
-        // TODO not used anymore. Delete org.goobi.production.importer.GoobiHotFolder
-
-    }
-
-    /**
-     * @deprecated Use a method with different parameters instead
      *
      * @param in The input stream from which the upload should be read
      * @param dest The destination where the file should be uploaded
      */
     @Override
-    @Deprecated(since = "23.05", forRemoval = true)
     public void uploadFile(InputStream in, Path dest) throws IOException {
-        if (getPathStorageType(dest) == StorageType.LOCAL) {
-            nio.uploadFile(in, dest);
-            return;
-        }
-        // if contentLength is not set, s3.putObject loads the whole stream into RAM and only then uploads the file
-        Path tempFile = Files.createTempFile("upload", null); //NOSONAR, using temporary file is save here
-        try {
-            Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
-            Long contentLength = Files.size(tempFile);
-            try (InputStream is = Files.newInputStream(tempFile)) {
-                uploadFile(is, dest, contentLength);
-            }
-        } finally {
-            if (Files.exists(tempFile)) {
-                Files.delete(tempFile);
-            }
-        }
+        uploadFile(in, dest, null);
     }
 
     @Override
