@@ -4,7 +4,18 @@
 }
 
 .alert {
+  --bs-alert-border-radius: var(--border-radius);
+  --bs-danger-bg-subtle: var(--clr-hot);
+  --bs-danger-border-subtle: var(--clr-hot);
+  --bs-danger-text-emphasis: var(--clr-white);
+  --bs-info-bg-subtle: var(--clr-primary-400);
+  --bs-info-border-subtle: var(--clr-primary-400);
+  --bs-info-text-emphasis: var(--clr-white);
+  --bs-warning-bg-subtle: var(--clr-action);
+  --bs-warning-border-subtle: var(--clr-action);
+  --bs-warning-text-emphasis: var(--clr-white);
   border: 0;
   margin-bottom: 3px;
-  padding: 0.5rem;
+  padding-block: 0.875rem;
+  padding-inline: 0.5rem;
 }
