@@ -1,31 +1,64 @@
 package de.sub.goobi.forms;
 
-/**
- * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * <p>
- * Visit the websites for more information.
- * - https://goobi.io
- * - https://www.intranda.com
- * <p>
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * <p>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * <p>
- * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * <p>
- * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
- * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
- * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
- * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
- * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
- * exception statement from your version.
- */
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
-import com.lowagie.text.Meta;
+import javax.enterprise.inject.Default;
+import javax.faces.model.SelectItem;
+import javax.inject.Named;
+import javax.naming.NamingException;
+import javax.servlet.http.Part;
+
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.goobi.beans.Institution;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
+import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
+import org.goobi.beans.Project;
+import org.goobi.beans.Ruleset;
+import org.goobi.beans.Step;
+import org.goobi.beans.Template;
+import org.goobi.beans.Templateproperty;
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.enums.LogType;
+import org.goobi.production.enums.UserRole;
+import org.goobi.production.flow.jobs.HistoryAnalyserJob;
+import org.goobi.production.plugin.interfaces.IOpacPlugin;
+import org.goobi.production.plugin.interfaces.IOpacPluginVersion2;
+import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.PropertyParser;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.file.UploadedFile;
+
 import de.schlichtherle.io.FileOutputStream;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -59,37 +92,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.goobi.beans.Institution;
-import org.goobi.beans.JournalEntry;
-import org.goobi.beans.JournalEntry.EntryType;
-import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
-import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
-import org.goobi.beans.Project;
-import org.goobi.beans.Ruleset;
-import org.goobi.beans.Step;
-import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
-import org.goobi.beans.User;
-import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.enums.LogType;
-import org.goobi.production.enums.UserRole;
-import org.goobi.production.flow.jobs.HistoryAnalyserJob;
-import org.goobi.production.plugin.interfaces.IOpacPlugin;
-import org.goobi.production.plugin.interfaces.IOpacPluginVersion2;
-import org.goobi.production.properties.ProcessProperty;
-import org.goobi.production.properties.PropertyParser;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.file.UploadedFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -107,33 +109,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
-
-import javax.enterprise.inject.Default;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-import javax.naming.NamingException;
-import javax.servlet.http.Part;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
-import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
 
 @Named("ProzesskopieForm")
 @WindowScoped
@@ -476,7 +451,8 @@ public class ProzesskopieForm implements Serializable {
         String vocabularyTitle = item.getString("@vocabulary");
         if (StringUtils.isNotBlank(vocabularyTitle)) {
             Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyTitle);
-            List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords()
+            List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance()
+                    .vocabularyRecords()
                     .list(vocabulary.getId())
                     .all()
                     .request()
@@ -486,8 +462,7 @@ public class ProzesskopieForm implements Serializable {
                             .map(ExtendedVocabularyRecord::getMainValue)
                             .sorted()
                             .map(v -> new SelectItem(v, v))
-                            .collect(Collectors.toList())
-            );
+                            .collect(Collectors.toList()));
         }
         // TODO: FIX
         return fa;
@@ -697,7 +672,8 @@ public class ProzesskopieForm implements Serializable {
             try {
                 DocStruct colStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
 
-                List<Metadata> firstChildMetadata = colStruct.getAllChildren().isEmpty() ? Collections.emptyList() : colStruct.getAllChildren().get(0).getAllMetadata();
+                List<Metadata> firstChildMetadata =
+                        colStruct.getAllChildren().isEmpty() ? Collections.emptyList() : colStruct.getAllChildren().get(0).getAllMetadata();
                 fillTemplateFromMetadata(colStruct.getAllMetadata(), firstChildMetadata);
 
                 // TODO: No idea what the following code does..
@@ -724,7 +700,7 @@ public class ProzesskopieForm implements Serializable {
         for (Processproperty pe : tempProcess.getEigenschaften()) {
             for (AdditionalField field : this.additionalFields) {
                 if (field.getTitel().equals(pe.getTitel())) {
-                   setFieldValue(field, pe.getWert());
+                    setFieldValue(field, pe.getWert());
                 }
             }
             if ("digitalCollection".equals(pe.getTitel())) {
@@ -827,7 +803,8 @@ public class ProzesskopieForm implements Serializable {
         /* keine Collektion ausgewählt */
         if (this.standardFields.get("collections") && getDigitalCollections().size() == 0) {
             valide = false;
-            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorNoCollection"));
+            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " "
+                    + Helper.getTranslation("ProcessCreationErrorNoCollection"));
         }
 
         /*
@@ -1034,7 +1011,8 @@ public class ProzesskopieForm implements Serializable {
                                 Metadata md = this.ughHelper.getMetadata(myTempStruct, mdt);
                                 if (md != null) {
                                     md.setValue(field.getWert());
-                                } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())//if the md could not be found, warn!
+                                } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())
+                                //if the md could not be found, warn!
                                 {
                                     Helper.setFehlerMeldung(this.ughHelper.lastErrorMessage);
                                     String strError = mdt.getName() + " : " + field.getWert();
@@ -1573,7 +1551,8 @@ public class ProzesskopieForm implements Serializable {
      */
 
     public void setOpacKatalog(String opacKatalog) {
-        //currentCatalogue is set to null in prepare(), but is required in opacAuswerten(). So reset it here if it is null or if the catalog name (this.opacKatalog) has changed
+        // currentCatalogue is set to null in prepare(), but is required in opacAuswerten().
+        // So reset it here if it is null or if the catalog name (this.opacKatalog) has changed
         if (this.currentCatalogue == null || !this.opacKatalog.equals(opacKatalog)) {
             this.opacKatalog = opacKatalog;
             currentCatalogue = null;

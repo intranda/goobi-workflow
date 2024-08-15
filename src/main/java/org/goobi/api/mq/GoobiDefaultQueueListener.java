@@ -34,13 +34,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.jms.BytesMessage;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQPrefetchPolicy;
@@ -52,6 +45,12 @@ import org.reflections.Reflections;
 import com.google.gson.Gson;
 
 import de.sub.goobi.persistence.managers.MQResultManager;
+import jakarta.jms.BytesMessage;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageConsumer;
+import jakarta.jms.Session;
+import jakarta.jms.TextMessage;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2

@@ -27,15 +27,6 @@ package org.goobi.api.mq;
 
 import java.util.Date;
 
-import javax.jms.BytesMessage;
-import javax.jms.Connection;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Step;
@@ -47,6 +38,14 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import jakarta.jms.BytesMessage;
+import jakarta.jms.Connection;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageConsumer;
+import jakarta.jms.Session;
+import jakarta.jms.TextMessage;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -61,15 +60,16 @@ public class GoobiExternalJobQueueDLQListener {
     private Gson gson = new Gson();
     private Connection conn;
     private Thread thread;
+    private Session sess;
+    private MessageConsumer cons;
 
     public void register(String username, String password) throws JMSException {
         conn = ExternalConnectionFactory.createConnection(username, password);
         ConfigurationHelper config = ConfigurationHelper.getInstance();
-
-        final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+        sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
         final Destination dest = sess.createQueue(config.getQueueName(QueueType.EXTERNAL_DL_QUEUE));
 
-        final MessageConsumer cons = sess.createConsumer(dest);
+        cons = sess.createConsumer(dest);
 
         Runnable run = () -> {
             while (true) { //NOSONAR, no abort condition is needed
@@ -108,9 +108,12 @@ public class GoobiExternalJobQueueDLQListener {
 
         conn.start();
         thread.start();
+
     }
 
     public void close() throws JMSException {
+        cons.close();
+        sess.close();
         this.conn.close();
         try {
             thread.join(1000);
