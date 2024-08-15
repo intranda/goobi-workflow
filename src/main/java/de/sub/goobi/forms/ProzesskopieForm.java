@@ -834,8 +834,7 @@ public class ProzesskopieForm implements Serializable {
          * -------------------------------- Prüfung der additional-Eingaben, die angegeben werden müssen --------------------------------
          */
         for (AdditionalField field : this.additionalFields) {
-            if ((field.getWert() == null || "".equals(field.getWert())) && field.isRequired() && field.getShowDependingOnDoctype(getDocType())
-                    && (StringUtils.isBlank(field.getWert()))) {
+            if ((field.getWert() == null || field.getWert().isBlank()) && field.isRequired() && field.getShowDependingOnDoctype(getDocType())) {
                 valide = false;
                 Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " "
                         + Helper.getTranslation("ProcessCreationErrorFieldIsEmpty"));
