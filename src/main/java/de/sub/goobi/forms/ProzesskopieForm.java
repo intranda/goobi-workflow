@@ -828,7 +828,8 @@ public class ProzesskopieForm implements Serializable {
         /* keine Collektion ausgewählt */
         if (this.standardFields.get("collections") && getDigitalCollections().size() == 0) {
             valide = false;
-            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorNoCollection"));
+            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " "
+                    + Helper.getTranslation("ProcessCreationErrorNoCollection"));
         }
 
         /*
@@ -1047,7 +1048,8 @@ public class ProzesskopieForm implements Serializable {
                                 Metadata md = this.ughHelper.getMetadata(myTempStruct, mdt);
                                 if (md != null) {
                                     md.setValue(field.getWert());
-                                } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())//if the md could not be found, warn!
+                                } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())
+                                //if the md could not be found, warn!
                                 {
                                     Helper.setFehlerMeldung(this.ughHelper.lastErrorMessage);
                                     String strError = mdt.getName() + " : " + field.getWert();
@@ -1586,7 +1588,8 @@ public class ProzesskopieForm implements Serializable {
      */
 
     public void setOpacKatalog(String opacKatalog) {
-        //currentCatalogue is set to null in prepare(), but is required in opacAuswerten(). So reset it here if it is null or if the catalog name (this.opacKatalog) has changed
+        // currentCatalogue is set to null in prepare(), but is required in opacAuswerten().
+        // So reset it here if it is null or if the catalog name (this.opacKatalog) has changed
         if (this.currentCatalogue == null || !this.opacKatalog.equals(opacKatalog)) {
             this.opacKatalog = opacKatalog;
             currentCatalogue = null;
