@@ -1706,8 +1706,17 @@ public class ProzesskopieForm implements Serializable {
                     }
 
                     /* den Inhalt zum Titel hinzufügen */
-                    if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        gen.addToken(calcProcesstitelCheck(myField.getTitel(), myField.getWert()), ManipulationType.NORMAL);
+                    if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType())) {
+                        String value = myField.getWert();
+                        if (value == null) {
+                            value = "";
+                        }
+
+                        // Skip process title generation if a required field is not present
+                        if (myField.isRequired() && value.isBlank()) {
+                            return;
+                        }
+                        gen.addToken(calcProcesstitelCheck(myField.getTitel(), value), ManipulationType.NORMAL);
                     }
                 }
             }
