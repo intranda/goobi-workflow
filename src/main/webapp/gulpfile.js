@@ -17,7 +17,7 @@ const cleanup = require('rollup-plugin-cleanup');
 const terser = require('@rollup/plugin-terser');
 
 // provide custom asset location for watch task
-const customLocation = `/home/florian/eclipse-workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/workflow-core/`;
+const customLocation = '';
 
 // source directories, files, globs
 const legacySources = {
