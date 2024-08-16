@@ -203,6 +203,9 @@ fieldSet:disabled .badge > a {
   > .form-row:last-child {
     border-block-end: 0;
   }
+  > input {
+    margin-block: auto;
+  }
 }
 
 @media (min-width: 768px) {
@@ -233,19 +236,42 @@ fieldSet:disabled .badge > a {
       }
     }
   }
-  > .form-rows,
   > .field-set-content {
     display: flex;
     flex: 1 0 auto;
     flex-direction: column;
     justify-content: space-between;
     width: 75%;
-    .form-label {
-      background: var(--clr-neutral-200);
+  }
+  .form-row {
+    background: white;
+    border: 0;
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: column;
+      padding-block: 0.25rem;
+      padding-inline: 0.5rem;
+      &:first-of-type {
+        padding-block-start: 0.5rem;
+      }
+      &:last-of-type {
+        padding-block-end: 0.5rem;
+      }
     }
-    .form-label + .form-input {
-      border-inline: 1px solid var(--clr-neutral-300);
-    }
+  .form-label,
+  .form-input {
+    border: 0;
+    flex: 0 1 auto;
+    min-height: unset;
+    width: 100% !important;
+  }
+  .form-label {
+    background: white;
+    color: var(--clr-neutral-600);
+    padding: 0.125em;
+  }
+  .form-input {
+    padding: 0;
   }
   .form-row:last-of-type {
     border-block-end: 0;
@@ -261,32 +287,46 @@ fieldSet:disabled .badge > a {
       flex: 0 0 auto;
       width: 25%;
     }
-    > .form-rows,
     > .field-set-content {
       padding: 0;
       margin: 0;
-      .form-input {
-        border-inline-end: 0;
-      }
-      .form-label + .form-input {
-        border-inline: 0;
-      }
     }
   }
 }
 
+.field-set-legend,
+.field-set-content,
+.field-label,
+.form-row {
+  .font-light {
+    color: #777;
+    &:hover {
+      color: #222;
+    }
+  }
+}
 
 .field-set .field-set {
   border-block: 0;
+  // border-block-end: 1px solid var(--clr-neutral-300);
+  &:last-of-type {
+    // border-block-end: 0;
+  }
   &:has(.form-label) {
-    padding-block: 0.125em;
-    .field-set-content > .form-row:first-of-type {
-      border-block-start: 1px solid var(--clr-neutral-300);
+    &:last-of-type .field-set-content {
+      border-block-end: 0;
     }
-
-    .field-set-content > .form-row:last-of-type {
+    // padding-block: 0.125em;
+    .field-set-content {
       border-block-end: 1px solid var(--clr-neutral-300);
     }
+  }
+}
+
+.field-set .field-set + .field-set {
+  padding-block-start: 0.125rem;
+  .field-set-content {
+    border-block-start: 1px solid var(--clr-neutral-300);
   }
 }
 
@@ -297,16 +337,66 @@ fieldSet:disabled .badge > a {
 
 .field-set-content:has(>.btn) {
   position: relative;
+  .form-row {
+    padding-inline-end: 2.5rem;
+  }
+  > .btn {
+    // border-block: 1px solid var(--clr-neutral-300);
+    // border-inline-end: 1px solid var(--clr-neutral-300);
+    border-inline-start: 1px solid var(--clr-neutral-300);
+    height: 100%;
+    justify-content: center;
+    right: 0;
+    position: absolute;
+    width: 2rem;
+    // flex display is needed for correct position of button icon when JSF outputs an anchor
+    display: flex;
+    align-items: center;
+  }
+}
+
+.form-row:has(>.btn) {
+  position: relative;
   .form-input {
     padding-inline-end: 2.5rem;
   }
   > .btn {
-    border-block: 1px solid var(--clr-neutral-300);
     border-inline-start: 1px solid var(--clr-neutral-300);
     height: 100%;
+    justify-content: center;
     right: 0;
     position: absolute;
     width: 2rem;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.form-legacy-wrapper {
+  position: relative;
+  > .row {
+    > .col-md-8,
+    > .col-md-1 {
+      padding-inline-end: 2.5rem !important;
+    }
+  }
+  > .btn {
+    border-inline-start: 1px solid var(--clr-neutral-300);
+    border-block-end: 1px solid var(--clr-neutral-300);
+    height: 100%;
+    justify-content: center;
+    right: 0;
+    position: absolute;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    top: 0;
+    &.font-light {
+      color: #777;
+      &:hover {
+        color: #222;
+      }
+    }
   }
 }
 
