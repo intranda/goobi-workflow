@@ -17,7 +17,7 @@
 .notification-wrapper {
     background: hsla(208.94, 73.28%, 54.51%, 0.125);
     border: 1px solid var(--clr-primary);
-    border-radius: 0 0 2rem;
+    border-radius: var(--border-radius) var(--border-radius) 2rem;
     max-width: 50vw;
     padding-block-end: 3rem;
     width: 30rem;
@@ -37,4 +37,8 @@
     justify-content: space-between;
     font-size: var(--fs-400);
     padding: 1em;
+    > .btn {
+        border: 0.0625rem solid #fff;
+        padding: var(--bs-btn-padding-y) var(--bs-btn-padding-x);
+    }
 }
