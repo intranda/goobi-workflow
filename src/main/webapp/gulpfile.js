@@ -17,7 +17,10 @@ const cleanup = require('rollup-plugin-cleanup');
 const terser = require('@rollup/plugin-terser');
 
 // provide custom asset location for watch task
-const customLocation = '';
+const fs = require("fs");
+const homedir = require("os").homedir();
+const config = fs.readFileSync(homedir + '/.config/gulp_userconfig.json')
+const customLocation = JSON.parse(config).tomcatLocation;
 
 // source directories, files, globs
 const legacySources = {

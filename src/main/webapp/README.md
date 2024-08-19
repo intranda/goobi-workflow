@@ -6,7 +6,7 @@ Required: `npm` >= v5.7.1
 
 1. Install dependencies:
   `npm i`
-2. For *development* purposes: by default, the development script moves the compiled assets to the same location as the production script. If you wish to move files to another location depending on your Goobi setup, provide the desired location of the web app **relative to the gulpfile** in the variable `customLocation`.
+2. For *development* purposes: by default, the development script moves the compiled assets to the same location as the production script. If you wish to move files to another location depending on your Goobi setup, refer to the development section below.
 3. Depending on your build target, run one of the following scripts:
    - `npm run dev` for *development*, move compiled assets to Tomcat and watch for further changes.
    - `npm run build` for *production*, minify assets as needed without moving them to the server. Do this before merging a PR.
@@ -14,6 +14,16 @@ Required: `npm` >= v5.7.1
 ## Development
 
 A number of legacy assets can be found in `uii/template/`. Please avoid changes to these, but refer to the following sections.
+
+### Tomcat Location
+
+Gulp expects the location of your Tomcat in a global configuration file. This file should be found at `~/.config/gulp_userconfig.json`. The location should be provided similar to this pattern:
+
+```JSON
+{
+    "tomcatLocation": "/PATH/TO/TOMCAT/webapps/workflow-core/"
+}
+```
 
 ### Javascript
 
