@@ -17,10 +17,7 @@ const cleanup = require('rollup-plugin-cleanup');
 const terser = require('@rollup/plugin-terser');
 
 // provide custom asset location for watch task
-const fs = require("fs");
-const homedir = require("os").homedir();
-const config = fs.readFileSync(homedir + '/.config/gulp_userconfig.json')
-const customLocation = JSON.parse(config).tomcatLocation;
+let customLocation;
 
 // source directories, files, globs
 const legacySources = {
@@ -63,6 +60,15 @@ const targetFolder = {
 }
 
 // FUNCTIONS
+// load custom location from user config
+// this is a function so that CI does not fail if the file is not present
+function loadConfig() {
+    const fs = require("fs");
+    const homedir = require("os").homedir();
+    const config = fs.readFileSync(homedir + '/.config/gulp_userconfig.json')
+    customLocation = JSON.parse(config).tomcatLocation;
+};
+
 function static() {
     return src(sources.staticAssets)
         .pipe(dest(`${customLocation}${targetFolder.staticAssets}`))
@@ -195,6 +201,7 @@ function prodJsRollup() {
 };
 
 exports.dev = function() {
+    loadConfig();
     watch(legacySources.less, { ignoreInitial: false }, devLess);
     watch(legacySources.js, { ignoreInitial: false }, devJsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
