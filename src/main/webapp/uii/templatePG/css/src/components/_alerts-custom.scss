@@ -14,7 +14,7 @@
   --bs-warning-bg-subtle: var(--clr-action);
   --bs-warning-border-subtle: var(--clr-action);
   --bs-warning-text-emphasis: var(--clr-white);
-  --before-width: 1.5rem;
+  --before-width: 1rem;
   background: white;
   border: 1px solid var(--alert-color);
   color: black;
@@ -41,7 +41,7 @@
   --alert-color: var(--clr-hot);
   &::before {
     content: "\f12a"; // exclamation
-    content: "\f071"; // exclamation-triangle
+    // content: "\f071"; // exclamation-triangle
   }
 }
 
