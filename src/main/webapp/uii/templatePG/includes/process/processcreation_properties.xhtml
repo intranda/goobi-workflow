@@ -103,7 +103,7 @@
                         <h:selectOneMenu
                             id="select"
                             styleClass="form-control form-select"
-                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}"
+                            disabled="#{property.showProcessGroupAccessCondition == 'READ'}"
                             value="#{property.value}"
                             binding="#{select}">
                             <f:selectItems
@@ -131,7 +131,7 @@
                             value="#{property.valueList}"
                             size="5"
                             styleClass="form-control"
-                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
+                            disabled="#{property.showProcessGroupAccessCondition == 'READ'}">
                             <f:selectItems
                                 value="#{property.possibleValues}"
                                 var="propertys"
@@ -159,7 +159,7 @@
                         <h:selectBooleanCheckbox
                             id="boolean"
                             value="#{property.booleanValue}"
-                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
+                            disabled="#{property.showProcessGroupAccessCondition == 'READ'}">
                         </h:selectBooleanCheckbox>
                         <h:message
                             for="boolean"
