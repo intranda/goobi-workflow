@@ -24,8 +24,8 @@
   position: relative;
   &::before {
     align-items: center;
-    // background: var(--alert-color);
-    color: var(--alert-color);
+    background: var(--alert-color);
+    color: white;
     display: flex;
     font: normal normal normal 14px/1 FontAwesome;
     height: 100%;
@@ -40,6 +40,7 @@
 .alert-danger {
   --alert-color: var(--clr-hot);
   &::before {
+    content: "\f12a"; // exclamation
     content: "\f071"; // exclamation-triangle
   }
 }
@@ -47,6 +48,7 @@
 .alert-info {
   --alert-color: var(--clr-primary-400);
   &::before {
-    content: "\f05a"; // info-circle
+    content: "\f129"; // info
+    // content: "\f05a"; // info-circle
   }
 }

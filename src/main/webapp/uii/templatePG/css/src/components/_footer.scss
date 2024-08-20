@@ -4,7 +4,7 @@
     color: white;
     gap: 1rem;
     justify-content: flex-start;
-    min-height: 4.875rem;
+    height: 3rem;
     padding-block: 0.5rem;
     padding-inline: 1.5rem;
     width: 100%;
@@ -32,3 +32,25 @@ a.footer-text {
         color: white;
     }
 }
+
+// gray
+// .footer {
+//     background: #ddd;
+//     color: black;
+// }
+
+// .footer-text {
+//     color: black;
+// }
+
+// a.footer-text {
+//     &:active {
+//         background-color: #ddd;
+//         color: black;
+//     }
+//     &:hover,
+//     &:focus {
+//         background-color: #ddd;
+//         color: black;
+//     }
+// }
