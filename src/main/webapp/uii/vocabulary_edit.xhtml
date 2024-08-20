@@ -1,374 +1,123 @@
 <ui:composition
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        template="/uii/templatePG/templatePG.html"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+>
 
-	<ui:param
-		name="myPageTitle"
-		value="#{msgs.vocabularyManager_editVocabulary}" />
+    <ui:param
+            name="myPageTitle"
+            value="#{msgs.vocabularyManager_editVocabulary}"/>
 
-	<ui:define name="breadcrumb">
-		<intranda:breadcrumb
-			id="index"
-			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-			action="index"
-			navId="a0" />
-		<intranda:breadcrumb
-			id="admin"
-			label="#{msgs.intranda_administration_vocabularies}"
-			action="vocabulary_all" />
-		<intranda:breadcrumb
-			id="edit"
-			label="#{msgs.vocabularyManager_editVocabulary}"
-			action="vocabulary_edit"
-			noSeparator="#{true}" />
-	</ui:define>
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+                id="index"
+                label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+                action="index"
+                navId="a0"/>
+        <intranda:breadcrumb
+                id="admin"
+                label="#{msgs.intranda_administration_vocabularies}"
+                action="vocabulary_all"/>
+        <intranda:breadcrumb
+                id="edit"
+                label="#{msgs.vocabularyManager_editVocabulary}"
+                action="vocabulary_edit"
+                noSeparator="#{true}"/>
+    </ui:define>
 
-	<ui:define name="info">
-	</ui:define>
+    <ui:define name="info">
+    </ui:define>
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<h:form
+        <h:form
 			id="myform"
 			styleClass="form-horizontal form-bordered"
 			onkeypress="submitOnEnter(event);"
 			rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}">
+			<intranda:box
+				boxType="action"
+				boxTitle="false"
+				boxForm="true"
+				boxPadding="false">
+				<intranda:boxTitle
+					title="#{myPageTitle}"
+					icon="fa-database"/>
 
-			<div
-				class="row"
-				role="main">
-				<div class="col-12">
+				<intranda:formOutputText
+					label="#{msgs.id}"
+					field="#{vocabularyEditBean.vocabulary.id}"
+					name="vocabularyId"/>
+				<intranda:formInputText
+					id="title"
+					name="titel"
+					label="#{msgs.vocabularyManager_vocabulary}"
+					field="#{vocabularyEditBean.vocabulary.name}"
+					help="#{msgs.help_vocabulary_title}"/>
 
-					<intranda:box
-						boxType="action"
-						boxTitle="false"
-						boxForm="true"
-						boxPadding="false">
-						<intranda:boxTitle
-							title="#{myPageTitle}"
-							icon="fa-database" />
+				<intranda:formInputTextArea
+					id="file"
+					name="fileName"
+					label="#{msgs.vocabularyManager_description}"
+					field="#{vocabularyEditBean.vocabulary.description}"
+					help="#{msgs.help_vocabulary_description}"
+					required="false"/>
 
-						<intranda:formInputText
-							id="title"
-							name="titel"
-							label="#{msgs.vocabularyManager_vocabulary}"
-							field="#{vocabularyBean.currentVocabulary.title}"
-							help="#{msgs.help_vocabulary_title}" />
+				<!-- OPTIONAL METADATA -->
+				<ui:fragment rendered="#{vocabularyEditBean.metadataRecord != null}">
+						<intranda:vocabularyRecordEditor
+							record="#{vocabularyEditBean.metadataRecord}"
+							showID="false"
+						/>
+				</ui:fragment>
+				<div class="box__actions">
+					<button
+						jsf:id="delete"
+						jsf:action="#{vocabularyEditBean.deleteVocabulary}"
+						class="btn btn-hot"
+						onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+						jsf:rendered="#{vocabularyEditBean.vocabulary != null}">
+						<span
+							aria-hidden="true"
+							class="fa fa-trash-o"/>
+						<span>
+							<h:outputText value="#{msgs.loeschen}"/>
+						</span>
+					</button>
+					<!-- Cancel -->
+					<a
+						class="btn btn-blank submitOnEnter"
+						jsf:id="abbrechen"
+						jsf:type="cancel"
+						jsf:action="#{vocabularyBean.load()}"
+						jsf:immediate="true">
+						<span>
+							<h:outputText value="#{msgs.abbrechen}"/>
+						</span>
+					</a>
 
-						<intranda:formInputTextArea
-							id="file"
-							name="fileName"
-							label="#{msgs.vocabularyManager_description}"
-							field="#{vocabularyBean.currentVocabulary.description}"
-							help="#{msgs.help_vocabulary_description}"
-							required="false"
-							aria-label="#{msgs.vocabularyManager_description}" />
-
-
-						<div
-							style="border-top: 2px solid #E8860C; border-bottom: 1px solid #ddd;">
-
-							<div class="box__body box__body--padded">
-								<h3>
-									<h:outputText
-										value="#{msgs.vocabularyManager_fieldDefinitions}" />
-								</h3>
-
-								<div class="gw-table gw-table-fixed">
-									<div class="gw-table__wrapper">
-
-										<x:dataTable
-											styleClass="table table-hover table-bordered"
-											value="#{vocabularyBean.currentVocabulary.struct}"
-											var="definition"
-											rendered="#{vocabularyBean.currentVocabulary.struct.size() > 0}"
-											forceId="true">
-
-											<h:column>
-												<div class="input-group input-group">
-													<f:facet name="header">
-														<h:outputText value="#{msgs.vocabularyManager_label}" />
-													</f:facet>
-													<h:inputText
-														id="description"
-														name="descriptionName"
-														styleClass="form-control"
-														value="#{definition.label}">
-														<f:passThroughAttribute
-															name="aria-label"
-															value="#{msgs.vocabularyManager_label}" />
-													</h:inputText>
-													<f:facet name="footer">
-														<intranda:formHelp content="#{msgs.help_vocabulary_label}" />
-													</f:facet>
-												</div>
-											</h:column>
-											<h:column>
-												<f:facet name="header">
-													<h:outputText
-														value="#{msgs.vocabularyManager_languageSelection}" />
-												</f:facet>
-												<h:selectOneMenu
-													value="#{definition.language}"
-													styleClass="form-select">
-													<f:selectItem
-														itemLabel="-"
-														itemValue="" />
-													<f:selectItem
-														itemLabel="#{msgs.vocabularyManager_language_english}"
-														itemValue="eng" />
-													<f:selectItem
-														itemLabel="#{msgs.vocabularyManager_language_german}"
-														itemValue="ger" />
-													<f:selectItem
-														itemLabel="#{msgs.vocabularyManager_language_french}"
-														itemValue="fre" />
-													<f:selectItem
-														itemLabel="#{msgs.vocabularyManager_language_spanish}"
-														itemValue="spa" />
-													<f:passThroughAttribute
-														name="aria-label"
-														value="#{msgs.vocabularyManager_languageSelection}" />
-												</h:selectOneMenu>
-
-												<f:facet name="footer">
-													<intranda:formHelp
-														content="#{msgs.help_vocabulary_languageSelecion}" />
-												</f:facet>
-											</h:column>
-											<h:column>
-												<f:facet name="header">
-													<h:outputText value="#{msgs.vocabularyManager_type}" />
-												</f:facet>
-												<h:selectOneMenu
-													value="#{definition.type}"
-													styleClass="form-select"
-													id="fieldname">
-													<f:selectItems
-														var="fieldname"
-														value="#{vocabularyBean.possibleDefinitionTypes}"
-														itemValue="#{fieldname}"
-														itemLabel="#{fieldname}" />
-													<f:ajax
-														render="@form"
-														execute="@form" />
-													<f:passThroughAttribute
-														name="aria-label"
-														value="#{msgs.vocabularyManager_type}" />
-												</h:selectOneMenu>
-												<f:facet name="footer">
-													<intranda:formHelp
-														content="#{msgs.help_vocabulary_typeSelecion}" />
-												</f:facet>
-											</h:column>
-
-											<h:column>
-												<f:facet name="header">
-													<h:outputText value="#{msgs.vocabularyManager_validation}" />
-												</f:facet>
-												<h:inputText
-													value="#{definition.validation}"
-													styleClass="form-control">
-													<f:passThroughAttribute
-														name="aria-label"
-														value="#{msgs.vocabularyManager_validation}" />
-												</h:inputText>
-												<f:facet name="footer">
-													<intranda:formHelp
-														content="#{msgs.help_vocabulary_fieldValidation}" />
-												</f:facet>
-											</h:column>
-											<h:column headerClass="gw-col-check">
-												<f:facet name="header">
-													<h:outputText value="#{msgs.vocabularyManager_required}" />
-												</f:facet>
-												<h:selectBooleanCheckbox value="#{definition.required}">
-													<f:passThroughAttribute
-														name="aria-label"
-														value="#{msgs.vocabularyManager_required}" />
-												</h:selectBooleanCheckbox>
-												<f:facet name="footer">
-													<intranda:formHelp
-														content="#{msgs.help_vocabulary_fieldRequired}" />
-												</f:facet>
-											</h:column>
-											<h:column headerClass="gw-col-check">
-												<f:facet name="header">
-													<h:outputText value="#{msgs.vocabularyManager_mainEntry}" />
-												</f:facet>
-												<!-- TODO uncheck others as ajax or javascript -->
-												<h:selectBooleanCheckbox value="#{definition.mainEntry}">
-													<f:passThroughAttribute
-														name="aria-label"
-														value="#{msgs.vocabularyManager_mainEntry}" />
-												</h:selectBooleanCheckbox>
-												<f:facet name="footer">
-													<intranda:formHelp
-														content="#{msgs.help_vocabulary_fieldIsMainEntry}" />
-												</f:facet>
-											</h:column>
-											<h:column headerClass="gw-col-check">
-												<f:facet name="header">
-													<h:outputText value="#{msgs.vocabularyManager_unique}" />
-												</f:facet>
-												<h:selectBooleanCheckbox value="#{definition.distinctive}">
-													<f:passThroughAttribute
-														name="aria-label"
-														value="#{msgs.vocabularyManager_unique}" />
-												</h:selectBooleanCheckbox>
-												<f:facet name="footer">
-													<intranda:formHelp
-														content="#{msgs.help_vocabulary_fieldIsUnique}" />
-												</f:facet>
-											</h:column>
-
-											<h:column headerClass="gw-col-check">
-												<f:facet name="header">
-													<h:outputText value="#{msgs.vocabularyManager_titleField}" />
-												</f:facet>
-												<h:selectBooleanCheckbox value="#{definition.titleField}">
-													<f:passThroughAttribute
-														name="aria-label"
-														value="#{msgs.vocabularyManager_titleField}" />
-												</h:selectBooleanCheckbox>
-												<f:facet name="footer">
-													<intranda:formHelp
-														content="#{msgs.help_vocabulary_fieldTitleField}" />
-												</f:facet>
-											</h:column>
-
-											<h:column>
-												<f:facet name="header">
-													<h:outputText value="#{msgs.vocabularyManager_select}" />
-												</f:facet>
-												<h:inputText
-													id="value"
-													name="value"
-													styleClass="form-control"
-													value="#{definition.selection}">
-													<f:passThroughAttribute
-														name="aria-label"
-														value="#{msgs.vocabularyManager_select}" />
-												</h:inputText>
-												<f:facet name="footer">
-													<intranda:formHelp
-														content="#{msgs.help_vocabulary_valueSelection}" />
-												</f:facet>
-											</h:column>
-
-
-											<x:column headerClass="gw-table-fixed__actions">
-												<f:facet name="header">
-													<h:outputText value="#{msgs.auswahl}" />
-												</f:facet>
-
-												<div class="gw-table__actions__container">
-													<button
-														jsf:id="delete"
-														class="btn btn-hot"
-														title="#{msgs.vocabularyManager_deleteDefinition}"
-														jsf:action="#{vocabularyBean.deleteDefinition}"
-														onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
-														jsf:immediate="true">
-														<f:setPropertyActionListener
-															target="#{vocabularyBean.currentDefinition}"
-															value="#{definition}" />
-														<span class="fa fa-trash-o font-bold" />
-													</button>
-												</div>
-
-											</x:column>
-										</x:dataTable>
-									</div>
-								</div>
-
-
-
-								<div class="box__actions">
-									<button
-										jsf:id="new_def"
-										class="btn btn-primary-400 me-auto"
-										jsf:action="#{vocabularyBean.addDefinition}"
-										title="#{msgs.vocabularyManager_addDefinition}">
-										<i
-											aria-hidden="true"
-											class="fa fa-plus"></i>
-										<span>
-											<h:outputText value="#{msgs.vocabularyManager_addDefinition}" />
-										</span>
-									</button>
-								</div>
-								<!-- /box__actions -->
-
-							</div>
-							<!-- /box__body -->
-
-						</div>
-
-						<div class="box__body">
-							<div class="box__actions">
-								<!-- Cancel -->
-								<a
-									class="btn btn-blank submitOnEnter"
-									jsf:id="abbrechen"
-									jsf:type="cancel"
-									jsf:action="#{vocabularyBean.cancelEdition}"
-									jsf:immediate="true">
-									<span>
-										<h:outputText value="#{msgs.abbrechen}" />
-									</span>
-								</a>
-
-								<!-- Save -->
-								<button
-									class="btn btn-success submitOnEnter"
-									jsf:id="absenden"
-									type="submit"
-									jsf:action="#{vocabularyBean.saveVocabulary}">
-									<span class="fa fa-save" />
-									<span>
-										<h:outputText value="#{msgs.speichern}" />
-									</span>
-								</button>
-
-								<button
-									jsf:id="delete"
-									jsf:action="#{vocabularyBean.deleteVocabulary}"
-									class="btn btn-hot trigger-delete"
-									onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
-									jsf:rendered="#{vocabularyBean.currentVocabulary.id != null}">
-									<span class="fa fa-trash-o" />
-									<span>
-										<h:outputText value="#{msgs.loeschen}" />
-									</span>
-								</button>
-
-							</div>
-						</div>
-
-					</intranda:box>
+					<!-- Save -->
+					<button
+						class="btn btn-success submitOnEnter"
+						jsf:id="absenden"
+						type="submit"
+						jsf:action="#{vocabularyEditBean.saveVocabulary}">
+						<span
+							aria-hidden="true"
+							class="fa fa-save"/>
+						<span>
+							<h:outputText value="#{msgs.speichern}"/>
+						</span>
+					</button>
 
 				</div>
-			</div>
+			</intranda:box>
 
+        </h:form>
 
-			<!-- Information about the definitions -->
-
-			<!-- new definition -->
-
-
-
-
-		</h:form>
-
-	</ui:define>
+    </ui:define>
 
 </ui:composition>

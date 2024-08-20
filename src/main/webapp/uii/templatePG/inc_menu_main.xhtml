@@ -1,391 +1,394 @@
 <ui:composition
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+		xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+		xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+		xmlns:h="http://xmlns.jcp.org/jsf/html"
+		xmlns:f="http://xmlns.jcp.org/jsf/core"
+		xmlns:c="http://java.sun.com/jsp/jstl/core"
+		xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+>
 
-	<composite:interface />
+    <composite:interface/>
 
-	<composite:implementation>
+    <composite:implementation>
 
-		<!-- Load the main menu only if the user is logged in -->
-		<!-- The page "mailNotificationDisabled.xhtml needs the menu with user == null -->
-		<c:if test="#{LoginForm.myBenutzer != null}">
-			<ui:insert name="menu-content">
-				<ul id="main-menu-set-class" class="navbar-nav">
-					<!-- Dropdown-Menü: "Startseite" / "Home page" -->
-					<li class="nav-item #{NavigationForm.parentMenu == 'menu_start' ? 'active' : ''}">
-						<h:commandLink rendered="#{DashboardForm.plugin == null}"
-							action="index"
-							id="start"
-							styleClass="nav-link">
+        <!-- Load the main menu only if the user is logged in -->
+        <!-- The page "mailNotificationDisabled.xhtml needs the menu with user == null -->
+        <c:if test="#{LoginForm.myBenutzer != null}">
+            <ui:insert name="menu-content">
+                <ul id="main-menu-set-class" class="navbar-nav">
+                    <!-- Dropdown-Menü: "Startseite" / "Home page" -->
+                    <li class="nav-item #{NavigationForm.parentMenu == 'menu_start' ? 'active' : ''}">
+                        <h:commandLink rendered="#{DashboardForm.plugin == null}"
+                                       action="index"
+                                       id="start"
+                                       styleClass="nav-link">
 							<span>
-								<span class="#{cc.attrs.icon}" />
-								#{msgs.startseite}
+								<span class="#{cc.attrs.icon}"/>
+                                #{msgs.startseite}
 							</span>
-							<f:setPropertyActionListener
-								target="#{NavigationForm.aktuell}"
-								value="a0" />
-							<f:setPropertyActionListener
-								target="#{NavigationForm.parentMenu}"
-								value="menu_start" />
-						</h:commandLink>
+                            <f:setPropertyActionListener
+                                    target="#{NavigationForm.aktuell}"
+                                    value="a0"/>
+                            <f:setPropertyActionListener
+                                    target="#{NavigationForm.parentMenu}"
+                                    value="menu_start"/>
+                        </h:commandLink>
 
-                         <h:commandLink rendered="#{DashboardForm.plugin != null}"
-                            action="index"
-                            id="dashboard"
-                            styleClass="nav-link">
+                        <h:commandLink rendered="#{DashboardForm.plugin != null}"
+                                       action="index"
+                                       id="dashboard"
+                                       styleClass="nav-link">
                             <span>
-                                <span class="#{cc.attrs.icon}" />
+                                <span class="#{cc.attrs.icon}"/>
                                 #{msgs.dashboard}
                             </span>
                             <f:setPropertyActionListener
-                                target="#{NavigationForm.aktuell}"
-                                value="a0" />
+                                    target="#{NavigationForm.aktuell}"
+                                    value="a0"/>
                             <f:setPropertyActionListener
-                                target="#{NavigationForm.parentMenu}"
-                                value="menu_start" />
+                                    target="#{NavigationForm.parentMenu}"
+                                    value="menu_start"/>
                         </h:commandLink>
-					</li>
+                    </li>
 
-					<!-- Dropdown-Menü: "Meine Aufgaben" / "My tasks" -->
-					<h:panelGroup rendered="#{LoginForm.hasRole('Task_Menu')}">
-						<li class="nav-item #{NavigationForm.parentMenu == 'menu_tasks' ? 'active' : ''}">
-							<h:commandLink
-								action="#{AktuelleSchritteForm.FilterAlleStart}"
-								id="steps"
-								styleClass="nav-link">
+                    <!-- Dropdown-Menü: "Meine Aufgaben" / "My tasks" -->
+                    <h:panelGroup rendered="#{LoginForm.hasRole('Task_Menu')}">
+                        <li class="nav-item #{NavigationForm.parentMenu == 'menu_tasks' ? 'active' : ''}">
+                            <h:commandLink
+                                    action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                    id="steps"
+                                    styleClass="nav-link">
 								<span>
-									<span class="#{cc.attrs.icon}" />
-									#{msgs.aktuelleSchritte}
+									<span class="#{cc.attrs.icon}"/>
+                                    #{msgs.aktuelleSchritte}
 								</span>
-								<f:setPropertyActionListener
-									target="#{NavigationForm.aktuell}"
-									value="a20" />
-								<f:setPropertyActionListener
-									target="#{NavigationForm.parentMenu}"
-									value="menu_tasks" />
-								<f:setPropertyActionListener
-									target="#{AktuelleSchritteForm.filter}"
-									value="" />
-							</h:commandLink>
-						</li>
-					</h:panelGroup>
+                                <f:setPropertyActionListener
+                                        target="#{NavigationForm.aktuell}"
+                                        value="a20"/>
+                                <f:setPropertyActionListener
+                                        target="#{NavigationForm.parentMenu}"
+                                        value="menu_tasks"/>
+                                <f:setPropertyActionListener
+                                        target="#{AktuelleSchritteForm.filter}"
+                                        value=""/>
+                            </h:commandLink>
+                        </li>
+                    </h:panelGroup>
 
-					<!-- Dropdown-Menü: "Workflow" -->
-					<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
-						<li class="nav-item dropdown #{NavigationForm.parentMenu == 'menu_workflow' ? 'active' : ''}">
-							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">#{msgs.workflow}</a>
-							<ul class="dropdown-menu">
-								<!-- Prozess suchen -->
-								<intranda:menuItem
-									id="a21"
-									parentMenu="menu_workflow"
-									label="#{msgs.nachEinemBandSuchen}"
-									action="process_search"
-									filter="#{ProzessverwaltungForm.filter}"
-									rendered="#{LoginForm.hasRole('Workflow_General_Search')}"
-									icon="fa fa-search" />
+                    <!-- Dropdown-Menü: "Workflow" -->
+                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
+                        <li class="nav-item dropdown #{NavigationForm.parentMenu == 'menu_workflow' ? 'active' : ''}">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                               aria-expanded="false">#{msgs.workflow}</a>
+                            <ul class="dropdown-menu">
+                                <!-- Prozess suchen -->
+                                <intranda:menuItem
+                                        id="a21"
+                                        parentMenu="menu_workflow"
+                                        label="#{msgs.nachEinemBandSuchen}"
+                                        action="process_search"
+                                        filter="#{ProzessverwaltungForm.filter}"
+                                        rendered="#{LoginForm.hasRole('Workflow_General_Search')}"
+                                        icon="fa fa-search"/>
 
-								<!-- Prozessuebersicht -->
-								<intranda:menuItem
-									id="a22"
-									parentMenu="menu_workflow"
-									label="#{msgs.aktuelleProzesse}"
-									action="#{ProzessverwaltungForm.FilterAktuelleProzesse}"
-									filter="#{ProzessverwaltungForm.filter}"
-									display="#{ProzessverwaltungForm.modusAnzeige}"
-									rendered="#{LoginForm.hasRole('Workflow_Processes')}"
-									icon="fa fa-tasks" />
+                                <!-- Prozessuebersicht -->
+                                <intranda:menuItem
+                                        id="a22"
+                                        parentMenu="menu_workflow"
+                                        label="#{msgs.aktuelleProzesse}"
+                                        action="#{ProzessverwaltungForm.FilterAktuelleProzesse}"
+                                        filter="#{ProzessverwaltungForm.filter}"
+                                        display="#{ProzessverwaltungForm.modusAnzeige}"
+                                        rendered="#{LoginForm.hasRole('Workflow_Processes')}"
+                                        icon="fa fa-tasks"/>
 
-								<!-- batches -->
-								<intranda:menuItem
-									id="a23"
-									parentMenu="menu_workflow"
-									label="#{msgs.batches}"
-									action="#{BatchForm.FilterAlleStart}"
-									display="#{BatchForm.modusBearbeiten}"
-									rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
-									icon="fa fa-archive" />
+                                <!-- batches -->
+                                <intranda:menuItem
+                                        id="a23"
+                                        parentMenu="menu_workflow"
+                                        label="#{msgs.batches}"
+                                        action="#{BatchForm.FilterAlleStart}"
+                                        display="#{BatchForm.modusBearbeiten}"
+                                        rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
+                                        icon="fa fa-archive"/>
 
-								<!-- Prozessvorlagen -->
-								<intranda:menuItem
-									id="a25"
-									parentMenu="menu_workflow"
-									label="#{msgs.prozessvorlagen}"
-									action="#{ProzessverwaltungForm.FilterVorlagen}"
-									filter="#{ProzessverwaltungForm.filter}"
-									rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates')}"
-									icon="fa fa-files-o" />
+                                <!-- Prozessvorlagen -->
+                                <intranda:menuItem
+                                        id="a25"
+                                        parentMenu="menu_workflow"
+                                        label="#{msgs.prozessvorlagen}"
+                                        action="#{ProzessverwaltungForm.FilterVorlagen}"
+                                        filter="#{ProzessverwaltungForm.filter}"
+                                        rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates')}"
+                                        icon="fa fa-files-o"/>
 
-								<!-- Workflow-Plugins -->
-								<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Plugins')}">
-									<ui:repeat
-										var="plugin"
-										value="#{NavigationForm.possibleWorkflowPluginNames}"
-										id="plugin1">
-										<ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isWorkflowPluginAllowed(plugin)}">
-											<li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.parentMenu == 'menu_workflow' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
-												<h:commandLink
-													action="#{NavigationForm.setPlugin(plugin)}"
-													id="plugin"
-													styleClass="dropdown-item"
-													>
+                                <!-- Workflow-Plugins -->
+                                <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Plugins')}">
+                                    <ui:repeat
+                                            var="plugin"
+                                            value="#{NavigationForm.possibleWorkflowPluginNames}"
+                                            id="plugin1">
+                                        <ui:fragment
+                                                rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isWorkflowPluginAllowed(plugin)}">
+                                            <li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.parentMenu == 'menu_workflow' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
+                                                <h:commandLink
+                                                        action="#{NavigationForm.setPlugin(plugin)}"
+                                                        id="plugin"
+                                                        styleClass="dropdown-item"
+                                                >
 													<span>
-														<span class="fa fa-plug" />
+														<span class="fa fa-plug"/>
 														<span>#{msgs[plugin]}</span>
 													</span>
-													<f:setPropertyActionListener
-														target="#{NavigationForm.aktuell}"
-														value="a28" />
-													<f:setPropertyActionListener
-														target="#{NavigationForm.parentMenu}"
-														value="menu_workflow" />
-												</h:commandLink>
-											</li>
-										</ui:fragment>
-									</ui:repeat>
-								</h:panelGroup>
-							</ul>
-						</li>
-					</h:panelGroup>
+                                                    <f:setPropertyActionListener
+                                                            target="#{NavigationForm.aktuell}"
+                                                            value="a28"/>
+                                                    <f:setPropertyActionListener
+                                                            target="#{NavigationForm.parentMenu}"
+                                                            value="menu_workflow"/>
+                                                </h:commandLink>
+                                            </li>
+                                        </ui:fragment>
+                                    </ui:repeat>
+                                </h:panelGroup>
+                            </ul>
+                        </li>
+                    </h:panelGroup>
 
-					<!-- Dropdown-Menü: "Administration" -->
-					<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
-						<li class="nav-item dropdown #{NavigationForm.parentMenu == 'menu_administration' ? 'active' : ''}">
-							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">#{msgs.administration}</a>
-							<ul class="dropdown-menu">
-								<!-- Benutzerverwaltung -->
-								<intranda:menuItem
-									id="a30"
-									parentMenu="menu_administration"
-									label="#{msgs.benutzer}"
-									action="#{BenutzerverwaltungForm.FilterKein}"
-									rendered="#{LoginForm.hasRole('Admin_Users')}"
-									icon="fa fa-user" />
+                    <!-- Dropdown-Menü: "Administration" -->
+                    <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
+                        <li class="nav-item dropdown #{NavigationForm.parentMenu == 'menu_administration' ? 'active' : ''}">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                               aria-expanded="false">#{msgs.administration}</a>
+                            <ul class="dropdown-menu">
+                                <!-- Benutzerverwaltung -->
+                                <intranda:menuItem
+                                        id="a30"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.benutzer}"
+                                        action="#{BenutzerverwaltungForm.FilterKein}"
+                                        rendered="#{LoginForm.hasRole('Admin_Users')}"
+                                        icon="fa fa-user"/>
 
-								<!-- Benutzergruppen -->
-								<intranda:menuItem
-									id="a31"
-									parentMenu="menu_administration"
-									label="#{msgs.benutzergruppen}"
-									action="#{BenutzergruppenForm.FilterKein}"
-									rendered="#{LoginForm.hasRole('Admin_Usergroups')}"
-									icon="fa fa-users" />
+                                <!-- Benutzergruppen -->
+                                <intranda:menuItem
+                                        id="a31"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.benutzergruppen}"
+                                        action="#{BenutzergruppenForm.FilterKein}"
+                                        rendered="#{LoginForm.hasRole('Admin_Usergroups')}"
+                                        icon="fa fa-users"/>
 
-								<!-- Projekte -->
-								<intranda:menuItem
-									id="a32"
-									parentMenu="menu_administration"
-									label="#{msgs.projekte}"
-									action="#{ProjekteForm.FilterKein}"
-									rendered="#{LoginForm.hasRole('Admin_Projects')}"
-									icon="fa fa-compass box-icon-fix-menu"
-									fontclass="margin-left-10" />
+                                <!-- Projekte -->
+                                <intranda:menuItem
+                                        id="a32"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.projekte}"
+                                        action="#{ProjekteForm.FilterKein}"
+                                        rendered="#{LoginForm.hasRole('Admin_Projects')}"
+                                        icon="fa fa-compass box-icon-fix-menu"
+                                        fontclass="margin-left-10"/>
 
-								<!-- Institution -->
-								<intranda:menuItem
-									id="aInstitution"
-									parentMenu="menu_administration"
-									label="#{msgs.institutions}"
-									action="#{institutionBean.FilterKein}"
-									rendered="#{LoginForm.myBenutzer.superAdmin}"
-									icon="fa fa-building" />
+                                <!-- Institution -->
+                                <intranda:menuItem
+                                        id="aInstitution"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.institutions}"
+                                        action="#{institutionBean.FilterKein}"
+                                        rendered="#{LoginForm.myBenutzer.superAdmin}"
+                                        icon="fa fa-building"/>
 
-								<!-- Regelsaetze -->
-								<intranda:menuItem
-									id="a33"
-									parentMenu="menu_administration"
-									label="#{msgs.regelsaetze}"
-									action="#{RegelsaetzeForm.FilterKein}"
-									rendered="#{LoginForm.hasRole('Admin_Rulesets')}"
-									icon="fa fa-wrench" />
+                                <!-- Regelsaetze -->
+                                <intranda:menuItem
+                                        id="a33"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.regelsaetze}"
+                                        action="#{RegelsaetzeForm.FilterKein}"
+                                        rendered="#{LoginForm.hasRole('Admin_Rulesets')}"
+                                        icon="fa fa-wrench"/>
 
-								<!-- Laufzettel -->
-								<intranda:menuItem
-									id="a34"
-									parentMenu="menu_administration"
-									label="#{msgs.dockets}"
-									action="#{DocketForm.FilterKein}"
-									rendered="#{LoginForm.hasRole('Admin_Dockets')}"
-									icon="fa fa-print" />
+                                <!-- Laufzettel -->
+                                <intranda:menuItem
+                                        id="a34"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.dockets}"
+                                        action="#{DocketForm.FilterKein}"
+                                        rendered="#{LoginForm.hasRole('Admin_Dockets')}"
+                                        icon="fa fa-print"/>
                                 <!-- GoobiScript templates -->
                                 <intranda:menuItem
-                                    id="a34a"
-                                    parentMenu="menu_administration"
-                                    label="#{msgs.goobiScriptTemplates}"
-                                    action="#{goobiScriptTemplateBean.FilterKein}"
-                                    rendered="#{LoginForm.hasRole('Admin_Templates')}"
-                                    icon="fa fa-clone" />
-								<!-- Ldapgruppen -->
-								<intranda:menuItem
-									id="a35"
-									parentMenu="menu_administration"
-									label="#{msgs.authentication_configuration}"
-									action="#{LdapGruppenForm.FilterKein}"
-									rendered="#{LoginForm.hasRole('Admin_Ldap')}"
-									icon="fa fa-key" />
+                                        id="a34a"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.goobiScriptTemplates}"
+                                        action="#{goobiScriptTemplateBean.FilterKein}"
+                                        rendered="#{LoginForm.hasRole('Admin_Templates')}"
+                                        icon="fa fa-clone"/>
+                                <!-- Ldapgruppen -->
+                                <intranda:menuItem
+                                        id="a35"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.authentication_configuration}"
+                                        action="#{LdapGruppenForm.FilterKein}"
+                                        rendered="#{LoginForm.hasRole('Admin_Ldap')}"
+                                        icon="fa fa-key"/>
 
-								<!-- Message Queue -->
-								<intranda:menuItem
-									id="a37"
-									parentMenu="menu_administration"
-									label="#{msgs.menu_administration_currentQueue}"
-									action="queue"
-									rendered="#{LoginForm.hasRole('Admin_Queue')}"
-									icon="fa fa-spinner" />
-								<!-- Jobtypes -->
-								<intranda:menuItem
-									id="a37b"
-									parentMenu="menu_administration"
-									label="#{msgs.automaticTasks}"
-									action="admin_jobtypes_all"
-									rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
-									icon="fa fa-gears" />
+                                <!-- Message Queue -->
+                                <intranda:menuItem
+                                        id="a37"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.menu_administration_currentQueue}"
+                                        action="queue"
+                                        rendered="#{LoginForm.hasRole('Admin_Queue')}"
+                                        icon="fa fa-spinner"/>
+                                <!-- Jobtypes -->
+                                <intranda:menuItem
+                                        id="a37b"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.automaticTasks}"
+                                        action="admin_jobtypes_all"
+                                        rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
+                                        icon="fa fa-gears"/>
 
                                 <!-- Quartz -->
                                 <intranda:menuItem
-                                    id="a37c"
-                                    parentMenu="menu_administration"
-                                    label="#{msgs.jobs_quartzJobs}"
-                                    action="quartz"
-                                    rendered="#{LoginForm.hasRole('Admin_Quartz')}"
-                                    icon="fa fa-spinner" />
+                                        id="a37c"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.jobs_quartzJobs}"
+                                        action="quartz"
+                                        rendered="#{LoginForm.hasRole('Admin_Quartz')}"
+                                        icon="fa fa-spinner"/>
                                 <!-- Harvester -->
                                 <intranda:menuItem
-                                    id="a37d"
-                                    parentMenu="menu_administration"
-                                    label="#{msgs.intranda_administration_harvester}"
-                                    action="#{harvesterBean.filter}"
-                                    rendered="#{LoginForm.hasRole('Admin_Harvester')}"
-                                    icon="fa fa-cloud-download" />
-								<!-- Plugins overview -->
-								<intranda:menuItem
-									id="a42"
-									parentMenu="menu_administration"
-									label="#{msgs.plugins}"
-									action="plugins"
-									icon="fa fa-stethoscope" />
+                                        id="a37d"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.intranda_administration_harvester}"
+                                        action="#{harvesterBean.filter}"
+                                        rendered="#{LoginForm.hasRole('Admin_Harvester')}"
+                                        icon="fa fa-cloud-download"/>
+                                <!-- Plugins overview -->
+                                <intranda:menuItem
+                                        id="a42"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.plugins}"
+                                        action="plugins"
+                                        icon="fa fa-stethoscope"/>
 
-								<!-- Vokabulare -->
-								<intranda:menuItem
-									id="a53"
-									parentMenu="menu_administration"
-									label="#{msgs.intranda_administration_vocabularies}"
-									action="#{vocabularyBean.FilterKein}"
-									rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
-									icon="fa fa-database" />
+                                <!-- Vokabulare -->
+                                <intranda:menuItem
+                                        id="a53"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.intranda_administration_vocabularies}"
+                                        action="#{vocabularyBean.load}"
+                                        rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
+                                        icon="fa fa-database"/>
 
                                 <!-- config editor -->
                                 <intranda:menuItem
-                                    id="aConfigFileEditor"
-                                    parentMenu="menu_administration"
-                                    label="#{msgs.intranda_administration_config_file_editor}"
-                                    action="config_file_editor.xhtml"
-                                    rendered="#{LoginForm.hasRole('Admin_config_file_editor') and NavigationForm.showConfigEditor}"
-                                    icon="fa fa-key" />
+                                        id="aConfigFileEditor"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.intranda_administration_config_file_editor}"
+                                        action="config_file_editor.xhtml"
+                                        rendered="#{LoginForm.hasRole('Admin_config_file_editor') and NavigationForm.showConfigEditor}"
+                                        icon="fa fa-key"/>
 
 
-								<!-- SWAGGER-API -->
-								<intranda:menuItem
-									id="a153"
-									parentMenu="menu_administration"
-									label="#{msgs.apiDescription}"
-									action="restApi.xhtml"
-									icon="fa fa-terminal" />
+                                <!-- SWAGGER-API -->
+                                <intranda:menuItem
+                                        id="a153"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.apiDescription}"
+                                        action="restApi.xhtml"
+                                        icon="fa fa-terminal"/>
 
-								<!-- Superadmin -->
-								<intranda:menuItem
-									id="a39"
-									parentMenu="menu_administration"
-									label="#{msgs.administrationsaufgaben}"
-									action="admin"
-									rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
-									icon="fa fa-bullhorn" />
+                                <!-- Superadmin -->
+                                <intranda:menuItem
+                                        id="a39"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.administrationsaufgaben}"
+                                        action="admin"
+                                        rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
+                                        icon="fa fa-bullhorn"/>
 
-								<!-- Admin-Plugins -->
-								<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Plugins')}">
-									<ui:repeat
-										var="plugin"
-										value="#{AdministrationForm.possibleAdministrationPluginNames}"
-										id="plugin2">
-										<ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isAdministrationPluginAllowed(plugin)}">
-											<li class="#{NavigationForm.aktuell == 'a38' and NavigationForm.parentMenu == 'menu_administration' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
-												<h:commandLink
-													action="#{AdministrationForm.setPlugin(plugin)}"
-													id="plugin"
-													styleClass="dropdown-item">
+                                <!-- Admin-Plugins -->
+                                <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Plugins')}">
+                                    <ui:repeat
+                                            var="plugin"
+                                            value="#{AdministrationForm.possibleAdministrationPluginNames}"
+                                            id="plugin2">
+                                        <ui:fragment
+                                                rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isAdministrationPluginAllowed(plugin)}">
+                                            <li class="#{NavigationForm.aktuell == 'a38' and NavigationForm.parentMenu == 'menu_administration' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
+                                                <h:commandLink
+                                                        action="#{AdministrationForm.setPlugin(plugin)}"
+                                                        id="plugin"
+                                                        styleClass="dropdown-item">
 													<span>
-														<span class="fa fa-plug box-icon-fix-menu" />
+														<span class="fa fa-plug box-icon-fix-menu"/>
 														<span>#{msgs[plugin]}</span>
 													</span>
-													<f:setPropertyActionListener
-														target="#{NavigationForm.aktuell}"
-														value="a38" />
-													<f:setPropertyActionListener
-														target="#{NavigationForm.parentMenu}"
-														value="menu_administration" />
-												</h:commandLink>
-											</li>
-										</ui:fragment>
-									</ui:repeat>
-								</h:panelGroup>
-							</ul>
-						</li>
-					</h:panelGroup>
+                                                    <f:setPropertyActionListener
+                                                            target="#{NavigationForm.aktuell}"
+                                                            value="a38"/>
+                                                    <f:setPropertyActionListener
+                                                            target="#{NavigationForm.parentMenu}"
+                                                            value="menu_administration"/>
+                                                </h:commandLink>
+                                            </li>
+                                        </ui:fragment>
+                                    </ui:repeat>
+                                </h:panelGroup>
+                            </ul>
+                        </li>
+                    </h:panelGroup>
 
-					<!-- Dropdown-Menü: "Statistiken" -->
-					<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
-						<li class="nav-item dropdown #{NavigationForm.parentMenu == 'menu_statistics' ? 'active' : ''} add-has-submenu-in-small-window">
-							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">#{msgs.statistik}</a>
-							<ul class="dropdown-menu">
-								<intranda:menuItem
-									id="a40"
-									parentMenu="menu_statistics"
-									label="#{msgs.general}"
-									action="statistics"
-									rendered="#{LoginForm.hasRole('Statistics_General')}"
-									icon="fa fa-bar-chart" />
+                    <!-- Dropdown-Menü: "Statistiken" -->
+                    <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
+                        <li class="nav-item dropdown #{NavigationForm.parentMenu == 'menu_statistics' ? 'active' : ''} add-has-submenu-in-small-window">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                               aria-expanded="false">#{msgs.statistik}</a>
+                            <ul class="dropdown-menu">
+                                <intranda:menuItem
+                                        id="a40"
+                                        parentMenu="menu_statistics"
+                                        label="#{msgs.general}"
+                                        action="statistics"
+                                        rendered="#{LoginForm.hasRole('Statistics_General')}"
+                                        icon="fa fa-bar-chart"/>
 
-								<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Plugins')}">
-									<ui:repeat
-										var="statistics"
-										value="#{StatisticalQuestionBean.possiblePluginNames}"
-										id="plugin3">
-										<ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isStatisticsPluginAllowed(statistics)}">
-											<li class="#{NavigationForm.aktuell == 'a41' and NavigationForm.parentMenu == 'menu_statistics' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
-												<h:commandLink
-													action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}"
-													id="statistics"
-													styleClass="dropdown-item"
-													>
+                                <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Plugins')}">
+                                    <ui:repeat
+                                            var="statistics"
+                                            value="#{StatisticalQuestionBean.possiblePluginNames}"
+                                            id="plugin3">
+                                        <ui:fragment
+                                                rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isStatisticsPluginAllowed(statistics)}">
+                                            <li class="#{NavigationForm.aktuell == 'a41' and NavigationForm.parentMenu == 'menu_statistics' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
+                                                <h:commandLink
+                                                        action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}"
+                                                        id="statistics"
+                                                        styleClass="dropdown-item"
+                                                >
 													<span>
-														<span class="fa fa-pie-chart" />
+														<span class="fa fa-pie-chart"/>
 														<span class="margin-left-10">#{msgs[statistics]}</span>
 													</span>
-													<f:setPropertyActionListener
-														target="#{NavigationForm.aktuell}"
-														value="a41" />
-													<f:setPropertyActionListener
-														target="#{NavigationForm.parentMenu}"
-														value="menu_statistics" />
-												</h:commandLink>
-											</li>
-										</ui:fragment>
-									</ui:repeat>
-								</h:panelGroup>
-							</ul>
-						</li>
-					</h:panelGroup>
-				</ul>
-			</ui:insert>
-		</c:if>
-	</composite:implementation>
+                                                    <f:setPropertyActionListener
+                                                            target="#{NavigationForm.aktuell}"
+                                                            value="a41"/>
+                                                    <f:setPropertyActionListener
+                                                            target="#{NavigationForm.parentMenu}"
+                                                            value="menu_statistics"/>
+                                                </h:commandLink>
+                                            </li>
+                                        </ui:fragment>
+                                    </ui:repeat>
+                                </h:panelGroup>
+                            </ul>
+                        </li>
+                    </h:panelGroup>
+                </ul>
+            </ui:insert>
+        </c:if>
+    </composite:implementation>
 </ui:composition>

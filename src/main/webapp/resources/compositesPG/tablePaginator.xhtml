@@ -22,6 +22,7 @@
 					class="btn btn-blank"
           aria-label="#{msgs.firstPage}"
 					jsf:action="#{cc.attrs.paginator.cmdMoveFirst}"
+					disabled="#{cc.attrs.paginator.hasPreviousPage}"
 					jsf:id="navfirst"
 					onclick="gwResizableTable.reload()">
 					<span class="fa fa-angle-double-left" />
@@ -29,6 +30,7 @@
 				</button>
 				<button class="btn btn-primary-400"
 					jsf:action="#{cc.attrs.paginator.cmdMovePrevious}"
+					disabled="#{cc.attrs.paginator.hasPreviousPage}"
 					jsf:id="navprev"
 					onclick="gwResizableTable.reload()">
 					<span class="fa fa-angle-left" />
@@ -59,6 +61,7 @@
 
 				<button class="btn btn-primary-400"
 					jsf:action="#{cc.attrs.paginator.cmdMoveNext}"
+					disabled="#{cc.attrs.paginator.hasNextPage}"
 					jsf:id="navnext"
 					onclick="gwResizableTable.reload()">
 					<h:outputText value="#{msgs.pageNext} "/>
@@ -68,6 +71,7 @@
 				<button
 					class="btn btn-blank"
 					aria-label="#{msgs.lastPage}"
+					disabled="#{cc.attrs.paginator.hasNextPage}"
 					jsf:action="#{cc.attrs.paginator.cmdMoveLast}"
 					jsf:id="navlast"
 					onclick="gwResizableTable.reload()">

@@ -488,10 +488,18 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <p:calendar
-                                        id="date"
-                                        value="#{myprocess_item.dateValue}"
+                                        id="date" 
+                                        value="#{myprocess_item.dateValue}" 
                                         locale="#{SpracheForm.locale}"
-                                        readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}" />
+                                        readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"
+                                        styleClass="ff-goobi" 
+                                        mask="true"
+                                        navigator="true"
+                                        yearRange="-100:+100"
+                                        pattern="#{myprocess_item.pattern}">
+                                        <f:passThroughAttribute name="autocomplete" value="off" />
+                                    </p:calendar>
+                                        
                                     <intranda:formHelp
                                         content="#{msgs.helpPropertyValue}"
                                         msgFor="date" />

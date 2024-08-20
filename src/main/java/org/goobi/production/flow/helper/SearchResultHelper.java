@@ -87,6 +87,9 @@ public class SearchResultHelper {
         String processSortHelperMetadata = "prozesse.sortHelperMetadata";
         possibleColumns.add(new SelectItem(processSortHelperMetadata, Helper.getTranslation(processSortHelperMetadata)));
 
+        String processSortHelperDocstructs = "prozesse.sortHelperDocstructs";
+        possibleColumns.add(new SelectItem(processSortHelperDocstructs, Helper.getTranslation(processSortHelperDocstructs)));
+
         String projectTitle = "projekte.Titel";
         possibleColumns.add(new SelectItem(projectTitle, Helper.getTranslation(projectTitle)));
 

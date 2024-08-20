@@ -36,8 +36,6 @@ import org.geonames.Toponym;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
-import org.goobi.production.cli.helper.StringPair;
-import org.goobi.vocabulary.VocabRecord;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
@@ -46,6 +44,7 @@ import de.intranda.digiverso.normdataimporter.model.TagDescription;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Data;
 import ugh.dl.Corporate;
 import ugh.dl.HoldingElement;
@@ -81,11 +80,13 @@ public class MetaCorporate implements SearchableMetadata {
     private List<NormDataRecord> normdataList;
     private int totalResults;
     private EasyDBSearch easydbSearch = new EasyDBSearch();
-    private List<StringPair> vocabularySearchFields;
+    private List<SelectItem> vocabularySearchFields;
     private String vocabularyName;
-    private List<VocabRecord> records;
+    private List<ExtendedVocabularyRecord> records;
     private String vocabularyUrl;
-    private VocabRecord selectedVocabularyRecord;
+    private ExtendedVocabularyRecord selectedVocabularyRecord;
+    private long currentVocabularySearchField;
+    private String vocabularySearchQuery;
 
     /**
      * constructor
@@ -184,13 +185,13 @@ public class MetaCorporate implements SearchableMetadata {
             String x156 = "\\x156";
 
             for (NormData normdata : currentData) {
-                if (normdata.getKey().equals("NORM_IDENTIFIER")) {
+                if ("NORM_IDENTIFIER".equals(normdata.getKey())) {
                     corporate.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
-                } else if (normdata.getKey().equals("NORM_ORGANIZATION")) {
+                } else if ("NORM_ORGANIZATION".equals(normdata.getKey())) {
                     mainValue = normdata.getValues().get(0).getText().replace(x152, "").replace(x156, "");
-                } else if (normdata.getKey().equals("NORM_SUB_ORGANIZATION")) {
+                } else if ("NORM_SUB_ORGANIZATION".equals(normdata.getKey())) {
                     subNames.add(new NamePart(SUBNAME, normdata.getValues().get(0).getText().replace(x152, "").replace(x156, "")));
-                } else if (normdata.getKey().equals("NORM_PART_ORGANIZATION")) {
+                } else if ("NORM_PART_ORGANIZATION".equals(normdata.getKey())) {
                     if (partName.length() > 0) {
                         partName.append("; ");
                     }

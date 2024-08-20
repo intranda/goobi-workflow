@@ -517,15 +517,22 @@
 								<h:panelGroup styleClass="row"
 									rendered="#{(myprocess_item.type.name == 'date')}">
 									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{myprocess_item.name}"
+										<intranda:formLabel label="#{myprocess_item.name} - #{myprocess_item.pattern}"
 										labelFor="date"  labelRequired="false"/>
 									</div>
 									<div class="col-12 col-md-9">
-										<p:calendar
-											id="date"
-											value="#{myprocess_item.dateValue}"
-											locale="#{SpracheForm.locale}"
-											readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"/>
+										 <p:calendar
+                                            id="date" 
+                                            value="#{myprocess_item.dateValue}" 
+                                            locale="#{SpracheForm.locale}"
+                                            readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"
+                                            styleClass="ff-goobi" 
+                                            mask="true"
+                                            navigator="true"
+                                            yearRange="-100:+100"
+                                            pattern="#{myprocess_item.pattern}">
+                                            <f:passThroughAttribute name="autocomplete" value="off" />
+                                        </p:calendar>
 										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="date" />
 									</div>
 								</h:panelGroup>

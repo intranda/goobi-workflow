@@ -34,6 +34,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
@@ -144,6 +146,7 @@ public class VariableReplacer {
     private static final String REGEX_TEMPLATE = PREFIX + "template\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_PROCESS = PREFIX + "process\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+?)" + SUFFIX;
+    private static final String REGEX_DATETIME = PREFIX + "datetime\\.([^)}]+?)" + SUFFIX;
 
     @Getter
     @Setter
@@ -507,6 +510,17 @@ public class VariableReplacer {
                 String value = process.getConfiguredImageFolder(folderName);
                 inString = inString.replace(r.group(), value);
             } catch (IllegalArgumentException | IOException | SwapException | DAOException e) {
+                log.error(e);
+            }
+        }
+
+        for (MatchResult r : findRegexMatches(REGEX_DATETIME, inString)) {
+            try {
+                LocalDateTime now = DateTimeHelper.localDateTimeNow();
+                String pattern = r.group(1);
+                DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+                inString = inString.replace(r.group(), now.format(format));
+            } catch (IllegalArgumentException e) {
                 log.error(e);
             }
         }

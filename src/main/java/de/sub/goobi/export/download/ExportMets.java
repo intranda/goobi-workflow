@@ -123,6 +123,7 @@ import ugh.dl.DocStruct;
 import ugh.dl.ExportFileformat;
 import ugh.dl.Fileformat;
 import ugh.dl.Md;
+import ugh.dl.Md.MdType;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.dl.VirtualFileGroup;
@@ -407,8 +408,7 @@ public class ExportMets {
                 }
                 Element techMd = createTechMd(path);
                 if (techMd != null) {
-                    Md md = new Md(techMd);
-                    md.setType("techMD");
+                    Md md = new Md(techMd, MdType.TECH_MD);
                     md.setId(String.format("AMD_%04d", counter++));
                     dd.addTechMd(md);
                     page.setAdmId(md.getId());

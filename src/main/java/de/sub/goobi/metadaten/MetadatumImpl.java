@@ -1,23 +1,25 @@
 package de.sub.goobi.metadaten;
 
-import java.net.URL;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.UriBuilder;
-
+import de.intranda.digiverso.normdataimporter.NormDataImporter;
+import de.intranda.digiverso.normdataimporter.dante.DanteImport;
+import de.intranda.digiverso.normdataimporter.model.NormData;
+import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
+import de.sub.goobi.config.ConfigPlugins;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.metadaten.search.EasyDBSearch;
+import de.sub.goobi.metadaten.search.KulturNavImporter;
+import de.sub.goobi.metadaten.search.ViafSearch;
+import de.sub.goobi.persistence.managers.MetadataManager;
+import io.goobi.vocabulary.exchange.FieldDefinition;
+import io.goobi.vocabulary.exchange.Vocabulary;
+import io.goobi.vocabulary.exchange.VocabularySchema;
+import io.goobi.workflow.api.vocabulary.APIException;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import lombok.Data;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -37,32 +39,11 @@ import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.request.SearchRequest;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
-import org.goobi.production.cli.helper.StringPair;
-import org.goobi.vocabulary.Field;
-import org.goobi.vocabulary.VocabRecord;
-import org.goobi.vocabulary.Vocabulary;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.filter.Filters;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
-
-import de.intranda.digiverso.normdataimporter.NormDataImporter;
-import de.intranda.digiverso.normdataimporter.dante.DanteImport;
-import de.intranda.digiverso.normdataimporter.model.NormData;
-import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
-import de.sub.goobi.config.ConfigPlugins;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.StorageProvider;
-import de.sub.goobi.metadaten.search.EasyDBSearch;
-import de.sub.goobi.metadaten.search.KulturNavImporter;
-import de.sub.goobi.metadaten.search.ViafSearch;
-import de.sub.goobi.persistence.managers.MetadataManager;
-import de.sub.goobi.persistence.managers.VocabularyManager;
-import lombok.Data;
-import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
@@ -71,6 +52,22 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.fileformats.mets.ModsHelper;
+
+import javax.faces.model.SelectItem;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -134,13 +131,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     /**
      * The table of available normdata objects
-     *
      */
     private List<List<NormData>> dataList;
 
     /**
      * The list of current normdata objects
-     *
      */
     private List<NormData> currentData;
 
@@ -174,11 +169,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private EasyDBSearch easydbSearch = new EasyDBSearch();
 
     // search in vocabulary
-    private List<StringPair> vocabularySearchFields;
+    private VocabularyAPIManager vocabularyAPI = VocabularyAPIManager.getInstance();
+    private List<SelectItem> vocabularySearchFields;
+    private long currentVocabularySearchField;
+    private String vocabularySearchQuery;
     private String vocabularyName;
-    private List<VocabRecord> records;
-    private String vocabularyUrl;
-    private VocabRecord selectedVocabularyRecord;
+    private List<ExtendedVocabularyRecord> records;
+    private List<FieldDefinition> definitions;
+    private ExtendedVocabularyRecord selectedVocabularyRecord;
 
     private boolean validationErrorPresent;
     private String validationMessage;
@@ -202,30 +200,17 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     public void searchVocabulary() {
-
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        String contextPath = request.getContextPath();
-        String scheme = request.getScheme(); // http
-        String serverName = request.getServerName(); // hostname.com
-        int serverPort = request.getServerPort(); // 80
-        String reqUrl = scheme + "://" + serverName + contextPath;
-        // if there is a port lower than the typical ones (443) don't show it in the url (http://mygoobi.io/xyz instead of http://mygoobi.io:80/xyz)
-        if (serverPort > 443) {
-            reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
-        }
-        UriBuilder ub = UriBuilder.fromUri(reqUrl);
-        vocabularyUrl = ub.path("api").path("vocabulary").path("records").build().toString();
-
-        records = VocabularyManager.findRecords(vocabulary, vocabularySearchFields);
-
-        if (records == null || records.isEmpty()) {
-            showNotHits = true;
-        } else {
-            showNotHits = false;
-        }
-        Collections.sort(records);
-
+        Vocabulary vocabulary = vocabularyAPI.vocabularies().findByName(this.vocabulary);
+        VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocabulary.getSchemaId());
+        definitions = schema.getDefinitions().stream()
+                .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
+                .sorted(Comparator.comparingLong(FieldDefinition::getId))
+                .collect(Collectors.toList());
+        records = vocabularyAPI.vocabularyRecords().list(vocabulary.getId())
+                .search(currentVocabularySearchField + ":" + vocabularySearchQuery)
+                .request()
+                .getContent();
+        showNotHits = records.isEmpty();
     }
 
     private void initializeValues() {
@@ -262,28 +247,111 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             searchRequest.newGroup();
         } else if (metadataDisplaytype == DisplayType.vocabularySearch) {
             vocabularyName = myValues.getItemList().get(0).getSource();
-            String fields = myValues.getItemList().get(0).getField();
+            Set<String> fieldsNames = Stream.of(myValues.getItemList().get(0).getField().split(";"))
+                    .map(String::trim)
+                    .collect(Collectors.toSet());
 
-            String[] fieldNames = fields.split(";");
-            vocabularySearchFields = new ArrayList<>();
-            for (String fieldname : fieldNames) {
-                StringPair sp = new StringPair(fieldname.trim(), "");
-                vocabularySearchFields.add(sp);
-            }
+            Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyName);
+            VocabularySchema vocabularySchema = vocabularyAPI.vocabularySchemas().get(currentVocabulary.getSchemaId());
 
+            vocabularySearchFields = vocabularySchema.getDefinitions().stream()
+                    .filter(d -> fieldsNames.contains(d.getName()))
+                    .map(d -> new SelectItem(d.getId(), d.getName()))
+                    .collect(Collectors.toList());
         } else if (metadataDisplaytype == DisplayType.vocabularyList) {
+            try {
+                String vocabularyTitle = myValues.getItemList().get(0).getSource();
+                String fields = myValues.getItemList().get(0).getField();
+                Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyTitle);
+                VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(currentVocabulary.getSchemaId());
 
-            String vocabularyTitle = myValues.getItemList().get(0).getSource();
+                if (Boolean.TRUE.equals(schema.getHierarchicalRecords())) {
+                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyListHierarchical", md.getType().getName(), vocabularyTitle));
+                    return;
+                }
 
-            String fields = myValues.getItemList().get(0).getField();
+                if (StringUtils.isBlank(fields)) {
+                    try {
+                        List<ExtendedVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
+                                .list(currentVocabulary.getId())
+                                .all()
+                                .request()
+                                .getContent();
+                        ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
+                        List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
 
-            if (StringUtils.isBlank(fields)) {
-                Vocabulary currentVocabulary = VocabularyManager.getVocabularyByTitle(vocabularyTitle);
-                VocabularyManager.getAllRecords(currentVocabulary);
+                        String defaultLabel = myValues.getItemList().get(0).getLabel();
+                        if (StringUtils.isNotBlank(defaultLabel)) {
+                            List<String> defaultitems = new ArrayList<>();
+                            defaultitems.add(defaultLabel);
+                            setDefaultItems(defaultitems);
+                        }
+                        itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
+                        selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
 
-                if (currentVocabulary != null && currentVocabulary.getId() != null) {
-                    List<VocabRecord> recordList = currentVocabulary.getRecords();
-                    Collections.sort(recordList);
+                        for (ExtendedVocabularyRecord vr : recordList) {
+                            selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
+                            Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
+                            if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
+                                item.setSelected(true);
+                            }
+                            itemList.add(item);
+                        }
+                        setPossibleItems(selectItems);
+                        myValues.setItemList(itemList);
+                    } catch (APIException e) {
+                        Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyTitle));
+                        metadataDisplaytype = DisplayType.input;
+                        myValues.overwriteConfiguredElement(myProcess, md.getType());
+                    }
+                } else {
+                    if (fields.contains(";")) {
+                        Helper.setFehlerMeldung("vocabularyList with multiple fields is not supported right now");
+                        return;
+                    }
+
+                    String searchFilter = fields.trim();
+                    Optional<String> sorting = Optional.empty();
+                    if (searchFilter.contains("@")) {
+                        String[] parts = searchFilter.split("@");
+                        searchFilter = parts[0];
+                        sorting = Optional.of(parts[1]);
+                    }
+
+                    String fieldName = searchFilter;
+                    Optional<String> fieldValueFilter = Optional.empty();
+
+                    if (fieldName.contains("=")) {
+                        String[] parts = searchFilter.split("=");
+                        fieldName = parts[0];
+                        fieldValueFilter = Optional.of(parts[1]);
+                    }
+
+                    String finalFieldName = fieldName;
+                    Optional<FieldDefinition> searchField = schema.getDefinitions().stream()
+                            .filter(d -> d.getName().equals(finalFieldName))
+                            .findFirst();
+
+                    if (searchField.isEmpty()) {
+                        Helper.setFehlerMeldung("Field " + fieldName + " not found in vocabulary " + currentVocabulary.getName());
+                        return;
+                    }
+
+                    Optional<String> sortingQuery = Optional.empty();
+                    if (sorting.isPresent()) {
+                        sortingQuery = Optional.of(searchField.get().getId() + "," + sorting.get());
+                    }
+                    Optional<String> searchQuery = Optional.empty();
+                    if (fieldValueFilter.isPresent()) {
+                        searchQuery = Optional.of(searchField.get().getId() + ":" + fieldValueFilter.get());
+                    }
+                    List<ExtendedVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
+                                .list(currentVocabulary.getId())
+                                .search(searchQuery)
+                                .sorting(sortingQuery)
+                                .request()
+                                .getContent();
+
                     ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                     List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
 
@@ -296,60 +364,19 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
                     selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
 
-                    for (VocabRecord vr : recordList) {
-                        for (Field f : vr.getFields()) {
-                            if (f.getDefinition().isMainEntry()) {
-                                selectItems.add(new SelectItem(f.getValue(), f.getValue()));
-                                Item item = new Item(f.getValue(), f.getValue(), false, "", "");
-                                if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(f.getValue())) {
-                                    item.setSelected(true);
-                                }
-                                itemList.add(item);
-                                break;
-                            }
+                    for (ExtendedVocabularyRecord vr : recordList) {
+                        selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
+                        Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
+                        if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
+                            item.setSelected(true);
                         }
+                        itemList.add(item);
                     }
                     setPossibleItems(selectItems);
                     myValues.setItemList(itemList);
-                } else {
-                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyTitle));
-                    metadataDisplaytype = DisplayType.input;
-                    myValues.overwriteConfiguredElement(myProcess, md.getType());
                 }
-            } else {
-                String[] fieldNames = fields.split(";");
-                vocabularySearchFields = new ArrayList<>();
-                for (String fieldname : fieldNames) {
-                    String[] parts = fieldname.trim().split("=");
-                    if (parts.length > 1) {
-                        String name = parts[0];
-                        String value = parts[1];
-                        StringPair sp = new StringPair(name, value);
-                        vocabularySearchFields.add(sp);
-                    }
-                }
-                List<VocabRecord> recordList = VocabularyManager.findRecords(vocabularyTitle, vocabularySearchFields);
-                Collections.sort(recordList);
-
-                if (recordList != null && !recordList.isEmpty()) {
-                    ArrayList<Item> itemList = new ArrayList<>(recordList.size());
-                    List<SelectItem> selectItems = new ArrayList<>(recordList.size());
-                    for (VocabRecord vr : recordList) {
-                        for (Field f : vr.getFields()) {
-                            if (f.getDefinition().isMainEntry()) {
-                                selectItems.add(new SelectItem(f.getValue(), f.getValue()));
-                                itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
-                                break;
-                            }
-                        }
-                    }
-                    setPossibleItems(selectItems);
-                    myValues.setItemList(itemList);
-                } else {
-                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyTitle));
-                    metadataDisplaytype = DisplayType.input;
-                    myValues.overwriteConfiguredElement(myProcess, md.getType());
-                }
+            } catch (APIException e) {
+                Helper.setFehlerMeldung(e);
             }
         } else if (metadataDisplaytype == DisplayType.generate) {
             for (Item item : myValues.getItemList()) {
@@ -504,7 +531,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         String value = this.md.getValue();
         if (value != null && value.length() != 0) {
             for (Item i : this.myValues.getItemList()) {
-                if (i.getValue().equals(value)) {
+                if (value.equals(i.getValue())) {
                     return i.getLabel();
                 }
             }
@@ -770,20 +797,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 easydbSearch.getMetadata(md);
                 break;
             case vocabularySearch:
-                for (Field currentField : selectedVocabularyRecord.getFields()) {
-                    if (currentField.getDefinition().isMainEntry()) {
-                        md.setValue(currentField.getValue());
-                    }
-                }
-                String url = ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl();
-                String user = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();
-                Integer vocabularyId = selectedVocabularyRecord.getVocabularyId();
-                Integer recordId = selectedVocabularyRecord.getId();
-                if (StringUtils.isNotBlank(user) && StringUtils.isNotBlank(url)) {
-                    md.setAutorityFile(vocabulary, url, url + user + "/vocabularies/" + vocabularyId + "/records/" + recordId);
-                } else {
-                    md.setAutorityFile(vocabulary, vocabularyUrl, vocabularyUrl + "/jskos/" + vocabularyId + "/" + recordId);
-                }
+                selectedVocabularyRecord.writeReferenceMetadata(md);
                 break;
             default:
                 break;

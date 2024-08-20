@@ -32,15 +32,15 @@ import java.util.StringTokenizer;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.beans.Process;
-import org.goobi.vocabulary.Field;
-import org.goobi.vocabulary.VocabRecord;
-import org.goobi.vocabulary.Vocabulary;
 
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -49,7 +49,6 @@ import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Corporate;
@@ -492,15 +491,16 @@ public class MetadatenVerifizierung {
                 if (allowedItems.get(0) == null) {
                     break;
                 }
-                Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(allowedItems.get(0).getSource());
-                VocabularyManager.getAllRecords(vocabulary);
-                List<VocabRecord> records = vocabulary.getRecords();
-                List<String> allowedValues = new ArrayList<>();
-                for (VocabRecord vocabularyRecord : records) {
-                    for (Field field : vocabularyRecord.getFields()) {
-                        allowedValues.add(field.getValue());
-                    }
-                }
+                ExtendedVocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(allowedItems.get(0).getSource());
+                List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords()
+                        .list(vocabulary.getId())
+                        .all()
+                        .request()
+                        .getContent();
+                List<String> allowedValues = records.stream()
+                        .map(ExtendedVocabularyRecord::getMainValue)
+                        .collect(Collectors.toList());
+
                 List<? extends Metadata> ll = null;
                 ll = inStruct.getAllMetadataByType(mdt);
                 for (Metadata md : ll) {

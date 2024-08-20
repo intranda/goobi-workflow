@@ -1,46 +1,37 @@
 <ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:o="http://omnifaces.org/ui"
-    xmlns:of="http://omnifaces.org/functions"
-    template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        template="/uii/templatePG/templatePG.html"
+        xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
+>
 
     <ui:param
-        name="myPageTitle"
-        value="#{msgs.vocabularyManager_vocabulary}: #{vocabularyBean.currentVocabulary.title}" />
+            name="myPageTitle"
+            value="#{msgs.vocabularyManager_vocabulary}: #{vocabularyRecordsBean.vocabulary.name}"/>
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
-            id="index"
-            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-            action="index"
-            navId="a0" />
+                id="index"
+                label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+                action="index"
+                navId="a0"/>
         <intranda:breadcrumb
-            id="admin"
-            label="#{msgs.intranda_administration_vocabularies}"
-            action="vocabulary_all" />
+                id="admin"
+                label="#{msgs.intranda_administration_vocabularies}"
+                action="vocabulary_all"/>
         <intranda:breadcrumb
-            id="edit"
-            label="#{vocabularyBean.currentVocabulary.title}"
-            action="vocabulary_records"
-            noSeparator="#{true}" />
+                id="edit"
+                label="#{vocabularyRecordsBean.vocabulary.name}"
+                action="vocabulary_records"
+                noSeparator="#{true}"/>
     </ui:define>
 
     <ui:define name="info">
     </ui:define>
 
     <ui:define name="content">
-        <script
-            type="text/javascript"
-            src='template/js/plugins/tinymce/tinymce.min.js'></script>
-
         <h:form
             id="myform"
             styleClass="form-horizontal form-bordered"
@@ -49,493 +40,158 @@
 
             <div class="row" role="main">
                 <div class="col-12 col-lg-6 mb-4">
-
-
-                <intranda:box
-                    boxType="neutral"
-                    boxTitle="false"
-                >
-                    <intranda:boxTitle
-                        title="Test"
-                        icon="fa-database">
-                        <div class="actions d-flex">
-                            <!-- download all records as csv/excel -->
-                            <div
-                                class="d-inline"
-                                title="#{msgs.vocabularyManager_downloadRecords}"
-                                data-bs-toggle="tooltip">
-                                <button
-                                    aria-label="#{msgs.vocabularyManager_downloadRecords}"
-									aria-haspopup="true"
-									aria-expanded="false"
-									class="btn h-100 text-white btn--title-action dropdown-toggle"
-									data-bs-toggle="dropdown">
-                                    <span class="fa fa-download" />
-                                </button>
-								<ul class="dropdown-menu">
-									<li>
-										<button
-											jsf:id="downloadRecordsCSV"
-											class="dropdown-item"
-											jsf:rel="tooltip"
-											jsf:action="#{vocabularyBean.downloadRecords}"
-											jsf:immediate="true">
-											<h:outputText
-												value="#{msgs.vocabularyManager_downloadRecords} (CSV)" />
-										</button>
-									</li>
-									<li>
-										<button
-												jsf:id="downloadRecordsXls"
-												class="dropdown-item"
-												jsf:rel="tooltip"
-												jsf:action="#{vocabularyBean.downloadRecordsExcel}"
-												jsf:immediate="true">
-											<h:outputText
-												value="#{msgs.vocabularyManager_downloadRecords} (Excel)" />
-										</button>
-									</li>
-								</ul>
-                              </div>
-                            <!-- import all records from excel -->
-                            <button
-                                    jsf:id="uploadRecords"
-                                    class="btn d-flex align-items-center btn--title-action"
-                                    jsf:rel="tooltip"
-                                    jsf:action="#{vocabularyBean.uploadRecords}"
-                                    title="#{msgs.vocabularyManager_uploadRecords}"
-                                    jsf:immediate="true">
-                                <span class="fa fa-upload" />
-                                <f:passThroughAttribute
-                                        name="data-toggle"
-                                        value="tooltip" />
-                                <f:passThroughAttribute
-                                        name="aria-label"
-                                        value="#{msgs.vocabularyManager_uploadRecords}" />
-                            </button>
-                        </div>
-                        <!-- /actions -->
-                    </intranda:boxTitle>
-
-                    <!-- table of records -->
-                    <h:panelGroup id="recordList" styleClass="gw-table gw-table-fixed">
-
-                  <div class="gw-table gw-table__search">
-
-                      <div class="gw-table__search__length">
-                        <h:outputText value="#{msgs.treffer}: #{vocabularyBean.currentVocabulary.filteredRecords.size()}" />
-                        <h:outputText rendered="#{vocabularyBean.currentVocabulary.searchValue != null and vocabularyBean.currentVocabulary.searchValue ne ''}" value=" #{msgs.von} #{vocabularyBean.currentVocabulary.records.size()}" />
-                      </div>
-
-                    <div class="gw-table__filters">
-                      <!-- Search box -->
-                      <div class="gw-table__filters__search-bar">
-
-                        <div class="input-group input-group">
-
-                          <span class="input-group-text">
-                              <span class="fa fa-search" />
-                          </span>
-                          <h:inputText
-                            id="searchField"
-                            pt:aria-label="search"
-                            styleClass="form-control searchfield"
-                            value="#{vocabularyBean.currentVocabulary.searchValue}">
-                            <f:passThroughAttribute
-                                name="placeholder"
-                                value="#{msgs.search}" />
-                          </h:inputText>
-                          <button
-                            type="button"
-                            jsf:id="FilterAlle2"
-                            jsf:forceId="true"
-                            class="btn btn-blank"
-                            jsf:action="#{vocabularyBean.currentVocabulary.runFilter}">
-                            <f:ajax render="@form" execute="@form"></f:ajax>
-                            #{msgs.search}
-                          </button>
-                        </div>
-                        <x:commandButton
-                          type="submit"
-                          id="FilterAlle"
-                          forceId="true"
-                          style="display: none;"
-                          action="#{vocabularyBean.currentVocabulary.runFilter}" >
-                           <f:ajax render="@form" execute="@form"></f:ajax>
-                        </x:commandButton>
-                      </div> <!-- /__search-bar -->
-                    </div> <!-- /__filters -->
-                  </div> <!-- /__search -->
-
-                  <div class="gw-table__wrapper">
-
-                  <table class="table table-hover table-bordered">
-
-                    <thead>
-                      <tr role="row">
-
-                          <ui:repeat var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
-                            <th scope="col" role="columnheader" aria-sort="#{vocabularyBean.currentVocabulary.sortfield== definition.idAsString.concat('Desc') ? 'descending' : vocabularyBean.currentVocabulary.sortfield== definition.idAsString.concat('Asc') ? 'ascending' :'none'}">
-                              <button
-                                jsf:id="changeOrderLabel"
-                                class="button-link"
-                                style="width: 100%; text-align: left;"
-                                jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}"
-                                aria-label="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}">
-                                <h:outputText value="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}" />
-
-                                <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Desc')?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Asc')?'fa-sort-asc':'fa-sort'}"></span>
-                                <f:setPropertyActionListener
-                                    target="#{vocabularyBean.currentVocabulary.sortfield}"
-                                    value="#{vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Asc')?definition.idAsString.concat('Desc'):definition.idAsString.concat('Asc')}" />
-                                <f:ajax render="@form" />
-                              </button>
-                            </th>
-
-                          </ui:repeat>
-                          <th class="gw-table-fixed__actions">
-                              <h:outputText value="#{msgs.auswahl}" />
-                          </th>
-
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <ui:repeat varStatus="status" var="record" value="#{vocabularyBean.currentVocabulary.paginatorList}">
-                          <tr>
-                            <ui:repeat var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
-                              <td class="tableColumnOverflow maxWidth150">
-                                  <h:outputText value="#{record.getFieldValue(definition)}" />
-                              </td>
-                            </ui:repeat>
-                            <td>
-                              <button
-                                type="button"
-                                jsf:id="switch"
-                                class="btn #{record.valid ? vocabularyBean.currentVocabRecord != record ? 'btn-blank' : 'btn-primary-400' : 'btn-hot'}"
-                                jsf:action="#{vocabularyBean.Reload}"
-                                title="#{msgs.bearbeiten}"
-                                data-bs-toggle="tooltip">
-                              <i class="font-size-s fa fa-pencil" />
-                                <f:setPropertyActionListener
-                                  value="#{record}"
-                                  target="#{vocabularyBean.currentVocabRecord}" />
-                                <f:ajax execute="@this" render="@form" />
-                                <f:passThroughAttribute name="aria-label" value="#{record.id}" />
-                              </button>
-                            </td>
-                          </tr>
-                        </ui:repeat>
-                      </tbody>
-                  </table>
+                    <intranda:vocabularyRecordList vocabulary="#{vocabularyRecordsBean.vocabulary}"/>
                 </div>
-                </h:panelGroup>
 
-                <!-- navigation buttons to flip through all records -->
-                <div class="box__actions">
-
-                  <!-- add new record -->
-                  <button jsf:id="new_record" jsf:action="#{vocabularyBean.addRecord}"
-                      class="btn btn-primary-400 me-auto"
-                      title="#{msgs.vocabularyManager_addRecord}">
-                      <i aria-hidden="true" class="fa fa-plus margin-right-5"/>
-                      <span>
-                          <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
-                      </span>
-                  </button>
-
-                  <h:panelGroup
-                    rendered="#{vocabularyBean.currentVocabulary.pageNumberLast > 1}"
-                    id="pagination-area"
-                    styleClass="pull-right"
-                  >
-
-
-
-                  <div class="dataTables__paginator">
-
-                    <h:commandLink
-                        styleClass="btn btn-blank"
-                        pt:aria-label="#{msgs.firstPage}"
-                        action="#{vocabularyBean.currentVocabulary.cmdMoveFirst}"
-                        id="navfirst">
-                        <span class="fa fa-angle-double-left" />
-                        <f:ajax render="recordList pagination-area" />
-                    </h:commandLink>
-                    <h:commandLink
-                        styleClass="btn btn-primary-400"
-                        action="#{vocabularyBean.currentVocabulary.cmdMovePrevious}"
-                        id="navprev">
-                        <span class="fa fa-angle-left" />
-                        <h:outputText value=" #{msgs.pagePrevious}" />
-                        <f:ajax render="recordList pagination-area" />
-                    </h:commandLink>
-
-                    <div class="dataTables__paginator__page-count">
-                      <x:outputText
-                          id="txtMoveTo1"
-                          forceId="true"
-                          value="#{msgs.seite} #{vocabularyBean.currentVocabulary.pageNumberCurrent} #{msgs.von} #{vocabularyBean.currentVocabulary.pageNumberLast}"
-                          onclick="document.getElementById('txtMoveTo2').style.display='inline';
-                             document.getElementById('txtMoveTo1').style.display='none';
-                             document.getElementById('txtMoveTo2').focus();
-                             document.getElementById('txtMoveTo2').select();" />
-
-                      <!-- Seite direkt anspringen -->
-                      <x:inputText
-                          id="txtMoveTo2"
-                          forceId="true"
-                          value="#{vocabularyBean.currentVocabulary.txtMoveTo}"
-                          style="display:none;width:30px"
-                          required="false"
-                          onblur="document.getElementById('txtMoveTo2').style.display='none';document.getElementById('txtMoveTo1').style.display='inline';"
-                          onkeypress="return submitEnter('cmdMoveTo',event)" />
-                      <x:commandButton
-                          action="#{NavigationForm.Reload}"
-                          id="cmdMoveTo"
-                          forceId="true"
-                          value="go"
-                          style="display:none">
-                      </x:commandButton>
-                    </div>
-
-                    <h:commandLink
-                        styleClass="btn btn-primary-400"
-                        action="#{vocabularyBean.currentVocabulary.cmdMoveNext}"
-                        id="navnext">
-                        <h:outputText value="#{msgs.pageNext} " />
-                        <span class="fa fa-angle-right" />
-                        <f:ajax render="recordList pagination-area" />
-                    </h:commandLink>
-                    <h:commandLink
-                        styleClass="btn btn-blank"
-                        pt:aria-label="#{msgs.lastPage}"
-                        action="#{vocabularyBean.currentVocabulary.cmdMoveLast}"
-                        id="navlast">
-                        <span class="fa fa-angle-double-right" />
-                        <f:ajax render="recordList pagination-area" />
-                    </h:commandLink>
-                  </div>
-                </h:panelGroup>
-
-              </div> <!-- /box__actions -->
-
-              <!-- Cancel (go back to vocab overview)-->
-              <button
-                  class="btn btn-blank mt-4"
-                  jsf:id="abbrechen"
-                  jsf:type="cancel"
-                  jsf:action="#{vocabularyBean.cancelRecordEdition}"
-                  jsf:immediate="true">
-                  <h:outputText value="#{msgs.vocabularyManager_backToVocabularies}" />
-              </button>
-
-            </intranda:box>
-          </div> <!-- /col-12 -->
-
-          <div class="col-12 col-lg-6">
-
-                    <!-- Right area for editing a record -->
+                <div class="col-12 col-lg-6">
                     <intranda:box
-                      boxType="action"
-                      boxForm="true"
-                      boxPadding="false"
-                      title="#{vocabularyBean.currentVocabRecord.title eq '' ? vocabularyBean.currentVocabulary.title : vocabularyBean.currentVocabRecord.title}"
-                      icon="fa-file-o">
-
-                            <intranda:formOutputText label="#{msgs.id}"
-                                field="#{vocabularyBean.currentVocabRecord.id}"
-                                name="recordid"/>
-
-                            <ui:repeat var="field" value="#{vocabularyBean.currentVocabRecord.fields}">
-                                <ui:fragment rendered="#{field.definition.type eq 'input'}">
-                                    <intranda:formInputText
-                                        name="field1"
-                                        field="#{field.value}"
-                                        required="#{field.definition.required}"
-                                        displayAsRequired="#{field.definition.required}"
-                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
-                                        validationMethod="#{vocabularyBean.validateFieldValue}"
-                                        idForValidator="#{field.label}" />
-                                </ui:fragment>
-                                <ui:fragment rendered="#{field.definition.type eq 'textarea'}">
-                                    <intranda:formInputTextArea
-                                        name="field2"
-                                        field="#{field.value}"
-                                        required="#{field.definition.required}"
-                                        displayAsRequired="#{field.definition.required}"
-                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
-                                        validationMethod="#{vocabularyBean.validateFieldValue}"
-                                        idForValidator="#{field.label}" />
-                                </ui:fragment>
-                                <ui:fragment rendered="#{field.definition.type eq 'select1'}">
-                                    <intranda:formInputDropDown
-                                        name="field3"
-                                        field="#{field.value}"
-                                        selectItems="#{field.definition.selecteableValues}"
-                                        required="#{field.definition.required}"
-                                        displayAsRequired="#{field.definition.required}"
-                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
-                                        validationMethod="#{vocabularyBean.validateFieldValue}"
-                                        idForValidator="#{field.label}" />
-                                </ui:fragment>
-                                <ui:fragment rendered="#{field.definition.type eq 'select'}">
-                                    <intranda:formInputSelectMany
-                                        name="field4"
-                                        field="#{field.valueMultiSelect}"
-                                        selectItems="#{field.definition.selectList}"
-                                        required="#{field.definition.required}"
-                                        displayAsRequired="#{field.definition.required}"
-                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
-                                        validationMethod="#{vocabularyBean.validateFieldValue}"
-                                        idForValidator="#{field.label}" />
-                                </ui:fragment>
-                                <ui:fragment rendered="#{field.definition.type eq 'html'}">
-                                    <intranda:formInputTextArea
-                                        name="field5"
-                                        field="#{field.value}"
-                                        required="#{field.definition.required}"
-                                        displayAsRequired="#{field.definition.required}"
-                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
-                                        validationMethod="#{vocabularyBean.validateFieldValue}"
-                                        idForValidator="#{field.label}" />
-                                </ui:fragment>
-                            </ui:repeat>
-
+                        boxType="action"
+                        boxForm="true"
+                        boxPadding="false"
+                        title="#{msgs.vocabularyManager_editRecord}"
+                        icon="fa-file-o">
+                        <intranda:vocabularyRecordEditor
+                            record="#{vocabularyRecordsBean.currentRecord}"
+                        />
+                        <ui:fragment rendered="#{vocabularyRecordsBean.currentRecord != null}">
                             <div class="box__actions">
-
-                                <!-- Delete -->
-                                <c:if test="#{vocabularyBean.currentVocabRecord.id != null}">
+                                <ui:fragment rendered="#{vocabularyRecordsBean.currentRecord.id != null}">
                                     <a
-                                      id="delete"
-                                      href="#"
-                                      class="btn btn-hot me-auto"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#deleteModal">
-                                      <i class="fa fa-trash-o" title="#{msgs.vocabularyManager_deleteRecord}" />
-                                      <span>
-                                        <h:outputText value="#{msgs.loeschen}" />
-                                      </span>
+                                        id="delete"
+                                        href="#"
+                                        class="btn btn-hot me-auto"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal"
+                                        title="#{msgs.vocabularyManager_deleteRecord}">
+                                        <span
+                                            aria-hidden="true"
+                                            class="fa fa-trash-o" />
+                                        <span>
+                                        <h:outputText value="#{msgs.loeschen}"/>
+                                        </span>
                                     </a>
 
-                                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                    <div
+                                        class="modal fade"
+                                        id="deleteModal"
+                                        tabindex="-1"
+                                        role="dialog"
+                                        aria-labelledby="myModalLabel">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
-                                              <div class="modal-header bg-primary-400 text-white">
-                                                <h4 class="modal-title" id="myModalLabel">
-                                                    <h:outputText value="#{msgs.loeschen}" />
-                                                </h4>
-                                              </div>
-                                              <div class="modal-body">
-                                                <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
-                                              </div>
-                                              <div class="modal-footer">
-                                                <button type="button" class="btn btn-blank" data-bs-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
-                                                <button jsf:id="confirmDelete" class="btn btn-hot" jsf:action="#{vocabularyBean.deleteRecord}">
-                                                  <span class="fa fa-trash-o" />
-                                                  <span>
-                                                    <h:outputText value="#{msgs.vocabularyManager_deleteRecord}" />
-                                                  </span>
-                                                </button>
-                                              </div>
-                                          </div>
+                                                <div class="modal-header bg-primary-400 text-white">
+                                                    <h4 class="h6 modal-title" id="myModalLabel">
+                                                        <h:outputText value="#{msgs.loeschen}"/>
+                                                    </h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <ui:fragment
+                                                            rendered="#{vocabularyRecordsBean.currentRecord.children == null or vocabularyRecordsBean.currentRecord.children.isEmpty() == true}">
+                                                        <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+                                                    </ui:fragment>
+                                                    <ui:fragment
+                                                            rendered="#{vocabularyRecordsBean.currentRecord.children.isEmpty() == false}">
+                                                        <p>#{msgs.vocabularyManager_deleteChildRecordsPrompt}</p>
+                                                    </ui:fragment>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-blank"
+                                                        data-bs-dismiss="modal">#{msgs.abbrechen}
+                                                    </button>
+                                                    <!-- <button> will not work with method references, <a> or <h:commandButton> do work however!!! -->
+                                                    <a
+                                                        jsf:id="deleteButton"
+                                                        class="btn btn-hot"
+                                                        jsf:action="#{vocabularyRecordsBean.deleteRecord(vocabularyRecordsBean.currentRecord)}"
+                                                    >
+                                                        <span>
+                                                            <span
+                                                                aria-hidden="true"
+                                                                class="fa fa-trash-o"/>
+                                                            <span>
+                                                                <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>
+                                                            </span>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </c:if>
+                                </ui:fragment>
 
-                                <!-- Save -->
-                                <f:event listener="#{vocabularyBean.resetValidationResults}" type="preRenderView" />
-                                <button
-                                    class="btn btn-success submitOnEnter"
-                                    jsf:id="absenden"
-                                    type="submit"
-                                    jsf:action="#{vocabularyBean.saveRecordEdition}">
-                                    <span class="fa fa-save" />
-                                    <span>
-                                      <h:outputText value="#{msgs.speichern}" />
+                                <ui:fragment>
+                                    <button
+                                        class="btn btn-success submitOnEnter"
+                                        jsf:id="absenden"
+                                        type="submit"
+                                        jsf:action="#{vocabularyRecordsBean.saveRecord(vocabularyRecordsBean.currentRecord)}">
+                                        <span class="fa fa-save"/>
+                                        <span>
+                                        <h:outputText value="#{msgs.speichern}"/>
                                     </span>
-                                </button>
-
+                                    </button>
+                                </ui:fragment>
                             </div>
-
+                        </ui:fragment>
                     </intranda:box>
-                	<!-- // Right area for editing a record -->
-                </div> <!-- /col-12 -->
-
+                </div>
             </div>
-
         </h:form>
-
+        <div class="modal" tabindex="-1" id="uploadModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header bg-primary-400 text-white">
+                  <h5 class="modal-title h6">
+                    <span class="fa fa-database me-2" />
+                    <span>
+                        #{myPageTitle}
+                    </span>
+                  </h5>
+                  <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="fa fa-times text-white"></span>
+                  </button>
+                </div>
+                <h:form id="uploadform" prependId="false" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="row mt-3">
+                            <div class="col-12 d-flex">
+                                <h:inputFile styleClass="form-control" title="Test"
+                                             value="#{vocabularyRecordsBean.uploadedFile}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <label class="btn">
+                            <input type="checkbox" jsf:value="#{vocabularyRecordsBean.clearBeforeImport}" />
+                            Clear before import
+                        </label>
+                        <!-- Cancel -->
+                        <a
+                                class="btn btn-blank"
+                                jsf:id="abbrechen"
+                                type="cancel"
+                                jsf:action="#{vocabularyRecordsBean.load(vocabularyRecordsBean.vocabulary)}"
+                                jsf:immediate="true">
+                            <h:outputText value="#{msgs.abbrechen}"/>
+                        </a>
+                        <!-- Save -->
+                        <button
+                                class="btn btn-success"
+                                jsf:id="absenden"
+                                type="submit"
+                                jsf:action="#{vocabularyRecordsBean.importRecords}"
+                        >
+                            <span class="fa fa-save"/>
+                            <span>
+                                <h:outputText value="#{msgs.vocabularyManager_excelImport_importRecords}"/>
+                            </span>
+                        </button>
+                    </div>
+                </h:form>
+              </div>
+            </div>
+          </div>
     </ui:define>
-    <script type="text/javascript">
-                    //<![CDATA[
-                    var simpleTinyMceConfig = {
-                        selector: '.editor',
-                        setup: function( editor ) {
-                            editor.on( 'change', function() {
-                                tinymce.triggerSave();
-                            } );
-                        },
-                        valid_elements: 'p,strong,em,span[!style<text-decoration: underline;],sup,',
-                        statusbar: true,
-                        theme: 'modern',
-                        height: 250,
-                        plugins: [ 'print code preview fullscreen' ],
-                        menu: {},
-                        toolbar: false,
-                        toolbar: 'undo redo | bold italic underline | superscript | code ',
-                        content_css: 'css/content.css',
-                        init_instance_callback: function( editor ) {
-                            var readOnlyAttr = $( "#" + editor.id.replace( ":", "\\:" ) ).attr( "readonly" );
-                            if ( readOnlyAttr === "readonly" ) {
-                                editor.setMode( "readonly" );
-                            }
-                        },
-                        setup: function( editor ) {
-                            editor.on( "blur", function( event, a, b ) {
-                                editor.save();
-                                $( "#" + editor.id.replace( ":", "\\:" ) ).trigger( "change" );
-                            } );
-                        }
-
-                    };
-
-                    function initTinyMce() {
-                        console.log( "Init tinyMce" );
-                        tinymce.init( simpleTinyMceConfig );
-                    }
-
-                    $( window ).on( "load", function() {
-                        renderInputFields()
-                    } )
-
-                    jsf.ajax.addOnEvent( function( data ) {
-                        var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
-                        switch ( ajaxstatus ) {
-                            case "success": // This is called when ajax response is successfully processed.
-                                renderInputFields()
-                                break;
-                        }
-                    } );
-
-                    function renderInputFields( ajaxData ) {
-                        if ( typeof tinyMCE !== 'undefined' ) {
-                            if ( ajaxData === undefined || ajaxData.status == "begin" ) {
-                                for ( edId in tinyMCE.editors ) {
-                                    try {
-                                        tinyMCE.editors[ edId ].remove();
-                                        console.log( "Removed editor " + edId );
-                                    }
-                                    catch ( error ) {
-                                        console.log( "Error occured during removing editors; ", error );
-                                    }
-                                }
-                            }
-                            if ( ajaxData === undefined || ajaxData.status == "success" ) {
-                                initTinyMce( ajaxData );
-                            }
-                        }
-                    }
-                    //]]>
-                </script>
 </ui:composition>

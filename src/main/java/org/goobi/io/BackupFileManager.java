@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import lombok.extern.log4j.Log4j2;
@@ -48,6 +49,10 @@ public abstract class BackupFileManager {
     private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd-HHmmssSSS";
     private static final String TIMESTAMP_REGEX = "\\d{4}-\\d{2}-\\d{2}-\\d{9}";
     private static final int TIMESTAMP_LENGTH = BackupFileManager.TIMESTAMP_FORMAT.length();
+
+    public static String createBackup(String path, String fileName, boolean createFrontendMessage) throws IOException {
+        return BackupFileManager.createBackup(path, path, fileName, ConfigurationHelper.getInstance().getNumberOfBackups(), createFrontendMessage);
+    }
 
     /**
      * Creates a backup. The difference to the other method is that this one uses the same path for original files and backup files.
@@ -78,18 +83,18 @@ public abstract class BackupFileManager {
      *
      * @param path The path of the original file
      * @param backupPath The path of the backup file (may be the same as the path)
-     * @param fileName The name of the original file (without directory)
+     * @param name The name of the original file (without directory)
      * @param limit The maximum number of backup files before the oldest one gets deleted.
      * @param createFrontendMessage Must be true to generate frontend help messages (Helper.setMeldung() or Helper.setFehlerMeldung())
      * @return The name of the created backup file or null in case of an error
      * @throws IOException if there was an error while reading the original file or writing backup files
      */
-    public static String createBackup(String path, String backupPath, String fileName, int limit, boolean createFrontendMessage) throws IOException {
-        String backupFileName = null;
+    public static String createBackup(String path, String backupPath, String name, int limit, boolean createFrontendMessage) throws IOException {
+        String backupFileOrDirectoryName = null;
         try {
             if (limit > 0) {
-                backupFileName = BackupFileManager.createBackupFile(path, backupPath, fileName);
-                log.trace("The backup file {} was created successfully.", backupPath + backupFileName);
+                backupFileOrDirectoryName = BackupFileManager.createBackup(path, backupPath, name);
+                log.trace("The backup file {} was created successfully.", backupPath + backupFileOrDirectoryName);
             }
         } catch (Exception exception) {
             if (createFrontendMessage) {
@@ -100,7 +105,7 @@ public abstract class BackupFileManager {
         }
 
         try {
-            BackupFileManager.removeTooOldBackupFiles(backupPath, fileName, limit);
+            BackupFileManager.removeTooOldBackupFiles(backupPath, name, limit);
         } catch (Exception exception) {
             log.warn("Old backup files could not be deleted. Please make sure that the required access rights are set.");
             if (createFrontendMessage) {
@@ -111,7 +116,7 @@ public abstract class BackupFileManager {
             // Code that calls this method should not get confused with this thrown exception in case of success...
             //throw new IOException(messageFail); (NOSONAR)
         }
-        return backupFileName;
+        return backupFileOrDirectoryName;
     }
 
     /**
@@ -124,12 +129,12 @@ public abstract class BackupFileManager {
      * @return The name of the created backup file or null in case of an error
      * @throws IOException if there was an error while creating the backup file
      */
-    private static String createBackupFile(String sourcePath, String backupPath, String fileName) throws IOException {
-        Path existingFile = Paths.get(sourcePath + fileName);
-        String backupFileName = fileName + "." + BackupFileManager.getCurrentTimestamp();
-        Path backupFile = Paths.get(backupPath + backupFileName);
+    private static String createBackup(String sourcePath, String backupPath, String fileName) throws IOException {
+        Path existingFileOrDirectory = Paths.get(sourcePath, fileName);
+        String backupName = fileName + "." + BackupFileManager.getCurrentTimestamp();
+        Path backupFileOrDirectory = Paths.get(backupPath, backupName);
 
-        if (!StorageProvider.getInstance().isFileExists(existingFile)) {
+        if (!StorageProvider.getInstance().isFileExists(existingFileOrDirectory) && !StorageProvider.getInstance().isDirectory(existingFileOrDirectory)) {
             return null;
         }
 
@@ -137,7 +142,7 @@ public abstract class BackupFileManager {
         if (!StorageProvider.getInstance().isFileExists(backupPathObject)) {
             try {
                 StorageProvider.getInstance().createDirectories(backupPathObject);
-                log.debug("Created backup directory " + backupPath + backupFileName);
+                log.debug("Created backup directory " + backupPath + backupName);
             } catch (IOException ioException) {
                 log.error("Error while creating backup directory " + backupPath);
                 throw ioException;
@@ -145,11 +150,15 @@ public abstract class BackupFileManager {
         }
 
         try {
-            StorageProvider.getInstance().copyFile(existingFile, backupFile);
-            log.debug("Created backup file " + backupPath + backupFileName);
-            return backupFileName;
+            if (StorageProvider.getInstance().isDirectory(existingFileOrDirectory)) {
+                StorageProvider.getInstance().copyDirectory(existingFileOrDirectory, backupFileOrDirectory, true);
+            } else {
+                StorageProvider.getInstance().copyFile(existingFileOrDirectory, backupFileOrDirectory);
+            }
+            log.debug("Created backup file " + backupPath + backupName);
+            return backupName;
         } catch (IOException ioException) {
-            log.error("Error while creating backup file " + backupPath + backupFileName);
+            log.error("Error while creating backup file " + backupPath + backupName);
             throw ioException;
         }
     }

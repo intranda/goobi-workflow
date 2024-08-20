@@ -42,9 +42,6 @@ import org.goobi.beans.Processproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
-import org.goobi.vocabulary.Definition;
-import org.goobi.vocabulary.VocabRecord;
-import org.goobi.vocabulary.Vocabulary;
 
 import com.google.gson.Gson;
 
@@ -934,48 +931,7 @@ public class DatabaseVersion {
         }
 
         if (DatabaseVersion.checkIfTableExists("vocabularies")) {
-            String allVocabularies = "SELECT * FROM vocabularies";
-            Connection connection = null;
-            try {
-                connection = MySQLHelper.getInstance().getConnection();
-                QueryRunner runner = new QueryRunner();
-                List<Vocabulary> vocabularyList = runner.query(connection, allVocabularies, VocabularyManager.resultSetToVocabularyListHandler);
-                String insert = "INSERT INTO vocabulary_record (id,  vocabulary_id) VALUES (?,?)";
-                String insertField =
-                        "INSERT INTO vocabulary_record_data (record_id,vocabulary_id, definition_id, label, language, value) VALUES (?,?,?,?,?,?)";
-
-                for (Vocabulary vocabulary : vocabularyList) {
-                    DatabaseVersion.runSql("INSERT INTO vocabulary(id, title, description) VALUES (" + vocabulary.getId() + ",'"
-                            + vocabulary.getTitle() + "', '" + vocabulary.getDescription() + "')");
-                    for (Definition def : vocabulary.getStruct()) {
-                        VocabularyManager.saveDefinition(vocabulary.getId(), def);
-                    }
-                    VocabularyManager.loadRecordsForVocabulary(vocabulary);
-
-                    for (VocabRecord rec : vocabulary.getRecords()) {
-                        runner.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, rec.getId(), vocabulary.getId());
-
-                        for (org.goobi.vocabulary.Field field : rec.getFields()) {
-                            int fieldId = runner.insert(connection, insertField, MySQLHelper.resultSetToIntegerHandler, rec.getId(),
-                                    vocabulary.getId(), field.getDefinition().getId(), field.getLabel(), field.getLanguage(), field.getValue());
-                            field.setId(fieldId);
-                        }
-                    }
-                }
-                DatabaseVersion.runSql("drop table vocabularyRecords");
-                DatabaseVersion.runSql("drop table vocabularies");
-
-            } catch (SQLException e) {
-                log.error(e);
-            } finally {
-                if (connection != null) {
-                    try {
-                        MySQLHelper.closeConnection(connection);
-                    } catch (SQLException exception) {
-                        log.warn(exception);
-                    }
-                }
-            }
+            log.error("The vocabulary migration logic for this version has been removed. Please try to manually re-create the vocabularies or contact the support.");
         }
     }
 

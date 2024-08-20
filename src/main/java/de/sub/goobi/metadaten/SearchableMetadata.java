@@ -110,4 +110,12 @@ public interface SearchableMetadata {
         }
         return filtered.toString();
     }
+
+    public long getCurrentVocabularySearchField();
+
+    public void setCurrentVocabularySearchField(long field);
+
+    public String getVocabularySearchQuery();
+
+    public void setVocabularySearchQuery(String query);
 }

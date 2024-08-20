@@ -10,56 +10,43 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
-
     <composite:interface>
     </composite:interface>
-
     <composite:implementation>
-
         <ui:include src="../calendarJavaScript.xhtml" />
-
         <x:dataList
             var="property"
             value="#{properties}">
-
             <!-- TEXT -->
             <h:panelGroup rendered="#{((property.type.name == 'text') or (property.type.name == 'link') or (property.type.name == 'null'))}">
-
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <intranda:formLabel 
-                            label="#{property.name}" 
-                            labelFor="value" 
+                        <intranda:formLabel
+                            label="#{property.name}"
+                            labelFor="value"
                             labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                     </div>
-                
                     <div class="col-12 col-md-9">
                         <x:inputText
                             id="value"
-                            forceId="true"
                             styleClass="form-control"
                             value="#{property.value}"
-                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
+                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}"
+                            binding="#{value}">
                         </x:inputText>
-                        <h:message
-                            for="value"
-                            showDetail="true"
-                            styleClass="help-inline font-danger" />
-                        <intranda:formHelp content="#{msgs.helpPropertyValue}" />
+                        <intranda:formHelp msgFor="#{value.clientId}" content="#{msgs.helpPropertyValue}" />
                     </div>
                 </div>
             </h:panelGroup>
-
             <!-- TEXTAREA -->
-            <h:panelGroup rendered="#{(property.type.name == 'textarea')}">                
+            <h:panelGroup rendered="#{(property.type.name == 'textarea')}">
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <intranda:formLabel 
-                            label="#{property.name}" 
-                            labelFor="textareaValue" 
+                        <intranda:formLabel
+                            label="#{property.name}"
+                            labelFor="textareaValue"
                             labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                     </div>
-                    
                     <div class="col-12 col-md-9">
                         <x:inputTextarea
                             id="textareaValue"
@@ -76,16 +63,14 @@
                         <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                     </div>
                 </div>
-
             </h:panelGroup>
-
             <!-- NUMBER -->
             <h:panelGroup rendered="#{property.type.name == 'integer' or property.type.name == 'number'}">
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <intranda:formLabel 
-                            label="#{property.name}" 
-                            labelFor="number" 
+                        <intranda:formLabel
+                            label="#{property.name}"
+                            labelFor="number"
                             labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                     </div>
                     <div class="col-12 col-md-9">
@@ -105,15 +90,13 @@
                     </div>
                 </div>
             </h:panelGroup>
-
-
             <!--  SELECT ONE -->
             <h:panelGroup rendered="#{(property.type.name == 'list')}">
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <intranda:formLabel 
-                            label="#{property.name}" 
-                            labelFor="select" 
+                        <intranda:formLabel
+                            label="#{property.name}"
+                            labelFor="select"
                             labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                     </div>
                     <div class="col-12 col-md-9">
@@ -121,29 +104,25 @@
                             id="select"
                             styleClass="form-control form-select"
                             readonly="#{property.showProcessGroupAccessCondition == 'READ'}"
-                            value="#{property.value}">
+                            value="#{property.value}"
+                            binding="#{select}">
                             <f:selectItems
                                 value="#{property.possibleValues}"
                                 var="propertys"
                                 itemLabel="#{propertys}"
                                 itemValue="#{propertys}" />
                         </h:selectOneMenu>
-                        <h:message
-                            for="select"
-                            showDetail="true"
-                            styleClass="help-inline font-danger" />
-                        <intranda:formHelp content="#{msgs.helpPropertyValue}" />
+                        <intranda:formHelp msgFor="#{select.clientId}" content="#{msgs.helpPropertyValue}" />
                     </div>
                 </div>
             </h:panelGroup>
-
             <!--  SELECT MANY -->
             <h:panelGroup rendered="#{(property.type.name == 'listmultiselect')}">
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <intranda:formLabel 
-                            label="#{property.name}" 
-                            labelFor="selectmany" 
+                        <intranda:formLabel
+                            label="#{property.name}"
+                            labelFor="selectmany"
                             labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                     </div>
                     <div class="col-12 col-md-9">
@@ -167,15 +146,13 @@
                     </div>
                 </div>
             </h:panelGroup>
-
-
             <!-- BOOLEAN  -->
             <h:panelGroup rendered="#{(property.type.name == 'boolean')}">
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <intranda:formLabel 
-                            label="#{property.name}" 
-                            labelFor="boolean" 
+                        <intranda:formLabel
+                            label="#{property.name}"
+                            labelFor="boolean"
                             labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                     </div>
                     <div class="col-12 col-md-9">
@@ -192,22 +169,27 @@
                     </div>
                 </div>
             </h:panelGroup>
-
-
             <!--  DATE   -->
             <h:panelGroup rendered="#{(property.type.name == 'date')}">
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <intranda:formLabel 
-                            label="#{property.name}" 
-                            labelFor="date" 
+                        <intranda:formLabel
+                            label="#{property.name}"
+                            labelFor="date"
                             labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                     </div>
                     <div class="col-12 col-md-9">
                         <p:calendar
                             id="date"
                             value="#{property.dateValue}"
-                            locale="#{SpracheForm.locale}" />
+                            locale="#{SpracheForm.locale}"
+                            styleClass="ff-goobi"
+                            mask="true"
+                            navigator="true"
+                            yearRange="-100:+100"
+                            pattern="#{property.pattern}">
+                            <f:passThroughAttribute name="autocomplete" value="off" />
+                        </p:calendar>
                         <h:message
                             for="date"
                             showDetail="true"
@@ -216,14 +198,13 @@
                     </div>
                 </div>
             </h:panelGroup>
-
             <!--  HTML   -->
             <h:panelGroup rendered="#{(property.type.name == 'html')}">
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <intranda:formLabel 
-                            label="#{property.name}" 
-                            labelFor="valuearea" 
+                        <intranda:formLabel
+                            label="#{property.name}"
+                            labelFor="valuearea"
                             labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                     </div>
                     <div class="col-12 col-md-9">
@@ -243,7 +224,4 @@
             </h:panelGroup>
         </x:dataList>
     </composite:implementation>
-
 </ui:composition>
-
-

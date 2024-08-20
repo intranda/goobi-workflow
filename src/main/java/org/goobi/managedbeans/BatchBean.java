@@ -72,8 +72,7 @@ public class BatchBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 8234897225425856549L;
 
     private static final String NO_BATCH_SELECTED = "noBatchSelected";
-    // TODO: Rename this key so that it does not use an 'Ḿ' with accent
-    private static final String TOO_MANY_BATCHES_SELECTED = "tooḾanyBatchesSelected";
+    private static final String TOO_MANY_BATCHES_SELECTED = "tooManyBatchesSelected";
 
     private static final String DEFAULT_BATCH_NAME = "-batch-";
 

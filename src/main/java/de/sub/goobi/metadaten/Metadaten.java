@@ -5207,17 +5207,24 @@ public class Metadaten implements Serializable {
 
         List<AuthorityData> authorityList = new ArrayList<>();
         for (Person person : persons) {
-            AuthorityData data = new AuthorityData(person.getDisplayname(), person.getAuthorityURI() + person.getAuthorityValue());
+            AuthorityData data =
+                    new AuthorityData(person.getDisplayname(),
+                            URI.create(Optional.ofNullable(person.getAuthorityURI()).orElse("")).resolve(person.getAuthorityValue()).toString());
             authorityList.add(data);
         }
         for (Corporate corporate : corporates) {
-            AuthorityData data = new AuthorityData(corporate.getMainName(), corporate.getAuthorityURI() + corporate.getAuthorityValue());
+            AuthorityData data = new AuthorityData(corporate.getMainName(),
+                    URI.create(Optional.ofNullable(corporate.getAuthorityURI()).orElse("")).resolve(corporate.getAuthorityValue()).toString());
             authorityList.add(data);
         }
         for (Metadata md : metadata) {
-            AuthorityData data = new AuthorityData(md.getValue(), md.getAuthorityURI() + md.getAuthorityValue());
+            AuthorityData data = new AuthorityData(md.getValue(),
+                    URI.create(Optional.ofNullable(md.getAuthorityURI()).orElse("")).resolve(md.getAuthorityValue()).toString());
             authorityList.add(data);
         }
+
+        Collections.sort(authorityList,
+                (a, b) -> Optional.ofNullable(a.getValue()).orElse("").compareTo(Optional.ofNullable(b.getValue()).orElse("")));
 
         return new Gson().toJson(authorityList);
     }

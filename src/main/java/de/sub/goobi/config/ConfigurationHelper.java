@@ -1111,6 +1111,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("numberOfMetaBackups", 9);
     }
 
+    public int getNumberOfBackups() {
+        return getLocalInt("numberOfBackups", 9);
+    }
+
     /*
      * subcategory in goobi_config.properties/METS EDITOR: user interface
      */
@@ -1289,6 +1293,14 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isPdfAsDownload() {
         return getLocalBoolean("pdfAsDownload", true);
+    }
+
+    public String getVocabularyServerHost() {
+        return getLocalString("vocabularyServerHost", "localhost");
+    }
+
+    public int getVocabularyServerPort() {
+        return getLocalInt("vocabularyServerPort", 8081);
     }
 
     /**
