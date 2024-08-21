@@ -25,12 +25,11 @@
  */
 package org.goobi.api.mq;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.jms.Connection;
-import javax.jms.JMSException;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -41,14 +40,18 @@ import com.amazon.sqs.javamessaging.AmazonSQSMessagingClientWrapper;
 import com.amazon.sqs.javamessaging.ProviderConfiguration;
 import com.amazon.sqs.javamessaging.SQSConnection;
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
-import com.amazonaws.services.sqs.model.CreateQueueRequest;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import jakarta.jms.Connection;
+import jakarta.jms.JMSException;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.sqs.SqsClient;
+import software.amazon.awssdk.services.sqs.model.CreateQueueRequest;
 
 public class ExternalConnectionFactory {
 
@@ -77,18 +80,28 @@ public class ExternalConnectionFactory {
 
     private static Connection createSQSConnection() throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
-        AmazonSQS client;
+        SqsClient client;
         if (config.isUseLocalSQS()) {
             String endpoint = "http://localhost:9324";
-            String region = "elasticmq";
             String accessKey = "x";
             String secretKey = "x";
-            client = AmazonSQSClientBuilder.standard()
-                    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey))) //NOSONAR: this not a real pw, its only a placeholder
-                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
-                    .build();
+            AwsCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
+            AwsCredentialsProvider prov = StaticCredentialsProvider.create(credentials);
+            try {
+                client = SqsClient.builder()
+                        .region(Region.US_EAST_1)
+                        .credentialsProvider(prov)
+                        .endpointOverride(new URI(endpoint))
+                        .build();
+            } catch (URISyntaxException e) {
+                throw new JMSException("invalid uri");
+            }
+
         } else {
-            client = AmazonSQSClientBuilder.defaultClient();
+            client = SqsClient.builder()
+                    .credentialsProvider(ProfileCredentialsProvider.create())
+                    .region(Region.of(System.getenv("AWS_REGION")))
+                    .build();
         }
         SQSConnectionFactory connectionFactory = new SQSConnectionFactory(
                 new ProviderConfiguration(),
@@ -119,7 +132,7 @@ public class ExternalConnectionFactory {
             Map<String, String> attributes = new HashMap<>();
             attributes.put("FifoQueue", "true");
             attributes.put("ContentBasedDeduplication", "true");
-            sqsClient.createQueue(new CreateQueueRequest().withQueueName(queueName).withAttributes(attributes));
+            sqsClient.createQueue(CreateQueueRequest.builder().queueName(queueName).attributesWithStrings(attributes).build());
         }
     }
 }
