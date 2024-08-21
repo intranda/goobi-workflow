@@ -709,7 +709,6 @@ public class ProzesskopieForm implements Serializable {
                 Helper.setFehlerMeldung("Error on creating process", e);
                 log.error("Error on creating process", e);
             } catch (RuntimeException e) {
-                e.printStackTrace();
                 /*
                  * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
                  */
