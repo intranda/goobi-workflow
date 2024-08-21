@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({})
@@ -160,5 +161,33 @@ public class ExtendedFieldValueTest {
     @Test
     public void givenTranslatedFieldValue_whenGetTranslations_returnEmptyTranslationForEachDefinedLanguage() {
         assertEquals(1, testSubjectTranslated.getTranslations().size());
+    }
+
+    @Test
+    public void givenTranslatedFieldValue_whenGetExtendedTranslations_dataMethodsWork() {
+        ExtendedTranslationInstance et = testSubjectTranslated.getExtendedTranslations().get(0);
+        TranslationInstance t = referenceValueTranslated.getTranslations().get(0);
+
+        assertEquals("", et.getValue());
+        et.setValue("new");
+        assertEquals("new", t.getValue());
+
+        assertEquals("English", et.getLanguageName());
+
+        assertEquals("eng", et.getLanguage());
+        et.setLanguage("ger");
+        assertEquals("ger", t.getLanguage());
+
+        assertEquals(t, et.getWrapped());
+
+        assertNotNull(et.getDefinition());
+    }
+
+    @Test
+    public void givenNothing_whenGetLanguageAbbreviation_returnCorrectValue() {
+        assertEquals("eng", ExtendedTranslationInstance.transformToThreeCharacterAbbreviation("en"));
+        assertEquals("ger", ExtendedTranslationInstance.transformToThreeCharacterAbbreviation("de"));
+        assertEquals("fre", ExtendedTranslationInstance.transformToThreeCharacterAbbreviation("fr"));
+        assertEquals("eng", ExtendedTranslationInstance.transformToThreeCharacterAbbreviation("xx"));
     }
 }
