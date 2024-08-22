@@ -38,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
+import org.goobi.production.cli.helper.StringPair;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -231,6 +232,12 @@ public class PropertyParser {
                         containsCurrentStepTitle = true;
                         pp.setDuplicationAllowed(duplicate);
                         pp.setCurrentStepAccessCondition(AccessCondition.getAccessConditionByName(access));
+                    }
+
+                    List<HierarchicalConfiguration> displayConditions = config.configurationsAt(showStep + "/display");
+
+                    for (HierarchicalConfiguration hc : displayConditions) {
+                        ssc.getDisplayCondition().add(new StringPair(hc.getString("@property"), hc.getString("@value")));
                     }
 
                     pp.getShowStepConditions().add(ssc);

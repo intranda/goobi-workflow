@@ -54,6 +54,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
@@ -68,6 +69,7 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+import org.goobi.production.properties.ShowStepCondition;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
@@ -821,7 +823,7 @@ public class StepBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public String uploadFromHomeAlle() throws NumberFormatException, DAOException {
+    public String uploadFromHomeAlle() throws NumberFormatException {
 
         List<String> fertigListe = this.myDav.UploadFromHomeAlle(this.doneDirectoryName);
         List<String> geprueft = new ArrayList<>();
@@ -969,7 +971,7 @@ public class StepBean extends BasicBean implements Serializable {
     public Step getMySchritt() {
         try {
             schrittPerParameterLaden();
-        } catch (NumberFormatException | DAOException e) {
+        } catch (NumberFormatException e) {
             log.error(e);
         }
         return this.mySchritt;
@@ -1045,7 +1047,7 @@ public class StepBean extends BasicBean implements Serializable {
      * @throws DAOException
      * @throws NumberFormatException
      */
-    private void schrittPerParameterLaden() throws DAOException, NumberFormatException {
+    private void schrittPerParameterLaden() throws NumberFormatException {
         String param = Helper.getRequestParameter("myid");
         if (param != null && !"".equals(param)) {
             /*
@@ -1156,6 +1158,26 @@ public class StepBean extends BasicBean implements Serializable {
         this.processPropertyList = PropertyParser.getInstance().getPropertiesForStep(this.mySchritt);
 
         for (ProcessProperty pt : this.processPropertyList) {
+
+            boolean match = true;
+            for (ShowStepCondition cond : pt.getShowStepConditions()) {
+                if (cond.getName().equals(mySchritt.getTitel()) && !cond.getDisplayCondition().isEmpty()) {
+                    // check if condition matches
+                    match = false;
+                    for (StringPair sp : cond.getDisplayCondition()) {
+                        for (ProcessProperty other : processPropertyList) {
+                            if (other.getName().equals(sp.getOne()) && sp.getTwo().equals(other.getValue())) {
+                                match = true;
+                            }
+                        }
+                    }
+
+                }
+            }
+            if (!match) {
+                continue;
+            }
+
             if (pt.getContainer() != 0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ) {
                 containerAccess.put(pt.getContainer(), true);
             }
@@ -1291,7 +1313,24 @@ public class StepBean extends BasicBean implements Serializable {
         List<ProcessProperty> answer = new ArrayList<>();
         for (ProcessProperty pp : this.processPropertyList) {
             if (pp.getContainer() == 0) {
-                answer.add(pp);
+                boolean match = true;
+                for (ShowStepCondition cond : pp.getShowStepConditions()) {
+                    if (cond.getName().equals(mySchritt.getTitel()) && !cond.getDisplayCondition().isEmpty()) {
+                        // check if condition matches
+                        match = false;
+                        for (StringPair sp : cond.getDisplayCondition()) {
+                            for (ProcessProperty other : processPropertyList) {
+                                if (other.getName().equals(sp.getOne()) && sp.getTwo().equals(other.getValue())) {
+                                    match = true;
+                                }
+                            }
+                        }
+
+                    }
+                }
+                if (match) {
+                    answer.add(pp);
+                }
             }
         }
         return answer;
@@ -1310,7 +1349,24 @@ public class StepBean extends BasicBean implements Serializable {
         if (this.container != null && this.container > 0) {
             for (ProcessProperty pp : this.processPropertyList) {
                 if (pp.getContainer() == this.container) {
-                    answer.add(pp);
+                    boolean match = true;
+                    for (ShowStepCondition cond : pp.getShowStepConditions()) {
+                        if (cond.getName().equals(mySchritt.getTitel()) && !cond.getDisplayCondition().isEmpty()) {
+                            // check if condition matches
+                            match = false;
+                            for (StringPair sp : cond.getDisplayCondition()) {
+                                for (ProcessProperty other : processPropertyList) {
+                                    if (other.getName().equals(sp.getOne()) && sp.getTwo().equals(other.getValue())) {
+                                        match = true;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    if (match) {
+                        answer.add(pp);
+                    }
                 }
             }
         } else {
