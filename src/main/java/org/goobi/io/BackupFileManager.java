@@ -131,7 +131,7 @@ public abstract class BackupFileManager {
      */
     private static String createBackup(String sourcePath, String backupPath, String fileName) throws IOException {
         Path existingFileOrDirectory = Paths.get(sourcePath, fileName);
-        String backupName = fileName + "." + BackupFileManager.getCurrentTimestamp();
+        String backupName = generateBackupName(fileName);
         Path backupFileOrDirectory = Paths.get(backupPath, backupName);
 
         if (!StorageProvider.getInstance().isFileExists(existingFileOrDirectory) && !StorageProvider.getInstance().isDirectory(existingFileOrDirectory)) {
@@ -161,6 +161,10 @@ public abstract class BackupFileManager {
             log.error("Error while creating backup file " + backupPath + backupName);
             throw ioException;
         }
+    }
+
+    public static String generateBackupName(String name) {
+        return name + "." + BackupFileManager.getCurrentTimestamp();
     }
 
     /**
