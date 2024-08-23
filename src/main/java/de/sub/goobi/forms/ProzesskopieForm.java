@@ -70,6 +70,7 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.UserRole;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -242,7 +243,6 @@ public class ProzesskopieForm implements Serializable {
 
     private List<Project> availableProjects = new ArrayList<>();
 
-    @Getter
     private List<ProcessProperty> configuredProperties;
 
     @Getter
@@ -2105,5 +2105,29 @@ public class ProzesskopieForm implements Serializable {
             String two = o.foldername + "_" + o.getTooltip();
             return one.compareTo(two);
         }
+    }
+
+    public List<ProcessProperty> getConfiguredProperties() {
+        List<ProcessProperty> properties = new ArrayList<>();
+
+        for (ProcessProperty prop : configuredProperties) {
+            boolean match = true;
+            if (!prop.getProcessCreationConditions().isEmpty()) {
+                // check if condition matches
+                match = false;
+                for (StringPair sp : prop.getProcessCreationConditions()) {
+                    for (ProcessProperty other : configuredProperties) {
+                        if (other.getName().equals(sp.getOne()) && sp.getTwo().equals(other.getValue())) {
+                            match = true;
+                        }
+                    }
+                }
+            }
+            if (match) {
+                properties.add(prop);
+            }
+        }
+
+        return properties;
     }
 }

@@ -203,8 +203,7 @@
                                     </td>
                                     <h:panelGroup rendered="#{propInd ==0}">
                                         <td rowspan="#{propertyOwner.containers[container].propertyListSizeString}">
-                                            <h:panelGroup
-                                                rendered="#{currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+                                            <h:panelGroup rendered="#{currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 
                                                 <!-- EDIT BUTTON FOR REGULAR TASK -->
                                                 <button
@@ -359,6 +358,7 @@
                                         value="#{myprocess_item.value}"
                                         required="false"
                                         readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
+                                        <f:ajax execute="@this" render="@form" />
                                     </h:inputTextarea>
                                     <intranda:formHelp
                                         content="#{msgs.helpPropertyValue}"
@@ -385,6 +385,9 @@
                                         value="#{myprocess_item.value}"
                                         readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
                                         <f:validateLongRange minimum="0" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
                                     </x:inputText>
                                     <intranda:formHelp
                                         content="#{msgs.helpPropertyValue}"
@@ -415,6 +418,9 @@
                                             var="myprocess_items"
                                             itemLabel="#{myprocess_items}"
                                             itemValue="#{myprocess_items}" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
                                     </h:selectOneMenu>
                                     <intranda:formHelp
                                         content="#{msgs.helpPropertyValue}"
@@ -445,6 +451,9 @@
                                             var="myprocess_items"
                                             itemLabel="#{myprocess_items}"
                                             itemValue="#{myprocess_items}" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
                                     </h:selectManyListbox>
                                     <intranda:formHelp
                                         content="#{msgs.helpPropertyValue}"
@@ -468,6 +477,9 @@
                                         id="boolean"
                                         value="#{myprocess_item.booleanValue}"
                                         disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
                                     </h:selectBooleanCheckbox>
                                     <intranda:formHelp
                                         content="#{msgs.helpPropertyValue}"
@@ -497,7 +509,12 @@
                                         navigator="true"
                                         yearRange="-100:+100"
                                         pattern="#{myprocess_item.pattern}">
-                                        <f:passThroughAttribute name="autocomplete" value="off" />
+                                        <f:passThroughAttribute
+                                            name="autocomplete"
+                                            value="off" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
                                     </p:calendar>
 
                                     <intranda:formHelp
@@ -523,7 +540,11 @@
                                         forceId="true"
                                         styleClass="form-control"
                                         value="#{myprocess_item.value}"
-                                        readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"></x:inputTextarea>
+                                        readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
+                                    </x:inputTextarea>
                                     <intranda:formHelp
                                         content="#{msgs.helpPropertyValue}"
                                         msgFor="html" />

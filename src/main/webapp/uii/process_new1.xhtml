@@ -683,7 +683,7 @@
 
             <!-- ADDITIONAL PROPERTIES -->
             <div class="row mt-3" jsf:rendered="#{!ProzesskopieForm.configuredProperties.isEmpty()}">
-                <div class="col-sm-12">
+                <h:panelGroup id="propertyBox" layout="block" styleClass="col-sm-12">
 
                     <intranda:box
                         boxType="action"
@@ -697,7 +697,7 @@
                                 value="#{ProzesskopieForm.configuredProperties}" />
                         </ui:include>
                     </intranda:box>
-                </div>
+                </h:panelGroup>
             </div>
             <!-- // ADDITIONAL PROPERTIES -->
 

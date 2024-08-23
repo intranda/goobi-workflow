@@ -521,6 +521,12 @@ public class PropertyParser {
                     pp.setReadValue("");
                 }
 
+                List<HierarchicalConfiguration> displayConditions = templateDefinition.configurationsAt("/display");
+
+                for (HierarchicalConfiguration hc : displayConditions) {
+                    pp.getProcessCreationConditions().add(new StringPair(hc.getString("@property"), hc.getString("@value")));
+                }
+
                 // possible values
                 pp.getPossibleValues().addAll(Arrays.asList(prop.getStringArray("/value")));
                 properties.add(pp);
