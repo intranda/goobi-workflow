@@ -177,6 +177,10 @@ public class StepBean extends BasicBean implements Serializable {
     private String content = "";
 
     @Getter
+    @Setter
+    protected boolean priorityComment = false;
+
+    @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
     @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
@@ -1121,7 +1125,8 @@ public class StepBean extends BasicBean implements Serializable {
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
             JournalEntry logEntry =
-                    new JournalEntry(mySchritt.getProzess().getId(), new Date(), user.getNachVorname(), LogType.USER, content, EntryType.PROCESS);
+                    new JournalEntry(mySchritt.getProzess().getId(), new Date(), user.getNachVorname(),
+                            priorityComment ? LogType.IMPORTANT_USER : LogType.USER, content, EntryType.PROCESS);
             JournalManager.saveJournalEntry(logEntry);
             mySchritt.getProzess().getJournal().add(logEntry);
             this.content = "";
