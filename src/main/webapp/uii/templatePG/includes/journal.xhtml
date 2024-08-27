@@ -155,6 +155,21 @@
                                     <li class="dropdonw-item">
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
+                                            jsf:id="showUserImportantMessages"
+                                            class="dropdown-item">
+                                            <span
+                                                class="fa #{NavigationForm.uiStatus['process_log_level_important']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span>
+                                                <h:outputText value="#{msgs.process_log_showUserImportantMessages}" />
+                                            </span>
+                                            <x:updateActionListener
+                                                property="#{NavigationForm.uiStatus['process_log_level_important']}"
+                                                value="#{not NavigationForm.uiStatus['process_log_level_important']}" />
+                                        </button>
+                                    </li>                                    
+                                    <li class="dropdonw-item">
+                                        <button
+                                            jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showWarnMessages"
                                             class="dropdown-item">
                                             <span
