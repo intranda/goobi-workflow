@@ -657,6 +657,8 @@ public class ProzesskopieForm implements Serializable {
         this.standardFields.put("preferences", true);
         this.standardFields.put("images", true);
         standardFields.put("fileUpload", true);
+        standardFields.put("processtitle", true);
+
         this.additionalFields = new ArrayList<>();
         this.tifHeaderDocumentname = "";
         this.tifHeaderImagedescription = "";
