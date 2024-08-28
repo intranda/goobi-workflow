@@ -143,7 +143,6 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     public void saveRecord(VocabularyRecord rec) {
-        long vocabularyId = rec.getVocabularyId();
         try {
             ExtendedVocabularyRecord newRecord = api.vocabularyRecords().save(rec);
             paginator.reload();
@@ -156,8 +155,6 @@ public class VocabularyRecordsBean implements Serializable {
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
             Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
-            // Reset vocabulary id (got cleared during save)
-            rec.setVocabularyId(vocabularyId);
             this.currentRecord = new ExtendedVocabularyRecord(rec);
         }
     }

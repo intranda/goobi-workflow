@@ -154,28 +154,35 @@ public class VocabularyRecordAPI {
 
     private ExtendedVocabularyRecord create(VocabularyRecord vocabularyRecord) {
         long vocabularyId = vocabularyRecord.getVocabularyId();
-        vocabularyRecord.setVocabularyId(null);
+        Long parentId = vocabularyRecord.getParentId();
         ExtendedVocabularyRecord newRecord;
-        if (vocabularyRecord.getParentId() == null) {
-            newRecord = new ExtendedVocabularyRecord(restApi.post(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyId));
-        } else {
-            long parentId = vocabularyRecord.getParentId();
+        try {
+            vocabularyRecord.setVocabularyId(null);
             vocabularyRecord.setParentId(null);
-            newRecord = new ExtendedVocabularyRecord(restApi.post(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, parentId));
+            if (parentId == null) {
+                newRecord = new ExtendedVocabularyRecord(restApi.post(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyId));
+            } else {
+                newRecord = new ExtendedVocabularyRecord(restApi.post(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, parentId));
+                this.singleLookupCache.invalidate(parentId);
+            }
+            this.singleLookupCache.update(newRecord.getId(), newRecord);
+        } finally {
+            vocabularyRecord.setVocabularyId(vocabularyId);
             vocabularyRecord.setParentId(parentId);
-            this.singleLookupCache.invalidate(vocabularyRecord.getParentId());
         }
-        vocabularyRecord.setId(vocabularyId);
-        this.singleLookupCache.update(newRecord.getId(), newRecord);
         return newRecord;
     }
 
     private ExtendedVocabularyRecord change(VocabularyRecord vocabularyRecord) {
         long id = vocabularyRecord.getId();
-        vocabularyRecord.setId(null);
-        ExtendedVocabularyRecord newRecord = new ExtendedVocabularyRecord(restApi.put(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, id));
-        vocabularyRecord.setId(id);
-        this.singleLookupCache.update(newRecord.getId(), newRecord);
+        ExtendedVocabularyRecord newRecord;
+        try {
+            vocabularyRecord.setId(null);
+            newRecord = new ExtendedVocabularyRecord(restApi.put(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, id));
+            this.singleLookupCache.update(newRecord.getId(), newRecord);
+        } finally {
+            vocabularyRecord.setId(id);
+        }
         return newRecord;
     }
 
