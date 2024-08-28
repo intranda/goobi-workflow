@@ -166,7 +166,7 @@
                                                 property="#{NavigationForm.uiStatus['process_log_level_important']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_important']}" />
                                         </button>
-                                    </li>                                    
+                                    </li>
                                     <li class="dropdonw-item">
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
@@ -281,6 +281,9 @@
                                         </td>
                                         <td>
                                             <div class="d-flex">
+                                                <ui:fragment rendered="#{entry.type.title == 'important'}">
+                                                    <span class="my-auto me-1 log_color_#{entry.type.title} fa fa-exclamation-triangle" />
+                                                </ui:fragment>
                                                 <h:outputText
                                                     value="#{entry.formattedContent}"
                                                     styleClass="log_color_#{entry.type.title}"
