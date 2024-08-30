@@ -766,17 +766,18 @@ public class S3FileUtils implements StorageProviderInterface {
                 // copy all files in prefix, delete old files
                 copyDirectory(oldPath, newPath);
                 deleteDir(oldPath);
-            }
-        } else {
-            // copy single file
-            Copy copy = transferManager.copy(getBucket(), path2Key(oldPath), getBucket(), path2Key(newPath));
-            try {
-                copy.waitForCompletion();
-                s3.deleteObject(getBucket(), path2Key(oldPath));
-            } catch (AmazonClientException e) {
-                throw new IOException(e);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+
+            } else {
+                // copy single file
+                Copy copy = transferManager.copy(getBucket(), path2Key(oldPath), getBucket(), path2Key(newPath));
+                try {
+                    copy.waitForCompletion();
+                    s3.deleteObject(getBucket(), path2Key(oldPath));
+                } catch (AmazonClientException e) {
+                    throw new IOException(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
     }
