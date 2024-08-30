@@ -3647,12 +3647,14 @@ public class Metadaten implements Serializable {
 
     public void loadJsonAlto() throws IOException, JDOMException, SwapException, DAOException {
         Path altoFile = getCurrentAltoPath();
-        SimpleAlto alto = new SimpleAlto();
         if (StorageProvider.getInstance().isFileExists(altoFile)) {
-            alto = SimpleAlto.readAlto(altoFile);
+            SimpleAlto alto = new SimpleAlto();
+            alto.readAlto(altoFile);
+            this.currentJsonAlto = new Gson().toJson(alto);
+        } else {
+            SimpleAlto alto = new SimpleAlto("ALTO file not found.");
+            this.currentJsonAlto = new Gson().toJson(alto);
         }
-
-        this.currentJsonAlto = new Gson().toJson(alto);
     }
 
     public String getJsonAlto() {
