@@ -859,13 +859,39 @@
                                 required="false" />
                         </h:panelGroup>
 
-                        <intranda:formInputTextArea
-                            id="journal"
-                            label="#{msgs.addToProcessLog}"
-                            field="#{ProzesskopieForm.addToWikiField}"
-                            help="#{msgs.help_import_AddToProcessLog}"
-                            name="addToJournal"
-                            required="false" />
+                        <fieldSet class="field-set">
+                            <legend class="field-set-legend">#{msgs.addToProcessLog}</legend>
+                            <div class="field-set-content">
+                                <label class="form-row">
+                                    <span class="form-label">
+                                        #{msgs.bemerkung}
+                                    </span>
+                                    <span class="form-input">
+                                        <h:inputTextarea
+                                                id="journal"
+                                                styleClass="form-control metsEditorTextArea"
+                                                value="#{ProzesskopieForm.addToWikiField}"
+                                                required="false"
+                                                rows="8"
+                                                tabindex="0"
+                                                pt:aria-label="#{msgs.addToProcessLog}" />
+                                    </span>
+                                </label>
+                                <label class="form-row">
+                                    <span class="form-label">
+                                        #{msgs.process_log_file_priorityComment}
+                                    </span>
+                                    <span class="form-input">
+                                        <h:selectBooleanCheckbox
+                                                id="journal-important"
+                                                styleClass="form-check-input"
+                                                value="#{ProzesskopieForm.importantWikiField}"
+                                                required="false"
+                                                tabindex="1" />
+                                    </span>
+                                </label>
+                            </div>
+                        </fieldSet>
 
                         <div class="box__actions">
                             <!-- Cancel -->

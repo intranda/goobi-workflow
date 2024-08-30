@@ -199,6 +199,9 @@ public class ProzesskopieForm implements Serializable {
     @Getter
     @Setter
     private String addToWikiField = "";
+    @Getter
+    @Setter
+    private boolean importantWikiField = false;
     private transient List<ConfigOpacCatalogue> catalogues;
     private List<String> catalogueTitles;
     private transient ConfigOpacCatalogue currentCatalogue;
@@ -1210,7 +1213,7 @@ public class ProzesskopieForm implements Serializable {
     private void writeJournalEntry(LoginBean loginForm) {
         User user = loginForm.getMyBenutzer();
         JournalEntry logEntry =
-                new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), LogType.INFO, addToWikiField, EntryType.PROCESS);
+                new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), importantWikiField ? LogType.IMPORTANT_USER : LogType.INFO, addToWikiField, EntryType.PROCESS);
         JournalManager.saveJournalEntry(logEntry);
         prozessKopie.getJournal().add(logEntry);
     }
