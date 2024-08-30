@@ -3,6 +3,11 @@ function altoSaveButtonCallback(data) {
 		if(!document.querySelector(".alto-message-error")) {
 			document.querySelector('alto-editor')._tag.saved();
 		}
+
+		let altoEditor = document.querySelector('alto-editor')._tag;
+		let newJson = { lines: altoEditor.lines };
+		let updatedJsonAlto = JSON.stringify(newJson);
+		document.querySelector(altoEditor.opts.altoDivSelector).innerText = updatedJsonAlto;
 	}
 }
 function checkAltoEditorDirty() {
