@@ -54,6 +54,7 @@ public class VocabularyRecordAPITest {
         EasyMock.expect(target.request(MediaType.APPLICATION_JSON)).andReturn(builder).anyTimes();
         EasyMock.expect(target.request(MediaType.MULTIPART_FORM_DATA)).andReturn(builder).anyTimes();
 
+        EasyMock.expect(builder.header(EasyMock.anyString(), EasyMock.anyString())).andReturn(builder).anyTimes();
         EasyMock.expect(builder.get()).andReturn(response).anyTimes();
         EasyMock.expect(builder.post(EasyMock.anyObject())).andReturn(response).anyTimes();
         EasyMock.expect(builder.put(EasyMock.anyObject())).andReturn(response).anyTimes();

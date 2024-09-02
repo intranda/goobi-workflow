@@ -60,6 +60,7 @@ public class HATEOASPaginatorTest {
         EasyMock.replay(response);
 
         Invocation.Builder builder = EasyMock.createMock(Invocation.Builder.class);
+        EasyMock.expect(builder.header(EasyMock.anyString(), EasyMock.anyString())).andReturn(builder).anyTimes();
         EasyMock.expect(builder.get()).andReturn(response).anyTimes();
         EasyMock.replay(builder);
 
