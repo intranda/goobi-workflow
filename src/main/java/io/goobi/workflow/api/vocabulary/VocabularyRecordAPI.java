@@ -12,6 +12,8 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.extern.log4j.Log4j2;
 
 import javax.faces.model.SelectItem;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -118,7 +120,7 @@ public class VocabularyRecordAPI {
         }
         if (search.isPresent()) {
             params += params.isEmpty() ? "?" : "&";
-            params += "search=" + search.get();
+            params += "search=" + URLEncoder.encode(search.get(), StandardCharsets.UTF_8);
         }
         if (all.isPresent() && Boolean.TRUE.equals(all.get())) {
             params += params.isEmpty() ? "?" : "&";
