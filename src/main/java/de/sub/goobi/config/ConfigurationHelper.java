@@ -1303,6 +1303,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("vocabularyServerPort", 8081);
     }
 
+    public String getVocabularyServerToken() {
+        return getLocalString("vocabularyServerToken", "secret");
+    }
+
     /**
      * This setter is only used by unit tests and makes manipulation of the configuration possible.
      *
