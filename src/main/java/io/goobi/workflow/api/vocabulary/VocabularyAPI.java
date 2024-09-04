@@ -28,7 +28,7 @@ public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     }
 
     public List<ExtendedVocabulary> all() {
-        return restApi.get(COMMON_ENDPOINT, VocabularyPageResult.class, "all=1").getContent();
+        return restApi.get(COMMON_ENDPOINT, VocabularyPageResult.class, "sort=name", "all=1").getContent();
     }
 
     @Override
