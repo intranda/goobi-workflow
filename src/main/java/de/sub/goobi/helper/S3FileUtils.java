@@ -823,18 +823,18 @@ public class S3FileUtils implements StorageProviderInterface {
                 // copy all files in prefix, delete old files
                 copyDirectory(oldPath, newPath);
                 deleteDir(oldPath);
-            }
-        } else {
-            // copy single file
-            CopyObjectRequest copyReq = CopyObjectRequest.builder()
-                    .sourceBucket(getBucket())
-                    .sourceKey(path2Key(oldPath))
-                    .destinationBucket(getBucket())
-                    .destinationKey(path2Key(newPath))
-                    .build();
+            } else {
+                // copy single file
+                CopyObjectRequest copyReq = CopyObjectRequest.builder()
+                        .sourceBucket(getBucket())
+                        .sourceKey(path2Key(oldPath))
+                        .destinationBucket(getBucket())
+                        .destinationKey(path2Key(newPath))
+                        .build();
 
-            CompletableFuture<CopyObjectResponse> copyRes = s3.copyObject(copyReq);
-            copyRes.join();
+                CompletableFuture<CopyObjectResponse> copyRes = s3.copyObject(copyReq);
+                copyRes.join();
+            }
         }
     }
 

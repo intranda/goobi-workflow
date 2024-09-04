@@ -199,6 +199,9 @@ public class ProzesskopieForm implements Serializable {
     @Getter
     @Setter
     private String addToWikiField = "";
+    @Getter
+    @Setter
+    private boolean importantWikiField = false;
     private transient List<ConfigOpacCatalogue> catalogues;
     private List<String> catalogueTitles;
     private transient ConfigOpacCatalogue currentCatalogue;
@@ -697,26 +700,21 @@ public class ProzesskopieForm implements Serializable {
             this.myRdf = tempProcess.readMetadataAsTemplateFile();
 
             /* falls ein erstes Kind vorhanden ist, sind die Collectionen dafür */
-            try {
-                DocStruct colStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
+            DocStruct colStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
 
-                List<Metadata> firstChildMetadata =
-                        colStruct.getAllChildren().isEmpty() ? Collections.emptyList() : colStruct.getAllChildren().get(0).getAllMetadata();
-                fillTemplateFromMetadata(colStruct.getAllMetadata(), firstChildMetadata);
+            List<Metadata> firstChildMetadata =
+                    colStruct.getAllChildren() == null || colStruct.getAllChildren().isEmpty() ? Collections.emptyList() : colStruct.getAllChildren().get(0).getAllMetadata();
+            fillTemplateFromMetadata(colStruct.getAllMetadata(), firstChildMetadata);
 
-                removeCollections(colStruct);
+            removeCollections(colStruct);
+
+            if (colStruct.getAllChildren() != null) {
                 colStruct = colStruct.getAllChildren().get(0);
                 removeCollections(colStruct);
-            } catch (PreferencesException e) {
-                Helper.setFehlerMeldung("Error on creating process", e);
-                log.error("Error on creating process", e);
-            } catch (RuntimeException e) {
-                /*
-                 * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
-                 */
             }
         } catch (Exception e) {
-            Helper.setFehlerMeldung("Error on reading template-metadata ", e);
+            Helper.setFehlerMeldung("Error on reading template-metadata", e);
+            log.error("Error on reading template-metadata", e);
         }
 
         return "";
@@ -1215,7 +1213,7 @@ public class ProzesskopieForm implements Serializable {
     private void writeJournalEntry(LoginBean loginForm) {
         User user = loginForm.getMyBenutzer();
         JournalEntry logEntry =
-                new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), LogType.INFO, addToWikiField, EntryType.PROCESS);
+                new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), importantWikiField ? LogType.IMPORTANT_USER : LogType.USER, addToWikiField, EntryType.PROCESS);
         JournalManager.saveJournalEntry(logEntry);
         prozessKopie.getJournal().add(logEntry);
     }

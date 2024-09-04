@@ -2,6 +2,8 @@ package io.goobi.workflow.api.vocabulary;
 
 import de.sub.goobi.config.ConfigurationHelper;
 
+import javax.ws.rs.client.Invocation;
+
 public class VocabularyAPIManager {
     private static VocabularyAPIManager instance;
 
@@ -46,5 +48,9 @@ public class VocabularyAPIManager {
 
     public VocabularyRecordAPI vocabularyRecords() {
         return vocabularyRecordAPI;
+    }
+
+    public static Invocation.Builder setupBearerTokenAuthenticationIfPresent(Invocation.Builder builder) {
+        return builder.header("Authorization", "Bearer " + ConfigurationHelper.getInstance().getVocabularyServerToken());
     }
 }
