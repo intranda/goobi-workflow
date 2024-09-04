@@ -495,6 +495,8 @@ public @Data class Image {
                     return Type.video;
                 } else if (mimetype.startsWith("image/")) {
                     return Type.image;
+                } else if (mimetype.equals("application/pdf")) {
+                    return Type.image; //todo handle pdf type
                 }
             }
 
