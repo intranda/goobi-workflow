@@ -289,7 +289,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             }
             String mimeType = getMimeTypeFromFile(path);
-            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || "application/mxf".equals(mimeType)) {
+            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || "application/mxf".equals(mimeType)
+                    || "application/pdf".equals(mimeType)) {
                 return fileOk;
             }
             return false;
