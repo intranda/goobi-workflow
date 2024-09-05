@@ -34,7 +34,7 @@
                                     jsf:onclick="goobiWorkflowJS.updateSelectedThumbnail(this);"
                                     class="btn">
                                     <!-- IMAGE -->
-                                    <ui:fragment rendered="#{image.type == 'image'}">
+                                    <ui:fragment rendered="#{image.type == 'image' || image.type == 'pdf'}">
                                         <canvas    
                                         	style="width:#{Metadaten.thumbnailSize}px"                                         
                                             id="thumbnail-#{status.index}"
@@ -51,7 +51,7 @@
                                             src="#{HelperForm.servletPathWithHostAsUrl}/uii/template/img/goobi_3d_object_placeholder.png" />
                                     </ui:fragment>
                                     <!-- PLACEHOLDER -->
-                                    <ui:fragment rendered="#{image.type != 'image' and image.type != 'object' and  image.type != 'x3dom'}">
+                                    <ui:fragment rendered="#{image.type != 'image' and image.type != 'pdf'  and image.type != 'object' and  image.type != 'x3dom'}">
                                         <img 
                                             class="thumbnails__thumb-placeholder"
                                             src="#{HelperForm.servletPathWithHostAsUrl}/uii/template/img/thumbnail-placeholder.png" />

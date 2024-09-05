@@ -100,6 +100,7 @@ public class NIOFileUtils implements StorageProviderInterface {
     private static final String REGEX_PLY = "\\.[pP][lL][yY]";
     private static final String REGEX_STL = "\\.[sS][tT][lL]";
     private static final String REGEX_TIFF = "\\.[tT][iI][fF][fF]?";
+    private static final String REGEX_PDF = "(?i)\\.pdf";
     private static final String REGEX_X3D = "\\.[xX]3[dD]";
     private static final String REGEX_XML = "\\.[xX][mM][lL]";
 
@@ -245,6 +246,11 @@ public class NIOFileUtils implements StorageProviderInterface {
         return isAllowed;
     }
 
+    public static boolean checkPdfType(String name) {
+        String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+        return name.matches(prefix + REGEX_PDF);
+    }
+
     public static boolean check3DType(String name) {
         if (name.endsWith(".xml")) {
             return false;
@@ -261,6 +267,9 @@ public class NIOFileUtils implements StorageProviderInterface {
     public List<String> listDirNames(String folder) {
         return this.list(folder, folderFilter);
     }
+
+    public static final DirectoryStream.Filter<Path> imageOrPdfNameFilter =
+            path -> checkImageType(path.getFileName().toString()) || checkPdfType(path.toString());
 
     public static final DirectoryStream.Filter<Path> imageNameFilter = path -> checkImageType(path.getFileName().toString());
 
@@ -289,8 +298,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             }
             String mimeType = getMimeTypeFromFile(path);
-            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || "application/mxf".equals(mimeType)
-                    || "application/pdf".equals(mimeType)) {
+            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || "application/mxf".equals(mimeType)) {
                 return fileOk;
             }
             return false;
@@ -326,7 +334,7 @@ public class NIOFileUtils implements StorageProviderInterface {
     public static final DirectoryStream.Filter<Path> imageOrObjectNameFilter = new DirectoryStream.Filter<>() {
         @Override
         public boolean accept(Path path) throws IOException {
-            return imageNameFilter.accept(path) || objectNameFilter.accept(path) || multimediaNameFilter.accept(path);
+            return imageOrPdfNameFilter.accept(path) || objectNameFilter.accept(path) || multimediaNameFilter.accept(path);
         }
     };
 
