@@ -15,13 +15,6 @@
             <url>https://nexus.intranda.com/repository/maven-public</url>
         </repository>
     </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>io.goobi.vocabulary</groupId>
-            <artifactId>vocabulary-server-exchange</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-    </dependencies>
     <build>
         <plugins>
             <plugin>
