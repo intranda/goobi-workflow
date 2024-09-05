@@ -167,27 +167,34 @@ public class VocabularyRecordsBean implements Serializable {
         if (uploadedFile == null) {
             return "";
         }
-        String fileExtension = uploadedFile.getSubmittedFileName().substring(uploadedFile.getSubmittedFileName().lastIndexOf("."));
-        switch (fileExtension) {
-            case ".csv":
-                if (clearBeforeImport) {
-                    api.vocabularies().cleanImportCsv(this.vocabulary.getId(), uploadedFile);
-                } else {
-                    api.vocabularies().importCsv(this.vocabulary.getId(), uploadedFile);
-                }
-                break;
-            case ".xlsx":
-                if (clearBeforeImport) {
-                    api.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile);
-                } else {
-                    api.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile);
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Unrecognized file type: \"" + fileExtension + "\"");
+        try {
+            String fileExtension = uploadedFile.getSubmittedFileName().substring(uploadedFile.getSubmittedFileName().lastIndexOf("."));
+            switch (fileExtension) {
+                case ".csv":
+                    if (clearBeforeImport) {
+                        api.vocabularies().cleanImportCsv(this.vocabulary.getId(), uploadedFile);
+                    } else {
+                        api.vocabularies().importCsv(this.vocabulary.getId(), uploadedFile);
+                    }
+                    break;
+                case ".xlsx":
+                    if (clearBeforeImport) {
+                        api.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile);
+                    } else {
+                        api.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile);
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unrecognized file type: \"" + fileExtension + "\"");
+            }
+
+            return load(this.vocabulary);
+        } catch (APIException e) {
+            APIExceptionExtractor extractor = new APIExceptionExtractor(e);
+            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
         }
 
-        return load(this.vocabulary);
+        return "";
     }
 
     public void expandRecord(ExtendedVocabularyRecord record) {
