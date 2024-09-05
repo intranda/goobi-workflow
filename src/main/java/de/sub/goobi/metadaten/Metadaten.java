@@ -33,6 +33,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.UriBuilder;
 
+import de.intranda.digiverso.ocr.alto.model.structureclasses.logical.AltoDocument;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -3670,10 +3672,20 @@ public class Metadaten implements Serializable {
         return altoFile;
     }
 
+    private Optional<Path> getCurrentTxtPath() throws SwapException, IOException {
+        String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
+        Path txtFile = Paths.get(myProzess.getOcrTxtDirectory(), ocrFileNew + ".txt");
+        if (!StorageProvider.getInstance().isFileExists(txtFile)) {
+            txtFile = null;
+        }
+        return Optional.ofNullable(txtFile);
+    }
+
     public void saveAlto() {
         AltoChange[] changes = new Gson().fromJson(this.altoChanges, AltoChange[].class);
         try {
             AltoSaver.saveAltoChanges(getCurrentAltoPath(), changes);
+            replaceTxtFileIfPresent(getCurrentTxtPath());
             this.loadJsonAlto();
             FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, Helper.getTranslation("savedAlto"), null);
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
@@ -3682,6 +3694,14 @@ public class Metadaten implements Serializable {
             FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_ERROR, Helper.getTranslation("errorSavingAlto"), null);
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
         }
+    }
+
+    private void replaceTxtFileIfPresent(Optional<Path> currentTxtPath) throws SwapException, IOException, JDOMException {
+        if (currentTxtPath.isEmpty()) {
+            return;
+        }
+        AltoDocument alto = AltoDocument.getDocumentFromFile(new File(getCurrentAltoPath().toString()));
+        Files.write(currentTxtPath.get(), alto.getContent().getBytes());
     }
 
     public boolean isShowNamedEntityEditor() {

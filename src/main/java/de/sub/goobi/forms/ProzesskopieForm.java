@@ -1213,7 +1213,7 @@ public class ProzesskopieForm implements Serializable {
     private void writeJournalEntry(LoginBean loginForm) {
         User user = loginForm.getMyBenutzer();
         JournalEntry logEntry =
-                new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), importantWikiField ? LogType.IMPORTANT_USER : LogType.INFO, addToWikiField, EntryType.PROCESS);
+                new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), importantWikiField ? LogType.IMPORTANT_USER : LogType.USER, addToWikiField, EntryType.PROCESS);
         JournalManager.saveJournalEntry(logEntry);
         prozessKopie.getJournal().add(logEntry);
     }
