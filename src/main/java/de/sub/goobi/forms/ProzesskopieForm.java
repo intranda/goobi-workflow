@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.regex.PatternSyntaxException;
@@ -52,6 +53,8 @@ import javax.inject.Named;
 import javax.naming.NamingException;
 import javax.servlet.http.Part;
 
+import io.goobi.vocabulary.exchange.FieldDefinition;
+import io.goobi.vocabulary.exchange.VocabularySchema;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -457,11 +460,6 @@ public class ProzesskopieForm implements Serializable {
         /* Children durchlaufen und SelectItems erzeugen */
 
         if (!parameterList.isEmpty()) {
-            if (item.getBoolean("@multiselect", true)) { // NOSONAR
-                fa.setMultiselect(true);
-            } else {
-                fa.setMultiselect(false);
-            }
             fa.setSelectList(new ArrayList<>());
         }
 
@@ -478,11 +476,34 @@ public class ProzesskopieForm implements Serializable {
         }
 
         String vocabularyTitle = item.getString("@vocabulary");
+        Optional<String> filter = Optional.ofNullable(item.getString("@vocabulary-filter"));
+        Optional<String> filterQuery = Optional.empty();
         if (StringUtils.isNotBlank(vocabularyTitle)) {
             Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyTitle);
+            VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(vocabulary.getSchemaId());
+
+            if (filter.isPresent() && filter.get().contains("=")) {
+                String[] parts = filter.get().split("=");
+                String field = parts[0];
+                String value = parts[1];
+
+                String finalFieldName = field;
+                Optional<FieldDefinition> searchField = schema.getDefinitions().stream()
+                        .filter(d -> d.getName().equals(finalFieldName))
+                        .findFirst();
+
+                if (searchField.isEmpty()) {
+                    Helper.setFehlerMeldung("Field " + field + " not found in vocabulary " + vocabulary.getName());
+                    return fa;
+                }
+
+                filterQuery = Optional.of(searchField.get().getId() + ":" + value);
+            }
+
             List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance()
                     .vocabularyRecords()
                     .list(vocabulary.getId())
+                    .search(filterQuery)
                     .all()
                     .request()
                     .getContent();
@@ -492,6 +513,12 @@ public class ProzesskopieForm implements Serializable {
                             .sorted()
                             .map(v -> new SelectItem(v, v))
                             .collect(Collectors.toList()));
+        }
+
+        if (item.getBoolean("@multiselect", true)) { // NOSONAR
+            fa.setMultiselect(true);
+        } else {
+            fa.setMultiselect(false);
         }
         // TODO: FIX
         return fa;
