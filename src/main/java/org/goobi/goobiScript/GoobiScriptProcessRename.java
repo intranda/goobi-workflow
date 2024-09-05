@@ -34,6 +34,7 @@ import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
@@ -117,13 +118,31 @@ public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IG
 
         if (replacedTitle) {
             log.info("Proces title changed using GoobiScript for process with ID " + p.getId());
-            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                    "Process title changed from '" + p.getTitel() + " to  '" + processTitle + "' using GoobiScript.", username);
 
-            p.changeProcessTitle(processTitle);
-            gsr.setProcessTitle(processTitle);
-            ProcessManager.saveProcessInformation(p);
-            gsr.setResultMessage("Process title changed successfully.");
+            // duplicates
+
+            // invalid characters
+
+            String validateRegEx = ConfigurationHelper.getInstance().getProcessTitleValidationRegex();
+            if (!processTitle.matches(validateRegEx)) {
+                String message = Helper.getTranslation("UngueltigerTitelFuerVorgang");
+                gsr.setResultMessage(message);
+                gsr.setResultType(GoobiScriptResultType.ERROR);
+                return;
+            } else if (ProcessManager.countProcessTitle(processTitle, p.getProjekt().getInstitution()) != 0) {
+                String message =
+                        Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse");
+                gsr.setResultMessage(message);
+                gsr.setResultType(GoobiScriptResultType.ERROR);
+                return;
+            } else {
+                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
+                        "Process title changed from '" + p.getTitel() + " to  '" + processTitle + "' using GoobiScript.", username);
+                p.changeProcessTitle(processTitle);
+                gsr.setProcessTitle(processTitle);
+                ProcessManager.saveProcessInformation(p);
+                gsr.setResultMessage("Process title changed successfully.");
+            }
         } else {
             gsr.setResultMessage("Process title did not match.");
         }
