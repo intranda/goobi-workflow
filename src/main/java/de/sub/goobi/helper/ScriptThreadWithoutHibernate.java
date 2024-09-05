@@ -31,7 +31,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.jms.JMSException;
 import javax.naming.ConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +57,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import jakarta.jms.JMSException;
 import lombok.extern.log4j.Log4j2;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
@@ -68,8 +68,6 @@ public class ScriptThreadWithoutHibernate extends Thread {
     private JobTypesCache jobTypesCache;
     HelperSchritte hs = new HelperSchritte();
     private Step step;
-    public String rueckgabe = "";
-    public boolean cancel = false;
 
     public ScriptThreadWithoutHibernate(Step step) {
         this.step = step;
@@ -188,11 +186,6 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 this.hs.runHttpStep(this.step);
             }
         }
-    }
-
-    public void stopThread() {
-        this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
-        this.cancel = true;
     }
 
     public void addStepScriptsToExternalQueue(Step automaticStep) {

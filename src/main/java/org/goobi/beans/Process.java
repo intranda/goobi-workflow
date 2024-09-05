@@ -1560,9 +1560,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                 }
             }
             try {
-                List<Path> images = StorageProvider.getInstance().listFiles(getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
+                List<Path> images = StorageProvider.getInstance().listFiles(getImagesTifDirectory(true), NIOFileUtils.imageOrPdfNameFilter);
                 if (images == null || images.isEmpty()) {
-                    images = StorageProvider.getInstance().listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageNameFilter);
+                    images = StorageProvider.getInstance().listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageOrPdfNameFilter);
                 }
                 if (images != null && !images.isEmpty()) {
                     representativeImage = images.get(imageNo).toString();

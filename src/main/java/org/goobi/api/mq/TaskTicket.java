@@ -53,4 +53,21 @@ public class TaskTicket {
         this.taskType = taskType;
     }
 
+    /**
+     * Create a new ticket with all values cloned from another one.
+     *
+     * @param other other ticket to clone
+     */
+    public TaskTicket(TaskTicket other) {
+        setProcessId(other.processId);
+        setProcessName(other.processName);
+        setStepId(other.stepId);
+        setStepName(other.stepName);
+        setTaskType(other.taskType);
+        setQueueName(other.queueName);
+        setRetryCount(other.retryCount);
+        setNumberOfObjects(other.numberOfObjects);
+        setMessageId(other.messageId);
+        properties.putAll(other.properties);
+    }
 }

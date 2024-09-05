@@ -384,7 +384,7 @@ public class ProzesskopieFormTest extends AbstractTest {
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
         assertEquals("process_new1", form.prepare());
-        assertEquals(5, form.getStandardFields().size());
+        assertEquals(6, form.getStandardFields().size());
         assertTrue(form.getStandardFields().get("doctype").booleanValue());
     }
 

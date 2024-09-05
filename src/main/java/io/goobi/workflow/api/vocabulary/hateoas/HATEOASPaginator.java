@@ -10,6 +10,7 @@ import org.goobi.managedbeans.Paginator;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
@@ -20,6 +21,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static io.goobi.workflow.api.vocabulary.VocabularyAPIManager.setupBearerTokenAuthenticationIfPresent;
 
 public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResult<T>> implements Paginator<T> {
     public static final String NAVIGATE_PREVIOUS = "prev";
@@ -196,10 +199,11 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
 
     private void request(String url, Optional<Long> pageSize, Optional<Long> pageNumber) {
         url = updatePageAndSizeUrlParameters(url, pageSize, pageNumber, sortField, searchParameter);
-        try (Response response = client
+        Invocation.Builder builder = client
                 .target(url)
-                .request(MediaType.APPLICATION_JSON)
-                .get()) {
+                .request(MediaType.APPLICATION_JSON);
+        builder = setupBearerTokenAuthenticationIfPresent(builder);
+        try (Response response = builder.get()) {
             if (response.getStatus() / 100 != 2) {
                 throw new APIException(url, "GET", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
             }

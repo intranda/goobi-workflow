@@ -43,6 +43,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import javax.inject.Named;
 import javax.servlet.http.Part;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
@@ -143,7 +144,6 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     public void saveRecord(VocabularyRecord rec) {
-        long vocabularyId = rec.getVocabularyId();
         try {
             ExtendedVocabularyRecord newRecord = api.vocabularyRecords().save(rec);
             paginator.reload();
@@ -156,41 +156,50 @@ public class VocabularyRecordsBean implements Serializable {
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
             Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
-            // Reset vocabulary id (got cleared during save)
-            rec.setVocabularyId(vocabularyId);
             this.currentRecord = new ExtendedVocabularyRecord(rec);
         }
     }
 
-    public String uploadRecords() {
-        return RETURN_PAGE_UPLOAD;
+    public void download(String url) {
+        try {
+            VocabularyAPIManager.download(url);
+        } catch (IOException e) {
+            Helper.setFehlerMeldung(e.getMessage());
+        }
     }
 
     public String importRecords() {
         if (uploadedFile == null) {
             return "";
         }
-        String fileExtension = uploadedFile.getSubmittedFileName().substring(uploadedFile.getSubmittedFileName().lastIndexOf("."));
-        switch (fileExtension) {
-            case ".csv":
-                if (clearBeforeImport) {
-                    api.vocabularies().cleanImportCsv(this.vocabulary.getId(), uploadedFile);
-                } else {
-                    api.vocabularies().importCsv(this.vocabulary.getId(), uploadedFile);
-                }
-                break;
-            case ".xlsx":
-                if (clearBeforeImport) {
-                    api.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile);
-                } else {
-                    api.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile);
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Unrecognized file type: \"" + fileExtension + "\"");
+        try {
+            String fileExtension = uploadedFile.getSubmittedFileName().substring(uploadedFile.getSubmittedFileName().lastIndexOf("."));
+            switch (fileExtension) {
+                case ".csv":
+                    if (clearBeforeImport) {
+                        api.vocabularies().cleanImportCsv(this.vocabulary.getId(), uploadedFile);
+                    } else {
+                        api.vocabularies().importCsv(this.vocabulary.getId(), uploadedFile);
+                    }
+                    break;
+                case ".xlsx":
+                    if (clearBeforeImport) {
+                        api.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile);
+                    } else {
+                        api.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile);
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unrecognized file type: \"" + fileExtension + "\"");
+            }
+
+            return load(this.vocabulary);
+        } catch (APIException e) {
+            APIExceptionExtractor extractor = new APIExceptionExtractor(e);
+            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
         }
 
-        return load(this.vocabulary);
+        return "";
     }
 
     public void expandRecord(ExtendedVocabularyRecord record) {

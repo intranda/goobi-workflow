@@ -46,6 +46,10 @@ public abstract class AbstractJournal implements IJournal {
     @Setter
     protected List<JournalEntry> journal = new ArrayList<>();
 
+    @Getter
+    @Setter
+    protected boolean priorityComment = false;
+
     public abstract EntryType getEntryType();
 
     public abstract Integer getId();
@@ -60,7 +64,8 @@ public abstract class AbstractJournal implements IJournal {
             LoginBean loginForm = Helper.getLoginBean();
 
             JournalEntry entry =
-                    new JournalEntry(getId(), new Date(), loginForm.getMyBenutzer().getNachVorname(), LogType.USER, content, getEntryType());
+                    new JournalEntry(getId(), new Date(), loginForm.getMyBenutzer().getNachVorname(),
+                            priorityComment ? LogType.IMPORTANT_USER : LogType.USER, content, getEntryType());
 
             content = "";
 
@@ -244,7 +249,6 @@ public abstract class AbstractJournal implements IJournal {
             Helper.setFehlerMeldung("uploadFailed");
         }
     }
-
 
     /**
      * extract the filename for the uploaded file

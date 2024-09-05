@@ -73,6 +73,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
@@ -1246,7 +1247,7 @@ public class ExportMets {
     private void buildPDFMetadata(Document document, Path file, Element object) throws IOException {
 
         addObjectIdentifier(document, object, identifierLocal, file.getFileName().normalize().toString());
-        PDDocument doc = PDDocument.load(file.toFile());
+        PDDocument doc = Loader.loadPDF(file.toFile());
         addSignificantProperty(document, object, "PageNumber", String.valueOf(doc.getNumberOfPages()));
         Element objectCharacteristics = document.createElementNS(premisNamespace, elementObjectCharacteristics);
         object.appendChild(objectCharacteristics);

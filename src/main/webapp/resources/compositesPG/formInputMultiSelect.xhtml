@@ -18,8 +18,8 @@
         <composite:attribute name="style" />
         <composite:attribute name="var" default="var" />
         <composite:attribute name="itemValue" default="#{var.itemValue}" />
-        <composite:attribute name="itemLabel" default="#{var.itemLabel}" />        
-        <composite:attribute name="displayLabel" default="true" />        
+        <composite:attribute name="itemLabel" default="#{var.itemLabel}" />
+        <composite:attribute name="displayLabel" default="true" />
         <composite:attribute name="readonly" default="false" />
         <composite:attribute name="required" default="false" />
         <composite:attribute name="displayAsRequired" default="false" />
@@ -28,15 +28,15 @@
         <composite:attribute name="tabindex" default="0" />
         <composite:attribute name="focusOnLoad" default="false" />
         <composite:attribute name="execute" default="@this" />
-        <composite:attribute name="render" default="@form" />      
-                
+        <composite:attribute name="render" default="@form" />
+
         <composite:attribute name="hidePleaseSelectMessage" default="false" />
-        <composite:attribute name="onfocus" default="" />         
-         
+        <composite:attribute name="onfocus" default="" />
+
     </composite:interface>
 
     <composite:implementation>
-    
+
         <!-- ROW -->
         <div
             class="row"
@@ -44,9 +44,9 @@
 
             <!-- LABEL -->
             <div class="#{cc.attrs.classLeft}" tabindex="-1">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}"
                     labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
-                <composite:insertChildren />                        
+                <composite:insertChildren />
             </div>
             <!-- // LABEL -->
 
@@ -55,7 +55,7 @@
                 layout="block"
                 styleClass="#{cc.attrs.classRight}"
               >
-                
+
             <h:selectOneMenu
                 onfocus="#{cc.attrs.onfocus}"
                 id="#{cc.attrs.name}"
@@ -63,12 +63,12 @@
                 styleClass="#{cc.attrs.fieldStyle}"
                 value="#{cc.attrs.field.currentValue}"
                 required="false"
-                readonly="#{cc.attrs.readonly}">
+                disabled="#{cc.attrs.readonly}">
                 <f:ajax execute="#{cc.attrs.execute}" render="#{cc.attrs.render}" event="change" />
                 <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="#{cc.attrs.hidePleaseSelectMessage}" />
                 <f:selectItems value="#{cc.attrs.selectItems}" var="#{cc.attrs.var}" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{cc.attrs.itemValue}" />
             </h:selectOneMenu>
-    
+
             <x:dataList
                 value="#{cc.attrs.field.allSelectedValues}"
                 var="selection">
@@ -86,13 +86,11 @@
             <!-- Help messages, inline + warning -->
             <intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
 
-                
+
         </h:panelGroup>
         <!-- // CONTENT -->
-    </div>    
-		
+    </div>
+
     </composite:implementation>
 
 </ui:composition>
-
-

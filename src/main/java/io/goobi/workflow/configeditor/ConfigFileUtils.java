@@ -275,9 +275,7 @@ public abstract class ConfigFileUtils {
         if (!Paths.get(backupDirectory).toFile().exists()) {
             ConfigFileUtils.createDirectory(backupDirectory);
         }
-        if (!Paths.get(fileName).toFile().exists()) {
-            ConfigFileUtils.createFile(fileName);
-        }
+
         try {
             Charset charset = ConfigFileUtils.standardCharset;
             FileUtils.write(new File(fileName), content, charset);
@@ -286,15 +284,6 @@ public abstract class ConfigFileUtils {
             String message = "ConfigFileEditorAdministrationPlugin could not write file " + fileName;
             log.error(message);
             Helper.setFehlerMeldung("configFileEditor", message, "");
-        }
-    }
-
-    public static void createFile(String fileName) {
-        Path path = Paths.get(fileName);
-        try {
-            StorageProvider.getInstance().createFile(path);
-        } catch (IOException ioException) {
-            log.error("ConfigFileEditorAdministrationPlugin could not create file " + fileName);
         }
     }
 

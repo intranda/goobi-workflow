@@ -103,6 +103,15 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
   });
   let tooltipTimeOut;
 
+  // close tooltip when the trigger element is clicked
+  // this avoids tooltips on dropdown triggers obscuring dropdown content
+  element.addEventListener('click', (event) => {
+    event.preventDefault;
+    event.stopPropagation;
+
+    hideAllTooltips();
+  });
+
   ['mouseenter', 'focusin'].forEach((eventType) => {
     element.addEventListener(eventType, (event) => {
       event.preventDefault;

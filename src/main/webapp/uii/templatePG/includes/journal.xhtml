@@ -24,32 +24,38 @@
         -->
 
         <script type="text/javascript">
-        /*
-            function switchExpanded( id ) {
-                console.log(1)
-                console.log( "called by: " + id );
-                var x = document.getElementById( id ).getAttribute( "aria-expanded" );
-                console.log( x )
-                if ( x == "true" ) {
-                    x = "false"
-                }
-                else {
-                    x = "true"
-                }
-                document.getElementById( id ).setAttribute( "aria-expanded", x );
-                                    }
-        */
-        </script>
+									/*
+									    function switchExpanded( id ) {
+									        console.log(1)
+									        console.log( "called by: " + id );
+									        var x = document.getElementById( id ).getAttribute( "aria-expanded" );
+									        console.log( x )
+									        if ( x == "true" ) {
+									            x = "false"
+									        }
+									        else {
+									            x = "true"
+									        }
+									        document.getElementById( id ).setAttribute( "aria-expanded", x );
+									                            }
+									 */
+								</script>
 
         <!-- Get box title -->
         <c:if test="#{NavigationForm.uiStatus['toggleJournal'] == null or NavigationForm.uiStatus['toggleJournal'] == '' }">
-            <c:set var="boxTitle" value="#{msgs.processLog}"/>
+            <c:set
+                var="boxTitle"
+                value="#{msgs.processLog}" />
         </c:if>
         <c:if test="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload'}">
-            <c:set var="boxTitle" value="#{msgs.process_log_fileView}"/>
+            <c:set
+                var="boxTitle"
+                value="#{msgs.process_log_fileView}" />
         </c:if>
         <c:if test="#{NavigationForm.uiStatus['toggleJournal'] == 'imageComments'}">
-            <c:set var="boxTitle" value="#{msgs.imageComments}"/>
+            <c:set
+                var="boxTitle"
+                value="#{msgs.imageComments}" />
         </c:if>
 
         <intranda:box
@@ -90,9 +96,10 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showDebugMessages"
                                             class="dropdown-item">
-                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_debug']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span
+                                                class="fa #{NavigationForm.uiStatus['process_log_level_debug']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <span>
-                                            <h:outputText value="#{msgs.process_log_showDebugMessages}" />
+                                                <h:outputText value="#{msgs.process_log_showDebugMessages}" />
                                             </span>
                                             <x:updateActionListener
                                                 property="#{NavigationForm.uiStatus['process_log_level_debug']}"
@@ -104,9 +111,10 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showFileMessages"
                                             class="dropdown-item">
-                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_file']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span
+                                                class="fa #{NavigationForm.uiStatus['process_log_level_file']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <span>
-                                            <h:outputText value="#{msgs.process_log_showFileMessages}" />
+                                                <h:outputText value="#{msgs.process_log_showFileMessages}" />
                                             </span>
                                             <x:updateActionListener
                                                 property="#{NavigationForm.uiStatus['process_log_level_file']}"
@@ -118,7 +126,8 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showInfoMessages"
                                             class="dropdown-item">
-                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_info']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span
+                                                class="fa #{NavigationForm.uiStatus['process_log_level_info']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showInfoMessages}" />
                                             </span>
@@ -133,7 +142,8 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showUserMessages"
                                             class="dropdown-item">
-                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_user']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span
+                                                class="fa #{NavigationForm.uiStatus['process_log_level_user']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showUserMessages}" />
                                             </span>
@@ -145,9 +155,25 @@
                                     <li class="dropdonw-item">
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
+                                            jsf:id="showUserImportantMessages"
+                                            class="dropdown-item">
+                                            <span
+                                                class="fa #{NavigationForm.uiStatus['process_log_level_important']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span>
+                                                <h:outputText value="#{msgs.process_log_showUserImportantMessages}" />
+                                            </span>
+                                            <x:updateActionListener
+                                                property="#{NavigationForm.uiStatus['process_log_level_important']}"
+                                                value="#{not NavigationForm.uiStatus['process_log_level_important']}" />
+                                        </button>
+                                    </li>
+                                    <li class="dropdonw-item">
+                                        <button
+                                            jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showWarnMessages"
                                             class="dropdown-item">
-                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_warn']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span
+                                                class="fa #{NavigationForm.uiStatus['process_log_level_warn']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showWarnMessages}" />
                                             </span>
@@ -162,7 +188,8 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showErrorMessages"
                                             class="dropdown-item">
-                                            <span class="fa #{NavigationForm.uiStatus['process_log_level_error']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            <span
+                                                class="fa #{NavigationForm.uiStatus['process_log_level_error']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showErrorMessages}" />
                                             </span>
@@ -229,32 +256,34 @@
 
             </intranda:boxTitle>
 
-                <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null}">
-                    <div
-                        class="gw-table-fixed #{NavigationForm.uiStatus['journalBig']?'journal-big':''}"
-                        tabindex="0"
-                        data-scrolldown="true">
-                        <h:panelGroup rendered="#{bean.journal.size()>0}">
-                            <table
-                                class="table table-hover table-bordered pt-2 pb-2">
-                                <ui:repeat
-                                    var="entry"
-                                    value="#{bean.journal}"
-                                    varStatus="row">
-                                    <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
-                                        <tr class="first-row">
-                                            <td>
-                                                <h:outputText
-                                                    value="#{entry.formattedCreationDate}"
-                                                    styleClass="log_color_#{entry.type.title}">
-                                                </h:outputText>
-                                                <br />
-                                                <h:outputText
-                                                    value="#{msgs[entry.userName]}"
-                                                    styleClass="log_color_#{entry.type.title}" />
-                                            </td>
-                                            <td>
-                                                <div class="d-flex">
+            <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null}">
+                <div
+                    class="gw-table-fixed #{NavigationForm.uiStatus['journalBig']?'journal-big':''}"
+                    tabindex="0"
+                    data-scrolldown="true">
+                    <h:panelGroup rendered="#{bean.journal.size()>0}">
+                        <table class="table table-hover table-bordered pt-2 pb-2">
+                            <ui:repeat
+                                var="entry"
+                                value="#{bean.journal}"
+                                varStatus="row">
+                                <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
+                                    <tr class="first-row">
+                                        <td>
+                                            <h:outputText
+                                                value="#{entry.formattedCreationDate}"
+                                                styleClass="log_color_#{entry.type.title}">
+                                            </h:outputText>
+                                            <br />
+                                            <h:outputText
+                                                value="#{msgs[entry.userName]}"
+                                                styleClass="log_color_#{entry.type.title}" />
+                                        </td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <ui:fragment rendered="#{entry.type.title == 'important'}">
+                                                    <span class="my-auto me-1 log_color_#{entry.type.title} fa fa-exclamation-triangle" />
+                                                </ui:fragment>
                                                 <h:outputText
                                                     value="#{entry.formattedContent}"
                                                     styleClass="log_color_#{entry.type.title}"
@@ -282,128 +311,145 @@
                                                         <span class="fa fa-trash-o" />
                                                     </button>
                                                 </h:panelGroup>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </h:panelGroup>
-                                </ui:repeat>
-                            </table>
-                        </h:panelGroup>
-                    </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </h:panelGroup>
+                            </ui:repeat>
+                        </table>
+                    </h:panelGroup>
+                </div>
 
-                    <div class="processLog__footer">
-                        <div class="d-flex p-4 pb-2 border-top">
-                            <div class="col-md-3">
+                <div class="processLog__footer">
+                    <div class="d-flex p-4 pb-2 border-top">
+                        <div class="col-md-3">
                             <h:outputText
                                 styleClass="flex-label"
                                 value="#{msgs.process_log_firstContent}:" />
-                            </div>
-                            <div class="col-md-9">
-                                <h:inputText
-                                    id="addToTextArea"
-                                    styleClass="form-control"
-                                    pt:aria-label="#{msgs.process_log_firstContent}"
-                                    onkeypress="return submitEnter('addToLog',event)"
-                                    value="#{bean.content}" />
-                            </div>
                         </div>
-
-                        <div class="d-flex p-4 pt-2">
-                            <div class="col-md-3">
-                            	<h:outputText
-                                	value="#{msgs.fileUpload}:" />
-                            </div>
-                            <div class="col-md-9 d-flex">
-                                    <div>
-                                        <h:inputFile
-                                            id="thirdtab_fileupload3"
-                                            pt:aria-label="#{msgs.fileUpload}"
-                                            value="#{bean.uploadedFile}"
-                                            storage="file"
-                                            required="false">
-                                            <f:ajax listener="#{bean.uploadFile}" />
-                                        </h:inputFile>
-                                        <!--
-                                        <intranda:formHelp content="#{msgs.help_import_FileUpload}" />
-                                        -->
-                                        <h:selectOneRadio
-                                            id="folderSelection"
-                                            value="#{bean.uploadFolder}"
-                                            styleClass="select-radio select-radio-horizontal"
-                                            rendered="#{showFolderSelection}">
-                                            <f:selectItem
-                                                pt:styleClass="focusable"
-                                                itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
-                                                itemValue="intern" />
-                                            <f:selectItem
-                                                itemClass="focusable"
-                                                itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
-                                                itemValue="export" />
-                                        </h:selectOneRadio>
-                                    </div>
-                                    <button
-                                        id="addToLog"
-                                        type="submit"
-                                        class="btn btn-primary-400 ms-auto"
-                                        jsf:action="#{bean.addJournalEntry}">
-                                        <h:outputText value="#{msgs.nachrichtHinzufuegen}" />
-                                    </button>
-                            </div>
+                        <div class="col-md-9">
+                            <h:inputText
+                                id="addToTextArea"
+                                styleClass="form-control"
+                                pt:aria-label="#{msgs.process_log_firstContent}"
+                                onkeypress="return submitEnter('addToLog',event)"
+                                value="#{bean.content}" />
                         </div>
                     </div>
-                </ui:fragment>
-                <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload'}">
-                    <h:panelGroup id="fileList">
-                        <div
-                            class="#{NavigationForm.uiStatus['journalBig']?'':''}"
-                            style="overflow: auto; width: auto; #{NavigationForm.uiStatus['journalBig']?'min-height: 330px;':'height: 330px;'}">
-                            <table
-                                style="width: 100%"
-                                class="table table-hover table-bordered">
-                                <ui:repeat
-                                    var="entry"
-                                    value="#{bean.filesInSelectedFolder}"
-                                    varStatus="row">
-                                    <tr>
-                                        <td>
-                                            <!-- file name -->
-                                            <h:outputText value="#{entry.file.fileName}">
-                                            </h:outputText>
 
-                                        </td>
-
-                                        <td class="gw-width8">
-                                            <!-- delete button, removed for some folder -->
-                                            <button
-                                                jsf:id="deleteFile2"
-                                                jsf:rendered="#{bean.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
-                                                class="btn btn-blank"
-                                                style="color: #333;"
-                                                jsf:action="#{bean.deleteFile(entry)}"
-                                                title="#{msgs.deleteFile}">
-                                                <span class="fa fa-trash-o" />
-                                            </button>
-                                            <!-- download button -->
-                                            <button
-                                                jsf:id="downloadFile"
-                                                class="btn btn-blank"
-                                                style="color: #333;"
-                                                jsf:action="#{bean.downloadFile(entry)}"
-                                                title="#{msgs.downloadFile}">
-                                                <span class="fa fa-download" />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </ui:repeat>
-                            </table>
+                    <div class="d-flex p-4 pt-2">
+                        <div class="col-md-3">
+                            <h:outputText value="#{msgs.fileUpload}:" />
                         </div>
-                    </h:panelGroup>
+                        <div class="col-md-9 d-flex">
+                            <div>
+                                <h:inputFile
+                                    id="thirdtab_fileupload3"
+                                    pt:aria-label="#{msgs.fileUpload}"
+                                    value="#{bean.uploadedFile}"
+                                    storage="file"
+                                    required="false">
+                                    <f:ajax listener="#{bean.uploadFile}" />
+                                </h:inputFile>
+                                <!--
+                                        <intranda:formHelp content="#{msgs.help_import_FileUpload}" />
+                                        -->
+                                <h:selectOneRadio
+                                    id="folderSelection"
+                                    value="#{bean.uploadFolder}"
+                                    styleClass="select-radio select-radio-horizontal"
+                                    rendered="#{showFolderSelection}">
+                                    <f:selectItem
+                                        pt:styleClass="focusable"
+                                        itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
+                                        itemValue="intern" />
+                                    <f:selectItem
+                                        itemClass="focusable"
+                                        itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
+                                        itemValue="export" />
+                                </h:selectOneRadio>
+                            </div>
 
 
-                </ui:fragment>
-                <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']=='imageComments'}">
-                     <ui:include src="imageComments.xhtml" />
-                </ui:fragment>
+                        </div>
+                    </div>
+                    <div class="d-flex p-4 pt-2">
+                        <div class="col-md-3">
+                            <h:outputText value="#{msgs.process_log_file_priorityComment}:" />
+                        </div>
+                        <div class="col-md-9 d-flex">
+                            <div>
+                                <h:selectBooleanCheckbox
+                                    id="priorityCheck"
+                                    styleClass="form-check-input"
+                                    value="#{bean.priorityComment}"
+                                    pt:aria-label="#{msgs.process_log_file_priorityComment}" />
+                            </div>
+
+                            <button
+                                id="addToLog"
+                                type="submit"
+                                class="btn btn-primary-400 ms-auto"
+                                jsf:action="#{bean.addJournalEntry}">
+                                <h:outputText value="#{msgs.nachrichtHinzufuegen}" />
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </ui:fragment>
+            <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload'}">
+                <h:panelGroup id="fileList">
+                    <div
+                        class="#{NavigationForm.uiStatus['journalBig']?'':''}"
+                        style="overflow: auto; width: auto; #{NavigationForm.uiStatus['journalBig']?'min-height: 330px;':'height: 330px;'}">
+                        <table
+                            style="width: 100%"
+                            class="table table-hover table-bordered">
+                            <ui:repeat
+                                var="entry"
+                                value="#{bean.filesInSelectedFolder}"
+                                varStatus="row">
+                                <tr>
+                                    <td>
+                                        <!-- file name -->
+                                        <h:outputText value="#{entry.file.fileName}">
+                                        </h:outputText>
+
+                                    </td>
+
+                                    <td class="gw-width8">
+                                        <!-- delete button, removed for some folder -->
+                                        <button
+                                            jsf:id="deleteFile2"
+                                            jsf:rendered="#{bean.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
+                                            class="btn btn-blank"
+                                            style="color: #333;"
+                                            jsf:action="#{bean.deleteFile(entry)}"
+                                            title="#{msgs.deleteFile}">
+                                            <span class="fa fa-trash-o" />
+                                        </button>
+                                        <!-- download button -->
+                                        <button
+                                            jsf:id="downloadFile"
+                                            class="btn btn-blank"
+                                            style="color: #333;"
+                                            jsf:action="#{bean.downloadFile(entry)}"
+                                            title="#{msgs.downloadFile}">
+                                            <span class="fa fa-download" />
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                        </table>
+                    </div>
+                </h:panelGroup>
+
+
+            </ui:fragment>
+            <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']=='imageComments'}">
+                <ui:include src="imageComments.xhtml" />
+            </ui:fragment>
 
         </intranda:box>
     </composite:implementation>

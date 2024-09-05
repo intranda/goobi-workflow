@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.regex.PatternSyntaxException;
@@ -52,6 +53,8 @@ import javax.inject.Named;
 import javax.naming.NamingException;
 import javax.servlet.http.Part;
 
+import io.goobi.vocabulary.exchange.FieldDefinition;
+import io.goobi.vocabulary.exchange.VocabularySchema;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -70,6 +73,7 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.UserRole;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -198,6 +202,9 @@ public class ProzesskopieForm implements Serializable {
     @Getter
     @Setter
     private String addToWikiField = "";
+    @Getter
+    @Setter
+    private boolean importantWikiField = false;
     private transient List<ConfigOpacCatalogue> catalogues;
     private List<String> catalogueTitles;
     private transient ConfigOpacCatalogue currentCatalogue;
@@ -242,7 +249,6 @@ public class ProzesskopieForm implements Serializable {
 
     private List<Project> availableProjects = new ArrayList<>();
 
-    @Getter
     private List<ProcessProperty> configuredProperties;
 
     @Getter
@@ -454,11 +460,6 @@ public class ProzesskopieForm implements Serializable {
         /* Children durchlaufen und SelectItems erzeugen */
 
         if (!parameterList.isEmpty()) {
-            if (item.getBoolean("@multiselect", true)) { // NOSONAR
-                fa.setMultiselect(true);
-            } else {
-                fa.setMultiselect(false);
-            }
             fa.setSelectList(new ArrayList<>());
         }
 
@@ -475,11 +476,34 @@ public class ProzesskopieForm implements Serializable {
         }
 
         String vocabularyTitle = item.getString("@vocabulary");
+        Optional<String> filter = Optional.ofNullable(item.getString("@vocabulary-filter"));
+        Optional<String> filterQuery = Optional.empty();
         if (StringUtils.isNotBlank(vocabularyTitle)) {
             Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyTitle);
+            VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(vocabulary.getSchemaId());
+
+            if (filter.isPresent() && filter.get().contains("=")) {
+                String[] parts = filter.get().split("=");
+                String field = parts[0];
+                String value = parts[1];
+
+                String finalFieldName = field;
+                Optional<FieldDefinition> searchField = schema.getDefinitions().stream()
+                        .filter(d -> d.getName().equals(finalFieldName))
+                        .findFirst();
+
+                if (searchField.isEmpty()) {
+                    Helper.setFehlerMeldung("Field " + field + " not found in vocabulary " + vocabulary.getName());
+                    return fa;
+                }
+
+                filterQuery = Optional.of(searchField.get().getId() + ":" + value);
+            }
+
             List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance()
                     .vocabularyRecords()
                     .list(vocabulary.getId())
+                    .search(filterQuery)
                     .all()
                     .request()
                     .getContent();
@@ -489,6 +513,12 @@ public class ProzesskopieForm implements Serializable {
                             .sorted()
                             .map(v -> new SelectItem(v, v))
                             .collect(Collectors.toList()));
+        }
+
+        if (item.getBoolean("@multiselect", true)) { // NOSONAR
+            fa.setMultiselect(true);
+        } else {
+            fa.setMultiselect(false);
         }
         // TODO: FIX
         return fa;
@@ -657,6 +687,8 @@ public class ProzesskopieForm implements Serializable {
         this.standardFields.put("preferences", true);
         this.standardFields.put("images", true);
         standardFields.put("fileUpload", true);
+        standardFields.put("processtitle", true);
+
         this.additionalFields = new ArrayList<>();
         this.tifHeaderDocumentname = "";
         this.tifHeaderImagedescription = "";
@@ -695,27 +727,21 @@ public class ProzesskopieForm implements Serializable {
             this.myRdf = tempProcess.readMetadataAsTemplateFile();
 
             /* falls ein erstes Kind vorhanden ist, sind die Collectionen dafür */
-            try {
-                DocStruct colStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
+            DocStruct colStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
 
-                List<Metadata> firstChildMetadata =
-                        colStruct.getAllChildren().isEmpty() ? Collections.emptyList() : colStruct.getAllChildren().get(0).getAllMetadata();
-                fillTemplateFromMetadata(colStruct.getAllMetadata(), firstChildMetadata);
+            List<Metadata> firstChildMetadata =
+                    colStruct.getAllChildren() == null || colStruct.getAllChildren().isEmpty() ? Collections.emptyList() : colStruct.getAllChildren().get(0).getAllMetadata();
+            fillTemplateFromMetadata(colStruct.getAllMetadata(), firstChildMetadata);
 
-                removeCollections(colStruct);
+            removeCollections(colStruct);
+
+            if (colStruct.getAllChildren() != null) {
                 colStruct = colStruct.getAllChildren().get(0);
                 removeCollections(colStruct);
-            } catch (PreferencesException e) {
-                Helper.setFehlerMeldung("Error on creating process", e);
-                log.error("Error on creating process", e);
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-                /*
-                 * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
-                 */
             }
         } catch (Exception e) {
-            Helper.setFehlerMeldung("Error on reading template-metadata ", e);
+            Helper.setFehlerMeldung("Error on reading template-metadata", e);
+            log.error("Error on reading template-metadata", e);
         }
 
         return "";
@@ -828,7 +854,8 @@ public class ProzesskopieForm implements Serializable {
         /* keine Collektion ausgewählt */
         if (this.standardFields.get("collections") && getDigitalCollections().size() == 0) {
             valide = false;
-            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorNoCollection"));
+            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " "
+                    + Helper.getTranslation("ProcessCreationErrorNoCollection"));
         }
 
         /*
@@ -1047,7 +1074,8 @@ public class ProzesskopieForm implements Serializable {
                                 Metadata md = this.ughHelper.getMetadata(myTempStruct, mdt);
                                 if (md != null) {
                                     md.setValue(field.getWert());
-                                } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())//if the md could not be found, warn!
+                                } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())
+                                //if the md could not be found, warn!
                                 {
                                     Helper.setFehlerMeldung(this.ughHelper.lastErrorMessage);
                                     String strError = mdt.getName() + " : " + field.getWert();
@@ -1212,7 +1240,7 @@ public class ProzesskopieForm implements Serializable {
     private void writeJournalEntry(LoginBean loginForm) {
         User user = loginForm.getMyBenutzer();
         JournalEntry logEntry =
-                new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), LogType.INFO, addToWikiField, EntryType.PROCESS);
+                new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), importantWikiField ? LogType.IMPORTANT_USER : LogType.USER, addToWikiField, EntryType.PROCESS);
         JournalManager.saveJournalEntry(logEntry);
         prozessKopie.getJournal().add(logEntry);
     }
@@ -1586,7 +1614,8 @@ public class ProzesskopieForm implements Serializable {
      */
 
     public void setOpacKatalog(String opacKatalog) {
-        //currentCatalogue is set to null in prepare(), but is required in opacAuswerten(). So reset it here if it is null or if the catalog name (this.opacKatalog) has changed
+        // currentCatalogue is set to null in prepare(), but is required in opacAuswerten().
+        // So reset it here if it is null or if the catalog name (this.opacKatalog) has changed
         if (this.currentCatalogue == null || !this.opacKatalog.equals(opacKatalog)) {
             this.opacKatalog = opacKatalog;
             currentCatalogue = null;
@@ -2103,5 +2132,29 @@ public class ProzesskopieForm implements Serializable {
             String two = o.foldername + "_" + o.getTooltip();
             return one.compareTo(two);
         }
+    }
+
+    public List<ProcessProperty> getConfiguredProperties() {
+        List<ProcessProperty> properties = new ArrayList<>();
+
+        for (ProcessProperty prop : configuredProperties) {
+            boolean match = true;
+            if (!prop.getProcessCreationConditions().isEmpty()) {
+                // check if condition matches
+                match = false;
+                for (StringPair sp : prop.getProcessCreationConditions()) {
+                    for (ProcessProperty other : configuredProperties) {
+                        if (other.getName().equals(sp.getOne()) && sp.getTwo().equals(other.getValue())) {
+                            match = true;
+                        }
+                    }
+                }
+            }
+            if (match) {
+                properties.add(prop);
+            }
+        }
+
+        return properties;
     }
 }

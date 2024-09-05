@@ -33,6 +33,7 @@
                             value="#{property.value}"
                             readonly="#{property.showProcessGroupAccessCondition == 'READ'}"
                             binding="#{value}">
+                            <f:ajax execute="@this" render="propertyBox" />
                         </x:inputText>
                         <intranda:formHelp msgFor="#{value.clientId}" content="#{msgs.helpPropertyValue}" />
                     </div>
@@ -55,6 +56,7 @@
                             styleClass="form-control"
                             value="#{property.value}"
                             readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
+                            <f:ajax execute="@this" render="propertyBox" />
                         </x:inputTextarea>
                         <h:message
                             for="textareaValue"
@@ -81,6 +83,7 @@
                             value="#{property.value}"
                             readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
                             <f:validateLongRange minimum="0" />
+                            <f:ajax execute="@this" render="propertyBox" />
                         </x:inputText>
                         <h:message
                             for="number"
@@ -103,7 +106,7 @@
                         <h:selectOneMenu
                             id="select"
                             styleClass="form-control form-select"
-                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}"
+                            disabled="#{property.showProcessGroupAccessCondition == 'READ'}"
                             value="#{property.value}"
                             binding="#{select}">
                             <f:selectItems
@@ -111,6 +114,7 @@
                                 var="propertys"
                                 itemLabel="#{propertys}"
                                 itemValue="#{propertys}" />
+                                <f:ajax execute="@this" render="propertyBox" />
                         </h:selectOneMenu>
                         <intranda:formHelp msgFor="#{select.clientId}" content="#{msgs.helpPropertyValue}" />
                     </div>
@@ -131,12 +135,13 @@
                             value="#{property.valueList}"
                             size="5"
                             styleClass="form-control"
-                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
+                            disabled="#{property.showProcessGroupAccessCondition == 'READ'}">
                             <f:selectItems
                                 value="#{property.possibleValues}"
                                 var="propertys"
                                 itemLabel="#{propertys}"
                                 itemValue="#{propertys}" />
+                                <f:ajax execute="@this" render="propertyBox" />
                         </h:selectManyListbox>
                         <h:message
                             for="selectmany"
@@ -159,7 +164,8 @@
                         <h:selectBooleanCheckbox
                             id="boolean"
                             value="#{property.booleanValue}"
-                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
+                            disabled="#{property.showProcessGroupAccessCondition == 'READ'}">
+                            <f:ajax execute="@this" render="propertyBox" />
                         </h:selectBooleanCheckbox>
                         <h:message
                             for="boolean"
@@ -189,6 +195,7 @@
                             yearRange="-100:+100"
                             pattern="#{property.pattern}">
                             <f:passThroughAttribute name="autocomplete" value="off" />
+                            <f:ajax execute="@this" render="propertyBox" />
                         </p:calendar>
                         <h:message
                             for="date"
@@ -213,7 +220,9 @@
                             forceId="true"
                             styleClass="form-control"
                             value="#{property.value}"
-                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}"></x:inputTextarea>
+                            readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
+                            <f:ajax execute="@this" render="propertyBox" />
+                        </x:inputTextarea>
                         <h:message
                             for="valueArea"
                             showDetail="true"

@@ -165,8 +165,7 @@
                                 </div>
                             </ui:fragment>
 
-
-                        <ui:fragment rendered="#{Metadaten.image.type == 'image'}">
+                        <ui:fragment rendered="#{Metadaten.image.type == 'image' or Metadaten.image.type == 'pdf'}">
                             <!-- MAIN IMAGE CONTAINER -->
                             <div
                                 id="mainImage"
@@ -180,7 +179,7 @@
                         </ui:fragment>
                     </div>
                     <!-- IMAGE CONTROLS -->
-                    <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and Metadaten.image.type == 'image'}">
+                    <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and (Metadaten.image.type == 'image' or Metadaten.image.type == 'pdf')}">
                         <ui:include src="inc_me_image-imageControls.xhtml" />
                     </ui:fragment>
                 </ui:fragment>

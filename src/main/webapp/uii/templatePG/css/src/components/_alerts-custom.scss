@@ -14,8 +14,39 @@
   --bs-warning-bg-subtle: var(--clr-action);
   --bs-warning-border-subtle: var(--clr-action);
   --bs-warning-text-emphasis: var(--clr-white);
-  border: 0;
+  --before-width: 1.5rem;
+  background: white;
+  border: 1px solid var(--alert-color);
+  color: black;
   margin-bottom: 3px;
   padding-block: 0.875rem;
-  padding-inline: 0.5rem;
+  padding-inline: calc(var(--before-width) + 0.5rem) 0.5rem;
+  position: relative;
+  &::before {
+    align-items: center;
+    // background: var(--alert-color);
+    color: var(--alert-color);
+    display: flex;
+    font: normal normal normal 14px/1 FontAwesome;
+    height: 100%;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: var(--before-width);
+  }
+}
+
+.alert-danger {
+  --alert-color: var(--clr-hot);
+  &::before {
+    content: "\f071"; // exclamation-triangle
+  }
+}
+
+.alert-info {
+  --alert-color: var(--clr-primary-400);
+  &::before {
+    content: "\f05a"; // info-circle
+  }
 }

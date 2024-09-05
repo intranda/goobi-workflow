@@ -21,7 +21,7 @@
 		<composite:attribute name="classLeft" default="col-12 col-md-3" />
 		<composite:attribute name="classRight" default="col-12 col-md-9" />
 		<composite:attribute name="tabindex" default="0" />
-        <composite:attribute name="displayLabel" default="true" />        
+        <composite:attribute name="displayLabel" default="true" />
 		<composite:attribute
 			name="validationMethod"
 			default="null"
@@ -39,9 +39,9 @@
 
             <!-- LABEL -->
             <div class="#{cc.attrs.classLeft}" tabindex="-1">
-                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}" 
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}"
                     labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
-                <composite:insertChildren />                        
+                <composite:insertChildren />
             </div>
             <!-- // LABEL -->
 
@@ -52,7 +52,7 @@
                     styleClass="#{cc.attrs.fieldStyle}"
                     value="#{cc.attrs.field}"
                     tabindex="#{cc.attrs.tabindex}"
-                    readonly="#{cc.attrs.readonly}"
+                    disabled="#{cc.attrs.readonly}"
                     validator="#{cc.attrs.validationMethod}"
                     idForValidator="#{cc.attrs.idForValidator}">
                     <f:selectItem
@@ -74,5 +74,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

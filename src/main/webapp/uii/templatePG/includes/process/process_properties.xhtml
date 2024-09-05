@@ -456,7 +456,7 @@
 											id="select"
 											styleClass="form-select"
 											required="false"
-											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+											disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
 											value="#{myprocess_item.value}">
 											<f:selectItems
 												value="#{myprocess_item.possibleValues}"
@@ -483,7 +483,7 @@
 											size="5"
 											styleClass="form-control"
 											required="false"
-											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+											disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
 											<f:selectItems
 												value="#{myprocess_item.possibleValues}"
 												var="myprocess_items"
@@ -506,7 +506,7 @@
 										<h:selectBooleanCheckbox
 											id="boolean"
 											value="#{myprocess_item.booleanValue}"
-											readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+											disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
 										</h:selectBooleanCheckbox>
 										<intranda:formHelp content="#{msgs.helpPropertyValue}" msgFor="boolean" />
 									</div>
@@ -522,11 +522,11 @@
 									</div>
 									<div class="col-12 col-md-9">
 										 <p:calendar
-                                            id="date" 
-                                            value="#{myprocess_item.dateValue}" 
+                                            id="date"
+                                            value="#{myprocess_item.dateValue}"
                                             locale="#{SpracheForm.locale}"
                                             readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"
-                                            styleClass="ff-goobi" 
+                                            styleClass="ff-goobi"
                                             mask="true"
                                             navigator="true"
                                             yearRange="-100:+100"

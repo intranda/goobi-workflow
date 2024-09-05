@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
+import org.goobi.production.cli.helper.StringPair;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -79,6 +80,11 @@ public class ProcessProperty implements IProperty, Serializable {
     @Getter
     @Setter
     private AccessCondition showProcessGroupAccessCondition;
+
+    @Getter
+    @Setter
+    private List<StringPair> processCreationConditions = new ArrayList<>();
+
     @Getter
     @Setter
     private Processproperty prozesseigenschaft;
