@@ -71,12 +71,12 @@ public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IG
         super.prepare(processes, command, parameters);
 
         String missingParameter = "Missing parameter: ";
-        if (StringUtils.isBlank(parameters.get(SEARCH))) {
+        if (StringUtils.isEmpty(parameters.get(SEARCH))) {
             Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, SEARCH);
             return Collections.emptyList();
         }
 
-        if (StringUtils.isBlank(parameters.get(REPLACE))) {
+        if (parameters.get(REPLACE) == null) {
             Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, REPLACE);
             return Collections.emptyList();
         }
@@ -110,17 +110,16 @@ public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IG
                 processTitle = processTitle.replace(search, replace);
                 replacedTitle = true;
             }
-        } else {
-            if (processTitle.equalsIgnoreCase(search)) {
-                processTitle = replace;
-                replacedTitle = true;
-            }
+        } else if (processTitle.equalsIgnoreCase(search)) {
+            processTitle = replace;
+            replacedTitle = true;
         }
 
         if (replacedTitle) {
             log.info("Proces title changed using GoobiScript for process with ID " + p.getId());
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                     "Process title changed from '" + p.getTitel() + " to  '" + processTitle + "' using GoobiScript.", username);
+
             p.changeProcessTitle(processTitle);
             gsr.setProcessTitle(processTitle);
             ProcessManager.saveProcessInformation(p);
