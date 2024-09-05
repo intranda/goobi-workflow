@@ -43,6 +43,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import javax.inject.Named;
 import javax.servlet.http.Part;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
@@ -159,8 +160,12 @@ public class VocabularyRecordsBean implements Serializable {
         }
     }
 
-    public String uploadRecords() {
-        return RETURN_PAGE_UPLOAD;
+    public void download(String url) {
+        try {
+            VocabularyAPIManager.download(url);
+        } catch (IOException e) {
+            Helper.setFehlerMeldung(e.getMessage());
+        }
     }
 
     public String importRecords() {
