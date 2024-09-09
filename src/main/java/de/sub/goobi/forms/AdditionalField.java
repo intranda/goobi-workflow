@@ -186,11 +186,15 @@ public class AdditionalField {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
             return LocalDateTime.from(formatter.parse(wert));
         } else {
-            return LocalDateTime.now();
+            return null;
         }
     }
 
     public void setValueAsDateTime(LocalDateTime date) {
+        if (date == null) {
+            return;
+        }
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
         wert = formatter.format(date);
     }
@@ -200,7 +204,7 @@ public class AdditionalField {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             return LocalDate.from(formatter.parse(wert));
         } else {
-            return LocalDate.now();
+            return null;
         }
     }
 
