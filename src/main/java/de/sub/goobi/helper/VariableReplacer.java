@@ -37,6 +37,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
@@ -145,6 +146,7 @@ public class VariableReplacer {
     private static final String REGEX_PRODUCT = PREFIX + "product\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_TEMPLATE = PREFIX + "template\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_PROCESS = PREFIX + "process\\.([^)}]+?)" + SUFFIX;
+    private static final String REGEX_PROCESSES = PREFIX + "processes\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DATETIME = PREFIX + "datetime\\.([^)}]+?)" + SUFFIX;
 
@@ -493,6 +495,20 @@ public class VariableReplacer {
                     break;
                 }
             }
+        }
+
+        for (MatchResult r : findRegexMatches(REGEX_PROCESSES, inString)) {
+            String propertyTitle = r.group(1);
+            List<String> newValues = new LinkedList<>();
+            List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
+            for (ProcessProperty pe : ppList) {
+                if (pe.getName().equalsIgnoreCase(propertyTitle)) {
+                    if (pe.getValue() != null) {
+                        newValues.add(pe.getValue());
+                    }
+                }
+            }
+            inString = inString.replace(r.group(), String.join(separator, newValues));
         }
 
         for (MatchResult r : findRegexMatches(REGEX_DB_META, inString)) {
