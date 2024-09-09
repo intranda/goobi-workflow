@@ -86,7 +86,7 @@
     <Name>ResourceLink</Name>
     <language name="de">Link zur Ressource</language>
     <language name="en">Resource link</language>
-  </MetadataType>  
+  </MetadataType>
   <MetadataType>
     <Name>Sublocation</Name>
     <language name="de">Besitzende Institution</language>
@@ -426,17 +426,13 @@
     <Name>shelfmarkarchiveimageset</Name>
     <language name="de">Signatur des Archivierungsimagesets</language>
     <language name="en">Shelfmark of archive imageset</language>
-    <language name="es">Signatura del juego de imágenes para la
-            preservación
-    </language>
+    <language name="es">Signatura del juego de imágenes para la preservación</language>
   </MetadataType>
   <MetadataType>
     <Name>imagedescr</Name>
     <language name="de">ImageDescription (TIFF-Header)</language>
     <language name="en">image description of tiff header</language>
-    <language name="es">Descripción de la imagen (etiqueta embebida
-            del TIFF)
-    </language>
+    <language name="es">Descripción de la imagen (etiqueta embebida del TIFF)</language>
   </MetadataType>
   <MetadataType>
     <Name>datedigit</Name>
@@ -705,11 +701,8 @@
   <MetadataType>
     <Name>CreatorsAllOrigin</Name>
     <language name="de">Alle Autoren u. Beteiligte (orig.)</language>
-    <language name="en">All authors and participants (original
-            version)
-    </language>
-    <language name="es">Todos los autores y participantes (orig.)
-    </language>
+    <language name="en">All authors and participants (original version)</language>
+    <language name="es">Todos los autores y participantes (orig.)</language>
   </MetadataType>
   <MetadataType>
     <Name>TSL_ATS</Name>
@@ -1026,7 +1019,7 @@
     <language name="en">Statement of responsibility</language>
   </MetadataType>
 
-<!-- archive management fields -->
+  <!-- archive management fields -->
   <MetadataType>
     <Name>NodeId</Name>
     <language name="de">ID des Knotens</language>
@@ -1127,6 +1120,142 @@
     <language name="de">Verzeichnungsgrundsätze</language>
     <language name="en">Convention Declaration</language>
   </MetadataType>
+  <MetadataType>
+    <Name>ArchivistNote</Name>
+    <language name="de">Information des Bearbeiters</language>
+    <language name="en">Archivist's Note</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>RepositoryLabel</Name>
+    <language name="de">Name</language>
+    <language name="en">Name</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>RepositoryAddress</Name>
+    <language name="de">Adresse</language>
+    <language name="en">Address</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>RepositoryLink</Name>
+    <language name="de">Link</language>
+    <language name="en">Link</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>RepositoryLinkName</Name>
+    <language name="de">Link Name</language>
+    <language name="en">Link Name</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>Quantity</Name>
+    <language name="de">Anzahl</language>
+    <language name="en">Quantity</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>Unittype</Name>
+    <language name="de">Einheit</language>
+    <language name="en">Unit</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>AcquisitionMethod</Name>
+    <language name="de">Methode</language>
+    <language name="en">Method</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>AcquisitionAgent</Name>
+    <language name="de">Akteur</language>
+    <language name="en">Agent</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>AcquisitionNotes</Name>
+    <language name="de">Beschreibung</language>
+    <language name="en">Notes</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>Date</Name>
+    <language name="de">Datum</language>
+    <language name="en">Date</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>Title</Name>
+    <language name="de">Titel</language>
+    <language name="en">Title</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>Person</Name>
+    <language name="de">Person</language>
+    <language name="en">Person</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>DescriptionDates</Name>
+    <language name="de">Datum der Verzeichnung</language>
+    <language name="en">Date(s) of description</language>
+  </MetadataType>
+
+
+  <Group>
+    <Name>AccrualsGroup</Name>
+    <language name="de">Informationen über voraussichtliche Ergänzungen</language>
+    <language name="en">anticipated additions</language>
+    <metadata DefaultDisplay="true" num="1o">Title</metadata>
+    <metadata DefaultDisplay="true" num="1o">Description</metadata>
+    <metadata DefaultDisplay="true" num="1o">Date</metadata>
+  </Group>
+
+  <Group>
+    <Name>InventoryHistoryGroup</Name>
+    <language name="de">Aufbewahrung der Materialien</language>
+    <language name="en">custody of the materials</language>
+    <metadata DefaultDisplay="true" num="1o">AcquisitionMethod</metadata>
+    <metadata DefaultDisplay="true" num="1o">AcquisitionAgent</metadata>
+    <metadata DefaultDisplay="true" num="1o">AcquisitionNotes</metadata>
+  </Group>
+
+  <Group>
+    <Name>physdesc</Name>
+    <language name="de">Ausmaß und Medium</language>
+    <language name="en">Standardised Extent and Medium</language>
+    <metadata DefaultDisplay="true" num="1o">Quantity</metadata>
+    <metadata DefaultDisplay="true" num="1o">Unittype</metadata>
+  </Group>
+  <Group>
+    <Name>Repository</Name>
+    <language name="de">Repository</language>
+    <language name="en">Repository</language>
+    <metadata DefaultDisplay="true" num="1o">RepositoryLabel</metadata>
+    <metadata DefaultDisplay="true" num="1o">RepositoryAddress</metadata>
+    <metadata DefaultDisplay="true" num="1o">RepositoryLink</metadata>
+    <metadata DefaultDisplay="true" num="1o">RepositoryLinkName</metadata>
+  </Group>
+  <Group>
+    <Name>AccessRestrictGroup</Name>
+    <language name="de">Zugriffsbeschränkung</language>
+    <language name="en">Restriction on access</language>
+    <metadata DefaultDisplay="true" num="1o">RestrictionOnAccessLicense</metadata>
+    <metadata DefaultDisplay="true" num="1o">Date</metadata>
+  </Group>
+  <Group>
+    <Name>OtherFindAidGroup</Name>
+    <language name="de">Findhilfsmittel</language>
+    <language name="en">Other Finding Aid</language>
+    <metadata DefaultDisplay="true" num="1o">Type</metadata>
+    <metadata DefaultDisplay="true" num="*">OtherFindAid</metadata>
+  </Group>
+  <Group>
+    <Name>OriginalsLocationGroup</Name>
+    <language name="de">Aufbewahrungsort der Originale</language>
+    <language name="en">Location of Originals</language>
+    <metadata DefaultDisplay="true" num="1o">Person</metadata>
+    <metadata DefaultDisplay="true" num="1o">shelfmarksource</metadata>
+    <metadata DefaultDisplay="true" num="1o">RepositoryLink</metadata>
+  </Group>
+  <Group>
+    <Name>CopyLocationGroup</Name>
+    <language name="de">Alternative Form</language>
+    <language name="en">Alternative Form</language>
+    <metadata DefaultDisplay="true" num="1o">Person</metadata>
+    <metadata DefaultDisplay="true" num="1o">shelfmarksource</metadata>
+    <metadata DefaultDisplay="true" num="1o">RepositoryLink</metadata>
+  </Group>
 
 
   <!-- Subjects start -->
@@ -1172,7 +1301,7 @@
   </MetadataType>
   <!-- Subjects end -->
 
-<!-- archive management fields -->
+  <!-- archive management fields -->
   <DocStrctType topStruct="true">
     <Name>Folder</Name>
     <language name="de">Ordner</language>
@@ -1196,7 +1325,7 @@
     <metadata num="*">Additions</metadata>
     <metadata num="1o">Arrangement</metadata>
     <metadata num="1o">UseAndReproductionLicense</metadata>
-    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">UseRestriction</metadata>
     <metadata num="1o">DocLanguage</metadata>
     <metadata num="1o">FontType</metadata>
@@ -1220,6 +1349,16 @@
     <metadata num="1o">_electronicEdition</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="*">ArchivistNote</metadata>
+    <metadata num="*">DescriptionDates</metadata>
+    <group num="*">Repository</group>
+    <group num="*">physdesc</group>
+    <group num="*">OriginalsLocationGroup</group>
+    <group num="*">CopyLocationGroup</group>
+    <group num="*">OtherFindAidGroup</group>
+    <group num="*">InventoryHistoryGroup</group>
+    <group num="*">AccrualsGroup</group>
+    <group num="*">AccessRestrictGroup</group>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>File</Name>
@@ -1244,7 +1383,7 @@
     <metadata num="*">Additions</metadata>
     <metadata num="1o">Arrangement</metadata>
     <metadata num="1o">UseAndReproductionLicense</metadata>
-    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">UseRestriction</metadata>
     <metadata num="1o">DocLanguage</metadata>
     <metadata num="1o">FontType</metadata>
@@ -1268,8 +1407,18 @@
     <metadata num="1o">_electronicEdition</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="*">ArchivistNote</metadata>
+    <metadata num="*">DescriptionDates</metadata>
+    <group num="*">Repository</group>
+    <group num="*">physdesc</group>
+    <group num="*">OriginalsLocationGroup</group>
+    <group num="*">CopyLocationGroup</group>
+    <group num="*">OtherFindAidGroup</group>
+    <group num="*">InventoryHistoryGroup</group>
+    <group num="*">AccrualsGroup</group>
+    <group num="*">AccessRestrictGroup</group>
   </DocStrctType>
-    <DocStrctType topStruct="true">
+  <DocStrctType topStruct="true">
     <Name>Picture</Name>
     <language name="de">Bild</language>
     <language name="en">Picture</language>
@@ -1292,7 +1441,7 @@
     <metadata num="*">Additions</metadata>
     <metadata num="1o">Arrangement</metadata>
     <metadata num="1o">UseAndReproductionLicense</metadata>
-    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">UseRestriction</metadata>
     <metadata num="1o">DocLanguage</metadata>
     <metadata num="1o">FontType</metadata>
@@ -1316,8 +1465,18 @@
     <metadata num="1o">_electronicEdition</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="*">ArchivistNote</metadata>
+    <metadata num="*">DescriptionDates</metadata>
+    <group num="*">Repository</group>
+    <group num="*">physdesc</group>
+    <group num="*">OriginalsLocationGroup</group>
+    <group num="*">CopyLocationGroup</group>
+    <group num="*">OtherFindAidGroup</group>
+    <group num="*">InventoryHistoryGroup</group>
+    <group num="*">AccrualsGroup</group>
+    <group num="*">AccessRestrictGroup</group>
   </DocStrctType>
-    <DocStrctType topStruct="true">
+  <DocStrctType topStruct="true">
     <Name>Audio</Name>
     <language name="de">Audio</language>
     <language name="en">Audio</language>
@@ -1340,7 +1499,7 @@
     <metadata num="*">Additions</metadata>
     <metadata num="1o">Arrangement</metadata>
     <metadata num="1o">UseAndReproductionLicense</metadata>
-    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">UseRestriction</metadata>
     <metadata num="1o">DocLanguage</metadata>
     <metadata num="1o">FontType</metadata>
@@ -1364,8 +1523,18 @@
     <metadata num="1o">_electronicEdition</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="*">ArchivistNote</metadata>
+    <metadata num="*">DescriptionDates</metadata>
+    <group num="*">Repository</group>
+    <group num="*">physdesc</group>
+    <group num="*">OriginalsLocationGroup</group>
+    <group num="*">CopyLocationGroup</group>
+    <group num="*">OtherFindAidGroup</group>
+    <group num="*">InventoryHistoryGroup</group>
+    <group num="*">AccrualsGroup</group>
+    <group num="*">AccessRestrictGroup</group>
   </DocStrctType>
-    <DocStrctType topStruct="true">
+  <DocStrctType topStruct="true">
     <Name>Video</Name>
     <language name="de">Video</language>
     <language name="en">Video</language>
@@ -1388,7 +1557,7 @@
     <metadata num="*">Additions</metadata>
     <metadata num="1o">Arrangement</metadata>
     <metadata num="1o">UseAndReproductionLicense</metadata>
-    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">UseRestriction</metadata>
     <metadata num="1o">DocLanguage</metadata>
     <metadata num="1o">FontType</metadata>
@@ -1412,8 +1581,18 @@
     <metadata num="1o">_electronicEdition</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="*">ArchivistNote</metadata>
+    <metadata num="*">DescriptionDates</metadata>
+    <group num="*">Repository</group>
+    <group num="*">physdesc</group>
+    <group num="*">OriginalsLocationGroup</group>
+    <group num="*">CopyLocationGroup</group>
+    <group num="*">OtherFindAidGroup</group>
+    <group num="*">InventoryHistoryGroup</group>
+    <group num="*">AccrualsGroup</group>
+    <group num="*">AccessRestrictGroup</group>
   </DocStrctType>
-    <DocStrctType topStruct="true">
+  <DocStrctType topStruct="true">
     <Name>Other</Name>
     <language name="de">Sonstiges</language>
     <language name="en">Other</language>
@@ -1436,7 +1615,7 @@
     <metadata num="*">Additions</metadata>
     <metadata num="1o">Arrangement</metadata>
     <metadata num="1o">UseAndReproductionLicense</metadata>
-    <metadata num="1o">RestrictionOnAccessLicense</metadata>    
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">UseRestriction</metadata>
     <metadata num="1o">DocLanguage</metadata>
     <metadata num="1o">FontType</metadata>
@@ -1460,6 +1639,16 @@
     <metadata num="1o">_electronicEdition</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="*">ArchivistNote</metadata>
+    <metadata num="*">DescriptionDates</metadata>
+    <group num="*">Repository</group>
+    <group num="*">physdesc</group>
+    <group num="*">OriginalsLocationGroup</group>
+    <group num="*">CopyLocationGroup</group>
+    <group num="*">OtherFindAidGroup</group>
+    <group num="*">InventoryHistoryGroup</group>
+    <group num="*">AccrualsGroup</group>
+    <group num="*">AccessRestrictGroup</group>
   </DocStrctType>
 
   <DocStrctType>
@@ -1678,8 +1867,8 @@
     <metadata num="*">PhysicalLocation</metadata>
     <metadata num="*">StatementOfResponsibility</metadata>
     <metadata num="*">Abstract</metadata>
-    <metadata num="1o">ResourceLink</metadata>  
-    <metadata num="1o">Copyright</metadata>  
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>Appendix</Name>
@@ -3608,7 +3797,7 @@
     <language name="en">Page</language>
     <language name="rusdml">page</language>
     <language name="es">Página</language>
-<!--     <allowedchildtype>area</allowedchildtype> -->
+    <!--     <allowedchildtype>area</allowedchildtype> -->
     <metadata num="1m">logicalPageNumber</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="1m">physPageNumber</metadata>
@@ -3641,7 +3830,7 @@
   <!-- deactivated pare area in metadata editor. Uncomment this to enable it.
        If area is used, it must be used for all pages within a book. 
        Pages and areas cannot not be mixed within a record, otherwise the record cannot be imported into the DDB  -->
-<!--  
+  <!--  
   <DocStrctType>
     <Name>area</Name>
     <language name="de">Region</language>
@@ -4199,10 +4388,11 @@
         <identifierConditionField>/DE-588/</identifierConditionField>
         <!-- run the regex and keep the value of $1-->
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
-        <!-- If <conditionField> is used, <conditionValue> must be used as well. Checks if the the subfield definied in conditionField is filled and matches the regular expression of conditionValue. If this is not the case, the metadata will not created.
+        <!-- If <conditionField> is used, <conditionValue> must be used as well. Checks if the the subfield definied in conditionField is filled and matches the regular expression of conditionValue.
+        If this is not the case, the metadata will not created.
                      -->
-        <conditionField/>
-        <conditionValue/>
+        <conditionField />
+        <conditionValue />
         <!-- run the regex and keep the value of $1 -->
         <fieldReplacement>s/[\xAC\x98\x9C]//g</fieldReplacement>
         <separateEntries>true</separateEntries>
@@ -4307,7 +4497,7 @@
           <fieldInd2>any</fieldInd2>
         </field>
         <separateEntries>false</separateEntries>
-        <separator/>
+        <separator />
       </Metadata>
       <Metadata>
         <Name>PlaceOfPublication</Name>
@@ -6215,10 +6405,10 @@
         <Name>Periodical</Name>
         <leader6>a</leader6>
         <leader7>s</leader7>
-        <leader19/>
-        <field007_0/>
-        <field007_1/>
-        <field008_21/>
+        <leader19 />
+        <field007_0 />
+        <field007_1 />
+        <field008_21 />
       </DocStruct>
       <DocStruct>
         <Name>Periodical</Name>
@@ -6589,7 +6779,7 @@
         <WriteXPath>./mods:mods/mods:location/#mods:shelfLocator
         </WriteXPath>
       </Metadata>
-         <Metadata>
+      <Metadata>
         <InternalName>ResourceLink</InternalName>
         <WriteXPath>./mods:mods/mods:location/#mods:url</WriteXPath>
       </Metadata>
@@ -6772,12 +6962,12 @@
         <InternalName>URN</InternalName>
         <WriteXPath>./mods:mods/#mods:identifier[@type='urn']</WriteXPath>
       </Metadata>
-      
+
       <Metadata>
         <InternalName>Copyright</InternalName>
         <WriteXPath>./mods:mods/#mods:note[@type='creation/production credits']</WriteXPath>
-      </Metadata>      
-      
+      </Metadata>
+
       <!-- Persons start -->
       <Metadata>
         <InternalName>Addressee</InternalName>
@@ -7181,7 +7371,7 @@
         <WriteXPath>./mods:mods/mods:extension/intranda:intranda/#intranda:directionRTL</WriteXPath>
       </Metadata>
 
-<!-- archive management fields -->
+      <!-- archive management fields -->
 
       <Metadata>
         <InternalName>NodeId</InternalName>
@@ -7211,7 +7401,7 @@
         <InternalName>AquisitionInformation</InternalName>
         <WriteXPath>./mods:mods/#mods:note[@type='acquisition']</WriteXPath>
       </Metadata>
-        <Metadata>
+      <Metadata>
         <InternalName>AppraisalInformation</InternalName>
         <WriteXPath>./mods:mods/mods:extension/#intranda:appraisal</WriteXPath>
       </Metadata>
@@ -7222,7 +7412,7 @@
       <Metadata>
         <InternalName>Provenience</InternalName>
         <WriteXPath>./mods:mods/#mods:note[@type='ownership']</WriteXPath>
-      </Metadata>      
+      </Metadata>
       <Metadata>
         <InternalName>Arrangement</InternalName>
         <WriteXPath>./mods:mods/#mods:classification[@displayLabel='arrangement']</WriteXPath>
@@ -7271,6 +7461,162 @@
         <InternalName>ConventionDeclaration</InternalName>
         <WriteXPath>./mods:mods/mods:physicalDescription/#mods:note[@type='organization']</WriteXPath>
       </Metadata>
+
+      <Metadata>
+        <InternalName>ArchivistNote</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/#intranda:note[@type='archivists note']</WriteXPath>
+      </Metadata>
+
+      <Metadata>
+        <InternalName>DescriptionDates</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/intranda:intranda/#intranda:date[@type='description']</WriteXPath>
+      </Metadata>
+
+      <Group>
+        <InternalName>Repository</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/#intranda:repository</WriteXPath>
+        <Metadata>
+          <InternalName>RepositoryLabel</InternalName>
+          <WriteXPath>./#intranda:label</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>RepositoryAddress</InternalName>
+          <WriteXPath>./#intranda:address</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>RepositoryLink</InternalName>
+          <WriteXPath>./#intranda:link</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>RepositoryLinkName</InternalName>
+          <WriteXPath>./#intranda:name</WriteXPath>
+        </Metadata>
+      </Group>
+
+      <Group>
+        <InternalName>physdesc</InternalName>
+        <WriteXPath>./mods:mods/#mods:physicalDescription</WriteXPath>
+        <Metadata>
+          <InternalName>Quantity</InternalName>
+          <WriteXPath>./#mods:extent</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>Unittype</InternalName>
+          <WriteXPath>./mods:extent/@unit</WriteXPath>
+        </Metadata>
+      </Group>
+
+      <Group>
+        <InternalName>OriginalsLocationGroup</InternalName>
+        <WriteXPath>./mods:mods/#mods:location[@displayLabel='originals']</WriteXPath>
+        <Metadata>
+          <InternalName>shelfmarksource</InternalName>
+          <WriteXPath>./#mods:shelfLocator</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>RepositoryLink</InternalName>
+          <WriteXPath>./mods:url</WriteXPath>
+        </Metadata>
+      </Group>
+
+      <Group>
+        <InternalName>CopyLocationGroup</InternalName>
+        <WriteXPath>./mods:mods/#mods:location[@displayLabel='alternative form']</WriteXPath>
+        <Metadata>
+          <InternalName>shelfmarksource</InternalName>
+          <WriteXPath>./#mods:shelfLocator</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>RepositoryLink</InternalName>
+          <WriteXPath>./mods:url</WriteXPath>
+        </Metadata>
+      </Group>
+
+      <Group>
+        <InternalName>OtherFindAidGroup</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/#intranda:findaid</WriteXPath>
+        <Metadata>
+          <InternalName>Type</InternalName>
+          <WriteXPath>./#intranda:type</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>OtherFindAid</InternalName>
+          <WriteXPath>./intranda:directory</WriteXPath>
+        </Metadata>
+      </Group>
+
+      <Group>
+        <InternalName>InventoryHistoryGroup</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/#intranda:inventoryHistory</WriteXPath>
+        <Metadata>
+          <InternalName>AcquisitionMethod</InternalName>
+          <WriteXPath>./#intranda:method</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>AcquisitionAgent</InternalName>
+          <WriteXPath>./intranda:agent</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>AcquisitionNotes</InternalName>
+          <WriteXPath>./intranda:note</WriteXPath>
+        </Metadata>
+      </Group>
+
+      <Group>
+        <InternalName>InventoryHistoryGroup</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/#intranda:inventoryHistory</WriteXPath>
+        <Metadata>
+          <InternalName>AcquisitionMethod</InternalName>
+          <WriteXPath>./#intranda:method</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>AcquisitionAgent</InternalName>
+          <WriteXPath>./intranda:agent</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>AcquisitionNotes</InternalName>
+          <WriteXPath>./intranda:note</WriteXPath>
+        </Metadata>
+      </Group>
+
+      <Group>
+        <InternalName>AccrualsGroup</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/#intranda:accruals</WriteXPath>
+        <Metadata>
+          <InternalName>Title</InternalName>
+          <WriteXPath>./#intranda:title</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>Description</InternalName>
+          <WriteXPath>./intranda:description</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>Date</InternalName>
+          <WriteXPath>./intranda:date</WriteXPath>
+        </Metadata>
+      </Group>
+
+      <Group>
+        <InternalName>AccessRestrictGroup</InternalName>
+        <WriteXPath>./mods:mods/mods:originInfo[@eventType='publication']/#mods:dateOther[@encoding='iso8601'][@point='end']</WriteXPath>
+        <Metadata>
+          <InternalName>RestrictionOnAccessLicense</InternalName>
+          <WriteXPath>./@type</WriteXPath>
+        </Metadata>
+        <Metadata>
+          <InternalName>Date</InternalName>
+          <WriteXPath>.</WriteXPath>
+        </Metadata>
+      </Group>
+      
+      <Group>
+        <InternalName>AccessRestrictGroup</InternalName>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='restriction on access']</WriteXPath>
+        <Metadata>
+          <InternalName>RestrictionOnAccessLicense</InternalName>
+          <WriteXPath>.</WriteXPath>
+        </Metadata>
+      </Group>
 
       <!-- Docstructs -->
       <DocStruct>
@@ -7329,9 +7675,6 @@
         <InternalName>Periodical</InternalName>
         <MetsType>periodical</MetsType>
       </DocStruct>
-      <!--DocStruct> <InternalName>Series</InternalName> <MetsType>Series</MetsType>
-				</DocStruct> <DocStruct> <InternalName>SerialVolume</InternalName> <MetsType>SerialVolume</MetsType>
-				</DocStruct -->
       <DocStruct>
         <InternalName>Prepage</InternalName>
         <MetsType>prepage</MetsType>
