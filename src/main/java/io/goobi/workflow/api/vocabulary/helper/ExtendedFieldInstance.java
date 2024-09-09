@@ -1,5 +1,6 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
+import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.FieldInstance;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -33,7 +35,10 @@ public class ExtendedFieldInstance extends FieldInstance {
     private Function<Long, List<ExtendedVocabularyRecord>> recordsResolver = this::getAllRecords;
     private Function<Long, FieldDefinition> definitionResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getDefinition;
     private Function<Long, FieldType> typeResolver = VocabularyAPIManager.getInstance().fieldTypes()::get;
-    private Supplier<String> languageSupplier = Helper.getLanguageBean().getLocale()::getLanguage;
+    private Supplier<String> languageSupplier = () -> Optional.ofNullable(Helper.getLanguageBean())
+            .map(SpracheForm::getLocale)
+            .map(Locale::getLanguage)
+            .orElse(null);
 
     private FieldDefinition definition;
     private FieldType type;
