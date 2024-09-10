@@ -63,6 +63,12 @@ public class APIExceptionExtractor {
             case RecordValidationMissingRequiredFields:
                 orderedParameters = List.of("missingFieldNames");
                 break;
+            case RecordImportHeaderIssues:
+                orderedParameters = List.of("undefinedFields", "missingFields");
+                break;
+            case RecordImportFieldCountIssue:
+                orderedParameters = List.of("expectedSize", "realSize");
+                break;
             case RecordImportUnsupportedExcelCellType:
                 orderedParameters = List.of("cellType");
                 break;
