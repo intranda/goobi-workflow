@@ -8,6 +8,7 @@ import io.goobi.vocabulary.exchange.FieldType;
 import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
+import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -168,7 +169,19 @@ public class ExtendedFieldInstance extends FieldInstance {
     public void setFieldValue(String value) {
         getValues().clear();
         FieldValue fieldValue = addFieldValue();
-        fieldValue.getTranslations().forEach(t -> t.setValue(value));
+        if (definition.getReferenceVocabularyId() == null) {
+            fieldValue.getTranslations().forEach(t -> t.setValue(value));
+        } else {
+            try {
+                fieldValue.getTranslations().forEach(t -> t.setValue(String.valueOf(Integer.parseInt(value))));
+            } catch (NumberFormatException e) {
+                recordsResolver.apply(this.definition.getReferenceVocabularyId()).stream()
+                        .filter(r -> r.getMainValue().equals(value))
+                        .findFirst()
+                        .map(VocabularyRecord::getId)
+                        .ifPresent(v -> fieldValue.getTranslations().forEach(t -> t.setValue(String.valueOf(v))));
+            }
+        }
     }
 
     private String extractValue(FieldInstance field, String language) {
