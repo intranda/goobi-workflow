@@ -32,7 +32,7 @@ services:
       MYSQL_PASSWORD: goobi
     volumes:
       - type: bind
-        source: ./Goobi/install/db/goobi_blank.sql
+        source: ./install/db/goobi_blank.sql
         target: /docker-entrypoint-initdb.d/goobi_blank.sql
       - type: volume
         source: goobi_dbdata
