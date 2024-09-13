@@ -170,6 +170,10 @@ public class SendMail {
             return config.getString("/configuration/smtpSenderAddress", null);
         }
 
+        public String getSmptPort() {
+            return config.getString("/configuration/smtpPort", "25");
+        }
+
         public String getApiUrl() {
             return config.getString("/apiUrl", null);
         }
@@ -261,7 +265,7 @@ public class SendMail {
                 String cancelStepUrl = config.getApiUrl() + "/step/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + URLEncoder.encode(step.getTitel(), StandardCharsets.UTF_8.toString()) + "/" + deactivateStepToken;
                 String cancelProjectUrl = config.getApiUrl() + "/project/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString())
-                + "/" + StringEscapeUtils.escapeHtml4(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
+                        + "/" + StringEscapeUtils.escapeHtml4(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
                 String cancelAllUrl = config.getApiUrl() + "/all/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + deactivateAllToken;
 
@@ -483,6 +487,7 @@ public class SendMail {
         Properties properties = new Properties();
         properties.setProperty("mail.transport.protocol", "smtp");
         properties.setProperty("mail.smtp.auth", "true");
+        properties.setProperty("mail.smtp.port", "25");
         properties.setProperty("mail.smtp.host", config.getSmtpServer());
         int port;
         if (config.isSmtpUseStartTls()) {
