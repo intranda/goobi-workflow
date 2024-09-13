@@ -321,79 +321,70 @@
                 </div>
 
                 <div class="processLog__footer">
-                    <div class="d-flex p-4 pb-2 border-top">
-                        <div class="col-md-3">
+                    <div class="form-row border-top">
+                        <div class="form-label">
                             <h:outputText
                                 styleClass="flex-label"
                                 value="#{msgs.process_log_firstContent}:" />
                         </div>
-                        <div class="col-md-9">
-                            <h:inputText
-                                id="addToTextArea"
-                                styleClass="form-control"
-                                pt:aria-label="#{msgs.process_log_firstContent}"
-                                onkeypress="return submitEnter('addToLog',event)"
-                                value="#{bean.content}" />
+                        <div class="form-input">
+                            <div class="input-group">
+                                <h:inputText
+                                    id="addToTextArea"
+                                    styleClass="form-control"
+                                    pt:aria-label="#{msgs.process_log_firstContent}"
+                                    onkeypress="return submitEnter('addToLog',event)"
+                                    value="#{bean.content}" />
+                                <label class="input-group-text py-0 align-self-stretch fs-400">
+                                    <h:selectBooleanCheckbox
+                                    id="priorityCheck"
+                                    styleClass="form-check-input mt-0 me-3"
+                                    value="#{bean.priorityComment}"
+                                    pt:aria-label="#{msgs.process_log_file_priorityComment}" />
+                                    #{msgs.process_log_file_priorityComment}
+                                </label>
+                        </div>
                         </div>
                     </div>
 
-                    <div class="d-flex p-4 pt-2">
-                        <div class="col-md-3">
+                    <div class="form-row">
+                        <div class="form-label">
                             <h:outputText value="#{msgs.fileUpload}:" />
                         </div>
-                        <div class="col-md-9 d-flex">
-                            <div>
+                        <div class="form-input">
+                            <div class="input-group">
                                 <h:inputFile
                                     id="thirdtab_fileupload3"
                                     pt:aria-label="#{msgs.fileUpload}"
                                     value="#{bean.uploadedFile}"
                                     storage="file"
-                                    required="false">
+                                    required="false"
+                                    styleClass="form-control">
                                     <f:ajax listener="#{bean.uploadFile}" />
                                 </h:inputFile>
-                                <!--
-                                        <intranda:formHelp content="#{msgs.help_import_FileUpload}" />
-                                        -->
-                                <h:selectOneRadio
+                                <h:selectOneMenu
                                     id="folderSelection"
+                                    styleClass="form-select"
                                     value="#{bean.uploadFolder}"
-                                    styleClass="select-radio select-radio-horizontal"
                                     rendered="#{showFolderSelection}">
                                     <f:selectItem
-                                        pt:styleClass="focusable"
                                         itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
                                         itemValue="intern" />
                                     <f:selectItem
-                                        itemClass="focusable"
                                         itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
                                         itemValue="export" />
-                                </h:selectOneRadio>
+                                </h:selectOneMenu>
                             </div>
-
-
                         </div>
                     </div>
-                    <div class="d-flex p-4 pt-2">
-                        <div class="col-md-3">
-                            <h:outputText value="#{msgs.process_log_file_priorityComment}:" />
-                        </div>
-                        <div class="col-md-9 d-flex">
-                            <div>
-                                <h:selectBooleanCheckbox
-                                    id="priorityCheck"
-                                    styleClass="form-check-input"
-                                    value="#{bean.priorityComment}"
-                                    pt:aria-label="#{msgs.process_log_file_priorityComment}" />
-                            </div>
-
-                            <button
-                                id="addToLog"
-                                type="submit"
-                                class="btn btn-primary-400 ms-auto"
-                                jsf:action="#{bean.addJournalEntry}">
-                                <h:outputText value="#{msgs.nachrichtHinzufuegen}" />
-                            </button>
-                        </div>
+                    <div class="box__actions px-2">
+                        <button
+                            id="addToLog"
+                            type="submit"
+                            class="btn btn-primary-400"
+                            jsf:action="#{bean.addJournalEntry}">
+                            <h:outputText value="#{msgs.nachrichtHinzufuegen}" />
+                        </button>
                     </div>
 
                 </div>
