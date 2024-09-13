@@ -1,5 +1,12 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
-    <label class="form-row">
-        <ui:insert />
-    </label>
+    <ui:fragment rendered="#{group}">
+        <span class="form-input #{styleClass}">
+            <ui:insert />
+        </span>
+    </ui:fragment>
+    <ui:fragment rendered="#{!group}">
+        <label class="form-row #{styleClass}">
+            <ui:insert />
+        </label>
+    </ui:fragment>
 </ui:composition>

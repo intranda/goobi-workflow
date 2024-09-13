@@ -8,22 +8,58 @@
     <tag>
         <tag-name>fieldSet</tag-name>
         <source>../resources/form/fieldSet.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>fieldSet-content</tag-name>
         <source>../resources/form/fieldSet-content.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>legend</tag-name>
         <source>../resources/form/legend.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>field</tag-name>
         <source>../resources/form/field.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Determine whether the field contains a form-group component</description>
+            <name>required</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>label</tag-name>
         <source>../resources/form/label.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
         <attribute>
             <description>Determine whether the label should be displayed as required</description>
             <name>required</name>
@@ -34,9 +70,47 @@
     <tag>
         <tag-name>input</tag-name>
         <source>../resources/form/input.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>input-group</tag-name>
+        <source>../resources/form/inputGroup.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>group-text</tag-name>
+        <source>../resources/form/groupText.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Determine whether the component should resolve to a label or a span (default)</description>
+            <name>label</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>help</tag-name>
         <source>../resources/form/help.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
 </facelet-taglib>

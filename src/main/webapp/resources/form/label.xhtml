@@ -1,5 +1,5 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
-    <div class="form-label">
+    <span class="form-label #{styleClass}">
         <ui:fragment rendered="#{required}">
             <span
                 aria-hidden="true"
@@ -11,5 +11,5 @@
             </span>
         </ui:fragment>
         <ui:insert />
-    </div>
+    </span>
 </ui:composition>

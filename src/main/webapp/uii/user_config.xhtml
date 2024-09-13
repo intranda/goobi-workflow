@@ -161,8 +161,10 @@
                                             id="firstname"
                                             class="form-control"
                                             value="#{LoginForm.myBenutzer.vorname}"
-                                            readonly="false" />
+                                            readonly="false"
+                                            required="true" />
                                         <form:help>#{msgs.helpVorname}</form:help>
+                                        <h:message for="firstname" showDetail="true" styleClass="help-inline text-danger" />
                                     </form:input>
                                 </form:field>
                                 <form:field>
@@ -176,6 +178,7 @@
                                             value="#{LoginForm.myBenutzer.nachname}"
                                             readonly="false" />
                                         <form:help>#{msgs.helpNachname}</form:help>
+                                        <h:message for="lastname" showDetail="true" styleClass="help-inline text-danger" />
                                     </form:input>
                                 </form:field>
                                 <form:field>
@@ -189,6 +192,7 @@
                                             value="#{LoginForm.myBenutzer.standort}"
                                             readonly="true" />
                                         <form:help>#{msgs.helpStandort}</form:help>
+                                        <h:message for="location" showDetail="true" styleClass="help-inline text-danger" />
                                     </form:input>
                                 </form:field>
                                 <form:field>
@@ -202,6 +206,7 @@
                                             value="#{LoginForm.myBenutzer.email}"
                                             readonly="true" />
                                         <form:help>#{msgs.helpEmail}</form:help>
+                                        <h:message for="email" showDetail="true" styleClass="help-inline text-danger" />
                                     </form:input>
                                 </form:field>
                                 <form:field>

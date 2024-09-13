@@ -199,6 +199,7 @@ fieldSet:disabled .badge > a {
 
 .form-input {
   background: var(--clr-white);
+  flex-wrap: wrap;
   &:has(.form-row) {
     padding: 0;
   }
@@ -217,6 +218,24 @@ fieldSet:disabled .badge > a {
   .form-label+.form-input {
     width: 75%;
   }
+}
+
+.form-label {
+  > * {
+    order: 2;
+  }
+  .form-label-required {
+    color: var(--clr-primary-400);
+    display: flex;
+    margin-inline: 0.25rem;
+    order: 1;
+    padding-inline: 0.25em;
+  }
+}
+
+.form-help {
+  color: var(--clr-neutral-600);
+  margin-block-start: 0.25em;
 }
 
 .field-set {
