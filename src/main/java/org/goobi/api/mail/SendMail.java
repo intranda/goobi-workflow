@@ -145,6 +145,10 @@ public class SendMail {
             return config.getString("/configuration/smtpServer", null);
         }
 
+        public String getSmptPort() {
+            return config.getString("/configuration/smtpPort", null);
+        }
+
         // account name
         public String getSmtpUser() {
             return config.getString("/configuration/smtpUser", null);
@@ -168,10 +172,6 @@ public class SendMail {
         // sender mail address, can differ from account name
         public String getSmtpSenderAddress() {
             return config.getString("/configuration/smtpSenderAddress", null);
-        }
-
-        public String getSmptPort() {
-            return config.getString("/configuration/smtpPort", "25");
         }
 
         public String getApiUrl() {
@@ -487,22 +487,28 @@ public class SendMail {
         Properties properties = new Properties();
         properties.setProperty("mail.transport.protocol", "smtp");
         properties.setProperty("mail.smtp.auth", "true");
-        properties.setProperty("mail.smtp.port", "25");
+
         properties.setProperty("mail.smtp.host", config.getSmtpServer());
-        int port;
+
+        String port;
         if (config.isSmtpUseStartTls()) {
             properties.setProperty("mail.smtp.ssl.trust", "*");
             properties.setProperty("mail.smtp.starttls.enable", "true");
             properties.setProperty("mail.smtp.starttls.required", "true");
-            port = 25;
+            port = "25";
         } else if (config.isSmtpUseSsl()) {
             properties.setProperty("mail.smtp.ssl.enable", "true");
             properties.setProperty("mail.smtp.ssl.trust", "*");
-            port = 465;
+            port = "465";
         } else {
-            port = 25;
+            port = "25";
         }
-        properties.setProperty("mail.smtp.port", String.valueOf(port));
+
+        if (StringUtils.isNotBlank(config.getSmptPort())) {
+            port = config.getSmptPort();
+        }
+
+        properties.setProperty("mail.smtp.port", port);
         return properties;
     }
 
