@@ -66,10 +66,6 @@ public class JournalEntry implements Serializable {
         return Helper.getDateAsFormattedString(creationDate);
     }
 
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
     public String getFormattedDate() {
         return DateFormat.getDateInstance().format(creationDate);
     }
