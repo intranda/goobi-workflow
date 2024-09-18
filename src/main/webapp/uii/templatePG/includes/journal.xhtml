@@ -302,20 +302,20 @@
                                                 </ui:fragment>
                                             </ui:fragment>
                                             <span class="
-                                            filler filler-vertical
-                                            #{entry.type.title == 'warn' ? 'filler-yellow' : ''}
-                                            #{entry.type.title == 'error' ? 'filler-red' : ''}" />
+                                                filler filler-vertical
+                                                #{entry.type.title == 'warn' ? 'filler-yellow' : ''}
+                                                #{entry.type.title == 'error' ? 'filler-red' : ''}" />
                                         </span>
                                         <span class="feed-item-content">
                                             <span class="feed-item-responsibility">
                                                 <span class="fw-700">
                                                     #{msgs[entry.userName]}:
                                                 </span>
-                                                <ui:fragment rendered="#{msgs[entry.userName] == LoginForm.myBenutzer.nachVorname}">
+                                                <!-- <ui:fragment rendered="#{msgs[entry.userName] == LoginForm.myBenutzer.nachVorname}">
                                                     <button class="btn btn-outline">
                                                         <span class="fa fa-pencil text-neutral-600" />
                                                     </button>
-                                                </ui:fragment>
+                                                </ui:fragment> -->
                                             </span>
                                             <h:outputText
                                                 value="#{entry.formattedContent}"
