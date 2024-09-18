@@ -1,6 +1,6 @@
 .feed {
-    margin: .25em 0;
-    padding: 0;
+    padding: var(--feed-spacing-h) var(--feed-spacing-v);
+    margin: 0;
     --feed-spacing-v: 0.25em;
     --feed-spacing-h: 0.5em;
 }
@@ -10,6 +10,9 @@
     margin-block-end: var(--feed-spacing-v);
     padding-inline: var(--feed-spacing-h);
     width: 100%;
+    &:hover {
+        background-color: var(--clr-neutral-100);
+    }
 }
 
 .feed-heading {
