@@ -16,8 +16,7 @@
         <ui:include src="../calendarJavaScript.xhtml" />
         <f:ajax execute="@this" render="propertyBox" onevent="(data) => {
             if (data.status === 'success') {
-                const element = document.getElementById(event.target.id);
-                element.focus();
+                refocusAfterAjax(data);
             }
         }">
             <x:dataList
@@ -230,5 +229,18 @@
                 </h:panelGroup>
             </x:dataList>
         </f:ajax>
+        <script>
+            function refocusAfterAjax (data) {
+                const element = document.getElementById(data.source.id);
+                if (element.getAttribute('type') === 'text' || element.localName === 'textarea') {
+                    const nextInput = element.closest('.row').nextElementSibling.querySelector('select, input, textarea');
+                    nextInput?.focus();
+                    return;
+                }
+                if (element) {
+                    element.focus();
+                }
+            };
+        </script>
     </composite:implementation>
 </ui:composition>
