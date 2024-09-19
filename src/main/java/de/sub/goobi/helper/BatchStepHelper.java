@@ -383,6 +383,7 @@ public class BatchStepHelper implements Serializable {
             }
         }
         int counter = 1;
+        currentContainer = currentContainer.replaceAll(" - \\d+", "");
         String newContainerNumber = currentContainer;
         if (!"0".equals(currentContainer)) {
             // find new unused container number
@@ -435,6 +436,7 @@ public class BatchStepHelper implements Serializable {
         }
 
         int counter = 1;
+        currentContainer = currentContainer.replaceAll(" - \\d+", "");
         String newContainerNumber = currentContainer;
         if (!"0".equals(currentContainer)) {
             boolean search = true;

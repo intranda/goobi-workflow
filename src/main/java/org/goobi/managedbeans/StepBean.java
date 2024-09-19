@@ -1391,7 +1391,7 @@ public class StepBean extends BasicBean implements Serializable {
             }
         }
         int counter = 1;
-
+        currentContainer = currentContainer.replaceAll(" - \\d+", "");
         String newContainerNumber = currentContainer;
         if (!"0".equals(currentContainer)) {
             // find new unused container number
