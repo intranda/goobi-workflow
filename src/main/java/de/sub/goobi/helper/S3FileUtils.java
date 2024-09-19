@@ -77,7 +77,6 @@ import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
 import software.amazon.awssdk.transfer.s3.model.DirectoryDownload;
@@ -236,7 +235,7 @@ public class S3FileUtils implements StorageProviderInterface {
                     .delete(d -> d.objects(toDelete))
                     .build();
 
-            s3.deleteObjects(dor);
+            s3.deleteObjects(dor).join();
 
         } while (nextContinuationToken != null);
 
@@ -583,14 +582,9 @@ public class S3FileUtils implements StorageProviderInterface {
                 .delete(d -> d.objects(toDelete))
                 .build();
 
-        try {
-            s3.copyObject(copyReq);
+        s3.copyObject(copyReq).join();
 
-            s3.deleteObjects(dor);
-
-        } catch (S3Exception e) {
-            log.error(e);
-        }
+        s3.deleteObjects(dor).join();
 
         return key2Path(newKey);
     }
@@ -623,7 +617,7 @@ public class S3FileUtils implements StorageProviderInterface {
                     .destinationKey(path2Key(destFile))
                     .build();
 
-            s3.copyObject(copyReq);
+            s3.copyObject(copyReq).join();
 
         } else {
             // src on s3 and dest local => download file from s3 to local location
@@ -778,7 +772,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 .delete(d -> d.objects(toDelete))
                 .build();
 
-        s3.deleteObjects(dor);
+        s3.deleteObjects(dor).join();
 
     }
 
