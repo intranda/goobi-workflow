@@ -262,37 +262,69 @@
                     tabindex="0"
                     data-scrolldown="true">
                     <h:panelGroup rendered="#{bean.journal.size()>0}">
-                        <table class="table table-hover table-bordered pt-2 pb-2">
+                        <ol class="feed" role="list">
                             <ui:repeat
                                 var="entry"
                                 value="#{bean.journal}"
                                 varStatus="row">
                                 <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
-                                    <tr class="first-row">
-                                        <td>
+                                    <ui:fragment rendered="#{entry.formattedDate != bean.journal[row.index-1].formattedDate}">
+                                        <h3 class="feed-heading">
                                             <h:outputText
-                                                value="#{entry.formattedCreationDate}"
-                                                styleClass="log_color_#{entry.type.title}">
+                                                value="#{entry.formattedDate}">
                                             </h:outputText>
-                                            <br />
-                                            <h:outputText
-                                                value="#{msgs[entry.userName]}"
-                                                styleClass="log_color_#{entry.type.title}" />
-                                        </td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <ui:fragment rendered="#{entry.type.title == 'important'}">
-                                                    <span class="my-auto me-1 log_color_#{entry.type.title} fa fa-exclamation-triangle" />
+                                            <span class="filler filler-horizontal" />
+                                        </h3>
+                                    </ui:fragment>
+                                    <li class="feed-item">
+                                        <span class="feed-item-icon fs-600">
+                                            <ui:fragment rendered="#{entry.type.title == 'important'}">
+                                                <span class="fa fa-exclamation-circle" />
+                                            </ui:fragment>
+                                            <ui:fragment rendered="#{entry.type.title != 'important'}">
+                                                <ui:fragment rendered="#{entry.type.title == 'debug'}">
+                                                    <span class="fa fa-desktop" />
                                                 </ui:fragment>
-                                                <h:outputText
-                                                    value="#{entry.formattedContent}"
-                                                    styleClass="log_color_#{entry.type.title}"
-                                                    escape="false" />
-                                                <h:panelGroup rendered="#{entry.type.title == 'file'}">
-
+                                                <ui:fragment rendered="#{entry.type.title == 'info'}">
+                                                    <span class="fa fa-info-circle" />
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{entry.type.title == 'warn'}">
+                                                    <span class="log_color_#{entry.type.title} fa fa-exclamation-circle" />
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{entry.type.title == 'error'}">
+                                                    <span class="log_color_#{entry.type.title} fa fa-exclamation-triangle" />
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{entry.type.title == 'user'}">
+                                                    <span class="fa fa-user-o" />
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{entry.type.title == 'file'}">
+                                                    <span class="fa fa-file-o" />
+                                                </ui:fragment>
+                                            </ui:fragment>
+                                            <span class="
+                                                filler filler-vertical
+                                                #{entry.type.title == 'warn' ? 'filler-yellow' : ''}
+                                                #{entry.type.title == 'error' ? 'filler-red' : ''}" />
+                                        </span>
+                                        <span class="feed-item-content">
+                                            <span class="feed-item-responsibility">
+                                                <span class="fw-700">
+                                                    #{msgs[entry.userName]}:
+                                                </span>
+                                                <!-- <ui:fragment rendered="#{msgs[entry.userName] == LoginForm.myBenutzer.nachVorname}">
+                                                    <button class="btn btn-outline">
+                                                        <span class="fa fa-pencil text-neutral-600" />
+                                                    </button>
+                                                </ui:fragment> -->
+                                            </span>
+                                            <h:outputText
+                                                value="#{entry.formattedContent}"
+                                                escape="false" />
+                                            <h:panelGroup rendered="#{entry.type.title == 'file'}">
+                                            <span class="btn-group">
                                                     <button
                                                         jsf:id="downloadFile"
-                                                        class="log_file ms-2"
+                                                        class="btn btn-primary-400"
                                                         jsf:action="#{bean.downloadFile(entry)}"
                                                         title="#{msgs.downloadFile}">
                                                         <span class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
@@ -300,23 +332,27 @@
                                                             <h:outputText value="#{entry.basename}" />
                                                         </span>
                                                     </button>
-
                                                     <button
                                                         jsf:id="deleteFile"
                                                         onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
                                                         jsf:rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
-                                                        class="log_file_delete btn-mini pull-right ms-auto"
+                                                        class="btn btn-blank"
                                                         jsf:action="#{bean.deleteFile(entry)}"
                                                         title="#{msgs.deleteFile}">
                                                         <span class="fa fa-trash-o" />
                                                     </button>
-                                                </h:panelGroup>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                                </span>
+                                            </h:panelGroup>
+                                        </span>
+                                        <span class="feed-item-timestamp">
+                                            <h:outputText
+                                                value="#{entry.creationTime}">
+                                            </h:outputText>
+                                        </span>
+                                    </li>
                                 </h:panelGroup>
                             </ui:repeat>
-                        </table>
+                        </ol>
                     </h:panelGroup>
                 </div>
 
@@ -329,21 +365,21 @@
                         </div>
                         <div class="form-input">
                             <div class="input-group">
-                                <h:inputText
+                                <h:inputTextarea
                                     id="addToTextArea"
                                     styleClass="form-control"
                                     pt:aria-label="#{msgs.process_log_firstContent}"
-                                    onkeypress="return submitEnter('addToLog',event)"
+                                    rows="3"
                                     value="#{bean.content}" />
                                 <label class="input-group-text py-0 align-self-stretch fs-400">
                                     <h:selectBooleanCheckbox
-                                    id="priorityCheck"
-                                    styleClass="form-check-input mt-0 me-3"
-                                    value="#{bean.priorityComment}"
-                                    pt:aria-label="#{msgs.process_log_file_priorityComment}" />
-                                    #{msgs.process_log_file_priorityComment}
+                                        id="priorityCheck"
+                                        styleClass="form-check-input mt-0 me-3"
+                                        value="#{bean.priorityComment}"
+                                        pt:aria-label="#{msgs.process_log_file_priorityComment}" />
+                                        #{msgs.process_log_file_priorityComment}
                                 </label>
-                        </div>
+                            </div>
                         </div>
                     </div>
 

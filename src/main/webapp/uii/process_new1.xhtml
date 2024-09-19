@@ -859,39 +859,34 @@
                                 required="false" />
                         </h:panelGroup>
 
-                        <fieldSet class="field-set">
-                            <legend class="field-set-legend">#{msgs.addToProcessLog}</legend>
-                            <div class="field-set-content">
-                                <label class="form-row">
-                                    <span class="form-label">
-                                        #{msgs.bemerkung}
-                                    </span>
-                                    <span class="form-input">
-                                        <h:inputTextarea
-                                                id="journal"
-                                                styleClass="form-control metsEditorTextArea"
-                                                value="#{ProzesskopieForm.addToWikiField}"
-                                                required="false"
-                                                rows="8"
-                                                tabindex="0"
-                                                pt:aria-label="#{msgs.addToProcessLog}" />
-                                    </span>
-                                </label>
-                                <label class="form-row">
-                                    <span class="form-label">
-                                        #{msgs.process_log_file_priorityComment}
-                                    </span>
-                                    <span class="form-input">
-                                        <h:selectBooleanCheckbox
-                                                id="journal-important"
-                                                styleClass="form-check-input"
-                                                value="#{ProzesskopieForm.importantWikiField}"
-                                                required="false"
-                                                tabindex="1" />
-                                    </span>
-                                </label>
+                        <div class="form-row">
+                            <div class="form-label">
+                                <h:outputText
+                                    styleClass="flex-label"
+                                    value="#{msgs.addToProcessLog}:" />
                             </div>
-                        </fieldSet>
+                            <div class="form-input">
+                                <div class="input-group">
+                                    <h:inputTextarea
+                                        id="journal"
+                                        styleClass="form-control metsEditorTextArea"
+                                        value="#{ProzesskopieForm.addToWikiField}"
+                                        required="false"
+                                        rows="3"
+                                        tabindex="0"
+                                        pt:aria-label="#{msgs.addToProcessLog}" />
+                                    <label class="input-group-text py-0 align-self-stretch fs-400">
+                                        <h:selectBooleanCheckbox
+                                            id="journal-important"
+                                            styleClass="form-check-input"
+                                            value="#{ProzesskopieForm.importantWikiField}"
+                                            required="false"
+                                            tabindex="1" />
+                                            #{msgs.process_log_file_priorityComment}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="box__actions">
                             <!-- Cancel -->
