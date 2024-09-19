@@ -1290,9 +1290,9 @@ public class CopyProcess {
     }
 
     private void addProperty(Template inVorlage, Templateproperty property) {
-        if (property.getContainer() == 0) {
+        if ("0".equals(property.getContainer())) {
             for (Templateproperty ve : inVorlage.getEigenschaftenList()) {
-                if (ve.getTitel().equals(property.getTitel()) && ve.getContainer() > 0) {
+                if (ve.getTitel().equals(property.getTitel()) && !"0".equals(ve.getContainer())) {
                     ve.setWert(property.getWert());
                     return;
                 }
@@ -1313,9 +1313,9 @@ public class CopyProcess {
     }
 
     private void addProperty(Process inProcess, Processproperty property) {
-        if (property.getContainer() == 0) {
+        if ("0".equals(property.getContainer())) {
             for (Processproperty pe : inProcess.getEigenschaftenList()) {
-                if (pe.getTitel().equals(property.getTitel()) && pe.getContainer() > 0) {
+                if (pe.getTitel().equals(property.getTitel()) && !"0".equals(property.getContainer())) {
                     pe.setWert(property.getWert());
                     return;
                 }
@@ -1336,9 +1336,9 @@ public class CopyProcess {
     }
 
     private void addProperty(Masterpiece inWerk, Masterpieceproperty property) {
-        if (property.getContainer() == 0) {
+        if ("0".equals(property.getContainer())) {
             for (Masterpieceproperty we : inWerk.getEigenschaftenList()) {
-                if (we.getTitel().equals(property.getTitel()) && we.getContainer() > 0) {
+                if (we.getTitel().equals(property.getTitel()) && !"0".equals(we.getContainer())) {
                     we.setWert(property.getWert());
                     return;
                 }

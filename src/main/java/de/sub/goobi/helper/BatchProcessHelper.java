@@ -57,8 +57,8 @@ public class BatchProcessHelper implements Serializable {
     private Process currentProcess;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
-    private Map<Integer, PropertyListObject> containers = new TreeMap<>();
-    private Integer container;
+    private Map<String, PropertyListObject> containers = new TreeMap<>();
+    private String container;
     private List<String> processNameList = new ArrayList<>();
     private String processName = "";
     private Batch batch;
@@ -248,20 +248,20 @@ public class BatchProcessHelper implements Serializable {
     public List<ProcessProperty> getContainerlessProperties() {
         List<ProcessProperty> answer = new ArrayList<>();
         for (ProcessProperty pp : this.processPropertyList) {
-            if (pp.getContainer() == 0 && pp.getName() != null) {
+            if (!"0".equals(pp.getContainer()) && pp.getName() != null) {
                 answer.add(pp);
             }
         }
         return answer;
     }
 
-    public List<Integer> getContainerList() {
+    public List<String> getContainerList() {
         return new ArrayList<>(this.containers.keySet());
     }
 
-    public void setContainer(Integer container) {
+    public void setContainer(String container) {
         this.container = container;
-        if (container != null && container > 0) {
+        if (container != null && !"0".equals(container)) {
             this.processProperty = getContainerProperties().get(0);
         }
     }
@@ -269,7 +269,7 @@ public class BatchProcessHelper implements Serializable {
     public List<ProcessProperty> getContainerProperties() {
         List<ProcessProperty> answer = new ArrayList<>();
 
-        if (this.container != null && this.container > 0) {
+        if (this.container != null && !"0".equals(this.container)) {
             for (ProcessProperty pp : this.processPropertyList) {
                 if (pp.getContainer() == this.container && pp.getName() != null) {
                     answer.add(pp);
@@ -283,24 +283,25 @@ public class BatchProcessHelper implements Serializable {
     }
 
     public String duplicateContainerForSingle() {
-        Integer currentContainer = this.processProperty.getContainer();
+        String currentContainer = this.processProperty.getContainer();
         List<ProcessProperty> plist = new ArrayList<>();
         // search for all properties in container
         for (ProcessProperty pt : this.processPropertyList) {
-            if (pt.getContainer() == currentContainer) {
+            if (pt.getContainer().equals(currentContainer)) {
                 plist.add(pt);
             }
         }
-        int newContainerNumber = 0;
-        if (currentContainer > 0) {
-            newContainerNumber++;
+        int counter = 1;
+        String newContainerNumber = currentContainer;
+        if (!"0".equals(currentContainer)) {
             // find new unused container number
             boolean search = true;
             while (search) {
+                newContainerNumber = currentContainer + " - " + counter;
                 if (!this.containers.containsKey(newContainerNumber)) {
                     search = false;
                 } else {
-                    newContainerNumber++;
+                    counter++;
                 }
             }
         }
@@ -317,24 +318,25 @@ public class BatchProcessHelper implements Serializable {
     }
 
     public String duplicateContainerForAll() {
-        Integer currentContainer = this.processProperty.getContainer();
+        String currentContainer = this.processProperty.getContainer();
         List<ProcessProperty> plist = new ArrayList<>();
         // search for all properties in container
         for (ProcessProperty pt : this.processPropertyList) {
-            if (pt.getContainer() == currentContainer) {
+            if (pt.getContainer().equals(currentContainer)) {
                 plist.add(pt);
             }
         }
 
-        int newContainerNumber = 0;
-        if (currentContainer > 0) {
-            newContainerNumber++;
+        int counter = 1;
+        String newContainerNumber = currentContainer;
+        if (!"0".equals(currentContainer)) {
             boolean search = true;
             while (search) {
+                newContainerNumber = currentContainer + " - " + counter;
                 if (!this.containers.containsKey(newContainerNumber)) {
                     search = false;
                 } else {
-                    newContainerNumber++;
+                    counter++;
                 }
             }
         }

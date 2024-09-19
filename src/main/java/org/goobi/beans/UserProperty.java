@@ -111,12 +111,12 @@ public class UserProperty implements Serializable, IGoobiProperty {
     }
 
     @Override
-    public Integer getContainer() {
-        return 0;
+    public String getContainer() {
+        return "0";
     }
 
     @Override
-    public void setContainer(Integer order) {
+    public void setContainer(String order) {
 
     }
 
