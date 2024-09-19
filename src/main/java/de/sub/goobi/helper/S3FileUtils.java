@@ -36,6 +36,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,6 +62,8 @@ import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.core.async.BlockingInputStreamAsyncRequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.crt.S3CrtHttpConfiguration;
+import software.amazon.awssdk.services.s3.crt.S3CrtRetryConfiguration;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.CopyObjectResponse;
@@ -139,7 +142,12 @@ public class S3FileUtils implements StorageProviderInterface {
                     .checksumValidationEnabled(false)
                     .build();
         } else {
-            mys3 = S3AsyncClient.create();
+            mys3 = S3AsyncClient.crtBuilder()
+                    .retryConfiguration(S3CrtRetryConfiguration.builder().numRetries(10).build())
+                    .httpConfiguration(S3CrtHttpConfiguration.builder().connectionTimeout(Duration.ofSeconds(20)).build())
+                    .targetThroughputInGbps(5.0)
+                    .minimumPartSizeInBytes(1000000L)
+                    .build();
         }
         return mys3;
     }

@@ -53,7 +53,7 @@ public class ProcessProperty implements IProperty, Serializable {
     private String name;
     @Getter
     @Setter
-    private int container;
+    private String container;
     @Getter
     @Setter
     private String validation;
@@ -168,9 +168,9 @@ public class ProcessProperty implements IProperty, Serializable {
      * @see org.goobi.production.properties.IProperty#getClone()
      */
     @Override
-    public ProcessProperty getClone(int containerNumber) {
+    public ProcessProperty getClone(String containerName) {
         ProcessProperty p = new ProcessProperty();
-        p.setContainer(containerNumber);
+        p.setContainer(containerName);
         p.setName(this.name);
         p.setValidation(this.validation);
         p.setType(this.type);
@@ -232,7 +232,7 @@ public class ProcessProperty implements IProperty, Serializable {
 
         @Override
         public int compare(ProcessProperty o1, ProcessProperty o2) {
-            return Integer.compare(o1.getContainer(), o2.getContainer());
+            return o1.getContainer().compareTo(o2.getContainer());
         }
 
     }

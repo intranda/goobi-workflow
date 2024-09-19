@@ -69,9 +69,9 @@ public interface IGoobiProperty {
      */
     public PropertyType getType();
 
-    public void setContainer(Integer order);
+    public void setContainer(String name);
 
-    public Integer getContainer();
+    public String getContainer();
 
     public String getNormalizedTitle();
 

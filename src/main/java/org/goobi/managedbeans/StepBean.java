@@ -162,15 +162,15 @@ public class StepBean extends BasicBean implements Serializable {
     @Setter
     private BatchStepHelper batchHelper;
     @Getter
-    private Map<Integer, PropertyListObject> containers = new TreeMap<>();
+    private Map<String, PropertyListObject> containers = new TreeMap<>();
     @Getter
-    private Integer container;
+    private String container;
     private List<ProcessProperty> processPropertyList;
     @Getter
     @Setter
     private ProcessProperty processProperty;
     @Getter
-    private HashMap<Integer, Boolean> containerAccess;
+    private HashMap<String, Boolean> containerAccess;
 
     @Getter
     @Setter
@@ -1183,7 +1183,7 @@ public class StepBean extends BasicBean implements Serializable {
                 continue;
             }
 
-            if (pt.getContainer() != 0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ) {
+            if (!"0".equals(pt.getContainer()) && pt.getCurrentStepAccessCondition() != AccessCondition.READ) {
                 containerAccess.put(pt.getContainer(), true);
             }
             if (pt.getProzesseigenschaft() == null) {
@@ -1275,7 +1275,7 @@ public class StepBean extends BasicBean implements Serializable {
         loadProcessProperties();
     }
 
-    public List<Integer> getContainerList() {
+    public List<String> getContainerList() {
         return new ArrayList<>(this.containers.keySet());
     }
 
@@ -1307,7 +1307,7 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     public void duplicateProperty() {
-        ProcessProperty pt = this.processProperty.getClone(0);
+        ProcessProperty pt = this.processProperty.getClone("0");
         this.processPropertyList.add(pt);
         this.processProperty = pt;
         saveCurrentProperty();
@@ -1317,7 +1317,7 @@ public class StepBean extends BasicBean implements Serializable {
     public List<ProcessProperty> getContainerlessProperties() {
         List<ProcessProperty> answer = new ArrayList<>();
         for (ProcessProperty pp : this.processPropertyList) {
-            if (pp.getContainer() == 0) {
+            if ("0".equals(pp.getContainer())) {
                 boolean match = true;
                 for (ShowStepCondition cond : pp.getShowStepConditions()) {
                     if (cond.getName().equals(mySchritt.getTitel()) && !cond.getDisplayCondition().isEmpty()) {
@@ -1341,9 +1341,9 @@ public class StepBean extends BasicBean implements Serializable {
         return answer;
     }
 
-    public void setContainer(Integer container) {
+    public void setContainer(String container) {
         this.container = container;
-        if (container != null && container > 0) {
+        if (container != null && !"0".equals(container)) {
             this.processProperty = getContainerProperties().get(0);
         }
     }
@@ -1351,7 +1351,7 @@ public class StepBean extends BasicBean implements Serializable {
     public List<ProcessProperty> getContainerProperties() {
         List<ProcessProperty> answer = new ArrayList<>();
 
-        if (this.container != null && this.container > 0) {
+        if (this.container != null && !"0".equals(container)) {
             for (ProcessProperty pp : this.processPropertyList) {
                 if (pp.getContainer() == this.container) {
                     boolean match = true;
@@ -1382,24 +1382,26 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     public String duplicateContainer() {
-        Integer currentContainer = this.processProperty.getContainer();
+        String currentContainer = this.processProperty.getContainer();
         List<ProcessProperty> plist = new ArrayList<>();
         // search for all properties in container
         for (ProcessProperty pt : this.processPropertyList) {
-            if (pt.getContainer() == currentContainer) {
+            if (pt.getContainer().equals(currentContainer)) {
                 plist.add(pt);
             }
         }
-        int newContainerNumber = 0;
-        if (currentContainer > 0) {
-            newContainerNumber++;
+        int counter = 1;
+        currentContainer = currentContainer.replaceAll(" - \\d+", "");
+        String newContainerNumber = currentContainer;
+        if (!"0".equals(currentContainer)) {
             // find new unused container number
             boolean search = true;
             while (search) {
+                newContainerNumber = currentContainer + " - " + counter;
                 if (!this.containers.containsKey(newContainerNumber)) {
                     search = false;
                 } else {
-                    newContainerNumber++;
+                    counter++;
                 }
             }
         }

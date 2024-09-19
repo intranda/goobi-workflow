@@ -200,7 +200,7 @@ public class PropertyParser {
             // general values for property
             ProcessProperty pp = new ProcessProperty();
             pp.setName(config.getString(property + "/@name"));
-            pp.setContainer(config.getInt(property + "/@container"));
+            pp.setContainer(config.getString(property + "/@container"));
 
             // projects
             int count = config.getMaxIndex(property + "/project");
@@ -340,7 +340,7 @@ public class PropertyParser {
             // general values for property
             ProcessProperty pp = new ProcessProperty();
             pp.setName(config.getString(property + "/@name"));
-            pp.setContainer(config.getInt(property + "/@container"));
+            pp.setContainer(config.getString(property + "/@container"));
 
             // workflows
 
@@ -479,7 +479,7 @@ public class PropertyParser {
             ProcessProperty pp = new ProcessProperty();
             // general values for property
             pp.setName(prop.getString("@name"));
-            pp.setContainer(prop.getInt("@container"));
+            pp.setContainer(prop.getString("@container"));
             // projects
             pp.getProjects().addAll(Arrays.asList(prop.getStringArray("/project")));
             // project is configured

@@ -61,7 +61,7 @@ public class ErrorProperty implements Serializable, IGoobiProperty {
     @Getter
     @Setter
     private Date creationDate;
-    private Integer container;
+    private String container;
 
     public ErrorProperty() {
         this.istObligatorisch = false;
@@ -111,17 +111,17 @@ public class ErrorProperty implements Serializable, IGoobiProperty {
     }
 
     @Override
-    public Integer getContainer() {
+    public String getContainer() {
         if (this.container == null) {
-            return 0;
+            return "0";
         }
         return this.container;
     }
 
     @Override
-    public void setContainer(Integer order) {
+    public void setContainer(String order) {
         if (order == null) {
-            order = 0;
+            order = "0";
         }
         this.container = order;
     }

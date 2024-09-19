@@ -43,7 +43,7 @@
                             id="containerless">
 
                             <!-- PROPERTIES OF CONTAINER 0 -->
-                            <h:panelGroup rendered="#{container == 0}">
+                            <h:panelGroup rendered="#{container == '0'}">
                                 <tr>
                                     <td>
                                         <h:outputText value="#{proc.name}" />
@@ -145,11 +145,11 @@
                         <!-- // PROPERTIES OF CONTAINER 0 -->
 
                         <!-- BLANK LINE -->
-                        <h:panelGroup rendered="#{rowIndex lt rowCount and rowIndex != 0}">
+                        <h:panelGroup rendered="#{container != '0'}">
                             <tr>
                                 <td colspan="3">
                                     <h:outputText
-                                        value="&amp;nbsp;"
+                                        value="#{msgs[container]}"
                                         escape="false" />
                                 </td>
                             </tr>
@@ -164,7 +164,7 @@
                             rowIndexVar="propInd"
                             id="container">
 
-                            <h:panelGroup rendered="#{container != 0}">
+                            <h:panelGroup rendered="#{container != '0'}">
                                 <tr>
                                     <td>
                                         <h:outputText value="#{process_item.name}" />
@@ -358,7 +358,9 @@
                                         value="#{myprocess_item.value}"
                                         required="false"
                                         readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
-                                        <f:ajax execute="@this" render="@form" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
                                     </h:inputTextarea>
                                     <intranda:formHelp
                                         content="#{msgs.helpPropertyValue}"

@@ -272,9 +272,9 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Setter
     private ProcessProperty processProperty;
     @Getter
-    private Map<Integer, PropertyListObject> containers = new TreeMap<>();
+    private Map<String, PropertyListObject> containers = new TreeMap<>();
     @Getter
-    private Integer container;
+    private String container;
     @Getter
     @Setter
     private String userDisplayMode = "";
@@ -2378,7 +2378,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         return this.processPropertyList.size();
     }
 
-    public List<Integer> getContainerList() {
+    public List<String> getContainerList() {
         return new ArrayList<>(this.containers.keySet());
     }
 
@@ -2406,14 +2406,14 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public void duplicateProperty() {
-        ProcessProperty pt = this.processProperty.getClone(0);
+        ProcessProperty pt = this.processProperty.getClone("0");
         this.processPropertyList.add(pt);
         saveProcessProperties();
     }
 
-    public void setContainer(Integer container) {
+    public void setContainer(String container) {
         this.container = container;
-        if (container != null && container > 0) {
+        if (container != null && !"0".equals(container)) {
             this.processProperty = getContainerProperties().get(0);
         }
     }
@@ -2421,9 +2421,9 @@ public class ProcessBean extends BasicBean implements Serializable {
     public List<ProcessProperty> getContainerProperties() {
         List<ProcessProperty> answer = new ArrayList<>();
 
-        if (this.container != null && this.container > 0) {
+        if (this.container != null && !"0".equals(container)) {
             for (ProcessProperty pp : this.processPropertyList) {
-                if (pp.getContainer() == this.container) {
+                if (pp.getContainer().equals(container)) {
                     answer.add(pp);
                 }
             }
@@ -2435,24 +2435,26 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public String duplicateContainer() {
-        Integer currentContainer = this.processProperty.getContainer();
+        String currentContainer = this.processProperty.getContainer();
         List<ProcessProperty> plist = new ArrayList<>();
         // search for all properties in container
         for (ProcessProperty pt : this.processPropertyList) {
-            if (pt.getContainer() == currentContainer) {
+            if (pt.getContainer().equals(currentContainer)) {
                 plist.add(pt);
             }
         }
-        int newContainerNumber = 0;
-        if (currentContainer > 0) {
-            newContainerNumber++;
+        int counter = 1;
+        currentContainer = currentContainer.replaceAll(" - \\d+", "");
+        String newContainerNumber = currentContainer;
+        if (!"0".equals(currentContainer)) {
             // find new unused container number
             boolean search = true;
             while (search) {
+                newContainerNumber = currentContainer + " - " + counter;
                 if (!this.containers.containsKey(newContainerNumber)) {
                     search = false;
                 } else {
-                    newContainerNumber++;
+                    counter++;
                 }
             }
         }
@@ -2479,7 +2481,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     public List<ProcessProperty> getContainerlessProperties() {
         List<ProcessProperty> answer = new ArrayList<>();
         for (ProcessProperty pp : this.processPropertyList) {
-            if (pp.getContainer() == 0) {
+            if ("0".equals(pp.getContainer())) {
                 answer.add(pp);
             }
         }
@@ -2492,7 +2494,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
         ProcessProperty pp = new ProcessProperty();
         pp.setType(Type.TEXT);
-        pp.setContainer(0);
+        pp.setContainer("0");
         this.processProperty = pp;
     }
 
