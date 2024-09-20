@@ -17,12 +17,15 @@
 
 .feed-heading {
     align-items: center;
+    background: var(--bs-body-bg);
     display: flex;
     font-size: 0.875rem;
     font-weight: 700;
     gap: var(--feed-spacing-v);
     padding-block-start: 0.25em;
     padding-inline: var(--feed-spacing-h);
+    position: sticky;
+    top: 0;
     width: 100%;
 }
 
