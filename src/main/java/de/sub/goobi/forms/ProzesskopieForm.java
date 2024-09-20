@@ -53,8 +53,6 @@ import javax.inject.Named;
 import javax.naming.NamingException;
 import javax.servlet.http.Part;
 
-import io.goobi.vocabulary.exchange.FieldDefinition;
-import io.goobi.vocabulary.exchange.VocabularySchema;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -114,7 +112,9 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.Vocabulary;
+import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Data;
@@ -460,6 +460,11 @@ public class ProzesskopieForm implements Serializable {
         /* Children durchlaufen und SelectItems erzeugen */
 
         if (!parameterList.isEmpty()) {
+            if (item.getBoolean("@multiselect", true)) { // NOSONAR
+                fa.setMultiselect(true);
+            } else {
+                fa.setMultiselect(false);
+            }
             fa.setSelectList(new ArrayList<>());
         }
 
@@ -488,7 +493,8 @@ public class ProzesskopieForm implements Serializable {
                 String value = parts[1];
 
                 String finalFieldName = field;
-                Optional<FieldDefinition> searchField = schema.getDefinitions().stream()
+                Optional<FieldDefinition> searchField = schema.getDefinitions()
+                        .stream()
                         .filter(d -> d.getName().equals(finalFieldName))
                         .findFirst();
 
@@ -514,13 +520,6 @@ public class ProzesskopieForm implements Serializable {
                             .map(v -> new SelectItem(v, v))
                             .collect(Collectors.toList()));
         }
-
-        if (item.getBoolean("@multiselect", true)) { // NOSONAR
-            fa.setMultiselect(true);
-        } else {
-            fa.setMultiselect(false);
-        }
-        // TODO: FIX
         return fa;
     }
 
@@ -730,7 +729,8 @@ public class ProzesskopieForm implements Serializable {
             DocStruct colStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
 
             List<Metadata> firstChildMetadata =
-                    colStruct.getAllChildren() == null || colStruct.getAllChildren().isEmpty() ? Collections.emptyList() : colStruct.getAllChildren().get(0).getAllMetadata();
+                    colStruct.getAllChildren() == null || colStruct.getAllChildren().isEmpty() ? Collections.emptyList()
+                            : colStruct.getAllChildren().get(0).getAllMetadata();
             fillTemplateFromMetadata(colStruct.getAllMetadata(), firstChildMetadata);
 
             removeCollections(colStruct);
@@ -1240,7 +1240,8 @@ public class ProzesskopieForm implements Serializable {
     private void writeJournalEntry(LoginBean loginForm) {
         User user = loginForm.getMyBenutzer();
         JournalEntry logEntry =
-                new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), importantWikiField ? LogType.IMPORTANT_USER : LogType.USER, addToWikiField, EntryType.PROCESS);
+                new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), importantWikiField ? LogType.IMPORTANT_USER : LogType.USER,
+                        addToWikiField, EntryType.PROCESS);
         JournalManager.saveJournalEntry(logEntry);
         prozessKopie.getJournal().add(logEntry);
     }
