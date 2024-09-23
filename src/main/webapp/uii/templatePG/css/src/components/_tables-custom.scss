@@ -339,7 +339,7 @@
 	width: 100%;
 }
 
-th {
+th:not([scope="row"]) {
   vertical-align: middle;
   --col-s: 50px;
   --col-m: 80px;

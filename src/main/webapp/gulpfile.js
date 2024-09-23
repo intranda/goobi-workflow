@@ -46,7 +46,8 @@ const sources = {
         'uii/**/*.riot'
     ],
     composites: 'resources/**/*.xhtml',
-    template: 'uii/templatePG/templatePG.html'
+    template: 'uii/templatePG/templatePG.html',
+    includes: 'WEB-INF/includes/**/*.xhtml',
 }
 // target directories
 const legacyTargetFolder = {
@@ -56,7 +57,8 @@ const targetFolder = {
     css: 'uii/templatePG/css/dist/',
     js: 'dist/js/',
     staticAssets: 'uii/',
-    composites: 'resources/'
+    composites: 'resources/',
+    includes: 'WEB-INF/includes/',
 }
 
 // FUNCTIONS
@@ -77,6 +79,11 @@ function static() {
 function composites() {
     return src(sources.composites)
         .pipe(dest(`${customLocation}${targetFolder.composites}`))
+};
+
+function includes() {
+    return src(sources.includes)
+        .pipe(dest(`${customLocation}${targetFolder.includes}`))
 };
 
 // function for legacy less
@@ -209,5 +216,6 @@ exports.dev = function() {
     watch(sources.cssGlob, { ignoreInitial: false }, devCss);
     watch(sources.staticAssets, { ignoreInitial: false }, static);
     watch(sources.composites, { ignoreInitial: false }, composites);
+    watch(sources.includes, { ignoreInitial: false }, includes);
 };
 exports.prod = parallel(prodJsLegacy, prodJsRollup, prodBSCss, prodCss, prodLess);
