@@ -79,6 +79,9 @@ button,
   .fa ~ * {
     margin-inline-start: 0.25rem;
   }
+  &:focus {
+    color: var(--bs-btn-color);
+  }
   &:focus-visible {
     color: var(--bs-btn-color);
     outline-width: 2px;
