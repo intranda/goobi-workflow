@@ -23,22 +23,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.easymock.EasyMock;
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
+import org.goobi.beans.Template;
+import org.goobi.beans.Templateproperty;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.sub.goobi.AbstractTest;
-import de.sub.goobi.mock.MockProcess;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import de.sub.goobi.AbstractTest;
+import de.sub.goobi.mock.MockProcess;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
-
-import java.time.LocalDateTime;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ DateTimeHelper.class })
@@ -147,13 +153,46 @@ public class VariableReplacerTest extends AbstractTest {
         assertEquals("{datetime.abcdefghijk}", replacer.replace("{datetime.abcdefghijk}"));
     }
 
-    //    @Test
+    @Test
     public void testReplaceProperties() {
-        // TODO
-        // {product.NAME}
-        // {template.NAME}
-        // {process.NAME}
-        // {folder.name}
+        VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
+
+        Templateproperty tp = new Templateproperty();
+        tp.setTitel("templateProperty");
+        tp.setWert("template value");
+        List<Templateproperty> tpl = new ArrayList<>();
+        tpl.add(tp);
+
+        List<Template> tl = new ArrayList<>();
+        Template t = new Template();
+        t.setId(1);
+        t.setProcessId(1);
+        t.setProzess(process);
+        tl.add(t);
+        t.setEigenschaften(tpl);
+
+        process.setVorlagen(tl);
+
+        assertEquals("template value", replacer.replace("{template.templateProperty}"));
+
+        Masterpiece m = new Masterpiece();
+        m.setId(1);
+        m.setProcessId(1);
+        m.setProzess(process);
+        List<Masterpiece> ml = new ArrayList<>();
+        ml.add(m);
+        process.setWerkstuecke(ml);
+
+        Masterpieceproperty mp = new Masterpieceproperty();
+        mp.setTitel("masterpieceProperty");
+        mp.setWert("value");
+        List<Masterpieceproperty> mpl = new ArrayList<>();
+        mpl.add(mp);
+        m.setEigenschaften(mpl);
+        assertEquals("value", replacer.replace("{product.masterpieceProperty}"));
+
+        assertEquals("", replacer.replace("{folder.notExisting}"));
+        assertTrue(replacer.replace("{folder.master}").contains("testprocess_master"));
     }
 
     @Test
@@ -162,9 +201,24 @@ public class VariableReplacerTest extends AbstractTest {
         assertTrue(replacer.replace("{processpath}/thumbs/{processtitle}_media_1920").endsWith("metadata/1/thumbs/testprocess_media_1920"));
     }
 
-    //  @Test
+    @Test
     public void testReplaceBashScript() {
+        VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
 
+        // no replacement needed
+        assertEquals("/bin/true", replacer.replaceBashScript("/bin/true").get(0));
+
+        // split into different parts
+        assertEquals(3, replacer.replaceBashScript("/bin/true param1 param2").size());
+
+        // don't split spaces in quotations
+        assertEquals(3, replacer.replaceBashScript("/bin/true param1 \"param2 param3\"").size());
+
+        // replace parameter with spaces
+        assertEquals(3, replacer.replaceBashScript("/bin/true {meta.TitleDocMain} {meta.TitleDocMain}").size());
+
+        // replace parameter with quotation
+        assertEquals(3, replacer.replaceBashScript("/bin/true {meta.TitleDocMain} {meta.PlaceOfPublication}").size());
     }
 
 }

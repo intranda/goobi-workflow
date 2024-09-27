@@ -524,6 +524,9 @@ public class VariableReplacer {
             String folderName = r.group(1);
             try {
                 String value = process.getConfiguredImageFolder(folderName);
+                if (value == null) {
+                    value = "";
+                }
                 inString = inString.replace(r.group(), value);
             } catch (IllegalArgumentException | IOException | SwapException | DAOException e) {
                 log.error(e);

@@ -660,7 +660,7 @@ public class ProcessServiceTest extends AbstractTest {
 
         @SuppressWarnings("unchecked")
         List<RestMetadataResource> data = (List<RestMetadataResource>) response.getEntity();
-        assertEquals(3, data.size());
+        assertEquals(4, data.size());
     }
 
     @Test

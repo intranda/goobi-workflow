@@ -181,23 +181,23 @@ public class GoobiScriptMetadataAddTest extends AbstractTest {
         // test process has 3 metadata fields
         Fileformat ff = process.readMetadataFile();
         DocStruct monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(3, monograph.getAllMetadata().size());
+        assertEquals(4, monograph.getAllMetadata().size());
 
         List<Integer> processes = new ArrayList<>();
         processes.add(1);
         String command = "metadataAdd";
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("field", "PlaceOfPublication");
-        parameters.put("value", "Place");
+        parameters.put("field", "PublicationYear");
+        parameters.put("value", "1234");
         parameters.put("position", "work");
         GoobiScriptMetadataAdd fixture = new GoobiScriptMetadataAdd();
 
         List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
         fixture.execute(results.get(0));
-        // now we have 4 fields
+        // now we have 5 fields
         ff = process.readMetadataFile();
         monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(4, monograph.getAllMetadata().size());
+        assertEquals(5, monograph.getAllMetadata().size());
     }
 
     @Test
@@ -231,7 +231,7 @@ public class GoobiScriptMetadataAddTest extends AbstractTest {
         // test process has 3 metadata fields
         Fileformat ff = process.readMetadataFile();
         DocStruct monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(3, monograph.getAllMetadata().size());
+        assertEquals(4, monograph.getAllMetadata().size());
 
         List<Integer> processes = new ArrayList<>();
         processes.add(1);
@@ -253,7 +253,7 @@ public class GoobiScriptMetadataAddTest extends AbstractTest {
         // now we have 4 fields
         ff = process.readMetadataFile();
         monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(4, monograph.getAllMetadata().size());
+        assertEquals(5, monograph.getAllMetadata().size());
         Metadata meta = null;
         for (Metadata md : monograph.getAllMetadata()) {
             if ("junitMetadata".equals(md.getType().getName())) {
