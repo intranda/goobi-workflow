@@ -7563,23 +7563,6 @@
       </Group>
 
       <Group>
-        <InternalName>InventoryHistoryGroup</InternalName>
-        <WriteXPath>./mods:mods/mods:extension/#intranda:inventoryHistory</WriteXPath>
-        <Metadata>
-          <InternalName>AcquisitionMethod</InternalName>
-          <WriteXPath>./#intranda:method</WriteXPath>
-        </Metadata>
-        <Metadata>
-          <InternalName>AcquisitionAgent</InternalName>
-          <WriteXPath>./intranda:agent</WriteXPath>
-        </Metadata>
-        <Metadata>
-          <InternalName>AcquisitionNotes</InternalName>
-          <WriteXPath>./intranda:note</WriteXPath>
-        </Metadata>
-      </Group>
-
-      <Group>
         <InternalName>AccrualsGroup</InternalName>
         <WriteXPath>./mods:mods/mods:extension/#intranda:accruals</WriteXPath>
         <Metadata>
@@ -7875,6 +7858,30 @@
         <InternalName>Postscript</InternalName>
         <MetsType>postscript</MetsType>
       </DocStruct>
+      <DocStruct>
+        <InternalName>Folder</InternalName>
+        <MetsType>folder</MetsType>
+      </DocStruct>
+      <DocStruct>
+        <InternalName>File</InternalName>
+        <MetsType>file</MetsType>
+      </DocStruct>
+      <DocStruct>
+        <InternalName>Picture</InternalName>
+        <MetsType>image</MetsType>
+      </DocStruct>
+      <DocStruct>
+        <InternalName>Audio</InternalName>
+        <MetsType>audio</MetsType>
+      </DocStruct>
+      <DocStruct>
+        <InternalName>Video</InternalName>
+        <MetsType>video</MetsType>
+      </DocStruct>
+      <DocStruct>
+        <InternalName>Other</InternalName>
+        <MetsType>other</MetsType>
+      </DocStruct>      
     </METS>
   </Formats>
 </Preferences>
