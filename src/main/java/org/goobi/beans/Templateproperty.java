@@ -26,44 +26,20 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.managers.TemplateManager;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Templateproperty implements Serializable, IGoobiProperty {
+public class Templateproperty extends AbstractProperty implements Serializable {
     private static final long serialVersionUID = -5981263038302791497L;
     @Getter
     @Setter
     private Integer templateId;
     @Setter
     private Template vorlage;
-    @Getter
-    @Setter
-    private Integer id;
-    @Getter
-    @Setter
-    private String titel;
-    @Getter
-    @Setter
-    private String wert;
-    private Boolean istObligatorisch;
-    @Getter(AccessLevel.PRIVATE)
-    @Setter(AccessLevel.PRIVATE)
-    private Integer datentyp;
-    @Getter
-    @Setter
-    private String auswahl;
-    @Getter
-    @Setter
-    private Date creationDate;
-    private Integer container;
 
     public Templateproperty() {
         this.istObligatorisch = false;
@@ -71,82 +47,10 @@ public class Templateproperty implements Serializable, IGoobiProperty {
         this.creationDate = new Date();
     }
 
-    @Setter
-    private List<String> valueList;
-
-    @Override
-    public Boolean isIstObligatorisch() {
-        if (this.istObligatorisch == null) {
-            this.istObligatorisch = false;
-        }
-        return this.istObligatorisch;
-    }
-
-    @Override
-    public void setIstObligatorisch(Boolean istObligatorisch) {
-        this.istObligatorisch = istObligatorisch;
-    }
-
-    /**
-     * set datentyp to specific value from {@link PropertyType}
-     * 
-     * @param inType as {@link PropertyType}
-     */
-    @Override
-    public void setType(PropertyType inType) {
-        this.datentyp = inType.getId();
-    }
-
-    /**
-     * get datentyp as {@link PropertyType}
-     * 
-     * @return current datentyp
-     */
-    @Override
-    public PropertyType getType() {
-        if (this.datentyp == null) {
-            this.datentyp = PropertyType.STRING.getId();
-        }
-        return PropertyType.getById(this.datentyp);
-    }
-
-    public List<String> getValueList() {
-        if (this.valueList == null) {
-            this.valueList = new ArrayList<>();
-        }
-        return this.valueList;
-    }
-
     public Template getVorlage() {
         if (vorlage == null && templateId != null) {
             vorlage = TemplateManager.getTemplateForTemplateID(templateId);
         }
         return this.vorlage;
-    }
-
-    @Override
-    public Integer getContainer() {
-        if (this.container == null) {
-            return 0;
-        }
-        return this.container;
-    }
-
-    @Override
-    public void setContainer(Integer order) {
-        if (order == null) {
-            order = 0;
-        }
-        this.container = order;
-    }
-
-    @Override
-    public String getNormalizedTitle() {
-        return this.titel.replace(" ", "_").trim();
-    }
-
-    @Override
-    public String getNormalizedValue() {
-        return this.wert.replace(" ", "_").trim();
     }
 }

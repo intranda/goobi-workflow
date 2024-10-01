@@ -26,44 +26,17 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.Setter;
 
-public class Processproperty implements Serializable, IGoobiProperty, Comparable<Processproperty> {
+public class Processproperty extends AbstractProperty implements Serializable, Comparable<Processproperty> {
     private static final long serialVersionUID = -2356566712752716107L;
 
     @Setter
     private Process prozess;
-    @Getter
-    @Setter
-    private Integer id;
-    @Getter
-    @Setter
-    private String titel;
-    @Getter
-    @Setter
-    private String wert;
-    @Getter
-    @Setter
-    private Boolean istObligatorisch;
-    @Getter(AccessLevel.PRIVATE)
-    @Setter(AccessLevel.PRIVATE)
-    private Integer datentyp;
-    @Getter
-    @Setter
-    private String auswahl;
-    @Getter
-    @Setter
-    private Date creationDate;
-    private Integer container;
     @Setter
     private int processId;
 
@@ -73,78 +46,11 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
         this.creationDate = new Date();
     }
 
-    @Setter
-    private List<String> valueList;
-
-    @Override
-    public Boolean isIstObligatorisch() {
-        if (this.istObligatorisch == null) {
-            this.istObligatorisch = false;
-        }
-        return this.istObligatorisch;
-    }
-
-    /**
-     * set datentyp to specific value from {@link PropertyType}
-     * 
-     * @param inType as {@link PropertyType}
-     */
-    @Override
-    public void setType(PropertyType inType) {
-        this.datentyp = inType.getId();
-    }
-
-    /**
-     * get datentyp as {@link PropertyType}
-     * 
-     * @return current datentyp
-     */
-    @Override
-    public PropertyType getType() {
-        if (this.datentyp == null) {
-            this.datentyp = PropertyType.STRING.getId();
-        }
-        return PropertyType.getById(this.datentyp);
-    }
-
-    public List<String> getValueList() {
-        if (this.valueList == null) {
-            this.valueList = new ArrayList<>();
-        }
-        return this.valueList;
-    }
-
     public Process getProzess() {
         if (prozess == null) {
             prozess = ProcessManager.getProcessById(processId);
         }
         return this.prozess;
-    }
-
-    @Override
-    public Integer getContainer() {
-        if (this.container == null) {
-            return 0;
-        }
-        return this.container;
-    }
-
-    @Override
-    public void setContainer(Integer order) {
-        if (order == null) {
-            order = 0;
-        }
-        this.container = order;
-    }
-
-    @Override
-    public String getNormalizedTitle() {
-        return this.titel.replace(" ", "_").trim();
-    }
-
-    @Override
-    public String getNormalizedValue() {
-        return this.wert.replace(" ", "_").trim();
     }
 
     @Override
@@ -160,7 +66,7 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((container == null) ? 0 : container.hashCode());
+        result = prime * result + ((getContainer() == null) ? 0 : getContainer().hashCode());
         result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
         result = prime * result + ((datentyp == null) ? 0 : datentyp.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -185,11 +91,11 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
         if (id != null && other.id != null && id.equals(other.id)) {
             return true;
         }
-        if (container == null) {
-            if (other.container != null) {
+        if (getContainer() == null) {
+            if (other.getContainer() != null) {
                 return false;
             }
-        } else if (!container.equals(other.container)) {
+        } else if (!getContainer().equals(other.getContainer())) {
             return false;
         }
         if (creationDate == null) {

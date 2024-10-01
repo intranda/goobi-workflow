@@ -44,7 +44,7 @@ public class ImportProperty implements IProperty {
     @Getter
     @Setter
     private String name = "";
-    private Integer container = 0;
+    private String container = "0";
     @Getter
     @Setter
     private String validation = "";
@@ -73,12 +73,12 @@ public class ImportProperty implements IProperty {
     }
 
     @Override
-    public int getContainer() {
+    public String getContainer() {
         return this.container;
     }
 
     @Override
-    public void setContainer(int container) {
+    public void setContainer(String container) {
         this.container = container;
     }
 
@@ -108,7 +108,7 @@ public class ImportProperty implements IProperty {
     }
 
     @Override
-    public ImportProperty getClone(int containerNumber) {
+    public ImportProperty getClone(String containerNumber) {
         return new ImportProperty();
     }
 

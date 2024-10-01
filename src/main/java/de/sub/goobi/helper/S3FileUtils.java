@@ -36,6 +36,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,6 +62,8 @@ import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.core.async.BlockingInputStreamAsyncRequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.crt.S3CrtHttpConfiguration;
+import software.amazon.awssdk.services.s3.crt.S3CrtRetryConfiguration;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.CopyObjectResponse;
@@ -74,7 +77,6 @@ import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
 import software.amazon.awssdk.transfer.s3.model.DirectoryDownload;
@@ -139,7 +141,12 @@ public class S3FileUtils implements StorageProviderInterface {
                     .checksumValidationEnabled(false)
                     .build();
         } else {
-            mys3 = S3AsyncClient.create();
+            mys3 = S3AsyncClient.crtBuilder()
+                    .retryConfiguration(S3CrtRetryConfiguration.builder().numRetries(10).build())
+                    .httpConfiguration(S3CrtHttpConfiguration.builder().connectionTimeout(Duration.ofSeconds(20)).build())
+                    .targetThroughputInGbps(5.0)
+                    .minimumPartSizeInBytes(1000000L)
+                    .build();
         }
         return mys3;
     }
@@ -228,7 +235,7 @@ public class S3FileUtils implements StorageProviderInterface {
                     .delete(d -> d.objects(toDelete))
                     .build();
 
-            s3.deleteObjects(dor);
+            s3.deleteObjects(dor).join();
 
         } while (nextContinuationToken != null);
 
@@ -575,14 +582,9 @@ public class S3FileUtils implements StorageProviderInterface {
                 .delete(d -> d.objects(toDelete))
                 .build();
 
-        try {
-            s3.copyObject(copyReq);
+        s3.copyObject(copyReq).join();
 
-            s3.deleteObjects(dor);
-
-        } catch (S3Exception e) {
-            log.error(e);
-        }
+        s3.deleteObjects(dor).join();
 
         return key2Path(newKey);
     }
@@ -615,7 +617,7 @@ public class S3FileUtils implements StorageProviderInterface {
                     .destinationKey(path2Key(destFile))
                     .build();
 
-            s3.copyObject(copyReq);
+            s3.copyObject(copyReq).join();
 
         } else {
             // src on s3 and dest local => download file from s3 to local location
@@ -770,7 +772,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 .delete(d -> d.objects(toDelete))
                 .build();
 
-        s3.deleteObjects(dor);
+        s3.deleteObjects(dor).join();
 
     }
 

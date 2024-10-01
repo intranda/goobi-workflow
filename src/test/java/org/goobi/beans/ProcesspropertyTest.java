@@ -82,17 +82,15 @@ public class ProcesspropertyTest extends AbstractTest {
     public void testContainer() {
         Processproperty property = new Processproperty();
 
-        // This integer is outsourced because assertEquals() requires object type safety
-        Integer zero = Integer.valueOf(0);
-        assertEquals(property.getContainer(), zero);
+        assertEquals(property.getContainer(), "0");
 
         // Test whether null is replaced with 0
         property.setContainer(null);
-        assertEquals(property.getContainer(), zero);
+        assertEquals(property.getContainer(), "0");
 
         // Test whether normal numbers work
-        property.setContainer(42);
-        assertEquals(property.getContainer(), Integer.valueOf(42));
+        property.setContainer("42");
+        assertEquals("42", property.getContainer());
     }
 
     @Test
@@ -133,7 +131,7 @@ public class ProcesspropertyTest extends AbstractTest {
     public void testEquals() {
         Processproperty property1 = new Processproperty();
         property1.setId(1);
-        property1.setContainer(1);
+        property1.setContainer("1");
         property1.setCreationDate(new Date());
         property1.setType(PropertyType.BOOLEAN);
         property1.setProcessId(1);
@@ -142,7 +140,7 @@ public class ProcesspropertyTest extends AbstractTest {
         Processproperty property2 = new Processproperty();
         property2.setId(2);
         Processproperty property3 = new Processproperty();
-        property3.setContainer(2);
+        property3.setContainer("2");
         Processproperty property4 = new Processproperty();
         property4.setCreationDate(null);
         Processproperty property5 = new Processproperty();

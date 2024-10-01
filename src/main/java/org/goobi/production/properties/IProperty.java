@@ -34,9 +34,9 @@ public interface IProperty {
 
     public abstract void setName(String name);
 
-    public abstract int getContainer();
+    public abstract String getContainer();
 
-    public abstract void setContainer(int container);
+    public abstract void setContainer(String container);
 
     public abstract String getValidation();
 
@@ -76,7 +76,7 @@ public interface IProperty {
 
     public abstract void setPattern(String pattern);
 
-    public abstract IProperty getClone(int containerNumber);
+    public abstract IProperty getClone(String containerName);
 
     public abstract void transfer();
 

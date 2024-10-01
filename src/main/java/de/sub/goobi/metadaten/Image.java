@@ -27,7 +27,6 @@ import java.awt.Dimension;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -428,7 +427,7 @@ public @Data class Image {
     private static Path getImagePath(org.goobi.beans.Process process, String imageFolderName, String filename)
             throws IOException, SwapException {
         Path path = Paths.get(process.getImagesDirectory(), imageFolderName, filename);
-        if (!Files.exists(path)) {
+        if (!StorageProvider.getInstance().isFileExists(path)) {
             path = Paths.get(process.getThumbsDirectory(), imageFolderName, filename);
         }
         return path;
@@ -495,7 +494,7 @@ public @Data class Image {
                     return Type.video;
                 } else if (mimetype.startsWith("image/")) {
                     return Type.image;
-                } else if (mimetype.equals("application/pdf")) {
+                } else if ("application/pdf".equals(mimetype)) {
                     return Type.pdf;
                 }
             }

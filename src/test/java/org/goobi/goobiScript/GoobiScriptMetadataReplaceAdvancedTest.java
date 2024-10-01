@@ -184,7 +184,7 @@ public class GoobiScriptMetadataReplaceAdvancedTest extends AbstractTest {
         // test process has 3 metadata fields
         Fileformat ff = process.readMetadataFile();
         DocStruct monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(3, monograph.getAllMetadata().size());
+        assertEquals(4, monograph.getAllMetadata().size());
         Metadata title = null;
         for (Metadata md : monograph.getAllMetadata()) {
             if ("TitleDocMain".equals(md.getType().getName())) {
@@ -209,7 +209,7 @@ public class GoobiScriptMetadataReplaceAdvancedTest extends AbstractTest {
         // now we have a new value
         ff = process.readMetadataFile();
         monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(3, monograph.getAllMetadata().size());
+        assertEquals(4, monograph.getAllMetadata().size());
         title = null;
         for (Metadata md : monograph.getAllMetadata()) {
             if ("TitleDocMain".equals(md.getType().getName())) {
@@ -225,12 +225,12 @@ public class GoobiScriptMetadataReplaceAdvancedTest extends AbstractTest {
         // test process has 3 metadata fields
         Fileformat ff = process.readMetadataFile();
         DocStruct monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(3, monograph.getAllMetadata().size());
+        assertEquals(4, monograph.getAllMetadata().size());
         Metadata title = null;
         for (Metadata md : monograph.getAllMetadata()) {
             if ("TitleDocMain".equals(md.getType().getName())) {
                 title = md;
-                title.setAutorityFile("gnd", "https://d-nb.info/gnd/", "https://d-nb.info/gnd/12345");
+                title.setAuthorityFile("gnd", "https://d-nb.info/gnd/", "https://d-nb.info/gnd/12345");
                 process.writeMetadataFile(ff);
             }
         }
@@ -254,7 +254,7 @@ public class GoobiScriptMetadataReplaceAdvancedTest extends AbstractTest {
         // now we have a new value
         ff = process.readMetadataFile();
         monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(3, monograph.getAllMetadata().size());
+        assertEquals(4, monograph.getAllMetadata().size());
         title = null;
         for (Metadata md : monograph.getAllMetadata()) {
             if ("TitleDocMain".equals(md.getType().getName())) {

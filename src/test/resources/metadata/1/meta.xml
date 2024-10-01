@@ -13,6 +13,7 @@
                <mods:extension>
                   <goobi:goobi>
                      <goobi:metadata name="CatalogIDDigital">PPNidentifierPPN</goobi:metadata>
+                     <goobi:metadata name="PlaceOfPublication">value in &quot;quotation&quot;</goobi:metadata>
                      <goobi:metadata name="TitleDocMain">main title</goobi:metadata>
                      <goobi:metadata name="_directionRTL">false</goobi:metadata>
                   </goobi:goobi>

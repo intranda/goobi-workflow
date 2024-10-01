@@ -26,108 +26,23 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-public class UserProperty implements Serializable, IGoobiProperty {
+public class UserProperty extends AbstractProperty implements Serializable {
     private static final long serialVersionUID = -2356566712752716107L;
 
     @Getter
     @Setter
     private User benutzer;
-    @Getter
-    @Setter
-    private Integer id;
-    @Getter
-    @Setter
-    private String titel;
-    @Getter
-    @Setter
-    private String wert;
-    @Setter
-    private Boolean istObligatorisch;
-    @Getter(AccessLevel.PRIVATE)
-    @Setter(AccessLevel.PRIVATE)
-    private Integer datentyp;
-    @Getter
-    @Setter
-    private String auswahl;
-    @Getter
-    @Setter
-    private Date creationDate;
 
     public UserProperty() {
         this.istObligatorisch = false;
         this.datentyp = PropertyType.STRING.getId();
         this.creationDate = new Date();
-    }
-
-    @Setter
-    private List<String> valueList;
-
-    @Override
-    public Boolean isIstObligatorisch() {
-        if (this.istObligatorisch == null) {
-            this.istObligatorisch = false;
-        }
-        return this.istObligatorisch;
-    }
-
-    /**
-     * set datentyp to specific value from {@link PropertyType}
-     * 
-     * @param inType as {@link PropertyType}
-     */
-    @Override
-    public void setType(PropertyType inType) {
-        this.datentyp = inType.getId();
-    }
-
-    /**
-     * get datentyp as {@link PropertyType}
-     * 
-     * @return current datentyp
-     */
-    @Override
-    public PropertyType getType() {
-        if (this.datentyp == null) {
-            this.datentyp = PropertyType.STRING.getId();
-        }
-        return PropertyType.getById(this.datentyp);
-    }
-
-    public List<String> getValueList() {
-        if (this.valueList == null) {
-            this.valueList = new ArrayList<>();
-        }
-        return this.valueList;
-    }
-
-    @Override
-    public Integer getContainer() {
-        return 0;
-    }
-
-    @Override
-    public void setContainer(Integer order) {
-
-    }
-
-    @Override
-    public String getNormalizedTitle() {
-        return this.titel.replace(" ", "_").trim();
-    }
-
-    @Override
-    public String getNormalizedValue() {
-        return this.wert.replace(" ", "_").trim();
     }
 
 }

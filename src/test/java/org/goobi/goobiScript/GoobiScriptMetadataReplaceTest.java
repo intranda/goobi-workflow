@@ -184,7 +184,7 @@ public class GoobiScriptMetadataReplaceTest extends AbstractTest {
         // test process has 3 metadata fields
         Fileformat ff = process.readMetadataFile();
         DocStruct monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(3, monograph.getAllMetadata().size());
+        assertEquals(4, monograph.getAllMetadata().size());
         Metadata title = null;
         for (Metadata md : monograph.getAllMetadata()) {
             if ("TitleDocMain".equals(md.getType().getName())) {
@@ -210,7 +210,7 @@ public class GoobiScriptMetadataReplaceTest extends AbstractTest {
         // now we have a new value
         ff = process.readMetadataFile();
         monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(3, monograph.getAllMetadata().size());
+        assertEquals(4, monograph.getAllMetadata().size());
         title = null;
         for (Metadata md : monograph.getAllMetadata()) {
             if ("TitleDocMain".equals(md.getType().getName())) {
@@ -226,7 +226,7 @@ public class GoobiScriptMetadataReplaceTest extends AbstractTest {
         // test process has 3 metadata fields
         Fileformat ff = process.readMetadataFile();
         DocStruct monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(3, monograph.getAllMetadata().size());
+        assertEquals(4, monograph.getAllMetadata().size());
         Metadata title = null;
         for (Metadata md : monograph.getAllMetadata()) {
             if ("TitleDocMain".equals(md.getType().getName())) {
@@ -255,7 +255,7 @@ public class GoobiScriptMetadataReplaceTest extends AbstractTest {
         // now we have a new value
         ff = process.readMetadataFile();
         monograph = ff.getDigitalDocument().getLogicalDocStruct();
-        assertEquals(3, monograph.getAllMetadata().size());
+        assertEquals(4, monograph.getAllMetadata().size());
         title = null;
         for (Metadata md : monograph.getAllMetadata()) {
             if ("TitleDocMain".equals(md.getType().getName())) {

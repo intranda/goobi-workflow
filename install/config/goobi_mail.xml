@@ -2,6 +2,7 @@
 <goobiMail>
     <configuration enabled="false">
         <smtpServer>example.com</smtpServer>
+         <smtpPort>25</smtpPort>
         <smtpUser>CHANGEME@example.com</smtpUser>
         <smtpPassword>CHANGEME</smtpPassword>
         <smtpUseStartTls>false</smtpUseStartTls>

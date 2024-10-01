@@ -111,10 +111,11 @@ option:checked {
 
 // Other overrides
 body .ui-inputfield {
-  padding: 0.1875rem 0.75rem;
   border: var(--gw-border);
   border-color: var(--bs-border-color);
   border-radius: var(--gw-border-radius);
+  font-size: 0.75rem;
+  padding: .375rem .75rem;
   &:hover {
     border-color: var(--clr-primary-400);
   }
@@ -362,6 +363,7 @@ fieldSet:disabled .badge > a {
   }
   > .btn {
     border-inline-start: 1px solid var(--clr-neutral-300);
+    border-radius: 0;
     height: 100%;
     justify-content: center;
     right: 0;

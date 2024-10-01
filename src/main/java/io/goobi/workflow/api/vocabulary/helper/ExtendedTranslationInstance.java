@@ -52,6 +52,9 @@ public class ExtendedTranslationInstance extends TranslationInstance {
     }
 
     static String transformToThreeCharacterAbbreviation(String language) {
+        if (language == null) {
+            return null;
+        }
         switch (language) {
             case "en":
                 return "eng";

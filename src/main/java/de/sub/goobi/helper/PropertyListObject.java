@@ -41,12 +41,12 @@ public class PropertyListObject implements Serializable {
     private List<ProcessProperty> propertyList = new ArrayList<>();
 
     @Getter
-    private int containerNumber = 0;
+    private String containerNumber = "0";
 
     public PropertyListObject() {
     }
 
-    public PropertyListObject(int container) {
+    public PropertyListObject(String container) {
         this.containerNumber = container;
     }
 

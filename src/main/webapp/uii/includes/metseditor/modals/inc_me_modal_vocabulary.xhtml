@@ -20,13 +20,14 @@
                 role="dialog"
                 aria-labelledby="vocabularySearchBoxLabel"
                 aria-hidden="true">
-            <div
+            <h:panelGroup
+                    layout="block"
                     class="modal-dialog"
-                    role="document">
+                    role="document"
+                    id="vocabularySearchModalContent">
                 <h:panelGroup
                         rendered="#{Metadaten.currentMetadataToPerformSearch != null}"
-                        styleClass="modal-content"
-                        id="vocabularySearchModalContent">
+                        styleClass="modal-content">
                     <div class="modal-header">
                         <h5
                                 class="modal-title"
@@ -166,7 +167,7 @@
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>
-            </div>
+            </h:panelGroup>
         </h:panelGroup>
     </composite:implementation>
 </ui:composition>

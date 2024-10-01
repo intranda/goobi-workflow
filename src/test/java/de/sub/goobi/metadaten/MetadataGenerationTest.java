@@ -47,7 +47,7 @@ public class MetadataGenerationTest extends AbstractTest {
         assertEquals("extension", fixture.getRootElement().getChildren().get(0).getName());
         assertEquals("goobi", fixture.getRootElement().getChildren().get(0).getChildren().get(0).getName());
         List<Element> metadataList = fixture.getRootElement().getChildren().get(0).getChildren().get(0).getChildren();
-        assertEquals(3, metadataList.size());
+        assertEquals(4, metadataList.size());
     }
 
     @Test
