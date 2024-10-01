@@ -28,6 +28,7 @@ pipeline {
             branch 'master'
             branch 'release_*'
             branch 'hotfix_release_*'
+            branch 'sonar_*'
             allOf {
               branch 'PR-*'
               expression { env.CHANGE_BRANCH.startsWith("release_") }
@@ -45,6 +46,7 @@ pipeline {
           branch 'master'
           branch 'release_*'
           branch 'hotfix_release_*'
+          branch 'sonar_*'
           allOf {
             branch 'PR-*'
             expression { env.CHANGE_BRANCH.startsWith("release_") }
@@ -77,9 +79,9 @@ pipeline {
     stage('deploy') {
       when {
         anyOf {
-        branch 'master'
-        branch 'develop'
-        branch 'hotfix_release_*'
+          branch 'master'
+          branch 'develop'
+          branch 'hotfix_release_*'
         }
       }
       steps {
