@@ -26,53 +26,20 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Masterpieceproperty implements Serializable, IGoobiProperty {
+public class Masterpieceproperty extends AbstractProperty implements Serializable {
     private static final long serialVersionUID = -88407008893258729L;
     @Getter
     @Setter
     private Integer masterpieceId;
     @Setter
     private Masterpiece werkstueck;
-    @Getter
-    @Setter
-    private Integer id;
-    @Getter
-    @Setter
-    private String titel;
-    @Getter
-    @Setter
-    private String wert;
-    @Setter
-    private Boolean istObligatorisch;
-    /**
-     * getter for datentyp set to private for hibernate
-     * 
-     * for use in programm use getType instead
-     */
-    @Getter(AccessLevel.PRIVATE)
-    /**
-     * set datentyp to defined integer. only for internal use through hibernate, for changing datentyp use setType instead
-     */
-    @Setter(AccessLevel.PRIVATE)
-    private Integer datentyp;
-    @Getter
-    @Setter
-    private String auswahl;
-    @Getter
-    @Setter
-    private Date creationDate;
-    private String container;
 
     public Masterpieceproperty() {
         this.istObligatorisch = false;
@@ -80,77 +47,10 @@ public class Masterpieceproperty implements Serializable, IGoobiProperty {
         this.creationDate = new Date();
     }
 
-    @Setter
-    private List<String> valueList;
-
-    @Override
-    public Boolean isIstObligatorisch() {
-        if (this.istObligatorisch == null) {
-            this.istObligatorisch = false;
-        }
-        return this.istObligatorisch;
-    }
-
-    /**
-     * set datentyp to specific value from {@link PropertyType}
-     * 
-     * @param inType as {@link PropertyType}
-     */
-    @Override
-    public void setType(PropertyType inType) {
-        this.datentyp = inType.getId();
-    }
-
-    /**
-     * get datentyp as {@link PropertyType}
-     * 
-     * @return current datentyp
-     */
-    @Override
-    public PropertyType getType() {
-        if (this.datentyp == null) {
-            this.datentyp = PropertyType.STRING.getId();
-        }
-        return PropertyType.getById(this.datentyp);
-    }
-
-    public List<String> getValueList() {
-        if (this.valueList == null) {
-            this.valueList = new ArrayList<>();
-        }
-        return this.valueList;
-    }
-
     public Masterpiece getWerkstueck() {
         if (werkstueck == null && masterpieceId != null) {
             werkstueck = MasterpieceManager.getMasterpieceForTemplateID(masterpieceId);
         }
         return this.werkstueck;
-    }
-
-    @Override
-    public String getContainer() {
-        if (this.container == null) {
-            return "0";
-        }
-        return this.container;
-    }
-
-    @Override
-    public void setContainer(String order) {
-        if (order == null) {
-            order = "0";
-        }
-        this.container = order;
-    }
-
-    @Override
-    public String getNormalizedTitle() {
-        return this.titel.replace(" ", "_").trim();
-    }
-
-    @Override
-    public String getNormalizedValue() {
-        return this.wert.replace(" ", "_").trim();
     }
 }
