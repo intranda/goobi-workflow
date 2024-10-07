@@ -58,9 +58,12 @@ public class VocabularyEditBean implements Serializable {
     @Getter
     private ExtendedVocabularyRecord metadataRecord;
 
-    @Inject
-    private VocabularyBean vocabularyBean;
+    private final VocabularyBean vocabularyBean;
 
+    @Inject
+    public VocabularyEditBean(VocabularyBean vocabularyBean) {
+        this.vocabularyBean = vocabularyBean;
+    }
 
     public String load(Vocabulary vocabulary) {
         this.vocabulary = vocabulary;
