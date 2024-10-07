@@ -974,7 +974,7 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Tag(name = "query")
-    public Response deleteStep(RestStepResource resource) {
+    public Response deleteStep(@PathParam("processid") String processid, RestStepResource resource) {
 
         // get id from request
         Integer id = resource.getStepId();
