@@ -362,7 +362,7 @@ public class BatchStepHelper implements Serializable {
 
         if (this.container != null && !"0".equals(this.container)) {
             for (ProcessProperty pp : this.processPropertyList) {
-                if (pp.getContainer() == this.container && pp.getName() != null) {
+                if (this.container.equals(pp.getContainer()) && pp.getName() != null) {
                     answer.add(pp);
                 }
             }
