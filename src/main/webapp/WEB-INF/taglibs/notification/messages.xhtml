@@ -4,8 +4,8 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <div class="notification-wrapper collapse #{not empty facesContext.messageList ? 'show' : ''}" id="notificationArea">
         <!-- MESSAGE LIST -->
-        <h:panelGroup id="globalMessage">
-            <h:messages escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" pt:role="list" />
+        <h:panelGroup id="globalMessage" layout="block" pt:aria-live="polite" pt:role="status">
+            <h:messages escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
         </h:panelGroup>
         <!-- // MESSAGE LIST -->
     </div>
