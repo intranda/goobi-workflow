@@ -8,7 +8,9 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:ds="http://deltaspike.apache.org/jsf">
+    xmlns:ds="http://deltaspike.apache.org/jsf"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:layout="http://goobi.io/layout">
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -120,7 +122,7 @@
 
 <ui:insert name="metadata" />
 
-<h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right'} templatePG" style="#{LoginForm.myBenutzer == null?'height:300px;':''}">
+<h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right content-flow'} templatePG" style="#{LoginForm.myBenutzer == null?'height:300px;':''}">
    <ds:windowId/>
     <f:view locale="#{SpracheForm.locale}">
 
@@ -159,7 +161,6 @@
                               <div class="header__top">
                                 <h:panelGroup layout="block" id="globalWarningMessage" styleClass="mt-4">
                                     <h:panelGroup layout="block" rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger" style="line-height:40px;font-size:24px;">
-                                      <i class="fa fa-exclamation-triangle"></i>
                                       <span>
                                         <h:outputText value="#{SessionForm.logoutMessage}" />
                                       </span>
@@ -254,61 +255,6 @@
 						            </nav>
                         <!-- // BREADCRUMB -->
 
-                        <!-- <ui:fragment rendered="#{not empty facesContext.messageList}"> -->
-                            <!-- MESSAGE CONTAINER -->
-                            <!-- <div class="toast-container border-bottom-0 position-fixed top-0 start-50 w-25 translate-middle-x">
-                              <div
-                                class="collapse #{not empty facesContext.messageList ? 'show' : ''}"
-                                id="messageContainer"> -->
-                                  <!-- MESSAGE LIST -->
-                                  <!-- <ol role="list" class="list-group-flush ps-0 mt-3">
-                                    <o:messages var="message" globalOnly="true">
-                                        <li
-                                         role="item"
-                                         data-bs-autohide="false"
-                                         class="toast show align-items-center text-white list-group-item mt-2 mx-5 color-box #{message.severity.ordinal == 0 ? 'bg-primary' : 'bg-hot'}">
-                                              <div class="toast-body my-2">
-                                                <h:outputText value="#{message.detail}: " rendered="#{message.detail ne ''}"/>
-                                                <h:outputText value="#{message.summary}"/>
-                                              </div>
-                                          </li>
-                                    </o:messages>
-                                  </ol> -->
-                                  <!-- // MESSAGE LIST -->
-                                <!-- </div> -->
-                               <!-- BUTTON TO HIDE MESSAGES -->
-                                <!-- <button
-                                  class="btn btn-action position-absolute top-100 start-50 translate-middle toast-button"
-                                  type="button"
-                                  data-bs-toggle="collapse"
-                                  data-bs-target="#messageContainer"
-                                  aria-expanded="#{not empty facesContext.messageList ? 'show' : ''}"
-                                  aria-controls="messageContainer">
-                                  <span class="fa fa-angle-up toast-expanded" />
-                                  <span class="toast-expanded">
-                                      <h:outputText value="#{msgs.messagesHide}"/>
-                                  </span>
-                                  <span class="fa fa-angle-down toast-collapsed" />
-                                  <span class="toast-collapsed">
-                                      <h:outputText value="#{fn:length(facesContext.messageList)} #{msgs.messagesShow}"/>
-                                  </span>
-                                </button> -->
-                                <!-- // BUTTON TO HIDE MESSAGES -->
-                            <!-- </div> -->
-                            <!-- // MESSAGE CONTAINER -->
-
-                        <!-- </ui:fragment> -->
-                        <!-- // MESSAGES -->
-
-
-                        <!-- MESSAGES -->
-                        <div role="complementary">
-                          <h:panelGroup id="globalMessage" style="display: inline">
-                            <h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
-                          </h:panelGroup>
-                        </div>
-                        <!-- // MESSAGES -->
-
                         <!-- CONTENT -->
                         <div jsf:id="main-content" tabindex="-1">
                           <ui:insert name="content" />
@@ -318,6 +264,7 @@
                     </div>
                 </div>
             </div>
+            <layout:footer />
 
         </c:if>
 
@@ -420,12 +367,11 @@
          // ]]>
         </script>
 
-        <script src="../dist/js/main.js?v=#{HelperForm.buildVersion}" />
+        <script src="../dist/js/main.min.js?v=#{HelperForm.buildVersion}" />
 
         <!--Show and hide help messages-->
         <!--toggle_help is the legacy name for this function, it is used in most views, use gwToggleHelp.init in new markup-->
         <script>
-          gwToggleHelp.init;
           //Show and hide goobi ajax loader
           gwAjaxLoader.init();
           //TOOLTIPS

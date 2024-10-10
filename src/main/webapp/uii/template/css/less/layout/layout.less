@@ -20,8 +20,8 @@
         height: calc(~"100vh - 40px");
         overflow-y: auto;
         .ui-resizable-handle {
-            position: fixed;
-            top: 40px;
+            position: absolute;
+            top: 0;
             bottom: 0;
             left: 20vw;
             cursor: col-resize !important;
@@ -127,10 +127,10 @@
 /* AJAX LOADER */
 .ajax-loader {
     display: none;
-    position: absolute; 
-    top: 32px; 
+    position: absolute;
+    top: 32px;
     right: 20px;
-    
+
 }
 #imageLoader {
     display: none;
@@ -148,7 +148,7 @@
 }
 
 /* BREAKPOINT FOR LARGE DESKTOPS */
-@media screen and (max-width: @largeBreakpoint) {} 
+@media screen and (max-width: @largeBreakpoint) {}
 
 /* BREAKPOINT FOR DESKTOPS */
 @media screen and (max-width: @mediumBreakpoint) {

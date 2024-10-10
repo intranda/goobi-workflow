@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html 
+<html
 	lang="#{SpracheForm.locale}"
-    xmlns="http://www.w3.org/1999/xhtml" 
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-    xmlns:f="http://xmlns.jcp.org/jsf/core" 
-    xmlns:h="http://xmlns.jcp.org/jsf/html" 
-    xmlns:c="http://java.sun.com/jstl/core" 
-    xmlns:x="http://myfaces.apache.org/tomahawk" 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:ds="http://deltaspike.apache.org/jsf">
+    xmlns:ds="http://deltaspike.apache.org/jsf"
+    xmlns:notification="http://goobi.io/notification">
 
 <h:head>
     <!-- META TAGS -->
@@ -76,8 +77,8 @@
 
 <ui:insert name="metadata" />
 
-<body class="#{LoginForm.myBenutzer == null?'login':''}">
-  <ds:windowId/>  
+<body class="#{LoginForm.myBenutzer == null?'login':'content-flow'}">
+  <ds:windowId/>
 <main>
     <f:view locale="#{SpracheForm.locale}">
         <!-- USER NOT LOGGED IN -->
@@ -89,7 +90,7 @@
         <c:if test="#{LoginForm.myBenutzer!=null}">
 
             <!-- PAGE WRAPPER -->
-            
+
             <div id="pageWrapper" class="page-wrapper">
                 <!-- MENU -->
                 <div id="pageMenu" class="page-menu">
@@ -97,7 +98,7 @@
                     <div id="brand" class="page-menu__logo">
                         <a aria-label="#{msgs.returnHome}" href="index.xhtml"></a>
                     </div>
-    
+
                     <!-- TOGLLE MOBILE MENU -->
                     <button type="button" class="btn btn--clean mobile-visible" data-toggle="mobile-menu">
                         <i class="fa fa-bars fa-lg" aria-hidden="true"></i>
@@ -109,17 +110,17 @@
                         <!-- METSEDITOR MENU -->
                         <ui:insert name="metseditorMenu" />
                     </nav>
-                    
+
                     <!-- plugins -->
                    <nav aria-label="#{msgs.navigation}" id="navigationPlugins" class="page-menu__navigation navigationActions" role="navigation">
                         <!-- METSEDITOR MENU -->
                         <ui:insert name="metseditorPlugins" />
                     </nav>
-                    
+
                     <!-- ACTIONS -->
                     <nav aria-label="#{msgs.navigation} #{msgs.auswahl}" id="navigationActions" class="page-menu__actions navigationActions">
                         <!-- METSEDITOR MENU ACTIONS -->
-                        <ui:insert name="metseditorMenuActions" />                        
+                        <ui:insert name="metseditorMenuActions" />
                     </nav>
 
                     <!-- TOGLLE MOBILE IMAGE -->
@@ -129,7 +130,7 @@
                         <span class="sr-only">#{msgs.toggleMobileImage}</span>
                     </button>
                 </div>
-    
+
                 <!-- CONTENT WRAPPER -->
                 <div id="pageContentWrapper" class="page-content-wrapper" tabindex="-1">
                     <!-- CONTENT LEFT -->
@@ -139,15 +140,15 @@
                             <ui:insert name="metseditorStructure" />
                         </div>
                     </div>
-                    
+
                     <!-- CONTENT CENTER -->
                     <h:panelGroup id="pageContentCenter" styleClass="page-content__center" layout="block">
                         <div class="page-content__center-inner">
                             <!-- METSEDITOR CONTENT -->
-                            <ui:insert name="metseditorContent" />                            
+                            <ui:insert name="metseditorContent" />
                         </div>
                     </h:panelGroup>
-                    
+
                     <!-- CONTENT RIGHT -->
                     <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
                     <div id="pageContentRight" class="page-content__right">
@@ -156,15 +157,41 @@
                             <ui:insert name="metseditorImage" />
                         </div>
                     </div>
-                    </ui:fragment>
-                </div>
-
-                <!-- AJAX LOADER -->
-                <div id="ajaxloader" class="ajax-loader">
-                    <img src="template/img/goobi/ajaxloader2.gif" />
-                </div>
+                </ui:fragment>
             </div>
-            
+
+            <!-- AJAX LOADER -->
+            <div id="ajaxloader" class="ajax-loader">
+                <img src="template/img/goobi/ajaxloader2.gif" />
+            </div>
+        </div>
+        <footer class="footer">
+          <div class="d-flex gap-3 justify-content-start align-items-center">
+            <a class="footer-text" href="https://github.com/intranda/goobi-workflow" target="_blank">
+              <span class="fa fa-github fa-lg" />
+              <span>
+                GitHub
+              </span>
+            </a>
+            <a class="footer-text" href="https://github.com/intranda/goobi-workflow/blob/master/LICENSE" target="_blank">
+              License
+            </a>
+            <a class="footer-text " href="https://goobi.io/" target="_blank">
+               Goobi workflow - developed by intranda
+            </a>
+            <h:outputText
+                styleClass="footer-text"
+                value="#{msgs.version} #{HelperForm.version}" />
+          </div>
+          <ui:fragment rendered="#{not empty facesContext.messageList}">
+            <notification:area>
+              <notification:toggle />
+              <notification:messages>
+              </notification:messages>
+            </notification:area>
+          </ui:fragment>
+        </footer>
+
         </c:if>
     </f:view>
 
@@ -199,7 +226,7 @@
     <script src="template/js/objectView.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- GOOBI WORKFLOW JS -->
     <script src="template/js/dist/goobiWorkflowJS.min.js?v=#{HelperForm.buildVersion}"></script>
-    
+
     <!-- ALTO EDITOR -->
     <script src="template/js/altoEditorUtils.js?v=#{HelperForm.buildVersion}" type="text/javascript"></script>
     <script src="template/js/riot+compiler.min.js?v=#{HelperForm.buildVersion}" type="text/javascript"></script>

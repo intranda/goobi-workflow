@@ -9,7 +9,8 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:notification="http://goobi.io/notification">
 
     <composite:interface />
 
@@ -18,6 +19,13 @@
 
         <div class="user">
             <div class="nav icon-nav">
+                <ui:fragment rendered="#{not empty facesContext.messageList}">
+                  <notification:area>
+                    <notification:toggle />
+                    <notification:messages>
+                    </notification:messages>
+                  </notification:area>
+                </ui:fragment>
                 <!-- Icon to enable help texts -->
                 <button
                     type="button"

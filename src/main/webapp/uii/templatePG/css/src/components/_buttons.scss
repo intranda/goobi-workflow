@@ -76,7 +76,7 @@ button,
   }
 
   i ~ *,
-  .fa ~ * {
+  .fa ~ *:not(.fa) {
     margin-inline-start: 0.25rem;
   }
   &:focus {
