@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.sub.goobi.beans.property.IGoobiProperty;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.PropertyType;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -81,6 +82,11 @@ public abstract class AbstractProperty implements IGoobiProperty {
     @Override
     public String getNormalizedValue() {
         return wert.replace(" ", "_").trim();
+    }
+
+    @Override
+    public String getNormalizedDate() {
+        return Helper.getDateAsFormattedString(creationDate);
     }
 
     @Override
