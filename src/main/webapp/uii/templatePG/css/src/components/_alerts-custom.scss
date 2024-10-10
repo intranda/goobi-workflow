@@ -39,6 +39,7 @@
 
 .alert-danger {
   --alert-color: var(--clr-hot);
+  background: hsla(from var(--clr-hot) h s l / 20%);
   &::before {
     content: "\f071"; // exclamation-triangle
   }
@@ -46,6 +47,7 @@
 
 .alert-info {
   --alert-color: var(--clr-primary-400);
+  background: hsla(from var(--clr-primary-400) h s l / 20%);
   &::before {
     content: "\f05a"; // info-circle
   }
