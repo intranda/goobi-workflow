@@ -1,0 +1,29 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+    <footer class="footer">
+        <div class="d-flex gap-3 justify-content-start align-items-center w-100">
+            <a
+                class="footer-text"
+                href="https://github.com/intranda/goobi-workflow"
+                target="_blank"
+                title="GitHub"
+                data-bs-toggle="tooltip">
+                <span class="fa fa-github fa-lg" aria-hidden="true" />
+            </a>
+            <a class="footer-text" href="https://github.com/intranda/goobi-workflow/blob/master/LICENSE" target="_blank">
+                License
+            </a>
+            <a class="footer-text " href="https://goobi.io/" target="_blank">
+                goobi.io
+            </a>
+            <a class="footer-text" href="https://community.goobi.io/" target="_blank">
+                Community
+            </a>
+            <h:outputText
+                styleClass="ms-auto footer-text"
+                value="#{msgs.version} #{HelperForm.version}" />
+        </div>
+    </footer>
+</ui:composition>

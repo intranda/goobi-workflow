@@ -1,7 +1,9 @@
 .footer {
-    background: var(--clr-primary-400);
+    --footer-text: var(--clr-white);
+    --footer-bg: var(--clr-neutral-600);
+    background: var(--footer-bg);
     display: flex;
-    color: white;
+    color: var(--footer-text);
     gap: 1rem;
     justify-content: flex-start;
     height: 3rem;
@@ -12,45 +14,20 @@
 
 .footer-text {
     align-items: center;
-    color: white;
+    color: var(--footer-text);
     display: flex;
     height: 2.9375rem;
     padding: 1em;
-    .fa {
-        margin-inline-end: 0.5rem;
-    }
 }
 
 a.footer-text {
     &:active {
-        background-color: var(--clr-primary-400);
-        color: white;
+        background-color: var(--footer-bg);
+        color: var(--footer-text);
     }
     &:hover,
     &:focus {
-        background-color: var(--clr-primary-600);
-        color: white;
+        background-color: var(--clr-neutral-400);
+        color: var(--clr-text-400);
     }
 }
-
-// gray
-// .footer {
-//     background: #ddd;
-//     color: black;
-// }
-
-// .footer-text {
-//     color: black;
-// }
-
-// a.footer-text {
-//     &:active {
-//         background-color: #ddd;
-//         color: black;
-//     }
-//     &:hover,
-//     &:focus {
-//         background-color: #ddd;
-//         color: black;
-//     }
-// }

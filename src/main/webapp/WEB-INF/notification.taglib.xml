@@ -7,18 +7,14 @@
     <namespace>http://goobi.io/notification</namespace>
     <tag>
         <tag-name>area</tag-name>
-        <source>../resources/notification/area.xhtml</source>
+        <source>taglibs/notification/area.xhtml</source>
     </tag>
     <tag>
         <tag-name>toggle</tag-name>
-        <source>../resources/notification/toggle.xhtml</source>
+        <source>taglibs/notification/toggle.xhtml</source>
     </tag>
     <tag>
         <tag-name>messages</tag-name>
-        <source>../resources/notification/messages.xhtml</source>
-    </tag>
-    <tag>
-        <tag-name>message</tag-name>
-        <source>../resources/notification/message.xhtml</source>
+        <source>taglibs/notification/messages.xhtml</source>
     </tag>
 </facelet-taglib>

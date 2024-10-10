@@ -10,7 +10,7 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:ds="http://deltaspike.apache.org/jsf"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:notification="http://goobi.io/notification">
+    xmlns:layout="http://goobi.io/layout">
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -265,34 +265,7 @@
                     </div>
                 </div>
             </div>
-            <footer class="footer">
-              <div class="d-flex gap-3 justify-content-start align-items-center">
-                <a
-                  class="footer-text"
-                  href="https://github.com/intranda/goobi-workflow"
-                  target="_blank"
-                  title="GitHub"
-                  data-bs-toggle="tooltip">
-                  <span class="fa fa-github fa-lg" />
-                </a>
-                <a class="footer-text" href="https://github.com/intranda/goobi-workflow/blob/master/LICENSE" target="_blank">
-                  License
-                </a>
-                <a class="footer-text " href="https://goobi.io/" target="_blank">
-                   goobi.io
-                </a>
-                <h:outputText
-                    styleClass="footer-text"
-                    value="#{msgs.version} #{HelperForm.version}" />
-              </div>
-              <ui:fragment rendered="#{not empty facesContext.messageList}">
-                <notification:area>
-                  <notification:toggle />
-                  <notification:messages>
-                  </notification:messages>
-                </notification:area>
-              </ui:fragment>
-            </footer>
+            <layout:footer />
 
         </c:if>
 
