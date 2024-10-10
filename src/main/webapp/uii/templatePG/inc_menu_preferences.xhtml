@@ -19,7 +19,7 @@
 
         <div class="user">
             <div class="nav icon-nav">
-                <ui:fragment rendered="#{not empty facesContext.messageList}">
+                <ui:fragment rendered="#{facesContext.getMessageList().size() > 1}">
                   <notification:area>
                     <notification:toggle />
                     <notification:messages>
