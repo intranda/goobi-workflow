@@ -176,7 +176,7 @@ function devJsRollup() {
         })
         .then(bundle => {
             return bundle.write({
-                file: `${customLocation}${targetFolder.js}main.js`,
+                file: `${customLocation}${targetFolder.js}main.min.js`,
                 format: 'es',
             });
         });
@@ -190,7 +190,7 @@ function prodJsRollup() {
         })
         .then(bundle => {
             return bundle.write({
-                file: `${targetFolder.js}main.js`,
+                file: `${targetFolder.js}main.min.js`,
                 format: 'es',
                 sourcemap: true,
                 plugins: [terser({
