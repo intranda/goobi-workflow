@@ -459,25 +459,15 @@ public class ProzesskopieForm implements Serializable {
         List<HierarchicalConfiguration> parameterList = item.configurationsAt("select");
         /* Children durchlaufen und SelectItems erzeugen */
 
-        if (!parameterList.isEmpty()) {
-            if (item.getBoolean("@multiselect", true)) { // NOSONAR
-                fa.setMultiselect(true);
-            } else {
-                fa.setMultiselect(false);
-            }
-            fa.setSelectList(new ArrayList<>());
-        }
+        fa.setMultiselect(item.getBoolean("@multiselect", true));
 
         if (parameterList.size() == 1) {
             fa.setWert(parameterList.get(0).getString("."));
             fa.setMultiselect(false);
-        }
-
-        for (HierarchicalConfiguration hc : parameterList) {
-            String svalue = hc.getString("@label");
-
-            String sid = hc.getString(".");
-            fa.getSelectList().add(new SelectItem(sid, svalue, null));
+        } else if (!parameterList.isEmpty()) {
+            fa.setSelectList(parameterList.stream()
+                    .map(hc -> new SelectItem(hc.getString("@label"), hc.getString("."), null))
+                    .toList());
         }
 
         String vocabularyTitle = item.getString("@vocabulary");
