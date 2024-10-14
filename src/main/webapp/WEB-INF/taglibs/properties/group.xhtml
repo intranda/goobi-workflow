@@ -1,0 +1,85 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:section="http://goobi.io/section"
+    xmlns:properties="http://goobi.io/properties"
+>
+    <div class="#{fullWidth ? 'col-12' : 'col-sm-6'} mt-3">
+        <section:section
+            type="outline">
+            <section:header
+                title="#{container == '0' ? msgs.eigenschaften : msgs[container]}"
+                icon="list">
+                <c:if test="#{add}">
+                    <div class="actions d-flex">
+                        <button
+                            jsf:action="#{bean.createNewProperty}"
+                            jsf:id="newProperty"
+                            jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                            title="#{msgs.eigenschaftHinzufuegen}"
+                            class="btn d-flex align-items-center btn--title-action-neutral"
+                            data-bs-toggle="tooltip">
+                            <f:setPropertyActionListener
+                                target="#{bean.container}"
+                                value="0" />
+                            <f:setPropertyActionListener
+                                target="#{bean.modusBearbeiten}"
+                                value="eigenschaft" />
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-plus" />
+                        </button>
+                    </div>
+                </c:if>
+                <c:if test="#{!add}">
+                    <div class="actions d-flex">
+                        <button
+                            class="btn d-flex align-items-center btn--title-action-neutral"
+                            data-bs-toggle="tooltip"
+                            jsf:action="process_edit"
+                            jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
+                            title="#{msgs.bearbeiten}"
+                            jsf:id="editProperty2">
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-pencil" />
+                            <f:setPropertyActionListener
+                                target="#{bean.container}"
+                                value="#{container}" />
+                            <f:setPropertyActionListener
+                                target="#{bean.modusBearbeiten}"
+                                value="eigenschaft" />
+                        </button>
+                        <button
+                            class="btn d-flex align-items-center btn--title-action-neutral"
+                            data-bs-toggle="tooltip"
+                            jsf:id="duplicateProperty2"
+                            aria-label="#{msgs.duplicate}"
+                            jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
+                            jsf:action="#{bean.duplicateContainer}"
+                            title="#{msgs.duplicate}">
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-clipboard" />
+                            <f:setPropertyActionListener
+                                target="#{bean.container}"
+                                value="#{container}" />
+                        </button>
+                    </div>
+                </c:if>
+            </section:header>
+            <properties:properties>
+                <c:forEach
+                    var="property"
+                    items="#{bean.containers[container].propertyList}">
+                    <properties:property
+                        property="#{property}"
+                        bean="#{bean}"
+                        editable="#{container == '0' ? true : false}" />
+                </c:forEach>
+            </properties:properties>
+        </section:section>
+    </div>
+</ui:composition>

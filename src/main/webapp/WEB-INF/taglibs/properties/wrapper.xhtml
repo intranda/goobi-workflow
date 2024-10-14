@@ -1,0 +1,19 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:properties="http://goobi.io/properties"
+>
+    <h:form id="propertyList">
+        <div class="row">
+            <c:forEach var="container" items="#{bean.containerList}">
+                <c:if test="#{container == '0'}">
+                    <properties:group group="#{container}" add="true" bean="#{bean}" fullWidth="#{((bean.containerList.size() + 1) % 2) != 0}" />
+                </c:if>
+                <c:if test="#{group != '0'}">
+                    <properties:group group="#{container}" />
+                </c:if>
+            </c:forEach>
+        </div>
+    </h:form>
+</ui:composition>

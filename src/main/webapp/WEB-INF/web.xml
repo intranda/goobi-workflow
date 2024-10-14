@@ -37,6 +37,7 @@
         <param-value>
             /WEB-INF/layout.taglib.xml;
             /WEB-INF/notification.taglib.xml;
+            /WEB-INF/properties.taglib.xml;
             /WEB-INF/section.taglib.xml;
         </param-value>
     </context-param>

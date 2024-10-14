@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib
+    version="2.2"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd">
+    <namespace>http://goobi.io/properties</namespace>
+    <tag>
+        <tag-name>group</tag-name>
+        <source>taglibs/properties/group.xhtml</source><attribute>
+            <description>The name of the group</description>
+            <name>group</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Whether the group should offer the possibility to add values</description>
+            <name>add</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>Whether the group should be displayed at full container width</description>
+            <name>fullWidth</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>The name of the bean carrying information on the properties</description>
+            <name>bean</name>
+            <required>true</required>
+            <!-- <type></type> -->
+        </attribute>
+        <!-- <attribute>
+            <description></description>
+            <name></name>
+            <required></required>
+            <type>java.lang.String</type>
+        </attribute> -->
+    </tag>
+    <tag>
+        <tag-name>property</tag-name>
+        <source>taglibs/properties/property.xhtml</source>
+        <attribute>
+            <description></description>
+            <name>property</name>
+            <required>true</required>
+            <!-- <type></type> -->
+        </attribute>
+        <attribute>
+            <description>The name of the bean carrying information on the properties. Needed if the properties should have individual edit/duplicate buttons</description>
+            <name>bean</name>
+            <required>false</required>
+            <!-- <type></type> -->
+        </attribute>
+        <attribute>
+            <description>Whether the property should be editable</description>
+            <name>editable</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>properties</tag-name>
+        <source>taglibs/properties/properties.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>wrapper</tag-name>
+        <source>taglibs/properties/wrapper.xhtml</source>
+        <attribute>
+            <description>The name of the bean carrying information on the properties</description>
+            <name>bean</name>
+            <required>true</required>
+        </attribute>
+    </tag>
+</facelet-taglib>

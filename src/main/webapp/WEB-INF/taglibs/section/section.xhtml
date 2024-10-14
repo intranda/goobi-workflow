@@ -5,16 +5,16 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 >
-    <c:if test="#{id != ''}">
+    <c:if test="#{id}">
         <f:subview id="#{id}">
             <h:panelGroup
                 layout="block"
-                styleClass="box box--#{type} #{styleClass}">
+                styleClass="box box--#{type} #{styleClass}">hhhhh
                 <ui:insert />
             </h:panelGroup>
         </f:subview>
     </c:if>
-    <c:if test="#{id == ''}">
+    <c:if test="#{!id}">
         <div
             class="box box--#{type} #{styleClass}">
             <ui:insert />
