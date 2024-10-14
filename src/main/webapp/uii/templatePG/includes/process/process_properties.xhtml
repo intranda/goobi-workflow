@@ -16,373 +16,373 @@
     </composite:interface>
 
     <composite:implementation>
+        <div class="flow">
+            <ui:include src="../calendarJavaScript.xhtml" />
 
-        <ui:include src="../calendarJavaScript.xhtml" />
-
-        <!-- LIST OF CONFIGURED METADATA -->
-        <ui:fragment rendered="#{ProzessverwaltungForm.sizeOfDisplayableMetadata != 0}">
-            <div class="row">
-                <div class="col-sm-12 mt-3">
-
-                    <intranda:box
-                        boxType="outline"
-                        boxPadding="false"
-                        icon="fa-list"
-                        title="#{msgs.descriptiveMetadata}">
-
-                        <table class="table table-hover table-bordered">
-                            <c:forEach
-                                items="#{ProzessverwaltungForm.displayableMetadataMap}"
-                                var="metadata">
-                                <tr>
-                                    <td class="process_propertyName">
-                                        <span
-                                            title="#{metadata.key}"
-                                            data-toggle="tooltip">#{msgs[metadata.key]}</span>
-                                    </td>
-                                    <td class="process_propertyValue">
-                                        <c:forEach
-                                            items="#{metadata.value}"
-                                            var="metadataValue">
-                                            <h:outputText
-                                                value="#{msgs[metadataValue]}"
-                                                rendered="#{metadata.key == 'DocStruct'}" />
-                                            <h:outputText
-                                                value="#{metadataValue}"
-                                                rendered="#{metadata.key != 'DocStruct'}" />
-                                            <br />
-                                        </c:forEach>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </table>
-                    </intranda:box>
-                </div>
-            </div>
-        </ui:fragment>
-        <!-- // LIST OF CONFIGURED METADATA -->
-
-
-        <!-- LIST OF PROPERTIES -->
-        <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='eigenschaft'}">
-            <properties:wrapper bean="#{ProzessverwaltungForm}" />
-        </h:panelGroup>
-        <!-- // LIST OF PROPERTIES -->
-
-
-        <!-- EDIT PROPERTY AREA -->
-        <h:panelGroup
-            styleClass="d-block mt-3"
-            rendered="#{ProzessverwaltungForm.modusBearbeiten=='eigenschaft'}">
-
-            <h:form
-                id="myform"
-                onkeypress="submitOnEnter(event);">
-
+            <!-- LIST OF CONFIGURED METADATA -->
+            <ui:fragment rendered="#{ProzessverwaltungForm.sizeOfDisplayableMetadata != 0}">
                 <div class="row">
                     <div class="col-sm-12">
 
                         <intranda:box
-                            boxType="action"
-                            boxForm="true"
+                            boxType="outline"
                             boxPadding="false"
-                            title="#{msgs.eigenschaft}"
-                            icon="fa-edit">
+                            icon="fa-list"
+                            title="#{msgs.descriptiveMetadata}">
 
-                            <x:dataList
-                                var="myprocess_item"
-                                value="#{ProzessverwaltungForm.containerProperties}">
-
-                                <!-- NEW AS TEXT -->
-                                <h:panelGroup>
-                                    <h:panelGroup rendered="#{myprocess_item.isNew}">
-                                        <intranda:formInputText
-                                            id="title"
-                                            name="titlename"
-                                            label="#{msgs.titel}"
-                                            field="#{myprocess_item.name}"
-                                            help="#{msgs.helpPropertyTitle}"
-                                            required="false" />
-                                    </h:panelGroup>
-                                </h:panelGroup>
-                                <!-- // NEW AS TEXT -->
-
-                                <!-- VALUE AS TEXT -->
-                                <h:panelGroup
-                                    styleClass="row"
-                                    rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{myprocess_item.name}"
-                                            labelFor="value"
-                                            labelRequired="false" />
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <h:inputText
-                                            id="value"
-                                            forceId="true"
-                                            styleClass="form-control form__input"
-                                            value="#{myprocess_item.value}"
-                                            required="false"
-                                            readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-                                        </h:inputText>
-                                        <intranda:formHelp
-                                            content="#{msgs.helpPropertyValue}"
-                                            msgFor="value" />
-                                    </div>
-                                </h:panelGroup>
-                                <!-- // VALUE AS TEXT -->
-
-                                <!-- VALUE AS TEXTAREA -->
-                                <h:panelGroup
-                                    styleClass="row"
-                                    rendered="#{(myprocess_item.type.name == 'textarea')}">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{myprocess_item.name}"
-                                            labelFor="textareaValue"
-                                            labelRequired="false" />
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <h:inputTextarea
-                                            id="textareaValue"
-                                            rows="7"
-                                            forceId="true"
-                                            styleClass="form-control form__input"
-                                            value="#{myprocess_item.value}"
-                                            required="false"
-                                            readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-                                        </h:inputTextarea>
-                                        <intranda:formHelp
-                                            content="#{msgs.helpPropertyValue}"
-                                            msgFor="textareaValue" />
-                                    </div>
-                                </h:panelGroup>
-                                <!-- // VALUE AS TEXTAREA -->
-
-                                <!-- VALUE AS NUMBER -->
-                                <h:panelGroup
-                                    styleClass="row"
-                                    rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{myprocess_item.name}"
-                                            labelFor="number"
-                                            labelRequired="false" />
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <x:inputText
-                                            id="number"
-                                            forceId="true"
-                                            styleClass="form-control form__input"
-                                            value="#{myprocess_item.value}"
-                                            required="false"
-                                            readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-                                            <f:validateLongRange minimum="0" />
-                                        </x:inputText>
-                                        <intranda:formHelp
-                                            content="#{msgs.helpPropertyValue}"
-                                            msgFor="number" />
-                                    </div>
-                                </h:panelGroup>
-                                <!-- // VALUE AS NUMBER -->
-
-                                <!-- VALUE AS DROPDOQWN -->
-                                <h:panelGroup
-                                    styleClass="row"
-                                    rendered="#{(myprocess_item.type.name == 'list')}">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{myprocess_item.name}"
-                                            labelFor="select"
-                                            labelRequired="false" />
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <h:selectOneMenu
-                                            id="select"
-                                            styleClass="form-select"
-                                            required="false"
-                                            disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
-                                            value="#{myprocess_item.value}">
-                                            <f:selectItems
-                                                value="#{myprocess_item.possibleValues}"
-                                                var="myprocess_items"
-                                                itemLabel="#{myprocess_items}"
-                                                itemValue="#{myprocess_items}" />
-                                        </h:selectOneMenu>
-                                        <intranda:formHelp
-                                            content="#{msgs.helpPropertyValue}"
-                                            msgFor="select" />
-                                    </div>
-                                </h:panelGroup>
-                                <!-- // VALUE AS DROPDOQWN -->
-
-                                <!-- VALUE AS MULTI SELECT -->
-                                <h:panelGroup
-                                    styleClass="row"
-                                    rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{myprocess_item.name}"
-                                            labelFor="selectmany"
-                                            labelRequired="false" />
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <h:selectManyListbox
-                                            id="selectmany"
-                                            value="#{myprocess_item.valueList}"
-                                            size="5"
-                                            styleClass="form-control"
-                                            required="false"
-                                            disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-                                            <f:selectItems
-                                                value="#{myprocess_item.possibleValues}"
-                                                var="myprocess_items"
-                                                itemLabel="#{myprocess_items}"
-                                                itemValue="#{myprocess_items}" />
-                                        </h:selectManyListbox>
-                                        <intranda:formHelp
-                                            content="#{msgs.helpPropertyValue}"
-                                            msgFor="selectmany" />
-                                    </div>
-                                </h:panelGroup>
-                                <!-- VALUE AS MULTI SELECT -->
-
-                                <!-- VALUE AS BOOLEAN -->
-                                <h:panelGroup
-                                    styleClass="row"
-                                    rendered="#{(myprocess_item.type.name == 'boolean')}">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{myprocess_item.name}"
-                                            labelFor="boolean"
-                                            labelRequired="false" />
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <h:selectBooleanCheckbox
-                                            id="boolean"
-                                            value="#{myprocess_item.booleanValue}"
-                                            disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-                                        </h:selectBooleanCheckbox>
-                                        <intranda:formHelp
-                                            content="#{msgs.helpPropertyValue}"
-                                            msgFor="boolean" />
-                                    </div>
-                                </h:panelGroup>
-                                <!-- // VALUE AS BOOLEAN -->
-
-                                <!-- VALUE AS DATE -->
-                                <h:panelGroup
-                                    styleClass="row"
-                                    rendered="#{(myprocess_item.type.name == 'date')}">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{myprocess_item.name} - #{myprocess_item.pattern}"
-                                            labelFor="date"
-                                            labelRequired="false" />
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <p:calendar
-                                            id="date"
-                                            value="#{myprocess_item.dateValue}"
-                                            locale="#{SpracheForm.locale}"
-                                            readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"
-                                            styleClass="ff-goobi"
-                                            mask="true"
-                                            navigator="true"
-                                            yearRange="-100:+100"
-                                            pattern="#{myprocess_item.pattern}">
-                                            <f:passThroughAttribute
-                                                name="autocomplete"
-                                                value="off" />
-                                        </p:calendar>
-                                        <intranda:formHelp
-                                            content="#{msgs.helpPropertyValue}"
-                                            msgFor="date" />
-                                    </div>
-                                </h:panelGroup>
-                                <!-- // VALUE AS DATE -->
-
-                                <!-- VALUE AS HTML -->
-                                <h:panelGroup
-                                    styleClass="row"
-                                    rendered="#{(myprocess_item.type.name == 'html')}">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{myprocess_item.name}"
-                                            labelFor="html"
-                                            labelRequired="false" />
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <x:inputTextarea
-                                            id="html"
-                                            forceId="true"
-                                            styleClass="form-control"
-                                            value="#{myprocess_item.value}"
-                                            readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"></x:inputTextarea>
-                                        <intranda:formHelp
-                                            content="#{msgs.helpPropertyValue}"
-                                            msgFor="html" />
-                                    </div>
-                                </h:panelGroup>
-                                <!-- // VALUE AS HTML -->
-
-                            </x:dataList>
-
-                            <div class="box__actions">
-
-                                <!-- Cancel -->
-                                <button
-                                    jsf:id="cancel"
-                                    class="btn btn-blank"
-                                    jsf:immediate="true"
-                                    jsf:action="#{NavigationForm.Reload}">
-                                    <span>
-                                        <h:outputText value="#{msgs.abbrechen}" />
-                                    </span>
-                                    <x:updateActionListener
-                                        property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                        value="" />
-                                </button>
-
-                                <!-- Save -->
-                                <button
-                                    jsf:id="save"
-                                    class="btn btn-success submitOnEnter"
-                                    jsf:action="#{ProzessverwaltungForm.saveCurrentProperty}">
-                                    <span class="fa fa-save" />
-                                    <x:updateActionListener
-                                        property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                        value="" />
-                                    <span>
-                                        <h:outputText value="#{msgs.speichern}" />
-                                    </span>
-                                </button>
-
-                                <!-- Delete -->
-                                <button
-                                    jsf:id="delete"
-                                    class="btn btn-hot trigger-delete"
-                                    jsf:action="#{ProzessverwaltungForm.deleteProperty}"
-                                    onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false">
-                                    <x:updateActionListener
-                                        property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                        value="" />
-                                    <span class="fa fa-trash-o" />
-                                    <span>
-                                        <h:outputText value="#{msgs.loeschen}" />
-                                    </span>
-                                </button>
-
-                            </div>
-
+                            <table class="table table-hover table-bordered">
+                                <c:forEach
+                                    items="#{ProzessverwaltungForm.displayableMetadataMap}"
+                                    var="metadata">
+                                    <tr>
+                                        <td class="process_propertyName">
+                                            <span
+                                                title="#{metadata.key}"
+                                                data-toggle="tooltip">#{msgs[metadata.key]}</span>
+                                        </td>
+                                        <td class="process_propertyValue">
+                                            <c:forEach
+                                                items="#{metadata.value}"
+                                                var="metadataValue">
+                                                <h:outputText
+                                                    value="#{msgs[metadataValue]}"
+                                                    rendered="#{metadata.key == 'DocStruct'}" />
+                                                <h:outputText
+                                                    value="#{metadataValue}"
+                                                    rendered="#{metadata.key != 'DocStruct'}" />
+                                                <br />
+                                            </c:forEach>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </table>
                         </intranda:box>
                     </div>
                 </div>
-            </h:form>
+            </ui:fragment>
+            <!-- // LIST OF CONFIGURED METADATA -->
 
-        </h:panelGroup>
-        <!-- // EDIT PROPERTY AREA -->
 
+            <!-- LIST OF PROPERTIES -->
+            <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='eigenschaft'}">
+                <properties:wrapper bean="#{ProzessverwaltungForm}" />
+            </h:panelGroup>
+            <!-- // LIST OF PROPERTIES -->
+
+
+            <!-- EDIT PROPERTY AREA -->
+            <h:panelGroup
+                styleClass="d-block"
+                rendered="#{ProzessverwaltungForm.modusBearbeiten=='eigenschaft'}">
+
+                <h:form
+                    id="myform"
+                    onkeypress="submitOnEnter(event);">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+
+                            <intranda:box
+                                boxType="action"
+                                boxForm="true"
+                                boxPadding="false"
+                                title="#{msgs.eigenschaft}"
+                                icon="fa-edit">
+
+                                <x:dataList
+                                    var="myprocess_item"
+                                    value="#{ProzessverwaltungForm.containerProperties}">
+
+                                    <!-- NEW AS TEXT -->
+                                    <h:panelGroup>
+                                        <h:panelGroup rendered="#{myprocess_item.isNew}">
+                                            <intranda:formInputText
+                                                id="title"
+                                                name="titlename"
+                                                label="#{msgs.titel}"
+                                                field="#{myprocess_item.name}"
+                                                help="#{msgs.helpPropertyTitle}"
+                                                required="false" />
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                    <!-- // NEW AS TEXT -->
+
+                                    <!-- VALUE AS TEXT -->
+                                    <h:panelGroup
+                                        styleClass="row"
+                                        rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{myprocess_item.name}"
+                                                labelFor="value"
+                                                labelRequired="false" />
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <h:inputText
+                                                id="value"
+                                                forceId="true"
+                                                styleClass="form-control form__input"
+                                                value="#{myprocess_item.value}"
+                                                required="false"
+                                                readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                            </h:inputText>
+                                            <intranda:formHelp
+                                                content="#{msgs.helpPropertyValue}"
+                                                msgFor="value" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <!-- // VALUE AS TEXT -->
+
+                                    <!-- VALUE AS TEXTAREA -->
+                                    <h:panelGroup
+                                        styleClass="row"
+                                        rendered="#{(myprocess_item.type.name == 'textarea')}">
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{myprocess_item.name}"
+                                                labelFor="textareaValue"
+                                                labelRequired="false" />
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <h:inputTextarea
+                                                id="textareaValue"
+                                                rows="7"
+                                                forceId="true"
+                                                styleClass="form-control form__input"
+                                                value="#{myprocess_item.value}"
+                                                required="false"
+                                                readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                            </h:inputTextarea>
+                                            <intranda:formHelp
+                                                content="#{msgs.helpPropertyValue}"
+                                                msgFor="textareaValue" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <!-- // VALUE AS TEXTAREA -->
+
+                                    <!-- VALUE AS NUMBER -->
+                                    <h:panelGroup
+                                        styleClass="row"
+                                        rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{myprocess_item.name}"
+                                                labelFor="number"
+                                                labelRequired="false" />
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <x:inputText
+                                                id="number"
+                                                forceId="true"
+                                                styleClass="form-control form__input"
+                                                value="#{myprocess_item.value}"
+                                                required="false"
+                                                readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                <f:validateLongRange minimum="0" />
+                                            </x:inputText>
+                                            <intranda:formHelp
+                                                content="#{msgs.helpPropertyValue}"
+                                                msgFor="number" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <!-- // VALUE AS NUMBER -->
+
+                                    <!-- VALUE AS DROPDOQWN -->
+                                    <h:panelGroup
+                                        styleClass="row"
+                                        rendered="#{(myprocess_item.type.name == 'list')}">
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{myprocess_item.name}"
+                                                labelFor="select"
+                                                labelRequired="false" />
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <h:selectOneMenu
+                                                id="select"
+                                                styleClass="form-select"
+                                                required="false"
+                                                disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+                                                value="#{myprocess_item.value}">
+                                                <f:selectItems
+                                                    value="#{myprocess_item.possibleValues}"
+                                                    var="myprocess_items"
+                                                    itemLabel="#{myprocess_items}"
+                                                    itemValue="#{myprocess_items}" />
+                                            </h:selectOneMenu>
+                                            <intranda:formHelp
+                                                content="#{msgs.helpPropertyValue}"
+                                                msgFor="select" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <!-- // VALUE AS DROPDOQWN -->
+
+                                    <!-- VALUE AS MULTI SELECT -->
+                                    <h:panelGroup
+                                        styleClass="row"
+                                        rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{myprocess_item.name}"
+                                                labelFor="selectmany"
+                                                labelRequired="false" />
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <h:selectManyListbox
+                                                id="selectmany"
+                                                value="#{myprocess_item.valueList}"
+                                                size="5"
+                                                styleClass="form-control"
+                                                required="false"
+                                                disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                <f:selectItems
+                                                    value="#{myprocess_item.possibleValues}"
+                                                    var="myprocess_items"
+                                                    itemLabel="#{myprocess_items}"
+                                                    itemValue="#{myprocess_items}" />
+                                            </h:selectManyListbox>
+                                            <intranda:formHelp
+                                                content="#{msgs.helpPropertyValue}"
+                                                msgFor="selectmany" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <!-- VALUE AS MULTI SELECT -->
+
+                                    <!-- VALUE AS BOOLEAN -->
+                                    <h:panelGroup
+                                        styleClass="row"
+                                        rendered="#{(myprocess_item.type.name == 'boolean')}">
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{myprocess_item.name}"
+                                                labelFor="boolean"
+                                                labelRequired="false" />
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <h:selectBooleanCheckbox
+                                                id="boolean"
+                                                value="#{myprocess_item.booleanValue}"
+                                                disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                            </h:selectBooleanCheckbox>
+                                            <intranda:formHelp
+                                                content="#{msgs.helpPropertyValue}"
+                                                msgFor="boolean" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <!-- // VALUE AS BOOLEAN -->
+
+                                    <!-- VALUE AS DATE -->
+                                    <h:panelGroup
+                                        styleClass="row"
+                                        rendered="#{(myprocess_item.type.name == 'date')}">
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{myprocess_item.name} - #{myprocess_item.pattern}"
+                                                labelFor="date"
+                                                labelRequired="false" />
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <p:calendar
+                                                id="date"
+                                                value="#{myprocess_item.dateValue}"
+                                                locale="#{SpracheForm.locale}"
+                                                readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"
+                                                styleClass="ff-goobi"
+                                                mask="true"
+                                                navigator="true"
+                                                yearRange="-100:+100"
+                                                pattern="#{myprocess_item.pattern}">
+                                                <f:passThroughAttribute
+                                                    name="autocomplete"
+                                                    value="off" />
+                                            </p:calendar>
+                                            <intranda:formHelp
+                                                content="#{msgs.helpPropertyValue}"
+                                                msgFor="date" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <!-- // VALUE AS DATE -->
+
+                                    <!-- VALUE AS HTML -->
+                                    <h:panelGroup
+                                        styleClass="row"
+                                        rendered="#{(myprocess_item.type.name == 'html')}">
+                                        <div class="col-12 col-md-3">
+                                            <intranda:formLabel
+                                                label="#{myprocess_item.name}"
+                                                labelFor="html"
+                                                labelRequired="false" />
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <x:inputTextarea
+                                                id="html"
+                                                forceId="true"
+                                                styleClass="form-control"
+                                                value="#{myprocess_item.value}"
+                                                readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"></x:inputTextarea>
+                                            <intranda:formHelp
+                                                content="#{msgs.helpPropertyValue}"
+                                                msgFor="html" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <!-- // VALUE AS HTML -->
+
+                                </x:dataList>
+
+                                <div class="box__actions">
+
+                                    <!-- Cancel -->
+                                    <button
+                                        jsf:id="cancel"
+                                        class="btn btn-blank"
+                                        jsf:immediate="true"
+                                        jsf:action="#{NavigationForm.Reload}">
+                                        <span>
+                                            <h:outputText value="#{msgs.abbrechen}" />
+                                        </span>
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            value="" />
+                                    </button>
+
+                                    <!-- Save -->
+                                    <button
+                                        jsf:id="save"
+                                        class="btn btn-success submitOnEnter"
+                                        jsf:action="#{ProzessverwaltungForm.saveCurrentProperty}">
+                                        <span class="fa fa-save" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            value="" />
+                                        <span>
+                                            <h:outputText value="#{msgs.speichern}" />
+                                        </span>
+                                    </button>
+
+                                    <!-- Delete -->
+                                    <button
+                                        jsf:id="delete"
+                                        class="btn btn-hot trigger-delete"
+                                        jsf:action="#{ProzessverwaltungForm.deleteProperty}"
+                                        onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false">
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            value="" />
+                                        <span class="fa fa-trash-o" />
+                                        <span>
+                                            <h:outputText value="#{msgs.loeschen}" />
+                                        </span>
+                                    </button>
+
+                                </div>
+
+                            </intranda:box>
+                        </div>
+                    </div>
+                </h:form>
+
+            </h:panelGroup>
+            <!-- // EDIT PROPERTY AREA -->
+        </div>
     </composite:implementation>
 </ui:composition>
