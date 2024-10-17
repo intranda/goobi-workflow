@@ -18,6 +18,8 @@
 
 .definition-list-description {
     border-block-end: 1px solid var(--clr-neutral-300);
+    display: flex;
+    flex-wrap: nowrap;
     margin: 0;
 }
 
