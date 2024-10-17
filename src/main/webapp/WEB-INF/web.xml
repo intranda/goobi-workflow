@@ -35,6 +35,7 @@
     <context-param>
         <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
         <param-value>
+            /WEB-INF/button.taglib.xml;
             /WEB-INF/layout.taglib.xml;
             /WEB-INF/notification.taglib.xml;
             /WEB-INF/properties.taglib.xml;
