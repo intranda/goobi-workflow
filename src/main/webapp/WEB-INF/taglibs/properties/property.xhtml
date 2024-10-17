@@ -6,10 +6,15 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
 >
-    <dt>
+    <c:set var="scope" value="#{
+        fn:contains(bean, 'StepBean') ? 'step'
+        : fn:contains(bean, 'BatchProcessHelper')? 'batch'
+        : 'process'
+    }" />
+    <dt class="definition-list-term">
         #{property.name}
     </dt>
-    <dd>
+    <dd class="definition-list-description">
         <c:forEach
             var="val"
             items="#{property.valueList}"
@@ -36,50 +41,82 @@
         </h:outputLink>
         <h:panelGroup rendered="#{property.type.name == 'boolean'}">
             <h:panelGroup rendered="#{property.readValue eq 'true'}">
-                <span class="fa fa-check-square-o fa-lg" />
+                <span
+                    aria-hidden="true"
+                    class="fa fa-check-square-o fa-lg" />
             </h:panelGroup>
             <h:panelGroup rendered="#{property.readValue ne 'true'}">
-                <span class="fa fa-square-o fa-lg" />
+                <span
+                    aria-hidden="true"
+                    class="fa fa-square-o fa-lg" />
             </h:panelGroup>
         </h:panelGroup>
         <c:if test="#{editable and LoginForm.hasRole('Workflow_General_Details_Edit')}">
-            <button
-                class="btn btn-blank"
-                data-bs-toggle="tooltip"
-                jsf:action="process_edit"
-                title="#{msgs.bearbeiten}"
-                jsf:id="editProperty"
-                aria-label="#{msgs.bearbeiten}"
-                jsf:rendered="#{proc.type.name != 'metadata'}">
-                <span
-                    aria-hidden="true"
-                    class="fa fa-pencil" />
-                <f:setPropertyActionListener
-                    target="#{bean.processProperty}"
-                    value="#{property}" />
-                <f:setPropertyActionListener
-                    target="#{bean.container}"
-                    value="0" />
-                <f:setPropertyActionListener
-                    target="#{bean.modusBearbeiten}"
-                    value="eigenschaft" />
-            </button>
-            <button
-                jsf:action="#{bean.duplicateProperty}"
-                class="btn btn-blank ms-2"
-                title="#{msgs.duplicate}"
-                jsf:id="duplicateProperty"
-                jsf:rendered="#{proc.type.name != 'metadata'}">
-                <span
-                    aria-hidden="true"
-                    class="fa fa-clipboard" />
-                <f:setPropertyActionListener
-                    target="#{bean.processProperty}"
-                    value="#{property}" />
-                <f:setPropertyActionListener
-                    target="#{bean.container}"
-                    value="0" />
-            </button>
+            <f:ajax
+                render="propertyEditArea">
+                <c:if test="#{scope == 'batch'}">
+                    <button
+                        class="btn btn-blank"
+                        data-bs-toggle="tooltip"
+                        jsf:action="batch_edit"
+                        title="#{msgs.bearbeiten}"
+                        jsf:id="editProperty"
+                        aria-label="#{msgs.bearbeiten}"
+                        jsf:rendered="#{proc.type.name != 'metadata'}">
+                        <span
+                            aria-hidden="true"
+                            class="fa fa-pencil" />
+                        <f:setPropertyActionListener
+                            target="#{bean.processProperty}"
+                            value="#{property}" />
+                        <f:setPropertyActionListener
+                            target="#{bean.container}"
+                            value="0" />
+                        <f:setPropertyActionListener
+                            target="#{BatchForm.modusBearbeiten}"
+                            value="eigenschaft" />
+                    </button>
+                </c:if>
+                <c:if test="#{scope != 'batch'}">
+                    <button
+                        class="btn btn-blank"
+                        data-bs-toggle="tooltip"
+                        jsf:action="process_edit"
+                        title="#{msgs.bearbeiten}"
+                        jsf:id="editProperty"
+                        aria-label="#{msgs.bearbeiten}"
+                        jsf:rendered="#{proc.type.name != 'metadata'}">
+                        <span
+                            aria-hidden="true"
+                            class="fa fa-pencil" />
+                        <f:setPropertyActionListener
+                            target="#{bean.processProperty}"
+                            value="#{property}" />
+                        <f:setPropertyActionListener
+                            target="#{bean.container}"
+                            value="0" />
+                        <f:setPropertyActionListener
+                            target="#{bean.modusBearbeiten}"
+                            value="eigenschaft" />
+                    </button>
+                </c:if>
+                <button
+                    jsf:action="#{bean.duplicateProperty}"
+                    class="btn btn-blank ms-2"
+                    title="#{msgs.duplicate}"
+                    jsf:id="duplicateProperty"
+                    jsf:rendered="#{proc.type.name != 'metadata' and scope == 'process'}">
+                    <span
+                        aria-hidden="true"
+                        class="fa fa-clipboard" />
+                    <f:setPropertyActionListener
+                        target="#{bean.processProperty}"
+                        value="#{property}" />
+                    <f:setPropertyActionListener
+                        target="#{bean.container}"
+                        value="0" />
+                </button>
+            </f:ajax>
         </c:if>
     </dd>
 </ui:composition>
