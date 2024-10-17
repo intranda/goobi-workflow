@@ -73,4 +73,13 @@
             <required>true</required>
         </attribute>
     </tag>
+    <tag>
+        <tag-name>editDialog</tag-name>
+        <source>taglibs/properties/editDialog.xhtml</source>
+        <attribute>
+            <description>The name of the bean carrying information on the properties</description>
+            <name>bean</name>
+            <required>true</required>
+        </attribute>
+    </tag>
 </facelet-taglib>

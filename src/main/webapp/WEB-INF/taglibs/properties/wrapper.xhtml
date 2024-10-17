@@ -4,16 +4,33 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:properties="http://goobi.io/properties"
 >
-    <h:form id="propertyList">
+    <h:form id="propertyForm">
         <div class="row">
-            <c:forEach var="container" items="#{bean.containerList}">
+            <c:forEach var="container" items="#{bean.containerList}" varStatus="iteration">
                 <c:if test="#{container == '0'}">
-                    <properties:group group="#{container}" add="true" bean="#{bean}" fullWidth="#{((bean.containerList.size() + 1) % 2) != 0}" />
+                    <properties:group group="#{container}" add="true" bean="#{bean}" fullWidth="#{(bean.containerList.size() % 2) != 0}" />
                 </c:if>
-                <c:if test="#{group != '0'}">
-                    <properties:group group="#{container}" />
+                <c:if test="#{container != '0'}">
+                    <properties:group group="#{container}" bean="#{bean}" fullWidth="#{(bean.containerList.size() % 2) != 0 and iteration.index == 0}" />
                 </c:if>
             </c:forEach>
         </div>
     </h:form>
+    <c:set var="scope" value="#{
+        fn:contains(bean, 'StepBean') ? 'step'
+        : fn:contains(bean, 'BatchProcessHelper')? 'batch'
+        : 'process'
+    }" />
+    <h:panelGroup id="propertyEditArea" layout="block">
+        <c:if test="#{scope == 'batch'}">
+            <c:if test="#{BatchForm.modusBearbeiten == 'eigenschaft'}">
+                <properties:editDialog bean="#{bean}" />
+            </c:if>
+        </c:if>
+        <c:if test="#{scope != 'batch'}">
+            <c:if test="#{bean.modusBearbeiten == 'eigenschaft'}">
+                <properties:editDialog bean="#{bean}" />
+            </c:if>
+        </c:if>
+    </h:panelGroup>
 </ui:composition>

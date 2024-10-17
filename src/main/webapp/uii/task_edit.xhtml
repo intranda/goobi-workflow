@@ -10,7 +10,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:properties="http://goobi.io/properties">
 
     <ui:param
         name="myPageTitle"
@@ -51,7 +52,7 @@
                 </div>
                 <!-- // DETAILS OF STEP AND PROCESS -->
 
-                
+
                 <!-- RIGHT AREA WITH ACTION BOXES AND PROPERTIES -->
                 <div class="col-sm-6">
 
@@ -63,7 +64,7 @@
                         </div>
                     </c:if>
                     <!-- // AREA FOR GUI PLUGINS -->
-                    
+
                     <!-- IMAGE COMMENTS -->
                     <h:panelGroup
                     	layout="block"
@@ -89,30 +90,7 @@
 
 
                     <!-- PROPERTIES -->
-                    <h:panelGroup
-                        layout="block"
-                        styleClass="mb-3"
-                        id="propform2"
-                        rendered="#{AktuelleSchritteForm.propertyListSize>0 or AktuelleSchritteForm.sizeOfDisplayableMetadata>0}">
-                        <ui:include src="templatePG/includes/task/box_properties.xhtml">
-                            <ui:param
-                                name="currentStep"
-                                value="#{AktuelleSchritteForm.mySchritt}" />
-                            <!-- the owner of the properties as regular tasks are different from tasks in batches -->
-                            <ui:param
-                                name="propertyOwner"
-                                value="#{AktuelleSchritteForm}" />
-                            <!-- the navigation information is independent of the property owner -->
-                            <ui:param
-                                name="bean"
-                                value="#{AktuelleSchritteForm}" />
-                             <ui:param
-                                name="isBatchStep"
-                                value="false" />
-                        </ui:include>
-                    
-                    </h:panelGroup>
-                    <!-- // PROPERTIES -->
+                    <properties:wrapper bean="#{AktuelleSchritteForm}" />
 
 
                     <!-- ACTION BOX -->
@@ -128,8 +106,8 @@
 
                 </div>
                 <!-- // RIGHT AREA WITH ACTION BOXES AND PROPERTIES -->
-                
-                
+
+
             </div>
 
             <!-- FULL WIDTH JOURNAL -->
@@ -163,7 +141,7 @@
             <!-- // FULL WIDTH JOURNAL -->
 
         </c:if>
-        
+
     </ui:define>
 
 </ui:composition>
