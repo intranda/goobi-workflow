@@ -7,7 +7,8 @@
     <namespace>http://goobi.io/properties</namespace>
     <tag>
         <tag-name>group</tag-name>
-        <source>taglibs/properties/group.xhtml</source><attribute>
+        <source>taglibs/properties/group.xhtml</source>
+        <attribute>
             <description>The name of the group</description>
             <name>group</name>
             <required>true</required>
