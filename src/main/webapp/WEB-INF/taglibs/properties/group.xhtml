@@ -12,15 +12,15 @@
         : fn:contains(bean, 'BatchProcessHelper')? 'batch'
         : 'process'
     }" />
-    <div class="#{fullWidth ? 'col-12' : 'col-sm-6 mt-3'}">
+    <div class="properties-group">
         <section:section
             type="outline">
             <section:header
-                title="#{container == '0' ? msgs.eigenschaften : msgs[container]}"
+                title="#{container == '0' ? msgs.eigenschaften : msgs.eigenschaften.concat(': ').concat(msgs[container])}"
                 icon="list">
                 <div class="actions d-flex">
                     <f:ajax
-                        execute="@form"
+                        execute="propertyEditArea propertyForm"
                         render="propertyEditArea propertyForm">
                         <c:if test="#{add and scope != 'batch'}">
                             <button

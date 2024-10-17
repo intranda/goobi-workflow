@@ -4,14 +4,16 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:properties="http://goobi.io/properties"
 >
-    <h:form id="propertyForm">
-        <div class="row">
+    <c:set var="evenContainers" value="#{bean.containerList.size() % 2 == 0}" />
+    <h:form id="propertyForm" class="properties-form">
+        <div class="properties-wrapper#{evenContainers ? ' group-count-even' : ' group-count-uneven'}">
             <c:forEach var="container" items="#{bean.containerList}" varStatus="iteration">
+                <c:set var="fullWidth" value="#{(bean.containerList.size() % 2) != 0 and iteration.index == 0}" />
                 <c:if test="#{container == '0'}">
-                    <properties:group group="#{container}" add="true" bean="#{bean}" fullWidth="#{(bean.containerList.size() % 2) != 0}" />
+                    <properties:group group="#{container}" add="true" bean="#{bean}" fullWidth="#{fullWidth}" />
                 </c:if>
                 <c:if test="#{container != '0'}">
-                    <properties:group group="#{container}" bean="#{bean}" fullWidth="#{(bean.containerList.size() % 2) != 0 and iteration.index == 0}" />
+                    <properties:group group="#{container}" bean="#{bean}" fullWidth="#{fullWidth}" />
                 </c:if>
             </c:forEach>
         </div>
