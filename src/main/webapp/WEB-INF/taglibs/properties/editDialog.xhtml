@@ -50,13 +50,12 @@
                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
                         </div>
                         <div class="col-12 col-md-9">
-                            <x:inputText
+                            <h:inputText
                                 id="value"
-                                forceId="true"
                                 styleClass="form-control"
                                 value="#{myprocess_item.value}"
                                 readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-                            </x:inputText>
+                            </h:inputText>
                             <h:message
                                 for="value"
                                 showDetail="true"
@@ -259,6 +258,7 @@
             <h:panelGroup>
                 <div class="box__actions">
                     <f:ajax
+                        execute="@form"
                         render="propertyEditArea propertyForm">
                         <button
                             jsf:id="cancel"

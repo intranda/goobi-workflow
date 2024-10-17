@@ -20,6 +20,7 @@
                 icon="list">
                 <div class="actions d-flex">
                     <f:ajax
+                        execute="@form"
                         render="propertyEditArea propertyForm">
                         <c:if test="#{add and scope != 'batch'}">
                             <button
@@ -40,8 +41,7 @@
                                     class="fa fa-plus" />
                             </button>
                         </c:if>
-                <!-- <c:if test="#{!add}"> -->
-                        <c:if test="#{scope == 'process'}">
+                        <c:if test="#{scope == 'process' and !add}">
                             <button
                                 class="btn d-flex align-items-center btn--title-action-neutral"
                                 data-bs-toggle="tooltip"
