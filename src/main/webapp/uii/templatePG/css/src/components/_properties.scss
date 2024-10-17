@@ -17,11 +17,6 @@
     .properties-wrapper {
         grid-template-columns: 1fr 1fr;
     }
-    .group-count-uneven {
-        .properties-group:first-of-type {
-            grid-column: auto;
-        }
-    }
 }
 
 @container properties-form (min-width: 1300px) {
@@ -33,5 +28,10 @@
 @container properties-form (min-width: 1600px) {
     .properties-wrapper {
         grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+    .group-count-uneven {
+        .properties-group:first-of-type {
+            grid-column: auto;
+        }
     }
 }
