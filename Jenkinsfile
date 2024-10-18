@@ -231,7 +231,7 @@ pipeline {
         unstash 'target'
         script {
           docker.withRegistry('https://ghcr.io','jenkins-github-container-registry') {
-            dockerimage_public = docker.build("intranda/goobi-workflow:${BRANCH_NAME}-${env.BUILD_ID}_${env.GIT_COMMIT}", "--build-arg build=false .")
+            dockerimage_public = docker.build("intranda/goobi-workflow:${env.BUILD_ID}_${env.GIT_COMMIT}", "--build-arg build=false .")
             if (env.GIT_BRANCH == 'origin/develop' || env.GIT_BRANCH == 'develop' || env.GIT_BRANCH == 'origin/feature/docker-ngx' || env.GIT_BRANCH == 'feature/docker-ngx') {
               dockerimage_public.push("develop")
             }
