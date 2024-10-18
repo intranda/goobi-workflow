@@ -12,3 +12,19 @@
         grid-template-columns: 1fr 1fr;
     }
 }
+
+#propertyEditModal {
+    .row {
+        background: var(--clr-white);
+        border-bottom: 1px solid var(--clr-neutral-300);
+        width: 100%;
+    }
+    .col-md-3 {
+        background: var(--clr-neutral-200);
+        border-right: 1px solid var(--clr-neutral-300);
+    }
+    [class^="col-"] {
+        min-height: 2.8125rem;
+        padding: 0.5rem 0.5rem;
+    }
+}

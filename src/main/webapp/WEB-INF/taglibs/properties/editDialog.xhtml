@@ -7,6 +7,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:button="http://goobi.io/button"
     xmlns:properties="http://goobi.io/properties"
     xmlns:dialog="http://goobi.io/dialog"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
@@ -253,80 +254,78 @@
             </c:forEach>
         </dialog:body>
         <dialog:footer>
-            <h:panelGroup>
-                <div class="box__actions">
-                    <f:ajax
-                        execute="propertyEditArea propertyForm"
-                        render="propertyEditArea propertyForm">
+            <button:row styleClass="ms-auto p-3">
+                <f:ajax
+                    execute="propertyEditArea propertyForm"
+                    render="propertyEditArea propertyForm">
+                    <c:if test="#{scope != 'batch'}">
+                        <!-- Delete -->
                         <button
-                            jsf:id="cancel"
-                            class="btn btn-blank"
-                            jsf:action="#{NavigationForm.Reload}"
-                            jsf:immediate="true">
-                            <h:outputText value="#{msgs.abbrechen}" />
-                            <c:if test="#{scope == 'batch'}">
-                                <f:setPropertyActionListener
-                                    target="#{BatchForm.modusBearbeiten}"
-                                    value="" />
-                            </c:if>
-                            <c:if test="#{scope != 'batch'}">
-                                <f:setPropertyActionListener
-                                    target="#{bean.modusBearbeiten}"
-                                    value="" />
-                            </c:if>
+                            jsf:id="delete"
+                            class="btn btn-hot trigger-delete"
+                            jsf:action="#{bean.deleteProperty}"
+                            onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false">
+                            <f:setPropertyActionListener
+                                target="#{bean.modusBearbeiten}"
+                                value="" />
+                            <span class="fa fa-trash-o" />
+                            <span>
+                                <h:outputText value="#{msgs.loeschen}" />
+                            </span>
                         </button>
+                    </c:if>
+                    <button
+                        jsf:id="cancel"
+                        class="btn btn-blank"
+                        jsf:action="#{NavigationForm.Reload}"
+                        jsf:immediate="true">
+                        <h:outputText value="#{msgs.abbrechen}" />
                         <c:if test="#{scope == 'batch'}">
-                            <button
-                                jsf:id="saveAll"
-                                class="btn btn-success"
-                                jsf:action="#{bean.saveCurrentPropertyForAll}">
-                                <span class="fa fa-save" />
-                                <span>
-                                    <h:outputText value="#{msgs.applyToAllProcesses}" />
-                                </span>
-                                <f:setPropertyActionListener
-                                    target="#{BatchForm.modusBearbeiten}"
-                                    value="" />
-                            </button>
+                            <f:setPropertyActionListener
+                                target="#{BatchForm.modusBearbeiten}"
+                                value="" />
                         </c:if>
+                        <c:if test="#{scope != 'batch'}">
+                            <f:setPropertyActionListener
+                                target="#{bean.modusBearbeiten}"
+                                value="" />
+                        </c:if>
+                    </button>
+                    <c:if test="#{scope == 'batch'}">
                         <button
-                            jsf:id="save"
+                            jsf:id="saveAll"
                             class="btn btn-success"
-                            jsf:action="#{bean.saveCurrentProperty}">
+                            jsf:action="#{bean.saveCurrentPropertyForAll}">
                             <span class="fa fa-save" />
                             <span>
-                                <h:outputText value="#{scope == 'batch'? msgs.applyToThisProcess : msgs.speichern}" />
+                                <h:outputText value="#{msgs.applyToAllProcesses}" />
                             </span>
-                            <c:if test="#{scope == 'batch'}">
-                                <f:setPropertyActionListener
-                                    target="#{BatchForm.modusBearbeiten}"
-                                    value="" />
-                            </c:if>
-                            <c:if test="#{scope != 'batch'}">
-                                <f:setPropertyActionListener
-                                    target="#{bean.modusBearbeiten}"
-                                    value="" />
-                            </c:if>
+                            <f:setPropertyActionListener
+                                target="#{BatchForm.modusBearbeiten}"
+                                value="" />
                         </button>
-                        <c:if test="#{scope != 'batch'}">
-                            <!-- Delete -->
-                            <button
-                                jsf:id="delete"
-                                class="btn btn-hot trigger-delete"
-                                jsf:action="#{bean.deleteProperty}"
-                                onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false">
-                                <f:setPropertyActionListener
-                                    target="#{bean.modusBearbeiten}"
-                                    value="" />
-                                <span class="fa fa-trash-o" />
-                                <span>
-                                    <h:outputText value="#{msgs.loeschen}" />
-                                </span>
-                            </button>
+                    </c:if>
+                    <button
+                        jsf:id="save"
+                        class="btn btn-success"
+                        jsf:action="#{bean.saveCurrentProperty}">
+                        <span class="fa fa-save" />
+                        <span>
+                            <h:outputText value="#{scope == 'batch'? msgs.applyToThisProcess : msgs.speichern}" />
+                        </span>
+                        <c:if test="#{scope == 'batch'}">
+                            <f:setPropertyActionListener
+                                target="#{BatchForm.modusBearbeiten}"
+                                value="" />
                         </c:if>
-                    </f:ajax>
-                </div>
-            </h:panelGroup>
+                        <c:if test="#{scope != 'batch'}">
+                            <f:setPropertyActionListener
+                                target="#{bean.modusBearbeiten}"
+                                value="" />
+                        </c:if>
+                    </button>
+                </f:ajax>
+            </button:row>
         </dialog:footer>
     </h:form>
 </ui:composition>

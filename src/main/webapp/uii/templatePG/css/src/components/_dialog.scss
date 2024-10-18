@@ -10,6 +10,7 @@
 }
 
 .dialog-modal {
+    background: transparent;
     border: 0;
     border-radius: var(--border-radius);
     margin: 2rem auto;
@@ -18,8 +19,20 @@
     padding: 0;
     position: fixed;
     top: 2rem;
+    width: unset;
     &::backdrop {
         background-color: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(3px);
     }
+}
+
+.dialog-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dialog-footer {
+    background: var(--clr-white);
+    display: flex;
 }
