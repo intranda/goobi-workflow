@@ -7,7 +7,7 @@
     <namespace>http://goobi.io/section</namespace>
     <tag>
         <tag-name>section</tag-name>
-        <source>taglibs/section/section.xhtml</source>
+        <source>section/section.xhtml</source>
         <attribute>
             <description>Determines the type of the section</description>
             <name>type</name>
@@ -29,7 +29,7 @@
     </tag>
     <tag>
         <tag-name>header</tag-name>
-        <source>taglibs/section/header.xhtml</source><attribute>
+        <source>section/header.xhtml</source><attribute>
             <description>The heading of the section</description>
             <name>title</name>
             <required>true</required>
@@ -43,10 +43,10 @@
     </tag>
     <tag>
         <tag-name>body</tag-name>
-        <source>taglibs/section/body.xhtml</source>
+        <source>section/body.xhtml</source>
     </tag>
     <tag>
         <tag-name>footer</tag-name>
-        <source>taglibs/section/footer.xhtml</source>
+        <source>section/footer.xhtml</source>
     </tag>
 </facelet-taglib>

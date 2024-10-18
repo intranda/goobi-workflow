@@ -7,7 +7,7 @@
     <namespace>http://goobi.io/properties</namespace>
     <tag>
         <tag-name>group</tag-name>
-        <source>taglibs/properties/group.xhtml</source>
+        <source>properties/group.xhtml</source>
         <attribute>
             <description>The name of the group</description>
             <name>group</name>
@@ -41,7 +41,7 @@
     </tag>
     <tag>
         <tag-name>property</tag-name>
-        <source>taglibs/properties/property.xhtml</source>
+        <source>properties/property.xhtml</source>
         <attribute>
             <description></description>
             <name>property</name>
@@ -63,11 +63,11 @@
     </tag>
     <tag>
         <tag-name>properties</tag-name>
-        <source>taglibs/properties/properties.xhtml</source>
+        <source>properties/properties.xhtml</source>
     </tag>
     <tag>
         <tag-name>wrapper</tag-name>
-        <source>taglibs/properties/wrapper.xhtml</source>
+        <source>properties/wrapper.xhtml</source>
         <attribute>
             <description>The name of the bean carrying information on the properties</description>
             <name>bean</name>
@@ -76,7 +76,7 @@
     </tag>
     <tag>
         <tag-name>editDialog</tag-name>
-        <source>taglibs/properties/editDialog.xhtml</source>
+        <source>properties/editDialog.xhtml</source>
         <attribute>
             <description>The name of the bean carrying information on the properties</description>
             <name>bean</name>

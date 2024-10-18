@@ -7,7 +7,7 @@
     <namespace>http://goobi.io/button</namespace>
     <tag>
         <tag-name>row</tag-name>
-        <source>taglibs/button/row.xhtml</source>
+        <source>button/row.xhtml</source>
         <attribute>
             <description>One or more HTML classes to pass through to the component</description>
             <name>styleClass</name>
