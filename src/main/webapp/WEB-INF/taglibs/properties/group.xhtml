@@ -41,40 +41,15 @@
                                     class="fa fa-plus" />
                             </button>
                         </c:if>
-                        <c:if test="#{scope == 'process' and !add}">
-                            <button
-                                class="btn d-flex align-items-center btn--title-action-neutral"
-                                data-bs-toggle="tooltip"
-                                jsf:action="process_edit"
-                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
-                                title="#{msgs.bearbeiten}"
-                                jsf:id="editProperty2">
-                                <span
-                                    aria-hidden="true"
-                                    class="fa fa-pencil" />
-                                <f:setPropertyActionListener
-                                    target="#{bean.container}"
-                                    value="#{container}" />
-                                <f:setPropertyActionListener
-                                    target="#{bean.modusBearbeiten}"
-                                    value="eigenschaft" />
-                            </button>
-                            <button
-                                class="btn d-flex align-items-center btn--title-action-neutral"
-                                data-bs-toggle="tooltip"
-                                jsf:id="duplicateProperty2"
-                                aria-label="#{msgs.duplicate}"
-                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
-                                jsf:action="#{bean.duplicateContainer}"
-                                title="#{msgs.duplicate}">
-                                <span
-                                    aria-hidden="true"
-                                    class="fa fa-clipboard" />
-                                <f:setPropertyActionListener
-                                    target="#{bean.container}"
-                                    value="#{container}" />
-                            </button>
-                        </c:if>
+                    </f:ajax>
+                    <f:ajax
+                        execute="propertyEditArea propertyForm"
+                        render="propertyEditArea propertyForm"
+                        onevent="(data) => {
+                            if (data.status === 'success') {
+                                document.querySelector('#propertyEditModal').showModal();
+                            }
+                        }">
                         <c:if test="#{scope == 'step'}">
                             <button
                                 class="btn d-flex align-items-center btn--title-action-neutral"
@@ -114,6 +89,46 @@
                                 <f:setPropertyActionListener
                                     target="#{BatchForm.modusBearbeiten}"
                                     value="eigenschaft" />
+                            </button>
+                        </c:if>
+                        <c:if test="#{scope == 'process' and !add}">
+                            <button
+                                class="btn d-flex align-items-center btn--title-action-neutral"
+                                data-bs-toggle="tooltip"
+                                jsf:action="process_edit"
+                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
+                                title="#{msgs.bearbeiten}"
+                                jsf:id="editProperty2">
+                                <f:setPropertyActionListener
+                                    target="#{bean.container}"
+                                    value="#{container}" />
+                                <f:setPropertyActionListener
+                                    target="#{bean.modusBearbeiten}"
+                                    value="eigenschaft" />
+                                <span
+                                    aria-hidden="true"
+                                    class="fa fa-pencil" />
+                            </button>
+                        </c:if>
+                    </f:ajax>
+                    <f:ajax
+                        execute="propertyEditArea propertyForm"
+                        render="propertyEditArea propertyForm">
+                        <c:if test="#{scope == 'process' and !add}">
+                            <button
+                                class="btn d-flex align-items-center btn--title-action-neutral"
+                                data-bs-toggle="tooltip"
+                                jsf:id="duplicateProperty2"
+                                aria-label="#{msgs.duplicate}"
+                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
+                                jsf:action="#{bean.duplicateContainer}"
+                                title="#{msgs.duplicate}">
+                                <span
+                                    aria-hidden="true"
+                                    class="fa fa-clipboard" />
+                                <f:setPropertyActionListener
+                                    target="#{bean.container}"
+                                    value="#{container}" />
                             </button>
                         </c:if>
                     </f:ajax>

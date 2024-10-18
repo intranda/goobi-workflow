@@ -55,7 +55,12 @@
         <c:if test="#{editable and LoginForm.hasRole('Workflow_General_Details_Edit')}">
             <button:row styleClass="ms-auto">
                 <f:ajax
-                    render="propertyEditArea">
+                    render="propertyEditArea"
+                    onevent="(data) => {
+                        if (data.status === 'success') {
+                            document.querySelector('#propertyEditModal').showModal();
+                        }
+                    }">
                     <c:if test="#{scope == 'batch'}">
                         <button
                             class="btn btn-blank"
@@ -102,6 +107,9 @@
                                 value="eigenschaft" />
                         </button>
                     </c:if>
+                </f:ajax>
+                <f:ajax
+                    render="propertyEditArea">
                     <button
                         jsf:action="#{bean.duplicateProperty}"
                         class="btn btn-blank"

@@ -5,8 +5,10 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:properties="http://goobi.io/properties"
+    xmlns:dialog="http://goobi.io/dialog"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 >
     <c:set var="scope" value="#{
@@ -14,18 +16,11 @@
         : fn:contains(bean, 'BatchProcessHelper')? 'batch'
         : 'process'
     }" />
-    <style>
-        .dialog {
-            position: fixed;
-            left: 0;
-            margin: auto;
-            bottom: 0;
-        }
-    </style>
+    <dialog:header icon="pencil" title="#{msgs.eigenschaftBearbeiten}"></dialog:header>
     <h:form
         id="processEditForm"
         onkeypress="submitOnEnter(event);">
-        <dialog open="" class="dialog">
+        <dialog:body>
             <c:forEach
                 var="myprocess_item"
                 items="#{bean.containerProperties}">
@@ -36,7 +31,8 @@
                             label="#{msgs.titel}"
                             field="#{myprocess_item.name}"
                             help="#{msgs.helpPropertyTitle}"
-                            required="true" />
+                            required="true"
+                            pt:autofocus="true" />
                     </h:panelGroup>
                 </h:panelGroup>
                 <!-- text -->
@@ -255,6 +251,8 @@
                     </div>
                 </h:panelGroup>
             </c:forEach>
+        </dialog:body>
+        <dialog:footer>
             <h:panelGroup>
                 <div class="box__actions">
                     <f:ajax
@@ -329,6 +327,6 @@
                     </f:ajax>
                 </div>
             </h:panelGroup>
-        </dialog>
+        </dialog:footer>
     </h:form>
 </ui:composition>

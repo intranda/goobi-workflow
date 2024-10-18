@@ -9,7 +9,7 @@
 
 .group-count-uneven {
     .properties-group:first-of-type {
-        grid-column: 1 / -1;
+        // grid-column: 1 / -1;
     }
 }
 
@@ -19,19 +19,19 @@
     }
 }
 
-@container properties-form (min-width: 1300px) {
-    .properties-wrapper.group-count-uneven {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-}
+// @container properties-form (min-width: 1300px) {
+//     .properties-wrapper.group-count-uneven {
+//         grid-template-columns: 1fr 1fr 1fr;
+//     }
+// }
 
-@container properties-form (min-width: 1600px) {
-    .properties-wrapper {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
-    .group-count-uneven {
-        .properties-group:first-of-type {
-            grid-column: auto;
-        }
-    }
-}
+// @container properties-form (min-width: 1600px) {
+//     .properties-wrapper {
+//         grid-template-columns: 1fr 1fr 1fr 1fr;
+//     }
+//     .group-count-uneven {
+//         .properties-group:first-of-type {
+//             grid-column: auto;
+//         }
+//     }
+// }
