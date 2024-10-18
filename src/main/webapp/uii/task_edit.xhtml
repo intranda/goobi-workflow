@@ -87,20 +87,20 @@
 	            		</intranda:box>
             		</h:panelGroup>
         			<!-- // IMAGE COMMENTS -->
-                    <!-- ACTION BOX -->
-                    <ui:include src="templatePG/includes/task/box_action.xhtml">
-                        <ui:param
-                            name="currentStep"
-                            value="#{AktuelleSchritteForm.mySchritt}" />
-                        <ui:param
-                            name="bean"
-                            value="#{AktuelleSchritteForm}" />
-                    </ui:include>
-                    <!-- // ACTION BOX -->
                     <!-- PROPERTIES -->
-                     <div class="mt-3">
+                     <div class="mb-3">
                          <properties:wrapper bean="#{AktuelleSchritteForm}" />
                      </div>
+                     <!-- ACTION BOX -->
+                     <ui:include src="templatePG/includes/task/box_action.xhtml">
+                         <ui:param
+                             name="currentStep"
+                             value="#{AktuelleSchritteForm.mySchritt}" />
+                         <ui:param
+                             name="bean"
+                             value="#{AktuelleSchritteForm}" />
+                     </ui:include>
+                     <!-- // ACTION BOX -->
                 </div>
                 <!-- // RIGHT AREA WITH ACTION BOXES AND PROPERTIES -->
 
