@@ -9,6 +9,7 @@ pipeline {
 
   stages {
     stage('prepare') {
+      agent any
       steps {
         sh 'git reset --hard HEAD && git clean -fdx'
       }
@@ -212,6 +213,7 @@ pipeline {
       }
     }
     stage('trigger docker build') {
+      agent any
       when { 
         anyOf {
           branch 'master'
