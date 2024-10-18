@@ -21,7 +21,12 @@
                 <div class="actions d-flex">
                     <f:ajax
                         execute="propertyEditArea propertyForm"
-                        render="propertyEditArea propertyForm">
+                        render="propertyEditArea propertyForm"
+                        onevent="(data) => {
+                            if (data.status === 'success') {
+                                document.querySelector('#propertyEditModal').showModal();
+                            }
+                        }">
                         <c:if test="#{add and scope != 'batch'}">
                             <button
                                 jsf:action="#{bean.createNewProperty}"
@@ -41,15 +46,6 @@
                                     class="fa fa-plus" />
                             </button>
                         </c:if>
-                    </f:ajax>
-                    <f:ajax
-                        execute="propertyEditArea propertyForm"
-                        render="propertyEditArea propertyForm"
-                        onevent="(data) => {
-                            if (data.status === 'success') {
-                                document.querySelector('#propertyEditModal').showModal();
-                            }
-                        }">
                         <c:if test="#{scope == 'step'}">
                             <button
                                 class="btn d-flex align-items-center btn--title-action-neutral"
