@@ -19,6 +19,8 @@
 @use "components/badges";
 @use "components/breadcrumbs";
 @use "components/boxes";
+@use "components/definition-list";
+@use "components/dialog";
 @use "components/dropdowns";
 @use "components/footer";
 @use "components/tables-custom";
@@ -30,7 +32,8 @@
 @use "components/switcher";
 @use "components/buttons";
 @use "components/journal";
-@use "components/modals";
+@use "components/properties";
+@use "components/section";
 @use "components/toasts-custom";
 @use "components/tooltip-custom";
 @use "components/file-upload";

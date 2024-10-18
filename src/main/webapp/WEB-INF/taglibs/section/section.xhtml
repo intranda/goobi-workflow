@@ -1,0 +1,23 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+>
+    <c:if test="#{id}">
+        <f:subview id="#{id}">
+            <h:panelGroup
+                layout="block"
+                styleClass="box box--#{type} #{styleClass}">
+                <ui:insert />
+            </h:panelGroup>
+        </f:subview>
+    </c:if>
+    <c:if test="#{!id}">
+        <div
+            class="box box--#{type} #{styleClass}">
+            <ui:insert />
+        </div>
+    </c:if>
+</ui:composition>

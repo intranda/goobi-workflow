@@ -1,0 +1,8 @@
+.section-footer {
+    --section-padding: var(--box-padding);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+    margin: var(--section-padding);
+}

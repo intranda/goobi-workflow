@@ -1,0 +1,133 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:button="http://goobi.io/button"
+>
+    <c:set var="scope" value="#{
+        fn:contains(bean, 'StepBean') ? 'step'
+        : fn:contains(bean, 'BatchProcessHelper')? 'batch'
+        : 'process'
+    }" />
+    <dt class="definition-list-term">
+        #{property.name}
+    </dt>
+    <dd class="definition-list-description">
+        <c:forEach
+            var="val"
+            items="#{property.valueList}"
+            rendered="#{property.type.name == 'listmultiselect'}">
+            <h:outputText
+                value="#{val}"
+                styleClass="badge badge-no-radius badge-light-grey" />
+        </c:forEach>
+        <h:outputText
+            value="#{property.readValue}"
+            rendered="#{property.type.name == 'html'}"
+            escape="false" />
+        <h:outputText
+            value="#{property.readValue}"
+            rendered="#{property.type.name != 'link' and property.type.name != 'boolean' and property.type.name != 'html' and property.type.name != 'listmultiselect'}" />
+        <h:outputLink
+            pt:aria-label="#{property.name}"
+            pt:data-bs-toggle="tooltip"
+            value="#{property.readValue}"
+            title="#{property.readValue}"
+            target="_blank"
+            rendered="#{property.type.name == 'link'}">
+            <h:outputText value="#{property.readValue}" />
+        </h:outputLink>
+        <h:panelGroup rendered="#{property.type.name == 'boolean'}">
+            <h:panelGroup rendered="#{property.readValue eq 'true'}">
+                <span
+                    aria-hidden="true"
+                    class="fa fa-check-square-o fa-lg" />
+            </h:panelGroup>
+            <h:panelGroup rendered="#{property.readValue ne 'true'}">
+                <span
+                    aria-hidden="true"
+                    class="fa fa-square-o fa-lg" />
+            </h:panelGroup>
+        </h:panelGroup>
+        <c:if test="#{editable and LoginForm.hasRole('Workflow_General_Details_Edit')}">
+            <button:row styleClass="ms-auto">
+                <f:ajax
+                    render="propertyEditArea"
+                    onevent="(data) => {
+                        if (data.status === 'success') {
+                            document.querySelector('#propertyEditModal').showModal();
+                        }
+                    }">
+                    <c:if test="#{scope == 'batch'}">
+                        <button
+                            class="btn btn-blank"
+                            data-bs-toggle="tooltip"
+                            jsf:action="batch_edit"
+                            title="#{msgs.bearbeiten}"
+                            jsf:id="editProperty"
+                            aria-label="#{msgs.bearbeiten}"
+                            jsf:rendered="#{proc.type.name != 'metadata'}">
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-pencil" />
+                            <f:setPropertyActionListener
+                                target="#{bean.processProperty}"
+                                value="#{property}" />
+                            <f:setPropertyActionListener
+                                target="#{bean.container}"
+                                value="0" />
+                            <f:setPropertyActionListener
+                                target="#{BatchForm.modusBearbeiten}"
+                                value="eigenschaft" />
+                        </button>
+                    </c:if>
+                    <c:if test="#{scope != 'batch'}">
+                        <button
+                            class="btn btn-blank"
+                            data-bs-toggle="tooltip"
+                            jsf:action="process_edit"
+                            title="#{msgs.bearbeiten}"
+                            jsf:id="editProperty"
+                            aria-label="#{msgs.bearbeiten}"
+                            jsf:rendered="#{proc.type.name != 'metadata'}">
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-pencil" />
+                            <f:setPropertyActionListener
+                                target="#{bean.processProperty}"
+                                value="#{property}" />
+                            <f:setPropertyActionListener
+                                target="#{bean.container}"
+                                value="0" />
+                            <f:setPropertyActionListener
+                                target="#{bean.modusBearbeiten}"
+                                value="eigenschaft" />
+                        </button>
+                    </c:if>
+                </f:ajax>
+                <f:ajax
+                    render="propertyEditArea">
+                    <button
+                        jsf:action="#{bean.duplicateProperty}"
+                        class="btn btn-blank"
+                        title="#{msgs.duplicate}"
+                        jsf:id="duplicateProperty"
+                        jsf:rendered="#{proc.type.name != 'metadata' and scope == 'process'}">
+                        <span
+                            aria-hidden="true"
+                            class="fa fa-clipboard" />
+                        <f:setPropertyActionListener
+                            target="#{bean.processProperty}"
+                            value="#{property}" />
+                        <f:setPropertyActionListener
+                            target="#{bean.container}"
+                            value="0" />
+                    </button>
+                </f:ajax>
+            </button:row>
+        </c:if>
+    </dd>
+</ui:composition>

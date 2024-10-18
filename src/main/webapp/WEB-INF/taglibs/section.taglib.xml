@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib
+    version="2.2"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd">
+    <namespace>http://goobi.io/section</namespace>
+    <tag>
+        <tag-name>section</tag-name>
+        <source>section/section.xhtml</source>
+        <attribute>
+            <description>Determines the type of the section</description>
+            <name>type</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Passes HTML classes to the component</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Provides an optional id if the section should have a clientID</description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>header</tag-name>
+        <source>section/header.xhtml</source>
+        <attribute>
+            <description>The heading of the section</description>
+            <name>title</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute><attribute>
+            <description>The icon to display before the heading</description>
+            <name>icon</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>body</tag-name>
+        <source>section/body.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>footer</tag-name>
+        <source>section/footer.xhtml</source>
+    </tag>
+</facelet-taglib>

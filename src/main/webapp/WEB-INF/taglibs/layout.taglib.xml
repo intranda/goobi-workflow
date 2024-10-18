@@ -7,6 +7,6 @@
     <namespace>http://goobi.io/layout</namespace>
     <tag>
         <tag-name>footer</tag-name>
-        <source>taglibs/layout/footer.xhtml</source>
+        <source>layout/footer.xhtml</source>
     </tag>
 </facelet-taglib>
