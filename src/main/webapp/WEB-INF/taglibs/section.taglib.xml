@@ -35,7 +35,8 @@
             <name>title</name>
             <required>true</required>
             <type>java.lang.String</type>
-        </attribute><attribute>
+        </attribute>
+        <attribute>
             <description>The icon to display before the heading</description>
             <name>icon</name>
             <required>false</required>
@@ -45,6 +46,12 @@
     <tag>
         <tag-name>body</tag-name>
         <source>section/body.xhtml</source>
+        <attribute>
+            <description>Whether the body should have padding</description>
+            <name>padding</name>
+            <required>true</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>footer</tag-name>

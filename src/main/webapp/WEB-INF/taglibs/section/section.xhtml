@@ -9,14 +9,14 @@
         <f:subview id="#{id}">
             <h:panelGroup
                 layout="block"
-                styleClass="box box--#{type} #{styleClass}">
+                styleClass="box box--#{type} #{styleClass} section">
                 <ui:insert />
             </h:panelGroup>
         </f:subview>
     </c:if>
     <c:if test="#{!id}">
         <div
-            class="box box--#{type} #{styleClass}">
+            class="box box--#{type} #{styleClass} section">
             <ui:insert />
         </div>
     </c:if>
