@@ -8,6 +8,14 @@
   --width-table-col: 100px;
 }
 
+.gw-table-wrapper:has(.gw-table__search) {
+  padding: var(--box-padding);
+  padding-block-start: 0;
+  .table {
+    border-inline: 1px solid var(--clr-neutral-300);
+  }
+}
+
 // workaround for overflowing tables that can't use fixed width
 .table-width {
   hyphens: auto;

@@ -41,6 +41,7 @@
             /WEB-INF/taglibs/notification.taglib.xml;
             /WEB-INF/taglibs/properties.taglib.xml;
             /WEB-INF/taglibs/section.taglib.xml;
+            /WEB-INF/taglibs/table.taglib.xml;
         </param-value>
     </context-param>
     <servlet>
