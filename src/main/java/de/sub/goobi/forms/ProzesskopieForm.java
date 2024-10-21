@@ -777,21 +777,33 @@ public class ProzesskopieForm implements Serializable {
     }
 
     private void fillTemplateFromMetadata(List<Metadata> topstruct, List<Metadata> firstChild) {
+        List<Metadata> toRemove = new ArrayList<>(topstruct.size());
         for (Metadata m : topstruct) {
-            this.additionalFields.stream()
+            Optional<AdditionalField> additionalField = this.additionalFields.stream()
                     .filter(f -> "topstruct".equals(f.getDocstruct()))
                     .filter(f -> f.getMetadata() != null && f.getMetadata().equals(m.getType().getName()))
-                    .findFirst()
-                    .ifPresent(f -> setFieldValue(f, m.getValue()));
+                    .findFirst();
+            if (additionalField.isPresent()) {
+                setFieldValue(additionalField.get(), m.getValue());
+                toRemove.add(m);
+            }
         }
+        // We need to remove all metadata that are saved into additional fields, because they would be possibly added twice in the end
+        toRemove.forEach(topstruct::remove);
 
+        toRemove = new ArrayList<>(firstChild.size());
         for (Metadata m : firstChild) {
-            this.additionalFields.stream()
+            Optional<AdditionalField> additionalField = this.additionalFields.stream()
                     .filter(f -> "firstchild".equals(f.getDocstruct()))
                     .filter(f -> f.getMetadata() != null && f.getMetadata().equals(m.getType().getName()))
-                    .findFirst()
-                    .ifPresent(f -> setFieldValue(f, m.getValue()));
+                    .findFirst();
+            if (additionalField.isPresent()) {
+                setFieldValue(additionalField.get(), m.getValue());
+                toRemove.add(m);
+            }
         }
+        // We need to remove all metadata that are saved into additional fields, because they would be possibly added twice in the end
+        toRemove.forEach(topstruct::remove);
     }
 
     private void setFieldValue(AdditionalField field, String value) {
