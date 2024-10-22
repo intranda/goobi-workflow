@@ -142,6 +142,10 @@ public class VocabularyRecordAPI {
         return new ExtendedVocabularyRecord(restApi.get(url, VocabularyRecord.class));
     }
 
+    VocabularyRecord getPrimitive(long id) {
+        return restApi.get(INSTANCE_ENDPOINT, VocabularyRecord.class, id);
+    }
+
     public ExtendedVocabularyRecord save(VocabularyRecord vocabularyRecord) {
         cleanUpRecord(vocabularyRecord);
         if (Boolean.TRUE.equals(vocabularyRecord.getMetadata())) {
