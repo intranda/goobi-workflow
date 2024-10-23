@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -58,7 +59,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.UriBuilder;
 
-import de.intranda.digiverso.ocr.alto.model.structureclasses.logical.AltoDocument;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -88,6 +88,7 @@ import org.omnifaces.util.Faces;
 
 import com.google.gson.Gson;
 
+import de.intranda.digiverso.ocr.alto.model.structureclasses.logical.AltoDocument;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -5229,20 +5230,31 @@ public class Metadaten implements Serializable {
 
         List<AuthorityData> authorityList = new ArrayList<>();
         for (Person person : persons) {
-            AuthorityData data =
-                    new AuthorityData(person.getDisplayname(),
-                            URI.create(Optional.ofNullable(person.getAuthorityURI()).orElse("")).resolve(person.getAuthorityValue()).toString());
-            authorityList.add(data);
+            try {
+                AuthorityData data = new AuthorityData(person.getDisplayname(),
+                        new URI(Optional.ofNullable(person.getAuthorityURI()).orElse("")).resolve(person.getAuthorityValue()).toString());
+                authorityList.add(data);
+            } catch (URISyntaxException | IllegalArgumentException e) {
+                log.error("Cannot add authority data '{}' to ALTO editor: {}", person.getAuthorityValue(), e.toString());
+            }
         }
         for (Corporate corporate : corporates) {
-            AuthorityData data = new AuthorityData(corporate.getMainName(),
-                    URI.create(Optional.ofNullable(corporate.getAuthorityURI()).orElse("")).resolve(corporate.getAuthorityValue()).toString());
-            authorityList.add(data);
+            try {
+                AuthorityData data = new AuthorityData(corporate.getMainName(),
+                        new URI(Optional.ofNullable(corporate.getAuthorityURI()).orElse("")).resolve(corporate.getAuthorityValue()).toString());
+                authorityList.add(data);
+            } catch (URISyntaxException | IllegalArgumentException e) {
+                log.error("Cannot add authority data '{}' to ALTO editor: {}", corporate.getAuthorityValue(), e.toString());
+            }
         }
         for (Metadata md : metadata) {
-            AuthorityData data = new AuthorityData(md.getValue(),
-                    URI.create(Optional.ofNullable(md.getAuthorityURI()).orElse("")).resolve(md.getAuthorityValue()).toString());
-            authorityList.add(data);
+            try {
+                AuthorityData data = new AuthorityData(md.getValue(),
+                        new URI(Optional.ofNullable(md.getAuthorityURI()).orElse("")).resolve(md.getAuthorityValue()).toString());
+                authorityList.add(data);
+            } catch (URISyntaxException | IllegalArgumentException e) {
+                log.error("Cannot add authority data '{}' to ALTO editor: {}", md.getAuthorityValue(), e.toString());
+            }
         }
 
         Collections.sort(authorityList,
