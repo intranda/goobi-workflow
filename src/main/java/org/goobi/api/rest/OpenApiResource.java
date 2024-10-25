@@ -50,6 +50,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import io.swagger.v3.oas.models.servers.Server;
+import org.goobi.production.GoobiVersion;
 
 /**
  * @author florian
@@ -123,7 +124,8 @@ public class OpenApiResource {
                         .email("info@intranda.com"))
                 .license(new License()
                         .name("GPL2 or later")
-                        .url("https://github.com/intranda/goobi-workflow/blob/master/LICENSE"));
+                        .url("https://github.com/intranda/goobi-workflow/blob/master/LICENSE"))
+                .version(GoobiVersion.getVersion());
     }
 
 }
