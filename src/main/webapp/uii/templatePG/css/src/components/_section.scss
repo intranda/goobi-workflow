@@ -2,6 +2,10 @@
     --section-padding: var(--box-padding);
 }
 
+.section-header-actions {
+    display: flex;
+}
+
 .section-footer {
     display: flex;
     flex-wrap: wrap;

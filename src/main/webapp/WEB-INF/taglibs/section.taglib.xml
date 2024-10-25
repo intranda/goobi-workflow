@@ -44,6 +44,10 @@
         </attribute>
     </tag>
     <tag>
+        <tag-name>header-actions</tag-name>
+        <source>section/header-actions.xhtml</source>
+    </tag>
+    <tag>
         <tag-name>body</tag-name>
         <source>section/body.xhtml</source>
         <attribute>
