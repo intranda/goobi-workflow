@@ -52,3 +52,11 @@
     content: "\f05a"; // info-circle
   }
 }
+
+.alert-success {
+  --alert-color: var(--clr-success);
+  background: hsla(from var(--clr-success) h s l / 20%);
+  &::before {
+    content: "\f058"; // check-circle
+  }
+}
