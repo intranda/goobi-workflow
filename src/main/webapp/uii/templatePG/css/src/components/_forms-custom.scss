@@ -1,7 +1,7 @@
 input,
 select,
 textarea {
-  &:hover {
+  &:not(.btn):hover {
     border-color: var(--clr-primary-400) !important;
   }
   &[type="checkbox"] {
@@ -17,7 +17,8 @@ textarea {
 }
 
 .form-control,
-.form-select {
+.form-select,
+.input-group-text {
   font-size: var(--fs-400)
 }
 
