@@ -22,6 +22,16 @@
         <source>table/search.xhtml</source>
     </tag>
     <tag>
+        <tag-name>table</tag-name>
+        <source>table/table.xhtml</source>
+        <attribute>
+            <description>Provides an optional id if the component should have a one</description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
         <tag-name>wrapper</tag-name>
         <source>table/wrapper.xhtml</source>
     </tag>
