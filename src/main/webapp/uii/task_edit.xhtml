@@ -88,8 +88,8 @@
             		</h:panelGroup>
         			<!-- // IMAGE COMMENTS -->
                     <!-- PROPERTIES -->
-                     <div class="mb-3">
-                         <properties:wrapper bean="#{AktuelleSchritteForm}" />
+                     <div class="#{AktuelleSchritteForm.containerList.size() gt 0 ? 'mb-3' : ''}">
+                        <properties:wrapper bean="#{AktuelleSchritteForm}" />
                      </div>
                      <!-- ACTION BOX -->
                      <ui:include src="templatePG/includes/task/box_action.xhtml">
