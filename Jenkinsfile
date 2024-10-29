@@ -235,7 +235,7 @@ pipeline {
             if (env.GIT_BRANCH == 'origin/develop' || env.GIT_BRANCH == 'develop') {
               dockerimage_public.push("develop")
             }
-            if (!latestTag == '' ) {
+            if (latestTag != '') {
               dockerimage_public.push(latestTag)
             }
           }
