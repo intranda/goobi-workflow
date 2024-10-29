@@ -459,7 +459,7 @@ public class ProzesskopieForm implements Serializable {
         List<HierarchicalConfiguration> parameterList = item.configurationsAt("select");
         /* Children durchlaufen und SelectItems erzeugen */
 
-        fa.setMultiselect(item.getBoolean("@multiselect", true));
+        fa.setMultiselect(item.getBoolean("@multiselect", false));
 
         if (parameterList.size() == 1) {
             fa.setWert(parameterList.get(0).getString("."));
