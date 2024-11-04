@@ -5,6 +5,7 @@ import io.goobi.vocabulary.exchange.FieldInstance;
 import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
+import io.goobi.workflow.api.vocabulary.hateoas.PlainVocabularyRecordPageResult;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
 import io.goobi.workflow.api.vocabulary.helper.CachedLookup;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
@@ -132,6 +133,12 @@ public class VocabularyRecordAPI {
         VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + params, VocabularyRecordPageResult.class, vocabularyId);
         result.getContent().forEach(r -> this.singleLookupCache.update(r.getId(), r));
         return result;
+    }
+
+    private PlainVocabularyRecordPageResult listPlain(long vocabularyId) {
+        String params = "all=1";
+
+        return restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + params, PlainVocabularyRecordPageResult.class, vocabularyId);
     }
 
     public ExtendedVocabularyRecord get(long id) {
