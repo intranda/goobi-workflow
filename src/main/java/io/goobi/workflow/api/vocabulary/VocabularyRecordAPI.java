@@ -1,5 +1,15 @@
 package io.goobi.workflow.api.vocabulary;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.faces.model.SelectItem;
+
 import io.goobi.vocabulary.exception.VocabularyException;
 import io.goobi.vocabulary.exchange.FieldInstance;
 import io.goobi.vocabulary.exchange.FieldValue;
@@ -11,15 +21,6 @@ import io.goobi.workflow.api.vocabulary.helper.CachedLookup;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.extern.log4j.Log4j2;
-
-import javax.faces.model.SelectItem;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Log4j2
 public class VocabularyRecordAPI {
@@ -105,7 +106,8 @@ public class VocabularyRecordAPI {
         return new VocabularyRecordQueryBuilder(vocabularyId);
     }
 
-    private VocabularyRecordPageResult list(long vocabularyId, Optional<Integer> size, Optional<Integer> page, Optional<String> sorting, Optional<String> search, Optional<Boolean> all) {
+    private VocabularyRecordPageResult list(long vocabularyId, Optional<Integer> size, Optional<Integer> page, Optional<String> sorting,
+            Optional<String> search, Optional<Boolean> all) {
         String params = "";
         if (size.isPresent()) {
             params += params.isEmpty() ? "?" : "&";
@@ -135,8 +137,8 @@ public class VocabularyRecordAPI {
         return result;
     }
 
-    private PlainVocabularyRecordPageResult listPlain(long vocabularyId) {
-        String params = "all=1";
+    public PlainVocabularyRecordPageResult listPlain(long vocabularyId) {
+        String params = "?all=1";
 
         return restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + params, PlainVocabularyRecordPageResult.class, vocabularyId);
     }
@@ -173,7 +175,8 @@ public class VocabularyRecordAPI {
             vocabularyRecord.setVocabularyId(null);
             vocabularyRecord.setParentId(null);
             if (parentId == null) {
-                newRecord = new ExtendedVocabularyRecord(restApi.post(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyId));
+                newRecord = new ExtendedVocabularyRecord(
+                        restApi.post(IN_VOCABULARY_RECORDS_ENDPOINT, VocabularyRecord.class, vocabularyRecord, vocabularyId));
             } else {
                 newRecord = new ExtendedVocabularyRecord(restApi.post(INSTANCE_ENDPOINT, VocabularyRecord.class, vocabularyRecord, parentId));
                 this.singleLookupCache.invalidate(parentId);
