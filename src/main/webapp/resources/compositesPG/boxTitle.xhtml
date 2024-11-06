@@ -17,7 +17,7 @@
 		<div class="box__title">
 			<h2>
 				<!-- Do not render icon if cc.attrs.icon is undefined -->
-				<span class="fa #{cc.attrs.icon} "
+				<span aria-hidden="true" class="fa #{cc.attrs.icon} "
 					jsf:rendered="#{cc.attrs.icon !='undefined'}" />
 				<h:outputText value="#{cc.attrs.title}" />
 			</h2>
