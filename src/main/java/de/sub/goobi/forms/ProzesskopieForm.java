@@ -464,7 +464,8 @@ public class ProzesskopieForm implements Serializable {
         if (parameterList.size() == 1) {
             fa.setWert(parameterList.get(0).getString("."));
             fa.setMultiselect(false);
-        } else if (!parameterList.isEmpty()) {
+        }
+        if (!parameterList.isEmpty()) {
             fa.setSelectList(parameterList.stream()
                     .map(hc -> new SelectItem(hc.getString("."), hc.getString("@label"), null))
                     .toList());
