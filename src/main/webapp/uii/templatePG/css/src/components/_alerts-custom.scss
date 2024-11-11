@@ -53,10 +53,26 @@
   }
 }
 
+.alert-secondary {
+  --alert-color: #383d41;
+  background: hsla(from var(--clr-neutral-400) h s l / 20%);
+  &::before {
+    content: "\f05a"; // info-circle
+  }
+}
+
 .alert-success {
   --alert-color: var(--clr-success);
   background: hsla(from var(--clr-success) h s l / 20%);
   &::before {
     content: "\f058"; // check-circle
+  }
+}
+
+.alert-warning {
+  --alert-color: var(--clr-action);
+  background: hsla(from var(--clr-action) h s l / 20%);
+  &::before {
+    content: "\f071"; // exclamation-triangle
   }
 }
