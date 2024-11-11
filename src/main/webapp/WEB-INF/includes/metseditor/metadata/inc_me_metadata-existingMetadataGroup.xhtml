@@ -1,0 +1,233 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <h:panelGroup
+            rendered="#{!(Metadaten.sizeOfMetadataGroups==0 and empty Metadaten.groups)}"
+            layout="block"
+            id="meEditGroupBox"
+            styleClass="module module__box module__box--collapsable #{!empty Metadaten.groups or Metadaten.sizeOfMetadataGroups!=0 ?'module__box--gray':'module__box--white'}">
+            <div class="module__box-title">
+                <h1>
+                    <i
+                        class="fa fa-bars"
+                        aria-hidden="true"></i>
+                    <span>#{msgs.metadataGroups}</span>
+                    <button
+                        type="button"
+                        aria-label="#{msgs.minimizeBox}"
+                        class="btn btn--clean"
+                        data-toggle="box-body">
+                        <i
+                            class="fa fa-angle-up fa-lg"
+                            aria-hidden="true"></i>
+                    </button>
+                </h1>
+            </div>
+            <div class="module__box-body">
+                <h:outputText
+                    value="#{msgs.mets_no_metadatagroups_assigned}"
+                    rendered="#{empty Metadaten.groups}" />
+
+                <x:dataList
+                    id="groupList"
+                    var="Item"
+                    value="#{Metadaten.groups}"
+                    rowCountVar="rowCount"
+                    rowIndexVar="rowIndex">
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="module__box-group module__box-level-#{Item.level}">
+                        <!--                     <h:outputText value="#{msgs.id}: #{Item.metadataGroupId}" /> -->
+                        <!--                     <br/> -->
+                        <!--                     <h:outputText value="#{msgs.parentId}: #{Item.parentGroupId}" rendered="#{Item.parentGroupId != null}" /> -->
+                        <!--                     <br/> -->
+                        <div class="btn-area duplicate pull-right">
+                            <button
+                                jsf:id="grpdelete"
+                                aria-label="#{msgs.mets_deleteMetadataGroup}"
+                                class="btn btn--icon btn--icon-light"
+                                jsf:action="#{Metadaten.deleteGroup}"
+                                title="#{msgs.mets_deleteMetadataGroup}"
+                                type="button">
+                                <i
+                                    class="fa fa-lg fa-trash-o"
+                                    aria-hidden="true"></i>
+                                <x:updateActionListener
+                                    property="#{Metadaten.currentGroup}"
+                                    value="#{Item}" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="@form" />
+                            </button>
+                            <button
+                                jsf:id="grpduplicate"
+                                aria-label="#{msgs.mets_duplicateMetadataGroup}"
+                                class="btn btn--icon btn--icon-light"
+                                jsf:action="#{Metadaten.CopyGroup}"
+                                title="#{msgs.mets_duplicateMetadataGroup}"
+                                type="button">
+                                <i
+                                    class="fa fa-lg fa-copy"
+                                    aria-hidden="true"></i>
+                                <x:updateActionListener
+                                    property="#{Metadaten.currentGroup}"
+                                    value="#{Item}" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="@form" />
+                            </button>
+                        </div>
+                        <h2 class="module__box-subtitle">
+                            <h:outputText value="#{Item.name}" />
+                        </h2>
+                        <div class="row">
+                            <div class="col-12">
+                                <x:dataList
+                                    id="grpMdList"
+                                    var="metadata"
+                                    value="#{Item.metadataList}"
+                                    rowCountVar="varCount"
+                                    rowIndexVar="varIndex">
+                                    <intranda:formGroupMetadata
+                                        id="grpMetadata"
+                                        metadata="#{metadata}"
+                                        renderDelete="true"
+                                        renderDuplicate="true" />
+                                </x:dataList>
+
+                                <x:dataList
+                                    id="grpPL"
+                                    var="currentPerson"
+                                    value="#{Item.personList}"
+                                    rowCountVar="varCount"
+                                    rowIndexVar="varIndex">
+                                    <intranda:formGroupPerson
+                                        id="grpPerson"
+                                        person="#{currentPerson}"
+                                        renderDelete="true" />
+                                </x:dataList>
+                                <x:dataList
+                                    id="grpCL"
+                                    var="currentCorporate"
+                                    value="#{Item.corporateList}"
+                                    rowCountVar="varCount"
+                                    rowIndexVar="varIndex">
+                                    <intranda:formGroupCorporate
+                                        id="grpCorporate"
+                                        corporate="#{currentCorporate}"
+                                        renderDelete="true"
+                                        changeRole="false"
+                                        index="#{rowIndex}" />
+                                </x:dataList>
+                            </div>
+                        </div>
+
+                        <ui:fragment rendered="#{Item.metadataAddable or Item.corporateAddable or Item.personAddable or Item.groupAddable}">
+                            <div class="row">
+                                <div class="col-auto mr-auto"></div>
+                                <div class="col-auto">
+                                    <button
+                                        class="btn btn--gray addable"
+                                        jsf:action="#{Metadaten.Hinzufuegen}"
+                                        jsf:rendered="#{Item.metadataAddable}"
+                                        type="button">
+                                        #{msgs.neuesMetadatumAnlegen}
+                                        <f:setPropertyActionListener
+                                            value="#{Item}"
+                                            target="#{Metadaten.currentGroup}" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:ajax render=":pageContentCenter" />
+                                    </button>
+
+                                    <button
+                                        class="btn btn--gray addable"
+                                        jsf:action="#{Metadaten.AddCorporate}"
+                                        jsf:rendered="#{Item.corporateAddable}"
+                                        type="button">
+                                        #{msgs.mets_corporate_createCorporate}
+                                        <f:setPropertyActionListener
+                                            value="#{Item}"
+                                            target="#{Metadaten.currentGroup}" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:ajax render=":pageContentCenter" />
+                                    </button>
+
+                                    <button
+                                        class="btn btn--gray addable"
+                                        jsf:action="#{Metadaten.HinzufuegenPerson}"
+                                        jsf:rendered="#{Item.personAddable}"
+                                        type="button">
+                                        #{msgs.neuePersonAnlegen}
+                                        <f:setPropertyActionListener
+                                            value="#{Item}"
+                                            target="#{Metadaten.currentGroup}" />
+                                        <f:ajax render=":pageContentCenter" />
+                                    </button>
+
+                                    <button
+                                        class="btn btn--gray addable"
+                                        jsf:action="#{Metadaten.AddGroup}"
+                                        jsf:rendered="#{Item.groupAddable}"
+                                        type="button">
+                                        #{msgs.AddNewGroup}
+                                        <f:setPropertyActionListener
+                                            value="#{Item}"
+                                            target="#{Metadaten.currentGroup}" />
+                                        <f:ajax render=":pageContentCenter" />
+                                    </button>                                    
+                                </div>
+                            </div>
+                        </ui:fragment>
+                    </h:panelGroup>
+
+
+
+
+                </x:dataList>
+
+                <br />
+
+                <h:panelGroup rendered="#{Metadaten.sizeOfMetadataGroups!=0}">
+                    <div class="row">
+                        <div class="col-auto mr-auto"></div>
+                        <div class="col-auto">
+                            <button
+                                jsf:id="addGroup"
+                                class="btn btn--gray"
+                                jsf:action="#{Metadaten.AddGroup}"
+                                type="button">
+                                #{msgs.AddNewGroup}
+                                <f:ajax render=":pageContentCenter" />
+                                <f:setPropertyActionListener
+                                    value=""
+                                    target="#{Metadaten.currentGroup}" />
+                            </button>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </h:panelGroup>
+    </composite:implementation>
+</ui:composition>

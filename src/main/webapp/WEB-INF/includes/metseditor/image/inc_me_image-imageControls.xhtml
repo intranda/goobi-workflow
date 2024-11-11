@@ -1,0 +1,96 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <composite:interface />
+
+    <!-- TODO: fix image controls -->
+
+    <composite:implementation>
+<!--         <a -->
+<!--             class="btn colorbox-image image__controls-toggle" -->
+<!--             data-toggle="tooltip" -->
+<!--             role="button"> -->
+<!--             <i -->
+<!--                 class="fa fa-bookmark" -->
+<!--                 aria-hidden="true"></i> -->
+<!--         </a> -->
+<!--  style="display:none" -->
+        <nav
+            id="meImageControls"
+            class="image__controls"
+            role="navigation">
+            <ul class="clean">
+                <!-- ROTATE LEFT -->
+                <li class="no-border">
+                    <button
+                        id="rotate-left-x"
+                        aria-label="#{msgs.mets_rotateImageLeft}"
+                        type="button"
+                        class="btn btn-icon"
+                        title="#{msgs.mets_rotateImageLeft}"
+                        data-toggle="tooltip"
+                        data-placement="top">
+                        <i
+                            class="fa fa-undo fa-lg"
+                            aria-hidden="true"></i>
+                    </button>
+                </li>
+                <!-- ROTATE RIGHT -->
+                <li class="no-border">
+                    <button
+                        type="button"
+                        class="btn btn-icon"
+                        id="rotate-right-x"
+                        aria-label="#{msgs.mets_rotateImageRight}"
+                        title="#{msgs.mets_rotateImageRight}"
+                        data-toggle="tooltip"
+                        data-placement="top">
+                        <i
+                            class="fa fa-repeat fa-lg"
+                            aria-hidden="true"></i>
+                    </button>
+                </li>
+
+                <!-- RESET -->
+                <li class="no-border">
+                    <button
+                        id="reset-position"
+                        type="button"
+                        class="btn btn-icon"
+                        aria-label="#{msgs.mets_resetImageRotation}"
+                        title="#{msgs.mets_resetImageRotation}"
+                        data-toggle="tooltip"
+                        data-placement="top">
+                        <i
+                            class="fa fa-times-circle-o fa-lg"
+                            aria-hidden="true"></i>
+                    </button>
+                </li>
+                <li class="image__controls-zoom">
+                    <div
+                        id="zoomSliderLabel"
+                        class="image__controls-zoom-label">
+                        <div class="row no-gutters">
+                            <div class="col-9">
+                                <input
+                                    aria-label="#{msgs.sizeOfImages}"
+                                    type="text"
+                                    class="form-control" />
+                            </div>
+                            <div class="col-3">
+                                <span>%</span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </composite:implementation>
+</ui:composition>

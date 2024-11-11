@@ -1,0 +1,89 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface />
+
+    <composite:implementation>
+    
+        <h:form id="thumbnailsForm" prependId="false">
+            <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails and Metadaten.bildNummer != '-1'}">
+                <!-- THUMBNAILS NAVIGATION -->
+                <ui:include src="inc_me_image-thumbNavigation.xhtml" />
+
+                <!-- THUMBNAILS -->
+                <div id="thumbnails" class="thumbnails" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}">
+                    <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
+                        <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}" dir="auto">
+                            <!-- THUMBNAIL IMAGE -->
+                            <div id="thumb_#{image.order}" class="thumbnails__thumb-image" >
+                                <button 
+                                    type="button"
+                                    jsf:id="thumbnailImage"
+                                    aria-label="#{msgs.thumbnail}"
+                                    jsf:action="#{Metadaten.checkSelectedThumbnail(image.order)}"
+                                    jsf:onclick="goobiWorkflowJS.updateSelectedThumbnail(this);"
+                                    class="btn">
+                                    <!-- IMAGE -->
+                                    <ui:fragment rendered="#{image.type == 'image' || image.type == 'pdf'}">
+                                        <canvas    
+                                        	style="width:#{Metadaten.thumbnailSize}px"                                         
+                                            id="thumbnail-#{status.index}"
+                                            class="thumbnails__thumb-canvas" 
+                                            title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.pageMap[''.concat(image.order)].label}"
+                                            data-image_small="#{image.thumbnailUrl}"
+                                            data-image_large="#{image.largeThumbnailUrl}"
+                                            data-toggle="tooltip"></canvas>
+                                    </ui:fragment>
+                                    <!-- 3D OBJECT -->
+                                    <ui:fragment rendered="#{image.type == 'object' or image.type == 'x3dom'}">
+                                        <img 
+                                            class="thumbnails__thumb-placeholder"
+                                            src="#{HelperForm.servletPathWithHostAsUrl}/uii/template/img/goobi_3d_object_placeholder.png" />
+                                    </ui:fragment>
+                                    <!-- PLACEHOLDER -->
+                                    <ui:fragment rendered="#{image.type != 'image' and image.type != 'pdf'  and image.type != 'object' and  image.type != 'x3dom'}">
+                                        <img 
+                                            class="thumbnails__thumb-placeholder"
+                                            src="#{HelperForm.servletPathWithHostAsUrl}/uii/template/img/thumbnail-placeholder.png" />
+                                    </ui:fragment>
+                                    <x:updateActionListener 
+                                        value="false"
+                                        property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
+                                    <x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <f:ajax render=":pagePaginationList :openseadragonform :altoEditAutocomplete" execute="@form" />
+                                    <f:passThroughAttribute name="data-renderimage" value="true" />
+                                </button>
+                            </div>
+
+                            <!-- THUMBNAIL CAPTION -->
+                            <div class="thumbnails__thumb-caption">
+                                <span>
+
+                                    <h:outputText
+                                        rendered="#{NavigationForm.uiStatus.mets_thumbFilename}"
+                                        value="#{Metadaten.pageMap[''.concat(image.order)].label}" />
+                                    <h:outputText 
+                                        rendered="#{not NavigationForm.uiStatus.mets_thumbFilename}"
+                                        value="#{image.tooltip}" />
+                                </span>
+
+<!--                                 <hr /> -->
+                            </div>
+                        </div>
+                    </ui:repeat>
+                </div>
+            </ui:fragment>
+        </h:form>
+    </composite:implementation>
+</ui:composition>

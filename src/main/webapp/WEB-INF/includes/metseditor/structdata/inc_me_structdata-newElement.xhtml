@@ -1,0 +1,383 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <div
+            id="meStructdataNewElementBox"
+            class="module module__box module__box--gray module__box--collapsable">
+            <div class="module__box-title">
+                <h1>
+                    <i
+                        class="fa fa-bars"
+                        aria-hidden="true"></i>
+                    <span>#{msgs.neuesStrukturelement}</span>
+                    <button
+                        aria-label="#{msgs.minimizeBox}"
+                        type="button"
+                        class="btn btn--clean"
+                        data-toggle="box-body">
+                        <i
+                            class="fa fa-angle-up fa-lg"
+                            aria-hidden="true"></i>
+                    </button>
+                </h1>
+            </div>
+            <div class="module__box-body">
+                <h:panelGroup id="struct">
+                    <!-- PLACEMENT SELECTION -->
+                    <h:selectOneRadio
+                        id="auswahlElementWohin"
+                        styleClass="select-radio focusableChildCss"
+                        forceId="true"
+                        layout="pageDirection"
+                        value="#{Metadaten.neuesElementWohin}">
+                        <f:selectItem
+                            itemValue="1"
+                            itemLabel="#{msgs.vorDasAktuelleElement}" />
+                        <f:selectItem
+                            itemValue="2"
+                            itemLabel="#{msgs.hinterDasAktuelleElement}" />
+                        <f:selectItem
+                            itemValue="3"
+                            itemLabel="#{msgs.alsErstesKindDesAktuellenElements}" />
+                        <f:selectItem
+                            itemValue="4"
+                            itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}" />
+                        <f:ajax
+                            render="struct"
+                            event="change"
+                            execute="struct" />
+                    </h:selectOneRadio>
+
+                    <hr />
+
+                    <!-- PREVIOUS PAGE -->
+                    <div class="form-group form-group--flex structdata__previous-page">
+                        <div class="row justify-content-between">
+                            <div class="col-3">
+                                <label for="pagestart1">#{msgs.ersteSeite}:</label>
+                            </div>
+                            <div class="col-6">
+                                <p:autoComplete
+                                    pt:aria-label="#{msgs.firstPage}"
+                                    scrollHeight="300"
+                                    id="pagestart1"
+                                    styleClass="form-control focusableChildCss"
+                                    value="#{Metadaten.pagesStart}"
+                                    completeMethod="#{Metadaten.autocomplete}" />
+                            </div>
+                            <div class="col-3">
+                                <button
+                                    jsf:id="takePreviousImage"
+                                    aria-label="#{msgs.previousImage}"
+                                    class="btn btn--icon-white"
+                                    jsf:action="#{Metadaten.CurrentStartpage}"
+                                    title="#{msgs.mets_takePreviousImage}"
+                                    type="button">
+                                    <i
+                                        class="fa fa-angle-left fa-lg"
+                                        aria-hidden="true"></i>
+                                    <x:updateActionListener
+                                        value="#{Metadaten.imageIndex}"
+                                        property="#{Metadaten.pageNumber}" />
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:ajax render="pagestart1" />
+                                </button>
+                                <button
+                                    jsf:id="takeCurrentImage"
+                                    aria-label="#{msgs.lw_currentImage}"
+                                    class="btn btn--icon-gray"
+                                    jsf:action="#{Metadaten.CurrentStartpage}"
+                                    title="#{msgs.mets_takeCurrentImage}"
+                                    type="button">
+                                    <i
+                                        class="fa fa-picture-o"
+                                        aria-hidden="true"></i>
+                                    <x:updateActionListener
+                                        value="#{Metadaten.imageIndex+1}"
+                                        property="#{Metadaten.pageNumber}" />
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:ajax render="pagestart1" />
+                                </button>
+                                <button
+                                    jsf:id="takeNextImage"
+                                    aria-label="#{msgs.nextImage}"
+                                    class="btn btn--icon-white"
+                                    jsf:action="#{Metadaten.CurrentStartpage}"
+                                    title="#{msgs.mets_takeNextImage}"
+                                    type="button">
+                                    <i
+                                        class="fa fa-angle-right fa-lg"
+                                        aria-hidden="true"></i>
+                                    <x:updateActionListener
+                                        value="#{Metadaten.imageIndex+2}"
+                                        property="#{Metadaten.pageNumber}" />
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:ajax render="pagestart1" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LAST PAGE -->
+                    <div class="form-group form-group--flex structdata__last-page">
+                        <div class="row justify-content-between">
+                            <div class="col-3">
+                                <label for="pageend1">#{msgs.letzteSeite}:</label>
+                            </div>
+                            <div class="col-6">
+                                <p:autoComplete
+                                    scrollHeight="300"
+                                    id="pageend1"
+                                    pt:aria-label="#{msgs.lastPage}"
+                                    styleClass="form-control focusableChildCss"
+                                    forceId="true"
+                                    value="#{Metadaten.pagesEnd}"
+                                    completeMethod="#{Metadaten.autocomplete}" />
+                            </div>
+                            <div class="col-3">
+                                <button
+                                    jsf:id="takePreviousImage2"
+                                    aria-label="#{msgs.previousImage}"
+                                    class="btn btn--icon-white"
+                                    jsf:action="#{Metadaten.CurrentEndpage}"
+                                    title="#{msgs.mets_takePreviousImage}"
+                                    type="button">
+                                    <i
+                                        class="fa fa-angle-left fa-lg"
+                                        aria-hidden="true"></i>
+                                    <x:updateActionListener
+                                        value="#{Metadaten.imageIndex}"
+                                        property="#{Metadaten.pageNumber}" />
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:ajax render="pageend1" />
+                                </button>
+                                <button
+                                    jsf:id="takeCurrentImage2"
+                                    aria-label="#{msgs.lw_currentImage}"
+                                    class="btn btn--icon-gray"
+                                    jsf:action="#{Metadaten.CurrentEndpage}"
+                                    title="#{msgs.mets_takeCurrentImage}"
+                                    type="button">
+                                    <i
+                                        class="fa fa-picture-o"
+                                        aria-hidden="true"></i>
+                                    <x:updateActionListener
+                                        value="#{Metadaten.imageIndex +1}"
+                                        property="#{Metadaten.pageNumber}" />
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:ajax render="pageend1" />
+                                </button>
+                                <button
+                                    jsf:id="takeNextImage2"
+                                    aria-label="#{msgs.nextImage}"
+                                    class="btn btn--icon-white"
+                                    jsf:action="#{Metadaten.CurrentEndpage}"
+                                    title="#{msgs.mets_takeNextImage}"
+                                    type="button">
+                                    <i
+                                        class="fa fa-angle-right fa-lg"
+                                        aria-hidden="true"></i>
+                                    <x:updateActionListener
+                                        value="#{Metadaten.imageIndex +2}"
+                                        property="#{Metadaten.pageNumber}" />
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:ajax render="pageend1" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <h:panelGroup id="addNewPageArea"
+                        styleClass="form-group form-group--flex structdata__page-area"
+                        layout="block"
+                        rendered="#{Metadaten.enablePageArea}">
+                        <div class="row justify-content-between">
+                            <div class="col-3">
+                                <label for="pageArea">#{msgs.pageArea}:</label>
+                            </div>
+                            <div class="col-6">
+                            	<h:inputText id="pageAreaName" pt:aria-label="#{msgs.pageArea}"
+	                            	styleClass="form-control focusableChildCss"
+	                            	value="#{Metadaten.pageArea}"
+	                            	disabled="true"></h:inputText>
+                            </div>
+                            <div class="col-3">
+          						<ui:fragment rendered="#{(Metadaten.neuesElementWohin gt 2 and not empty Metadaten.addDocStructType2) or (Metadaten.neuesElementWohin lt 3 and not empty Metadaten.addDocStructType1)}">
+                            <!-- ADD PAGE AREA -->
+								<button class="btn btn--icon-gray start-area-edition"
+									title="#{msgs.mets_createPageArea}"
+									type="button"
+									onclick="goobiWorkflowJS.object.startDrawArea(this, 'new')"
+									aria-label="#{msgs.mets_createPageArea}" data-toggle="tooltip"
+									data-placement="top">
+									<i class="fa fa-crop"
+                                        aria-hidden="true"></i>
+								</button>
+								<button class="btn btn--icon-red cancel-area-edition"
+									title="#{msgs.mets_cancelPageArea}"
+									type="button"
+									onclick="goobiWorkflowJS.object.cancelDrawArea(this)"
+									aria-label="#{msgs.mets_cancelPageArea}" data-toggle="tooltip"
+									data-placement="top">
+									<i
+                                        class="fa fa-ban"
+                                        aria-hidden="true"></i>
+								</button>
+								</ui:fragment>
+                            </div>
+
+                        </div>
+
+
+
+                    </h:panelGroup>
+
+
+
+                    <hr />
+
+                    <!-- STRUCTURE TYPE -->
+                    <div class="form-group form-group--flex structdata__structure-type">
+                        <div class="row justify-content-between">
+                            <div class="col-3">
+                                <ui:fragment rendered="#{Metadaten.neuesElementWohin lt 3}">
+                                    <label for="auswahlAddable1">#{msgs.typ}:</label>
+                                </ui:fragment>
+                                <ui:fragment rendered="#{Metadaten.neuesElementWohin gt 2}">
+                                    <label for="auswahlAddable2">#{msgs.typ}:</label>
+                                </ui:fragment>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-control form-control--select">
+                                    <x:selectOneMenu
+                                        id="auswahlAddable1"
+                                        forceId="true"
+                                        value="#{Metadaten.addDocStructType1}"
+                                        rendered="#{Metadaten.neuesElementWohin lt 3}">
+                                        <f:selectItems
+                                            value="#{Metadaten.addableDocStructTypenAlsNachbar}"
+                                            itemLabel="#{item.label}"
+                                            itemValue="#{item.value.name}"
+                                            var="item" />
+                                        <f:ajax
+                                            render="struct"
+                                            event="change"
+                                            execute="struct" />
+                                    </x:selectOneMenu>
+                                    <x:selectOneMenu
+                                        id="auswahlAddable2"
+                                        styleClass="focusable"
+                                        forceId="true"
+                                        value="#{Metadaten.addDocStructType2}"
+                                        rendered="#{Metadaten.neuesElementWohin gt 2}">
+                                        <f:selectItems
+                                            value="#{Metadaten.addableDocStructTypenAlsKind}"
+                                            itemLabel="#{item.label}"
+                                            itemValue="#{item.value.name}"
+                                            var="item" />
+                                        <f:ajax
+                                            render="struct"
+                                            event="change"
+                                            execute="struct" />
+                                    </x:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ADD ABLE PERSONDATA -->
+                    <h:panelGroup rendered="#{Metadaten.addablePersondata.size() > 0}">
+                        <x:dataList
+                            id="addablePersondata"
+                            var="addablePersondata"
+                            value="#{Metadaten.addablePersondata}"
+                            rowCountVar="rowCount"
+                            rowIndexVar="rowIndex">
+                            <intranda:formGroupPerson
+                                id="person"
+                                person="#{addablePersondata}"
+                                renderDelete="false"
+                                index="#{rowIndex}"
+                                datatype="addablePerson" />
+                        </x:dataList>
+                    </h:panelGroup>
+
+                    <!-- ADD ABLE METADATA -->
+                    <ui:fragment rendered="#{Metadaten.addableMetadata.size() > 0}">
+                        <x:dataList
+                            id="addableMetadata"
+                            var="Item"
+                            value="#{Metadaten.addableMetadata}"
+                            rowCountVar="rowCount"
+                            rowIndexVar="rowIndex">
+                            <intranda:formGroupMetadata
+                                cols="2"
+                                metadata="#{Item}"
+                                datatype="addableMetadata"
+                                renderDelete="false"
+                                renderDuplicate="false"
+                                index="#{rowIndex}" />
+                        </x:dataList>
+                    </ui:fragment>
+
+                    <!-- ADD ELEMENT -->
+                    <div class="structdata__add-element">
+                        <div class="row">
+                            <div class="col-auto mr-auto">
+
+                				<button jsf:id="fastPagination" class="btn" type="button">
+                					<span class="fa #{Metadaten.enableFastPagination == false?'fa fa-square-o':'fa fa-check-square-o'}" />
+					                <h:outputText value="#{msgs.mets_easyPagination}"
+					                	styleClass="structdata__easyPagination" />
+					                <f:setPropertyActionListener value="#{not Metadaten.enableFastPagination}"
+					                	target="#{Metadaten.enableFastPagination}" />
+                          <f:ajax
+                              onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                              render=":pageContentCenter"
+                          />
+					            </button>
+
+                            </div>
+                            <div class="col-auto">
+                                <button
+                                    jsf:id="add"
+                                    class="btn btn--gray"
+                                    jsf:action="#{Metadaten.KnotenAdd}">
+                                    #{msgs.strukturelementHinzufuegen}
+                                    <f:ajax
+                                        render="@form :treeform :messages :openseadragonform:pageareas"
+                                        execute="@form" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:composition>

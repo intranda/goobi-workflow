@@ -1,0 +1,332 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:o="http://omnifaces.org/ui">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <div id="meStructdataChangeBox" class="module module__box module__box--white module__box--collapsable structdata__change">
+            <div class="module__box-title">
+                <h1>
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                    <span>#{msgs.ausgewaehltesStrukturelement}</span>
+                    <button type="button" aria-label="#{msgs.minimizeBox}" class="btn btn--clean" data-toggle="box-body">
+                        <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
+                    </button>
+                </h1>
+            </div>
+            <div class="module__box-body">
+                <h:panelGroup id="structEdit">
+                    <ul class="clean">
+                        <!-- ELEMENT UP -->
+                        <li>
+                            <button
+                                jsf:id="nodeUp"
+                                class="btn btn--icon"
+                                jsf:action="#{Metadaten.KnotenUp}"
+                                title="#{msgs.docstructNachObenSchieben}" role="button">
+                                <span class="fa fa-chevron-up fa-lg fa-with-bg" />
+<!--                                 <i class="fa fa-chevron-up" aria-hidden="true"></i> -->
+                                <h:outputText value="#{msgs.docstructNachObenSchieben}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:ajax execute="@form" render="@form :treeform" />
+                            </button>
+                        </li>
+                        <!-- ELEMENT DOWN -->
+                        <li>
+                            <button
+                                jsf:id="nodeDown"
+                                class="btn btn--icon"
+                                jsf:action="#{Metadaten.KnotenDown}"
+                                title="#{msgs.docstructNachUntenSchieben}"
+                                type="button">
+                                <span class="fa fa-chevron-down fa-lg fa-with-bg" />
+<!--                                 <i class="fa fa-chevron-down" aria-hidden="true"></i> -->
+                                <h:outputText value="#{msgs.docstructNachUntenSchieben}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:ajax execute="@form" render="@form :treeform" />
+                            </button>
+                        </li>
+                        <!-- ELEMENT MOVE -->
+                        <li>
+                            <button
+                                jsf:id="moveNode"
+                                class="btn btn--icon"
+                                jsf:action="metseditor"
+                                title="#{msgs.docstructAnAndereStelleSchieben}"
+                                >
+                                <span class="fa fa-arrows fa-lg fa-with-bg" />
+<!--                                 <i class="fa fa-arrows" aria-hidden="true"></i> -->
+                                <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
+                                <f:ajax
+                                    onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                    render=":pageContentCenter"
+                                />
+                            </button>
+                        </li>
+                        <!-- ELEMENT IMPORT -->
+                        <li>
+                            <button
+                                jsf:id="copyNode"
+                                class="btn btn--icon"
+                                jsf:action="metseditor"
+                                title="#{msgs.copyDocstructFromOtherProcess}" role="button">
+                                <span class="fa fa-puzzle-piece fa-lg fa-with-bg" />
+<!--                                 <i class="fa fa-puzzle-piece" aria-hidden="true"></i> -->
+                                <h:outputText value="#{msgs.copyDocstructFromOtherProcess}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" />
+                                <f:ajax
+                                    onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                    render=":pageContentCenter"
+                                />
+                            </button>
+                        </li>
+
+                        <ui:fragment rendered="#{Metadaten.isNotRootElement}">
+                            <!-- CHANGE DOCSTRUCTTYPE -->
+                            <li>
+                                <button
+                                    jsf:id="expandbutton1"
+                                    class="btn btn--icon btn--toggle button-link"
+                                    title="#{msgs.docstructTypeAendern}"
+                                    type="button">
+                                    <span class="fa fa-exchange fa-lg fa-with-bg" />
+<!--                                     <i class="fa fa-exchange" aria-hidden="true"></i> -->
+                                    <h:outputText value="#{msgs.docstructTypeAendern}" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <f:ajax render="expandbutton1" />
+                                </button>
+
+                                <div id="possibleActions1" class="form-group form-group--flex form-group--inside">
+                                    <div class="row">
+                                        <!-- SELECT -->
+                                        <div class="col-9">
+                                            <div class="form-control form-control--select">
+                                                <h:selectOneMenu pt:aria-label="#{msgs.auswahl2}" value="#{Metadaten.tempWert}">
+                                                    <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}"
+                                                        itemLabel="#{item.label}" itemValue="#{item.value.name}"
+                                                        var="item" />
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <!-- ACTION -->
+                                        <div class="col-3">
+                                            <button
+                                                jsf:id="ChangeCurrentDocstructType"
+                                                aria-label="#{msgs.uebernehmen}"
+                                                class="btn btn--icon"
+                                                jsf:action="#{Metadaten.ChangeCurrentDocstructType}"
+                                                title="#{msgs.uebernehmen}"
+                                                onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                <span class="fa fa-check-circle-o fa-lg fa-with-bg" />
+<!--                                                 <i class="fa fa-check-circle-o" aria-hidden="true"></i> -->
+                                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- DELETE ELEMENT -->
+                            <li>
+                                <button
+                                    jsf:id="deleteNode"
+                                    class="btn btn--icon"
+                                    jsf:action="#{Metadaten.KnotenDelete}"
+                                    title="#{msgs.strukturelementLoeschen}"
+                                    jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
+                                    <span class="fa fa-trash fa-lg fa-with-bg" />
+                                    <h:outputText value="#{msgs.strukturelementLoeschen}" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <f:ajax execute="@form" render="@form :treeform :openseadragonform:pageareas" />
+                                </button>
+                            </li>
+                            <!-- DUPLICATE ELEMENT -->
+                            <li>
+                                <button
+                                    jsf:id="duplicateNode"
+                                    class="btn btn--icon"
+                                    jsf:action="#{Metadaten.duplicateNode}"
+                                    title="#{msgs.duplicateStructureElement}"
+                                    type="button">
+                                    <span class="fa fa-files-o fa-lg fa-with-bg" />
+                                    <h:outputText value="#{msgs.duplicateStructureElement}" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <f:ajax execute="@form" render="@form :treeform" />
+                                </button>
+                            </li>
+                        </ui:fragment>
+                        <li>
+                            <button
+                                type="button"
+                                class="btn btn--icon btn--toggle">
+                                <span class="fa fa-download fa-lg fa-with-bg" />
+<!--                                 <i class="fa fa-download" aria-hidden="true"></i> -->
+                                <h:outputText value="#{msgs.strukturelementeAusOpacHinzufuegen}" />
+                            </button>
+
+                            <div id="possibleActions2" class="form-group form-group--flex form-group--inside">
+                                <!-- CATALOGUE -->
+                                <div class="row">
+                                    <div class="col-3">
+                                        <h:outputText styleClass="form-group__label" value="#{msgs.katalog}:" />
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="form-control form-control--select">
+                                            <h:selectOneMenu pt:aria-label="#{msgs.katalog}" id="katalogauswahl" value="#{Metadaten.opacKatalog}">
+                                                <f:selectItems value="#{Metadaten.allOpacCatalogues}" var="step"
+                                                    itemLabel="#{step}" itemValue="#{step}" />
+                                                <f:ajax render="feldauswahl" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- FIELD -->
+                                <div class="row">
+                                    <div class="col-3">
+                                        <h:outputText styleClass="form-group__label" value="#{msgs.feld}:" />
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="form-control form-control--select">
+                                            <h:selectOneMenu pt:aria-label="#{msgs.feld}" id="feldauswahl" value="#{Metadaten.opacSuchfeld}">
+                                                <f:selectItems value="#{Metadaten.allSearchFields}" var="step"
+                                                    itemLabel="#{step.label}" itemValue="#{step.value}" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- SEARCHTERMS -->
+                                <div class="row">
+                                    <div class="col-3">
+                                        <h:outputText styleClass="form-group__label" value="#{msgs.suchbegriffe}:" />
+                                    </div>
+                                    <div class="col-9">
+                                        <h:inputTextarea pt:aria-label="#{msgs.suchbegriffe}" styleClass="form-control"
+                                            value="#{Metadaten.additionalOpacPpns}" />
+                                    </div>
+                                </div>
+                                <!-- Actions -->
+                                <div class="row">
+                                    <div class="col-auto mr-auto"></div>
+                                    <div class="col-auto">
+                                        <button
+                                            jsf:id="importMetadata"
+                                            class="btn btn--gray"
+                                            jsf:immediate="false"
+                                            jsf:action="#{Metadaten.AddMetadaFromOpacPpn}"
+                                            title="#{msgs.uebernehmen}"
+                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                            <h:outputText value="#{msgs.nurMetadaten}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+
+                                            <!--
+                                            <f:ajax
+                                                onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                                execute="@form"
+                                                render="@form :pageContentCenter @form :treeform"
+                                            />
+                                            -->
+
+                                        </button>
+
+                                        <button
+                                            jsf:id="importNode"
+                                            class="btn btn--gray"
+                                            jsf:immediate="false"
+                                            jsf:action="#{Metadaten.AddAdditionalOpacPpns}"
+                                            title="#{msgs.uebernehmen}"
+                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                            <h:outputText value="#{msgs.alsUnterelemente}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+
+                                            <!--
+                                            <f:ajax
+                                                onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                                execute="@form"
+                                                render="@form :pageContentCenter @form :treeform"
+                                            />
+                                            -->
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!-- PAGE ASSIGNMENT -->
+                        <li>
+                            <button
+                                jsf:id="seitenVonUnterelementenZuweisen"
+                                class="btn btn--icon"
+                                jsf:action="#{Metadaten.SeitenVonChildrenUebernehmen}"
+                                title="#{msgs.seitenVonUnterelementenZuweisen}">
+                                <span class="fa fa-check-circle-o fa-lg fa-with-bg" />
+<!--                                 <i class="fa fa-check-circle-o" aria-hidden="true"></i> -->
+                                <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:ajax execute="@form" render="@form :treeform" />
+                            </button>
+                        </li>
+                        <ui:fragment rendered="#{Metadaten.enablePageArea}">
+	                        <!-- ADD PAGE AREA TO CURRENT DOCSTRUCT -->
+	                        <li>
+	                            <button class="btn btn--icon start-area-edition" type="button"
+	                                 title="#{msgs.mets_createPageArea}"
+	                                 aria-label="#{msgs.mets_createPageArea}"
+	                                 onclick="goobiWorkflowJS.object.startDrawArea(this, 'current')"
+	                                 data-toggle="tooltip" data-placement="top">
+	                                 <span class="fa fa-crop fa-lg fa-with-bg" />
+	                           		<h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
+	                           </button>
+	                           <button class="btn btn--icon cancel-area-edition" type="button"
+	                               title="#{msgs.mets_cancelPageArea}"
+	                               aria-label="#{msgs.mets_cancelPageArea}"
+	                               onclick="goobiWorkflowJS.object.cancelDrawArea(this)"
+	                               data-toggle="tooltip" data-placement="top">
+	                               <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
+	                               <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
+	                           </button>
+	                        </li>
+	                        <!-- DELETE PAGE AREA -->
+	                        <li>
+	                            <button class="btn btn--icon"
+	                            		type="button"
+	                                    title="#{msgs.mets_PageArea}"
+	                                    aria-label="#{msgs.mets_deletePageArea}"
+	                                    data-pagearea-delete="start"
+	                                    data-renderimage="true"
+	                                    data-toggle="tooltip"
+	                                    data-placement="top">
+	                                    <span class="fa fa-eraser fa-lg fa-with-bg" />
+	                                    <h:outputText value="#{msgs.mets_deletePageArea}" />
+	                                </button>
+	                                <button
+	                                	type="button"
+	                                    class="btn btn--icon delete-page-area"
+	                                    title="#{msgs.mets_cancelPageArea}"
+	                                    aria-label="#{msgs.mets_cancelPageArea}"
+	                                    data-pagearea-delete="cancel"
+	                                    data-renderimage="true"
+	                                    data-toggle="tooltip"
+	                                    data-placement="top">
+	                                    <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
+	                                    <h:outputText value="#{msgs.mets_deletePageArea}" />
+	                                </button>
+	                        </li>
+                        </ui:fragment>
+
+                    </ul>
+                </h:panelGroup>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:composition>

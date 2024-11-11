@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface />
+
+	<composite:implementation>
+		<h:form>
+			<ul class='mobile-nav open'>
+				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Pagination')}">
+				<li class="#{Metadaten.modusAnsicht == 'Paginierung'?'active':''}">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                        <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
+                        <h:outputText value="#{msgs.paginierung}" />
+                    </h:commandLink>
+                </li>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Structure')}">
+                <li class="#{Metadaten.modusAnsicht == 'Strukturdaten'?'active':''}">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                        <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
+                        <h:outputText value="#{msgs.strukturdaten}" />
+                    </h:commandLink>
+                </li>
+                </h:panelGroup>
+				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Metadata')}">
+                <li class="#{Metadaten.modusAnsicht == 'Metadaten'?'active':''}">
+                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                        <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
+                        <h:outputText value="#{msgs.metadaten}" />
+                    </h:commandLink>
+                </li>
+				</h:panelGroup>
+                <h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Files')}">
+                    <li class="#{Metadaten.modusAnsicht == 'File'?'active':''}">
+                        <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();">
+                            <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
+                            <h:outputText value="#{msgs.fileManipulation}" />
+                        </h:commandLink>
+                    </li>
+                </h:panelGroup>
+			</ul>
+		</h:form>
+	</composite:implementation>
+</ui:composition>

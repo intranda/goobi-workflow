@@ -1,0 +1,106 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <h:form id="meServersideDownloadForm">
+            <div id="meServersideDownloadBox" class="module module__box module__box--gray module__box--collapsable">
+                <div class="module__box-title">
+                    <h1>
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                        <span>#{msgs.serversideDownload}</span>
+                        <button type="button" aria-label="#{msgs.minimizeBox}" class="btn btn--clean" data-toggle="box-body">
+                            <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
+                        </button>
+                    </h1>
+                </div>
+                <div class="module__box-body">
+                    <div class="form-group form-group--flex">
+                        <div class="row justify-content-between">
+                            <div class="col-3">
+                                <label>#{msgs.dateien}:</label>
+                            </div>
+                            <div class="col-9">
+                                <h:selectManyListbox
+                                    id="folderToImport"
+                                    pt:aria-label="#{msgs.files}"
+                                    styleClass="form-control"
+                                    value="#{Metadaten.fileManipulation.selectedFiles}">
+                                    <f:selectItems
+                                        itemLabel="#{folder}"
+                                        itemValue="#{folder}"
+                                        var="folder"
+                                        value="#{Metadaten.fileManipulation.allImportFolder}" />
+                                </h:selectManyListbox>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group--flex">
+                        <div class="row justify-content-between">
+                            <div class="col-3">
+                                <label>#{msgs.position}:</label>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-control form-control--select">
+                                    <h:selectOneMenu
+                                        id="paginationSelection2"
+                                        styleClass="focusable"
+                                        pt:aria-label="#{msgs.selectFile}"
+                                        value="#{Metadaten.fileManipulation.insertPage}"
+                                        rendered="#{Metadaten.allPages != null}">
+                                        <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
+                                        <f:selectItem itemLabel="#{msgs.asLastPage}" itemValue="lastPage" />
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group--flex">
+                        <div class="row justify-content-between">
+                            <div class="col-3">
+                                <label>#{msgs.paginierung}:</label>
+                            </div>
+                            <div class="col-9">
+                                <h:selectOneRadio
+                                    id="insertMode2"
+                                    styleClass="select-radio"
+                                    value="#{Metadaten.fileManipulation.insertMode}"
+                                    layout="pageDirection">
+                                    <f:selectItem itemValue="uncounted" itemLabel="#{msgs.insertAsUncounted}" />
+                                    <f:selectItem itemValue="insertIntoPagination" itemLabel="#{msgs.insertIntoPagination}" />
+                                </h:selectOneRadio>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-auto mr-auto"></div>
+                        <div class="col-auto">
+                            <button
+                                jsf:id="importFiles2"
+                                class="btn btn--gray"
+                                jsf:action="#{Metadaten.fileManipulation.importFiles}"
+                                onclick="goobiWorkflowJS.meScrollPos.storeScrollPos(); if (!confirm('#{msgs.wirklichAusfuehren}')) return false" >
+                                #{msgs.importFiles}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </composite:implementation>
+</ui:composition>

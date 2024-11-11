@@ -1,0 +1,100 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:p="http://primefaces.org/ui">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <nav id="objectControls" class="image__controls-object" role="navigation">
+            <ul class="clean">
+                <!-- ROTATE X -->
+                <li>
+                    <span>#{msgs.rotation_x_axis}:</span>
+                    <button
+                        type="button"
+                        id="rotate-left-x"
+                        title="#{msgs.rotateXLeft}"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        class="btn btn--icon">
+                        <i class="fa fa-undo fa-lg" aria-hidden="true"></i>
+                    </button>
+                    <button
+                        type="button"
+                        id="rotate-right-x"
+                        title="#{msgs.rotateXRight}"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        class="btn btn--icon">
+                        <i class="fa fa-repeat fa-lg" aria-hidden="true"></i>
+                    </button>
+                </li>
+                
+                <!-- ROTATE Y -->
+                <li>
+                    <span>#{msgs.rotation_y_axis}:</span>
+                    <button
+                        type="button"
+                        id="rotate-left-y"
+                        title="#{msgs.rotateYLeft}"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        class="btn btn--icon">
+                        <i class="fa fa-undo fa-lg" aria-hidden="true"></i>
+                    </button>
+                    <button
+                        type="button"
+                        id="rotate-right-y"
+                        title="#{msgs.rotateYRight}"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        class="btn btn--icon">
+                        <i class="fa fa-repeat fa-lg" aria-hidden="true"></i>
+                    </button>
+                </li>
+
+                <!-- ROTATE Z -->
+                <li>
+                    <span>#{msgs.rotation_z_axis}:</span>
+                    <button
+                        type="button"
+                        id="rotate-left-z"
+                        title="#{msgs.rotateZLeft}"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        class="btn btn--icon">
+                        <i class="fa fa-undo fa-lg" aria-hidden="true"></i>
+                    </button>
+                    <button
+                        type="button"
+                        id="rotate-right-z"
+                        title="#{msgs.rotateZRight}"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        class="btn btn--icon">
+                        <i class="fa fa-repeat fa-lg" aria-hidden="true"></i>
+                    </button>
+                </li>
+                
+                <!-- RESET -->
+                <li>
+                    <span>#{msgs.resetPosition}:</span>
+                    <button
+                        type="button"
+                        id="reset-position"
+                        title="#{msgs.resetPosition}"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        class="btn btn--icon">
+                        <i class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </composite:implementation>
+</ui:composition>

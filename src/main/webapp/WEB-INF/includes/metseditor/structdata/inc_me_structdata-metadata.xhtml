@@ -1,0 +1,34 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:p="http://primefaces.org/ui">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <div id="meStructdataMetadataBox" class="module module__box module__box--white module__box--collapsable structdata__metadata">
+            <div class="module__box-title">
+                <h1>
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                    <span>#{msgs.mets_metadataOfCurrentDocStruct}</span>
+                    <button type="button" aria-label="#{msgs.minimizeBox}" class="btn btn--clean" data-toggle="box-body">
+                        <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
+                    </button>
+                </h1>
+            </div>
+            <div class="module__box-body">
+                <h:panelGroup id="structMetadataEdit">
+                    <h:outputText value="#{msgs.mets_no_metadata_assigned}" rendered="#{empty Metadaten.myMetadaten}" />
+                    <x:dataList var="Item" value="#{Metadaten.myMetadaten}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                        <intranda:formGroupMetadata metadata="#{Item}" index="#{rowIndex}" />
+                    </x:dataList>
+                </h:panelGroup>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:composition>

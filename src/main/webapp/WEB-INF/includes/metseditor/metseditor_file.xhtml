@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface />
+
+	<composite:implementation>
+		<!-- FILE UPLOAD -->
+		<ui:include src="file/inc_me_file-upload.xhtml" />
+		
+		<!-- FILE DOWNLOAD -->
+		<ui:include src="file/inc_me_file-download.xhtml" />
+		
+		<!-- FILE EXPORT -->
+		<ui:include src="file/inc_me_file-export.xhtml" />
+		
+		<!-- FILE IMPORT -->
+		<ui:include src="file/inc_me_file-import.xhtml" />
+	</composite:implementation>
+</ui:composition>
+
+

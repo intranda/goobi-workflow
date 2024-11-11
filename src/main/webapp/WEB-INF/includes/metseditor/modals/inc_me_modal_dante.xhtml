@@ -1,0 +1,199 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <!-- DANTE SEARCH MODAL -->
+        <div
+            id="danteSearchBox"
+            class="modal"
+            tabindex="-1"
+            role="dialog">
+            <div
+                class="modal-dialog"
+                role="document">
+                <h:panelGroup
+                    styleClass="modal-content"
+                    id="danteModalContent">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <h:outputText value="#{msgs.NORM_danteSearch}" />
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                            <h:outputText
+                                value="&amp;times;"
+                                escape="false" />
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            <h:outputText
+                                value="#{msgs.NORM_descriptionTextDanteSearch}"
+                                escape="false" />
+                        </p>
+
+                        <div id="dante_search_area" class="row">
+                            <div class="col-10">
+                                <x:inputText
+                                    id="danteInput"
+                                    styleClass="form-control"
+                                    value="#{Metadaten.danteSearchValue}" />
+                            </div>
+                            <div class="col-2 text-right">
+                                <div class="text-right">
+                                    <button
+                                    	jsf:id="danteSearch"
+                                        class="btn btn--white btn--loader"
+                                        jsf:action="#{Metadaten.search}">
+                                        <i
+                                            class="fa fa-search"
+                                            aria-hidden="true"></i>
+                                        #{msgs.search}
+                                        <span
+                                            class="btn-ajax-loader"
+                                            aria-hidden="true">
+                                            <img
+                                                src="template/img/goobi/ajaxloader2.gif"
+                                                alt="Ajax Button Loader" />
+                                        </span>
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:ajax
+                                            execute="@form"
+                                            render="resultList" />
+                                    </button>
+
+                                </div>
+                            </div>
+                            <script>
+                                $( 'input[id*="danteInput"]' ).on( 'focus', function() {
+                                    $( this ).off('keyup').on( 'keyup', function( event ) {
+                                        event.preventDefault();
+                                        if ( event.keyCode == 13 ) {
+                                            $( this ).parents("#dante_search_area").find("button[id*='danteSearch']").click();
+                                        }
+                                    } );
+                                } );
+                            </script>
+                        </div>
+
+
+                        <h:panelGroup id="resultList">
+                            <h:message
+                                for="geonamesList"
+                                showDetail="true"
+                                styleClass="help-inline font-danger" />
+
+                            <h:panelGroup
+                                layout="block"
+                                styleClass="modal__geonames-list scrollable"
+                                rendered="#{Metadaten.currentMetadataToPerformSearch.normdataList ne null and Metadaten.currentMetadataToPerformSearch.normdataList.size() != 0}">
+
+                                <x:dataList
+                                    value="#{Metadaten.currentMetadataToPerformSearch.normdataList}"
+                                    var="normdataRecord">
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-11">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <h:outputText value="#{msgs.NORM_dantePreferredValue}" />
+                                                </div>
+                                                <div class="col-8">
+                                                    <div class="form-control form-control--select">
+                                                        <h:selectOneMenu value="#{normdataRecord.preferredValue}">
+                                                            <f:selectItems value="#{normdataRecord.valueList}" />
+                                                        </h:selectOneMenu>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <x:dataList
+                                                value="#{normdataRecord.normdataList}"
+                                                var="normdata">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="row"
+                                                    rendered="#{normdata.key.contains('NORM_LABEL') or normdata.key.contains('NORM_ALTLABEL') or normdata.key.contains('NORM_NOTATION') or normdata.key.contains('URI')}">
+                                                    <div class="col-sm-4">
+                                                        <h:outputText value="#{msgs[normdata.key]}" />
+                                                    </div>
+
+                                                    <div class="col-sm-8">
+                                                        <x:dataList
+                                                            value="#{normdata.values}"
+                                                            var="value">
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <h:outputLink
+                                                                        rendered="#{value.url != null}"
+                                                                        target="_blank"
+                                                                        value="#{value.url}">
+                                                                        <h:outputText value="#{value.text}" />
+                                                                        <h:outputText
+                                                                            rendered="#{value.identifier != null}"
+                                                                            value=" (#{value.identifier})" />
+                                                                    </h:outputLink>
+
+                                                                    <h:outputText
+                                                                        value="#{value.text}"
+                                                                        rendered="#{value.url == null}" />
+                                                                </div>
+                                                            </div>
+                                                        </x:dataList>
+                                                    </div>
+                                                </h:panelGroup>
+                                            </x:dataList>
+                                        </div>
+
+
+                                        <div class="col-1">
+                                            <button
+                                                onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
+                                            	jsf:id="danteButton1"
+                                                class="btn btn--icon-green greenCheckButton"
+                                                jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                                <f:setPropertyActionListener
+                                                    value="#{normdataRecord}"
+                                                    target="#{Metadaten.currentMetadataToPerformSearch.selectedRecord}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{Metadaten.searchOption}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{Metadaten.gndSearchValue}" />
+                                                <i
+                                                    class="fa fa-check"
+                                                    aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </x:dataList>
+
+                                <h:outputText
+                                    value="#{msgs.NORM_noHits}"
+                                    rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+
+    </composite:implementation>
+</ui:composition>
