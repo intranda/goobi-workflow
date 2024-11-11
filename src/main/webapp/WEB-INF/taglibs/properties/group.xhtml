@@ -16,7 +16,7 @@
         <section:section
             type="outline">
             <section:header
-                title="#{container == '0' ? msgs.eigenschaften : msgs.eigenschaften.concat(': ').concat(msgs[container])}"
+                title="#{container.matches('^\\d+$') ? msgs.eigenschaften.concat(': ').concat(msgs.group).concat(' ').concat(msgs[container]) : msgs[container]}"
                 icon="list">
                 <div class="actions d-flex">
                     <f:ajax
