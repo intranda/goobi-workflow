@@ -70,7 +70,9 @@ public class ExtendedFieldInstance extends FieldInstance {
     }
 
     private void postInit() {
-        this.schemaPrepareCallback.accept(getRecordId());
+        if (getRecordId() != null) {
+            this.schemaPrepareCallback.accept(getRecordId());
+        }
         this.definition = definitionResolver.apply(getDefinitionId());
         if (this.definition.getTypeId() != null) {
             this.type = typeResolver.apply(this.definition.getTypeId());
