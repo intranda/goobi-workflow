@@ -1,6 +1,5 @@
 package io.goobi.workflow.api.vocabulary;
 
-import com.thoughtworks.qdox.parser.structs.FieldDef;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
@@ -8,8 +7,6 @@ import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularySchemaPageResult;
 import io.goobi.workflow.api.vocabulary.helper.CachedLookup;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySchemaPageResult> {
@@ -18,8 +15,6 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
     private static final String COMMON_FIELD_DEFINITIONS_ENDPOINT = "/api/v1/fieldDefinitions";
     private static final String FIELD_DEFINITION_INSTANCE_ENDPOINT = COMMON_FIELD_DEFINITIONS_ENDPOINT + "/{{0}}";
 
-    // TODO: Make this generic
-    private Map<Long, FieldDefinition> definitionMap = new HashMap<>();
     private final CachedLookup<Long, VocabularySchema> singleLookupCache;
     private final CachedLookup<Long, FieldDefinition> definitionLookupCache;
 
@@ -36,7 +31,7 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
 
     private VocabularySchema request(long id) {
         VocabularySchema schema = super.get(id);
-        schema.getDefinitions().forEach(d -> definitionMap.put(d.getId(), d));
+        schema.getDefinitions().forEach(d -> this.definitionLookupCache.update(d.getId(), d));
         return schema;
     }
 
