@@ -1,5 +1,6 @@
 package io.goobi.workflow.api.vocabulary;
 
+import com.thoughtworks.qdox.parser.structs.FieldDef;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
@@ -14,14 +15,18 @@ import java.util.Optional;
 public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySchemaPageResult> {
     private static final String COMMON_ENDPOINT = "/api/v1/schemas";
     private static final String INSTANCE_ENDPOINT = COMMON_ENDPOINT + "/{{0}}";
+    private static final String COMMON_FIELD_DEFINITIONS_ENDPOINT = "/api/v1/fieldDefinitions";
+    private static final String FIELD_DEFINITION_INSTANCE_ENDPOINT = COMMON_FIELD_DEFINITIONS_ENDPOINT + "/{{0}}";
 
     // TODO: Make this generic
     private Map<Long, FieldDefinition> definitionMap = new HashMap<>();
     private final CachedLookup<Long, VocabularySchema> singleLookupCache;
+    private final CachedLookup<Long, FieldDefinition> definitionLookupCache;
 
     public VocabularySchemaAPI(String host, int port) {
         super(host, port, VocabularySchema.class, VocabularySchemaPageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
         this.singleLookupCache = new CachedLookup<>(this::request);
+        this.definitionLookupCache = new CachedLookup<>(this::requestDefinition);
     }
 
     @Override
@@ -35,11 +40,12 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
         return schema;
     }
 
-    public FieldDefinition getDefinition(Long definitionId) {
-        // TODO: Better definition resolving
-        // Use case: Some plugin has a record URL and wants to retrieve the record. The extended field needs the definition,
-        // but the schema wasn't loaded yet.
-        return this.definitionMap.get(definitionId);
+    private FieldDefinition requestDefinition(long id) {
+        return this.restApi.get(FIELD_DEFINITION_INSTANCE_ENDPOINT, FieldDefinition.class, id);
+    }
+
+    public FieldDefinition getDefinition(long definitionId) {
+        return this.definitionLookupCache.getCached(definitionId);
     }
 
     public VocabularySchema getSchema(VocabularyRecord vocabularyRecord) {
@@ -59,15 +65,5 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
             return Optional.empty();
         }
         return Optional.of(get(vocabulary.getMetadataSchemaId()));
-    }
-
-    public void load(long vocabularyId) {
-        getSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
-    }
-
-    // TODO: Better definition resolving
-    public void loadDefinitionsForRecord(long recordId) {
-        VocabularyRecord rec = VocabularyAPIManager.getInstance().vocabularyRecords().getPrimitive(recordId);
-        load(rec.getVocabularyId());
     }
 }

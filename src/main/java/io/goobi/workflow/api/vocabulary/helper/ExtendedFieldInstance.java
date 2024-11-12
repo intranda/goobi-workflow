@@ -35,8 +35,6 @@ import static io.goobi.workflow.api.vocabulary.helper.ExtendedTranslationInstanc
 public class ExtendedFieldInstance extends FieldInstance {
     private Function<Long, ExtendedVocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
     private Function<Long, List<ExtendedVocabularyRecord>> recordsResolver = this::getAllRecords;
-    // TODO: Solve this better!
-    private Consumer<Long> schemaPrepareCallback = VocabularyAPIManager.getInstance().vocabularySchemas()::loadDefinitionsForRecord;
     private Function<Long, FieldDefinition> definitionResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getDefinition;
     private Function<Long, FieldType> typeResolver = VocabularyAPIManager.getInstance().fieldTypes()::get;
     private Supplier<String> languageSupplier = () -> Optional.ofNullable(Helper.getLanguageBean())
@@ -70,9 +68,6 @@ public class ExtendedFieldInstance extends FieldInstance {
     }
 
     private void postInit() {
-        if (getRecordId() != null) {
-            this.schemaPrepareCallback.accept(getRecordId());
-        }
         this.definition = definitionResolver.apply(getDefinitionId());
         if (this.definition.getTypeId() != null) {
             this.type = typeResolver.apply(this.definition.getTypeId());
