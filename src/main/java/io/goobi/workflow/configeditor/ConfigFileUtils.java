@@ -280,7 +280,7 @@ public abstract class ConfigFileUtils {
             Charset charset = ConfigFileUtils.standardCharset;
             FileUtils.write(new File(fileName), content, charset);
             String message = Helper.getTranslation("savedConfigFileSuccessfully");
-            Helper.setMeldung("configFileEditor", message, "");
+            Helper.setMeldung(message, "");
         } catch (IOException | IllegalArgumentException ioException) {
             String message = "ConfigFileEditorAdministrationPlugin could not write file " + fileName;
             log.error(message);
