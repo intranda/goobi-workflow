@@ -16,10 +16,12 @@ public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     private static final String INSTANCE_ENDPOINT = COMMON_ENDPOINT + "/{{0}}";
 
     private final CachedLookup<Long, ExtendedVocabulary> singleLookupCache;
+    private final CachedLookup<String, ExtendedVocabulary> singleNameLookupCache;
 
     public VocabularyAPI(String host, int port) {
         super(host, port, Vocabulary.class, VocabularyPageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
         this.singleLookupCache = new CachedLookup<>(id -> new ExtendedVocabulary(super.get(id)));
+        this.singleNameLookupCache = new CachedLookup<>(name -> new ExtendedVocabulary(restApi.get(FIND_INSTANCE_ENDPOINT, Vocabulary.class, name)));
     }
 
     @Override
@@ -35,6 +37,7 @@ public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     public ExtendedVocabulary change(Vocabulary vocabulary) {
         ExtendedVocabulary result = new ExtendedVocabulary(super.change(vocabulary));
         this.singleLookupCache.update(vocabulary.getId(), result);
+        this.singleNameLookupCache.update(vocabulary.getName(), result);
         return result;
     }
 
@@ -45,7 +48,7 @@ public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     }
 
     public ExtendedVocabulary findByName(String name) {
-        return new ExtendedVocabulary(restApi.get(FIND_INSTANCE_ENDPOINT, Vocabulary.class, name));
+        return this.singleNameLookupCache.getCached(name);
     }
 
     public void cleanImportCsv(long id, Part uploadedFile) {
