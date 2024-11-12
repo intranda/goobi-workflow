@@ -5,7 +5,7 @@
         data-bs-toggle="collapse"
         data-bs-target="#notificationArea"
         role="button"
-        aria-expanded="#{facesContext.getMessageList().size() > 1 ? 'true' : 'false'}"
+        aria-expanded="#{facesContext.getMessageList().size() > 0 ? 'true' : 'false'}"
         aria-controls="notificationArea">
         <span class="notification-count">
             #{facesContext.messageList.size()}
