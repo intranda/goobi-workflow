@@ -25,7 +25,7 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
     private Function<VocabularyRecord, Optional<VocabularySchema>> metadataSchemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getMetadataSchema;
 
     private int level;
-    private ExtendedFieldInstance mainField;
+    private Optional<ExtendedFieldInstance> mainField;
     private String mainValue;
     private List<String> titleValues;
     private List<ExtendedFieldInstance> extendedFields;
@@ -60,9 +60,8 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
                 .collect(Collectors.toList());
         this.mainField = this.extendedFields.stream()
                 .filter(f -> Boolean.TRUE.equals(f.getDefinition().getMainEntry()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Vocabulary record [" + getId() + "] has no main field"));
-        this.mainValue = this.mainField.getFieldValue();
+                .findFirst();
+        this.mainField.ifPresent(extendedFieldInstance -> this.mainValue = extendedFieldInstance.getFieldValue());
         prepareEmpty();
     }
 
