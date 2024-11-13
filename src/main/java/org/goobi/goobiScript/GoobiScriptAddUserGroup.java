@@ -47,7 +47,7 @@ import net.sf.ehcache.Element;
 @Log4j2
 public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String GROUP = "group";
 
@@ -80,13 +80,13 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         String missingParameter = "Missing parameter: ";
         String wrongParameter = "Unknown group: ";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String group = parameters.get(GROUP);
-        if (group == null || group.equals("")) {
+        if (group == null || "".equals(group)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, GROUP);
             return new ArrayList<>();
         }

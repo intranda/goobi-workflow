@@ -42,7 +42,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String FIELD_RULESET = "ruleset";
 
     private Ruleset ruleset;
@@ -67,7 +67,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
 
         String missingParameter = "Missing parameter: ";
         String rulesetName = parameters.get(FIELD_RULESET);
-        if (rulesetName == null || rulesetName.equals("")) {
+        if (rulesetName == null || "".equals(rulesetName)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, FIELD_RULESET);
             return new ArrayList<>();
         }

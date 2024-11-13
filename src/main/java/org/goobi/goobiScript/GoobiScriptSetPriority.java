@@ -25,7 +25,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +42,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String PRIORITY = "priority";
 
@@ -62,7 +61,8 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to define a priority to a specific workflow step.");
-        addParameterToSampleCall(sb, STEPTITLE, "Scanning", "Title of the workflow step to be changed. Leave blank or remove this line to apply to all workflow steps.");
+        addParameterToSampleCall(sb, STEPTITLE, "Scanning",
+                "Title of the workflow step to be changed. Leave blank or remove this line to apply to all workflow steps.");
         addParameterToSampleCall(sb, PRIORITY, PRIORITY_HIGHER,
                 "Priority to assign to the workflow step. Possible values are: `" + PRIORITY_STANDARD + "` `" + PRIORITY_HIGH + "` `"
                         + PRIORITY_HIGHER + "` `" + PRIORITY_HIGHEST + "` `" + PRIORITY_CORRECTION + "`");
@@ -75,14 +75,14 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
 
         String missingParameter = "Missing parameter: ";
         String priority = parameters.get(PRIORITY);
-        if (priority == null || priority.equals("")) {
+        if (priority == null || "".equals(priority)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, PRIORITY);
             return new ArrayList<>();
         }
 
         String prio = priority.toLowerCase();
-        if (!prio.equals(PRIORITY_STANDARD) && !prio.equals(PRIORITY_HIGH) && !prio.equals(PRIORITY_HIGHER) && !prio.equals(PRIORITY_HIGHEST)
-                && !prio.equals(PRIORITY_CORRECTION)) {
+        if (!PRIORITY_STANDARD.equals(prio) && !PRIORITY_HIGH.equals(prio) && !PRIORITY_HIGHER.equals(prio) && !PRIORITY_HIGHEST.equals(prio)
+                && !PRIORITY_CORRECTION.equals(prio)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Wrong priority parameter",
                     "(only the following values are allowed: " + PRIORITY_STANDARD + ", " + PRIORITY_HIGH + ", " + PRIORITY_HIGHER + ", "
                             + PRIORITY_HIGHEST + ", " + PRIORITY_CORRECTION);
@@ -130,8 +130,7 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-            Step s = iterator.next();
+        for (Step s : p.getSchritteList()) {
             if (stepTitle.length() == 0 || s.getTitel().equals(stepTitle)) {
                 s.setPrioritaet(prio);
                 try {
@@ -149,7 +148,7 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
                 }
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
             gsr.setResultMessage("Step not found: " + stepTitle);
         }

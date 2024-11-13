@@ -25,7 +25,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String PROPERTY = "property";
     private static final String VALUE = "value";
@@ -105,19 +104,19 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
 
         String missingParameter = "Missing parameter: ";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String property = parameters.get(PROPERTY);
-        if (property == null || property.equals("")) {
+        if (property == null || "".equals(property)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, PROPERTY);
             return new ArrayList<>();
         }
 
         String value = parameters.get(VALUE);
-        if (value == null || value.equals("")) {
+        if (value == null || "".equals(value)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, VALUE);
             return new ArrayList<>();
         }
@@ -158,7 +157,7 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
                 return new ArrayList<>();
         }
 
-        if (!value.equals("true") && !value.equals("false")) {
+        if (!"true".equals(value) && !"false".equals(value)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "", "wrong parameter 'value'; possible values: true, false");
             return new ArrayList<>();
         }
@@ -185,53 +184,52 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
         String value = parameters.get(VALUE);
 
         if (p.getSchritte() != null) {
-            for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
-                Step s = iterator.next();
+            for (Step s : p.getSchritte()) {
                 if (s.getTitel().equals(steptitle)) {
-                    if (property.equals(PROPERTY_METADATA)) {
+                    if (PROPERTY_METADATA.equals(property)) {
                         s.setTypMetadaten(Boolean.parseBoolean(value));
                     }
-                    if (property.equals(PROPERTY_READ_IMAGES)) {
+                    if (PROPERTY_READ_IMAGES.equals(property)) {
                         s.setTypImagesLesen(Boolean.parseBoolean(value));
                     }
-                    if (property.equals(PROPERTY_WRITE_IMAGES)) {
+                    if (PROPERTY_WRITE_IMAGES.equals(property)) {
                         s.setTypImagesSchreiben(Boolean.parseBoolean(value));
                     }
-                    if (property.equals(PROPERTY_VALIDATE)) {
+                    if (PROPERTY_VALIDATE.equals(property)) {
                         s.setTypBeimAbschliessenVerifizieren(Boolean.parseBoolean(value));
                     }
-                    if (property.equals(PROPERTY_EXPORT_DMS)) {
+                    if (PROPERTY_EXPORT_DMS.equals(property)) {
                         s.setTypExportDMS(Boolean.parseBoolean(value));
                     }
-                    if (property.equals(PROPERTY_BATCH)) {
+                    if (PROPERTY_BATCH.equals(property)) {
                         s.setBatchStep(Boolean.parseBoolean(value));
                     }
-                    if (property.equals(PROPERTY_AUTOMATIC)) {
+                    if (PROPERTY_AUTOMATIC.equals(property)) {
                         s.setTypAutomatisch(Boolean.parseBoolean(value));
                     }
 
-                    if (property.equalsIgnoreCase(PROPERTY_IMPORT_FILE_UPLOAD)) {
+                    if (PROPERTY_IMPORT_FILE_UPLOAD.equalsIgnoreCase(property)) {
                         s.setTypImportFileUpload(Boolean.parseBoolean(value));
                     }
-                    if (property.equalsIgnoreCase(PROPERTY_ACCEPT_AND_CLOSE)) {
+                    if (PROPERTY_ACCEPT_AND_CLOSE.equalsIgnoreCase(property)) {
                         s.setTypBeimAnnehmenAbschliessen(Boolean.parseBoolean(value));
                     }
-                    if (property.equalsIgnoreCase(PROPERTY_ACCEPT_MODULE_AND_CLOSE)) {
+                    if (PROPERTY_ACCEPT_MODULE_AND_CLOSE.equalsIgnoreCase(property)) {
                         s.setTypBeimAnnehmenModulUndAbschliessen(Boolean.parseBoolean(value));
                     }
 
-                    if (property.equalsIgnoreCase(PROPERTY_SCRIPT)) {
+                    if (PROPERTY_SCRIPT.equalsIgnoreCase(property)) {
                         s.setTypScriptStep(Boolean.parseBoolean(value));
                     }
-                    if (property.equalsIgnoreCase(PROPERTY_DELAY)) {
+                    if (PROPERTY_DELAY.equalsIgnoreCase(property)) {
                         s.setDelayStep(Boolean.parseBoolean(value));
                     }
 
-                    if (property.equalsIgnoreCase(PROPERTY_UPDATE_METADATA_INDEX)) {
+                    if (PROPERTY_UPDATE_METADATA_INDEX.equalsIgnoreCase(property)) {
                         s.setUpdateMetadataIndex(Boolean.parseBoolean(value));
                     }
 
-                    if (property.equalsIgnoreCase(PROPERTY_GENERATE_DOCKET)) {
+                    if (PROPERTY_GENERATE_DOCKET.equalsIgnoreCase(property)) {
                         s.setGenerateDocket(Boolean.parseBoolean(value));
                     }
 
@@ -253,7 +251,7 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
                 }
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
             gsr.setResultMessage("Step not found: " + steptitle);
         }

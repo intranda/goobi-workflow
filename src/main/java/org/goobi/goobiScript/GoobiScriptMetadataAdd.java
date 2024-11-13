@@ -54,7 +54,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 @Log4j2
 public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String FIELD = "field";
     private static final String VALUE = "value";
     private static final String POSITION = "position";

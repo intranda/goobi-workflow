@@ -25,7 +25,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String NUMBER = "number";
 
@@ -69,13 +68,13 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
         String missingParameter = "Missing parameter: ";
         String wrongParameter = "Wrong number parameter";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String number = parameters.get(NUMBER);
-        if (number == null || number.equals("")) {
+        if (number == null || "".equals(number)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, NUMBER);
             return new ArrayList<>();
         }
@@ -104,8 +103,7 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
         String steptitle = parameters.get(STEPTITLE);
         String number = parameters.get(NUMBER);
 
-        for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-            Step s = iterator.next();
+        for (Step s : p.getSchritteList()) {
             if (s.getTitel().equals(steptitle)) {
                 s.setReihenfolge(Integer.parseInt(number));
                 String info = "'" + s.getTitel() + "' to '" + s.getReihenfolge() + "'";
@@ -125,7 +123,7 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
                 break;
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
             gsr.setResultMessage("Step not found: " + steptitle);
         }

@@ -53,7 +53,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
     // action:metadataReplace field:DocLanguage search:deutschTop replace:deutschNewTop position:top
     // action:metadataReplace field:DocLanguage search:deutschChild replace:deutschNewChild position:child
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String FIELD = "field";
     private static final String SEARCH = "search";
     private static final String REPLACE = "replace";

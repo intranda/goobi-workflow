@@ -25,7 +25,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +44,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String GROUP = "group";
 
@@ -72,13 +71,13 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
 
         String missingParameter = "Missing parameter: ";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String group = parameters.get(GROUP);
-        if (group == null || group.equals("")) {
+        if (group == null || "".equals(group)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, GROUP);
             return new ArrayList<>();
         }
@@ -111,8 +110,7 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
         gsr.updateTimestamp();
         boolean found = false;
         if (userGroup != null) {
-            for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-                Step step = iterator.next();
+            for (Step step : p.getSchritteList()) {
                 if (step.getTitel().equals(stepTitle)) {
                     List<Usergroup> userGroups = step.getBenutzergruppen();
                     if (userGroups == null) {

@@ -43,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String MESSAGE = "message";
     private static final String TYPE = "type";
 
@@ -68,17 +68,17 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
         super.prepare(processes, command, parameters);
 
         String missingParameter = "Missing parameter: ";
-        if (parameters.get(MESSAGE) == null || parameters.get(MESSAGE).equals("")) {
+        if (parameters.get(MESSAGE) == null || "".equals(parameters.get(MESSAGE))) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, MESSAGE);
             return new ArrayList<>();
         }
 
         String type = parameters.get(TYPE);
-        if (type == null || type.equals("")) {
+        if (type == null || "".equals(type)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, TYPE);
             return new ArrayList<>();
         }
-        if (!type.equals("error") && !type.equals("warn") && !type.equals("info") && !type.equals("debug") && !type.equals("user")) {
+        if (!"error".equals(type) && !"warn".equals(type) && !"info".equals(type) && !"debug".equals(type) && !"user".equals(type)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Wrong parameter for type. Allowed values are: error, warn, info, debug and user");
             return new ArrayList<>();
         }

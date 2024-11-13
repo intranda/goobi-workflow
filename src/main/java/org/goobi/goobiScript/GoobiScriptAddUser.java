@@ -25,7 +25,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +44,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String FIELD_STEPTITLE = "steptitle";
     private static final String FIELD_USERNAME = "username";
 
@@ -69,12 +68,12 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
         User myUser = null;
         String missingParameter = "Missing parameter: ";
         String steptitle = parameters.get(FIELD_STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, FIELD_STEPTITLE);
             return new ArrayList<>();
         }
         String username = parameters.get(FIELD_USERNAME);
-        if (username == null || username.equals("")) {
+        if (username == null || "".equals(username)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, FIELD_USERNAME);
             return new ArrayList<>();
         }
@@ -103,8 +102,7 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
         if (myUser != null) {
-            for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-                Step s = iterator.next();
+            for (Step s : p.getSchritteList()) {
                 if (s.getTitel().equals(parameters.get(FIELD_STEPTITLE))) {
                     List<User> myBenutzer = s.getBenutzer();
                     if (myBenutzer == null) {
@@ -132,7 +130,7 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
             }
         }
 
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
             gsr.setResultMessage("Step not found: " + parameters.get(FIELD_STEPTITLE));
         }

@@ -25,7 +25,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +42,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String STATUS = "status";
 
@@ -89,18 +88,18 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 
         String missingParameter = "Missing parameter: ";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String status = parameters.get(STATUS);
-        if (status == null || status.equals("")) {
+        if (status == null || "".equals(status)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STATUS);
             return new ArrayList<>();
         }
 
-        if (!status.equals("0") && !status.equals("1") && !status.equals("2") && !status.equals("3") && !status.equals("4") && !status.equals("5")) {
+        if (!"0".equals(status) && !"1".equals(status) && !"2".equals(status) && !"3".equals(status) && !"4".equals(status) && !"5".equals(status)) {
             StringBuilder options = new StringBuilder();
             options.append(STATUS_NUMBER_LOCKED + "=" + STATUS_TEXT_LOCKED + ", ");
             options.append(STATUS_NUMBER_OPEN + "=" + STATUS_TEXT_OPEN + ", ");
@@ -128,8 +127,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        for (Iterator<Step> iterator = process.getSchritteList().iterator(); iterator.hasNext();) {
-            Step step = iterator.next();
+        for (Step step : process.getSchritteList()) {
             if (step.getTitel().equals(gsr.getParameters().get(STEPTITLE))) {
                 String oldStatusTitle = step.getBearbeitungsstatusEnum().getUntranslatedTitle();
                 step.setBearbeitungsstatusAsString(gsr.getParameters().get(STATUS));
@@ -151,7 +149,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
                 break;
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
             gsr.setResultMessage("Step not found: " + gsr.getParameters().get(STEPTITLE));
         }
