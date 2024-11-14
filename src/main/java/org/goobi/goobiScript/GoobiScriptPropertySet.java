@@ -40,7 +40,6 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 
 public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String NAME = "name";
     private static final String VALUE = "value";
 

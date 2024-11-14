@@ -43,7 +43,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String MESSAGE = "message";
     private static final String TYPE = "type";
 

@@ -48,7 +48,6 @@ import ugh.dl.Prefs;
 @Log4j2
 public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String FIELD = "field";
     private static final String VALUE = "value";
     private static final String POSITION = "position";

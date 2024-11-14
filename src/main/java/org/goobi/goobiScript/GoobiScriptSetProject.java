@@ -42,7 +42,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String FIELD_PROJECT = "project";
 
     private Project project;

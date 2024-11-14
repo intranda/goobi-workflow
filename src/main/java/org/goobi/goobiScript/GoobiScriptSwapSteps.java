@@ -43,7 +43,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String SWAP_1_NUMBER = "swap1nr";
     private static final String SWAP_1_TITLE = "swap1title";
     private static final String SWAP_2_NUMBER = "swap2nr";

@@ -44,7 +44,6 @@ import ugh.dl.Fileformat;
 @Log4j2
 public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String TITLE = "title";
     private static final String CONTENT = "content";
     private static final String META_ANCHOR_FILE = "meta_anchor.xml";

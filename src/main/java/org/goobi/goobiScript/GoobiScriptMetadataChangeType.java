@@ -50,7 +50,6 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implements IGoobiScript {
     // action:metadataTypeChange position:work oldType:singleDigCollection newType:DDC
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String OLD_TYPE = "oldType";
     private static final String NEW_TYPE = "newType";
     private static final String POSITION = "position";

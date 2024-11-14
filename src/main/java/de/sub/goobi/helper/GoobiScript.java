@@ -61,8 +61,6 @@ public class GoobiScript {
 
     public static final String DIRECTORY_SUFFIX = "_tif";
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
-
     /**
      * executes the list of GoobiScript commands for all processes that were selected
      *

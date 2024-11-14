@@ -38,7 +38,6 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String TEMPLATE_NAME = "templateName";
 
     private Process processTemplate;

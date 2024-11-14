@@ -45,7 +45,6 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoobiScript {
     // action:renameProcess search:415121809 replace:1659235871 type:contains|full
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String OLD_STEP_NAME = "oldStepName";
     private static final String NEW_STEP_NAME = "newStepName";
 
