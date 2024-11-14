@@ -1,20 +1,20 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -80,7 +80,7 @@ public class GoobiScript {
 
     /**
      * executes the list of GoobiScript commands for all processes that were selected
-     * 
+     *
      * @param processes List of process identifiers
      * @param allScripts all goobiScript calls that were used
      * @param gsm GoobiScriptManager to use
@@ -100,14 +100,14 @@ public class GoobiScript {
             // in case of a missing action parameter skip this goobiscript
             String myaction = currentScript.get("action");
             if (myaction == null || myaction.length() == 0) {
-                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Missing action!", "Please select one of the allowed commands.");
+                Helper.setFehlerMeldung("Missing action!", "Please select one of the allowed commands.");
                 continue;
             }
 
             // in case of missing rights skip this goobiscript
             LoginBean loginForm = Helper.getLoginBean();
             if (!loginForm.hasRole("goobiscript_" + myaction) && !loginForm.hasRole("Workflow_Processes_Allow_GoobiScript")) {
-                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "You are not allowed to execute this GoobiScript: ", myaction);
+                Helper.setFehlerMeldung("You are not allowed to execute this GoobiScript: ", myaction);
                 continue;
             }
 
@@ -135,12 +135,12 @@ public class GoobiScript {
 
                         // just execute the GoobiScript now if the initialization was valid
                         if (!scriptResults.isEmpty()) {
-                            Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript added: " + gs.getAction());
+                            Helper.setMeldung("", "GoobiScript added: " + gs.getAction());
                             gsm.enqueueScripts(scriptResults);
                             gsm.startWork();
                         }
                     } else {
-                        Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Unknown action: " + myaction, " Please use one of the given below.");
+                        Helper.setFehlerMeldung("Unknown action: " + myaction, " Please use one of the given below.");
                     }
             }
         }
@@ -149,7 +149,7 @@ public class GoobiScript {
 
     /**
      * Parses YAML to a list of GoobiScript parameter maps
-     * 
+     *
      * @param allScripts
      * @return
      */
@@ -169,7 +169,7 @@ public class GoobiScript {
 
     /**
      * GoobiScript updateContentFiles
-     * 
+     *
      * @param inProzesse List of identifiers for this GoobiScript
      */
     private void updateContentFiles(List<Integer> inProzesse) {
@@ -181,20 +181,20 @@ public class GoobiScript {
                 proz.writeMetadataFile(myRdf);
                 Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "ContentFiles updated using GoobiScript.");
                 log.info("ContentFiles updated using GoobiScript for process with ID " + proz.getId());
-                Helper.setMeldung(GOOBI_SCRIPTFIELD, "ContentFiles updated: ", proz.getTitel());
+                Helper.setMeldung("ContentFiles updated: ", proz.getTitel());
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
                 Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
 
             } catch (Exception e) {
-                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error while updating content files", e);
+                Helper.setFehlerMeldung("Error while updating content files", e);
             }
         }
-        Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript 'updateContentFiles' finished");
+        Helper.setMeldung("", "GoobiScript 'updateContentFiles' finished");
     }
 
     /**
      * GoobiScript swapOutProzesses
-     * 
+     *
      * @param inProzesse List of identifiers for this GoobiScript
      */
     private void swapOutProzesses(List<Integer> inProzesse) {
@@ -207,12 +207,12 @@ public class GoobiScript {
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Swapping out started using GoobiScript.");
             log.info("Swapping out started using GoobiScript for process with ID " + p.getId());
         }
-        Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript 'swapOut' executed.");
+        Helper.setMeldung("", "GoobiScript 'swapOut' executed.");
     }
 
     /**
      * GoobiScript swapInProzesses
-     * 
+     *
      * @param inProzesse List of identifiers for this GoobiScript
      */
     private void swapInProzesses(List<Integer> inProzesse) {
@@ -225,12 +225,12 @@ public class GoobiScript {
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Swapping in started using GoobiScript.");
             log.info("Swapping in started using GoobiScript for process with ID " + p.getId());
         }
-        Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript 'swapIn' executed.");
+        Helper.setMeldung("", "GoobiScript 'swapIn' executed.");
     }
 
     /**
      * GoobiScript deleteTiffHeaderFile to delete an existing tiff header file tiffwriter.conf for each process
-     * 
+     *
      * @param inProzesse List of identifiers for this GoobiScript
      */
     public void deleteTiffHeaderFile(List<Integer> inProzesse) {
@@ -243,17 +243,17 @@ public class GoobiScript {
                 }
                 Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "TiffHeaderFile deleted using GoobiScript.");
                 log.info("TiffHeaderFile deleted using GoobiScript for process with ID " + proz.getId());
-                Helper.setMeldung(GOOBI_SCRIPTFIELD, "TiffHeaderFile deleted: ", proz.getTitel());
+                Helper.setMeldung("TiffHeaderFile deleted: ", proz.getTitel());
             } catch (Exception e) {
-                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error while deleting TiffHeader", e);
+                Helper.setFehlerMeldung("Error while deleting TiffHeader", e);
             }
         }
-        Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript 'deleteTiffHeaderFile' finished.");
+        Helper.setMeldung("", "GoobiScript 'deleteTiffHeaderFile' finished.");
     }
 
     /**
      * GoobiScript updateImagePath
-     * 
+     *
      * @param inProzesse List of identifiers for this GoobiScript
      */
     public void updateImagePath(List<Integer> inProzesse) {
@@ -280,21 +280,21 @@ public class GoobiScript {
                 proz.writeMetadataFile(myRdf);
                 Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.");
                 log.info("ImagePath updated using GoobiScript for process with ID " + proz.getId());
-                Helper.setMeldung(GOOBI_SCRIPTFIELD, "ImagePath updated: ", proz.getTitel());
+                Helper.setMeldung("ImagePath updated: ", proz.getTitel());
 
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
-                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "DocStructHasNoTypeException", e.getMessage());
+                Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
             } catch (UghHelperException e) {
-                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "UghHelperException", e.getMessage());
+                Helper.setFehlerMeldung("UghHelperException", e.getMessage());
             } catch (MetadataTypeNotAllowedException e) {
-                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "MetadataTypeNotAllowedException", e.getMessage());
+                Helper.setFehlerMeldung("MetadataTypeNotAllowedException", e.getMessage());
 
             } catch (Exception e) {
-                Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error while updating imagepath", e);
+                Helper.setFehlerMeldung("Error while updating imagepath", e);
             }
 
         }
-        Helper.setMeldung(GOOBI_SCRIPTFIELD, "", "GoobiScript 'updateImagePath' finished.");
+        Helper.setMeldung("", "GoobiScript 'updateImagePath' finished.");
     }
 
 }
