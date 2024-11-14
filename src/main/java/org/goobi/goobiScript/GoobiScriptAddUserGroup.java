@@ -1,19 +1,19 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -87,20 +87,20 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         String wrongParameter = "Unknown group: ";
         String steptitle = parameters.get(STEPTITLE);
         if (steptitle == null || "".equals(steptitle)) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
+            Helper.setFehlerMeldung(missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String group = parameters.get(GROUP);
         if (group == null || "".equals(group)) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, GROUP);
+            Helper.setFehlerMeldung(missingParameter, GROUP);
             return new ArrayList<>();
         }
 
         /* check if usergroup exists */
         Usergroup groupInDatabase = GoobiScriptAddUserGroup.getUsergroupFromDatabase(parameters);
         if (groupInDatabase == null) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, wrongParameter, group);
+            Helper.setFehlerMeldung(wrongParameter, group);
         }
 
         // add all valid commands to list
@@ -200,7 +200,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
             gsr.setResultMessage(message);
 
         } catch (DAOException daoException) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error while saving - " + process.getTitel(), daoException);
+            Helper.setFehlerMeldung("Error while saving - " + process.getTitel(), daoException);
             gsr.setResultMessage("Problem while adding usergroup " + info + ": " + daoException.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(daoException.getMessage());
@@ -217,7 +217,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
             }
         } catch (DAOException e) {
             log.error(e);
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error in GoobiScript addusergroup", e);
+            Helper.setFehlerMeldung("Error in GoobiScript addusergroup", e);
             return null;
         }
     }
