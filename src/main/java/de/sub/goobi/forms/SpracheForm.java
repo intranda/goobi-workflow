@@ -37,6 +37,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -101,6 +102,12 @@ public class SpracheForm implements Serializable {
                 translation.put("id", supportedLocale.toString());
                 translation.put("displayLanguageSelf", supportedLocale.getDisplayLanguage(supportedLocale));
                 translation.put("displayLanguageTranslated", supportedLocale.getDisplayLanguage(currentDisplayLanguage));
+                // if we have a specific country code, show this one too
+                if (StringUtils.isNotBlank(supportedLocale.getCountry())) {
+                    translation.put("displayLanguageSelf", translation.get("displayLanguageSelf") + " (" + supportedLocale.getCountry() + ")");
+                    translation.put("displayLanguageTranslated",
+                            translation.get("displayLanguageTranslated") + " (" + supportedLocale.getCountry() + ")");
+                }
                 translation.put("selected", Boolean.valueOf(supportedLocale.equals(currentDisplayLanguage)));
                 result.add(translation);
             }
