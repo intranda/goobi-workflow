@@ -1,7 +1,9 @@
 package io.goobi.workflow.api.vocabulary;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import io.goobi.vocabulary.monitoring.MonitoringResult;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
 import javax.faces.context.ExternalContext;
@@ -18,7 +20,10 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class VocabularyAPIManager {
+    private static final String MIN_REQUIRED_VERSION = "1.1.9";
+    private static final String MONITORING_ENDPOINT = "/api/v1/monitoring";
     private static VocabularyAPIManager instance;
 
     private FieldTypeAPI fieldTypeAPI;
@@ -26,15 +31,50 @@ public class VocabularyAPIManager {
     private VocabularySchemaAPI vocabularySchemaAPI;
     private VocabularyAPI vocabularyAPI;
     private VocabularyRecordAPI vocabularyRecordAPI;
+    private final RESTAPI api;
 
     private VocabularyAPIManager() {
         final String host = ConfigurationHelper.getInstance().getVocabularyServerHost();
         final int port = ConfigurationHelper.getInstance().getVocabularyServerPort();
+        this.api = new RESTAPI(host, port);
         this.fieldTypeAPI = new FieldTypeAPI(host, port);
         this.languageAPI = new LanguageAPI(host, port);
         this.vocabularySchemaAPI = new VocabularySchemaAPI(host, port);
         this.vocabularyAPI = new VocabularyAPI(host, port);
         this.vocabularyRecordAPI = new VocabularyRecordAPI(host, port);
+    }
+
+    public void versionCheck() {
+        MonitoringResult monitoringResult = this.api.get(MONITORING_ENDPOINT, MonitoringResult.class);
+        String version = monitoringResult.versions().core().version();
+        if ("unknown".equals(version)) {
+            log.warn("You are working on a development version of the vocabulary server, version check will not work!");
+            return;
+        }
+        if (!versionIsAtLeast(MIN_REQUIRED_VERSION, version)) {
+            throw new IllegalStateException("Vocabulary server doesn't meet required minimum version! minimum version=" + MIN_REQUIRED_VERSION + ", current version=" + version);
+        }
+    }
+
+    private boolean versionIsAtLeast(String minVersion, String version) {
+        String[] minVersionParts = minVersion.split("\\.");
+        String[] versionParts = version.split("\\.");
+        if (minVersionParts.length != 3 || versionParts.length != 3) {
+            throw new IllegalArgumentException("Wrong vocabulary server version format: " + minVersion + " :: " + version + "!");
+        }
+        for (int i = 0; i < 3; i++) {
+            int min = Integer.parseInt(minVersionParts[i]);
+            int current;
+            if (i == 2 && versionParts[i].contains("-SNAPSHOT")) {
+                current = Integer.parseInt(versionParts[i].replace("-SNAPSHOT", "")) - 1;
+            } else {
+                current = Integer.parseInt(versionParts[i]);
+            }
+            if (current < min) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public synchronized static VocabularyAPIManager getInstance() {
