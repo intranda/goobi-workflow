@@ -28,20 +28,19 @@ package org.goobi.api.mq;
 import java.util.Arrays;
 import java.util.UUID;
 
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ScheduledMessage;
 
 import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import jakarta.jms.Connection;
+import jakarta.jms.DeliveryMode;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.Session;
+import jakarta.jms.TextMessage;
 
 public class TicketGenerator {
     private static Gson gson = new Gson();
@@ -133,26 +132,29 @@ public class TicketGenerator {
 
     private static String submitTicket(Object ticket, String queueName, Connection conn, String ticketType, Integer processid, Integer delay)
             throws JMSException {
-        Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        final Destination dest = sess.createQueue(queueName);
-        MessageProducer producer = sess.createProducer(dest);
-        producer.setDeliveryMode(DeliveryMode.PERSISTENT);
-        TextMessage message = sess.createTextMessage();
-        // we set a random UUID here, because otherwise tickets will not be processed in parallel in an SQS fifo queue.
-        // we still need a fifo queue for message deduplication, though.
-        // See: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-additional-fifo-queue-recommendations.html
-        message.setStringProperty("JMSXGroupID", UUID.randomUUID().toString());
-        message.setText(gson.toJson(ticket));
-        message.setStringProperty("JMSType", ticketType);
-        message.setIntProperty("processid", processid);
+        TextMessage message = null;
+        try (Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
+            final Destination dest = sess.createQueue(queueName);
+            try (MessageProducer producer = sess.createProducer(dest)) {
+                producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+                message = sess.createTextMessage();
+                // we set a random UUID here, because otherwise tickets will not be processed in parallel in an SQS fifo queue.
+                // we still need a fifo queue for message deduplication, though.
+                // See: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-additional-fifo-queue-recommendations.html
+                message.setStringProperty("JMSXGroupID", UUID.randomUUID().toString());
+                message.setText(gson.toJson(ticket));
+                message.setStringProperty("JMSType", ticketType);
+                message.setIntProperty("processid", processid);
 
-        // add a delay, given in seconds
-        if (delay > 0) {
-            long seconds = delay * 1000l;
-            message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, seconds);
+                // add a delay, given in seconds
+                if (delay > 0) {
+                    long seconds = delay * 1000l;
+                    message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, seconds);
+                }
+
+                producer.send(message);
+            }
         }
-
-        producer.send(message);
         return message.getJMSMessageID();
     }
 

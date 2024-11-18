@@ -31,8 +31,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -86,6 +88,7 @@ import org.omnifaces.util.Faces;
 
 import com.google.gson.Gson;
 
+import de.intranda.digiverso.ocr.alto.model.structureclasses.logical.AltoDocument;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -3647,12 +3650,14 @@ public class Metadaten implements Serializable {
 
     public void loadJsonAlto() throws IOException, JDOMException, SwapException, DAOException {
         Path altoFile = getCurrentAltoPath();
-        SimpleAlto alto = new SimpleAlto();
         if (StorageProvider.getInstance().isFileExists(altoFile)) {
-            alto = SimpleAlto.readAlto(altoFile);
+            SimpleAlto alto = new SimpleAlto();
+            alto.readAlto(altoFile);
+            this.currentJsonAlto = new Gson().toJson(alto);
+        } else {
+            SimpleAlto alto = new SimpleAlto("ALTO file not found.");
+            this.currentJsonAlto = new Gson().toJson(alto);
         }
-
-        this.currentJsonAlto = new Gson().toJson(alto);
     }
 
     public String getJsonAlto() {
@@ -3668,10 +3673,20 @@ public class Metadaten implements Serializable {
         return altoFile;
     }
 
+    private Optional<Path> getCurrentTxtPath() throws SwapException, IOException {
+        String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
+        Path txtFile = Paths.get(myProzess.getOcrTxtDirectory(), ocrFileNew + ".txt");
+        if (!StorageProvider.getInstance().isFileExists(txtFile)) {
+            txtFile = null;
+        }
+        return Optional.ofNullable(txtFile);
+    }
+
     public void saveAlto() {
         AltoChange[] changes = new Gson().fromJson(this.altoChanges, AltoChange[].class);
         try {
             AltoSaver.saveAltoChanges(getCurrentAltoPath(), changes);
+            replaceTxtFileIfPresent(getCurrentTxtPath());
             this.loadJsonAlto();
             FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, Helper.getTranslation("savedAlto"), null);
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
@@ -3680,6 +3695,14 @@ public class Metadaten implements Serializable {
             FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_ERROR, Helper.getTranslation("errorSavingAlto"), null);
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
         }
+    }
+
+    private void replaceTxtFileIfPresent(Optional<Path> currentTxtPath) throws SwapException, IOException, JDOMException {
+        if (currentTxtPath.isEmpty()) {
+            return;
+        }
+        AltoDocument alto = AltoDocument.getDocumentFromFile(new File(getCurrentAltoPath().toString()));
+        Files.write(currentTxtPath.get(), alto.getContent().getBytes());
     }
 
     public boolean isShowNamedEntityEditor() {
@@ -5207,20 +5230,31 @@ public class Metadaten implements Serializable {
 
         List<AuthorityData> authorityList = new ArrayList<>();
         for (Person person : persons) {
-            AuthorityData data =
-                    new AuthorityData(person.getDisplayname(),
-                            URI.create(Optional.ofNullable(person.getAuthorityURI()).orElse("")).resolve(person.getAuthorityValue()).toString());
-            authorityList.add(data);
+            try {
+                AuthorityData data = new AuthorityData(person.getDisplayname(),
+                        new URI(Optional.ofNullable(person.getAuthorityURI()).orElse("")).resolve(person.getAuthorityValue()).toString());
+                authorityList.add(data);
+            } catch (URISyntaxException | IllegalArgumentException e) {
+                log.error("Cannot add authority data '{}' to ALTO editor: {}", person.getAuthorityValue(), e.toString());
+            }
         }
         for (Corporate corporate : corporates) {
-            AuthorityData data = new AuthorityData(corporate.getMainName(),
-                    URI.create(Optional.ofNullable(corporate.getAuthorityURI()).orElse("")).resolve(corporate.getAuthorityValue()).toString());
-            authorityList.add(data);
+            try {
+                AuthorityData data = new AuthorityData(corporate.getMainName(),
+                        new URI(Optional.ofNullable(corporate.getAuthorityURI()).orElse("")).resolve(corporate.getAuthorityValue()).toString());
+                authorityList.add(data);
+            } catch (URISyntaxException | IllegalArgumentException e) {
+                log.error("Cannot add authority data '{}' to ALTO editor: {}", corporate.getAuthorityValue(), e.toString());
+            }
         }
         for (Metadata md : metadata) {
-            AuthorityData data = new AuthorityData(md.getValue(),
-                    URI.create(Optional.ofNullable(md.getAuthorityURI()).orElse("")).resolve(md.getAuthorityValue()).toString());
-            authorityList.add(data);
+            try {
+                AuthorityData data = new AuthorityData(md.getValue(),
+                        new URI(Optional.ofNullable(md.getAuthorityURI()).orElse("")).resolve(md.getAuthorityValue()).toString());
+                authorityList.add(data);
+            } catch (URISyntaxException | IllegalArgumentException e) {
+                log.error("Cannot add authority data '{}' to ALTO editor: {}", md.getAuthorityValue(), e.toString());
+            }
         }
 
         Collections.sort(authorityList,

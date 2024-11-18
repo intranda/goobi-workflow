@@ -18,6 +18,7 @@
 .box__title {
   // margin: -0.3px; // Fix a chrome bug => otherwise gaps between title + box border are visible when zooming in
   color: var(--clr-white, #fff);
+  --section-color-text: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
   flex-wrap: nowrap;
@@ -33,7 +34,7 @@
   button {
     color: currentColor;
     .fa {
-      color: currentColor;
+      --section-color-text: var(--clr-white, #fff);
       font-size: 0.875rem;
     }
   }

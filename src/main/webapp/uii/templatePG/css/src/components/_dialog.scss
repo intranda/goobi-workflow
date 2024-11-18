@@ -1,0 +1,38 @@
+.modal {
+    --bs-modal-border-radius: var(--border-radius);
+    --bs-modal-inner-border-radius: 0;
+    --bs-modal-header-padding: 1em;
+}
+
+.button-modal-close .fa {
+    margin: 0 10px 0 5px;
+    color: var(--section-color-text);
+}
+
+.dialog-modal {
+    background: transparent;
+    border: 0;
+    border-radius: var(--border-radius);
+    margin: 2rem auto;
+    min-width: 300px;
+    max-width: 800px;
+    padding: 0;
+    position: fixed;
+    top: 2rem;
+    width: unset;
+    &::backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(3px);
+    }
+}
+
+.dialog-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dialog-footer {
+    background: var(--clr-white);
+    display: flex;
+}

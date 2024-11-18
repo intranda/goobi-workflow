@@ -27,7 +27,8 @@ public enum LogType {
     DEBUG("debug"),
     USER("user"),
     STATUS("status"),
-    FILE("file");
+    FILE("file"),
+    IMPORTANT_USER("important");
 
     @Getter
     private String title;

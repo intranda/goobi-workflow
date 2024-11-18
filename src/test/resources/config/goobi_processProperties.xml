@@ -11,7 +11,9 @@
     </property>
     <property name="Test2" container="1" >
         <project>*</project>
-        <showStep name="title" access="read" />
+        <showStep name="title" access="read">
+            <display property="Test1" value="1"/>
+        </showStep>
         <type>text</type>
         <defaultvalue>a</defaultvalue>
     </property>

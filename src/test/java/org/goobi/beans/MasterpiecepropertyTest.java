@@ -80,17 +80,15 @@ public class MasterpiecepropertyTest extends AbstractTest {
     public void testContainer() {
         Masterpieceproperty property = new Masterpieceproperty();
 
-        // This integer is outsourced because assertEquals() requires object type safety
-        Integer zero = Integer.valueOf(0);
-        assertEquals(property.getContainer(), zero);
+        assertEquals(property.getContainer(), "0");
 
         // Test whether null is replaced with 0
         property.setContainer(null);
-        assertEquals(property.getContainer(), zero);
+        assertEquals(property.getContainer(), "0");
 
         // Test whether normal numbers work
-        property.setContainer(42);
-        assertEquals(property.getContainer(), Integer.valueOf(42));
+        property.setContainer("42");
+        assertEquals("42", property.getContainer());
     }
 
     @Test

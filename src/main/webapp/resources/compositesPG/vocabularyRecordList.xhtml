@@ -30,22 +30,22 @@
                     icon="fa-database">
                 <div class="actions d-flex">
                     <!-- import -->
-                    <button
-                        jsf:id="uploadRecords"
-                        class="btn btn&#45;&#45;title-action"
-                        jsf:rel="tooltip"
-                        jsf:action="#{vocabularyRecordsBean.uploadRecords}"
+                    <div
+                        class="d-inline btn&#45;&#45;title-action"
+                        data-bs-toggle="tooltip"
+                        jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
                         title="#{msgs.vocabularyManager_uploadRecords}">
-                        <span
-                            aria-hidden="true"
-                            class="fa fa-upload"/>
-                        <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip"/>
-                        <f:passThroughAttribute
-                                name="aria-label"
-                                value="#{msgs.vocabularyManager_uploadRecords}"/>
-                    </button>
+                        <button
+                            id="uploadRecords"
+                            class="btn"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#uploadModal">
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-upload"/>
+                        </button>
+                    </div>
                     <div
                         class="d-inline btn&#45;&#45;title-action"
                         data-bs-toggle="tooltip"
@@ -61,10 +61,11 @@
                         </button>
                         <ul class="dropdown-menu">
                             <!-- export -->
-                            <h:outputLink
+                            <h:commandLink
                                 styleClass="btn dropdown-item"
-                                value="#{cc.attrs.vocabulary.jsonExport()}"
+                                action="#{vocabularyRecordsBean.download(cc.attrs.vocabulary.jsonExport())}"
                                 title="#{msgs.vocabularyManager_downloadRecordsAsJson}"
+                                target="_blank"
                             >
                                 <span
                                     aria-hidden="true"
@@ -72,49 +73,53 @@
                                 <span>
                                     JSON
                                 </span>
-                            </h:outputLink>
-                            <h:outputLink
+                            </h:commandLink>
+                            <h:commandLink
                                     styleClass="btn dropdown-item"
-                                    value="#{cc.attrs.vocabulary.excelExport()}"
+                                    action="#{vocabularyRecordsBean.download(cc.attrs.vocabulary.excelExport())}"
                                     title="#{msgs.vocabularyManager_downloadRecordsAsExcel}"
+                                    target="_blank"
                             >
                                 <span aria-hidden="true" class="fa fa-download"/>
                                 <span>
                                     Excel
                                 </span>
-                            </h:outputLink>
-                            <h:outputLink
+                            </h:commandLink>
+                            <h:commandLink
                                     styleClass="btn dropdown-item"
-                                    value="#{cc.attrs.vocabulary.csvExport()}"
+                                    action="#{vocabularyRecordsBean.download(cc.attrs.vocabulary.csvExport())}"
                                     title="#{msgs.vocabularyManager_downloadRecordsAsCsv}"
+                                    target="_blank"
                             >
                                 <span aria-hidden="true" class="fa fa-download"/>
                                 <span>
                                     CSV
                                 </span>
-                            </h:outputLink>
+                            </h:commandLink>
                             <ui:fragment
                                     rendered="#{cc.attrs.vocabulary.skosExportPossible}">
-                                <h:outputLink
+                                <h:commandLink
                                         styleClass="btn dropdown-item"
-                                        value="#{cc.attrs.vocabulary.rdfXmlExport()}"
+                                        action="#{vocabularyRecordsBean.download(cc.attrs.vocabulary.rdfXmlExport())}"
                                         title="#{msgs.vocabularyManager_downloadRecordsAsRdfXml}"
+                                        target="_blank"
                                 >
                                     <span aria-hidden="true" class="fa fa-download"/>
                                     <span>
                                         RDF/XML
                                     </span>
-                                </h:outputLink>
-                                <h:outputLink
+                                </h:commandLink>
+                                <h:commandLink
                                         styleClass="btn dropdown-item"
-                                        value="#{cc.attrs.vocabulary.rdfTurtleExport()}"
+                                        action="#{vocabularyRecordsBean.download(cc.attrs.vocabulary.rdfTurtleExport())}"
                                         title="#{msgs.vocabularyManager_downloadRecordsAsRdfTurtle}"
+                                        target="_blank"
                                 >
                                     <span aria-hidden="true" class="fa fa-download"/>
                                     <span>
                                         RDF/Turtle
                                     </span>
-                                </h:outputLink>
+                                </h:commandLink>
                             </ui:fragment>
                         </ul>
                     </div>
@@ -222,19 +227,6 @@
                     </div>
                     <!-- navigation buttons to flip through all records -->
                     <div class="box__actions">
-
-                        <!-- add new record -->
-                        <ui:fragment rendered="#{vocabularyRecordsBean.isRootRecordCreationPossible() == true}">
-                            <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty(null)}"
-                                    class="btn btn-primary me-auto"
-                                    title="#{msgs.vocabularyManager_addRecord}">
-                                <span aria-hidden="true" class="fa fa-plus"/>
-                                <span>
-                                    <h:outputText value="#{msgs.vocabularyManager_addRecord}"/>
-                                </span>
-                            </button>
-                        </ui:fragment>
-
                         <!-- Cancel (go back to vocab overview)-->
                         <button
                                 class="btn btn-blank"
@@ -244,6 +236,19 @@
                                 jsf:immediate="true">
                             <h:outputText value="#{msgs.vocabularyManager_backToVocabularies}"/>
                         </button>
+
+                        <!-- add new record -->
+                        <ui:fragment rendered="#{vocabularyRecordsBean.isRootRecordCreationPossible() == true}">
+                            <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty(null)}"
+                                    class="btn btn-primary"
+                                    title="#{msgs.vocabularyManager_addRecord}">
+                                <span aria-hidden="true" class="fa fa-plus"/>
+                                <span>
+                                    <h:outputText value="#{msgs.vocabularyManager_addRecord}"/>
+                                </span>
+                            </button>
+                        </ui:fragment>
+
 
                         <intranda:paginator id="record" paginator="#{vocabularyRecordsBean.paginator}"/>
                     </div> <!-- /box__actions -->

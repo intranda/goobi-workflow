@@ -44,7 +44,7 @@ import ugh.dl.Fileformat;
 @Log4j2
 public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String TITLE = "title";
     private static final String CONTENT = "content";
     private static final String META_ANCHOR_FILE = "meta_anchor.xml";
@@ -75,17 +75,17 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
         String missingParameter = "Missing parameter: ";
         String wrongParameter = "Wrong content parameter";
         String title = parameters.get(TITLE);
-        if (title == null || title.equals("")) {
+        if (title == null || "".equals(title)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, TITLE);
             return new ArrayList<>();
         }
         String content = parameters.get(CONTENT);
-        if (content == null || content.equals("")) {
+        if (content == null || "".equals(content)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, CONTENT);
             return new ArrayList<>();
         }
 
-        if (!content.equals(CONTENT_ALL) && !content.equals(CONTENT_EMPTY)) {
+        if (!CONTENT_ALL.equals(content) && !CONTENT_EMPTY.equals(content)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, wrongParameter, "(only limited values are allowed)");
             return new ArrayList<>();
         }
@@ -119,7 +119,7 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
             Path newMetaAnchorFile = Paths.get(newProcess.getProcessDataDirectory(), META_ANCHOR_FILE);
 
             // copy the files and other content over to the new process
-            if (parameters.get(CONTENT).equals(CONTENT_ALL)) {
+            if (CONTENT_ALL.equals(parameters.get(CONTENT))) {
                 // all content
                 StorageProvider.getInstance().copyDirectory(existingDirectory, newDirectory);
             } else {

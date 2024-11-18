@@ -561,12 +561,21 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     @Override
     public void setSelectedItem(String selectedItem) {
+        List<Item> hits = this.myValues.getItemList().stream()
+                .filter(i -> i.getLabel().equals(selectedItem))
+                .toList();
 
-        for (Item i : this.myValues.getItemList()) {
-            if (i.getLabel().equals(selectedItem)) {
-                setWert(i.getValue());
-            }
+        if (hits.size() == 1) {
+            setWert(hits.get(0).getValue());
+            return;
         }
+
+        if (hits.isEmpty() && StringUtils.isBlank(selectedItem)) {
+            setWert("");
+            return;
+        }
+
+        log.warn("Unable to find desired value \"{}\" from dropdown", selectedItem);
     }
 
     @Override

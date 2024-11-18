@@ -1,0 +1,3 @@
+[submodule "docs"]
+	path = docs
+	url = git@gitea.intranda.com:goobi-workflow/goobi-workflow-core-docs.git

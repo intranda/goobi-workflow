@@ -45,7 +45,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
 
     @Override
@@ -67,7 +67,7 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
 
         String missingParameter = "Missing parameter: ";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
@@ -120,7 +120,7 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
                 }
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
             gsr.setResultMessage("Step not found: " + steptitle);
         }

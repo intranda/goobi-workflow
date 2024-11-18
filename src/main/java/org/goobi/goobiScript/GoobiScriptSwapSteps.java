@@ -43,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String SWAP_1_NUMBER = "swap1nr";
     private static final String SWAP_1_TITLE = "swap1title";
     private static final String SWAP_2_NUMBER = "swap2nr";
@@ -72,25 +72,25 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
 
         String missingParameter = "Missing parameter: ";
         String swap1Number = parameters.get(SWAP_1_NUMBER);
-        if (swap1Number == null || swap1Number.equals("")) {
+        if (swap1Number == null || "".equals(swap1Number)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, SWAP_1_NUMBER);
             return new ArrayList<>();
         }
 
         String swap1Title = parameters.get(SWAP_1_TITLE);
-        if (swap1Title == null || swap1Title.equals("")) {
+        if (swap1Title == null || "".equals(swap1Title)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, SWAP_1_TITLE);
             return new ArrayList<>();
         }
 
         String swap2Number = parameters.get(SWAP_2_NUMBER);
-        if (swap2Number == null || swap2Number.equals("")) {
+        if (swap2Number == null || "".equals(swap2Number)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, SWAP_2_NUMBER);
             return new ArrayList<>();
         }
 
         String swap2Title = parameters.get(SWAP_2_TITLE);
-        if (swap2Title == null || swap2Title.equals("")) {
+        if (swap2Title == null || "".equals(swap2Title)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, SWAP_2_TITLE);
             return new ArrayList<>();
         }

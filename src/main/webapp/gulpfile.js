@@ -17,7 +17,7 @@ const cleanup = require('rollup-plugin-cleanup');
 const terser = require('@rollup/plugin-terser');
 
 // provide custom asset location for watch task
-const customLocation = `/home/florian/eclipse-workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/workflow-core/`;
+let customLocation;
 
 // source directories, files, globs
 const legacySources = {
@@ -35,8 +35,7 @@ const sources = {
         'node_modules/bootstrap/scss/',
     ],
     js: './uii/templatePG/js/**/*.js',
-    static: [
-        'resources/**/*.xhtml',
+    staticAssets: [
         'uii/**/*.xhtml',
         'uii/**/*.html',
         'uii/**/*.jpg',
@@ -45,7 +44,10 @@ const sources = {
         'uii/**/*.gif',
         'uii/**/*.ico',
         'uii/**/*.riot'
-    ]
+    ],
+    composites: 'resources/**/*.xhtml',
+    template: 'uii/templatePG/templatePG.html',
+    taglibs: 'WEB-INF/taglibs/**/*.xhtml',
 }
 // target directories
 const legacyTargetFolder = {
@@ -54,14 +56,34 @@ const legacyTargetFolder = {
 const targetFolder = {
     css: 'uii/templatePG/css/dist/',
     js: 'dist/js/',
-    static: 'uii/',
+    staticAssets: 'uii/',
+    composites: 'resources/',
+    taglibs: 'WEB-INF/taglibs/',
 }
 
 // FUNCTIONS
+// load custom location from user config
+// this is a function so that CI does not fail if the file is not present
+function loadConfig() {
+    const fs = require("fs");
+    const homedir = require("os").homedir();
+    const config = fs.readFileSync(homedir + '/.config/gulp_userconfig.json')
+    customLocation = JSON.parse(config).tomcatLocation;
+};
+
 function static() {
-	console.log("copy " + sources.static + " to " + `${customLocation}${targetFolder.static}`);
-    return src(sources.static)
-        .pipe(dest(`${customLocation}${targetFolder.static}`))
+    return src(sources.staticAssets)
+        .pipe(dest(`${customLocation}${targetFolder.staticAssets}`))
+};
+
+function composites() {
+    return src(sources.composites)
+        .pipe(dest(`${customLocation}${targetFolder.composites}`))
+};
+
+function taglibs() {
+    return src(sources.taglibs)
+        .pipe(dest(`${customLocation}${targetFolder.taglibs}`))
 };
 
 // function for legacy less
@@ -161,7 +183,7 @@ function devJsRollup() {
         })
         .then(bundle => {
             return bundle.write({
-                file: `${customLocation}${targetFolder.js}main.js`,
+                file: `${customLocation}${targetFolder.js}main.min.js`,
                 format: 'es',
             });
         });
@@ -175,7 +197,7 @@ function prodJsRollup() {
         })
         .then(bundle => {
             return bundle.write({
-                file: `${targetFolder.js}main.js`,
+                file: `${targetFolder.js}main.min.js`,
                 format: 'es',
                 sourcemap: true,
                 plugins: [terser({
@@ -186,11 +208,14 @@ function prodJsRollup() {
 };
 
 exports.dev = function() {
+    loadConfig();
     watch(legacySources.less, { ignoreInitial: false }, devLess);
     watch(legacySources.js, { ignoreInitial: false }, devJsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
     watch(sources.cssGlob, { ignoreInitial: false }, devCss);
-    watch(sources.static, { ignoreInitial: false }, static);
+    watch(sources.staticAssets, { ignoreInitial: false }, static);
+    watch(sources.composites, { ignoreInitial: false }, composites);
+    watch(sources.taglibs, { ignoreInitial: false }, taglibs);
 };
 exports.prod = parallel(prodJsLegacy, prodJsRollup, prodBSCss, prodCss, prodLess);

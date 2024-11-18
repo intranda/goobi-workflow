@@ -16,6 +16,10 @@ hr {
   color: var(--clr-neutral);
 }
 
+[role="list"] {
+  list-style: none;
+}
+
 // Overrides for font-awesome.css
 // Might be removed, once font-awesome is updated
 .pull-left,

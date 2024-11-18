@@ -54,7 +54,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 56;
+    public static final int EXPECTED_VERSION = 57;
     private static final Gson GSON = new Gson();
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -405,6 +405,10 @@ public class DatabaseVersion {
                     log.trace("Update database to version 55.");
                     updateToVersion56();
                     tempVersion++;
+                case 56: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 56.");
+                    updateToVersion57();
+                    tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -417,6 +421,26 @@ public class DatabaseVersion {
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
         }
+    }
+
+    private static void updateToVersion57() throws Exception {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            DatabaseVersion.runSql("ALTER TABLE prozesseeigenschaften MODIFY container text");
+            DatabaseVersion.runSql("ALTER TABLE schritteeigenschaften MODIFY container text");
+            DatabaseVersion.runSql("ALTER TABLE vorlageneigenschaften MODIFY container text");
+            DatabaseVersion.runSql("ALTER TABLE werkstueckeeigenschaften MODIFY container text");
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException exception) {
+                    log.warn(exception);
+                }
+            }
+        }
+
     }
 
     private static void updateToVersion56() throws Exception {
@@ -931,7 +955,8 @@ public class DatabaseVersion {
         }
 
         if (DatabaseVersion.checkIfTableExists("vocabularies")) {
-            log.error("The vocabulary migration logic for this version has been removed. Please try to manually re-create the vocabularies or contact the support.");
+            log.error(
+                    "The vocabulary migration logic for this version has been removed. Please try to manually re-create the vocabularies or contact the support.");
         }
     }
 

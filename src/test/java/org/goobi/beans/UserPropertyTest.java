@@ -26,7 +26,6 @@ import static org.junit.Assert.assertSame;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
@@ -75,25 +74,6 @@ public class UserPropertyTest extends AbstractTest {
         assertNotNull(property.getValueList());
         assertSame(property.getValueList(), exampleList);
 
-    }
-
-    // TODO: Is the non-implemented container in UserProperty a bug, or a feature?
-    @Ignore
-    @Test
-    public void testContainer() {
-        UserProperty property = new UserProperty();
-
-        // This integer is outsourced because assertEquals() requires object type safety
-        Integer zero = Integer.valueOf(0);
-        assertEquals(property.getContainer(), zero);
-
-        // Test whether null is replaced with 0
-        property.setContainer(null);
-        assertEquals(property.getContainer(), zero);
-
-        // Test whether normal numbers work
-        property.setContainer(42);
-        assertEquals(property.getContainer(), Integer.valueOf(42));
     }
 
     @Test

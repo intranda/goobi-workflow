@@ -297,7 +297,7 @@ public class HelperSchritteTest extends AbstractTest {
 
         Map<String, List<String>> metadataPairs = new HashMap<>();
         HelperSchritte.extractMetadata(Paths.get(process.getMetadataFilePath()), metadataPairs);
-        assertEquals(6, metadataPairs.size());
+        assertEquals(7, metadataPairs.size());
         assertEquals("main title", metadataPairs.get("TitleDocMain").get(0));
 
     }

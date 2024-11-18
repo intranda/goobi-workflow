@@ -27,7 +27,6 @@ import java.awt.Dimension;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -166,7 +165,7 @@ public @Data class Image {
         this.type = Type.getFromPath(imagePath);
         this.order = order;
         this.tooltip = filename;
-        if (Type.image.equals(this.type)) {
+        if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) { //handle pdfs like images since they can be read as such by the contentServer
             this.bookmarkUrl = createThumbnailUrl(process, 1000, imageFolderName, filename);
             this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
@@ -195,7 +194,7 @@ public @Data class Image {
         this.type = Type.getFromPath(imagePath);
         this.order = order;
         this.tooltip = imagePath.getFileName().toString();
-        if (Type.image.equals(this.type) || Type.unknown.equals(this.type)) {
+        if (Type.image.equals(this.type) || Type.pdf.equals(this.type) || Type.unknown.equals(this.type)) {
             this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
             bookmarkUrl = objectUrl;
             thumbnailUrl = objectUrl;
@@ -235,7 +234,7 @@ public @Data class Image {
      * @param size The size of the smaller thumbnails
      */
     public void createThumbnailUrls(int size) {
-        if (Type.image.equals(this.type)) {
+        if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) { //handle pdfs like images since they can be read as such by the contentServer
             this.thumbnailUrl = replaceSizeInUri(thumbnailUrl, size);
             this.largeThumbnailUrl = replaceSizeInUri(thumbnailUrl, size * LARGE_THUMBNAIL_SIZE_FACTOR);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
@@ -267,7 +266,7 @@ public @Data class Image {
      * @param size The size of the smaller thumbnails
      */
     public void createThumbnailUrls(int size, Process process, String imageFoldername, String filename) {
-        if (Type.image.equals(this.type)) {
+        if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) { //handle pdfs like images since they can be read as such by the contentServer
             this.thumbnailUrl = createThumbnailUrl(process, size, imageFoldername, filename);
             this.largeThumbnailUrl = createThumbnailUrl(process, size * LARGE_THUMBNAIL_SIZE_FACTOR, imageFoldername, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
@@ -337,7 +336,7 @@ public @Data class Image {
      */
     public Dimension getSize() {
         if (this.size == null) {
-            if (Type.image.equals(getType())) {
+            if (Type.image.equals(getType()) || Type.pdf.equals(getType())) {
                 try {
                     this.size = getImageSize(getImagePath());
                 } catch (ImageManagerException | FileNotFoundException e) {
@@ -428,7 +427,7 @@ public @Data class Image {
     private static Path getImagePath(org.goobi.beans.Process process, String imageFolderName, String filename)
             throws IOException, SwapException {
         Path path = Paths.get(process.getImagesDirectory(), imageFolderName, filename);
-        if (!Files.exists(path)) {
+        if (!StorageProvider.getInstance().isFileExists(path)) {
             path = Paths.get(process.getThumbsDirectory(), imageFolderName, filename);
         }
         return path;
@@ -495,6 +494,8 @@ public @Data class Image {
                     return Type.video;
                 } else if (mimetype.startsWith("image/")) {
                     return Type.image;
+                } else if ("application/pdf".equals(mimetype)) {
+                    return Type.pdf;
                 }
             }
 
@@ -515,6 +516,8 @@ public @Data class Image {
                 return Type.object;
             } else if (filename.endsWith(".xml")) {
                 return Type.object2vr;
+            } else if (filename.toLowerCase().endsWith(".pdf")) {
+                return Type.pdf;
             } else {
                 return Type.unknown;
             }

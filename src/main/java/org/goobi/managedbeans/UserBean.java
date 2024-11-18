@@ -740,9 +740,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public Integer getNumberOfInstitutions() {
-
-        List<Institution> lstInsts = InstitutionManager.getAllInstitutionsAsList();
-        return lstInsts.size();
+        return InstitutionManager.getNumberOfInstitutions();
     }
 
     public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {

@@ -1,368 +1,394 @@
 <ui:composition
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 
-	<ui:param
-		name="myPageTitle"
-		value="#{msgs.einenNeuenProzessAnlegen}" />
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.einenNeuenProzessAnlegen}" />
 
-	<ui:define name="breadcrumb">
-		<intranda:breadcrumb
-			id="id2"
-			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-			action="index"
-			navId="a0" />
-		<intranda:breadcrumb
-			id="templates"
-			label="#{msgs.prozessvorlagen}"
-			action="process_all"
-			navId="a1" />
-		<intranda:breadcrumb
-			id="newProcess"
-			label="#{msgs.einenNeuenProzessAnlegen}"
-			action="process_new1" />
-		<intranda:breadcrumb
-			id="templateName"
-			label="#{ProzesskopieForm.prozessVorlage.titel}"
-			action="process_new1"
-			noSeparator="#{true}" />
-	</ui:define>
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="id2"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="templates"
+            label="#{msgs.prozessvorlagen}"
+            action="process_all"
+            navId="a1" />
+        <intranda:breadcrumb
+            id="newProcess"
+            label="#{msgs.einenNeuenProzessAnlegen}"
+            action="process_new1" />
+        <intranda:breadcrumb
+            id="templateName"
+            label="#{ProzesskopieForm.prozessVorlage.titel}"
+            action="process_new1"
+            noSeparator="#{true}" />
+    </ui:define>
 
-	<ui:define name="info">
-	</ui:define>
+    <ui:define name="info">
+    </ui:define>
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-    	<!-- BUTTON TO SHOW THE INFO TABLES -->
+        <!-- BUTTON TO SHOW THE INFO TABLES -->
         <div
             jsf:rendered="#{ProzesskopieForm.showExistingProcessButton}"
             class="alert alert-danger mb-3 pt-2 pb-2">
 
             <h:outputText value="#{msgs.existingProcessTitleInUse}" />
 
-    		<button
-				id="existingProcessTablesModalButton"
-				type="button"
-				class="btn btn-neutral-600 ms-3"
-				data-bs-toggle="modal"
-				data-bs-target="#existingProcessTablesModal"
-				jsf:rendered="#{ProzesskopieForm.showExistingProcessButton}"
-				jsf:action="#{ProzesskopieForm.showTablesOfExistingProcess}">
-				<h:outputText value="#{msgs.existingProcessShowDetails}" />
-			</button>
+            <button
+                id="existingProcessTablesModalButton"
+                type="button"
+                class="btn btn-neutral-600 ms-3"
+                data-bs-toggle="modal"
+                data-bs-target="#existingProcessTablesModal"
+                jsf:rendered="#{ProzesskopieForm.showExistingProcessButton}"
+                jsf:action="#{ProzesskopieForm.showTablesOfExistingProcess}">
+                <h:outputText value="#{msgs.existingProcessShowDetails}" />
+            </button>
 
         </div>
 
-		<!-- // BUTTON TO SHOW THE INFO TABLES -->
+        <!-- // BUTTON TO SHOW THE INFO TABLES -->
 
         <!-- MODAL BOX FOR EXISTING PROCESS TABLES -->
-		<h:panelGroup layout="block"
-			class="modal fade"
-			id="existingProcessTablesModal"
-			tabindex="-1"
-			role="dialog"
-			aria-labelledby="existingProcessTablesModalLabel">
+        <h:panelGroup
+            layout="block"
+            class="modal fade"
+            id="existingProcessTablesModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="existingProcessTablesModalLabel">
 
-			<div
-				class="modal-dialog"
-				role="document">
-				<!-- MODAL CONTENT -->
-				<div class="modal-content">
-					<!-- MODAL HEADER -->
-					<div class="modal-header bg-primary text-white">
-						<h4 class="modal-title" id="existingProcessTablesModalLabel">
-							<h:outputText value="#{msgs.existingProcessDetails}" />
-						</h4>
-						<button type="button" class="btn text-white" title="#{msgs.close}" data-bs-dismiss="modal">
-							<span class="fa fa-times" />
-						</button>
-					</div>
-					<!-- // MODAL HEADER -->
+            <div
+                class="modal-dialog"
+                role="document">
+                <!-- MODAL CONTENT -->
+                <div class="modal-content">
+                    <!-- MODAL HEADER -->
+                    <div class="modal-header bg-primary text-white">
+                        <h4
+                            class="modal-title"
+                            id="existingProcessTablesModalLabel">
+                            <h:outputText value="#{msgs.existingProcessDetails}" />
+                        </h4>
+                        <button
+                            type="button"
+                            class="btn text-white"
+                            title="#{msgs.close}"
+                            data-bs-dismiss="modal">
+                            <span class="fa fa-times" />
+                        </button>
+                    </div>
+                    <!-- // MODAL HEADER -->
 
-					<!-- MODAL BODY -->
-					<div class="modal-body">
-						<!-- INFO TABLES OF THE EXISTING PROCESS -->
+                    <!-- MODAL BODY -->
+                    <div class="modal-body">
+                        <!-- INFO TABLES OF THE EXISTING PROCESS -->
 
-		                    <!-- DETAILS OF THE EXISTING PROCESS -->
-							<intranda:box
-								boxScope="general"
-								boxType="primary"
-								title="#{msgs.existingProcessBasicInfo}"
-                                icon="fa-table"
-								boxPadding="false"
-                                boxSmall="true"
-                                boxClass="mb-3">
+                        <!-- DETAILS OF THE EXISTING PROCESS -->
+                        <intranda:box
+                            boxScope="general"
+                            boxType="primary"
+                            title="#{msgs.existingProcessBasicInfo}"
+                            icon="fa-table"
+                            boxPadding="false"
+                            boxSmall="true"
+                            boxClass="mb-3">
 
-								<div
-			                        class="gw-table-fixed"
-			                        tabindex="0"
-			                        data-scrolldown="true">
-									<h:panelGrid
-										columns="2"
-										styleClass="table table-hover table-bordered"
-										columnClasses="visible, tableColumnMaxWidthLong">
+                            <div
+                                class="gw-table-fixed"
+                                tabindex="0"
+                                data-scrolldown="true">
+                                <h:panelGrid
+                                    columns="2"
+                                    styleClass="table table-hover table-bordered"
+                                    columnClasses="visible, tableColumnMaxWidthLong">
 
-										<h:outputText value="#{msgs.prozessTitel}:" />
-										<h:outputText value="#{ProzesskopieForm.existingProcess.titel}" />
+                                    <h:outputText value="#{msgs.prozessTitel}:" />
+                                    <h:outputText value="#{ProzesskopieForm.existingProcess.titel}" />
 
-										<h:outputText value="#{msgs.projekt}:" />
-										<h:outputText value="#{ProzesskopieForm.existingProcess.projekt.titel}" />
+                                    <h:outputText value="#{msgs.projekt}:" />
+                                    <h:outputText value="#{ProzesskopieForm.existingProcess.projekt.titel}" />
 
-										<h:outputText value="#{msgs.erstellungsdatum}:" />
-										<h:outputText value="#{ProzesskopieForm.existingProcess.erstellungsdatum}" />
+                                    <h:outputText value="#{msgs.erstellungsdatum}:" />
+                                    <h:outputText value="#{ProzesskopieForm.existingProcess.erstellungsdatum}" />
 
-										<h:outputText value="#{msgs.regelsatz}:" />
-										<h:outputText value="#{ProzesskopieForm.existingProcess.regelsatz.titel}"
-																title="#{ProzesskopieForm.existingProcess.regelsatz.datei}" />
+                                    <h:outputText value="#{msgs.regelsatz}:" />
+                                    <h:outputText
+                                        value="#{ProzesskopieForm.existingProcess.regelsatz.titel}"
+                                        title="#{ProzesskopieForm.existingProcess.regelsatz.datei}" />
 
-										<h:outputText value="#{msgs.docket}:" />
-										<h:outputText value="#{ProzesskopieForm.existingProcess.docket.name}" />
+                                    <h:outputText value="#{msgs.docket}:" />
+                                    <h:outputText value="#{ProzesskopieForm.existingProcess.docket.name}" />
 
-										<h:outputText value="#{msgs.exportValidation}:" />
-										<h:outputText value="#{ProzesskopieForm.existingProcess.exportValidator.label != null ? ProzesskopieForm.existingProcess.exportValidator.label : msgs.noValidation}" />
+                                    <h:outputText value="#{msgs.exportValidation}:" />
+                                    <h:outputText
+                                        value="#{ProzesskopieForm.existingProcess.exportValidator.label != null ? ProzesskopieForm.existingProcess.exportValidator.label : msgs.noValidation}" />
 
-										<h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
-										<span class="fa #{ProzesskopieForm.existingProcess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}" />
+                                    <h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
+                                    <span class="fa #{ProzesskopieForm.existingProcess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}" />
 
-										<h:outputText value="#{msgs.istTemplate}:" />
-										<span class="fa #{ProzesskopieForm.existingProcess.istTemplate?'fa-check-square-o':'fa-square-o'}" />
-										<h:outputText value="#{msgs.pauseAutomaticExecution}:" />
-										<span class="fa #{ProzesskopieForm.existingProcess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}" />
+                                    <h:outputText value="#{msgs.istTemplate}:" />
+                                    <span class="fa #{ProzesskopieForm.existingProcess.istTemplate?'fa-check-square-o':'fa-square-o'}" />
+                                    <h:outputText value="#{msgs.pauseAutomaticExecution}:" />
+                                    <span class="fa #{ProzesskopieForm.existingProcess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}" />
 
-										<h:outputText value="#{msgs.id}:"
-																styleClass="font-light" />
-										<h:outputText value="#{ProzesskopieForm.existingProcess.id}"
-																styleClass="font-light" />
+                                    <h:outputText
+                                        value="#{msgs.id}:"
+                                        styleClass="font-light" />
+                                    <h:outputText
+                                        value="#{ProzesskopieForm.existingProcess.id}"
+                                        styleClass="font-light" />
 
-										<h:outputText value="#{msgs.batch}:"
-																styleClass="font-light" />
-										<h:outputText value=""
-																rendered="#{ProzesskopieForm.existingProcess.batch==null}"
-																styleClass="font-light" />
-										<h:outputText value="#{ProzesskopieForm.existingProcess.batch.batchId}"
-																rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName ==null}"
-																styleClass="font-light" />
-										<h:outputText value="#{ProzesskopieForm.existingProcess.batch.batchId} (#{ProzesskopieForm.existingProcess.batch.batchName})"
-																rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName !=null}"
-																styleClass="font-light" />
+                                    <h:outputText
+                                        value="#{msgs.batch}:"
+                                        styleClass="font-light" />
+                                    <h:outputText
+                                        value=""
+                                        rendered="#{ProzesskopieForm.existingProcess.batch==null}"
+                                        styleClass="font-light" />
+                                    <h:outputText
+                                        value="#{ProzesskopieForm.existingProcess.batch.batchId}"
+                                        rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName ==null}"
+                                        styleClass="font-light" />
+                                    <h:outputText
+                                        value="#{ProzesskopieForm.existingProcess.batch.batchId} (#{ProzesskopieForm.existingProcess.batch.batchName})"
+                                        rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName !=null}"
+                                        styleClass="font-light" />
 
-									</h:panelGrid>
-								</div>
+                                </h:panelGrid>
+                            </div>
 
-							</intranda:box>
+                        </intranda:box>
 
-							<!-- // DETAILS OF THE EXISTING PROCESS -->
+                        <!-- // DETAILS OF THE EXISTING PROCESS -->
 
-							<!-- STEPS OF THE EXISTING PROCESS -->
-							<intranda:box
-								boxScope="general"
-								boxType="primary"
-								boxPadding="false"
-                                boxSmall="true"
-                                title="#{msgs.existingProcessSteps}"
-                                icon="fa-list"
-                                boxClass="mb-3">
+                        <!-- STEPS OF THE EXISTING PROCESS -->
+                        <intranda:box
+                            boxScope="general"
+                            boxType="primary"
+                            boxPadding="false"
+                            boxSmall="true"
+                            title="#{msgs.existingProcessSteps}"
+                            icon="fa-list"
+                            boxClass="mb-3">
 
-                                <div
-			                        class="gw-table gw-table-fixed"
-			                        tabindex="0"
-			                        data-scrolldown="true">
-                                    <div class="gw-table__wrapper">
-										<h:dataTable
-											var="item"
-											value="#{ProzesskopieForm.existingProcess.schritte}"
-											styleClass="table table-hover table-bordered">
+                            <div
+                                class="gw-table gw-table-fixed"
+                                tabindex="0"
+                                data-scrolldown="true">
+                                <div class="gw-table__wrapper">
+                                    <h:dataTable
+                                        var="item"
+                                        value="#{ProzesskopieForm.existingProcess.schritte}"
+                                        styleClass="table table-hover table-bordered">
 
-											<h:column>
-												<f:facet name="header">#{msgs.nr}</f:facet>
-												<h:outputText value="#{item.reihenfolge}"/>
-											</h:column>
-											<h:column>
-												<f:facet name="header">#{msgs.titel}</f:facet>
-												<h:outputText value="#{item.titel}"/>
-											</h:column>
-											<h:column>
-												<f:facet name="header">#{msgs.status}</f:facet>
+                                        <h:column>
+                                            <f:facet name="header">#{msgs.nr}</f:facet>
+                                            <h:outputText value="#{item.reihenfolge}" />
+                                        </h:column>
+                                        <h:column>
+                                            <f:facet name="header">#{msgs.titel}</f:facet>
+                                            <h:outputText value="#{item.titel}" />
+                                        </h:column>
+                                        <h:column>
+                                            <f:facet name="header">#{msgs.status}</f:facet>
 
-												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'LOCKED'}"
-													title="#{msgs.statusGesperrt}"
-													rel="tooltip"
-													data-toggle="tooltip"
-													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+                                            <div
+                                                jsf:rendered="#{item.bearbeitungsstatusEnum == 'LOCKED'}"
+                                                title="#{msgs.statusGesperrt}"
+                                                rel="tooltip"
+                                                data-toggle="tooltip"
+                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
 
-												<!-- OPEN -->
-												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'OPEN'}"
-													title="#{msgs.statusOffen}"
-													rel="tooltip"
-													data-toggle="tooltip"
-													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+                                            <!-- OPEN -->
+                                            <div
+                                                jsf:rendered="#{item.bearbeitungsstatusEnum == 'OPEN'}"
+                                                title="#{msgs.statusOffen}"
+                                                rel="tooltip"
+                                                data-toggle="tooltip"
+                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
 
-												<!-- DONE AND ANONYMIZED -->
-												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}"
-													title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
-													rel="tooltip"
-													data-toggle="tooltip"
-													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+                                            <!-- DONE AND ANONYMIZED -->
+                                            <div
+                                                jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}"
+                                                title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
+                                                rel="tooltip"
+                                                data-toggle="tooltip"
+                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
 
-												<!-- INWORK AND ANONYMIZED -->
-												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}"
-													title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
-													rel="tooltip"
-													data-toggle="tooltip"
-													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+                                            <!-- INWORK AND ANONYMIZED -->
+                                            <div
+                                                jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}"
+                                                title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
+                                                rel="tooltip"
+                                                data-toggle="tooltip"
+                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
 
-												<!-- DONE AND NOT ANONYMIZED -->
-												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}"
-													title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
-													rel="tooltip"
-													data-toggle="tooltip"
-													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+                                            <!-- DONE AND NOT ANONYMIZED -->
+                                            <div
+                                                jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}"
+                                                title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
+                                                rel="tooltip"
+                                                data-toggle="tooltip"
+                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
 
-												<!-- INWORK AND NOT ANONYMIZED -->
-												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}"
-													title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
-													rel="tooltip"
-													data-toggle="tooltip"
-													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+                                            <!-- INWORK AND NOT ANONYMIZED -->
+                                            <div
+                                                jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}"
+                                                title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
+                                                rel="tooltip"
+                                                data-toggle="tooltip"
+                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
 
-												<!-- ERROR -->
-												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'ERROR'}"
-													title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
-													rel="tooltip"
-													data-toggle="tooltip"
-													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+                                            <!-- ERROR -->
+                                            <div
+                                                jsf:rendered="#{item.bearbeitungsstatusEnum == 'ERROR'}"
+                                                title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
+                                                rel="tooltip"
+                                                data-toggle="tooltip"
+                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
 
-												<!-- DEACTIVATED -->
-												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}"
-													title="#{msgs.statusDeactivated}"
-													rel="tooltip"
-													data-toggle="tooltip"
-													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+                                            <!-- DEACTIVATED -->
+                                            <div
+                                                jsf:rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}"
+                                                title="#{msgs.statusDeactivated}"
+                                                rel="tooltip"
+                                                data-toggle="tooltip"
+                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
 
-												<!-- INFLIGHT -->
-												<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INFLIGHT'}"
-													title="#{msgs.statusInFlight}"
-													rel="tooltip"
-													data-toggle="tooltip"
-													class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+                                            <!-- INFLIGHT -->
+                                            <div
+                                                jsf:rendered="#{item.bearbeitungsstatusEnum == 'INFLIGHT'}"
+                                                title="#{msgs.statusInFlight}"
+                                                rel="tooltip"
+                                                data-toggle="tooltip"
+                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
 
-												<div class="ms-3 d-inline-block align-middle" jsf:rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}">
-													<h:outputText value="#{item.bearbeitungsstatusEnum.title}" />
-												</div>
+                                            <div
+                                                class="ms-3 d-inline-block align-middle"
+                                                jsf:rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}">
+                                                <h:outputText value="#{item.bearbeitungsstatusEnum.title}" />
+                                            </div>
 
-											</h:column>
+                                        </h:column>
 
-										</h:dataTable>
-                                    </div>
-								</div>
+                                    </h:dataTable>
+                                </div>
+                            </div>
 
-							</intranda:box>
-							<!-- // STEPS OF THE EXISTING PROCESS -->
+                        </intranda:box>
+                        <!-- // STEPS OF THE EXISTING PROCESS -->
 
-							<!-- JOURNAL ENTRIES OF THE EXISTING PROCESS -->
-							<intranda:box
-								boxScope="general"
-								boxType="primary"
-								title="#{msgs.existingProcessJournal}"
-                                icon="fa-list-ol"
-								boxPadding="false"
-                                boxSmall="true">
+                        <!-- JOURNAL ENTRIES OF THE EXISTING PROCESS -->
+                        <intranda:box
+                            boxScope="general"
+                            boxType="primary"
+                            title="#{msgs.existingProcessJournal}"
+                            icon="fa-list-ol"
+                            boxPadding="false"
+                            boxSmall="true">
 
-			                    <div
-			                        class="gw-table-fixed"
-			                        tabindex="0"
-			                        data-scrolldown="true">
-			                        <h:panelGroup rendered="#{ProzesskopieForm.existingProcess.journal.size()>0}">
-			                            <table
-			                                class="table table-hover table-bordered pt-2 pb-2">
-			                                <ui:repeat
-			                                    var="entry"
-			                                    value="#{ProzesskopieForm.existingProcess.journal}"
-			                                    varStatus="row">
-			                                    <!--
+                            <div
+                                class="gw-table-fixed"
+                                tabindex="0"
+                                data-scrolldown="true">
+                                <h:panelGroup rendered="#{ProzesskopieForm.existingProcess.journal.size()>0}">
+                                    <table class="table table-hover table-bordered pt-2 pb-2">
+                                        <ui:repeat
+                                            var="entry"
+                                            value="#{ProzesskopieForm.existingProcess.journal}"
+                                            varStatus="row">
+                                            <!--
 			                                    <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
 			                                    -->
-			                                    <h:panelGroup>
-			                                        <tr class="first-row">
-			                                            <td>
-			                                                <h:outputText
-			                                                    value="#{entry.formattedCreationDate}"
-			                                                    styleClass="log_color_#{entry.type.title}">
-			                                                </h:outputText>
-			                                                <br />
-			                                                <h:outputText
-			                                                    value="#{msgs[entry.userName]}"
-			                                                    styleClass="log_color_#{entry.type.title}" />
-			                                            </td>
-			                                            <td>
-			                                                <div class="d-flex">
-			                                                <h:outputText
-			                                                    value="#{entry.formattedContent}"
-			                                                    styleClass="log_color_#{entry.type.title}"
-			                                                    escape="false" />
-			                                                <h:panelGroup rendered="#{entry.type.title == 'file'}">
-			                                                    <button
-			                                                        jsf:id="downloadFile"
-			                                                        class="log_file ms-2"
-			                                                        jsf:action="#{ProzesskopieForm.existingProcess.downloadFile(entry)}"
-			                                                        title="#{msgs.downloadFile}">
-			                                                        <span class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
-			                                                        <span>
-			                                                            <h:outputText value="#{entry.basename}" />
-			                                                        </span>
-			                                                    </button>
-			                                                </h:panelGroup>
-			                                                </div>
-			                                            </td>
-			                                        </tr>
-			                                    </h:panelGroup>
-			                                </ui:repeat>
-			                            </table>
-			                        </h:panelGroup>
-			                    </div>
-							</intranda:box>
-							<!-- // JOURNAL ENTRIES OF THE EXISTING PROCESS -->
+                                            <h:panelGroup>
+                                                <tr class="first-row">
+                                                    <td>
+                                                        <h:outputText
+                                                            value="#{entry.formattedCreationDate}"
+                                                            styleClass="log_color_#{entry.type.title}">
+                                                        </h:outputText>
+                                                        <br />
+                                                        <h:outputText
+                                                            value="#{msgs[entry.userName]}"
+                                                            styleClass="log_color_#{entry.type.title}" />
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            <h:outputText
+                                                                value="#{entry.formattedContent}"
+                                                                styleClass="log_color_#{entry.type.title}"
+                                                                escape="false" />
+                                                            <h:panelGroup rendered="#{entry.type.title == 'file'}">
+                                                                <button
+                                                                    jsf:id="downloadFile"
+                                                                    class="log_file ms-2"
+                                                                    jsf:action="#{ProzesskopieForm.existingProcess.downloadFile(entry)}"
+                                                                    title="#{msgs.downloadFile}">
+                                                                    <span
+                                                                        class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
+                                                                    <span>
+                                                                        <h:outputText value="#{entry.basename}" />
+                                                                    </span>
+                                                                </button>
+                                                            </h:panelGroup>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </h:panelGroup>
+                                        </ui:repeat>
+                                    </table>
+                                </h:panelGroup>
+                            </div>
+                        </intranda:box>
+                        <!-- // JOURNAL ENTRIES OF THE EXISTING PROCESS -->
 
 
-						<!-- // INFO TABLES OF THE EXISTING PROCESS -->
-					</div>
-					<!-- MODAL BODY -->
+                        <!-- // INFO TABLES OF THE EXISTING PROCESS -->
+                    </div>
+                    <!-- MODAL BODY -->
 
-					<!-- MODAL FOOTER -->
-					<div class="modal-footer">
+                    <!-- MODAL FOOTER -->
+                    <div class="modal-footer">
 
-                    <button
-                        type="button"
-                        class="btn btn-blank"
-                        data-bs-dismiss="modal"
-                        aria-hidden="true">#{msgs.close}</button>
-					</div>
-					<!-- // MODAL FOOTER -->
+                        <button
+                            type="button"
+                            class="btn btn-blank"
+                            data-bs-dismiss="modal"
+                            aria-hidden="true">#{msgs.close}</button>
+                    </div>
+                    <!-- // MODAL FOOTER -->
 
-				</div>
-				<!-- // MODAL CONTENT -->
-			</div>
-
-
-		</h:panelGroup>
-		 <!-- // MODAL BOX FOR EXISTING PROCESS TABLES -->
+                </div>
+                <!-- // MODAL CONTENT -->
+            </div>
 
 
+        </h:panelGroup>
+        <!-- // MODAL BOX FOR EXISTING PROCESS TABLES -->
 
-		<h:form
-			id="pageform0"
-			styleClass="form-horizontal form-bordered"
-			prependId="false">
+
+
+        <h:form
+            id="pageform0"
+            styleClass="form-horizontal form-bordered"
+            prependId="false">
 
             <div class="row">
                 <div class="col-sm-12">
@@ -467,7 +493,8 @@
 
 
                         <!-- REUSE TEMPLATE -->
-                        <ui:fragment rendered="#{NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and ProzesskopieForm.useTemplates}">
+                        <ui:fragment
+                            rendered="#{NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and ProzesskopieForm.useTemplates}">
 
                             <!-- MULTIPLE INPUT ROW -->
                             <div class="row">
@@ -573,9 +600,9 @@
 
                             <ui:fragment rendered="#{intern.getShowDependingOnDoctype(ProzesskopieForm.docType)}">
 
-                                <ui:fragment rendered="#{intern.selectList==null and intern.fieldType=='text' and (!intern.autogenerated or (intern.autogenerated and NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part'))}">
-                                    
-                                    <!-- TEXT FIELD -->
+                                <!-- TEXT FIELD -->
+                                <ui:fragment
+                                    rendered="#{intern.selectList==null and intern.fieldType=='text' and (!intern.autogenerated or (intern.autogenerated and NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part'))}">
                                     <intranda:formInputText
                                         id="text"
                                         label="#{HelperForm.getTranslation ('import_', intern.titel)} #{intern.autogenerated ? msgs.generated : ''}"
@@ -585,10 +612,11 @@
                                         displayAsRequired="#{intern.required}"
                                         required="false"
                                         forceId="false" />
-                                 </ui:fragment>
-                                 
-                                 <!-- TEXT AREA -->
-                                 <ui:fragment rendered="#{intern.selectList==null and intern.fieldType=='textarea' and (!intern.autogenerated or (intern.autogenerated and NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part'))}">
+                                </ui:fragment>
+
+                                <!-- TEXT AREA -->
+                                <ui:fragment
+                                    rendered="#{intern.selectList==null and intern.fieldType=='textarea' and (!intern.autogenerated or (intern.autogenerated and NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part'))}">
                                     <intranda:formInputTextArea
                                         id="textArea"
                                         label="#{HelperForm.getTranslation ('import_', intern.titel)}  #{intern.autogenerated ? msgs.generated : ''}"
@@ -599,7 +627,7 @@
                                         required="false"
                                         forceId="false" />
                                 </ui:fragment>
-                                
+
                                 <!-- CALENDAR FOR DATE -->
                                 <ui:fragment rendered="#{intern.selectList==null and intern.fieldType=='date'}">
                                     <intranda:formInputCalendar
@@ -610,10 +638,10 @@
                                         name="id"
                                         displayAsRequired="#{intern.required}"
                                         required="false"
-                                        forceId="false" 
+                                        forceId="false"
                                         navigation="true"
                                         mask="true"
-                                        pattern="#{intern.pattern}"/>
+                                        pattern="#{intern.pattern}" />
                                 </ui:fragment>
 
                                 <!-- CALENDAR FOR DATETIME -->
@@ -629,10 +657,11 @@
                                         forceId="false"
                                         navigation="true"
                                         mask="true"
-                                        pattern="#{intern.pattern}"/>
+                                        pattern="#{intern.pattern}" />
                                 </ui:fragment>
 
-                                <ui:fragment rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and !intern.multiselect}">
+                                <ui:fragment
+                                    rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and !intern.multiselect}">
                                     <intranda:formInputDropDown2
                                         id="select"
                                         label="#{HelperForm.getTranslation ('import_', intern.titel)}"
@@ -644,7 +673,8 @@
                                         required="false" />
                                 </ui:fragment>
 
-                                <ui:fragment rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and intern.multiselect}">
+                                <ui:fragment
+                                    rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and intern.multiselect}">
                                     <div class="row">
 
                                         <!-- LABEL -->
@@ -683,8 +713,13 @@
             </div>
 
             <!-- ADDITIONAL PROPERTIES -->
-            <div class="row mt-3" jsf:rendered="#{!ProzesskopieForm.configuredProperties.isEmpty()}">
-                <div class="col-sm-12">
+            <div
+                class="row mt-3"
+                jsf:rendered="#{!ProzesskopieForm.configuredProperties.isEmpty()}">
+                <h:panelGroup
+                    id="propertyBox"
+                    layout="block"
+                    styleClass="col-sm-12">
 
                     <intranda:box
                         boxType="action"
@@ -698,197 +733,214 @@
                                 value="#{ProzesskopieForm.configuredProperties}" />
                         </ui:include>
                     </intranda:box>
-                </div>
+                </h:panelGroup>
             </div>
             <!-- // ADDITIONAL PROPERTIES -->
 
             <div class="row mt-3">
-				<div class="col-sm-12">
+                <div class="col-sm-12">
 
-					<intranda:box
-						boxType="action"
-						boxTitle="false"
-						boxForm="true"
-						boxPadding="false">
+                    <intranda:box
+                        boxType="action"
+                        boxTitle="false"
+                        boxForm="true"
+                        boxPadding="false">
 
-						<!-- ACTION BUTTONS TO EXPAND AND COLLAPSE -->
-						<intranda:boxTitle
-							title="#{msgs.prozessDetails}"
-							icon="fa-tasks">
-							<div class="actions d-flex">
-								<button
-									jsf:id="expand1"
-									title="#{msgs.expandProcessDetails}"
-									class="btn d-flex align-items-center btn--title-action"
-									jsf:action="#{NavigationForm.Reload}">
-									<i
-										class="fa #{NavigationForm.uiStatus.new_process_box2 eq 'full'?'fa-compress':'fa-expand'}" />
-									<f:setPropertyActionListener
-										target="#{NavigationForm.uiStatus.new_process_box2}"
-										value="#{NavigationForm.uiStatus.new_process_box2 eq 'full'?'part':'full'}" />
-									<f:ajax
-										render="@form"
-										execute="@form" />
-								</button>
-							</div>
-						</intranda:boxTitle>
-						<!-- // ACTION BUTTONS TO EXPAND AND COLLAPSE -->
+                        <!-- ACTION BUTTONS TO EXPAND AND COLLAPSE -->
+                        <intranda:boxTitle
+                            title="#{msgs.prozessDetails}"
+                            icon="fa-tasks">
+                            <div class="actions d-flex">
+                                <button
+                                    jsf:id="expand1"
+                                    title="#{msgs.expandProcessDetails}"
+                                    class="btn d-flex align-items-center btn--title-action"
+                                    jsf:action="#{NavigationForm.Reload}">
+                                    <i class="fa #{NavigationForm.uiStatus.new_process_box2 eq 'full'?'fa-compress':'fa-expand'}" />
+                                    <f:setPropertyActionListener
+                                        target="#{NavigationForm.uiStatus.new_process_box2}"
+                                        value="#{NavigationForm.uiStatus.new_process_box2 eq 'full'?'part':'full'}" />
+                                    <f:ajax
+                                        render="@form"
+                                        execute="@form" />
+                                </button>
+                            </div>
+                        </intranda:boxTitle>
+                        <!-- // ACTION BUTTONS TO EXPAND AND COLLAPSE -->
+                        <ui:fragment rendered="#{ProzesskopieForm.standardFields.processtitle}">
+                            <intranda:formInputText
+                                id="processtitle"
+                                label="#{msgs.prozessTitel}"
+                                field="#{ProzesskopieForm.prozessKopie.titel}"
+                                help="#{msgs.help_import_ProzessTitel}"
+                                name="titel"
+                                displayAsRequired="true"
+                                required="false" />
+                        </ui:fragment>
+                        <h:panelGroup
+                            rendered="#{NavigationForm.uiStatus.new_process_box2 != NULL and NavigationForm.uiStatus.new_process_box2 ne 'part'}">
 
-						<intranda:formInputText
-							id="processtitle"
-							label="#{msgs.prozessTitel}"
-							field="#{ProzesskopieForm.prozessKopie.titel}"
-							help="#{msgs.help_import_ProzessTitel}"
-							name="titel"
-							displayAsRequired="true"
-							required="false" />
+                            <intranda:formOutputText
+                                label="#{msgs.prozessvorlage}"
+                                field="#{ProzesskopieForm.prozessVorlage.titel}"
+                                help="#{msgs.help_import_workflow}"
+                                name="workflow" />
+                            <intranda:formOutputText
+                                label="#{msgs.projekt}"
+                                field="#{ProzesskopieForm.prozessKopie.projekt.titel}"
+                                help="#{msgs.help_import_project}"
+                                name="project" />
 
-						<h:panelGroup
-							rendered="#{NavigationForm.uiStatus.new_process_box2 != NULL and NavigationForm.uiStatus.new_process_box2 ne 'part'}">
+                            <h:panelGroup rendered="#{ProzesskopieForm.standardFields.preferences}">
+                                <intranda:formInputDropDown2
+                                    id="ruleset"
+                                    label="#{msgs.regelsatz}"
+                                    field="#{ProzesskopieForm.rulesetSelection}"
+                                    help="#{msgs.help_import_ruleset}"
+                                    name="Regelsatz"
+                                    selectItems="#{ProzesskopieForm.rulesetSelectionList}"
+                                    required="true" />
+                            </h:panelGroup>
+                        </h:panelGroup>
 
-							<intranda:formOutputText
-								label="#{msgs.prozessvorlage}"
-								field="#{ProzesskopieForm.prozessVorlage.titel}"
-								help="#{msgs.help_import_workflow}"
-								name="workflow" />
-							<intranda:formOutputText
-								label="#{msgs.projekt}"
-								field="#{ProzesskopieForm.prozessKopie.projekt.titel}"
-								help="#{msgs.help_import_project}"
-								name="project" />
+                        <h:panelGroup rendered="#{ProzesskopieForm.standardFields.collections}">
+                            <intranda:formInputSelectMany
+                                id="collection"
+                                label="#{msgs.digitaleKollektionen}"
+                                field="#{ProzesskopieForm.digitalCollections}"
+                                help="#{msgs.help_import_DigitalCollection}"
+                                name="digitaleKollektionen"
+                                selectItems="#{ProzesskopieForm.possibleDigitalCollections}"
+                                required="true"
+                                var="step"
+                                itemLabel="#{step}"
+                                itemValue="#{step}" />
 
-							<h:panelGroup
-								rendered="#{ProzesskopieForm.standardFields.preferences}">
-								<intranda:formInputDropDown2
-									id="ruleset"
-									label="#{msgs.regelsatz}"
-									field="#{ProzesskopieForm.rulesetSelection}"
-									help="#{msgs.help_import_ruleset}"
-									name="Regelsatz"
-									selectItems="#{ProzesskopieForm.rulesetSelectionList}"
-									required="true" />
-							</h:panelGroup>
-						</h:panelGroup>
+                        </h:panelGroup>
+                        <!-- TODO: docket -->
 
-						<h:panelGroup
-							rendered="#{ProzesskopieForm.standardFields.collections}">
-							<intranda:formInputSelectMany
-								id="collection"
-								label="#{msgs.digitaleKollektionen}"
-								field="#{ProzesskopieForm.digitalCollections}"
-								help="#{msgs.help_import_DigitalCollection}"
-								name="digitaleKollektionen"
-								selectItems="#{ProzesskopieForm.possibleDigitalCollections}"
-								required="true"
-								var="step"
-								itemLabel="#{step}"
-								itemValue="#{step}" />
+                        <h:panelGroup
+                            rendered="#{NavigationForm.uiStatus.new_process_box2 != NULL and NavigationForm.uiStatus.new_process_box2 ne 'part'}">
+                            <intranda:formInputText
+                                id="tiffheader1"
+                                label="#{msgs.tifheaderdocumentname}"
+                                field="#{ProzesskopieForm.tifHeaderDocumentname}"
+                                help="#{msgs.help_import_TifHeader}"
+                                name="tifheader"
+                                displayAsRequired="false"
+                                required="false" />
 
-						</h:panelGroup>
-						<!-- TODO: docket -->
+                            <intranda:formInputText
+                                id="tiffheader2"
+                                label="#{msgs.tifheaderimagedescription}"
+                                field="#{ProzesskopieForm.tifHeaderImagedescription}"
+                                help="#{msgs.help_import_TifHeaderImagedescription}"
+                                name="imagedescription"
+                                displayAsRequired="false"
+                                required="false" />
 
-						<h:panelGroup
-							rendered="#{NavigationForm.uiStatus.new_process_box2 != NULL and NavigationForm.uiStatus.new_process_box2 ne 'part'}">
-							<intranda:formInputText
-								id="tiffheader1"
-								label="#{msgs.tifheaderdocumentname}"
-								field="#{ProzesskopieForm.tifHeaderDocumentname}"
-								help="#{msgs.help_import_TifHeader}"
-								name="tifheader"
-								displayAsRequired="false"
-								required="false" />
+                            <h:panelGroup rendered="#{ProzesskopieForm.useTemplates}">
+                                <intranda:formInputCheckBox
+                                    id="selectTemplate"
+                                    label="#{msgs.inAuswahllisteAnzeigen}"
+                                    field="#{ProzesskopieForm.prozessKopie.inAuswahllisteAnzeigen}"
+                                    help="#{msgs.help_import_ProcessSelectionList}"
+                                    name="check" />
+                            </h:panelGroup>
+                        </h:panelGroup>
 
-							<intranda:formInputText
-								id="tiffheader2"
-								label="#{msgs.tifheaderimagedescription}"
-								field="#{ProzesskopieForm.tifHeaderImagedescription}"
-								help="#{msgs.help_import_TifHeaderImagedescription}"
-								name="imagedescription"
-								displayAsRequired="false"
-								required="false" />
+                        <h:panelGroup rendered="#{ProzesskopieForm.standardFields.images}">
+                            <intranda:formInputText
+                                id="images"
+                                label="#{msgs.guessImages}"
+                                field="#{ProzesskopieForm.imagesGuessed}"
+                                help="#{msgs.help_import_GuessImages}"
+                                name="guessImages"
+                                required="false" />
+                        </h:panelGroup>
 
-							<h:panelGroup rendered="#{ProzesskopieForm.useTemplates}">
-								<intranda:formInputCheckBox
-									id="selectTemplate"
-									label="#{msgs.inAuswahllisteAnzeigen}"
-									field="#{ProzesskopieForm.prozessKopie.inAuswahllisteAnzeigen}"
-									help="#{msgs.help_import_ProcessSelectionList}"
-									name="check" />
-							</h:panelGroup>
-						</h:panelGroup>
+                        <div class="form-row">
+                            <div class="form-label">
+                                <h:outputText
+                                    styleClass="flex-label"
+                                    value="#{msgs.addToProcessLog}:" />
+                            </div>
+                            <div class="form-input">
+                                <div class="input-group">
+                                    <h:inputTextarea
+                                        id="journal"
+                                        styleClass="form-control metsEditorTextArea"
+                                        value="#{ProzesskopieForm.addToWikiField}"
+                                        required="false"
+                                        rows="3"
+                                        tabindex="0"
+                                        pt:aria-label="#{msgs.addToProcessLog}" />
+                                    <label class="input-group-text py-0 align-self-stretch fs-400">
+                                        <h:selectBooleanCheckbox
+                                            id="journal-important"
+                                            styleClass="form-check-input"
+                                            value="#{ProzesskopieForm.importantWikiField}"
+                                            required="false"
+                                            tabindex="1" />
+                                            #{msgs.process_log_file_priorityComment}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
 
-						<h:panelGroup
-							rendered="#{ProzesskopieForm.standardFields.images}">
-							<intranda:formInputText
-								id="images"
-								label="#{msgs.guessImages}"
-								field="#{ProzesskopieForm.imagesGuessed}"
-								help="#{msgs.help_import_GuessImages}"
-								name="guessImages"
-								required="false" />
-						</h:panelGroup>
+                        <div class="box__actions">
+                            <!-- Cancel -->
+                            <button
+                                jsf:id="cancel"
+                                class="btn btn-blank"
+                                jsf:action="process_all"
+                                jsf:immediate="true">
+                                <h:outputText value="#{msgs.abbrechen}" />
+                            </button>
+                            <h:commandLink
+                                styleClass="btn btn-primary-400"
+                                id="nextPage"
+                                action="#{ProzesskopieForm.openPage2}"
+                                rendered="#{ProzesskopieForm.enableFileUpload}">
+                                <span>
+                                    <h:outputText value="#{msgs.weiter}" />
+                                </span>
+                                <span class="fa fa-arrow-circle-o-right margin-left-5" />
+                            </h:commandLink>
 
-						<intranda:formInputTextArea
-							id="journal"
-							label="#{msgs.addToProcessLog}"
-							field="#{ProzesskopieForm.addToWikiField}"
-							help="#{msgs.help_import_AddToProcessLog}"
-							name="addToJournal"
-							required="false" />
-
-						<div class="box__actions">
-							<!-- Cancel -->
-							<button
-								jsf:id="cancel"
-								class="btn btn-blank"
-								jsf:action="process_all"
-								jsf:immediate="true">
-								<h:outputText value="#{msgs.abbrechen}" />
-							</button>
-							<h:commandLink
-								styleClass="btn btn-primary-400"
-								id="nextPage"
-								action="#{ProzesskopieForm.openPage2}"
-								rendered="#{ProzesskopieForm.enableFileUpload}">
-								<span>
-									<h:outputText value="#{msgs.weiter}" />
-								</span>
-								<span class="fa fa-arrow-circle-o-right margin-left-5" />
-							</h:commandLink>
-
-							<button
-								class="btn btn-success"
-								jsf:id="absenden"
-								jsf:action="#{ProzesskopieForm.createNewProcess}"
-								jsf:rendered="#{!ProzesskopieForm.enableFileUpload}">
-								<span class="fa fa-save margin-right-5" />
-								<span>
-									<h:outputText value="#{msgs.speichern}" />
-								</span>
-							</button>
-
-
-							<!-- Generate -->
-							<button
-								jsf:id="generateTitle"
-								class="btn btn-blank trigger-delete"
-								jsf:action="#{ProzesskopieForm.calculateProcessTitle}">
-								<h:outputText value="#{msgs.generieren}" />
-								<f:ajax
-									execute="@form"
-									render="@form" />
-							</button>
-						</div>
-					</intranda:box>
+                            <button
+                                class="btn btn-success"
+                                jsf:id="absenden"
+                                jsf:action="#{ProzesskopieForm.createNewProcess}"
+                                jsf:rendered="#{!ProzesskopieForm.enableFileUpload}">
+                                <span class="fa fa-save margin-right-5" />
+                                <span>
+                                    <h:outputText value="#{msgs.speichern}" />
+                                </span>
+                            </button>
 
 
+                            <!-- Generate -->
+                            <button
+                                jsf:id="generateTitle"
+                                class="btn btn-blank trigger-delete"
+                                jsf:action="#{ProzesskopieForm.calculateProcessTitle}">
+                                <h:outputText value="#{msgs.generieren}" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="@form" />
+                            </button>
+                        </div>
+                    </intranda:box>
 
 
-				</div>
-			</div>
-		</h:form>
 
-		<script type="text/javascript">
+
+                </div>
+            </div>
+        </h:form>
+
+        <script type="text/javascript">
 
 		        function getKeyCode(e) {
 		                 var keycode;
@@ -923,6 +975,6 @@
 		        }
 
 			</script>
-	</ui:define>
+    </ui:define>
 
 </ui:composition>

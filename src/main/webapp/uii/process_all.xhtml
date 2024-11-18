@@ -471,16 +471,16 @@
 																						value="#{msgs.titel}"
 																						style="white-space: normal;" />
 																				</f:facet>
-																				<div class="d-flex align-items-center">
+																				<div class="icon-text">
 																					<h:panelGroup rendered="#{step.typAutomatisch}">
-																						<i
-																							class="fa fa-cogs font-light me-4"
+																						<span
+																							class="fa fa-cogs font-light"
 																							title="#{msgs.automatischerSchritt}"
 																							data-bs-toggle="tooltip" />
 																					</h:panelGroup>
 																					<h:panelGroup rendered="#{not step.typAutomatisch}">
-																						<i
-																							class="fa fa-user-o font-light me-4 #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"
+																						<span
+																							class="fa fa-user-o font-light #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"
 																							title="#{msgs.normalerSchritt}"
 																							data-bs-toggle="tooltip" />
 																					</h:panelGroup>
@@ -488,7 +488,6 @@
 																						value="#{step.titelLokalisiert}"
 																						title="#{step.titel}"
 																						data-bs-toggle="tooltip"
-																						style="white-space: normal;"
 																						styleClass="#{step.reihenfolge}_id #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
 																				</div>
 																			</h:column>

@@ -111,6 +111,15 @@ public class InstitutionManager implements IManager, Serializable {
         return idList;
     }
 
+    public static int getNumberOfInstitutions() {
+        try {
+            return InstitutionMysqlHelper.getInstitutionCount("");
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return 0;
+    }
+
     public static List<Institution> getAllInstitutionsAsList() {
         List<Institution> answer = new ArrayList<>();
         try {
@@ -202,7 +211,7 @@ public class InstitutionManager implements IManager, Serializable {
         return answer;
     }
 
-    public static final ResultSetHandler<Institution> resultSetToInstitutionHandler = new ResultSetHandler<Institution>() {
+    public static final ResultSetHandler<Institution> resultSetToInstitutionHandler = new ResultSetHandler<>() {
         @Override
         public Institution handle(ResultSet rs) throws SQLException {
             try {
@@ -216,7 +225,7 @@ public class InstitutionManager implements IManager, Serializable {
         }
     };
 
-    public static final ResultSetHandler<List<Institution>> resultSetToInstitutionListHandler = new ResultSetHandler<List<Institution>>() {
+    public static final ResultSetHandler<List<Institution>> resultSetToInstitutionListHandler = new ResultSetHandler<>() {
         @Override
         public List<Institution> handle(ResultSet rs) throws SQLException {
             List<Institution> answer = new ArrayList<>();

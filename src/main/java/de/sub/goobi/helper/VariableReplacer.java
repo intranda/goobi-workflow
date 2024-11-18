@@ -34,7 +34,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
@@ -143,7 +146,9 @@ public class VariableReplacer {
     private static final String REGEX_PRODUCT = PREFIX + "product\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_TEMPLATE = PREFIX + "template\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_PROCESS = PREFIX + "process\\.([^)}]+?)" + SUFFIX;
+    private static final String REGEX_PROCESSES = PREFIX + "processes\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+?)" + SUFFIX;
+    private static final String REGEX_DATETIME = PREFIX + "datetime\\.([^)}]+?)" + SUFFIX;
 
     @Getter
     @Setter
@@ -492,6 +497,20 @@ public class VariableReplacer {
             }
         }
 
+        for (MatchResult r : findRegexMatches(REGEX_PROCESSES, inString)) {
+            String propertyTitle = r.group(1);
+            List<String> newValues = new LinkedList<>();
+            List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
+            for (ProcessProperty pe : ppList) {
+                if (pe.getName().equalsIgnoreCase(propertyTitle)) {
+                    if (pe.getValue() != null) {
+                        newValues.add(pe.getValue());
+                    }
+                }
+            }
+            inString = inString.replace(r.group(), String.join(separator, newValues));
+        }
+
         for (MatchResult r : findRegexMatches(REGEX_DB_META, inString)) {
             String metadataName = r.group(1);
             String value = MetadataManager.getAllValuesForMetadata(process.getId(), metadataName);
@@ -505,8 +524,22 @@ public class VariableReplacer {
             String folderName = r.group(1);
             try {
                 String value = process.getConfiguredImageFolder(folderName);
+                if (value == null) {
+                    value = "";
+                }
                 inString = inString.replace(r.group(), value);
             } catch (IllegalArgumentException | IOException | SwapException | DAOException e) {
+                log.error(e);
+            }
+        }
+
+        for (MatchResult r : findRegexMatches(REGEX_DATETIME, inString)) {
+            try {
+                LocalDateTime now = DateTimeHelper.localDateTimeNow();
+                String pattern = r.group(1);
+                DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+                inString = inString.replace(r.group(), now.format(format));
+            } catch (IllegalArgumentException e) {
                 log.error(e);
             }
         }

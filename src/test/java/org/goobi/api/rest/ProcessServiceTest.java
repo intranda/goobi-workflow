@@ -463,12 +463,12 @@ public class ProcessServiceTest extends AbstractTest {
         RestStepResource stepResource = new RestStepResource();
 
         // no step id given
-        Response response = service.deleteStep(stepResource);
+        Response response = service.deleteStep("0", stepResource);
         assertEquals(400, response.getStatus());
 
         // deletion successful
         stepResource.setStepId(1);
-        response = service.deleteStep(stepResource);
+        response = service.deleteStep("0", stepResource);
         assertEquals(200, response.getStatus());
     }
 
@@ -660,7 +660,7 @@ public class ProcessServiceTest extends AbstractTest {
 
         @SuppressWarnings("unchecked")
         List<RestMetadataResource> data = (List<RestMetadataResource>) response.getEntity();
-        assertEquals(3, data.size());
+        assertEquals(4, data.size());
     }
 
     @Test

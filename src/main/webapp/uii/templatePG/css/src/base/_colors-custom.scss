@@ -5,8 +5,8 @@
 
 $colors: (
   primary-400: #368ee0,
-  primary-600: #1b67af,
-  neutral-100: #f1f1f1,
+  primary-600: #1c68b0,
+  neutral-100: #f8f8f8,
   neutral-200: #eee,
   neutral-210: #dddddd,
   neutral-300: #ccc,
@@ -157,13 +157,23 @@ $colors-status: (
 
 @each $name, $color in $colors {
   .btn-#{$name} {
-    background-color: var(--clr-#{$name});
-    border-color: var(--clr-#{$name});
     @if $name == blank {
-      color: #000; // bg is transparent
-      border: 1px solid var(--clr-neutral-400);
+      --bs-btn-color: #000; // bg is transparent
+      --bs-btn-bg: var(--clr-neutral-400);
+      --bs-btn-active-bg: var(--clr-neutral-200);
+      --bs-btn-active-border-color: var(--clr-neutral-200);
+      --bs-btn-active-color: #000;
+      --bs-btn-border-color: var(--clr-neutral-400);
+      --bs-btn-hover-bg: var(--clr-neutral-200);
     } @else {
-      color: #fff; // bg is a color
+      --bs-btn-color: #fff; // bg is a color
+      --bs-btn-bg: var(--clr-#{$name});
+      --bs-btn-active-bg: var(--clr-#{$name});
+      --bs-btn-active-border-color: var(--clr-#{$name});
+      --bs-btn-active-color: #fff;
+      --bs-btn-border-color: var(--clr-#{$name});
+      --bs-btn-hover-bg: var(--clr-#{$name});
+
     }
   }
   .btn-#{$name}:hover {

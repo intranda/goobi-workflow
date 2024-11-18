@@ -99,7 +99,8 @@ public class AdditionalField {
     }
 
     public void setWert(String newValue) {
-        if (newValue == null || newValue.equals(this.initStart)) {
+        // TODO: Testing for "null" is not nice, but JSF seems to store empty selection of dropdowns as "null" instead of null
+        if (newValue == null || "null".equals(newValue) || newValue.equals(this.initStart)) {
             newValue = "";
         }
         if (newValue.startsWith(this.initStart)) {
@@ -185,11 +186,15 @@ public class AdditionalField {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
             return LocalDateTime.from(formatter.parse(wert));
         } else {
-            return LocalDateTime.now();
+            return null;
         }
     }
 
     public void setValueAsDateTime(LocalDateTime date) {
+        if (date == null) {
+            return;
+        }
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
         wert = formatter.format(date);
     }
@@ -199,11 +204,15 @@ public class AdditionalField {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             return LocalDate.from(formatter.parse(wert));
         } else {
-            return LocalDate.now();
+            return null;
         }
     }
 
     public void setValueAsDate(LocalDate date) {
+        if (date == null) {
+            return;
+        }
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         wert = formatter.format(date);
     }

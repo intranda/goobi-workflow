@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jms.JMSException;
 import javax.management.remote.JMXServiceURL;
 import javax.management.remote.rmi.RMIConnectorServer;
 import javax.servlet.ServletContextEvent;
@@ -47,6 +46,7 @@ import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import jakarta.jms.JMSException;
 import lombok.extern.log4j.Log4j2;
 
 @WebListener

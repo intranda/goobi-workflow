@@ -145,6 +145,10 @@ public class SendMail {
             return config.getString("/configuration/smtpServer", null);
         }
 
+        public String getSmptPort() {
+            return config.getString("/configuration/smtpPort", null);
+        }
+
         // account name
         public String getSmtpUser() {
             return config.getString("/configuration/smtpUser", null);
@@ -261,7 +265,7 @@ public class SendMail {
                 String cancelStepUrl = config.getApiUrl() + "/step/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + URLEncoder.encode(step.getTitel(), StandardCharsets.UTF_8.toString()) + "/" + deactivateStepToken;
                 String cancelProjectUrl = config.getApiUrl() + "/project/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString())
-                + "/" + StringEscapeUtils.escapeHtml4(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
+                        + "/" + StringEscapeUtils.escapeHtml4(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
                 String cancelAllUrl = config.getApiUrl() + "/all/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + deactivateAllToken;
 
@@ -483,21 +487,28 @@ public class SendMail {
         Properties properties = new Properties();
         properties.setProperty("mail.transport.protocol", "smtp");
         properties.setProperty("mail.smtp.auth", "true");
+
         properties.setProperty("mail.smtp.host", config.getSmtpServer());
-        int port;
+
+        String port;
         if (config.isSmtpUseStartTls()) {
             properties.setProperty("mail.smtp.ssl.trust", "*");
             properties.setProperty("mail.smtp.starttls.enable", "true");
             properties.setProperty("mail.smtp.starttls.required", "true");
-            port = 25;
+            port = "25";
         } else if (config.isSmtpUseSsl()) {
             properties.setProperty("mail.smtp.ssl.enable", "true");
             properties.setProperty("mail.smtp.ssl.trust", "*");
-            port = 465;
+            port = "465";
         } else {
-            port = 25;
+            port = "25";
         }
-        properties.setProperty("mail.smtp.port", String.valueOf(port));
+
+        if (StringUtils.isNotBlank(config.getSmptPort())) {
+            port = config.getSmptPort();
+        }
+
+        properties.setProperty("mail.smtp.port", port);
         return properties;
     }
 

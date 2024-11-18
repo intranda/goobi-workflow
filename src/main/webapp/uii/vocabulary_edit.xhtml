@@ -74,6 +74,19 @@
 						/>
 				</ui:fragment>
 				<div class="box__actions">
+					<button
+						jsf:id="delete"
+						jsf:action="#{vocabularyEditBean.deleteVocabulary}"
+						class="btn btn-hot"
+						onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+						jsf:rendered="#{vocabularyEditBean.vocabulary != null}">
+						<span
+							aria-hidden="true"
+							class="fa fa-trash-o"/>
+						<span>
+							<h:outputText value="#{msgs.loeschen}"/>
+						</span>
+					</button>
 					<!-- Cancel -->
 					<a
 						class="btn btn-blank submitOnEnter"
@@ -97,19 +110,6 @@
 							class="fa fa-save"/>
 						<span>
 							<h:outputText value="#{msgs.speichern}"/>
-						</span>
-					</button>
-					<button
-						jsf:id="delete"
-						jsf:action="#{vocabularyEditBean.deleteVocabulary}"
-						class="btn btn-hot trigger-delete"
-						onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
-						jsf:rendered="#{vocabularyEditBean.vocabulary != null}">
-						<span
-							aria-hidden="true"
-							class="fa fa-trash-o"/>
-						<span>
-							<h:outputText value="#{msgs.loeschen}"/>
 						</span>
 					</button>
 

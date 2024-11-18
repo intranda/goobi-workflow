@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class CachedLookup<T> {
+public class CachedLookup<K, T> {
     private static final long MAX_DATA_AGE_IN_MS = 5000L;
 
     @Data
@@ -21,38 +21,38 @@ public class CachedLookup<T> {
         }
     }
 
-    private Map<Long, AgingData> cache = new HashMap<>();
-    private Function<Long, T> lookupFunction;
+    private Map<K, AgingData> cache = new HashMap<>();
+    private Function<K, T> lookupFunction;
 
-    public CachedLookup(Function<Long, T> lookupFunction) {
+    public CachedLookup(Function<K, T> lookupFunction) {
         this.lookupFunction = lookupFunction;
     }
 
-    public synchronized T getCached(Long id) {
-        if (!cache.containsKey(id)) {
-            return insert(id);
+    public synchronized T getCached(K key) {
+        if (!cache.containsKey(key)) {
+            return insert(key);
         }
-        AgingData agingData = cache.get(id);
+        AgingData agingData = cache.get(key);
         if (agingData.getAge() > MAX_DATA_AGE_IN_MS) {
-            return insert(id);
+            return insert(key);
         }
         return agingData.getData();
     }
 
-    public synchronized T update(Long id, T item) {
-        return insert(id, item);
+    public synchronized T update(K key, T item) {
+        return insert(key, item);
     }
 
-    public synchronized void invalidate(Long id) {
-        this.cache.remove(id);
+    public synchronized void invalidate(K key) {
+        this.cache.remove(key);
     }
 
-    private T insert(Long id) {
-        return insert(id, this.lookupFunction.apply(id));
+    private T insert(K key) {
+        return insert(key, this.lookupFunction.apply(key));
     }
 
-    private T insert(Long id, T data) {
-        cache.put(id, new AgingData(System.currentTimeMillis(), data));
+    private T insert(K key, T data) {
+        cache.put(key, new AgingData(System.currentTimeMillis(), data));
         return data;
     }
 }

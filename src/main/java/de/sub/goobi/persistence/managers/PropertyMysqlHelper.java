@@ -162,7 +162,7 @@ class PropertyMysqlHelper implements Serializable {
             creationDate = new Date(time.getTime());
         }
         property.setCreationDate(creationDate);
-        property.setContainer(result.getInt(container));
+        property.setContainer(result.getString(container));
         return property;
     }
 
@@ -181,7 +181,7 @@ class PropertyMysqlHelper implements Serializable {
             creationDate = new Date(time.getTime());
         }
         property.setCreationDate(creationDate);
-        property.setContainer(result.getInt(container));
+        property.setContainer(result.getString(container));
         return property;
     }
 
@@ -200,7 +200,7 @@ class PropertyMysqlHelper implements Serializable {
             creationDate = new Date(time.getTime());
         }
         property.setCreationDate(creationDate);
-        property.setContainer(result.getInt(container));
+        property.setContainer(result.getString(container));
         return property;
     }
 

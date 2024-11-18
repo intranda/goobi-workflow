@@ -39,7 +39,6 @@ import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
-import org.goobi.production.cli.helper.StringPair;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
@@ -95,11 +94,13 @@ public class MetaPerson implements SearchableMetadata {
     private List<NormDataRecord> normdataList;
     private int totalResults;
     private EasyDBSearch easydbSearch = new EasyDBSearch();
-    private List<StringPair> vocabularySearchFields;
+    private List<SelectItem> vocabularySearchFields;
     private String vocabularyName;
     private List<ExtendedVocabularyRecord> records;
     private String vocabularyUrl;
     private ExtendedVocabularyRecord selectedVocabularyRecord;
+    private long currentVocabularySearchField;
+    private String vocabularySearchQuery;
 
     /**
      * Allgemeiner Konstruktor ()

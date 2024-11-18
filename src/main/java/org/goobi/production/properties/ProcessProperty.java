@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
+import org.goobi.production.cli.helper.StringPair;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -52,7 +53,7 @@ public class ProcessProperty implements IProperty, Serializable {
     private String name;
     @Getter
     @Setter
-    private int container;
+    private String container;
     @Getter
     @Setter
     private String validation;
@@ -79,6 +80,11 @@ public class ProcessProperty implements IProperty, Serializable {
     @Getter
     @Setter
     private AccessCondition showProcessGroupAccessCondition;
+
+    @Getter
+    @Setter
+    private List<StringPair> processCreationConditions = new ArrayList<>();
+
     @Getter
     @Setter
     private Processproperty prozesseigenschaft;
@@ -88,6 +94,9 @@ public class ProcessProperty implements IProperty, Serializable {
     @Getter
     @Setter
     private boolean duplicationAllowed = false;
+    @Getter
+    @Setter
+    private String pattern = "dd.MM.yyyy";
 
     public ProcessProperty() {
         this.possibleValues = new ArrayList<>();
@@ -109,14 +118,14 @@ public class ProcessProperty implements IProperty, Serializable {
 
     @Override
     public void setDateValue(Date inDate) {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
         value = format.format(inDate);
         this.readValue = value;
     }
 
     @Override
     public Date getDateValue() {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
         try {
             Calendar cal = Calendar.getInstance();
             cal.setTime(format.parse(value));
@@ -159,12 +168,13 @@ public class ProcessProperty implements IProperty, Serializable {
      * @see org.goobi.production.properties.IProperty#getClone()
      */
     @Override
-    public ProcessProperty getClone(int containerNumber) {
+    public ProcessProperty getClone(String containerName) {
         ProcessProperty p = new ProcessProperty();
-        p.setContainer(containerNumber);
+        p.setContainer(containerName);
         p.setName(this.name);
         p.setValidation(this.validation);
         p.setType(this.type);
+        p.setPattern(this.pattern);
         p.setValue(this.value);
         p.setShowProcessGroupAccessCondition(this.showProcessGroupAccessCondition);
         p.setDuplicationAllowed(this.isDuplicationAllowed());
@@ -205,7 +215,7 @@ public class ProcessProperty implements IProperty, Serializable {
     }
 
     public boolean getBooleanValue() {
-        return this.value != null && this.value.equalsIgnoreCase("true");
+        return this.value != null && "true".equalsIgnoreCase(this.value);
     }
 
     public void setBooleanValue(boolean val) {
@@ -222,7 +232,7 @@ public class ProcessProperty implements IProperty, Serializable {
 
         @Override
         public int compare(ProcessProperty o1, ProcessProperty o2) {
-            return Integer.compare(o1.getContainer(), o2.getContainer());
+            return o1.getContainer().compareTo(o2.getContainer());
         }
 
     }

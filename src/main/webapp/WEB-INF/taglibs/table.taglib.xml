@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib
+    version="2.2"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd">
+    <namespace>http://goobi.io/table</namespace>
+    <tag>
+        <tag-name>filter-input</tag-name>
+        <source>table/filter-input.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>filter</tag-name>
+        <source>table/filter.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>hits</tag-name>
+        <source>table/hits.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>search</tag-name>
+        <source>table/search.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>table</tag-name>
+        <source>table/table.xhtml</source>
+        <attribute>
+            <description>Provides an optional id if the component should have a one</description>
+            <name>id</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>wrapper</tag-name>
+        <source>table/wrapper.xhtml</source>
+    </tag>
+</facelet-taglib>

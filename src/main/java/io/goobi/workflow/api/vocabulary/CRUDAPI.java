@@ -23,7 +23,12 @@ public abstract class CRUDAPI<InstanceType extends Identifiable, PageResultType>
         return restApi.get(commonEndpoint, pageResultTypeClass);
     }
 
+    @Deprecated(since = "24.07", forRemoval = true)
     public PageResultType list(Optional<Integer> size, Optional<Integer> page) {
+        return list(size, page, Optional.empty());
+    }
+
+    public PageResultType list(Optional<Integer> size, Optional<Integer> page, Optional<String> sort) {
         String params = "";
         if (size.isPresent()) {
             params += params.isEmpty() ? "?" : "&";
@@ -32,6 +37,10 @@ public abstract class CRUDAPI<InstanceType extends Identifiable, PageResultType>
         if (page.isPresent()) {
             params += params.isEmpty() ? "?" : "&";
             params += "page=" + page.get();
+        }
+        if (sort.isPresent()) {
+            params += params.isEmpty() ? "?" : "&";
+            params += "sort=" + sort.get();
         }
         return restApi.get(commonEndpoint + params, pageResultTypeClass);
     }

@@ -10,7 +10,7 @@
     height: 243px;
 
     &.journal-big {
-      height: 32vh;
+      height: auto;
     }
   }
 
@@ -40,7 +40,8 @@
     color: #8e8d8e;
   }
 
-  .log_color_user {
+  .log_color_user,
+  .log_color_important {
     color: #006600;
   }
 

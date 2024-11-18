@@ -1,0 +1,20 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:section="http://goobi.io/section"
+>
+        <section:header icon="#{icon}" title="#{title}">
+            <ui:insert />
+            <form method="dialog">
+                <button
+                    class="btn button-modal-close"
+                    aria-label="#{msgs.abbrechen}"
+                >
+                    <span
+                        aria-hidden="true"
+                        class="fa fa-times" />
+                </button>
+            </form>
+        </section:header>
+</ui:composition>

@@ -76,9 +76,27 @@ button,
   }
 
   i ~ *,
-  .fa ~ * {
+  .fa ~ *:not(.fa) {
     margin-inline-start: 0.25rem;
   }
+  &:focus {
+    color: var(--bs-btn-color);
+  }
+  &:focus-visible {
+    color: var(--bs-btn-color);
+    outline-width: 2px;
+    outline-style: solid;
+    outline-color: var(--bs-btn-bg, var(--clr-neutral-300));
+    outline-offset: 2px;
+  }
+  &:active {
+    transform: scale(99%);
+  }
+}
+
+.button-row {
+  display: flex;
+  gap: 0.25rem;
 }
 
 /* ========================================

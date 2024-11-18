@@ -33,61 +33,70 @@ import java.io.PipedOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.FileVisitOption;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CopyObjectRequest;
-import com.amazonaws.services.s3.model.ListObjectsRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.amazonaws.services.s3.transfer.Copy;
-import com.amazonaws.services.s3.transfer.Download;
-import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
-import com.amazonaws.services.s3.transfer.Upload;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
 import de.unigoettingen.sub.commons.util.PathConverter;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.core.async.AsyncRequestBody;
+import software.amazon.awssdk.core.async.AsyncResponseTransformer;
+import software.amazon.awssdk.core.async.BlockingInputStreamAsyncRequestBody;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.crt.S3CrtHttpConfiguration;
+import software.amazon.awssdk.services.s3.crt.S3CrtRetryConfiguration;
+import software.amazon.awssdk.services.s3.model.CommonPrefix;
+import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
+import software.amazon.awssdk.services.s3.model.CopyObjectResponse;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.services.s3.model.S3Object;
+import software.amazon.awssdk.transfer.s3.S3TransferManager;
+import software.amazon.awssdk.transfer.s3.model.DirectoryDownload;
+import software.amazon.awssdk.transfer.s3.model.DirectoryUpload;
+import software.amazon.awssdk.transfer.s3.model.DownloadFileRequest;
+import software.amazon.awssdk.transfer.s3.model.FileDownload;
+import software.amazon.awssdk.transfer.s3.model.FileUpload;
+import software.amazon.awssdk.transfer.s3.model.UploadDirectoryRequest;
+import software.amazon.awssdk.transfer.s3.model.UploadFileRequest;
+import software.amazon.awssdk.transfer.s3.progress.LoggingTransferListener;
 
 @Log4j2
 public class S3FileUtils implements StorageProviderInterface {
+
     @Getter
-    private final AmazonS3 s3;
+    private S3TransferManager transferManager;
+
     @Getter
-    private final TransferManager transferManager;
+    private S3AsyncClient s3;
+
     private NIOFileUtils nio;
     private static Pattern processDirPattern;
 
@@ -103,54 +112,41 @@ public class S3FileUtils implements StorageProviderInterface {
 
     public S3FileUtils() {
         super();
-        this.s3 = createS3Client();
-        this.transferManager = TransferManagerBuilder.standard()
-                .withS3Client(s3)
-                .withDisableParallelDownloads(false)
-                .withMinimumUploadPartSize(Long.valueOf(5 * MB))
-                .withMultipartUploadThreshold(Long.valueOf(16 * MB))
-                .withMultipartCopyPartSize(Long.valueOf(5 * MB))
-                .withMultipartCopyThreshold(Long.valueOf(100 * MB))
-                .withExecutorFactory(() -> createExecutorService(20))
-                .build();
+        try {
+            this.s3 = createS3Client();
+        } catch (URISyntaxException e) {
+            log.error(e);
+        }
+        transferManager = S3TransferManager.builder().s3Client(s3).build();
+
         this.nio = new NIOFileUtils();
 
     }
 
-    private ThreadPoolExecutor createExecutorService(int threadNumber) {
-        ThreadFactory threadFactory = new ThreadFactory() {
-            private int threadCount = 1;
-
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread thread = new Thread(r);
-                thread.setName("jsa-amazon-s3-transfer-manager-worker-" + threadCount++);
-                return thread;
-            }
-        };
-        return (ThreadPoolExecutor) Executors.newFixedThreadPool(threadNumber, threadFactory);
-    }
-
-    public static AmazonS3 createS3Client() {
-        AmazonS3 mys3;
+    public static S3AsyncClient createS3Client() throws URISyntaxException {
+        S3AsyncClient mys3;
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
         if (conf.useCustomS3()) {
-            AWSCredentials credentials = new BasicAWSCredentials(conf.getS3AccessKeyID(), conf.getS3SecretAccessKey());
-            ClientConfiguration clientConfiguration = new ClientConfiguration();
-            clientConfiguration.setSignerOverride("AWSS3V4SignerType");
+            URI endpoint = new URI(conf.getS3Endpoint());
 
-            mys3 = AmazonS3ClientBuilder.standard()
-                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(), Regions.US_EAST_1.name()))
-                    .withPathStyleAccessEnabled(true)
-                    .withClientConfiguration(clientConfiguration)
-                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
+            AwsCredentials credentials = AwsBasicCredentials.create(conf.getS3AccessKeyID(), conf.getS3SecretAccessKey());
+            AwsCredentialsProvider prov = StaticCredentialsProvider.create(credentials);
+
+            mys3 = S3AsyncClient.crtBuilder() // NOSONAR: false positive, region is set explicitly
+                    .region(Region.US_EAST_1)
+                    .minimumPartSizeInBytes(10 * MB)
+                    .targetThroughputInGbps(20.0)
+                    .endpointOverride(endpoint)
+                    .credentialsProvider(prov)
+                    .checksumValidationEnabled(false)
                     .build();
         } else {
-            ClientConfiguration cc = new ClientConfiguration().withMaxErrorRetry(ConfigurationHelper.getInstance().getS3ConnectionRetries())
-                    .withConnectionTimeout(ConfigurationHelper.getInstance().getS3ConnectionTimeout())
-                    .withSocketTimeout(ConfigurationHelper.getInstance().getS3SocketTimeout())
-                    .withTcpKeepAlive(true);
-            mys3 = AmazonS3ClientBuilder.standard().withClientConfiguration(cc).build();
+            mys3 = S3AsyncClient.crtBuilder()
+                    .retryConfiguration(S3CrtRetryConfiguration.builder().numRetries(10).build())
+                    .httpConfiguration(S3CrtHttpConfiguration.builder().connectionTimeout(Duration.ofSeconds(20)).build())
+                    .targetThroughputInGbps(5.0)
+                    .minimumPartSizeInBytes(1000000L)
+                    .build();
         }
         return mys3;
     }
@@ -194,42 +190,55 @@ public class S3FileUtils implements StorageProviderInterface {
         return ConfigurationHelper.getInstance().getS3Bucket();
     }
 
-    private void copyS3Object(String sourcePrefix, String targetPrefix, S3ObjectSummary os)
-            throws AmazonServiceException, AmazonClientException, InterruptedException {
-        String sourceKey = os.getKey();
+    private void copyS3Object(String sourcePrefix, String targetPrefix, S3Object os) {
+        String sourceKey = os.key();
         String destinationKey = targetPrefix + sourceKey.replace(sourcePrefix, "");
-        CopyObjectRequest copyReq = new CopyObjectRequest(getBucket(), sourceKey, getBucket(), destinationKey);
 
-        Copy copy = transferManager.copy(copyReq);
-        copy.waitForCompletion();
-    }
+        CopyObjectRequest copyReq = CopyObjectRequest.builder()
+                .sourceBucket(getBucket())
+                .sourceKey(sourceKey)
+                .destinationBucket(getBucket())
+                .destinationKey(destinationKey)
+                .build();
 
-    private void downloadS3ObjectToFolder(String sourcePrefix, Path target, S3ObjectSummary os) throws IOException {
-        String key = os.getKey();
-        Path targetPath = target.resolve(key.replace(sourcePrefix, ""));
-
-        Download dl = transferManager.download(os.getBucketName(), key, targetPath.toFile());
-        try {
-            dl.waitForCompletion();
-        } catch (AmazonClientException e) {
-            throw new IOException(e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        CompletableFuture<CopyObjectResponse> copyRes = s3.copyObject(copyReq);
+        copyRes.join();
     }
 
     private void deletePathOnS3(Path dir) {
         String prefix = path2Prefix(dir);
-        ObjectListing listing = s3.listObjects(getBucket(), prefix);
-        for (S3ObjectSummary os : listing.getObjectSummaries()) {
-            s3.deleteObject(getBucket(), os.getKey());
-        }
-        while (listing.isTruncated()) {
-            listing = s3.listNextBatchOfObjects(listing);
-            for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                s3.deleteObject(getBucket(), os.getKey());
+
+        String nextContinuationToken = null;
+        // we can list max 1000 objects in one request, so we need to paginate through the results
+        do {
+            ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                    .prefix(prefix)
+                    .bucket(getBucket())
+                    .delimiter("/")
+                    .continuationToken(nextContinuationToken);
+
+            CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+            ListObjectsV2Response resp = response.toCompletableFuture().join();
+
+            nextContinuationToken = resp.nextContinuationToken();
+
+            List<S3Object> contents = resp.contents();
+            List<ObjectIdentifier> toDelete = new ArrayList<>();
+            for (S3Object obj : contents) {
+                toDelete.add(ObjectIdentifier.builder()
+                        .key(obj.key())
+                        .build());
             }
-        }
+
+            DeleteObjectsRequest dor = DeleteObjectsRequest.builder()
+                    .bucket(getBucket())
+                    .delete(d -> d.objects(toDelete))
+                    .build();
+
+            s3.deleteObjects(dor).join();
+
+        } while (nextContinuationToken != null);
+
     }
 
     public static StorageType getPathStorageType(Path p) {
@@ -265,25 +274,39 @@ public class S3FileUtils implements StorageProviderInterface {
         if (storageType == StorageType.LOCAL) {
             return nio.getNumberOfFiles(inDir);
         }
-        ObjectListing listing = s3.listObjects(getBucket(), string2Prefix(inDir));
+
+        String nextContinuationToken = null;
         int count = 0;
-        for (S3ObjectSummary os : listing.getObjectSummaries()) {
-            if (StorageProvider.dataFilterString(os.getKey())) {
-                count++;
-            }
-        }
-        while (listing.isTruncated()) {
-            listing = s3.listNextBatchOfObjects(listing);
-            for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                if (StorageProvider.dataFilterString(os.getKey())) {
+        // we can list max 1000 objects in one request, so we need to paginate through the results
+        do {
+            ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                    .prefix(string2Prefix(inDir))
+                    .bucket(getBucket())
+                    .delimiter("/")
+                    .continuationToken(nextContinuationToken);
+
+            CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+            ListObjectsV2Response resp = response.toCompletableFuture().join();
+
+            nextContinuationToken = resp.nextContinuationToken();
+
+            List<CommonPrefix> prefixes = resp.commonPrefixes();
+            for (CommonPrefix pref : prefixes) {
+                if (StorageProvider.dataFilterString(pref.prefix())) {
                     count++;
                 }
             }
-        }
-        if (storageType == StorageType.BOTH) {
-            count += nio.getNumberOfFiles(inDir);
-        }
+
+            List<S3Object> contents = resp.contents();
+            for (S3Object object : contents) {
+                if (StorageProvider.dataFilterString(object.key())) {
+                    count++;
+                }
+            }
+
+        } while (nextContinuationToken != null);
         return count;
+
     }
 
     @Override
@@ -292,21 +315,38 @@ public class S3FileUtils implements StorageProviderInterface {
         if (storageType == StorageType.LOCAL) {
             return nio.getNumberOfFiles(dir, suffixes);
         }
-        ObjectListing listing = s3.listObjects(getBucket(), path2Prefix(dir));
+
+        String nextContinuationToken = null;
         int count = 0;
-        for (S3ObjectSummary os : listing.getObjectSummaries()) {
-            if (Arrays.stream(suffixes).anyMatch(suffix -> os.getKey().endsWith(suffix))) {
-                count++;
-            }
-        }
-        while (listing.isTruncated()) {
-            listing = s3.listNextBatchOfObjects(listing);
-            for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                if (Arrays.stream(suffixes).anyMatch(suffix -> os.getKey().endsWith(suffix))) {
+        // we can list max 1000 objects in one request, so we need to paginate through the results
+        do {
+            ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                    .prefix(string2Prefix(dir.toString()))
+                    .bucket(getBucket())
+                    .delimiter("/")
+                    .continuationToken(nextContinuationToken);
+
+            CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+            ListObjectsV2Response resp = response.toCompletableFuture().join();
+
+            nextContinuationToken = resp.nextContinuationToken();
+
+            List<CommonPrefix> prefixes = resp.commonPrefixes();
+            for (CommonPrefix pref : prefixes) {
+                if (Arrays.stream(suffixes).anyMatch(suffix -> pref.prefix().endsWith(suffix))) {
                     count++;
                 }
             }
-        }
+
+            List<S3Object> contents = resp.contents();
+            for (S3Object object : contents) {
+                if (Arrays.stream(suffixes).anyMatch(suffix -> object.key().endsWith(suffix))) {
+                    count++;
+                }
+            }
+
+        } while (nextContinuationToken != null);
+
         if (storageType == StorageType.BOTH) {
             count += nio.getNumberOfFiles(dir, suffixes);
         }
@@ -323,30 +363,31 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.listFiles(folder);
         }
         String folderPrefix = string2Prefix(folder);
-        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix).withDelimiter("/");
-        ObjectListing listing = s3.listObjects(req);
-        List<String> commonPrefixes = listing.getCommonPrefixes();
+
         List<Path> paths = new ArrayList<>();
-        if (!commonPrefixes.isEmpty()) {
-            for (String key : commonPrefixes) {
-                paths.add(key2Path(key));
+        String nextContinuationToken = null;
+        Set<String> objs = new HashSet<>();
+        // we can list max 1000 objects in one request, so we need to paginate through the results
+        do {
+            ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                    .bucket(getBucket())
+                    .delimiter("/")
+                    .prefix(folderPrefix)
+                    .continuationToken(nextContinuationToken);
+
+            CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+            ListObjectsV2Response resp = response.toCompletableFuture().join();
+
+            nextContinuationToken = resp.nextContinuationToken();
+
+            List<CommonPrefix> prefixes = resp.commonPrefixes();
+            for (CommonPrefix pref : prefixes) {
+                paths.add(key2Path(pref.prefix()));
             }
 
-        }
-        Set<String> objs = new HashSet<>();
-        for (S3ObjectSummary os : listing.getObjectSummaries()) {
-            String key = os.getKey().replace(folderPrefix, "");
-            int idx = key.indexOf('/');
-            if (idx > 0) {
-                objs.add(key.substring(0, idx));
-            } else {
-                objs.add(key);
-            }
-        }
-        while (listing.isTruncated()) {
-            listing = s3.listNextBatchOfObjects(listing);
-            for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                String key = os.getKey().replace(folderPrefix, "");
+            List<S3Object> contents = resp.contents();
+            for (S3Object obj : contents) {
+                String key = obj.key().replace(folderPrefix, "");
                 int idx = key.indexOf('/');
                 if (idx > 0) {
                     objs.add(key.substring(0, idx));
@@ -354,7 +395,9 @@ public class S3FileUtils implements StorageProviderInterface {
                     objs.add(key);
                 }
             }
-        }
+
+        } while (nextContinuationToken != null);
+
         for (String key : objs) {
             paths.add(key2Path(folderPrefix + key));
         }
@@ -425,18 +468,26 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.list(folder, NIOFileUtils.folderFilter);
         }
         String folderPrefix = string2Prefix(folder);
-        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix).withDelimiter("/");
-        ObjectListing listing = s3.listObjects(req);
-        Set<String> objs = new HashSet<>();
-        for (String os : listing.getCommonPrefixes()) {
-            String key = os.replace(folderPrefix, "");
+
+        ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                .bucket(getBucket())
+                .delimiter("/")
+                .prefix(folderPrefix);
+
+        CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+        ListObjectsV2Response resp = response.toCompletableFuture().join();
+
+        List<String> folders = new ArrayList<>();
+
+        List<CommonPrefix> prefixes = resp.commonPrefixes();
+        for (CommonPrefix pref : prefixes) {
+            String key = pref.prefix().replace(folderPrefix, "");
             int idx = key.indexOf('/');
             if (idx >= 0) {
-                objs.add(key.substring(0, key.indexOf('/')));
+                folders.add(key.substring(0, key.indexOf('/')));
             }
-        }
 
-        List<String> folders = new ArrayList<>(objs);
+        }
         Collections.sort(folders, new GoobiStringFileComparator());
         return folders;
     }
@@ -455,77 +506,55 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         String sourcePrefix = path2Prefix(source);
         String targetPrefix = path2Prefix(target);
-        ObjectListing listing = s3.listObjects(getBucket(), sourcePrefix);
-        try {
-            for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                copyS3Object(sourcePrefix, targetPrefix, os);
+        String nextContinuationToken = null;
+        Set<S3Object> objs = new HashSet<>();
+        // we can list max 1000 objects in one request, so we need to paginate through the results
+        do {
+            ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                    .bucket(getBucket())
+                    .delimiter("/")
+                    .prefix(sourcePrefix)
+                    .continuationToken(nextContinuationToken);
+
+            CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+            ListObjectsV2Response resp = response.toCompletableFuture().join();
+
+            nextContinuationToken = resp.nextContinuationToken();
+
+            List<S3Object> contents = resp.contents();
+            for (S3Object obj : contents) {
+                objs.add(obj);
             }
-            while (listing.isTruncated()) {
-                listing = s3.listNextBatchOfObjects(listing);
-                for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                    copyS3Object(sourcePrefix, targetPrefix, os);
-                }
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+
+        } while (nextContinuationToken != null);
+
+        for (S3Object os : objs) {
+            copyS3Object(sourcePrefix, targetPrefix, os);
         }
     }
 
     @Override
     public void uploadDirectory(final Path source, final Path target) throws IOException {
-        Files.walkFileTree(source, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new FileVisitor<Path>() {
+        DirectoryUpload directoryUpload =
+                transferManager.uploadDirectory(UploadDirectoryRequest.builder()
+                        .source(source)
+                        .bucket(getBucket())
+                        .s3Prefix(path2Prefix(target))
+                        .build());
 
-            @Override
-            public FileVisitResult visitFile(Path p, BasicFileAttributes bfa) throws IOException {
-                String fileName = p.getFileName().toString();
-                String key = path2Prefix(target) + fileName;
-                ObjectMetadata om = new ObjectMetadata();
-                om.setContentType(Files.probeContentType(p));
-                om.setContentLength(Files.size(p));
-                try (InputStream is = Files.newInputStream(p)) {
-                    try {
-                        Upload upload = transferManager.upload(getBucket(), key, is, om);
-                        upload.waitForCompletion();
-                    } catch (AmazonClientException e) {
-                        log.error(e);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-
-                }
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes sourceBasic) throws IOException {
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult postVisitDirectory(Path p, IOException e) throws IOException {
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult visitFileFailed(Path p, IOException e) throws IOException {
-                throw e;
-            }
-        });
+        // Wait for the transfer to complete
+        directoryUpload.completionFuture().join();
     }
 
     @Override
     public void downloadDirectory(final Path source, final Path target) throws IOException {
         String sourcePrefix = path2Prefix(source);
-        ObjectListing listing = s3.listObjects(getBucket(), sourcePrefix);
-        for (S3ObjectSummary os : listing.getObjectSummaries()) {
-            downloadS3ObjectToFolder(sourcePrefix, target, os);
-        }
-        while (listing.isTruncated()) {
-            listing = s3.listNextBatchOfObjects(listing);
-            for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                downloadS3ObjectToFolder(sourcePrefix, target, os);
-            }
-        }
+        DirectoryDownload directoryDownload =
+                transferManager.downloadDirectory(
+                        u -> u.destination(target).bucket(getBucket()).listObjectsV2RequestTransformer(l -> l.prefix(sourcePrefix)));
+        // Wait for the transfer to complete
+        directoryDownload.completionFuture().join();
+
     }
 
     @Override
@@ -537,15 +566,26 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         String oldKey = path2Key(oldName);
         String newKey = path2Key(oldName.resolveSibling(newNameString));
-        Copy copy = transferManager.copy(getBucket(), oldKey, getBucket(), newKey);
-        try {
-            copy.waitForCompletion();
-            s3.deleteObject(getBucket(), oldKey);
-        } catch (AmazonClientException e) {
-            throw new IOException(e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+
+        CopyObjectRequest copyReq = CopyObjectRequest.builder()
+                .sourceBucket(getBucket())
+                .sourceKey(oldKey)
+                .destinationBucket(getBucket())
+                .destinationKey(newKey)
+                .build();
+        ArrayList<ObjectIdentifier> toDelete = new ArrayList<>();
+        toDelete.add(ObjectIdentifier.builder()
+                .key(oldKey)
+                .build());
+        DeleteObjectsRequest dor = DeleteObjectsRequest.builder()
+                .bucket(getBucket())
+                .delete(d -> d.objects(toDelete))
+                .build();
+
+        s3.copyObject(copyReq).join();
+
+        s3.deleteObjects(dor).join();
+
         return key2Path(newKey);
     }
 
@@ -557,36 +597,43 @@ public class S3FileUtils implements StorageProviderInterface {
                 nio.copyFile(srcFile, destFile);
             } else {
                 // src local, dest s3 => upload file
-                try {
-                    // use multipart upload for larger files larger than 1GB
-                    Upload upload = transferManager.upload(getBucket(), path2Key(destFile), srcFile.toFile());
-                    upload.waitForCompletion();
-                } catch (AmazonClientException e) {
-                    throw new IOException(e);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+
+                UploadFileRequest uploadFileRequest = UploadFileRequest.builder()
+                        .putObjectRequest(req -> req.bucket(getBucket()).key(path2Key(destFile)))
+                        .addTransferListener(LoggingTransferListener.create())
+                        .source(srcFile)
+                        .build();
+
+                FileUpload upload = transferManager.uploadFile(uploadFileRequest);
+                upload.completionFuture().join();
+
             }
         } else if (getPathStorageType(destFile) == StorageType.S3) {
             // both on s3 => standard copy on s3
-            Copy copy = transferManager.copy(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
-            try {
-                copy.waitForCompletion();
-            } catch (AmazonClientException e) {
-                throw new IOException(e);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            CopyObjectRequest copyReq = CopyObjectRequest.builder()
+                    .sourceBucket(getBucket())
+                    .sourceKey(path2Key(srcFile))
+                    .destinationBucket(getBucket())
+                    .destinationKey(path2Key(destFile))
+                    .build();
+
+            s3.copyObject(copyReq).join();
+
         } else {
             // src on s3 and dest local => download file from s3 to local location
-            Download dl = transferManager.download(getBucket(), path2Key(srcFile), destFile.toFile());
-            try {
-                dl.waitForCompletion();
-            } catch (AmazonClientException e) {
-                throw new IOException(e);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+
+            DownloadFileRequest downloadFileRequest =
+                    DownloadFileRequest.builder()
+                            .getObjectRequest(req -> req.bucket(getBucket()).key(path2Key(srcFile)))
+                            .destination(destFile)
+                            .addTransferListener(LoggingTransferListener.create())
+                            .build();
+
+            FileDownload download = transferManager.downloadFile(downloadFileRequest);
+
+            // Wait for the transfer to complete
+            download.completionFuture().join();
+
         }
     }
 
@@ -642,13 +689,15 @@ public class S3FileUtils implements StorageProviderInterface {
         if (getPathStorageType(path) == StorageType.LOCAL) {
             return nio.isFileExists(path);
         }
-        // handle prefix, too
-        if (s3.doesObjectExist(getBucket(), path2Key(path))) {
-            return true;
-        }
-        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(path2Key(path)).withDelimiter("/");
-        ObjectListing listing = s3.listObjects(req);
-        return !listing.getCommonPrefixes().isEmpty() || !listing.getObjectSummaries().isEmpty();
+
+        ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                .bucket(getBucket())
+                .delimiter("/")
+                .prefix(path2Key(path));
+
+        CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+        ListObjectsV2Response resp = response.toCompletableFuture().join();
+        return !resp.commonPrefixes().isEmpty() || !resp.contents().isEmpty();
     }
 
     @Override
@@ -657,9 +706,14 @@ public class S3FileUtils implements StorageProviderInterface {
         if (storageType == StorageType.LOCAL || storageType == StorageType.BOTH) {
             return nio.isDirectory(path);
         }
-        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(path2Key(path)).withDelimiter("/");
-        ObjectListing listing = s3.listObjects(req);
-        return !listing.getCommonPrefixes().isEmpty();
+        ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                .bucket(getBucket())
+                .delimiter("/")
+                .prefix(path2Key(path));
+
+        CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+        ListObjectsV2Response resp = response.toCompletableFuture().join();
+        return !resp.commonPrefixes().isEmpty();
     }
 
     @Override
@@ -681,30 +735,15 @@ public class S3FileUtils implements StorageProviderInterface {
         if (getPathStorageType(path) == StorageType.LOCAL) {
             return nio.getLastModifiedDate(path);
         }
-        ObjectMetadata om = s3.getObjectMetadata(getBucket(), path2Key(path));
-        if (om == null) {
-            // check everything inside prefix.
-            long lastModified = 0;
-            ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(path2Key(path)).withDelimiter("/");
-            ObjectListing listing = s3.listObjects(req);
-            for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                if (os.getLastModified().getTime() > lastModified) {
-                    lastModified = os.getLastModified().getTime();
-                }
-            }
-            while (listing.isTruncated()) {
-                listing = s3.listNextBatchOfObjects(listing);
-                for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                    if (os.getLastModified().getTime() > lastModified) {
-                        lastModified = os.getLastModified().getTime();
-                    }
-                }
-            }
-            return lastModified;
-        } else {
-            // return lastModified of object
-            return om.getLastModified().getTime();
-        }
+
+        HeadObjectRequest objectRequest = HeadObjectRequest.builder()
+                .key(path2Key(path))
+                .bucket(getBucket())
+                .build();
+        CompletableFuture<HeadObjectResponse> objectHead = s3.headObject(objectRequest);
+
+        return objectHead.toCompletableFuture().join().lastModified().toEpochMilli();
+
     }
 
     @Override
@@ -723,7 +762,18 @@ public class S3FileUtils implements StorageProviderInterface {
         if (getPathStorageType(path) == StorageType.LOCAL) {
             nio.deleteFile(path);
         }
-        s3.deleteObject(getBucket(), path2Key(path));
+        ArrayList<ObjectIdentifier> toDelete = new ArrayList<>();
+        toDelete.add(ObjectIdentifier.builder()
+                .key(path2Key(path))
+                .build());
+
+        DeleteObjectsRequest dor = DeleteObjectsRequest.builder()
+                .bucket(getBucket())
+                .delete(d -> d.objects(toDelete))
+                .build();
+
+        s3.deleteObjects(dor).join();
+
     }
 
     @Override
@@ -736,29 +786,38 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         if (oldType == StorageType.LOCAL && (newType == StorageType.S3 || newType == StorageType.BOTH)) {
             // new path is on s3. Upload object
-            try {
-                // use multipart upload for larger files larger than 1GB
-                Upload upload = transferManager.upload(getBucket(), path2Key(newPath), oldPath.toFile());
-                upload.waitForCompletion();
-                Files.delete(oldPath);
-            } catch (AmazonClientException e) {
-                throw new IOException(e);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+
+            // use multipart upload for larger files larger than 1GB
+            UploadFileRequest uploadFileRequest = UploadFileRequest.builder()
+                    .putObjectRequest(req -> req.bucket(getBucket()).key(path2Key(newPath)))
+                    .addTransferListener(LoggingTransferListener.create())
+                    .source(oldPath)
+                    .build();
+
+            FileUpload upload = transferManager.uploadFile(uploadFileRequest);
+            upload.completionFuture().join();
+
+            Files.delete(oldPath);
+
         }
         if ((oldType == StorageType.S3 || oldType == StorageType.BOTH) && newType == StorageType.LOCAL) {
             // download object
 
-            Download dl = transferManager.download(getBucket(), path2Key(oldPath), newPath.toFile());
-            try (S3Object obj = s3.getObject(getBucket(), path2Key(oldPath)); InputStream in = obj.getObjectContent()) {
-                dl.waitForCompletion();
-            } catch (AmazonClientException e) {
-                throw new IOException(e);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            s3.deleteObject(getBucket(), path2Key(oldPath));
+            DownloadFileRequest downloadFileRequest =
+                    DownloadFileRequest.builder()
+                            .getObjectRequest(req -> req.bucket(getBucket()).key(path2Key(oldPath)))
+                            .destination(newPath)
+                            .addTransferListener(LoggingTransferListener.create())
+                            .build();
+
+            FileDownload download = transferManager.downloadFile(downloadFileRequest);
+
+            // Wait for the transfer to complete
+            download.completionFuture().join();
+            s3.deleteObject(DeleteObjectRequest.builder()
+                    .bucket(getBucket())
+                    .key(path2Key(oldPath))
+                    .build());
         }
         if (oldType == StorageType.S3 && newType == StorageType.S3) {
             // copy on s3
@@ -766,17 +825,17 @@ public class S3FileUtils implements StorageProviderInterface {
                 // copy all files in prefix, delete old files
                 copyDirectory(oldPath, newPath);
                 deleteDir(oldPath);
-            }
-        } else {
-            // copy single file
-            Copy copy = transferManager.copy(getBucket(), path2Key(oldPath), getBucket(), path2Key(newPath));
-            try {
-                copy.waitForCompletion();
-                s3.deleteObject(getBucket(), path2Key(oldPath));
-            } catch (AmazonClientException e) {
-                throw new IOException(e);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+            } else {
+                // copy single file
+                CopyObjectRequest copyReq = CopyObjectRequest.builder()
+                        .sourceBucket(getBucket())
+                        .sourceKey(path2Key(oldPath))
+                        .destinationBucket(getBucket())
+                        .destinationKey(path2Key(newPath))
+                        .build();
+
+                CompletableFuture<CopyObjectResponse> copyRes = s3.copyObject(copyReq);
+                copyRes.join();
             }
         }
     }
@@ -828,8 +887,12 @@ public class S3FileUtils implements StorageProviderInterface {
         if (getPathStorageType(path) == StorageType.LOCAL) {
             return nio.getFileSize(path);
         }
-        ObjectMetadata om = s3.getObjectMetadata(getBucket(), path2Key(path));
-        return om.getContentLength();
+        HeadObjectRequest objectRequest = HeadObjectRequest.builder()
+                .key(path2Key(path))
+                .bucket(getBucket())
+                .build();
+        CompletableFuture<HeadObjectResponse> objectHead = s3.headObject(objectRequest);
+        return objectHead.toCompletableFuture().join().contentLength();
     }
 
     @Override
@@ -839,59 +902,39 @@ public class S3FileUtils implements StorageProviderInterface {
         if (nio.isFileExists(path)) {
             size += nio.getDirectorySize(path);
         }
+
         if (storageType == StorageType.S3 || storageType == StorageType.BOTH) {
-            ObjectListing listing = s3.listObjects(getBucket(), path2Key(path));
-            for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                size += os.getSize();
-            }
-            while (listing.isTruncated()) {
-                listing = s3.listNextBatchOfObjects(listing);
-                for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                    size += os.getSize();
+            String nextContinuationToken = null;
+            do {
+                ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                        .prefix(string2Prefix(path2Key(path)))
+                        .bucket(getBucket())
+                        .delimiter("/")
+                        .continuationToken(nextContinuationToken);
+
+                CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+                ListObjectsV2Response resp = response.toCompletableFuture().join();
+
+                nextContinuationToken = resp.nextContinuationToken();
+
+                List<S3Object> contents = resp.contents();
+                for (S3Object object : contents) {
+                    size += object.size();
                 }
-            }
+
+            } while (nextContinuationToken != null);
         }
         return size;
     }
 
     /**
-     * @deprecated Use methods with different parameters instead
-     *
-     * @path The path of the file to create
-     */
-    @Override
-    @Deprecated(since = "23.05", forRemoval = true)
-    public void createFile(Path path) throws IOException {
-        // TODO not used anymore. Delete org.goobi.production.importer.GoobiHotFolder
-
-    }
-
-    /**
-     * @deprecated Use a method with different parameters instead
      *
      * @param in The input stream from which the upload should be read
      * @param dest The destination where the file should be uploaded
      */
     @Override
-    @Deprecated(since = "23.05", forRemoval = true)
     public void uploadFile(InputStream in, Path dest) throws IOException {
-        if (getPathStorageType(dest) == StorageType.LOCAL) {
-            nio.uploadFile(in, dest);
-            return;
-        }
-        // if contentLength is not set, s3.putObject loads the whole stream into RAM and only then uploads the file
-        Path tempFile = Files.createTempFile("upload", null); //NOSONAR, using temporary file is save here
-        try {
-            Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
-            Long contentLength = Files.size(tempFile);
-            try (InputStream is = Files.newInputStream(tempFile)) {
-                uploadFile(is, dest, contentLength);
-            }
-        } finally {
-            if (Files.exists(tempFile)) {
-                Files.delete(tempFile);
-            }
-        }
+        uploadFile(in, dest, null);
     }
 
     @Override
@@ -900,19 +943,16 @@ public class S3FileUtils implements StorageProviderInterface {
             nio.uploadFile(in, dest);
             return;
         }
-        ObjectMetadata om = new ObjectMetadata();
-        om.setContentType(Files.probeContentType(dest));
-        om.setContentLength(contentLength);
-        // use regular put method if file is smaller than 4gb
-        try {
-            // use multipart upload for larger files larger than 1GB
-            Upload upload = transferManager.upload(getBucket(), path2Key(dest), in, om);
-            upload.waitForCompletion();
-        } catch (AmazonClientException e) {
-            throw new IOException(e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+
+        BlockingInputStreamAsyncRequestBody body = AsyncRequestBody.forBlockingInputStream(null); // 'null' indicates a stream will be provided later.
+
+        CompletableFuture<PutObjectResponse> responseFuture = s3.putObject(r -> r.bucket(getBucket()).key(path2Key(dest)), body);
+
+        // Provide the stream of data to be uploaded.
+        body.writeInputStream(in);
+
+        responseFuture.join(); // Wait for the response.
+
     }
 
     /**
@@ -925,20 +965,13 @@ public class S3FileUtils implements StorageProviderInterface {
         if (getPathStorageType(src) == StorageType.LOCAL) {
             return nio.newInputStream(src);
         }
-        String key = path2Key(src);
-        if (!s3.doesObjectExist(getBucket(), key)) {
-            throw new IOException(String.format("Key '%s' not found in bucket '%s'", key, getBucket()));
-        }
-        InputStream is = null;
-        S3Object s3Obj = null;
-        try {
-            s3Obj = s3.getObject(getBucket(), key);
-            // There might be a better way to do this.
-            is = new S3ObjectCloserInputStream(s3Obj.getObjectContent(), s3Obj);
-        } catch (AmazonClientException ace) {
-            log.error(ace.getMessage(), ace);
-        }
-        return is;
+
+        CompletableFuture<ResponseInputStream<GetObjectResponse>> responseInputStream = s3.getObject(GetObjectRequest.builder()
+                .bucket(getBucket())
+                .key(path2Key(src))
+                .build(),
+                AsyncResponseTransformer.toBlockingInputStream());
+        return responseInputStream.toCompletableFuture().join();
     }
 
     @Override

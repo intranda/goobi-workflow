@@ -111,7 +111,7 @@ public class JobCreation {
             try {
                 p = cp.createProcess(io);
                 if (p != null && p.getId() != null) {
-                    moveFiles(metsfile, basepath, p);
+                    moveFiles(basepath, p);
                     List<Step> steps = StepManager.getStepsForProcess(p.getId());
                     for (Step s : steps) {
                         if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum()) && s.isTypAutomatisch()) {
@@ -157,7 +157,7 @@ public class JobCreation {
         return true;
     }
 
-    public static void moveFiles(Path metsfile, String basepath, Process p) throws IOException, InterruptedException, SwapException, DAOException {
+    public static void moveFiles(String basepath, Process p) throws IOException, SwapException {
 
         // new folder structure for process imports
         Path importFolder = Paths.get(basepath);

@@ -130,8 +130,6 @@ public interface StorageProviderInterface {
 
     public long getDirectorySize(Path path) throws IOException;
 
-    public void createFile(Path path) throws IOException;
-
     public void uploadFile(InputStream in, Path destination) throws IOException;
 
     public void uploadFile(InputStream in, Path dest, Long contentLength) throws IOException;

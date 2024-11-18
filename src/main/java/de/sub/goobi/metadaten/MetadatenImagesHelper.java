@@ -116,7 +116,7 @@ public class MetadatenImagesHelper {
             folder = Paths.get(myProzess.getImagesDirectory() + directoryName);
         }
 
-        List<String> imagenames = StorageProvider.getInstance().list(folder.toString(), NIOFileUtils.imageNameFilter);
+        List<String> imagenames = StorageProvider.getInstance().list(folder.toString(), NIOFileUtils.imageOrPdfNameFilter);
         if (imagenames == null || imagenames.isEmpty()) {
             // no images found, return
             return Collections.emptyList();

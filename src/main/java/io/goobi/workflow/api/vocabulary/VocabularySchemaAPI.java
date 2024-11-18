@@ -17,7 +17,7 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
 
     // TODO: Make this generic
     private Map<Long, FieldDefinition> definitionMap = new HashMap<>();
-    private final CachedLookup<VocabularySchema> singleLookupCache;
+    private final CachedLookup<Long, VocabularySchema> singleLookupCache;
 
     public VocabularySchemaAPI(String host, int port) {
         super(host, port, VocabularySchema.class, VocabularySchemaPageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
@@ -36,6 +36,9 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
     }
 
     public FieldDefinition getDefinition(Long definitionId) {
+        // TODO: Better definition resolving
+        // Use case: Some plugin has a record URL and wants to retrieve the record. The extended field needs the definition,
+        // but the schema wasn't loaded yet.
         return this.definitionMap.get(definitionId);
     }
 
@@ -60,5 +63,11 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
 
     public void load(long vocabularyId) {
         getSchema(VocabularyAPIManager.getInstance().vocabularies().get(vocabularyId));
+    }
+
+    // TODO: Better definition resolving
+    public void loadDefinitionsForRecord(long recordId) {
+        VocabularyRecord rec = VocabularyAPIManager.getInstance().vocabularyRecords().getPrimitive(recordId);
+        load(rec.getVocabularyId());
     }
 }

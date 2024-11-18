@@ -50,7 +50,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String STEP_SCRIPT = "script";
     private static final String STEP_EXPORT = "export";
@@ -78,7 +78,7 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
 
         String missingParameter = "Missing parameter: ";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }

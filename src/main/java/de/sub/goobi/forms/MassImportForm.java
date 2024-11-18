@@ -513,7 +513,9 @@ public class MassImportForm implements Serializable {
 
         String filename = this.createUploadFileName();
 
-        try (InputStream inputStream = this.uploadedFile.getInputStream(); OutputStream outputStream = new FileOutputStream(filename)) { // NOSONAR filename is safe here, any prefix folder name from user input is removed from it (see basename above)
+        try (InputStream inputStream = this.uploadedFile.getInputStream();
+                OutputStream outputStream = new FileOutputStream(filename)) { // NOSONAR
+            // filename is safe here, any prefix folder name from user input is removed from it (see basename above)
 
             byte[] buf = new byte[1024];
             int len;

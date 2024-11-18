@@ -1,0 +1,12 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <div class="notification-wrapper collapse #{facesContext.getMessageList().size() > 0 ? 'show' : ''}" id="notificationArea">
+        <!-- MESSAGE LIST -->
+        <h:panelGroup id="globalMessage" layout="block" pt:aria-live="polite" pt:role="status">
+            <h:messages escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" globalOnly="true" />
+        </h:panelGroup>
+        <!-- // MESSAGE LIST -->
+    </div>
+</ui:composition>

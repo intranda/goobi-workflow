@@ -20,12 +20,14 @@
                 role="dialog"
                 aria-labelledby="vocabularySearchBoxLabel"
                 aria-hidden="true">
-            <div
+            <h:panelGroup
+                    layout="block"
                     class="modal-dialog"
-                    role="document">
+                    role="document"
+                    id="vocabularySearchModalContent">
                 <h:panelGroup
-                        styleClass="modal-content"
-                        id="vocabularySearchModalContent">
+                        rendered="#{Metadaten.currentMetadataToPerformSearch != null}"
+                        styleClass="modal-content">
                     <div class="modal-header">
                         <h5
                                 class="modal-title"
@@ -51,7 +53,7 @@
                         </p>
                         <div class="row form-group">
                             <div class="col-3">
-                                <intranda:formInputDropDown
+                                <intranda:formInputDropDownWithEmptyValue
                                         classLeft="invisible"
                                         name="searchField"
                                         field="#{Metadaten.currentMetadataToPerformSearch.currentVocabularySearchField}"
@@ -165,7 +167,7 @@
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>
-            </div>
+            </h:panelGroup>
         </h:panelGroup>
     </composite:implementation>
 </ui:composition>

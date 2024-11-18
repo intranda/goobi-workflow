@@ -41,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STRATEGY = "insertionstrategy";
     private static final String EXISTING_STEP_TITLE = "existingsteptitle";
     private static final String NEW_STEP_TITLE = "newsteptitle";
@@ -76,25 +76,25 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
         String missingParameter = "Missing parameter: ";
         String wrongParameter = "Wrong parameter: ";
         String strategy = parameters.get(STRATEGY);
-        if (strategy == null || strategy.equals("")) {
+        if (strategy == null || "".equals(strategy)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STRATEGY);
             return new ArrayList<>();
         }
-        if (!strategy.equals(STATE_BEFORE) && !strategy.equals(STATE_AFTER)) {
+        if (!STATE_BEFORE.equals(strategy) && !STATE_AFTER.equals(strategy)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, wrongParameter, STRATEGY);
             return new ArrayList<>();
         }
 
         // Check existing step title
         String existingStepTitle = parameters.get(EXISTING_STEP_TITLE);
-        if (existingStepTitle == null || existingStepTitle.equals("")) {
+        if (existingStepTitle == null || "".equals(existingStepTitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, EXISTING_STEP_TITLE);
             return new ArrayList<>();
         }
 
         // Check new step title
         String newStepTitle = parameters.get(NEW_STEP_TITLE);
-        if (newStepTitle == null || newStepTitle.equals("")) {
+        if (newStepTitle == null || "".equals(newStepTitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, NEW_STEP_TITLE);
             return new ArrayList<>();
         }
@@ -148,13 +148,13 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
     private int getOrderForNewStep(Process p, Map<String, String> parameters) {
         List<Step> steps = p.getSchritte();
         int order = ERROR_NO_STEPS;
-        for (int i = 0; i < steps.size(); i++) {
+        for (Step step : steps) {
             // Look for the given title
-            if (steps.get(i).getTitel().equals(parameters.get(EXISTING_STEP_TITLE))) {
+            if (step.getTitel().equals(parameters.get(EXISTING_STEP_TITLE))) {
                 if (order == -1) {
                     // Index was found, but still look whole list for that case when there are multiple indices
-                    order = steps.get(i).getReihenfolge();
-                    if (parameters.get(STRATEGY).equals(STATE_AFTER)) {
+                    order = step.getReihenfolge();
+                    if (STATE_AFTER.equals(parameters.get(STRATEGY))) {
                         // order + 1 because new step should be inserted after found step
                         order++;
                     }
@@ -182,8 +182,8 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
         // This is false, when there was a gap directly after the searched task
         if (p.containsStepOfOrder(order)) {
             Step s;
-            for (int i = 0; i < steps.size(); i++) {
-                s = steps.get(i);
+            for (Step step : steps) {
+                s = step;
                 if (s.getReihenfolge() >= order) {
                     s.setReihenfolge(s.getReihenfolge() + 1);
                 }

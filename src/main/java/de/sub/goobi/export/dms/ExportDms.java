@@ -304,6 +304,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             return false;
         } catch (Exception exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             Helper.setFehlerMeldung(errorMessageTitle, exception);
+            Helper.addMessageToProcessJournal(myProzess.getId(), LogType.ERROR, errorMessageTitle + "\n" + exception.getMessage());
             problems.add(EXPORT_ERROR_PREFIX + exception.getMessage());
             return false;
         }

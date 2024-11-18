@@ -171,7 +171,7 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-    public static final ResultSetHandler<List<Step>> resultSetToStepListHandler = new ResultSetHandler<List<Step>>() {
+    public static final ResultSetHandler<List<Step>> resultSetToStepListHandler = new ResultSetHandler<>() {
 
         @Override
         public List<Step> handle(ResultSet rs) throws SQLException {
@@ -188,7 +188,7 @@ class StepMysqlHelper implements Serializable {
 
     };
 
-    public static final ResultSetHandler<List<Step>> resultSetIdsToStepListHandler = new ResultSetHandler<List<Step>>() {
+    public static final ResultSetHandler<List<Step>> resultSetIdsToStepListHandler = new ResultSetHandler<>() {
 
         @Override
         public List<Step> handle(ResultSet rs) throws SQLException {
@@ -267,7 +267,7 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-    public static final ResultSetHandler<Step> resultSetToStepHandler = new ResultSetHandler<Step>() {
+    public static final ResultSetHandler<Step> resultSetToStepHandler = new ResultSetHandler<>() {
         @Override
         public Step handle(ResultSet rs) throws SQLException {
             try {
@@ -385,7 +385,7 @@ class StepMysqlHelper implements Serializable {
         return s;
     }
 
-    public static final ResultSetHandler<List<ErrorProperty>> resultSetToErrorPropertyListHandler = new ResultSetHandler<List<ErrorProperty>>() {
+    public static final ResultSetHandler<List<ErrorProperty>> resultSetToErrorPropertyListHandler = new ResultSetHandler<>() {
 
         @Override
         public List<ErrorProperty> handle(ResultSet rs) throws SQLException {
@@ -403,7 +403,7 @@ class StepMysqlHelper implements Serializable {
                     if (time != null) {
                         creationDate = new Date(time.getTime());
                     }
-                    int container = rs.getInt("container");
+                    String container = rs.getString("container");
                     ErrorProperty ve = new ErrorProperty();
                     ve.setId(id);
                     ve.setTitel(title);
@@ -422,7 +422,7 @@ class StepMysqlHelper implements Serializable {
         }
     };
 
-    public static final ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<Boolean>() {
+    public static final ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<>() {
 
         @Override
         public Boolean handle(ResultSet rs) throws SQLException {
@@ -1167,7 +1167,7 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-    public static final ResultSetHandler<List<String>> resultSetToScriptsHandler = new ResultSetHandler<List<String>>() {
+    public static final ResultSetHandler<List<String>> resultSetToScriptsHandler = new ResultSetHandler<>() {
         @Override
         public List<String> handle(ResultSet rs) throws SQLException {
             List<String> answer = new ArrayList<>();

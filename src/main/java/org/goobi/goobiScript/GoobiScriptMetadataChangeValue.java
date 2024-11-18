@@ -50,7 +50,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
     // action:metadataChangValue field:DocLanguage prefix:start_ suffix:_end position:top condition:Deutsch
     // action:metadataChangeValue field:DocLanguage prefix:start_ suffix:_end position:child
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String FIELD = "field";
     private static final String PREFIX = "prefix";
     private static final String SUFFIX = "suffix";

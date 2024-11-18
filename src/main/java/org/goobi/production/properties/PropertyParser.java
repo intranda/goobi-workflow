@@ -38,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
+import org.goobi.production.cli.helper.StringPair;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -199,7 +200,7 @@ public class PropertyParser {
             // general values for property
             ProcessProperty pp = new ProcessProperty();
             pp.setName(config.getString(property + "/@name"));
-            pp.setContainer(config.getInt(property + "/@container"));
+            pp.setContainer(config.getString(property + "/@container"));
 
             // projects
             int count = config.getMaxIndex(property + "/project");
@@ -233,6 +234,12 @@ public class PropertyParser {
                         pp.setCurrentStepAccessCondition(AccessCondition.getAccessConditionByName(access));
                     }
 
+                    List<HierarchicalConfiguration> displayConditions = config.configurationsAt(showStep + "/display");
+
+                    for (HierarchicalConfiguration hc : displayConditions) {
+                        ssc.getDisplayCondition().add(new StringPair(hc.getString("@property"), hc.getString("@value")));
+                    }
+
                     pp.getShowStepConditions().add(ssc);
                 }
 
@@ -250,6 +257,8 @@ public class PropertyParser {
                     pp.setValidation(config.getString(property + "/validation"));
                     // type
                     pp.setType(Type.getTypeByName(config.getString(property + "/type")));
+                    // pattern
+                    pp.setPattern(config.getString(property + "/pattern", "dd.MM.yyyy"));
                     // (default) value
                     String defaultValue = config.getString(property + "/defaultvalue");
                     if (Type.METADATA.equals(pp.getType())) {
@@ -331,7 +340,7 @@ public class PropertyParser {
             // general values for property
             ProcessProperty pp = new ProcessProperty();
             pp.setName(config.getString(property + "/@name"));
-            pp.setContainer(config.getInt(property + "/@container"));
+            pp.setContainer(config.getString(property + "/@container"));
 
             // workflows
 
@@ -378,6 +387,8 @@ public class PropertyParser {
                 pp.setValidation(config.getString(property + "/validation"));
                 // type
                 pp.setType(Type.getTypeByName(config.getString(property + "/type")));
+                // pattern
+                pp.setPattern(config.getString(property + "/pattern", "dd.MM.yyyy"));
                 // (default) value
                 String defaultValue = config.getString(property + "/defaultvalue");
                 if (Type.METADATA.equals(pp.getType())) {
@@ -468,7 +479,7 @@ public class PropertyParser {
             ProcessProperty pp = new ProcessProperty();
             // general values for property
             pp.setName(prop.getString("@name"));
-            pp.setContainer(prop.getInt("@container"));
+            pp.setContainer(prop.getString("@container"));
             // projects
             pp.getProjects().addAll(Arrays.asList(prop.getStringArray("/project")));
             // project is configured
@@ -498,6 +509,8 @@ public class PropertyParser {
                 pp.setValidation(prop.getString("/validation"));
                 // type
                 pp.setType(Type.getTypeByName(prop.getString("/type")));
+                // pattern
+                pp.setPattern(prop.getString("/pattern", "dd.MM.yyyy"));
                 // (default) value
                 String defaultValue = prop.getString("/defaultvalue");
                 if (Type.METADATA.equals(pp.getType())) {
@@ -506,6 +519,12 @@ public class PropertyParser {
                 } else {
                     pp.setValue(defaultValue);
                     pp.setReadValue("");
+                }
+
+                List<HierarchicalConfiguration> displayConditions = templateDefinition.configurationsAt("/display");
+
+                for (HierarchicalConfiguration hc : displayConditions) {
+                    pp.getProcessCreationConditions().add(new StringPair(hc.getString("@property"), hc.getString("@value")));
                 }
 
                 // possible values

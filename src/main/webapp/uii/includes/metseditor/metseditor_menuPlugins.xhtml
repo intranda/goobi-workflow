@@ -14,36 +14,31 @@
 
     <composite:implementation>
         <h:form id="meMenuPluginsForm" rendered="#{!Metadaten.extensions.isEmpty()}">
-        <script>
-
-function loadPlugin  (data, selector) {
-    console.log('run loadPlugin')
-    if (data.status === 'success') {
-        console.log(selector );
-        $(selector).modal('show');
-    }
-}
-
-</script>
+            <script>
+                function loadPlugin  (data, selector) {
+                    console.log('run loadPlugin')
+                    if (data.status === 'success') {
+                        console.log(selector );
+                        $(selector).modal('show');
+                    }
+                }
+            </script>
             <ul class="clean">
-                <li class="separator"></li>
 
                 <li>
                     <button
                         id="configDropdown"
                         type="button"
-                        class="btn btn--clean"
+                        class="btn btn--icon dropdown-toggle"
                         aria-label="#{msgs.plugins}"
-                        title="#{msgs.plugins}"
+                        title=""
                         aria-haspopup="true"
                         aria-expanded="false"
                         onclick="switchExpanded(this.id)"
-                        data-show="submenu"
-                        data-toggle="tooltip"
-                        data-placement="bottom">
-                        <i
-                            class="fa fa-plug fa-lg"
-                            aria-hidden="true"></i>
+                        data-show="submenu">
+                        <span class="mr-1">
+                            #{msgs.plugins}
+                        </span>
                     </button>
 
 
@@ -57,10 +52,12 @@ function loadPlugin  (data, selector) {
                                     jsf:id="openExtension"
                                     class="dropdown-item"
                                     type="button">
-                                    <i
-                                        class="fa fa-plug"
-                                        aria-hidden="true"></i>
-                                    <h:outputText value="#{msgs[extension.title]}" />
+                                    <span
+                                        class="fa fa-plug ml-0 mr-2"
+                                        aria-hidden="true" />
+                                    <span>
+                                        <h:outputText value="#{msgs[extension.title]}" />
+                                    </span>
                                     <f:setPropertyActionListener
                                         value="#{extension}"
                                         target="#{Metadaten.extension}" />
@@ -77,10 +74,6 @@ function loadPlugin  (data, selector) {
 
                     </ul>
                 </li>
-
-
-                <li class="separator"></li>
-
             </ul>
         </h:form>
     </composite:implementation>

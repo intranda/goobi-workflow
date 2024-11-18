@@ -63,6 +63,12 @@ public class APIExceptionExtractor {
             case RecordValidationMissingRequiredFields:
                 orderedParameters = List.of("missingFieldNames");
                 break;
+            case RecordImportHeaderIssues:
+                orderedParameters = List.of("undefinedFields", "missingFields");
+                break;
+            case RecordImportFieldCountIssue:
+                orderedParameters = List.of("expectedSize", "realSize");
+                break;
             case RecordImportUnsupportedExcelCellType:
                 orderedParameters = List.of("cellType");
                 break;
@@ -74,11 +80,9 @@ public class APIExceptionExtractor {
                     orderedParameters = List.of("recordId", "referencingRecordIds");
                 }
                 break;
-            case GenericValidation:
-            case FieldInstanceIssues:
-            case FieldInstanceValueIssues:
             default:
                 log.warn("No translation for vocabulary exception type \"{}\" given, parameters: {}", errorType, params);
+                orderedParameters = List.of(errorType.toString());
                 break;
         }
         if (orderedParameters == null) {

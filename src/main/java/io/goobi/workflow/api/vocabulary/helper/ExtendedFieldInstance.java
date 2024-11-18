@@ -1,5 +1,6 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
+import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.FieldInstance;
@@ -7,6 +8,7 @@ import io.goobi.vocabulary.exchange.FieldType;
 import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
+import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -19,19 +21,28 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import static io.goobi.workflow.api.vocabulary.helper.ExtendedTranslationInstance.transformToThreeCharacterAbbreviation;
 
 @Getter
 @Log4j2
 public class ExtendedFieldInstance extends FieldInstance {
     private Function<Long, ExtendedVocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
     private Function<Long, List<ExtendedVocabularyRecord>> recordsResolver = this::getAllRecords;
+    // TODO: Solve this better!
+    private Consumer<Long> schemaPrepareCallback = VocabularyAPIManager.getInstance().vocabularySchemas()::loadDefinitionsForRecord;
     private Function<Long, FieldDefinition> definitionResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getDefinition;
     private Function<Long, FieldType> typeResolver = VocabularyAPIManager.getInstance().fieldTypes()::get;
-    private Supplier<String> languageSupplier = Helper.getLanguageBean().getLocale()::getLanguage;
+    private Supplier<String> languageSupplier = () -> Optional.ofNullable(Helper.getLanguageBean())
+            .map(SpracheForm::getLocale)
+            .map(Locale::getLanguage)
+            .orElse(null);
 
     private FieldDefinition definition;
     private FieldType type;
@@ -59,6 +70,9 @@ public class ExtendedFieldInstance extends FieldInstance {
     }
 
     private void postInit() {
+        if (getRecordId() != null) {
+            this.schemaPrepareCallback.accept(getRecordId());
+        }
         this.definition = definitionResolver.apply(getDefinitionId());
         if (this.definition.getTypeId() != null) {
             this.type = typeResolver.apply(this.definition.getTypeId());
@@ -77,24 +91,8 @@ public class ExtendedFieldInstance extends FieldInstance {
 
     private void prepareEmpty() {
         if (getValues().isEmpty()) {
-            getValues().add(new FieldValue());
+            getValues().add(new ExtendedFieldValue(new FieldValue(), definition.getTranslationDefinitions()));
         }
-        getValues().forEach(v -> {
-            if (!definition.getTranslationDefinitions().isEmpty()) {
-                definition.getTranslationDefinitions().stream()
-                        .filter(t -> v.getTranslations().stream().noneMatch(t2 -> t2.getLanguage().equals(t.getLanguage())))
-                        .forEach(t -> {
-                            TranslationInstance translation = new TranslationInstance();
-                            translation.setLanguage(t.getLanguage());
-                            translation.setValue("");
-                            v.getTranslations().add(translation);
-                        });
-            } else if (v.getTranslations().isEmpty()) {
-                TranslationInstance translation = new TranslationInstance();
-                translation.setValue("");
-                v.getTranslations().add(translation);
-            }
-        });
     }
 
     public FormInputMultiSelectBean getSelectionBean() {
@@ -142,7 +140,7 @@ public class ExtendedFieldInstance extends FieldInstance {
     }
 
     public FieldValue addFieldValue() {
-        FieldValue value = new FieldValue();
+        FieldValue value = new ExtendedFieldValue(new FieldValue(), definition.getTranslationDefinitions());
         getValues().add(value);
         prepareEmpty();
         sortTranslations(value);
@@ -177,7 +175,19 @@ public class ExtendedFieldInstance extends FieldInstance {
     public void setFieldValue(String value) {
         getValues().clear();
         FieldValue fieldValue = addFieldValue();
-        fieldValue.getTranslations().forEach(t -> t.setValue(value));
+        if (definition.getReferenceVocabularyId() == null) {
+            fieldValue.getTranslations().forEach(t -> t.setValue(value));
+        } else {
+            try {
+                fieldValue.getTranslations().forEach(t -> t.setValue(String.valueOf(Integer.parseInt(value))));
+            } catch (NumberFormatException e) {
+                recordsResolver.apply(this.definition.getReferenceVocabularyId()).stream()
+                        .filter(r -> r.getMainValue().equals(value))
+                        .findFirst()
+                        .map(VocabularyRecord::getId)
+                        .ifPresent(v -> fieldValue.getTranslations().forEach(t -> t.setValue(String.valueOf(v))));
+            }
+        }
     }
 
     private String extractValue(FieldInstance field, String language) {
@@ -212,17 +222,9 @@ public class ExtendedFieldInstance extends FieldInstance {
                 ).collect(Collectors.joining("|"));
     }
 
-    private static String transformToThreeCharacterAbbreviation(String language) {
-        switch (language) {
-            case "en":
-                return "eng";
-            case "de":
-                return "ger";
-            case "fr":
-                return "fre";
-            default:
-                log.warn("Unknown language \"{}\", falling back to \"eng\"", language);
-                return "eng";
-        }
+    public List<ExtendedFieldValue> getExtendedValues() {
+        return getValues().stream()
+                .map(v -> new ExtendedFieldValue(v, definition.getTranslationDefinitions()))
+                .collect(Collectors.toList());
     }
 }

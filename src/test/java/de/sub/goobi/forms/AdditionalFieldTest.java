@@ -201,13 +201,13 @@ public class AdditionalFieldTest extends AbstractTest {
     @Test
     public void testValueAsDateTime() {
         AdditionalField af = new AdditionalField();
-        assertNotNull(af.getValueAsDateTime());
+        assertNull(af.getValueAsDateTime());
     }
 
     @Test
     public void testValueAsDate() {
         AdditionalField af = new AdditionalField();
-        assertNotNull(af.getValueAsDate());
+        assertNull(af.getValueAsDate());
         af.setValueAsDate(LocalDate.of(2000, 1, 1));
         assertEquals(2000, af.getValueAsDate().getYear());
     }

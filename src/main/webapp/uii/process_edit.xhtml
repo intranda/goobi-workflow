@@ -39,9 +39,9 @@
     </ui:define>
 
     <ui:define name="content">
-    
+
         <c:if test="#{LoginForm.hasRole('Workflow_General_Details')}">
-            <div class="alert alert-warning mt-4" jsf:rendered="#{ProzessverwaltungForm.myProzess.archivedImageFolders.size() gt 0}">
+            <div class="alert alert-warning my-2" jsf:rendered="#{ProzessverwaltungForm.myProzess.archivedImageFolders.size() gt 0}">
                 <h:outputText value="#{msgs.warningImageFoldersArchived}" escape="false" />
                 <ui:repeat var="folder" value="#{ProzessverwaltungForm.myProzess.archivedImageFolders}"> #{folder}</ui:repeat>
             </div>
@@ -50,7 +50,8 @@
 
             <h:form
                 id="proceditform"
-                onkeypress="submitOnEnter(event);">
+                onkeypress="submitOnEnter(event);"
+                class="flow">
 
                 <f:subview
                     id="sub001"

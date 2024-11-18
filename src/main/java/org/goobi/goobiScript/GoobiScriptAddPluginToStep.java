@@ -25,7 +25,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String PLUGIN = "plugin";
 
@@ -66,13 +65,13 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
 
         String missingParameter = "Missing parameter: ";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String plugin = parameters.get(PLUGIN);
-        if (plugin == null || plugin.equals("")) {
+        if (plugin == null || "".equals(plugin)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, PLUGIN);
             return new ArrayList<>();
         }
@@ -95,8 +94,7 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
         gsr.updateTimestamp();
 
         if (p.getSchritte() != null) {
-            for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
-                Step s = iterator.next();
+            for (Step s : p.getSchritte()) {
                 if (s.getTitel().equals(parameters.get(STEPTITLE))) {
                     s.setStepPlugin(parameters.get(PLUGIN));
                     try {
@@ -117,8 +115,8 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
                 }
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
-            gsr.setResultType(GoobiScriptResultType.OK);
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
+            gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setResultMessage("Step not found: " + parameters.get(STEPTITLE));
         }
         gsr.updateTimestamp();
