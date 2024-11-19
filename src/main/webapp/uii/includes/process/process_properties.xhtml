@@ -399,11 +399,7 @@
                                                     styleClass="form-control"
                                                     readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
                                                     value="#{myprocess_item.value}">
-                                                    <f:selectItems
-                                                        value="#{myprocess_item.possibleValues}"
-                                                        var="myprocess_items"
-                                                        itemLabel="#{myprocess_items}"
-                                                        itemValue="#{myprocess_items}" />
+                                                    <f:selectItems value="#{myprocess_item.possibleValues}" />
                                                 </h:selectOneMenu>
                                                 <h:message
                                                     for="select"

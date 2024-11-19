@@ -44,6 +44,8 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.extern.log4j.Log4j2;
 
+import javax.faces.model.SelectItem;
+
 @Log4j2
 public class PropertyParser {
 
@@ -272,7 +274,8 @@ public class PropertyParser {
                     // possible values
                     count = config.getMaxIndex(property + "/value");
                     for (int j = 0; j <= count; j++) {
-                        pp.getPossibleValues().add(config.getString(property + "/value[" + (j + 1) + "]"));
+                        String value = config.getString(property + "/value[" + (j + 1) + "]");
+                        pp.getPossibleValues().add(new SelectItem(value, value));
                     }
                     properties.add(pp);
                 }
@@ -402,7 +405,8 @@ public class PropertyParser {
                 // possible values
                 count = config.getMaxIndex(property + "/value");
                 for (int j = 0; j <= count; j++) {
-                    pp.getPossibleValues().add(config.getString(property + "/value[" + (j + 1) + "]"));
+                    String value = config.getString(property + "/value[" + (j + 1) + "]");
+                    pp.getPossibleValues().add(new SelectItem(value, value));
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
@@ -528,7 +532,9 @@ public class PropertyParser {
                 }
 
                 // possible values
-                pp.getPossibleValues().addAll(Arrays.asList(prop.getStringArray("/value")));
+                pp.getPossibleValues().addAll(Arrays.stream(prop.getStringArray("/value"))
+                        .map(v -> new SelectItem(v, v))
+                        .toList());
                 properties.add(pp);
             }
         }

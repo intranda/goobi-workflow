@@ -45,6 +45,9 @@ import org.goobi.production.cli.helper.StringPair;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.faces.model.SelectItem;
+
+@Slf4j
 public class ProcessProperty implements IProperty, Serializable {
 
     private static final long serialVersionUID = 6413183995622426678L;
@@ -67,7 +70,7 @@ public class ProcessProperty implements IProperty, Serializable {
     private String readValue;
     @Getter
     @Setter
-    private List<String> possibleValues;
+    private List<SelectItem> possibleValues;
     @Getter
     @Setter
     private List<String> projects;

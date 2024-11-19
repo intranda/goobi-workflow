@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -38,6 +39,8 @@ import java.util.regex.Pattern;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.faces.model.SelectItem;
 
 public class ImportProperty implements IProperty {
 
@@ -56,7 +59,7 @@ public class ImportProperty implements IProperty {
     private String value = "";
     @Getter
     @Setter
-    private List<String> possibleValues = new ArrayList<>();
+    private List<SelectItem> possibleValues = Collections.emptyList();
     @Getter
     @Setter
     private List<String> projects = new ArrayList<>();
