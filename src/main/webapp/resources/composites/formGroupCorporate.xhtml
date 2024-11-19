@@ -30,6 +30,28 @@
                     <h:outputText
                         styleClass="form-group__label"
                         value="#{msgs.mets_corporate_mainName}:" />
+                        
+                        
+                        
+                        <h:panelGroup
+                        styleClass="float-right"
+                        id="restrictBtn">
+                        <button
+                            type="button"
+                            class="btn float-right toggle"
+                            jsf:id="toggle-restrictions"
+                            jsf:rendered="#{cc.attrs.corporate.displayRestrictions}"
+                            title="#{cc.attrs.corporate.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }"
+                            data-toggle="tooltip">
+                            <i class="fa #{cc.attrs.corporate.restricted == false?'fa fa-toggle-off':'fa fa-toggle-on toggle-on'}" />
+                            <f:ajax
+                                execute="restrictBtn"
+                                render="restrictBtn" />
+                            <f:setPropertyActionListener
+                                value="#{not cc.attrs.corporate.restricted}"
+                                target="#{cc.attrs.corporate.restricted}" />
+                        </button>
+                    </h:panelGroup>
                 </div>
                 <!-- INPUT -->
                 <div class="col-7">
@@ -307,7 +329,8 @@
                             <f:selectItems value="#{cc.attrs.corporate.addableRoles}" />
                             <f:ajax
                                 execute="@form"
-                                event="valueChange" />
+                                event="valueChange" 
+                                render="restrictBtn"/>
                         </h:selectOneMenu>
                     
                     </c:if>

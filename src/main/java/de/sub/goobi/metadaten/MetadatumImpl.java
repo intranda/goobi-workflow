@@ -1,25 +1,22 @@
 package de.sub.goobi.metadaten;
 
-import de.intranda.digiverso.normdataimporter.NormDataImporter;
-import de.intranda.digiverso.normdataimporter.dante.DanteImport;
-import de.intranda.digiverso.normdataimporter.model.NormData;
-import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
-import de.sub.goobi.config.ConfigPlugins;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.StorageProvider;
-import de.sub.goobi.metadaten.search.EasyDBSearch;
-import de.sub.goobi.metadaten.search.KulturNavImporter;
-import de.sub.goobi.metadaten.search.ViafSearch;
-import de.sub.goobi.persistence.managers.MetadataManager;
-import io.goobi.vocabulary.exchange.FieldDefinition;
-import io.goobi.vocabulary.exchange.Vocabulary;
-import io.goobi.vocabulary.exchange.VocabularySchema;
-import io.goobi.workflow.api.vocabulary.APIException;
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
-import lombok.Data;
-import lombok.extern.log4j.Log4j2;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.faces.model.SelectItem;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -44,6 +41,27 @@ import org.jdom2.Element;
 import org.jdom2.filter.Filters;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
+
+import de.intranda.digiverso.normdataimporter.NormDataImporter;
+import de.intranda.digiverso.normdataimporter.dante.DanteImport;
+import de.intranda.digiverso.normdataimporter.model.NormData;
+import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
+import de.sub.goobi.config.ConfigPlugins;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.metadaten.search.EasyDBSearch;
+import de.sub.goobi.metadaten.search.KulturNavImporter;
+import de.sub.goobi.metadaten.search.ViafSearch;
+import de.sub.goobi.persistence.managers.MetadataManager;
+import io.goobi.vocabulary.exchange.FieldDefinition;
+import io.goobi.vocabulary.exchange.Vocabulary;
+import io.goobi.vocabulary.exchange.VocabularySchema;
+import io.goobi.workflow.api.vocabulary.APIException;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import lombok.Data;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
@@ -52,22 +70,6 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.fileformats.mets.ModsHelper;
-
-import javax.faces.model.SelectItem;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -200,13 +202,15 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     public void searchVocabulary() {
-        Vocabulary vocabulary = vocabularyAPI.vocabularies().findByName(this.vocabulary);
-        VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocabulary.getSchemaId());
-        definitions = schema.getDefinitions().stream()
+        Vocabulary vocab = vocabularyAPI.vocabularies().findByName(this.vocabulary);
+        VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(vocab.getSchemaId());
+        definitions = schema.getDefinitions()
+                .stream()
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
                 .sorted(Comparator.comparingLong(FieldDefinition::getId))
                 .collect(Collectors.toList());
-        records = vocabularyAPI.vocabularyRecords().list(vocabulary.getId())
+        records = vocabularyAPI.vocabularyRecords()
+                .list(vocab.getId())
                 .search(currentVocabularySearchField + ":" + vocabularySearchQuery)
                 .request()
                 .getContent();
@@ -254,7 +258,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             Vocabulary currentVocabulary = vocabularyAPI.vocabularies().findByName(vocabularyName);
             VocabularySchema vocabularySchema = vocabularyAPI.vocabularySchemas().get(currentVocabulary.getSchemaId());
 
-            vocabularySearchFields = vocabularySchema.getDefinitions().stream()
+            vocabularySearchFields = vocabularySchema.getDefinitions()
+                    .stream()
                     .filter(d -> fieldsNames.contains(d.getName()))
                     .map(d -> new SelectItem(d.getId(), d.getName()))
                     .collect(Collectors.toList());
@@ -266,44 +271,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 VocabularySchema schema = vocabularyAPI.vocabularySchemas().get(currentVocabulary.getSchemaId());
 
                 if (Boolean.TRUE.equals(schema.getHierarchicalRecords())) {
-                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyListHierarchical", md.getType().getName(), vocabularyTitle));
+                    Helper.setFehlerMeldung(
+                            Helper.getTranslation("mets_error_configuredVocabularyListHierarchical", md.getType().getName(), vocabularyTitle));
                     return;
                 }
 
                 if (StringUtils.isBlank(fields)) {
-                    try {
-                        List<ExtendedVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
-                                .list(currentVocabulary.getId())
-                                .all()
-                                .request()
-                                .getContent();
-                        ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
-                        List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
-
-                        String defaultLabel = myValues.getItemList().get(0).getLabel();
-                        if (StringUtils.isNotBlank(defaultLabel)) {
-                            List<String> defaultitems = new ArrayList<>();
-                            defaultitems.add(defaultLabel);
-                            setDefaultItems(defaultitems);
-                        }
-                        itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
-                        selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
-
-                        for (ExtendedVocabularyRecord vr : recordList) {
-                            selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
-                            Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
-                            if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
-                                item.setSelected(true);
-                            }
-                            itemList.add(item);
-                        }
-                        setPossibleItems(selectItems);
-                        myValues.setItemList(itemList);
-                    } catch (APIException e) {
-                        Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyTitle));
-                        metadataDisplaytype = DisplayType.input;
-                        myValues.overwriteConfiguredElement(myProcess, md.getType());
-                    }
+                    searchInVocabulary(vocabularyTitle, currentVocabulary);
                 } else {
                     if (fields.contains(";")) {
                         Helper.setFehlerMeldung("vocabularyList with multiple fields is not supported right now");
@@ -328,7 +302,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     }
 
                     String finalFieldName = fieldName;
-                    Optional<FieldDefinition> searchField = schema.getDefinitions().stream()
+                    Optional<FieldDefinition> searchField = schema.getDefinitions()
+                            .stream()
                             .filter(d -> d.getName().equals(finalFieldName))
                             .findFirst();
 
@@ -346,11 +321,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         searchQuery = Optional.of(searchField.get().getId() + ":" + fieldValueFilter.get());
                     }
                     List<ExtendedVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
-                                .list(currentVocabulary.getId())
-                                .search(searchQuery)
-                                .sorting(sortingQuery)
-                                .request()
-                                .getContent();
+                            .list(currentVocabulary.getId())
+                            .search(searchQuery)
+                            .sorting(sortingQuery)
+                            .request()
+                            .getContent();
 
                     ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                     List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
@@ -384,6 +359,43 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 generationRules.add(mg);
             }
 
+        }
+    }
+
+    private void searchInVocabulary(String vocabularyTitle, Vocabulary currentVocabulary) {
+        try {
+            List<ExtendedVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
+                    .list(currentVocabulary.getId())
+                    .all()
+                    .request()
+                    .getContent();
+            ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
+            List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
+
+            String defaultLabel = myValues.getItemList().get(0).getLabel();
+            if (StringUtils.isNotBlank(defaultLabel)) {
+                List<String> defaultitems = new ArrayList<>();
+                defaultitems.add(defaultLabel);
+                setDefaultItems(defaultitems);
+            }
+            itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
+            selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+
+            for (ExtendedVocabularyRecord vr : recordList) {
+                selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
+                Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
+                if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
+                    item.setSelected(true);
+                }
+                itemList.add(item);
+            }
+            setPossibleItems(selectItems);
+            myValues.setItemList(itemList);
+        } catch (APIException e) {
+            Helper.setFehlerMeldung(
+                    Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyTitle));
+            metadataDisplaytype = DisplayType.input;
+            myValues.overwriteConfiguredElement(myProcess, md.getType());
         }
     }
 
@@ -738,7 +750,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if ("URI".equals(normdata.getKey())) {
-                        md.setAutorityFile(DANTE, "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
+                        md.setAuthorityFile(DANTE, "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
                     } else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isEmpty(getLabelList())
                             && normdata.getKey().equals(field)) {
                         String value = normdata.getValues().get(0).getText();
@@ -766,7 +778,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     for (NormData normdata : selectedRecord.getNormdataList()) {
                         if ("URI".equals(normdata.getKey())) {
                             String uriValue = normdata.getValues().get(0).getText();
-                            md.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
+                            md.setAuthorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
                             break;
                         }
                     }
@@ -783,13 +795,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             case geonames:
 
                 md.setValue(currentToponym.getName());
-                md.setAutorityFile("geonames", "http://www.geonames.org/", "" + currentToponym.getGeoNameId());
+                md.setAuthorityFile("geonames", "http://www.geonames.org/", "" + currentToponym.getGeoNameId());
                 resultList = new ArrayList<>();
                 break;
             case gnd:
                 for (NormData normdata : currentData) {
                     if ("NORM_IDENTIFIER".equals(normdata.getKey())) {
-                        md.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
+                        md.setAuthorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
                     } else if ("NORM_NAME".equals(normdata.getKey())) {
                         String value = normdata.getValues().get(0).getText();
                         md.setValue(filter(value));
@@ -1042,7 +1054,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     @Override
     public void setSearchInViaf(boolean serachInViaf) {
-
+        // do nothing
     }
 
     public void generateValue() {
@@ -1088,4 +1100,18 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         md.setValue(currentValue);
     }
 
+    @Override
+    public boolean isDisplayRestrictions() {
+        return md.getType().isAllowAccessRestriction();
+    }
+
+    @Override
+    public boolean isRestricted() {
+        return md.isAccessRestrict();
+    }
+
+    @Override
+    public void setRestricted(boolean restricted) {
+        md.setAccessRestrict(restricted);
+    }
 }

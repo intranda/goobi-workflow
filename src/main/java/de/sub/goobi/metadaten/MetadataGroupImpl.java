@@ -102,7 +102,7 @@ public class MetadataGroupImpl {
         }
 
         for (Corporate corporate : metadataGroup.getCorporateList()) {
-            MetaCorporate mc = new MetaCorporate(corporate, myPrefs, metadataGroup.getParent(), myProcess, bean);
+            MetaCorporate mc = new MetaCorporate(corporate, myPrefs, metadataGroup.getParent(), bean);
             corporateList.add(mc);
         }
         for (MetadataGroup mg : metadataGroup.getAllMetadataGroups()) {

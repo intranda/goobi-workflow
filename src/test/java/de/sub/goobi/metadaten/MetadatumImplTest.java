@@ -26,6 +26,7 @@
 package de.sub.goobi.metadaten;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -42,9 +43,7 @@ import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -57,6 +56,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
@@ -67,8 +67,6 @@ public class MetadatumImplTest extends AbstractTest {
     private Prefs prefs;
     private Process process;
     private static final String METADATA_TYPE = "junitMetadata";
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
@@ -246,7 +244,7 @@ public class MetadatumImplTest extends AbstractTest {
     @Test
     public void testUrl() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        m.setAutorityFile("gnd", "https://example.com/", "1234");
+        m.setAuthorityFile("gnd", "https://example.com/", "1234");
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         assertEquals("https://example.com/1234", md.getUrl());
     }
@@ -268,4 +266,37 @@ public class MetadatumImplTest extends AbstractTest {
 
     }
 
+    @Test
+    public void testDisplayRestrictions() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        MetadataType type = prefs.getMetadataTypeByName("junitGenerationMetadata");
+        Metadata m = new Metadata(type);
+        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
+
+        assertFalse(md.isDisplayRestrictions());
+        type.setAllowAccessRestriction(true);
+        assertTrue(md.isDisplayRestrictions());
+
+    }
+
+    @Test
+    public void testRestricted() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        MetadataType type = prefs.getMetadataTypeByName("junitGenerationMetadata");
+        type.setAllowAccessRestriction(true);
+        Metadata m = new Metadata(type);
+        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
+
+        assertFalse(md.isRestricted());
+        md.setRestricted(true);
+        assertTrue(md.isRestricted());
+    }
 }

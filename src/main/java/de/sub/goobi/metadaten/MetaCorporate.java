@@ -35,7 +35,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.geonames.Toponym;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
-import org.goobi.beans.Process;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
@@ -99,7 +98,7 @@ public class MetaCorporate implements SearchableMetadata {
      * @param bean
      */
 
-    public MetaCorporate(Corporate corporate, Prefs inPrefs, HoldingElement inStruct, Process inProcess, Metadaten bean) {
+    public MetaCorporate(Corporate corporate, Prefs inPrefs, HoldingElement inStruct, Metadaten bean) {
         this.myPrefs = inPrefs;
         this.corporate = corporate;
         this.docStruct = inStruct;
@@ -186,7 +185,7 @@ public class MetaCorporate implements SearchableMetadata {
 
             for (NormData normdata : currentData) {
                 if ("NORM_IDENTIFIER".equals(normdata.getKey())) {
-                    corporate.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
+                    corporate.setAuthorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
                 } else if ("NORM_ORGANIZATION".equals(normdata.getKey())) {
                     mainValue = normdata.getValues().get(0).getText().replace(x152, "").replace(x156, "");
                 } else if ("NORM_SUB_ORGANIZATION".equals(normdata.getKey())) {
@@ -314,5 +313,17 @@ public class MetaCorporate implements SearchableMetadata {
 
     public int getSubNameSize() {
         return corporate.getSubNames().size();
+    }
+
+    public boolean isDisplayRestrictions() {
+        return corporate.getType().isAllowAccessRestriction();
+    }
+
+    public boolean isRestricted() {
+        return corporate.isAccessRestrict();
+    }
+
+    public void setRestricted(boolean restricted) {
+        corporate.setAccessRestrict(restricted);
     }
 }

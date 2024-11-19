@@ -2,7 +2,7 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of
  * mass digitization.
  *
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  *
@@ -21,15 +21,15 @@
 
 package de.sub.goobi.mock;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.model.SelectItem;
+
 import org.goobi.api.display.Item;
 
 import de.sub.goobi.metadaten.Metadatum;
 import ugh.dl.Metadata;
-
-import javax.faces.model.SelectItem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MockMetadatum implements Metadatum {
 
@@ -42,65 +42,97 @@ public class MockMetadatum implements Metadatum {
         this.value = value;
     }
 
+    @Override
     public int getIdentifier() {
         return 0;
     }
 
+    @Override
     public List<SelectItem> getItems() {
         return null;
     }
 
+    @Override
     public Metadata getMd() {
         return null;
     }
 
+    @Override
     public String getOutputType() {
         return null;
     }
 
+    @Override
     public String getSelectedItem() {
         return null;
     }
 
+    @Override
     public List<String> getSelectedItems() {
         return null;
     }
 
+    @Override
     public String getTyp() {
         return null;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
 
+    @Override
     public ArrayList<Item> getWert() {
         return null;
     }
 
+    @Override
     public void setIdentifier(int identifier) {
     }
 
+    @Override
     public void setItems(List<SelectItem> items) {
     }
 
+    @Override
     public void setMd(Metadata md) {
     }
 
+    @Override
     public void setSelectedItem(String selectedItem) {
     }
 
+    @Override
     public void setSelectedItems(List<String> selectedItems) {
     }
 
+    @Override
     public void setTyp(String inTyp) {
     }
 
+    @Override
     public void setValue(String value) {
     }
 
+    @Override
     public void setWert(String inWert) {
         value = inWert;
+    }
+
+    @Override
+    public boolean isDisplayRestrictions() {
+        return false;
+    }
+
+    @Override
+    public boolean isRestricted() {
+        return false;
+    }
+
+    @Override
+    public void setRestricted(boolean restricted) {
+
     }
 
 }
