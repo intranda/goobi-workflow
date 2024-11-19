@@ -257,7 +257,8 @@ public class VocabularyRecordAPI {
     }
 
     private boolean translationIsEmpty(TranslationInstance translationInstance) {
-        return translationInstance.getValue().isEmpty();
+        return translationInstance.getValue().isEmpty() ||
+                translationInstance.getLanguage() == null && "null".equals(translationInstance.getValue());
     }
 
     private boolean valueIsEmpty(FieldValue fieldValue) {
