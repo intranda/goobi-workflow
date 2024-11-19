@@ -38,6 +38,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import lombok.extern.slf4j.Slf4j;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.production.cli.helper.StringPair;
@@ -117,6 +120,15 @@ public class ProcessProperty implements IProperty, Serializable {
     public void setValue(String value) {
         this.value = value;
         this.readValue = value;
+        if (Type.VOCABULARYREFERENCE.equals(this.type)) {
+            try {
+                ExtendedVocabularyRecord rec = VocabularyAPIManager.getInstance().vocabularyRecords().get(this.value);
+                this.readValue = rec.getMainValue();
+            } catch (Exception e) {
+                log.warn("Unable to retrieve vocabulary record reference \"{}\"", this.value);
+                this.readValue = "Broken vocabulary reference";
+            }
+        }
     }
 
     @Override

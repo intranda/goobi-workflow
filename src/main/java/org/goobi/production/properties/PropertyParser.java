@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import io.goobi.workflow.api.vocabulary.APIException;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -400,6 +402,22 @@ public class PropertyParser {
                 } else {
                     pp.setValue(defaultValue);
                     pp.setReadValue("");
+                }
+
+                if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
+                    String vocabularyName = config.getString(property + "/vocabulary");
+                    try {
+                        long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
+                        pp.setPossibleValues(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
+                                .all()
+                                .request()
+                                .getContent()
+                                .stream()
+                                .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
+                                .toList());
+                    } catch (APIException e) {
+                        log.warn("Unable to parse vocabulary reference property \"{}\"", property, e);
+                    }
                 }
 
                 // possible values

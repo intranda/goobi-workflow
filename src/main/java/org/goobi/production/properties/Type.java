@@ -2,6 +2,8 @@ package org.goobi.production.properties;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -35,7 +37,8 @@ public enum Type {
     NUMBER("number"),
     LINK("link"),
     METADATA("metadata"),
-    HTML("html");
+    HTML("html"),
+    VOCABULARYREFERENCE("vocabularyreference");
 
     @Getter
     private String name;
@@ -45,34 +48,9 @@ public enum Type {
     }
 
     public static Type getTypeByName(String inName) {
-        if (inName.equalsIgnoreCase("LIST")) {
-            return LIST;
-        }
-        if (inName.equalsIgnoreCase("LISTMULTISELECT")) {
-            return LISTMULTISELECT;
-        }
-        if (inName.equalsIgnoreCase("BOOLEAN")) {
-            return BOOLEAN;
-        }
-        if (inName.equalsIgnoreCase("DATE")) {
-            return DATE;
-        }
-        if (inName.equalsIgnoreCase("NUMBER")) {
-            return NUMBER;
-        }
-        if (inName.equalsIgnoreCase("LINK")) {
-            return LINK;
-        }
-        if (inName.equalsIgnoreCase("METADATA")) {
-            return METADATA;
-        }
-        if (inName.equalsIgnoreCase("HTML")) {
-            return HTML;
-        }
-        if (inName.equalsIgnoreCase("TEXTAREA")) {
-            return TEXTAREA;
-        }
-
-        return TEXT;
+        return Arrays.stream(Type.values())
+                .filter(t -> t.name.equalsIgnoreCase(inName))
+                .findFirst()
+                .orElse(TEXT);
     }
 }

@@ -30,14 +30,23 @@
             escape="false" />
         <h:outputText
             value="#{property.readValue}"
-            rendered="#{property.type.name != 'link' and property.type.name != 'boolean' and property.type.name != 'html' and property.type.name != 'listmultiselect'}" />
+            rendered="#{(property.type.name != 'link') and (property.type.name != 'boolean') and (property.type.name != 'html') and (property.type.name != 'listmultiselect') and (property.type.name != 'vocabularyreference')}" />
         <h:outputLink
-            pt:aria-label="#{property.name}"
-            pt:data-bs-toggle="tooltip"
-            value="#{property.readValue}"
-            title="#{property.readValue}"
-            target="_blank"
-            rendered="#{property.type.name == 'link'}">
+                pt:aria-label="#{property.name}"
+                pt:data-bs-toggle="tooltip"
+                value="#{property.readValue}"
+                title="#{property.readValue}"
+                target="_blank"
+                rendered="#{property.type.name == 'link'}">
+            <h:outputText value="#{property.readValue}" />
+        </h:outputLink>
+        <h:outputLink
+                pt:aria-label="#{property.name}"
+                pt:data-bs-toggle="tooltip"
+                value="#{property.value}"
+                title="#{property.value}"
+                target="_blank"
+                rendered="#{property.type.name == 'vocabularyreference'}">
             <h:outputText value="#{property.readValue}" />
         </h:outputLink>
         <h:panelGroup rendered="#{property.type.name == 'boolean'}">
