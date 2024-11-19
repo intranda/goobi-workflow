@@ -25,6 +25,7 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
     private Function<VocabularyRecord, Optional<VocabularySchema>> metadataSchemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getMetadataSchema;
 
     private int level;
+    private Optional<ExtendedFieldInstance> mainField;
     private String mainValue;
     private List<String> titleValues;
     private List<ExtendedFieldInstance> extendedFields;
@@ -57,11 +58,12 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
                 .filter(f -> Boolean.TRUE.equals(f.getDefinition().getTitleField()))
                 .map(ExtendedFieldInstance::getFieldValue)
                 .collect(Collectors.toList());
-        this.mainValue = this.extendedFields.stream()
+        this.mainField = this.extendedFields.stream()
                 .filter(f -> Boolean.TRUE.equals(f.getDefinition().getMainEntry()))
+                .findFirst();
+        this.mainValue = this.mainField
                 .map(ExtendedFieldInstance::getFieldValue)
-                .findAny()
-                .orElse("");
+                .orElse(""); // TODO: Make mainValue optional?
         prepareEmpty();
     }
 

@@ -19,6 +19,7 @@ import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
 import io.goobi.workflow.api.vocabulary.helper.CachedLookup;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import io.goobi.workflow.api.vocabulary.helper.RecordListRequest;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -29,6 +30,7 @@ public class VocabularyRecordAPI {
 
     private final RESTAPI restApi;
     private final CachedLookup<Long, ExtendedVocabularyRecord> singleLookupCache;
+    private final CachedLookup<RecordListRequest, VocabularyRecordPageResult> listLookupCache;
 
     public class VocabularyRecordQueryBuilder {
         private final long vocabularyId;
@@ -94,10 +96,11 @@ public class VocabularyRecordAPI {
 
     public VocabularyRecordAPI(String host, int port) {
         this.restApi = new RESTAPI(host, port);
-        this.singleLookupCache = new CachedLookup<>(id -> {
-            VocabularyRecord r = restApi.get(INSTANCE_ENDPOINT, VocabularyRecord.class, id);
-            VocabularyAPIManager.getInstance().vocabularySchemas().load(r.getVocabularyId());
-            return new ExtendedVocabularyRecord(r);
+        this.singleLookupCache = new CachedLookup<>(id -> new ExtendedVocabularyRecord(restApi.get(INSTANCE_ENDPOINT, VocabularyRecord.class, id)));
+        this.listLookupCache = new CachedLookup<>(req -> {
+            VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + req.getUrlParams(), VocabularyRecordPageResult.class, req.getVocabularyId());
+            result.getContent().forEach(r -> this.singleLookupCache.update(r.getId(), r));
+            return result;
         });
     }
 
@@ -128,12 +131,8 @@ public class VocabularyRecordAPI {
             params += params.isEmpty() ? "?" : "&";
             params += "all=1";
         }
-        // Load schema to populate definition resolver
-        VocabularyAPIManager.getInstance().vocabularySchemas().load(vocabularyId);
 
-        VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + params, VocabularyRecordPageResult.class, vocabularyId);
-        result.getContent().forEach(r -> this.singleLookupCache.update(r.getId(), r));
-        return result;
+        return this.listLookupCache.getCached(new RecordListRequest(params, vocabularyId));
     }
 
     public ExtendedVocabularyRecord get(long id) {
