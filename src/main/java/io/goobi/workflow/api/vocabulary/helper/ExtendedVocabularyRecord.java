@@ -61,7 +61,9 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         this.mainField = this.extendedFields.stream()
                 .filter(f -> Boolean.TRUE.equals(f.getDefinition().getMainEntry()))
                 .findFirst();
-        this.mainField.ifPresent(extendedFieldInstance -> this.mainValue = extendedFieldInstance.getFieldValue());
+        this.mainValue = this.mainField
+                .map(ExtendedFieldInstance::getFieldValue)
+                .orElse(""); // TODO: Make mainValue optional?
         prepareEmpty();
     }
 
