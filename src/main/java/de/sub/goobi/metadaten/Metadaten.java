@@ -5217,7 +5217,7 @@ public class Metadaten implements Serializable {
     public String getAuthorityMetadataJSON() {
         List<Person> persons =
                 getMyPersonen().stream().filter(p -> StringUtils.isNotBlank(p.getNormdataValue())).map(MetaPerson::getP).collect(Collectors.toList());
-        List<Corporate> corporates =
+        List<Corporate> corpList =
                 getCorporates().stream()
                         .filter(p -> StringUtils.isNotBlank(p.getNormdataValue()))
                         .map(MetaCorporate::getCorporate)
@@ -5235,10 +5235,10 @@ public class Metadaten implements Serializable {
                         new URI(Optional.ofNullable(person.getAuthorityURI()).orElse("")).resolve(person.getAuthorityValue()).toString());
                 authorityList.add(data);
             } catch (URISyntaxException | IllegalArgumentException e) {
-                log.error("Cannot add authority data '{}' to ALTO editor: {}", person.getAuthorityValue(), e.toString());
+                log.error("Cannot add authority data '{}' to ALTO editor: {}", person.getAuthorityValue(), e.toString()); //NONONAR
             }
         }
-        for (Corporate corporate : corporates) {
+        for (Corporate corporate : corpList) {
             try {
                 AuthorityData data = new AuthorityData(corporate.getMainName(),
                         new URI(Optional.ofNullable(corporate.getAuthorityURI()).orElse("")).resolve(corporate.getAuthorityValue()).toString());

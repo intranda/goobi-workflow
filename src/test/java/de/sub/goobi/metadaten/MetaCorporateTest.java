@@ -156,7 +156,7 @@ public class MetaCorporateTest extends AbstractTest {
     }
 
     @Test
-    public void testDisplayRestrictions() throws Exception {
+    public void testDisplayRestrictions() {
         MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
 
         assertFalse(fixture.isDisplayRestrictions());
@@ -166,7 +166,7 @@ public class MetaCorporateTest extends AbstractTest {
     }
 
     @Test
-    public void testRestricted() throws Exception {
+    public void testRestricted() {
         MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         c.getType().setAllowAccessRestriction(true);
 

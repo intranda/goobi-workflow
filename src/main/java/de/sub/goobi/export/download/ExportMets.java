@@ -276,7 +276,7 @@ public class ExportMets {
             try {
                 boolean success = FilesystemHelper.createDirectoryForUser(target, myBenutzer.getLogin());
                 if (!success) {
-                    throw new Exception("Creation not successful!");
+                    throw new IOException("Creation not successful!");
                 }
             } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                 Helper.setFehlerMeldung("Export canceled, could not create destination directory: " + inTargetFolder, e);
