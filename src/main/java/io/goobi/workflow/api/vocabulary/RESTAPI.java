@@ -29,8 +29,8 @@ public class RESTAPI {
             .build();
     private String baseUrl;
 
-    protected RESTAPI(String host, int port) {
-        baseUrl = "http://" + host + ":" + port;
+    protected RESTAPI(String address) {
+        baseUrl = address;
     }
 
     private String generateUrl(String endpoint, Object... parameters) {

@@ -18,8 +18,8 @@ public class VocabularySchemaAPI extends CRUDAPI<VocabularySchema, VocabularySch
     private final CachedLookup<Long, VocabularySchema> singleLookupCache;
     private final CachedLookup<Long, FieldDefinition> definitionLookupCache;
 
-    public VocabularySchemaAPI(String host, int port) {
-        super(host, port, VocabularySchema.class, VocabularySchemaPageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
+    public VocabularySchemaAPI(String address) {
+        super(address, VocabularySchema.class, VocabularySchemaPageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
         this.singleLookupCache = new CachedLookup<>(this::request);
         this.definitionLookupCache = new CachedLookup<>(this::requestDefinition);
     }

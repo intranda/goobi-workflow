@@ -1295,6 +1295,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("pdfAsDownload", true);
     }
 
+    public String getVocabularyServerAddress() {
+        return getLocalString("vocabularyServerAddress", null);
+    }
+
     public String getVocabularyServerHost() {
         return getLocalString("vocabularyServerHost", "localhost");
     }
@@ -1377,5 +1381,4 @@ public class ConfigurationHelper implements Serializable {
             }
         }
     }
-
 }

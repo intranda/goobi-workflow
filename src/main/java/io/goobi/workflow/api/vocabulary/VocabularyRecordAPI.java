@@ -94,8 +94,8 @@ public class VocabularyRecordAPI {
         }
     }
 
-    public VocabularyRecordAPI(String host, int port) {
-        this.restApi = new RESTAPI(host, port);
+    public VocabularyRecordAPI(String address) {
+        this.restApi = new RESTAPI(address);
         this.singleLookupCache = new CachedLookup<>(id -> new ExtendedVocabularyRecord(restApi.get(INSTANCE_ENDPOINT, VocabularyRecord.class, id)));
         this.listLookupCache = new CachedLookup<>(req -> {
             VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + req.getUrlParams(), VocabularyRecordPageResult.class, req.getVocabularyId());

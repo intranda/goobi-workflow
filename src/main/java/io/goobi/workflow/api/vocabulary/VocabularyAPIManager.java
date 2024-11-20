@@ -34,14 +34,18 @@ public class VocabularyAPIManager {
     private final RESTAPI api;
 
     private VocabularyAPIManager() {
-        final String host = ConfigurationHelper.getInstance().getVocabularyServerHost();
-        final int port = ConfigurationHelper.getInstance().getVocabularyServerPort();
-        this.api = new RESTAPI(host, port);
-        this.fieldTypeAPI = new FieldTypeAPI(host, port);
-        this.languageAPI = new LanguageAPI(host, port);
-        this.vocabularySchemaAPI = new VocabularySchemaAPI(host, port);
-        this.vocabularyAPI = new VocabularyAPI(host, port);
-        this.vocabularyRecordAPI = new VocabularyRecordAPI(host, port);
+        String address = ConfigurationHelper.getInstance().getVocabularyServerAddress();
+        if (address == null) {
+            String host = ConfigurationHelper.getInstance().getVocabularyServerHost();
+            int port = ConfigurationHelper.getInstance().getVocabularyServerPort();
+            address = "http://" + host + ":" + port;
+        }
+        this.api = new RESTAPI(address);
+        this.fieldTypeAPI = new FieldTypeAPI(address);
+        this.languageAPI = new LanguageAPI(address);
+        this.vocabularySchemaAPI = new VocabularySchemaAPI(address);
+        this.vocabularyAPI = new VocabularyAPI(address);
+        this.vocabularyRecordAPI = new VocabularyRecordAPI(address);
     }
 
     public void versionCheck() {

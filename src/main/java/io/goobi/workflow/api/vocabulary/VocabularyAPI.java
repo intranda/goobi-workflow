@@ -18,8 +18,8 @@ public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     private final CachedLookup<Long, ExtendedVocabulary> singleLookupCache;
     private final CachedLookup<String, ExtendedVocabulary> singleNameLookupCache;
 
-    public VocabularyAPI(String host, int port) {
-        super(host, port, Vocabulary.class, VocabularyPageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
+    public VocabularyAPI(String address) {
+        super(address, Vocabulary.class, VocabularyPageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
         this.singleLookupCache = new CachedLookup<>(id -> new ExtendedVocabulary(super.get(id)));
         this.singleNameLookupCache = new CachedLookup<>(name -> new ExtendedVocabulary(restApi.get(FIND_INSTANCE_ENDPOINT, Vocabulary.class, name)));
     }
