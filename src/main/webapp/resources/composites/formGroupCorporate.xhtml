@@ -26,24 +26,22 @@
         <div class="form-group form-group--flex">
             <div class="row justify-content-between">
                 <!-- LABEL -->
-                <div class="col-3">
+                <div class="col-3 d-flex justify-content-between">
                     <h:outputText
                         styleClass="form-group__label"
                         value="#{msgs.mets_corporate_mainName}:" />
-                        
-                        
-                        
-                        <h:panelGroup
-                        styleClass="float-right"
-                        id="restrictBtn">
+                    <h:panelGroup
+                        id="restrictBtn"
+                        rendered="#{cc.attrs.corporate.displayRestrictions}">
                         <button
                             type="button"
-                            class="btn float-right toggle"
+                            class="btn#{cc.attrs.corporate.restricted == false ? ' btn--icon-light' : ''} d-flex flex-nowrap pt-1"
                             jsf:id="toggle-restrictions"
-                            jsf:rendered="#{cc.attrs.corporate.displayRestrictions}"
                             title="#{cc.attrs.corporate.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }"
                             data-toggle="tooltip">
-                            <i class="fa #{cc.attrs.corporate.restricted == false?'fa fa-toggle-off':'fa fa-toggle-on toggle-on'}" />
+                            <span class="fa fa-unlock" />
+                            <span class="fa #{cc.attrs.corporate.restricted == false ? 'fa fa-toggle-off' : 'fa fa-toggle-on toggle-on'} px-1" />
+                            <span class="fa fa-lock" />
                             <f:ajax
                                 execute="restrictBtn"
                                 render="restrictBtn" />
@@ -329,10 +327,10 @@
                             <f:selectItems value="#{cc.attrs.corporate.addableRoles}" />
                             <f:ajax
                                 execute="@form"
-                                event="valueChange" 
+                                event="valueChange"
                                 render="restrictBtn"/>
                         </h:selectOneMenu>
-                    
+
                     </c:if>
                     <c:if test="#{not cc.attrs.changeRole}">
                         <h:outputText
@@ -340,7 +338,7 @@
                             pt:aria-label="#{msgs.rolle}"
                             value="#{cc.attrs.corporate.role}"
                           />
-                           
+
 </c:if>
 
                     </div>

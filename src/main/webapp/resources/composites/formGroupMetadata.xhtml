@@ -31,23 +31,24 @@
         <div class="form-group form-group--flex #{cc.attrs.metadata.validationErrorPresent ? 'has-validation-error' : ''}">
             <div class="row justify-content-between">
                 <!-- LABEL -->
-                <div class="col-3">
+                <div class="col-3 d-flex justify-content-between">
                     <h:outputText
                         styleClass="form-group__label"
                         value="#{cc.attrs.metadata.typ}:"
                         title="#{cc.attrs.metadata.md.type.name}" />
 
                     <h:panelGroup
-                        styleClass="float-right"
                         id="restrictBtn"
                         rendered="#{cc.attrs.metadata.displayRestrictions}">
                         <button
                             type="button"
-                            class="btn float-right toggle"
+                            class="btn#{cc.attrs.metadata.restricted == false ? ' btn--icon-light' : ''} d-flex flex-nowrap pt-1"
                             jsf:id="toggle-restrictions"
                             title="#{cc.attrs.metadata.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }"
                             data-toggle="tooltip">
-                            <i class="fa #{cc.attrs.metadata.restricted == false?'fa fa-toggle-off':'fa fa-toggle-on toggle-on'}" />
+                            <span class="fa fa-unlock" />
+                            <span class="fa #{cc.attrs.metadata.restricted == false ? 'fa fa-toggle-off' : 'fa fa-toggle-on toggle-on'} px-1" />
+                            <span class="fa fa-lock" />
                             <f:ajax
                                 execute="restrictBtn"
                                 render="restrictBtn" />
