@@ -252,4 +252,14 @@ public class MetaPersonTest extends AbstractTest {
         mp.setRestricted(true);
         assertTrue(mp.isRestricted());
     }
+
+    @Test
+    public void testAddNamePart() throws Exception {
+        Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
+        MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
+        mp.addNamePart();
+        assertNotNull(mp.getAdditionalNameParts());
+        assertEquals(1, mp.getAdditionalNameParts().size());
+        assertEquals("date", mp.getAdditionalNameParts().get(0).getType());
+    }
 }
