@@ -121,7 +121,7 @@ pipeline {
           tools: [checkStyle(pattern: 'target/checkstyle-result.xml', reportEncoding: 'UTF-8')]
         )
         archiveArtifacts artifacts: 'target/*.war, target/*.jar, install/db/goobi.sql', fingerprint: true
-        stash includes: 'target/*', name: 'target'
+        stash includes: 'target/**', name: 'target'
       }
     }
     stage('sonarcloud') {
