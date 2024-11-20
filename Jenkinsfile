@@ -147,6 +147,7 @@ pipeline {
         }
       }
       steps {
+        unstash 'target'
         withCredentials([string(credentialsId: 'jenkins-sonarcloud', variable: 'TOKEN')]) {
           sh 'mvn verify sonar:sonar -Dsonar.token=$TOKEN -U'
         }
@@ -170,6 +171,7 @@ pipeline {
         }
       }
       steps {
+        unstash 'target'
         sh 'mvn deploy -U'
       }
     }
