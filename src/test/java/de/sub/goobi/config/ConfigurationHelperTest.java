@@ -1199,6 +1199,11 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
+    public void testGoobiInstanceName() {
+        assertEquals("", ConfigurationHelper.getInstance().getGoobiInstanceName());
+    }
+
+    @Test
     public void testIsPdfAsDownload() {
         assertTrue(ConfigurationHelper.getInstance().isPdfAsDownload());
     }
