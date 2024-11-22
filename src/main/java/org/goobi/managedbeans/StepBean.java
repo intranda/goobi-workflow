@@ -1353,7 +1353,7 @@ public class StepBean extends BasicBean implements Serializable {
 
         if (this.container != null && !"0".equals(container)) {
             for (ProcessProperty pp : this.processPropertyList) {
-                if (pp.getContainer() == this.container) {
+                if (this.container.equals(pp.getContainer())) {
                     boolean match = true;
                     for (ShowStepCondition cond : pp.getShowStepConditions()) {
                         if (cond.getName().equals(mySchritt.getTitel()) && !cond.getDisplayCondition().isEmpty()) {

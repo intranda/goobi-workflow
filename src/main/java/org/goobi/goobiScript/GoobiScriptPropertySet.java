@@ -40,7 +40,7 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 
 public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String NAME = "name";
     private static final String VALUE = "value";
 
@@ -114,7 +114,7 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
             gsr.setResultMessage("Property created.");
             gsr.setResultType(GoobiScriptResultType.OK);
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
         }
         gsr.updateTimestamp();

@@ -55,6 +55,7 @@ public class VocabularyBean implements Serializable {
 
     public String load() {
         try {
+            api.versionCheck();
             paginator = new HATEOASPaginator<>(
                     VocabularyPageResult.class,
                     api.vocabularies().list(
@@ -70,6 +71,9 @@ public class VocabularyBean implements Serializable {
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
             Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
+            return "index";
+        } catch (Exception e) {
+            Helper.setFehlerMeldung(e.getMessage());
             return "index";
         }
     }

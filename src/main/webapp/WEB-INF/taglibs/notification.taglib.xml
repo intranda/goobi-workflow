@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
+    version="2.0">
+    <namespace>http://goobi.io/notification</namespace>
+    <tag>
+        <tag-name>area</tag-name>
+        <source>notification/area.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>toggle</tag-name>
+        <source>notification/toggle.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>messages</tag-name>
+        <source>notification/messages.xhtml</source>
+    </tag>
+</facelet-taglib>

@@ -46,7 +46,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String CONTENT_ONLY = "contentOnly";
     private static final String REMOVE_UNKNOWN_FILES = "removeUnknownFiles";
 
@@ -75,12 +75,12 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
 
         String missingParameter = "Missing parameter: ";
         String contentOnly = parameters.get(CONTENT_ONLY);
-        if (contentOnly == null || contentOnly.equals("")) {
+        if (contentOnly == null || "".equals(contentOnly)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, CONTENT_ONLY);
             return new ArrayList<>();
         }
 
-        if (!contentOnly.equals("true") && !contentOnly.equals("false")) {
+        if (!"true".equals(contentOnly) && !"false".equals(contentOnly)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "", "wrong parameter '" + CONTENT_ONLY + "'; possible values: true, false");
             return new ArrayList<>();
         }

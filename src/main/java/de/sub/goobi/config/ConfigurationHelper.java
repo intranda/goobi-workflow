@@ -1291,8 +1291,21 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("automaticExportWithOcr", true);
     }
 
+    /**
+     * This field is written into the mets:agent on export. Leave it blank, if this is not wanted
+     * 
+     * @return
+     */
+    public String getGoobiInstanceName() {
+        return getLocalString("ExportGoobiInstanceName", "");
+    }
+
     public boolean isPdfAsDownload() {
         return getLocalBoolean("pdfAsDownload", true);
+    }
+
+    public String getVocabularyServerAddress() {
+        return getLocalString("vocabularyServerAddress", null);
     }
 
     public String getVocabularyServerHost() {
@@ -1377,5 +1390,4 @@ public class ConfigurationHelper implements Serializable {
             }
         }
     }
-
 }

@@ -46,7 +46,8 @@ const sources = {
         'uii/**/*.riot'
     ],
     composites: 'resources/**/*.xhtml',
-    template: 'uii/templatePG/templatePG.html'
+    template: 'uii/templatePG/templatePG.html',
+    taglibs: 'WEB-INF/taglibs/**/*.xhtml',
 }
 // target directories
 const legacyTargetFolder = {
@@ -56,7 +57,8 @@ const targetFolder = {
     css: 'uii/templatePG/css/dist/',
     js: 'dist/js/',
     staticAssets: 'uii/',
-    composites: 'resources/'
+    composites: 'resources/',
+    taglibs: 'WEB-INF/taglibs/',
 }
 
 // FUNCTIONS
@@ -77,6 +79,11 @@ function static() {
 function composites() {
     return src(sources.composites)
         .pipe(dest(`${customLocation}${targetFolder.composites}`))
+};
+
+function taglibs() {
+    return src(sources.taglibs)
+        .pipe(dest(`${customLocation}${targetFolder.taglibs}`))
 };
 
 // function for legacy less
@@ -176,7 +183,7 @@ function devJsRollup() {
         })
         .then(bundle => {
             return bundle.write({
-                file: `${customLocation}${targetFolder.js}main.js`,
+                file: `${customLocation}${targetFolder.js}main.min.js`,
                 format: 'es',
             });
         });
@@ -190,7 +197,7 @@ function prodJsRollup() {
         })
         .then(bundle => {
             return bundle.write({
-                file: `${targetFolder.js}main.js`,
+                file: `${targetFolder.js}main.min.js`,
                 format: 'es',
                 sourcemap: true,
                 plugins: [terser({
@@ -209,5 +216,6 @@ exports.dev = function() {
     watch(sources.cssGlob, { ignoreInitial: false }, devCss);
     watch(sources.staticAssets, { ignoreInitial: false }, static);
     watch(sources.composites, { ignoreInitial: false }, composites);
+    watch(sources.taglibs, { ignoreInitial: false }, taglibs);
 };
 exports.prod = parallel(prodJsLegacy, prodJsRollup, prodBSCss, prodCss, prodLess);

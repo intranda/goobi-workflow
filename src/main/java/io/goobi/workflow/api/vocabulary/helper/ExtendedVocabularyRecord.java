@@ -25,6 +25,8 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
     private Function<VocabularyRecord, Optional<VocabularySchema>> metadataSchemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getMetadataSchema;
 
     private int level;
+    @JsonIgnore
+    private ExtendedFieldInstance mainField;
     private String mainValue;
     private List<String> titleValues;
     private List<ExtendedFieldInstance> extendedFields;
@@ -57,17 +59,23 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
                 .filter(f -> Boolean.TRUE.equals(f.getDefinition().getTitleField()))
                 .map(ExtendedFieldInstance::getFieldValue)
                 .collect(Collectors.toList());
-        this.mainValue = this.extendedFields.stream()
+        this.mainField = this.extendedFields.stream()
                 .filter(f -> Boolean.TRUE.equals(f.getDefinition().getMainEntry()))
+                .findFirst()
+                .orElse(null);
+        this.mainValue = getMainField()
                 .map(ExtendedFieldInstance::getFieldValue)
-                .findAny()
-                .orElse("");
+                .orElse(""); // TODO: Make mainValue optional?
         prepareEmpty();
     }
 
     @JsonIgnore
     public String getURI() {
         return get_links().get("self").getHref();
+    }
+
+    public Optional<ExtendedFieldInstance> getMainField() {
+        return Optional.ofNullable(this.mainField);
     }
 
     public Optional<String> getFieldValueForDefinition(FieldDefinition definition) {

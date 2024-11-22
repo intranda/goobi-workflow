@@ -10,8 +10,8 @@ public class FieldTypeAPI extends CRUDAPI<FieldType, FieldTypePageResult> {
 
     private final CachedLookup<Long, FieldType> singleLookupCache;
 
-    public FieldTypeAPI(String host, int port) {
-        super(host, port, FieldType.class, FieldTypePageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
+    public FieldTypeAPI(String address) {
+        super(address, FieldType.class, FieldTypePageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
         this.singleLookupCache = new CachedLookup<>(super::get);
     }
 

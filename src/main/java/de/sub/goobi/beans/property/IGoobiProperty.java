@@ -77,4 +77,5 @@ public interface IGoobiProperty {
 
     public String getNormalizedValue();
 
+    public String getNormalizedDate();
 }

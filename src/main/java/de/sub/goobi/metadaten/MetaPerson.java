@@ -227,7 +227,6 @@ public class MetaPerson implements SearchableMetadata {
     }
 
     public List<String> getPossibleNamePartTypes() {
-        // TODO configurable?
         List<String> possibleNamePartTypes = new ArrayList<>();
         possibleNamePartTypes.add("date");
         possibleNamePartTypes.add("termsOfAddress");
@@ -322,7 +321,7 @@ public class MetaPerson implements SearchableMetadata {
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if ("URI".equals(normdata.getKey())) {
                         String uriValue = normdata.getValues().get(0).getText();
-                        p.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
+                        p.setAuthorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
                         break;
                     }
                 }
@@ -337,7 +336,7 @@ public class MetaPerson implements SearchableMetadata {
         } else {
             for (NormData normdata : currentData) {
                 if ("NORM_IDENTIFIER".equals(normdata.getKey())) {
-                    p.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
+                    p.setAuthorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
                 } else if ("NORM_NAME".equals(normdata.getKey())) {
                     mainValue = normdata.getValues().get(0).getText().replace("\\x152", "").replace("\\x156", "");
                 }
@@ -396,5 +395,18 @@ public class MetaPerson implements SearchableMetadata {
 
     @Override
     public void clearResults() {
+        // do nithing
+    }
+
+    public boolean isDisplayRestrictions() {
+        return p.getType().isAllowAccessRestriction();
+    }
+
+    public boolean isRestricted() {
+        return p.isAccessRestrict();
+    }
+
+    public void setRestricted(boolean restricted) {
+        p.setAccessRestrict(restricted);
     }
 }

@@ -37,6 +37,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -55,6 +56,9 @@ public class SpracheForm implements Serializable {
      */
     private static final long serialVersionUID = -3323667988305293854L;
     public static final String SESSION_LOCALE_FIELD_ID = "lang";
+
+    private static final String DISPLAY_LANGUAGE_SELF = "displayLanguageSelf";
+    private static final String DISPLAY_LANGUAGE_TRANSLATED = "displayLanguageTranslated";
 
     /**
      * The constructor of this class loads the required MessageBundle
@@ -99,8 +103,14 @@ public class SpracheForm implements Serializable {
             if (supportedLocale.getLanguage().length() > 0) {
                 Map<String, Object> translation = new HashMap<>();
                 translation.put("id", supportedLocale.toString());
-                translation.put("displayLanguageSelf", supportedLocale.getDisplayLanguage(supportedLocale));
-                translation.put("displayLanguageTranslated", supportedLocale.getDisplayLanguage(currentDisplayLanguage));
+                translation.put(DISPLAY_LANGUAGE_SELF, supportedLocale.getDisplayLanguage(supportedLocale));
+                translation.put(DISPLAY_LANGUAGE_TRANSLATED, supportedLocale.getDisplayLanguage(currentDisplayLanguage));
+                // if we have a specific country code, show this one too
+                if (StringUtils.isNotBlank(supportedLocale.getCountry())) {
+                    translation.put(DISPLAY_LANGUAGE_SELF, translation.get(DISPLAY_LANGUAGE_SELF) + " (" + supportedLocale.getCountry() + ")");
+                    translation.put(DISPLAY_LANGUAGE_TRANSLATED,
+                            translation.get(DISPLAY_LANGUAGE_TRANSLATED) + " (" + supportedLocale.getCountry() + ")");
+                }
                 translation.put("selected", Boolean.valueOf(supportedLocale.equals(currentDisplayLanguage)));
                 result.add(translation);
             }

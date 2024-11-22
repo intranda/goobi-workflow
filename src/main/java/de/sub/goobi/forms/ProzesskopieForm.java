@@ -459,25 +459,16 @@ public class ProzesskopieForm implements Serializable {
         List<HierarchicalConfiguration> parameterList = item.configurationsAt("select");
         /* Children durchlaufen und SelectItems erzeugen */
 
-        if (!parameterList.isEmpty()) {
-            if (item.getBoolean("@multiselect", true)) { // NOSONAR
-                fa.setMultiselect(true);
-            } else {
-                fa.setMultiselect(false);
-            }
-            fa.setSelectList(new ArrayList<>());
-        }
+        fa.setMultiselect(item.getBoolean("@multiselect", false));
 
         if (parameterList.size() == 1) {
             fa.setWert(parameterList.get(0).getString("."));
             fa.setMultiselect(false);
         }
-
-        for (HierarchicalConfiguration hc : parameterList) {
-            String svalue = hc.getString("@label");
-
-            String sid = hc.getString(".");
-            fa.getSelectList().add(new SelectItem(sid, svalue, null));
+        if (!parameterList.isEmpty()) {
+            fa.setSelectList(parameterList.stream()
+                    .map(hc -> new SelectItem(hc.getString("."), hc.getString("@label"), null))
+                    .toList());
         }
 
         String vocabularyTitle = item.getString("@vocabulary");
@@ -731,7 +722,8 @@ public class ProzesskopieForm implements Serializable {
             List<Metadata> firstChildMetadata =
                     colStruct.getAllChildren() == null || colStruct.getAllChildren().isEmpty() ? Collections.emptyList()
                             : colStruct.getAllChildren().get(0).getAllMetadata();
-            fillTemplateFromMetadata(colStruct.getAllMetadata(), firstChildMetadata);
+            fillTemplateFromMetadata(colStruct.getAllMetadata(), "topstruct");
+            fillTemplateFromMetadata(firstChildMetadata, "firstchild");
 
             removeCollections(colStruct);
 
@@ -786,22 +778,20 @@ public class ProzesskopieForm implements Serializable {
         }
     }
 
-    private void fillTemplateFromMetadata(List<Metadata> topstruct, List<Metadata> firstChild) {
-        for (Metadata m : topstruct) {
-            this.additionalFields.stream()
-                    .filter(f -> "topstruct".equals(f.getDocstruct()))
+    private void fillTemplateFromMetadata(List<Metadata> struct, String structName) {
+        List<Metadata> toRemove = new ArrayList<>(struct.size());
+        for (Metadata m : struct) {
+            Optional<AdditionalField> additionalField = this.additionalFields.stream()
+                    .filter(f -> structName.equals(f.getDocstruct()))
                     .filter(f -> f.getMetadata() != null && f.getMetadata().equals(m.getType().getName()))
-                    .findFirst()
-                    .ifPresent(f -> setFieldValue(f, m.getValue()));
+                    .findFirst();
+            if (additionalField.isPresent()) {
+                setFieldValue(additionalField.get(), m.getValue());
+                toRemove.add(m);
+            }
         }
-
-        for (Metadata m : firstChild) {
-            this.additionalFields.stream()
-                    .filter(f -> "firstchild".equals(f.getDocstruct()))
-                    .filter(f -> f.getMetadata() != null && f.getMetadata().equals(m.getType().getName()))
-                    .findFirst()
-                    .ifPresent(f -> setFieldValue(f, m.getValue()));
-        }
+        // We need to remove all metadata that are saved into additional fields, because they would be possibly added twice in the end
+        toRemove.forEach(struct::remove);
     }
 
     private void setFieldValue(AdditionalField field, String value) {

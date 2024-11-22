@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib
+    version="2.2"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd">
+    <namespace>http://goobi.io/dialog</namespace>
+    <tag>
+        <tag-name>modal</tag-name>
+        <source>dialog/modal.xhtml</source>
+        <attribute>
+            <description>Provides an optional id to the dialog</description>
+            <name>id</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>header</tag-name>
+        <source>dialog/header.xhtml</source>
+        <attribute>
+            <description>The heading of the modal</description>
+            <name>title</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute><attribute>
+            <description>The icon to display before the heading</description>
+            <name>icon</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>body</tag-name>
+        <source>dialog/body.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>footer</tag-name>
+        <source>dialog/footer.xhtml</source>
+    </tag>
+</facelet-taglib>

@@ -25,7 +25,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String SCRIPT = "script";
     private static final String LABEL = "label";
@@ -70,19 +69,19 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
 
         String missingParameter = "Missing parameter: ";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String label = parameters.get(LABEL);
-        if (label == null || label.equals("")) {
+        if (label == null || "".equals(label)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, LABEL);
             return new ArrayList<>();
         }
 
         String script = parameters.get(SCRIPT);
-        if (script == null || script.equals("")) {
+        if (script == null || "".equals(script)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, SCRIPT);
             return new ArrayList<>();
         }
@@ -105,8 +104,7 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
         gsr.updateTimestamp();
 
         if (p.getSchritte() != null) {
-            for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
-                Step s = iterator.next();
+            for (Step s : p.getSchritte()) {
                 if (s.getTitel().equals(parameters.get(STEPTITLE))) {
                     s.setTypAutomatischScriptpfad(parameters.get(SCRIPT));
                     s.setScriptname1(parameters.get(LABEL));
@@ -131,7 +129,7 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
                 }
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
             gsr.setResultMessage("Step not found: " + parameters.get(STEPTITLE));
         }

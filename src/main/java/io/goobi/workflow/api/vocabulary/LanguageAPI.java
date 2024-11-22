@@ -11,8 +11,8 @@ public class LanguageAPI extends CRUDAPI<Language, LanguagePageResult> {
 
     private final CachedLookup<String, Language> singleLookupCache;
 
-    public LanguageAPI(String host, int port) {
-        super(host, port, Language.class, LanguagePageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
+    public LanguageAPI(String address) {
+        super(address, Language.class, LanguagePageResult.class, COMMON_ENDPOINT, INSTANCE_ENDPOINT);
         this.singleLookupCache = new CachedLookup<>(abbreviation -> restApi.get(FIND_INSTANCE_ENDPOINT, Language.class, abbreviation));
     }
 

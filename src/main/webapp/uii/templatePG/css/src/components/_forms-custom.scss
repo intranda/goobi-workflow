@@ -1,7 +1,7 @@
 input,
 select,
 textarea {
-  &:hover {
+  &:not(.btn):hover {
     border-color: var(--clr-primary-400) !important;
   }
   &[type="checkbox"] {
@@ -17,7 +17,8 @@ textarea {
 }
 
 .form-control,
-.form-select {
+.form-select,
+.input-group-text {
   font-size: var(--fs-400)
 }
 
@@ -277,6 +278,24 @@ fieldSet:disabled .badge > a {
   .form-row:last-of-type {
     border-block-end: 0;
   }
+  &:has(.form-fieldset-remove) {
+    border: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    > * {
+      width: calc(100% - 4em);
+      > .form-row:last-child {
+        // border-block-end: 0;
+      }
+    }
+  }
+  > .form-fieldset-remove {
+    border-inline-end: 1px solid var(--clr-neutral-300);
+    width: 4em;
+    > .btn {
+      height: 100%;
+    }
+  }
   @media (min-width: 768px) {
     .form-label {
       width: 15%;
@@ -400,6 +419,11 @@ fieldSet:disabled .badge > a {
       }
     }
   }
+}
+
+.field-set:has(.field-set) {
+  padding: 0;
+  border-block-end: 0;
 }
 
 // input elements in box titles, should be mostly search/filter inputs

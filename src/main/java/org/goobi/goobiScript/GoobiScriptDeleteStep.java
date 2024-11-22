@@ -41,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
 
     @Override
@@ -63,7 +63,7 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
 
         String missingParameter = "Missing parameter: ";
         String steptitle = parameters.get(STEPTITLE);
-        if (steptitle == null || steptitle.equals("")) {
+        if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
@@ -96,9 +96,7 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
         String stepTitle = parameters.get(STEPTITLE);
         int removedSteps = 0;
 
-        for (int index = 0; index < steps.size(); index++) {
-            Step step = steps.get(index);
-
+        for (Step step : steps) {
             if (step.getTitel().equals(stepTitle)) {
                 StepManager.deleteStep(step);
                 removedSteps++;

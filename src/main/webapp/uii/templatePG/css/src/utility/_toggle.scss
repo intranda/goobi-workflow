@@ -1,0 +1,16 @@
+.toggle {
+    .toggle-show {
+        display: initial;
+    }
+    .toggle-hide {
+        display: none;
+    }
+    &[aria-expanded="true"] {
+        .toggle-show {
+            display: none;
+        }
+        .toggle-hide {
+            display: initial;
+        }
+    }
+}

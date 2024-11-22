@@ -76,7 +76,7 @@ button,
   }
 
   i ~ *,
-  .fa ~ * {
+  .fa ~ *:not(.fa) {
     margin-inline-start: 0.25rem;
   }
   &:focus {
@@ -92,6 +92,11 @@ button,
   &:active {
     transform: scale(99%);
   }
+}
+
+.button-row {
+  display: flex;
+  gap: 0.25rem;
 }
 
 /* ========================================

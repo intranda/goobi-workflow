@@ -1,0 +1,41 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:dialog="http://goobi.io/dialog"
+    xmlns:properties="http://goobi.io/properties"
+>
+    <c:set var="evenContainers" value="#{bean.containerList.size() % 2 == 0}" />
+    <h:form id="propertyForm" class="properties-form">
+        <div class="properties-wrapper#{evenContainers ? ' group-count-even' : ' group-count-uneven'}">
+            <c:forEach var="container" items="#{bean.containerList}" varStatus="iteration">
+                <c:set var="fullWidth" value="#{(bean.containerList.size() % 2) != 0 and iteration.index == 0}" />
+                <c:if test="#{container == '0'}">
+                    <properties:group group="#{container}" add="true" bean="#{bean}" fullWidth="#{fullWidth}" />
+                </c:if>
+                <c:if test="#{container != '0'}">
+                    <properties:group group="#{container}" bean="#{bean}" fullWidth="#{fullWidth}" />
+                </c:if>
+            </c:forEach>
+        </div>
+    </h:form>
+    <c:set var="scope" value="#{
+        fn:contains(bean, 'StepBean') ? 'step'
+        : fn:contains(bean, 'BatchProcessHelper')? 'batch'
+        : 'process'
+    }" />
+    <h:panelGroup id="propertyEditArea" layout="block">
+        <dialog:modal id="propertyEditModal">
+            <c:if test="#{scope == 'batch'}">
+                <c:if test="#{BatchForm.modusBearbeiten == 'eigenschaft'}">
+                    <properties:editDialog bean="#{bean}" />
+                </c:if>
+            </c:if>
+            <c:if test="#{scope != 'batch'}">
+                <c:if test="#{bean.modusBearbeiten == 'eigenschaft'}">
+                    <properties:editDialog bean="#{bean}" />
+                </c:if>
+            </c:if>
+        </dialog:modal>
+    </h:panelGroup>
+</ui:composition>

@@ -1,0 +1,18 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
+>
+    <div class="box__title">
+        <h2>
+            <!-- Do not render icon if cc.attrs.icon is undefined -->
+            <c:if test="#{icon != 'undefined'}">
+                <span
+                    aria-hidden="true"
+                    class="fa fa-#{icon}" />
+            </c:if>
+            <h:outputText value="#{title}" />
+        </h2>
+        <ui:insert />
+    </div>
+</ui:composition>

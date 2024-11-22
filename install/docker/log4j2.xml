@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <!-- ******************************************************************* -->
+        <!-- STDOUT                                                              -->
+        <!-- ******************************************************************* -->
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-4r %-5p (%F:%L) - %m%n"/>
+            <RegexFilter regex=".*org.omnifaces.cdi.push.SocketEndpoint.onClose.*" onMatch="DENY" onMismatch="ACCEPT"/>
+        </Console>
+    </Appenders>
+
+    <!-- ******************************************************************* -->
+    <!-- APPENDER                                                            -->
+    <!-- ******************************************************************* -->
+    <Loggers>
+        <!-- ignore push related errors -->
+        <Logger level="off" name="org.omnifaces.cdi.push">
+        </Logger>
+        <!-- ignore broken pipe exceptions -->
+        <Logger level="off" name="org.apache.catalina.connector.ClientAbortException">
+        </Logger>
+        <Logger name="de.sub.goobi" level="debug" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="org.reflections" level="error" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="org.goobi" level="debug" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="de.unigoettingen.sub.search.opac" level="error" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="ugh" level="error" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="de.sub.goobi.persistence" level="error" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="de.unigoettingen.gdz.goobi.contentserver" level="error" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="de.unigoettingen.sub.commons" level="error" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="de.intranda.goobi" level="debug" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="org.quartz" level="error" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="com.amazonaws" level="warn" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="org.apache.http.wire" level="warn" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <!-- ******************************************************************* -->
+        <!-- ROOT LOGGER                                                         -->
+        <!-- ******************************************************************* -->
+
+        <Root level="warn">
+            <AppenderRef ref="STDOUT" />
+        </Root>
+    </Loggers>
+
+</Configuration>

@@ -8,6 +8,14 @@
   --width-table-col: 100px;
 }
 
+.gw-table-wrapper:has(.gw-table__search) {
+  padding: var(--box-padding);
+  padding-block-start: 0;
+  .table {
+    border-inline: 1px solid var(--clr-neutral-300);
+  }
+}
+
 // workaround for overflowing tables that can't use fixed width
 .table-width {
   hyphens: auto;
@@ -30,6 +38,11 @@
   margin-bottom: 0;
   border-color: var(--clr-neutral-300);
   max-width: 100%;
+}
+
+.box--padded .table,
+.section-body-padded .table {
+  border-inline: 1px solid var(--clr-neutral-300);
 }
 
 .table > :not(caption) > * > * {
@@ -148,7 +161,8 @@
   gap: var(--gap, 8px);
 
   // Contains search form + `show active users btn`
-  form {
+  form,
+  .search-form {
     display: flex;
     flex-shrink: 0;
   }

@@ -26,6 +26,7 @@
 package de.sub.goobi.metadaten;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -74,20 +75,20 @@ public class MetaCorporateTest extends AbstractTest {
     }
 
     @Test
-    public void testConstructor() throws Exception {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
+    public void testConstructor() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         assertNotNull(fixture);
     }
 
     @Test
-    public void testDisplaytype() throws Exception {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
+    public void testDisplaytype() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         assertEquals(DisplayType.corporate, fixture.getMetadataDisplaytype());
     }
 
     @Test
-    public void testRole() throws Exception {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
+    public void testRole() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         fixture.setRole(METADATA_TYPE);
         assertEquals(METADATA_TYPE, fixture.getRole());
     }
@@ -96,29 +97,29 @@ public class MetaCorporateTest extends AbstractTest {
     public void testAddableRoles() throws Exception {
         DocStruct ds = process.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
         ds.addCorporate(c);
-        MetaCorporate fixture = new MetaCorporate(c, prefs, ds, process, null);
+        MetaCorporate fixture = new MetaCorporate(c, prefs, ds, null);
 
         assertEquals(1, fixture.getAddableRoles().size());
         assertEquals(METADATA_TYPE, fixture.getAddableRoles().get(0).getValue());
     }
 
     @Test
-    public void testMainName() throws Exception {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
+    public void testMainName() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         fixture.setMainName("main name");
         assertEquals("main name", fixture.getMainName());
     }
 
     @Test
-    public void testPartName() throws Exception {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
+    public void testPartName() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         fixture.setPartName("part name");
         assertEquals("part name", fixture.getPartName());
     }
 
     @Test
-    public void testSubNames() throws Exception {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
+    public void testSubNames() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         assertEquals(1, fixture.getSubNames().size());
         fixture.getSubNames().get(0).setValue("val");
         fixture.addSubName();
@@ -129,29 +130,49 @@ public class MetaCorporateTest extends AbstractTest {
     }
 
     @Test
-    public void testGetPossibleDatabases() throws Exception {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
+    public void testGetPossibleDatabases() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         assertEquals("gnd", fixture.getPossibleDatabases().get(0));
     }
 
     @Test
-    public void testIsNormdata() throws Exception {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
+    public void testIsNormdata() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         assertTrue(fixture.isNormdata());
     }
 
     @Test
-    public void testNormdataValue() throws Exception {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
+    public void testNormdataValue() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         fixture.setNormdataValue("test");
         assertEquals("test", fixture.getNormdataValue());
     }
 
     @Test
-    public void testNormDatabase() throws Exception {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
+    public void testNormDatabase() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
         fixture.setNormDatabase("gnd");
         assertEquals("gnd", fixture.getNormDatabase());
+    }
+
+    @Test
+    public void testDisplayRestrictions() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+
+        assertFalse(fixture.isDisplayRestrictions());
+        c.getType().setAllowAccessRestriction(true);
+        assertTrue(fixture.isDisplayRestrictions());
+
+    }
+
+    @Test
+    public void testRestricted() {
+        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+        c.getType().setAllowAccessRestriction(true);
+
+        assertFalse(fixture.isRestricted());
+        fixture.setRestricted(true);
+        assertTrue(fixture.isRestricted());
     }
 
     //    search

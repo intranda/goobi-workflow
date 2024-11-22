@@ -68,4 +68,10 @@ public interface Metadatum {
     public abstract void setValue(String value);
 
     public abstract String getValue();
+
+    public boolean isDisplayRestrictions();
+
+    public boolean isRestricted();
+
+    public void setRestricted(boolean restricted);
 }

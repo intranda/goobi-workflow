@@ -24,8 +24,8 @@
   position: relative;
   &::before {
     align-items: center;
-    // background: var(--alert-color);
-    color: var(--alert-color);
+    background: var(--alert-color);
+    color: white;
     display: flex;
     font: normal normal normal 14px/1 FontAwesome;
     height: 100%;
@@ -39,6 +39,7 @@
 
 .alert-danger {
   --alert-color: var(--clr-hot);
+  background: hsla(from var(--clr-hot) h s l / 20%);
   &::before {
     content: "\f071"; // exclamation-triangle
   }
@@ -46,7 +47,32 @@
 
 .alert-info {
   --alert-color: var(--clr-primary-400);
+  background: hsla(from var(--clr-primary-400) h s l / 20%);
   &::before {
     content: "\f05a"; // info-circle
+  }
+}
+
+.alert-secondary {
+  --alert-color: #383d41;
+  background: hsla(from var(--clr-neutral-400) h s l / 20%);
+  &::before {
+    content: "\f05a"; // info-circle
+  }
+}
+
+.alert-success {
+  --alert-color: var(--clr-success);
+  background: hsla(from var(--clr-success) h s l / 20%);
+  &::before {
+    content: "\f058"; // check-circle
+  }
+}
+
+.alert-warning {
+  --alert-color: var(--clr-action);
+  background: hsla(from var(--clr-action) h s l / 20%);
+  &::before {
+    content: "\f071"; // exclamation-triangle
   }
 }

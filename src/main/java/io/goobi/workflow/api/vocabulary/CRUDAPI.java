@@ -11,8 +11,8 @@ public abstract class CRUDAPI<InstanceType extends Identifiable, PageResultType>
     private final String commonEndpoint;
     private final String instanceEndpoint;
 
-    protected CRUDAPI(String host, int port, Class<InstanceType> instanceTypeClass, Class<PageResultType> pageResultTypeClass, String commonEndpoint, String instanceEndpoint) {
-        this.restApi = new RESTAPI(host, port);
+    protected CRUDAPI(String address, Class<InstanceType> instanceTypeClass, Class<PageResultType> pageResultTypeClass, String commonEndpoint, String instanceEndpoint) {
+        this.restApi = new RESTAPI(address);
         this.instanceTypeClass = instanceTypeClass;
         this.pageResultTypeClass = pageResultTypeClass;
         this.commonEndpoint = commonEndpoint;

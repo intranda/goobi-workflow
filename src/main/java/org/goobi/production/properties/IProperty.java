@@ -25,6 +25,7 @@ package org.goobi.production.properties;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import javax.faces.model.SelectItem;
 import java.util.Date;
 import java.util.List;
 
@@ -50,9 +51,9 @@ public interface IProperty {
 
     public abstract void setValue(String value);
 
-    public abstract List<String> getPossibleValues();
+    public abstract List<SelectItem> getPossibleValues();
 
-    public abstract void setPossibleValues(List<String> possibleValues);
+    public abstract void setPossibleValues(List<SelectItem> possibleValues);
 
     public abstract List<String> getProjects();
 

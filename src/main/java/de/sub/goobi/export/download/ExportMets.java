@@ -79,6 +79,7 @@ import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.GoobiVersion;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
@@ -145,17 +146,17 @@ public class ExportMets {
 
     private static final Pattern descriptionPattern = Pattern.compile("\\D");
 
-    private static final String metsNamespace = "http://www.loc.gov/METS/";
-    private static final String premisNamespace = "http://www.loc.gov/standards/premis/";
+    private static final String METS_NAMESPACE = "http://www.loc.gov/METS/";
+    private static final String PREMIS_NAMESPACE = "http://www.loc.gov/standards/premis/";
 
-    private static final String identifierLocal = "local";
+    private static final String IDENTIFIER_LOCAL = "local";
 
-    private static final String propertyDuration = "Duration";
-    private static final String propertyBitrate = "Bitrate";
-    private static final String propertyImageWidth = "ImageWidth";
-    private static final String propertyImageHeight = "ImageHeight";
-    private static final String elementFixity = "fixity";
-    private static final String elementObjectCharacteristics = "objectCharacteristics";
+    private static final String PROPERTY_NAME_DURATION = "Duration";
+    private static final String PROPERTY_NAME_BITRATE = "Bitrate";
+    private static final String PROPERTY_NAME_IMAGE_WIDTH = "ImageWidth";
+    private static final String PROPERTY_NAME_IMAGE_HEIGHT = "ImageHeight";
+    private static final String ELEMENT_NAME_FIXITY = "fixity";
+    private static final String ELEMENT_NAME_OBJECT_CHARACTERISTICS = "objectCharacteristics";
 
     private static final String SHA_1 = "SHA-1";
     private static final String SHA_256 = "SHA-256";
@@ -274,7 +275,10 @@ public class ExportMets {
         User myBenutzer = Helper.getCurrentUser();
         if (myBenutzer != null) {
             try {
-                FilesystemHelper.createDirectoryForUser(target, myBenutzer.getLogin());
+                boolean success = FilesystemHelper.createDirectoryForUser(target, myBenutzer.getLogin());
+                if (!success) {
+                    throw new IOException("Creation not successful!");
+                }
             } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                 Helper.setFehlerMeldung("Export canceled, could not create destination directory: " + inTargetFolder, e);
             }
@@ -580,6 +584,18 @@ public class ExportMets {
             }
         }
 
+        // write <mets:agent>, if an instance name is configured
+        String instance = ConfigurationHelper.getInstance().getGoobiInstanceName();
+        if (StringUtils.isNotBlank(instance)) {
+            mm.setSoftwareName(ConfigurationHelper.getInstance().getApplicationHeaderTitle());
+            mm.setSoftwareVersion(GoobiVersion.getVersion());
+            mm.setInstanceName(instance);
+            // write institution name, if it is not the default institution
+            if (!"goobi".equals(myProzess.getProjekt().getInstitution().getLongName())) {
+                mm.setClientName(myProzess.getProjekt().getInstitution().getLongName());
+            }
+        }
+
         // Replace rights and digiprov entries.
         mm.setRightsOwner(vp.replace(myProzess.getProjekt().getMetsRightsOwner()));
         mm.setRightsOwnerLogo(vp.replace(myProzess.getProjekt().getMetsRightsOwnerLogo()));
@@ -638,7 +654,7 @@ public class ExportMets {
     }
 
     private void saveFinishedMetadata(Process myProzess, String targetFileName, ConfigurationHelper config, ExportFileformat mm,
-            boolean addAnchorFile) throws IOException, WriteException, PreferencesException, SwapException, DAOException {
+            boolean addAnchorFile) throws IOException, WriteException, PreferencesException {
         String xmlEnding = ".xml";
         String zipEnding = ".zip";
         String anchorEnding = "_anchor.xml";
@@ -731,15 +747,15 @@ public class ExportMets {
         try {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.newDocument();
-            Element techMd = doc.createElementNS(metsNamespace, "techMD");
-            Element mdWrap = doc.createElementNS(metsNamespace, "mdWrap");
+            Element techMd = doc.createElementNS(METS_NAMESPACE, "techMD");
+            Element mdWrap = doc.createElementNS(METS_NAMESPACE, "mdWrap");
             techMd.appendChild(mdWrap);
             mdWrap.setAttribute("MDTYPE", "OTHER");
             mdWrap.setAttribute("MIMETYPE", "text/xml");
-            Element xmlData = doc.createElementNS(metsNamespace, "xmlData");
+            Element xmlData = doc.createElementNS(METS_NAMESPACE, "xmlData");
             mdWrap.appendChild(xmlData);
 
-            Element object = doc.createElementNS(premisNamespace, "object");
+            Element object = doc.createElementNS(PREMIS_NAMESPACE, "object");
             object.setAttribute("version", "3.0");
             object.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "type", "premis:file");
             xmlData.appendChild(object);
@@ -777,9 +793,9 @@ public class ExportMets {
      *
      */
 
-    private void buildMPEGMetadata(Document doc, Path file, Element object) throws DataFormatException, IOException {
+    private void buildMPEGMetadata(Document doc, Path file, Element object) throws IOException {
 
-        addObjectIdentifier(doc, object, identifierLocal, file.getFileName().normalize().toString());
+        addObjectIdentifier(doc, object, IDENTIFIER_LOCAL, file.getFileName().normalize().toString());
         String duration = null;
         String bitrate = null;
         String width = null;
@@ -806,22 +822,22 @@ public class ExportMets {
         }
 
         if (duration != null) {
-            addSignificantProperty(doc, object, propertyDuration, duration);
+            addSignificantProperty(doc, object, PROPERTY_NAME_DURATION, duration);
         }
         if (bitrate != null) {
-            addSignificantProperty(doc, object, propertyBitrate, bitrate);
+            addSignificantProperty(doc, object, PROPERTY_NAME_BITRATE, bitrate);
         }
         if (width != null) {
-            addSignificantProperty(doc, object, propertyImageWidth, width);
+            addSignificantProperty(doc, object, PROPERTY_NAME_IMAGE_WIDTH, width);
         }
         if (height != null) {
-            addSignificantProperty(doc, object, propertyImageHeight, height);
+            addSignificantProperty(doc, object, PROPERTY_NAME_IMAGE_HEIGHT, height);
         }
 
-        Element objectCharacteristics = doc.createElementNS(premisNamespace, elementObjectCharacteristics);
+        Element objectCharacteristics = doc.createElementNS(PREMIS_NAMESPACE, ELEMENT_NAME_OBJECT_CHARACTERISTICS);
         object.appendChild(objectCharacteristics);
 
-        Element fixity = doc.createElementNS(premisNamespace, elementFixity);
+        Element fixity = doc.createElementNS(PREMIS_NAMESPACE, ELEMENT_NAME_FIXITY);
         objectCharacteristics.appendChild(fixity);
         addHash(doc, file, fixity, SHA_1);
         addSize(doc, file, objectCharacteristics);
@@ -829,7 +845,7 @@ public class ExportMets {
     }
 
     private void addSize(Document doc, Path file, Element objectCharacteristics) {
-        Element size = doc.createElementNS(premisNamespace, "size");
+        Element size = doc.createElementNS(PREMIS_NAMESPACE, "size");
         objectCharacteristics.appendChild(size);
 
         try {
@@ -849,7 +865,7 @@ public class ExportMets {
      * @throws IOException
      * @throws FileNotFoundException
      */
-    private void buildImageMetadata(Document doc, Path file, Element object) throws FileNotFoundException, IOException {
+    private void buildImageMetadata(Document doc, Path file, Element object) throws IOException {
 
         // obtain Dimensions of passed image
         Optional<Dimension> maybeImageDimension = getSize(file);
@@ -863,14 +879,14 @@ public class ExportMets {
             throw new IOException(message);
         }
         // create remaining structure for the premis block and add information
-        addObjectIdentifier(doc, object, identifierLocal, file.getFileName().normalize().toString());
-        addSignificantProperty(doc, object, propertyImageHeight, Integer.toString((int) imageDimension.getHeight()));
-        addSignificantProperty(doc, object, propertyImageWidth, Integer.toString((int) imageDimension.getWidth()));
+        addObjectIdentifier(doc, object, IDENTIFIER_LOCAL, file.getFileName().normalize().toString());
+        addSignificantProperty(doc, object, PROPERTY_NAME_IMAGE_HEIGHT, Integer.toString((int) imageDimension.getHeight()));
+        addSignificantProperty(doc, object, PROPERTY_NAME_IMAGE_WIDTH, Integer.toString((int) imageDimension.getWidth()));
 
-        Element objectCharacteristics = doc.createElementNS(premisNamespace, elementObjectCharacteristics);
+        Element objectCharacteristics = doc.createElementNS(PREMIS_NAMESPACE, ELEMENT_NAME_OBJECT_CHARACTERISTICS);
         object.appendChild(objectCharacteristics);
 
-        Element fixity = doc.createElementNS(premisNamespace, elementFixity);
+        Element fixity = doc.createElementNS(PREMIS_NAMESPACE, ELEMENT_NAME_FIXITY);
         objectCharacteristics.appendChild(fixity);
 
         addHash(doc, file, fixity, SHA_256);
@@ -1040,7 +1056,7 @@ public class ExportMets {
      */
     private static String getDuration(String s) {
         String duration = null;
-        if (s.startsWith(propertyDuration)) {
+        if (s.startsWith(PROPERTY_NAME_DURATION)) {
             String[] splitString = s.split(" ");
             for (String str : splitString) {
                 if (str.matches("\\d:\\d\\d:\\d\\d")) {
@@ -1073,7 +1089,7 @@ public class ExportMets {
      */
     private static String getBitrate(String s) {
         String bitrate = null;
-        if (s.contains(propertyBitrate) || s.contains("Video Frame Rate")) {
+        if (s.contains(PROPERTY_NAME_BITRATE) || s.contains("Video Frame Rate")) {
             String[] splitString = s.split(":");
             bitrate = splitString[1].trim();
         }
@@ -1119,16 +1135,16 @@ public class ExportMets {
      * @param identifierValue to be written in subElement called objectIdentifierValue
      */
     private void addObjectIdentifier(Document document, Element object, String identifierName, String identifierValue) {
-        Element objectIdentifier = document.createElementNS(premisNamespace, "objectIdentifier");
+        Element objectIdentifier = document.createElementNS(PREMIS_NAMESPACE, "objectIdentifier");
 
         object.appendChild(objectIdentifier);
 
-        Element objectIdentifierType = document.createElementNS(premisNamespace, "objectIdentifierType");
+        Element objectIdentifierType = document.createElementNS(PREMIS_NAMESPACE, "objectIdentifierType");
         objectIdentifier.appendChild(objectIdentifierType);
 
         objectIdentifierType.setTextContent(identifierName);
 
-        Element objectIdentifierValue = document.createElementNS(premisNamespace, "objectIdentifierValue");
+        Element objectIdentifierValue = document.createElementNS(PREMIS_NAMESPACE, "objectIdentifierValue");
         objectIdentifier.appendChild(objectIdentifierValue);
 
         objectIdentifierValue.setTextContent(identifierValue);
@@ -1143,13 +1159,13 @@ public class ExportMets {
      * @param propertyValue
      */
     private void addSignificantProperty(Document document, Element object, String propertyType, String propertyValue) {
-        Element significantProperties2 = document.createElementNS(premisNamespace, "significantProperties");
+        Element significantProperties2 = document.createElementNS(PREMIS_NAMESPACE, "significantProperties");
         object.appendChild(significantProperties2);
-        Element significantPropertiesType = document.createElementNS(premisNamespace, "significantPropertiesType");
+        Element significantPropertiesType = document.createElementNS(PREMIS_NAMESPACE, "significantPropertiesType");
         significantProperties2.appendChild(significantPropertiesType);
 
         significantPropertiesType.setTextContent(propertyType);
-        Element significantPropertiesValue = document.createElementNS(premisNamespace, "significantPropertiesValue");
+        Element significantPropertiesValue = document.createElementNS(PREMIS_NAMESPACE, "significantPropertiesValue");
         significantProperties2.appendChild(significantPropertiesValue);
         significantPropertiesValue.setTextContent(propertyValue);
 
@@ -1165,11 +1181,11 @@ public class ExportMets {
      * @throws IOException
      */
     private void addHash(Document document, Path file, Element fixity, String algorithmName) throws IOException {
-        Element messageDigestAlgorithm = document.createElementNS(premisNamespace, "messageDigestAlgorithm");
+        Element messageDigestAlgorithm = document.createElementNS(PREMIS_NAMESPACE, "messageDigestAlgorithm");
         fixity.appendChild(messageDigestAlgorithm);
         messageDigestAlgorithm.setTextContent(algorithmName);
 
-        Element messageDigest = document.createElementNS(premisNamespace, "messageDigest");
+        Element messageDigest = document.createElementNS(PREMIS_NAMESPACE, "messageDigest");
         fixity.appendChild(messageDigest);
 
         String hash;
@@ -1246,13 +1262,13 @@ public class ExportMets {
      */
     private void buildPDFMetadata(Document document, Path file, Element object) throws IOException {
 
-        addObjectIdentifier(document, object, identifierLocal, file.getFileName().normalize().toString());
+        addObjectIdentifier(document, object, IDENTIFIER_LOCAL, file.getFileName().normalize().toString());
         PDDocument doc = Loader.loadPDF(file.toFile());
         addSignificantProperty(document, object, "PageNumber", String.valueOf(doc.getNumberOfPages()));
-        Element objectCharacteristics = document.createElementNS(premisNamespace, elementObjectCharacteristics);
+        Element objectCharacteristics = document.createElementNS(PREMIS_NAMESPACE, ELEMENT_NAME_OBJECT_CHARACTERISTICS);
         object.appendChild(objectCharacteristics);
 
-        Element fixity = document.createElementNS(premisNamespace, elementFixity);
+        Element fixity = document.createElementNS(PREMIS_NAMESPACE, ELEMENT_NAME_FIXITY);
         objectCharacteristics.appendChild(fixity);
 
         addHash(document, file, fixity, SHA_1);
@@ -1280,7 +1296,7 @@ public class ExportMets {
     private void buildAudioMetadata(Document doc, Path file, Element object, boolean isMp3)
             throws IOException, DataFormatException, UnsupportedAudioFileException {
 
-        addObjectIdentifier(doc, object, identifierLocal, file.getFileName().normalize().toString());
+        addObjectIdentifier(doc, object, IDENTIFIER_LOCAL, file.getFileName().normalize().toString());
 
         double duration = 0;
         String bitrate = null;
@@ -1314,19 +1330,19 @@ public class ExportMets {
         DecimalFormat numberFormat = new DecimalFormat("#.######", separator);
         // check if duration and bitrate were successfully read, else throw exception
         if (duration != 0) {
-            addSignificantProperty(doc, object, propertyDuration, numberFormat.format(duration));
+            addSignificantProperty(doc, object, PROPERTY_NAME_DURATION, numberFormat.format(duration));
         } else {
             throw new DataFormatException("Unable to determine duration of medium " + file);
         }
         if (bitrate != null) {
-            addSignificantProperty(doc, object, propertyBitrate, bitrate);
+            addSignificantProperty(doc, object, PROPERTY_NAME_BITRATE, bitrate);
         } else {
             throw new DataFormatException("Unable to determine bitrate of medium " + file);
         }
-        Element objectCharacteristics = doc.createElementNS(premisNamespace, elementObjectCharacteristics);
+        Element objectCharacteristics = doc.createElementNS(PREMIS_NAMESPACE, ELEMENT_NAME_OBJECT_CHARACTERISTICS);
         object.appendChild(objectCharacteristics);
 
-        Element fixity = doc.createElementNS(premisNamespace, elementFixity);
+        Element fixity = doc.createElementNS(PREMIS_NAMESPACE, ELEMENT_NAME_FIXITY);
         objectCharacteristics.appendChild(fixity);
 
         addHash(doc, file, fixity, SHA_1);

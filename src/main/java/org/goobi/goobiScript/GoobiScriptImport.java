@@ -49,7 +49,7 @@ import lombok.Setter;
 
 public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptField";
+    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String PLUGIN = "plugin";
     private static final String IDENTIFIERS = "identifiers";
     private static final String TEMPLATE = "template";

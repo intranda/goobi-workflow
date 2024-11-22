@@ -1,22 +1,22 @@
 <ui:composition
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-        xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-        xmlns:h="http://xmlns.jcp.org/jsf/html"
-        xmlns:f="http://xmlns.jcp.org/jsf/core"
-        xmlns:x="http://myfaces.apache.org/tomahawk"
-        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-        xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
         <composite:attribute name="metadata" />
         <composite:attribute name="person" />
         <composite:attribute
-                name="required"
-                default="false"/>
+            name="required"
+            default="false" />
         <composite:attribute
-                name="renderDelete"
-                default="true"/>
+            name="renderDelete"
+            default="true" />
     </composite:interface>
 
     <composite:implementation>
@@ -25,85 +25,106 @@
         <div class="form-group form-group--flex">
             <div class="row justify-content-between">
                 <!-- LABEL -->
-                <div class="col-3">
+                <div class="col-3 d-flex justify-content-between">
                     <h:outputText
-                            styleClass="form-group__label"
-                            value="#{msgs.vorname}:"/>
+                        styleClass="form-group__label"
+                        value="#{msgs.vorname}:" />
+
+                        <h:panelGroup
+                        id="restrictBtn"
+                        rendered="#{cc.attrs.person.displayRestrictions}">
+                        <button
+                            type="button"
+                            class="btn#{cc.attrs.person.restricted == false ? ' btn--icon-light' : ''} d-flex flex-nowrap pt-1"
+                            jsf:id="toggle-restrictions"
+                            title="#{cc.attrs.person.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }"
+                            data-toggle="tooltip">
+                            <span class="fa fa-unlock" />
+                            <span class="fa #{cc.attrs.person.restricted == false ? 'fa fa-toggle-off' : 'fa fa-toggle-on toggle-on'} px-1" />
+                            <span class="fa fa-lock" />
+                            <f:ajax
+                                execute="restrictBtn"
+                                render="restrictBtn" />
+                            <f:setPropertyActionListener
+                                value="#{not cc.attrs.person.restricted}"
+                                target="#{cc.attrs.person.restricted}" />
+                        </button>
+                    </h:panelGroup>
                 </div>
                 <!-- INPUT -->
                 <div class="col-7">
                     <x:inputText
-                            id="firstname"
-                            pt:aria-label="#{msgs.vorname}"
-                            styleClass="form-control"
-                            value="#{cc.attrs.person.vorname}"
-                            required="#{cc.attrs.required}"
-                            readonly="#{Metadaten.nurLesenModus}">
+                        id="firstname"
+                        pt:aria-label="#{msgs.vorname}"
+                        styleClass="form-control"
+                        value="#{cc.attrs.person.vorname}"
+                        required="#{cc.attrs.required}"
+                        readonly="#{Metadaten.nurLesenModus}">
                         <f:ajax
-                                execute="@form"
-                                event="valueChange"/>
+                            execute="@form"
+                            event="valueChange" />
                     </x:inputText>
                 </div>
                 <!-- ACTIONS -->
                 <div class="btn-area duplicate">
                     <!-- DELETE -->
                     <button
-                            jsf:id="delete"
-                            class="btn btn--icon-light personButton"
-                            aria-label="#{msgs.personendatenLoeschen}"
-                            tabindex="0"
-                            jsf:action="#{Metadaten.LoeschenPerson}"
-                            title="#{msgs.personendatenLoeschen}"
-                            jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
-                            type="button">
+                        jsf:id="delete"
+                        class="btn btn--icon-light personButton"
+                        aria-label="#{msgs.personendatenLoeschen}"
+                        tabindex="0"
+                        jsf:action="#{Metadaten.LoeschenPerson}"
+                        title="#{msgs.personendatenLoeschen}"
+                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                        type="button">
                         <i
-                                class="fa fa-lg fa-trash-o"
-                                aria-hidden="true"></i>
+                            class="fa fa-lg fa-trash-o"
+                            aria-hidden="true"></i>
                         <x:updateActionListener
-                                property="#{Metadaten.curPerson}"
-                                value="#{cc.attrs.person}"/>
+                            property="#{Metadaten.curPerson}"
+                            value="#{cc.attrs.person}" />
                         <f:param
-                                name="ID"
-                                value="#{cc.attrs.person.identifier}"/>
+                            name="ID"
+                            value="#{cc.attrs.person.identifier}" />
                         <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip"/>
+                            name="data-toggle"
+                            value="tooltip" />
                         <f:passThroughAttribute
-                                name="data-placement"
-                                value="top"/>
+                            name="data-placement"
+                            value="top" />
                         <f:ajax
-                                execute="@form"
-                                render="@form"/>
+                            execute="@form"
+                            render="@form" />
                     </button>
 
                     <!-- COPY -->
                     <button
-                            jsf:id="copy"
-                            tabindex="0"
-                            class="btn btn--icon-light personButton"
-                            jsf:action="#{Metadaten.KopierenPerson}"
-                            title="#{msgs.personendatenKopieren}"
-                            aria-label="#{msgs.personendatenKopieren}"
-                            jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
-                            type="button">
+                        jsf:id="copy"
+                        tabindex="0"
+                        class="btn btn--icon-light personButton"
+                        jsf:action="#{Metadaten.KopierenPerson}"
+                        title="#{msgs.personendatenKopieren}"
+                        aria-label="#{msgs.personendatenKopieren}"
+                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
+                        type="button">
                         <i
-                                class="fa fa-lg fa-copy"
-                                aria-hidden="true"></i>
+                            class="fa fa-lg fa-copy"
+                            aria-hidden="true"></i>
                         <x:updateActionListener
-                                property="#{Metadaten.currentPerson}"
-                                value="#{cc.attrs.person.p}"/>
+                            property="#{Metadaten.currentPerson}"
+                            value="#{cc.attrs.person.p}" />
                         <f:param
-                                name="ID"
-                                value="#{cc.attrs.person.identifier}"/>
+                            name="ID"
+                            value="#{cc.attrs.person.identifier}" />
                         <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip"/>
+                            name="data-toggle"
+                            value="tooltip" />
                         <f:passThroughAttribute
-                                name="data-placement"
-                                value="top"/>
+                            name="data-placement"
+                            value="top" />
                         <f:ajax
-                                execute="@form"
-                                render="@form"/>
+                            execute="@form"
+                            render="@form" />
                     </button>
 
 
@@ -111,111 +132,111 @@
                     <ui:fragment rendered="#{cc.attrs.person.normdata}">
                         <!-- GND -->
                         <button
-                                jsf:id="gndPerson"
-                                type="button"
-                                class="btn change-icon btn--icon-light personButton"
-                                title="#{msgs.NORM_gndSearch}"
-                                aria-label="#{msgs.NORM_gndSearch}"
-                                jsf:onclick="$('#gndSearchBox').modal('show');">
+                            jsf:id="gndPerson"
+                            type="button"
+                            class="btn change-icon btn--icon-light personButton"
+                            title="#{msgs.NORM_gndSearch}"
+                            aria-label="#{msgs.NORM_gndSearch}"
+                            jsf:onclick="$('#gndSearchBox').modal('show');">
                             <img
-                                    class="toggle"
-                                    style="width: 16px;"
-                                    alt="GND"
-                                    src="template/img/Icons_GND_grey.png"/>
+                                class="toggle"
+                                style="width: 16px;"
+                                alt="GND"
+                                src="template/img/Icons_GND_grey.png" />
                             <img
-                                    class="toggle"
-                                    style="width: 16px;"
-                                    alt="GND"
-                                    src="template/img/Icons_GND_color.png"/>
+                                class="toggle"
+                                style="width: 16px;"
+                                alt="GND"
+                                src="template/img/Icons_GND_color.png" />
                             <f:setPropertyActionListener
-                                    value="#{cc.attrs.person}"
-                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                value="#{cc.attrs.person}"
+                                target="#{Metadaten.currentMetadataToPerformSearch}" />
                             <f:ajax
-                                    execute="@this"
-                                    render=":gndModalContent"/>
+                                execute="@this"
+                                render=":gndModalContent" />
                             <f:setPropertyActionListener
-                                    value="false"
-                                    target="#{cc.attrs.person.searchInKulturnav}" />
+                                value="false"
+                                target="#{cc.attrs.person.searchInKulturnav}" />
                             <f:setPropertyActionListener
-                                    value="false"
-                                    target="#{cc.attrs.person.searchInViaf}" />
+                                value="false"
+                                target="#{cc.attrs.person.searchInViaf}" />
                             <f:passThroughAttribute
-                                    name="data-toggle"
-                                    value="tooltip"/>
+                                name="data-toggle"
+                                value="tooltip" />
                         </button>
 
                         <!--Viaf-->
                         <button
-                                jsf:id="viaf"
-                                type="button"
-                                class="btn change-icon viafIndexTrigger btn--icon-light personButton"
-                                title="#{msgs.NORM_viafSearch}"
-                                aria-label="#{msgs.NORM_viafSearch}"
-                                jsf:onclick="$('#viafSearchBox').modal('show');">
+                            jsf:id="viaf"
+                            type="button"
+                            class="btn change-icon viafIndexTrigger btn--icon-light personButton"
+                            title="#{msgs.NORM_viafSearch}"
+                            aria-label="#{msgs.NORM_viafSearch}"
+                            jsf:onclick="$('#viafSearchBox').modal('show');">
 
                             <img
-                                    class="toggle"
-                                    style="width: 16px;"
-                                    alt="VIAF"
-                                    src="template/img/Icons_Viaf_grey.png"/>
+                                class="toggle"
+                                style="width: 16px;"
+                                alt="VIAF"
+                                src="template/img/Icons_Viaf_grey.png" />
                             <img
-                                    class="toggle"
-                                    style="width: 16px;"
-                                    alt="VIAF"
-                                    src="template/img/Icons_Viaf_color.png"/>
+                                class="toggle"
+                                style="width: 16px;"
+                                alt="VIAF"
+                                src="template/img/Icons_Viaf_color.png" />
                             <f:setPropertyActionListener
-                                    value="#{cc.attrs.person}"
-                                    target="#{Metadaten.currentMetadataToPerformSearch}"/>
+                                value="#{cc.attrs.person}"
+                                target="#{Metadaten.currentMetadataToPerformSearch}" />
                             <f:ajax
-                                    execute="@this"
-                                    render=":viafModalContent"/>
+                                execute="@this"
+                                render=":viafModalContent" />
                             <f:setPropertyActionListener
-                                    value="true"
-                                    target="#{cc.attrs.person.searchInViaf}"/>
+                                value="true"
+                                target="#{cc.attrs.person.searchInViaf}" />
                             <f:setPropertyActionListener
-                                    value="false"
-                                    target="#{cc.attrs.person.searchInKulturnav}"/>
+                                value="false"
+                                target="#{cc.attrs.person.searchInKulturnav}" />
                             <f:passThroughAttribute
-                                    name="data-toggle"
-                                    value="tooltip"/>
+                                name="data-toggle"
+                                value="tooltip" />
                         </button>
 
                         <!-- KULTURNAV -->
                         <button
-                                jsf:id="kulturnav"
-                                type="button"
-                                class="btn change-icon btn--icon-light personButton"
-                                title="#{msgs.NORM_kulturnavSearch}"
-                                pt:aria-label="#{msgs.NORM_kulturnavSearch}"
-                                jsf:onclick="$('#kulturnavSearchBox').modal('show');">
+                            jsf:id="kulturnav"
+                            type="button"
+                            class="btn change-icon btn--icon-light personButton"
+                            title="#{msgs.NORM_kulturnavSearch}"
+                            pt:aria-label="#{msgs.NORM_kulturnavSearch}"
+                            jsf:onclick="$('#kulturnavSearchBox').modal('show');">
                             <img
-                                    class="toggle"
-                                    style="width: 16px;"
-                                    alt="KN"
-                                    src="template/img/import_grey.svg"/>
+                                class="toggle"
+                                style="width: 16px;"
+                                alt="KN"
+                                src="template/img/import_grey.svg" />
                             <img
-                                    class="toggle"
-                                    style="width: 16px;"
-                                    alt="KN"
-                                    src="template/img/import.svg"/>
+                                class="toggle"
+                                style="width: 16px;"
+                                alt="KN"
+                                src="template/img/import.svg" />
 
                             <f:setPropertyActionListener
-                                    value="#{cc.attrs.person}"
-                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                value="#{cc.attrs.person}"
+                                target="#{Metadaten.currentMetadataToPerformSearch}" />
                             <f:ajax
-                                    execute="@this"
-                                    render=":kulturnavModalContent"/>
+                                execute="@this"
+                                render=":kulturnavModalContent" />
 
                             <f:setPropertyActionListener
-                                    value="true"
-                                    target="#{cc.attrs.person.searchInKulturnav}" />
+                                value="true"
+                                target="#{cc.attrs.person.searchInKulturnav}" />
 
                             <f:setPropertyActionListener
-                                    value="false"
-                                    target="#{cc.attrs.person.searchInViaf}" />
+                                value="false"
+                                target="#{cc.attrs.person.searchInViaf}" />
                             <f:passThroughAttribute
-                                    name="data-toggle"
-                                    value="tooltip" />
+                                name="data-toggle"
+                                value="tooltip" />
                         </button>
                     </ui:fragment>
                 </div>
@@ -229,21 +250,21 @@
                 <!-- LABEL -->
                 <div class="col-3">
                     <h:outputText
-                            styleClass="form-group__label"
-                            value="#{msgs.nachname}:"/>
+                        styleClass="form-group__label"
+                        value="#{msgs.nachname}:" />
                 </div>
                 <!-- INPUT -->
                 <div class="col-7">
                     <x:inputText
-                            id="lastname"
-                            pt:aria-label="#{msgs.nachname}"
-                            styleClass="form-control"
-                            value="#{cc.attrs.person.nachname}"
-                            required="#{cc.attrs.required}"
-                            readonly="#{Metadaten.nurLesenModus}">
+                        id="lastname"
+                        pt:aria-label="#{msgs.nachname}"
+                        styleClass="form-control"
+                        value="#{cc.attrs.person.nachname}"
+                        required="#{cc.attrs.required}"
+                        readonly="#{Metadaten.nurLesenModus}">
                         <f:ajax
-                                execute="@form"
-                                event="valueChange"/>
+                            execute="@form"
+                            event="valueChange" />
                     </x:inputText>
                 </div>
                 <div class="btn-area"></div>
@@ -257,23 +278,24 @@
                 <!-- LABEL -->
                 <div class="col-3">
                     <h:outputText
-                            styleClass="form-group__label"
-                            value="#{msgs.rolle}:"/>
+                        styleClass="form-group__label"
+                        value="#{msgs.rolle}:" />
                 </div>
                 <!-- INPUT -->
                 <div class="col-7">
                     <div class="form-control form-control--select">
                         <h:selectOneMenu
-                                id="role"
-                                styleClass="focusable"
-                                pt:aria-label="#{msgs.rolle}"
-                                value="#{cc.attrs.person.rolle}"
-                                disabled="#{Metadaten.nurLesenModus}"
-                                readonly="#{Metadaten.nurLesenModus}">
-                            <f:selectItems value="#{cc.attrs.person.addableRollen}"/>
+                            id="role"
+                            styleClass="focusable"
+                            pt:aria-label="#{msgs.rolle}"
+                            value="#{cc.attrs.person.rolle}"
+                            disabled="#{Metadaten.nurLesenModus}"
+                            readonly="#{Metadaten.nurLesenModus}">
+                            <f:selectItems value="#{cc.attrs.person.addableRollen}" />
                             <f:ajax
-                                    execute="@form"
-                                    event="valueChange"/>
+                                execute="@form"
+                                event="valueChange"
+                                render="restrictBtn" />
                         </h:selectOneMenu>
                     </div>
                 </div>
@@ -288,8 +310,8 @@
                 <!-- LABEL -->
                 <div class="col-3">
                     <h:outputText
-                            styleClass="form-group__label"
-                            value="#{msgs.mets_authority_data}:"/>
+                        styleClass="form-group__label"
+                        value="#{msgs.mets_authority_data}:" />
                 </div>
                 <!-- INPUT -->
                 <div class="col-7">
@@ -297,32 +319,32 @@
                         <div class="col">
                             <div class="form-control form-control--select">
                                 <h:selectOneMenu
-                                        id="normDatabase"
-                                        styleClass="focusable"
-                                        pt:aria-label="#{msgs.mets_authority_database}"
-                                        value="#{cc.attrs.person.normDatabase}"
-                                        readonly="#{Metadaten.nurLesenModus}">
+                                    id="normDatabase"
+                                    styleClass="focusable"
+                                    pt:aria-label="#{msgs.mets_authority_database}"
+                                    value="#{cc.attrs.person.normDatabase}"
+                                    readonly="#{Metadaten.nurLesenModus}">
                                     <f:selectItems
-                                            value="#{cc.attrs.person.possibleDatabases}"
-                                            var="database"
-                                            itemLabel="#{database}"
-                                            itemValue="#{database}"/>
+                                        value="#{cc.attrs.person.possibleDatabases}"
+                                        var="database"
+                                        itemLabel="#{database}"
+                                        itemValue="#{database}" />
                                     <f:ajax
-                                            execute="@form"
-                                            event="valueChange"/>
+                                        execute="@form"
+                                        event="valueChange" />
                                 </h:selectOneMenu>
                             </div>
                         </div>
                         <div class="col">
                             <h:inputText
-                                    id="normdataValue"
-                                    pt:aria-label="#{msgs.mets_authority_data} #{msgs.wert}"
-                                    styleClass="form-control"
-                                    value="#{cc.attrs.person.normdataValue}"
-                                    readonly="#{Metadaten.nurLesenModus}">
+                                id="normdataValue"
+                                pt:aria-label="#{msgs.mets_authority_data} #{msgs.wert}"
+                                styleClass="form-control"
+                                value="#{cc.attrs.person.normdataValue}"
+                                readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax
-                                        execute="@form"
-                                        event="valueChange"/>
+                                    execute="@form"
+                                    event="valueChange" />
                             </h:inputText>
                         </div>
                     </div>
@@ -334,17 +356,17 @@
 
         <!-- ADDITIONAL PARTS -->
         <x:dataList
-                var="part"
-                value="#{cc.attrs.person.additionalNameParts}"
-                rendered="#{cc.attrs.person.showAdditionalParts}">
+            var="part"
+            value="#{cc.attrs.person.additionalNameParts}"
+            rendered="#{cc.attrs.person.showAdditionalParts}">
 
             <div class="form-group form-group--flex">
                 <div class="row justify-content-between">
                     <!-- LABEL -->
                     <div class="col-3">
                         <h:outputText
-                                styleClass="form-group__label"
-                                value="#{msgs.mets_namePart}:"/>
+                            styleClass="form-group__label"
+                            value="#{msgs.mets_namePart}:" />
                     </div>
                     <!-- INPUT -->
                     <div class="col-7">
@@ -352,28 +374,28 @@
                             <div class="col">
                                 <div class="form-control form-control--select">
                                     <h:selectOneMenu
-                                            id="namepartType"
-                                            styleClass="focusable"
-                                            value="#{part.type}"
-                                            readonly="#{Metadaten.nurLesenModus}">
-                                        <f:selectItems value="#{cc.attrs.person.possibleNamePartTypes}"/>
+                                        id="namepartType"
+                                        styleClass="focusable"
+                                        value="#{part.type}"
+                                        readonly="#{Metadaten.nurLesenModus}">
+                                        <f:selectItems value="#{cc.attrs.person.possibleNamePartTypes}" />
                                         <f:ajax
-                                                execute="@form"
-                                                event="valueChange"
-                                                render="@form"/>
+                                            execute="@form"
+                                            event="valueChange"
+                                            render="@form" />
                                     </h:selectOneMenu>
                                 </div>
                             </div>
                             <div class="col">
                                 <h:inputText
-                                        id="namepartValue"
-                                        styleClass="form-control"
-                                        value="#{part.value}"
-                                        readonly="#{Metadaten.nurLesenModus}">
+                                    id="namepartValue"
+                                    styleClass="form-control"
+                                    value="#{part.value}"
+                                    readonly="#{Metadaten.nurLesenModus}">
                                     <f:ajax
-                                            execute="@form"
-                                            event="valueChange"
-                                            render="@form"/>
+                                        execute="@form"
+                                        event="valueChange"
+                                        render="@form" />
                                 </h:inputText>
                             </div>
                         </div>
@@ -388,24 +410,26 @@
                 <div class="col-auto mr-auto"></div>
                 <div class="col-auto">
                     <button
-                            jsf:id="addNamePart"
-                            class="btn btn--link"
-                            jsf:action="#{cc.attrs.person.addNamePart}"
-                            title="#{msgs.addNamePart}"
-                            type="button">
+                        jsf:id="addNamePart"
+                        class="btn btn--link"
+                        jsf:action="#{cc.attrs.person.addNamePart}"
+                        title="#{msgs.addNamePart}"
+                        type="button">
                         #{msgs.addNamePart}
                         <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip"/>
+                            name="data-toggle"
+                            value="tooltip" />
                         <f:passThroughAttribute
-                                name="data-placement"
-                                value="top"/>
-                                <f:ajax execute="@this" render="@form"/>
+                            name="data-placement"
+                            value="top" />
+                        <f:ajax
+                            execute="@this"
+                            render="@form" />
                     </button>
                 </div>
             </div>
         </ui:fragment>
 
-        <hr/>
+        <hr />
     </composite:implementation>
 </ui:composition>
