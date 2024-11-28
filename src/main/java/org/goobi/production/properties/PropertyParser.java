@@ -521,7 +521,10 @@ public class PropertyParser {
         List<ProcessProperty> properties = new ArrayList<>();
 
         List<HierarchicalConfiguration> propertyList = config.configurationsAt("/property");
-        for (HierarchicalConfiguration prop : propertyList) {
+        for (int i = 0; i < propertyList.size(); i++) {
+            HierarchicalConfiguration prop = propertyList.get(i);
+            String property = "/property[" + (i+1) + "]";
+
             ProcessProperty pp = new ProcessProperty();
             // general values for property
             pp.setName(prop.getString("@name"));
@@ -574,7 +577,7 @@ public class PropertyParser {
                 }
 
                 if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
-                    String vocabularyName = config.getString(prop + "/vocabulary");
+                     String vocabularyName = config.getString(property + "/vocabulary");
                     try {
                         long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
                         pp.setPossibleValues(new LinkedList<>());
@@ -587,7 +590,7 @@ public class PropertyParser {
                                 .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
                                 .toList());
                     } catch (APIException e) {
-                        log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", prop, e);
+                        log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
                     }
                 } else {
                     // possible values
