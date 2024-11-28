@@ -57,7 +57,6 @@ public class VocabularyRecordsBean implements Serializable {
     private static final long serialVersionUID = 5672948572345L;
 
     private static final String RETURN_PAGE_OVERVIEW = "vocabulary_records";
-    private static final String RETURN_PAGE_UPLOAD = "vocabulary_upload";
 
     private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
 
@@ -75,7 +74,7 @@ public class VocabularyRecordsBean implements Serializable {
     private Part uploadedFile;
     @Getter
     @Setter
-    private boolean clearBeforeImport;
+    private boolean clearBeforeImport = false;
 
     public String load(ExtendedVocabulary vocabulary) {
         this.vocabulary = vocabulary;

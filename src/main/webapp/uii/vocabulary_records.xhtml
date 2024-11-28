@@ -163,10 +163,12 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <label class="btn">
-                            <input type="checkbox" jsf:value="#{vocabularyRecordsBean.clearBeforeImport}" />
-                            Clear before import
-                        </label>
+                        <div style="display: none">
+                            <label class="btn">
+                                <input type="checkbox" jsf:value="#{vocabularyRecordsBean.clearBeforeImport}" />
+                                Clear before import
+                            </label>
+                        </div>
                         <!-- Cancel -->
                         <a
                                 class="btn btn-blank"
