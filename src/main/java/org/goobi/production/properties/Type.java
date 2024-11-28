@@ -38,7 +38,8 @@ public enum Type {
     LINK("link"),
     METADATA("metadata"),
     HTML("html"),
-    VOCABULARYREFERENCE("vocabularyreference");
+    VOCABULARYREFERENCE("vocabularyreference"),
+    VOCABULARYMULTIREFERENCE("vocabularymultireference");
 
     @Getter
     private String name;

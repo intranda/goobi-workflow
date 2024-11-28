@@ -404,7 +404,7 @@ public class PropertyParser {
                     pp.setReadValue("");
                 }
 
-                if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
+                if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
                     String vocabularyName = config.getString(property + "/vocabulary");
                     try {
                         long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
@@ -416,7 +416,7 @@ public class PropertyParser {
                                 .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
                                 .toList());
                     } catch (APIException e) {
-                        log.warn("Unable to parse vocabulary reference property \"{}\"", property, e);
+                        log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
                     }
                 }
 

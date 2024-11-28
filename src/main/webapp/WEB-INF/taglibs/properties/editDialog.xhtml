@@ -140,6 +140,25 @@
                         </div>
                     </div>
                 </h:panelGroup>
+                <!-- Multi vocabulary references -->
+                <h:panelGroup rendered="#{(myprocess_item.type.name == 'vocabularymultireference')}">
+                    <div class="row">
+                        <div class="col-12 col-md-3">
+                            <h:outputLabel
+                                    for="select"
+                                    styleClass="control-label"
+                                    value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <intranda:formInputDropdownBadges selectionBean="#{myprocess_item.selectionBean}"/>
+                            <h:message
+                                    for="select"
+                                    showDetail="true"
+                                    styleClass="help-inline text-danger" />
+                            <intranda:formHelp content="#{msgs.helpPropertyValue}" />
+                        </div>
+                    </div>
+                </h:panelGroup>
                 <!--  SelectManyMenu -->
                 <h:panelGroup rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
                     <div class="row">
