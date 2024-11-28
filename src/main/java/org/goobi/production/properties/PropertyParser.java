@@ -27,8 +27,10 @@ package org.goobi.production.properties;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
+import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import org.apache.commons.configuration.ConfigurationException;
@@ -273,12 +275,31 @@ public class PropertyParser {
                         pp.setReadValue("");
                     }
 
-                    // possible values
-                    count = config.getMaxIndex(property + "/value");
-                    for (int j = 0; j <= count; j++) {
-                        String value = config.getString(property + "/value[" + (j + 1) + "]");
-                        pp.getPossibleValues().add(new SelectItem(value, value));
+                    if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
+                        String vocabularyName = config.getString(property + "/vocabulary");
+                        try {
+                            long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
+                            pp.setPossibleValues(new LinkedList<>());
+                            pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+                            pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
+                                    .all()
+                                    .request()
+                                    .getContent()
+                                    .stream()
+                                    .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
+                                    .toList());
+                        } catch (APIException e) {
+                            log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
+                        }
+                    } else {
+                        // possible values
+                        count = config.getMaxIndex(property + "/value");
+                        for (int j = 0; j <= count; j++) {
+                            String value = config.getString(property + "/value[" + (j + 1) + "]");
+                            pp.getPossibleValues().add(new SelectItem(value, value));
+                        }
                     }
+
                     properties.add(pp);
                 }
             }
@@ -408,7 +429,9 @@ public class PropertyParser {
                     String vocabularyName = config.getString(property + "/vocabulary");
                     try {
                         long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
-                        pp.setPossibleValues(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
+                        pp.setPossibleValues(new LinkedList<>());
+                        pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+                        pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
                                 .all()
                                 .request()
                                 .getContent()
@@ -418,14 +441,15 @@ public class PropertyParser {
                     } catch (APIException e) {
                         log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
                     }
+                } else {
+                    // possible values
+                    count = config.getMaxIndex(property + "/value");
+                    for (int j = 0; j <= count; j++) {
+                        String value = config.getString(property + "/value[" + (j + 1) + "]");
+                        pp.getPossibleValues().add(new SelectItem(value, value));
+                    }
                 }
 
-                // possible values
-                count = config.getMaxIndex(property + "/value");
-                for (int j = 0; j <= count; j++) {
-                    String value = config.getString(property + "/value[" + (j + 1) + "]");
-                    pp.getPossibleValues().add(new SelectItem(value, value));
-                }
                 if (log.isDebugEnabled()) {
                     log.debug("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                 }
@@ -549,10 +573,29 @@ public class PropertyParser {
                     pp.getProcessCreationConditions().add(new StringPair(hc.getString("@property"), hc.getString("@value")));
                 }
 
-                // possible values
-                pp.getPossibleValues().addAll(Arrays.stream(prop.getStringArray("/value"))
-                        .map(v -> new SelectItem(v, v))
-                        .toList());
+                if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
+                    String vocabularyName = config.getString(prop + "/vocabulary");
+                    try {
+                        long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
+                        pp.setPossibleValues(new LinkedList<>());
+                        pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+                        pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
+                                .all()
+                                .request()
+                                .getContent()
+                                .stream()
+                                .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
+                                .toList());
+                    } catch (APIException e) {
+                        log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", prop, e);
+                    }
+                } else {
+                    // possible values
+                    pp.getPossibleValues().addAll(Arrays.stream(prop.getStringArray("/value"))
+                            .map(v -> new SelectItem(v, v))
+                            .toList());
+                }
+
                 properties.add(pp);
             }
         }

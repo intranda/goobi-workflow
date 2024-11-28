@@ -31,6 +31,7 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.managedbeans.FormInputMultiSelectBean;
@@ -236,6 +237,9 @@ public class ProcessProperty implements IProperty, Serializable {
     }
 
     private String readVocabularyMainValueForRecord(String ref) {
+        if (StringUtils.isBlank(ref)) {
+            return "";
+        }
         try {
             ExtendedVocabularyRecord rec = VocabularyAPIManager.getInstance().vocabularyRecords().get(ref);
             return rec.getMainValue();
