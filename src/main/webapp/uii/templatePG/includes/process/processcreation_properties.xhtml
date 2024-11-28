@@ -95,7 +95,7 @@
                     </div>
                 </h:panelGroup>
                 <!--  SELECT ONE -->
-                <h:panelGroup rendered="#{(property.type.name == 'list')}">
+                <h:panelGroup rendered="#{(property.type.name == 'list') or (property.type.name == 'vocabularyreference')}">
                     <div class="row">
                         <div class="col-12 col-md-3">
                             <intranda:formLabel
@@ -117,6 +117,28 @@
                                     itemValue="#{propertys}" />
                             </h:selectOneMenu>
                             <intranda:formHelp msgFor="#{select.clientId}" content="#{msgs.helpPropertyValue}" />
+                        </div>
+                    </div>
+                </h:panelGroup>
+                <!-- Multi vocabulary references -->
+                <h:panelGroup rendered="#{(property.type.name == 'vocabularymultireference')}">
+                    <div class="row">
+                        <div class="col-12 col-md-3">
+                            <h:outputLabel
+                                    for="select"
+                                    styleClass="control-label"
+                                    value="#{!property.isNew?property.name:msgs.wert}" />
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <intranda:formInputDropdownBadges
+                                    selectionBean="#{property.selectionBean}"
+                                    readonly="#{property.showProcessGroupAccessCondition == 'READ'}"
+                            />
+                            <h:message
+                                    for="select"
+                                    showDetail="true"
+                                    styleClass="help-inline text-danger" />
+                            <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                         </div>
                     </div>
                 </h:panelGroup>

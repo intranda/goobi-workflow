@@ -150,7 +150,10 @@
                                     value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
                         </div>
                         <div class="col-12 col-md-9">
-                            <intranda:formInputDropdownBadges selectionBean="#{myprocess_item.selectionBean}"/>
+                            <intranda:formInputDropdownBadges
+                                    selectionBean="#{myprocess_item.selectionBean}"
+                                    readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+                            />
                             <h:message
                                     for="select"
                                     showDetail="true"

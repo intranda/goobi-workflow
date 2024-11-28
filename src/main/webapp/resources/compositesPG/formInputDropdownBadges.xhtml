@@ -15,6 +15,11 @@
                 type="org.goobi.managedbeans.FormInputMultiSelectBean"
                 required="true"
         />
+        <composite:attribute
+                name="readonly"
+                type="java.lang.Boolean"
+                required="false"
+                default="false" />
     </composite:interface>
 
     <composite:implementation>
@@ -25,13 +30,14 @@
                         id="field4"
                         forceId="true"
                         value="#{cc.attrs.selectionBean.currentSelection}"
-                        required="false">
+                        required="false"
+                        disabled="#{cc.attrs.readonly}">
                     <f:ajax execute="@form" render="@form" event="change"/>
                     <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}"/>
                     <f:selectItems value="#{cc.attrs.selectionBean.currentlySelectableItems}"/>
                 </h:selectOneMenu>
 
-                <h:panelGroup id="multiselect-id">
+                <h:panelGroup id="multiselect-id" rendered="#{cc.attrs.readonly == false}">
                     <x:dataList
                             id="datalist-id"
                             value="#{cc.attrs.selectionBean.selection}"
@@ -41,10 +47,23 @@
                                 title="#{msgs.removeSelectedItem}" data-bs-toggle="tooltip">
                             <span class="fa fa-trash fs-400"/>
                             <span class="fs-400">
-                            <h:outputText value="#{selection.label}"/>
-                        </span>
+                                <h:outputText value="#{selection.label}"/>
+                            </span>
                             <f:ajax execute="@form" render="@form"/>
                         </button>
+                    </x:dataList>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{cc.attrs.readonly == true}">
+                    <x:dataList
+                            id="datalist-readonly-id"
+                            value="#{cc.attrs.selectionBean.selection}"
+                            var="selection">
+                        <span class="badge badge-intranda-light mt-3">
+                            <span class="fa fa-trash fs-400"/>
+                            <span class="fs-400">
+                                <h:outputText value="#{selection.label}"/>
+                            </span>
+                        </span>
                     </x:dataList>
                 </h:panelGroup>
             </h:panelGroup>
