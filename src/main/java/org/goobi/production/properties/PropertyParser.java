@@ -430,7 +430,10 @@ public class PropertyParser {
                     try {
                         long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
                         pp.setPossibleValues(new LinkedList<>());
-                        pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+                        // this "Please select" element is only required for non drop-down badge components, as this component handles it itself
+                        if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
+                            pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+                        }
                         pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
                                 .all()
                                 .request()
@@ -444,6 +447,9 @@ public class PropertyParser {
                 } else {
                     // possible values
                     count = config.getMaxIndex(property + "/value");
+                    if (count > 0 && pp.getPossibleValues().isEmpty() && !Type.LISTMULTISELECT.equals(pp.getType())) {
+                        pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+                    }
                     for (int j = 0; j <= count; j++) {
                         String value = config.getString(property + "/value[" + (j + 1) + "]");
                         pp.getPossibleValues().add(new SelectItem(value, value));
