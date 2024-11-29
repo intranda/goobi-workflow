@@ -37,33 +37,21 @@
                     <f:selectItems value="#{cc.attrs.selectionBean.currentlySelectableItems}"/>
                 </h:selectOneMenu>
 
-                <h:panelGroup id="multiselect-id" rendered="#{cc.attrs.readonly == false}">
+                <h:panelGroup id="multiselect-id">
                     <x:dataList
                             id="datalist-id"
                             value="#{cc.attrs.selectionBean.selection}"
                             var="selection">
                         <button class="badge badge-intranda-light mt-3"
                                 jsf:action="#{cc.attrs.selectionBean.removeSelection(selection)}"
-                                title="#{msgs.removeSelectedItem}" data-bs-toggle="tooltip">
+                                title="#{msgs.removeSelectedItem}" data-bs-toggle="tooltip"
+                                disabled="#{cc.attrs.readonly == true ? 'disabled' : null}">
                             <span class="fa fa-trash fs-400"/>
                             <span class="fs-400">
                                 <h:outputText value="#{selection.label}"/>
                             </span>
                             <f:ajax execute="@form" render="@form"/>
                         </button>
-                    </x:dataList>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{cc.attrs.readonly == true}">
-                    <x:dataList
-                            id="datalist-readonly-id"
-                            value="#{cc.attrs.selectionBean.selection}"
-                            var="selection">
-                        <span class="badge badge-intranda-light mt-3">
-                            <span class="fa fa-trash fs-400"/>
-                            <span class="fs-400">
-                                <h:outputText value="#{selection.label}"/>
-                            </span>
-                        </span>
                     </x:dataList>
                 </h:panelGroup>
             </h:panelGroup>
