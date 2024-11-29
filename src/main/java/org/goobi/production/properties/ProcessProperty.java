@@ -108,14 +108,17 @@ public class ProcessProperty implements IProperty, Serializable {
     private String pattern = "dd.MM.yyyy";
 
     @Getter
-    private FormInputMultiSelectBean selectionBean;
+    private FormInputMultiSelectBean normalSelectionBean;
+    @Getter
+    private FormInputMultiSelectBean vocabularySelectionBean;
 
     public ProcessProperty() {
         this.possibleValues = new ArrayList<>();
         this.projects = new ArrayList<>();
         this.workflows = new ArrayList<>();
         this.showStepConditions = new ArrayList<>();
-        this.selectionBean = new FormInputMultiSelectHelper(() -> this.possibleValues, this::getSelectedVocabularyRecords, this::setSelectedVocabularyRecords);
+        this.normalSelectionBean = new FormInputMultiSelectHelper(() -> this.possibleValues, this::getSelectedValues, this::setSelectedValues);
+        this.vocabularySelectionBean = new FormInputMultiSelectHelper(() -> this.possibleValues, this::getSelectedVocabularyRecords, this::setSelectedValues);
     }
 
     /*
@@ -230,6 +233,14 @@ public class ProcessProperty implements IProperty, Serializable {
         this.readValue = value;
     }
 
+    private List<SelectItem> getSelectedValues() {
+        return new LinkedList<>(
+                getValueList().stream()
+                        .map(value -> new SelectItem(value, value))
+                        .toList()
+        );
+    }
+
     public List<String> getMultiVocabularyReferenceList() {
         return getValueList().stream()
                 .map(this::readVocabularyMainValueForRecord)
@@ -257,7 +268,7 @@ public class ProcessProperty implements IProperty, Serializable {
         );
     }
 
-    private void setSelectedVocabularyRecords(List<SelectItem> selectItems) {
+    private void setSelectedValues(List<SelectItem> selectItems) {
         this.setValueList(selectItems.stream()
                 .map(SelectItem::getValue)
                 .map(Object::toString)

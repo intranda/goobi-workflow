@@ -140,8 +140,8 @@
                         </div>
                     </div>
                 </h:panelGroup>
-                <!-- Multi vocabulary references -->
-                <h:panelGroup rendered="#{(myprocess_item.type.name == 'vocabularymultireference')}">
+                <!-- SelectManyMenu -->
+                <h:panelGroup rendered="#{(myprocess_item.type.name == 'listmultiselect') or (myprocess_item.type.name == 'vocabularymultireference')}">
                     <div class="row">
                         <div class="col-12 col-md-3">
                             <h:outputLabel
@@ -151,43 +151,13 @@
                         </div>
                         <div class="col-12 col-md-9">
                             <intranda:formInputDropdownBadges
-                                    selectionBean="#{myprocess_item.selectionBean}"
+                                    selectionBean="#{myprocess_item.type.name == 'vocabularymultireference' ? myprocess_item.vocabularySelectionBean : myprocess_item.normalSelectionBean}"
                                     readonly="#{scope == 'step' ? myprocess_item.currentStepAccessCondition == 'READ' : myprocess_item.showProcessGroupAccessCondition == 'READ'}"
                             />
                             <h:message
                                     for="select"
                                     showDetail="true"
                                     styleClass="help-inline text-danger" />
-                            <intranda:formHelp content="#{msgs.helpPropertyValue}" />
-                        </div>
-                    </div>
-                </h:panelGroup>
-                <!--  SelectManyMenu -->
-                <h:panelGroup rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
-                    <div class="row">
-                        <div class="col-12 col-md-3">
-                            <h:outputLabel
-                                for="selectmany"
-                                styleClass="control-label"
-                                value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-                        </div>
-                        <div class="col-12 col-md-9">
-                            <h:selectManyListbox
-                                id="selectmany"
-                                value="#{myprocess_item.valueList}"
-                                size="5"
-                                styleClass="form-control"
-                                disabled="#{scope == 'step' ? myprocess_item.currentStepAccessCondition == 'READ' : myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-                                <f:selectItems
-                                    value="#{myprocess_item.possibleValues}"
-                                    var="myprocess_items"
-                                    itemLabel="#{myprocess_items}"
-                                    itemValue="#{myprocess_items}" />
-                            </h:selectManyListbox>
-                            <h:message
-                                for="selectmany"
-                                showDetail="true"
-                                styleClass="help-inline text-danger" />
                             <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                         </div>
                     </div>
