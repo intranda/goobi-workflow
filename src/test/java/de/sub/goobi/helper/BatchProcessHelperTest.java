@@ -291,6 +291,7 @@ public class BatchProcessHelperTest extends AbstractTest {
 
         PowerMock.mockStatic(Helper.class);
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getTranslation("bitteAuswaehlen")).andReturn("Please select").anyTimes();
         EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
         Helper.setMeldung(EasyMock.anyString());
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
