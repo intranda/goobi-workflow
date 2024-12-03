@@ -268,14 +268,7 @@
                                 value="#{bean.journal}"
                                 varStatus="row">
                                 <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
-                                    <ui:fragment rendered="#{entry.formattedDate != bean.journal[row.index-1].formattedDate}">
-                                        <h3 class="feed-heading">
-                                            <h:outputText
-                                                value="#{entry.formattedDate}">
-                                            </h:outputText>
-                                            <span class="filler filler-horizontal" />
-                                        </h3>
-                                    </ui:fragment>
+                                    
                                     <li class="feed-item">
                                         <span class="feed-item-icon fs-600">
                                             <ui:fragment rendered="#{entry.type.title == 'important'}">
@@ -346,7 +339,7 @@
                                         </span>
                                         <span class="feed-item-timestamp">
                                             <h:outputText
-                                                value="#{entry.creationTime}">
+                                                value="#{entry.formattedDate} #{entry.creationTime}">
                                             </h:outputText>
                                         </span>
                                     </li>
