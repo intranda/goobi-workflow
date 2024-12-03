@@ -12,7 +12,9 @@
         : fn:contains(bean, 'BatchProcessHelper')? 'batch'
         : 'process'
     }" />
+    
     <div class="properties-group">
+ 
         <section:section
             type="outline">
             <section:header
@@ -51,7 +53,7 @@
                                 class="btn d-flex align-items-center btn--title-action-neutral"
                                 data-bs-toggle="tooltip"
                                 jsf:action="step_edit"
-                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
+                                jsf:rendered="#{bean.containers[container].propertyList[0].type.name != 'metadata'}"
                                 title="#{msgs.bearbeiten}"
                                 jsf:id="editProperty2">
                                 <span
