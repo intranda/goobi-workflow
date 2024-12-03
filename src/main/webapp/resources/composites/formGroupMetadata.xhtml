@@ -37,18 +37,26 @@
                         value="#{cc.attrs.metadata.typ}:"
                         title="#{cc.attrs.metadata.md.type.name}" />
 
+                    <!-- SHOW LOCK/UNLOCK ACCESS RESTRICTIONS BUTTON-->
                     <h:panelGroup
                         id="restrictBtn"
                         rendered="#{cc.attrs.metadata.displayRestrictions}">
-                        <button
-                            type="button"
-                            class="btn#{cc.attrs.metadata.restricted == false ? ' btn--icon-light' : ''} d-flex flex-nowrap pt-1"
+                        <button 
+                            type="button" 
+                            class="btn #{cc.attrs.metadata.restricted == false ? 'btn--icon-light' : ''} d-flex flex-nowrap pt-1 restrict-button" 
                             jsf:id="toggle-restrictions"
                             title="#{cc.attrs.metadata.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }"
                             data-toggle="tooltip">
-                            <span class="fa fa-unlock" />
-                            <span class="fa #{cc.attrs.metadata.restricted == false ? 'fa fa-toggle-off' : 'fa fa-toggle-on toggle-on'} px-1" />
-                            <span class="fa fa-lock" />
+                            
+                            <!-- ACCESS RESTRICTION ACTIVE - ACTION: REMOVE ACCESS RESTRICTION -->
+                            <h:outputText value="" styleClass="fa fa-lg fa-lock" escape="false" 
+                            rendered="#{cc.attrs.metadata.restricted == true}"/>
+                             
+                            
+                            <!-- NO ACCESS RESTRICTION ACTIVE - ACTION: SET ACCESS RESTRICTION -->
+                            <h:outputText value="" styleClass="fa fa-lg fa-unlock" escape="false" 
+                            rendered="#{cc.attrs.metadata.restricted == false}" />
+
                             <f:ajax
                                 execute="restrictBtn"
                                 render="restrictBtn" />
@@ -57,6 +65,28 @@
                                 target="#{cc.attrs.metadata.restricted}" />
                         </button>
                     </h:panelGroup>
+                    
+<!--                     <h:panelGroup -->
+<!--                         id="restrictBtn" -->
+<!--                         rendered="#{cc.attrs.metadata.displayRestrictions}"> -->
+<!--                         <button -->
+<!--                             type="button" -->
+<!--                             class="btn#{cc.attrs.metadata.restricted == false ? ' btn-icon-light' : ''} d-flex flex-nowrap pt-1" -->
+<!--                             jsf:id="toggle-restrictions" -->
+<!--                             title="#{cc.attrs.metadata.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }" -->
+<!--                             data-toggle="tooltip"> -->
+<!--                             <span class="fa fa-unlock" /> -->
+<!--                             <span class="fa #{cc.attrs.metadata.restricted == false ? 'fa fa-toggle-off' : 'fa fa-toggle-on toggle-on'} px-1" /> -->
+<!--                             <span class="fa fa-lock" /> -->
+<!--                             <f:ajax -->
+<!--                                 execute="restrictBtn" -->
+<!--                                 render="restrictBtn" /> -->
+<!--                             <f:setPropertyActionListener -->
+<!--                                 value="#{not cc.attrs.metadata.restricted}" -->
+<!--                                 target="#{cc.attrs.metadata.restricted}" /> -->
+<!--                         </button> -->
+<!--                     </h:panelGroup> -->
+                    
                 </div>
                 <!-- INPUT -->
                 <div class="#{cc.attrs.cols eq 2 ? 'col-9' : 'col-7'}">
