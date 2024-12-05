@@ -1390,4 +1390,8 @@ public class ConfigurationHelper implements Serializable {
             }
         }
     }
+
+    public int getMaxDatabaseConnectionRetries() {
+        return getLocalInt("maxDatabaseConnectionRetries", 5);
+    }
 }

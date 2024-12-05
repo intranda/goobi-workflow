@@ -59,7 +59,7 @@ public class DatabaseVersion {
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
-    public static int getCurrentVersion() {
+    public static int getCurrentVersion() throws SQLException {
 
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -70,8 +70,6 @@ public class DatabaseVersion {
                 log.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-        } catch (SQLException e) {
-            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -81,7 +79,6 @@ public class DatabaseVersion {
                 }
             }
         }
-        return 0;
     }
 
     public static void updateDatabase(int currentVersion) {
