@@ -208,10 +208,13 @@ public class PropertyParser {
             pp.setName(config.getString(property + "/@name"));
             pp.setContainer(config.getString(property + "/@container"));
 
+            // workflows
+
+            // project and workflows are configured correct?
+
             // projects
             int count = config.getMaxIndex(property + "/project");
             for (int j = 0; j <= count; j++) {
-
                 pp.getProjects().add(config.getString(property + "/project[" + (j + 1) + "]"));
             }
 
@@ -276,21 +279,7 @@ public class PropertyParser {
                     }
 
                     if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
-                        String vocabularyName = config.getString(property + "/vocabulary");
-                        try {
-                            long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
-                            pp.setPossibleValues(new LinkedList<>());
-                            pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
-                            pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
-                                    .all()
-                                    .request()
-                                    .getContent()
-                                    .stream()
-                                    .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
-                                    .toList());
-                        } catch (APIException e) {
-                            log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
-                        }
+                        populatePossibleValuesWithVocabulary(property, pp);
                     } else {
                         // possible values
                         count = config.getMaxIndex(property + "/value");
@@ -426,24 +415,7 @@ public class PropertyParser {
                 }
 
                 if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
-                    String vocabularyName = config.getString(property + "/vocabulary");
-                    try {
-                        long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
-                        pp.setPossibleValues(new LinkedList<>());
-                        // this "Please select" element is only required for non drop-down badge components, as this component handles it itself
-                        if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
-                            pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
-                        }
-                        pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
-                                .all()
-                                .request()
-                                .getContent()
-                                .stream()
-                                .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
-                                .toList());
-                    } catch (APIException e) {
-                        log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
-                    }
+                    populatePossibleValuesWithVocabulary(property, pp);
                 } else {
                     // possible values
                     count = config.getMaxIndex(property + "/value");
@@ -583,21 +555,7 @@ public class PropertyParser {
                 }
 
                 if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
-                     String vocabularyName = config.getString(property + "/vocabulary");
-                    try {
-                        long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
-                        pp.setPossibleValues(new LinkedList<>());
-                        pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
-                        pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
-                                .all()
-                                .request()
-                                .getContent()
-                                .stream()
-                                .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
-                                .toList());
-                    } catch (APIException e) {
-                        log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
-                    }
+                    populatePossibleValuesWithVocabulary(property, pp);
                 } else {
                     // possible values
                     pp.getPossibleValues().addAll(Arrays.stream(prop.getStringArray("/value"))
@@ -612,4 +570,24 @@ public class PropertyParser {
 
     }
 
+    private void populatePossibleValuesWithVocabulary(String property, ProcessProperty pp) {
+        String vocabularyName = config.getString(property + "/vocabulary");
+        try {
+            long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
+            pp.setPossibleValues(new LinkedList<>());
+            // this "Please select" element is only required for non drop-down badge components, as this component handles it itself
+            if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
+                pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+            }
+            pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
+                    .all()
+                    .request()
+                    .getContent()
+                    .stream()
+                    .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
+                    .toList());
+        } catch (APIException e) {
+            log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
+        }
+    }
 }
