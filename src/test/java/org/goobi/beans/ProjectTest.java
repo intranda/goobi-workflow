@@ -263,14 +263,14 @@ public class ProjectTest extends AbstractTest {
     public void testNumberOfPages() {
         Project project = new Project();
         project.setNumberOfPages(42);
-        assertSame(42, project.getNumberOfPages().intValue());
+        assertSame(42, project.getNumberOfPages());
     }
 
     @Test
     public void testNumberOfVolumes() {
         Project project = new Project();
         project.setNumberOfVolumes(42);
-        assertSame(42, project.getNumberOfVolumes().intValue());
+        assertSame(42, project.getNumberOfVolumes());
     }
 
     @Test

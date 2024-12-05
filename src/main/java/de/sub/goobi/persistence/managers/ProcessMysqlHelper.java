@@ -24,7 +24,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -252,7 +256,7 @@ class ProcessMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM prozesse left join batches on prozesse.batchID = batches.id ");
-        sql.append("left JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         if (institution != null) {
             sql.append("and projekte.institution_id = ");
             sql.append(institution.getId());
@@ -281,7 +285,7 @@ class ProcessMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT prozesse.* FROM prozesse left join batches on prozesse.batchID = batches.id ");
-        sql.append("left JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         if (institution != null) {
             sql.append("and projekte.institution_id = ");
             sql.append(institution.getId());
@@ -716,7 +720,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static final ResultSetHandler<Batch> resultSetToBatchHandler = new ResultSetHandler<Batch>() {
+    public static final ResultSetHandler<Batch> resultSetToBatchHandler = new ResultSetHandler<>() {
         @Override
         public Batch handle(ResultSet rs) throws SQLException {
 
@@ -731,7 +735,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     };
 
-    public static final ResultSetHandler<List<Batch>> resultSetToBatchListHandler = new ResultSetHandler<List<Batch>>() {
+    public static final ResultSetHandler<List<Batch>> resultSetToBatchListHandler = new ResultSetHandler<>() {
         @Override
         public List<Batch> handle(ResultSet rs) throws SQLException {
             List<Batch> answer = new ArrayList<>();

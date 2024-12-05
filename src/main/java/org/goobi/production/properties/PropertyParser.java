@@ -27,8 +27,10 @@ package org.goobi.production.properties;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
+import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import org.apache.commons.configuration.ConfigurationException;
@@ -206,10 +208,13 @@ public class PropertyParser {
             pp.setName(config.getString(property + "/@name"));
             pp.setContainer(config.getString(property + "/@container"));
 
+            // workflows
+
+            // project and workflows are configured correct?
+
             // projects
             int count = config.getMaxIndex(property + "/project");
             for (int j = 0; j <= count; j++) {
-
                 pp.getProjects().add(config.getString(property + "/project[" + (j + 1) + "]"));
             }
 
@@ -273,12 +278,17 @@ public class PropertyParser {
                         pp.setReadValue("");
                     }
 
-                    // possible values
-                    count = config.getMaxIndex(property + "/value");
-                    for (int j = 0; j <= count; j++) {
-                        String value = config.getString(property + "/value[" + (j + 1) + "]");
-                        pp.getPossibleValues().add(new SelectItem(value, value));
+                    if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
+                        populatePossibleValuesWithVocabulary(property, pp);
+                    } else {
+                        // possible values
+                        count = config.getMaxIndex(property + "/value");
+                        for (int j = 0; j <= count; j++) {
+                            String value = config.getString(property + "/value[" + (j + 1) + "]");
+                            pp.getPossibleValues().add(new SelectItem(value, value));
+                        }
                     }
+
                     properties.add(pp);
                 }
             }
@@ -404,28 +414,20 @@ public class PropertyParser {
                     pp.setReadValue("");
                 }
 
-                if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
-                    String vocabularyName = config.getString(property + "/vocabulary");
-                    try {
-                        long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
-                        pp.setPossibleValues(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
-                                .all()
-                                .request()
-                                .getContent()
-                                .stream()
-                                .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
-                                .toList());
-                    } catch (APIException e) {
-                        log.warn("Unable to parse vocabulary reference property \"{}\"", property, e);
+                if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
+                    populatePossibleValuesWithVocabulary(property, pp);
+                } else {
+                    // possible values
+                    count = config.getMaxIndex(property + "/value");
+                    if (count > 0 && pp.getPossibleValues().isEmpty() && !Type.LISTMULTISELECT.equals(pp.getType())) {
+                        pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+                    }
+                    for (int j = 0; j <= count; j++) {
+                        String value = config.getString(property + "/value[" + (j + 1) + "]");
+                        pp.getPossibleValues().add(new SelectItem(value, value));
                     }
                 }
 
-                // possible values
-                count = config.getMaxIndex(property + "/value");
-                for (int j = 0; j <= count; j++) {
-                    String value = config.getString(property + "/value[" + (j + 1) + "]");
-                    pp.getPossibleValues().add(new SelectItem(value, value));
-                }
                 if (log.isDebugEnabled()) {
                     log.debug("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                 }
@@ -497,7 +499,10 @@ public class PropertyParser {
         List<ProcessProperty> properties = new ArrayList<>();
 
         List<HierarchicalConfiguration> propertyList = config.configurationsAt("/property");
-        for (HierarchicalConfiguration prop : propertyList) {
+        for (int i = 0; i < propertyList.size(); i++) {
+            HierarchicalConfiguration prop = propertyList.get(i);
+            String property = "/property[" + (i+1) + "]";
+
             ProcessProperty pp = new ProcessProperty();
             // general values for property
             pp.setName(prop.getString("@name"));
@@ -549,10 +554,15 @@ public class PropertyParser {
                     pp.getProcessCreationConditions().add(new StringPair(hc.getString("@property"), hc.getString("@value")));
                 }
 
-                // possible values
-                pp.getPossibleValues().addAll(Arrays.stream(prop.getStringArray("/value"))
-                        .map(v -> new SelectItem(v, v))
-                        .toList());
+                if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
+                    populatePossibleValuesWithVocabulary(property, pp);
+                } else {
+                    // possible values
+                    pp.getPossibleValues().addAll(Arrays.stream(prop.getStringArray("/value"))
+                            .map(v -> new SelectItem(v, v))
+                            .toList());
+                }
+
                 properties.add(pp);
             }
         }
@@ -560,4 +570,24 @@ public class PropertyParser {
 
     }
 
+    private void populatePossibleValuesWithVocabulary(String property, ProcessProperty pp) {
+        String vocabularyName = config.getString(property + "/vocabulary");
+        try {
+            long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
+            pp.setPossibleValues(new LinkedList<>());
+            // this "Please select" element is only required for non drop-down badge components, as this component handles it itself
+            if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
+                pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+            }
+            pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
+                    .all()
+                    .request()
+                    .getContent()
+                    .stream()
+                    .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
+                    .toList());
+        } catch (APIException e) {
+            log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
+        }
+    }
 }

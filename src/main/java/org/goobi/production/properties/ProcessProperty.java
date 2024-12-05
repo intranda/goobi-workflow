@@ -26,29 +26,32 @@ package org.goobi.production.properties;
  * exception statement from your version.
  */
 
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.goobi.beans.Processproperty;
+import org.goobi.beans.Step;
+import org.goobi.managedbeans.FormInputMultiSelectBean;
+import org.goobi.managedbeans.FormInputMultiSelectHelper;
+import org.goobi.production.cli.helper.StringPair;
+
+import javax.faces.model.SelectItem;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
-import lombok.extern.slf4j.Slf4j;
-import org.goobi.beans.Processproperty;
-import org.goobi.beans.Step;
-import org.goobi.production.cli.helper.StringPair;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.faces.model.SelectItem;
 
 @Slf4j
 public class ProcessProperty implements IProperty, Serializable {
@@ -104,11 +107,18 @@ public class ProcessProperty implements IProperty, Serializable {
     @Setter
     private String pattern = "dd.MM.yyyy";
 
+    @Getter
+    private FormInputMultiSelectBean normalSelectionBean;
+    @Getter
+    private FormInputMultiSelectBean vocabularySelectionBean;
+
     public ProcessProperty() {
         this.possibleValues = new ArrayList<>();
         this.projects = new ArrayList<>();
         this.workflows = new ArrayList<>();
         this.showStepConditions = new ArrayList<>();
+        this.normalSelectionBean = new FormInputMultiSelectHelper(() -> this.possibleValues, this::getSelectedValues, this::setSelectedValues);
+        this.vocabularySelectionBean = new FormInputMultiSelectHelper(() -> this.possibleValues, this::getSelectedVocabularyRecords, this::setSelectedValues);
     }
 
     /*
@@ -121,13 +131,7 @@ public class ProcessProperty implements IProperty, Serializable {
         this.value = value;
         this.readValue = value;
         if (Type.VOCABULARYREFERENCE.equals(this.type)) {
-            try {
-                ExtendedVocabularyRecord rec = VocabularyAPIManager.getInstance().vocabularyRecords().get(this.value);
-                this.readValue = rec.getMainValue();
-            } catch (Exception e) {
-                log.warn("Unable to retrieve vocabulary record reference \"{}\"", this.value);
-                this.readValue = "Broken vocabulary reference";
-            }
+            this.readValue = readVocabularyMainValueForRecord(this.value);
         }
     }
 
@@ -216,7 +220,7 @@ public class ProcessProperty implements IProperty, Serializable {
         if (this.value != null && this.value.contains("; ")) {
             return Arrays.asList(this.value.split("; "));
         } else {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 
@@ -229,8 +233,50 @@ public class ProcessProperty implements IProperty, Serializable {
         this.readValue = value;
     }
 
+    private List<SelectItem> getSelectedValues() {
+        return new LinkedList<>(
+                getValueList().stream()
+                        .map(value -> new SelectItem(value, value))
+                        .toList()
+        );
+    }
+
+    public List<String> getMultiVocabularyReferenceList() {
+        return getValueList().stream()
+                .map(this::readVocabularyMainValueForRecord)
+                .toList();
+    }
+
+    private String readVocabularyMainValueForRecord(String ref) {
+        if (StringUtils.isBlank(ref)) {
+            return "";
+        }
+        try {
+            ExtendedVocabularyRecord rec = VocabularyAPIManager.getInstance().vocabularyRecords().get(ref);
+            return rec.getMainValue();
+        } catch (Exception e) {
+            log.warn("Unable to retrieve vocabulary record reference \"{}\"", ref);
+            return "Broken vocabulary reference";
+        }
+    }
+
+    private List<SelectItem> getSelectedVocabularyRecords() {
+        return new LinkedList<>(
+                getValueList().stream()
+                        .map(ref -> new SelectItem(ref, readVocabularyMainValueForRecord(ref)))
+                        .toList()
+        );
+    }
+
+    private void setSelectedValues(List<SelectItem> selectItems) {
+        this.setValueList(selectItems.stream()
+                .map(SelectItem::getValue)
+                .map(Object::toString)
+                .toList());
+    }
+
     public boolean getBooleanValue() {
-        return this.value != null && "true".equalsIgnoreCase(this.value);
+        return "true".equalsIgnoreCase(this.value);
     }
 
     public void setBooleanValue(boolean val) {

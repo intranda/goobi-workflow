@@ -95,7 +95,7 @@
                     </div>
                 </h:panelGroup>
                 <!--  SELECT ONE -->
-                <h:panelGroup rendered="#{(property.type.name == 'list')}">
+                <h:panelGroup rendered="#{(property.type.name == 'list') or (property.type.name == 'vocabularyreference')}">
                     <div class="row">
                         <div class="col-12 col-md-3">
                             <intranda:formLabel
@@ -120,32 +120,24 @@
                         </div>
                     </div>
                 </h:panelGroup>
-                <!--  SELECT MANY -->
-                <h:panelGroup rendered="#{(property.type.name == 'listmultiselect')}">
+                <!-- SELECT MANY -->
+                <h:panelGroup rendered="#{(property.type.name == 'listmultiselect') or (property.type.name == 'vocabularymultireference')}">
                     <div class="row">
                         <div class="col-12 col-md-3">
-                            <intranda:formLabel
-                                label="#{property.name}"
-                                labelFor="selectmany"
-                                labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
+                            <h:outputLabel
+                                    for="select"
+                                    styleClass="control-label"
+                                    value="#{!property.isNew?property.name:msgs.wert}" />
                         </div>
                         <div class="col-12 col-md-9">
-                            <h:selectManyListbox
-                                id="selectmany"
-                                value="#{property.valueList}"
-                                size="5"
-                                styleClass="form-control"
-                                disabled="#{property.showProcessGroupAccessCondition == 'READ'}">
-                                <f:selectItems
-                                    value="#{property.possibleValues}"
-                                    var="propertys"
-                                    itemLabel="#{propertys}"
-                                    itemValue="#{propertys}" />
-                            </h:selectManyListbox>
+                            <intranda:formInputDropdownBadges
+                                    selectionBean="#{property.type.name == 'vocabularymultireference' ? property.vocabularySelectionBean : property.normalSelectionBean}"
+                                    readonly="#{property.showProcessGroupAccessCondition == 'READ'}"
+                            />
                             <h:message
-                                for="selectmany"
-                                showDetail="true"
-                                styleClass="help-inline font-danger" />
+                                    for="select"
+                                    showDetail="true"
+                                    styleClass="help-inline text-danger" />
                             <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                         </div>
                     </div>

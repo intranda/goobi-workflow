@@ -131,7 +131,7 @@ public class ExtendedFieldInstance extends FieldInstance {
     }
 
     private void sortTranslations(FieldValue value) {
-        Collections.sort(value.getTranslations(), Comparator.comparing(TranslationInstance::getLanguage));
+        value.getTranslations().sort(Comparator.comparing(TranslationInstance::getLanguage, Comparator.nullsFirst(Comparator.naturalOrder())));
     }
 
     public FieldValue addFieldValue() {

@@ -16,21 +16,22 @@
         #{property.name}
     </dt>
     <dd class="definition-list-description">
-        <c:forEach
-            var="val"
-            items="#{property.valueList}"
-            rendered="#{property.type.name == 'listmultiselect'}">
-            <h:outputText
-                value="#{val}"
-                styleClass="badge badge-no-radius badge-light-grey" />
-        </c:forEach>
+        <h:panelGroup rendered="#{property.type.name == 'listmultiselect'}">
+            <c:forEach
+                var="val"
+                items="#{property.valueList}">
+                <h:outputText
+                    value="#{val}"
+                    styleClass="badge badge-no-radius badge-light-grey" />
+            </c:forEach>
+        </h:panelGroup>
         <h:outputText
             value="#{property.readValue}"
             rendered="#{property.type.name == 'html'}"
             escape="false" />
         <h:outputText
             value="#{property.readValue}"
-            rendered="#{(property.type.name != 'link') and (property.type.name != 'boolean') and (property.type.name != 'html') and (property.type.name != 'listmultiselect') and (property.type.name != 'vocabularyreference')}" />
+            rendered="#{(property.type.name != 'link') and (property.type.name != 'boolean') and (property.type.name != 'html') and (property.type.name != 'listmultiselect') and (property.type.name != 'vocabularyreference') and (property.type.name != 'vocabularymultireference')}" />
         <h:outputLink
                 pt:aria-label="#{property.name}"
                 pt:data-bs-toggle="tooltip"
@@ -49,6 +50,15 @@
                 rendered="#{property.type.name == 'vocabularyreference'}">
             <h:outputText value="#{property.readValue}" />
         </h:outputLink>
+        <h:panelGroup rendered="#{property.type.name == 'vocabularymultireference'}">
+            <c:forEach
+                    var="val"
+                    items="#{property.getMultiVocabularyReferenceList()}">
+                <h:outputText
+                        value="#{val}"
+                        styleClass="badge badge-no-radius badge-light-grey" />
+            </c:forEach>
+        </h:panelGroup>
         <h:panelGroup rendered="#{property.type.name == 'boolean'}">
             <h:panelGroup rendered="#{property.readValue eq 'true'}">
                 <span

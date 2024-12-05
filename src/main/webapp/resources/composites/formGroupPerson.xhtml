@@ -30,18 +30,24 @@
                         styleClass="form-group__label"
                         value="#{msgs.vorname}:" />
 
-                        <h:panelGroup
+                    <h:panelGroup
                         id="restrictBtn"
                         rendered="#{cc.attrs.person.displayRestrictions}">
                         <button
                             type="button"
-                            class="btn#{cc.attrs.person.restricted == false ? ' btn--icon-light' : ''} d-flex flex-nowrap pt-1"
+                            class="btn#{cc.attrs.person.restricted == false ? ' btn--icon-light' : ''} d-flex flex-nowrap pt-1 restrict-button"
                             jsf:id="toggle-restrictions"
                             title="#{cc.attrs.person.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }"
                             data-toggle="tooltip">
-                            <span class="fa fa-unlock" />
-                            <span class="fa #{cc.attrs.person.restricted == false ? 'fa fa-toggle-off' : 'fa fa-toggle-on toggle-on'} px-1" />
-                            <span class="fa fa-lock" />
+
+                            <!-- ACCESS RESTRICTION ACTIVE - ACTION: REMOVE ACCESS RESTRICTION -->
+                            <h:outputText value="" styleClass="fa fa-lg fa-lock" escape="false" 
+                            rendered="#{cc.attrs.metadata.restricted == true}"/>
+                             
+                            <!-- NO ACCESS RESTRICTION ACTIVE - ACTION: SET ACCESS RESTRICTION -->
+                            <h:outputText value="" styleClass="fa fa-lg fa-unlock" escape="false" 
+                            rendered="#{cc.attrs.metadata.restricted == false}"/>
+
                             <f:ajax
                                 execute="restrictBtn"
                                 render="restrictBtn" />
