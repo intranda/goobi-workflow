@@ -11,16 +11,16 @@ RUN echo $build; if [ "$build" = "true" ]; then mvn clean package; elif [ -f "/w
 FROM tomcat:9-jre17 AS assemble
 LABEL maintainer="Matthias Geerdsen <matthias.geerdsen@intranda.com>"
 
-ENV DB_SERVER goobi-db
+ENV DB_SERVER workflow-db
 ENV DB_PORT 3306
-ENV DB_NAME goobi
-ENV DB_USER goobi
-ENV DB_PASSWORD goobi
+ENV DB_NAME workflow
+ENV DB_USER workflow
+ENV DB_PASSWORD workflow
 
 RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
-RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/tomcat/webapps/goobi
+RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/tomcat/webapps/workflow
 
-COPY install/docker/goobi.xml.template /usr/local/tomcat/conf/goobi.xml.template
+COPY install/docker/goobi.xml.template /usr/local/tomcat/conf/workflow.xml.template
 COPY install/config/ /opt/digiverso/goobi/config/
 COPY install/rulesets/ /opt/digiverso/goobi/rulesets/
 COPY install/scripts/ /opt/digiverso/goobi/scripts/
@@ -58,12 +58,16 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     rm -rf ${CATALINA_HOME}/webapps/*
 
-# redirect / to /goobi/
+# redirect / to /workflow/
 RUN mkdir ${CATALINA_HOME}/webapps/ROOT && \
-    echo '<% response.sendRedirect("/goobi/"); %>' > ${CATALINA_HOME}/webapps/ROOT/index.jsp
+    echo '<% response.sendRedirect("/workflow/"); %>' > ${CATALINA_HOME}/webapps/ROOT/index.jsp
 
 COPY --from=build  /workflow/target/*.war /
-RUN unzip /*.war -d /usr/local/tomcat/webapps/goobi && rm /*.war
+RUN unzip /*.war -d /usr/local/tomcat/webapps/workflow && rm /*.war
+
+# Manually patch this until 'workflow' is used everywhere
+RUN sed -i 's/goobi\.xml/workflow\.xml/g' /run.sh
+RUN sed -i 's/\/goobi\/jvmtemp/\/workflow\/jvmtemp/g' /run.sh
 
 EXPOSE 8080
 CMD ["/run.sh"]
