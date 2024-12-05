@@ -41,7 +41,14 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         if (log.isDebugEnabled()) {
             log.debug("Checking for database version");
         }
-        int currentVersion = DatabaseVersion.getCurrentVersion();
+        int currentVersion;
+        try {
+            currentVersion = DatabaseVersion.getCurrentVersion();
+        } catch (SQLException e) {
+            log.error("Unable to detect current database version, skipping database upgrades!", e);
+            return;
+        }
+
         if (log.isDebugEnabled()) {
             log.debug("Current version is " + currentVersion);
         }
