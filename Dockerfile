@@ -13,9 +13,9 @@ LABEL maintainer="Matthias Geerdsen <matthias.geerdsen@intranda.com>"
 
 ENV DB_SERVER workflow-db
 ENV DB_PORT 3306
-ENV DB_NAME workflow
-ENV DB_USER workflow
-ENV DB_PASSWORD workflow
+ENV DB_NAME goobi
+ENV DB_USER goobi
+ENV DB_PASSWORD goobi
 
 RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/tomcat/webapps/workflow
