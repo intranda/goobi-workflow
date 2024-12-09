@@ -29,7 +29,7 @@ COPY install/docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY install/docker/server.xml /usr/local/tomcat/conf/server.xml
 COPY install/docker/run.sh /run.sh
 COPY install/docker/log4j.xml /opt/digiverso/log4j.xml
-COPY install/docker/log4j2.xml /opt/digiverso/log4j.xml
+COPY install/docker/log4j2.xml /opt/digiverso/log4j2.xml
 
 COPY install/docker/dummy.sh /opt/digiverso/goobi/scripts/
 RUN sed -i 's/^script_createSymLink=script_createSymLink.sh/script_createSymLink=dummy.sh/' /opt/digiverso/goobi/config/goobi_config.properties
