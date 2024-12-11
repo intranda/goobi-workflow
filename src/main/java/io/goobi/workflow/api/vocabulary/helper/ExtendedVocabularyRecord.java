@@ -116,6 +116,10 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         meta.setAuthorityFile(vocabulary.getName(), vocabulary.get_links().get("self").getHref(), get_links().get("self").getHref());
     }
 
+    public String getSelectItemLabel() {
+        return "--".repeat(getLevel()) + (getLevel() > 0 ? " " : "") + getMainValue();
+    }
+
     private void initParents() {
         if (this.getParentId() != null) {
             ExtendedVocabularyRecord parent = recordResolver.apply(this.getParentId());

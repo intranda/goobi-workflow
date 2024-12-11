@@ -2,10 +2,7 @@ package io.goobi.workflow.api.vocabulary;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.faces.model.SelectItem;
@@ -289,13 +286,42 @@ public class VocabularyRecordAPI {
     }
 
     public List<SelectItem> getRecordSelectItems(VocabularyRecordQueryBuilder query) {
-        return query
+        return getAllHierarchicalRecords(query)
+                .stream()
+                .map(r -> new SelectItem(String.valueOf(r.getId()), r.getSelectItemLabel()))
+                .toList();
+    }
+
+    public List<ExtendedVocabularyRecord> getAllHierarchicalRecords(long vocabularyId) {
+        return getAllHierarchicalRecords(list(vocabularyId));
+    }
+
+    public List<ExtendedVocabularyRecord> getAllHierarchicalRecords(VocabularyRecordQueryBuilder query) {
+        List<ExtendedVocabularyRecord> topRecords = query
                 .all()
                 .request()
-                .getContent()
-                .stream()
-                .map(r -> new SelectItem(String.valueOf(r.getId()), r.getMainValue()))
-                .sorted(Comparator.comparing(SelectItem::getLabel))
-                .collect(Collectors.toList());
+                .getContent();
+        topRecords.sort(Comparator.comparing(ExtendedVocabularyRecord::getMainValue));
+        return fullyLoadChildren(topRecords);
+    }
+
+    public List<ExtendedVocabularyRecord> fullyLoadChildren(List<ExtendedVocabularyRecord> records) {
+        List<ExtendedVocabularyRecord> allRecords = new LinkedList<>();
+        recursivelyPopulateRecordList(allRecords, records);
+        return allRecords;
+    }
+
+    private void recursivelyPopulateRecordList(List<ExtendedVocabularyRecord> list, Collection<ExtendedVocabularyRecord> records) {
+        for (ExtendedVocabularyRecord r : records) {
+            list.add(r);
+
+            List<ExtendedVocabularyRecord> children = Optional.ofNullable(r.getChildren())
+                    .map(l -> l.stream()
+                            .map(id -> VocabularyAPIManager.getInstance().vocabularyRecords().get(id))
+                            .sorted(Comparator.comparing(ExtendedVocabularyRecord::getMainValue))
+                            .toList())
+                    .orElse(Collections.emptyList());
+            recursivelyPopulateRecordList(list, children);
+        }
     }
 }

@@ -579,12 +579,10 @@ public class PropertyParser {
             if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
                 pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
             }
-            pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords().list(vocabularyId)
-                    .all()
-                    .request()
-                    .getContent()
+            pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords()
+                    .getAllHierarchicalRecords(vocabularyId)
                     .stream()
-                    .map(r -> new SelectItem(r.getURI(), r.getMainValue()))
+                    .map(r -> new SelectItem(r.getURI(), r.getSelectItemLabel()))
                     .toList());
         } catch (APIException e) {
             log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
