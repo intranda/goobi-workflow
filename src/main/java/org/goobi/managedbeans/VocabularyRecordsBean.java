@@ -86,6 +86,14 @@ public class VocabularyRecordsBean implements Serializable {
         return RETURN_PAGE_OVERVIEW;
     }
 
+    public String getCurrentRecordUri() {
+        return Optional.ofNullable(currentRecord).map(ExtendedVocabularyRecord::getURI).orElse(null);
+    }
+
+    public void setCurrentRecordUri(String uri) {
+        currentRecord = api.vocabularyRecords().get(uri);
+    }
+
     private void loadPaginator() {
         // TODO: Unclean to have static Helper access to user here..
         this.paginator = new HATEOASPaginator<>(

@@ -5,7 +5,9 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:p="http://primefaces.org/ui"
     xmlns:button="http://goobi.io/button"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 >
     <c:set var="scope" value="#{
         fn:contains(bean, 'StepBean') ? 'step'
@@ -41,15 +43,22 @@
                 rendered="#{property.type.name == 'link'}">
             <h:outputText value="#{property.readValue}" />
         </h:outputLink>
-        <h:outputLink
+        <h:commandLink
                 pt:aria-label="#{property.name}"
                 pt:data-bs-toggle="tooltip"
-                value="#{property.value}"
+                value="#{property.readValue}"
                 title="#{property.value}"
                 target="_blank"
                 rendered="#{property.type.name == 'vocabularyreference'}">
-            <h:outputText value="#{property.readValue}" />
-        </h:outputLink>
+            <f:setPropertyActionListener target="#{vocabularyRecordsBean.currentRecordUri}" value="#{property.value}" />
+            <f:ajax
+                    render="vocabularyRecordDetails"
+                    onevent="(data) => {
+                if (data.status == 'success') {
+                    PF('vocabularyRecordDetails').show();
+                }
+            }"/>
+        </h:commandLink>
         <h:panelGroup rendered="#{property.type.name == 'vocabularymultireference'}">
             <c:forEach
                     var="val"
@@ -148,5 +157,16 @@
                 </f:ajax>
             </button:row>
         </c:if>
+        <p:dialog id="vocabularyRecordDetails"
+            rendered="true"
+            widgetVar="vocabularyRecordDetails"
+            minHeight="30"
+                  style="min-width: 800px;"
+        >
+            <intranda:vocabularyRecordEditor
+                    record="#{vocabularyRecordsBean.currentRecord}"
+                    readonly="true"
+                    showID="false" />
+        </p:dialog>
     </dd>
 </ui:composition>

@@ -23,6 +23,12 @@
             default="true"
             required="false"
         />
+        <composite:attribute
+            name="readonly"
+            type="boolean"
+            default="false"
+            required="false"
+        />
     </composite:interface>
 
     <composite:implementation>
@@ -57,8 +63,7 @@
                                         id="field1"
                                         styleClass="form-control form__input"
                                         value="#{translation.value}"
-                                        readonly="false"
-                                        disabled="false"
+                                        disabled="#{cc.attrs.readonly}"
                                     />
 			                        <h:message for="field1" showDetail="true" styleClass="text-danger"/>
                                 </ui:fragment>
@@ -70,6 +75,7 @@
                                         id="field2"
                                         styleClass="form-control metsEditorTextArea"
                                         value="#{translation.value}"
+                                        disabled="#{cc.attrs.readonly}"
                                         rows="6"
                                     />
                                     <h:message for="field2" showDetail="true" styleClass="text-danger"/>
@@ -83,6 +89,7 @@
                                         id="field3"
                                         styleClass="form-select form__input"
                                         value="#{translation.value}"
+                                        disabled="#{cc.attrs.readonly}"
                                         >
                                         <f:selectItem
                                         itemValue="null"
@@ -127,7 +134,7 @@
                                                 styleClass="form-control form__input"
                                                 value="#{translation.value}"
                                                 readonly="false"
-                                                disabled="false"
+                                                disabled="#{cc.attrs.readonly}"
                                             />
                                             <h:message for="field1" showDetail="true" styleClass="text-danger"/>
                                                 <!-- // CONTENT -->
@@ -140,6 +147,7 @@
                                                 id="field2"
                                                 styleClass="form-control metsEditorTextArea"
                                                 value="#{translation.value}"
+                                                disabled="#{cc.attrs.readonly}"
                                                 rows="6"
                                             />
                                             <h:message for="field2" showDetail="true" styleClass="text-danger"/>
@@ -153,6 +161,7 @@
                                                     id="field3"
                                                     styleClass="form-select form__input"
                                                     value="#{translation.value}"
+                                                    disabled="#{cc.attrs.readonly}"
                                                 >
                                                 <f:selectItem
                                                 itemValue="null"
@@ -183,7 +192,10 @@
                     </div>
                     <!-- // LANGUAGE -->
                     <!-- CONTENT -->
-                    <intranda:formInputDropdownBadges selectionBean="#{field.selectionBean}"/>
+                    <intranda:formInputDropdownBadges
+                            selectionBean="#{field.selectionBean}"
+                            readonly="#{cc.attrs.readonly}"
+                    />
                     <!-- // CONTENT -->
                 </div>
             </ui:fragment>
@@ -238,7 +250,7 @@
                                                         styleClass="form-control form__input"
                                                         value="#{translation.value}"
                                                         readonly="false"
-                                                        disabled="false"
+                                                        disabled="#{cc.attrs.readonly}"
                                                     />
                                                     <h:message for="field1" showDetail="true" styleClass="text-danger"/>
                                                         <!-- // CONTENT -->
@@ -251,6 +263,7 @@
                                                         id="field2"
                                                         styleClass="form-control metsEditorTextArea"
                                                         value="#{translation.value}"
+                                                        disabled="#{cc.attrs.readonly}"
                                                         rows="6"
                                                     />
                                                     <h:message for="field2" showDetail="true" styleClass="text-danger"/>
