@@ -62,10 +62,25 @@
         <h:panelGroup rendered="#{property.type.name == 'vocabularymultireference'}">
             <c:forEach
                     var="val"
-                    items="#{property.getMultiVocabularyReferenceList()}">
-                <h:outputText
-                        value="#{val}"
-                        styleClass="badge badge-no-radius badge-light-grey" />
+                    items="#{property.vocabularySelectionBean.selection}">
+                <span class="badge badge-no-radius badge-light-grey">
+                    <h:commandLink
+                            pt:aria-label="#{property.name}"
+                            pt:data-bs-toggle="tooltip"
+                            value="#{val.label}"
+                            title="#{val.value}"
+                            target="_blank"
+                    >
+                        <f:setPropertyActionListener target="#{vocabularyRecordsBean.currentRecordUri}" value="#{val.value}" />
+                        <f:ajax
+                                render="vocabularyRecordDetails"
+                                onevent="(data) => {
+                            if (data.status == 'success') {
+                                PF('vocabularyRecordDetails').show();
+                            }
+                        }"/>
+                    </h:commandLink>
+                </span>
             </c:forEach>
         </h:panelGroup>
         <h:panelGroup rendered="#{property.type.name == 'boolean'}">
