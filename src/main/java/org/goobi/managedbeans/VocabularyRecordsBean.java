@@ -87,11 +87,15 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     public String getCurrentRecordUri() {
-        return Optional.ofNullable(currentRecord).map(ExtendedVocabularyRecord::getURI).orElse(null);
+        return Optional.ofNullable(currentRecord).map(r -> r.getId().toString()).orElse(null);
     }
 
-    public void setCurrentRecordUri(String uri) {
-        currentRecord = api.vocabularyRecords().get(uri);
+    public void setCurrentRecordUri(String id) {
+        try {
+            currentRecord = api.vocabularyRecords().get(Long.parseLong(id));
+        } catch (NumberFormatException e) {
+            log.error("Wrong record ID \"{}\"", id);
+        }
     }
 
     private void loadPaginator() {

@@ -252,8 +252,11 @@ public class ProcessProperty implements IProperty, Serializable {
             return "";
         }
         try {
-            ExtendedVocabularyRecord rec = VocabularyAPIManager.getInstance().vocabularyRecords().get(ref);
+            ExtendedVocabularyRecord rec = VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(ref));
             return rec.getMainValue();
+        } catch (NumberFormatException e) {
+            log.error("Wrong ID format \"{}\"", ref);
+            return "Broken vocabulary reference";
         } catch (Exception e) {
             log.warn("Unable to retrieve vocabulary record reference \"{}\"", ref);
             return "Broken vocabulary reference";

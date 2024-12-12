@@ -47,7 +47,7 @@
                 pt:aria-label="#{property.name}"
                 pt:data-bs-toggle="tooltip"
                 value="#{property.readValue}"
-                title="#{property.value}"
+                title="#{property.readValue}"
                 target="_blank"
                 rendered="#{property.type.name == 'vocabularyreference'}">
             <f:setPropertyActionListener target="#{vocabularyRecordsBean.currentRecordUri}" value="#{property.value}" />
@@ -68,7 +68,7 @@
                             pt:aria-label="#{property.name}"
                             pt:data-bs-toggle="tooltip"
                             value="#{val.label}"
-                            title="#{val.value}"
+                            title="#{val.label}"
                             target="_blank"
                     >
                         <f:setPropertyActionListener target="#{vocabularyRecordsBean.currentRecordUri}" value="#{val.value}" />
