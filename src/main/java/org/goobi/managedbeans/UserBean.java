@@ -605,8 +605,9 @@ public class UserBean extends BasicBean implements Serializable {
         boolean passwordChangeable = true;
 
         // Check for administrator rules
+        boolean userIsSuperAdmin = Helper.getCurrentUser().isSuperAdmin();
         boolean userIsAdmin = Helper.getCurrentUser().getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString());
-        if (!userIsAdmin) {
+        if (!userIsSuperAdmin && !userIsAdmin) {
             Helper.setFehlerMeldung("You are not allowed to change the user's password!");
             passwordChangeable = false;
         }
