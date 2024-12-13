@@ -25,20 +25,7 @@ package org.goobi.production.enums;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
-import org.goobi.production.plugin.interfaces.ICommandPlugin;
-import org.goobi.production.plugin.interfaces.IDashboardPlugin;
-import org.goobi.production.plugin.interfaces.IDelayPlugin;
-import org.goobi.production.plugin.interfaces.IExportPlugin;
-import org.goobi.production.plugin.interfaces.IImportPlugin;
-import org.goobi.production.plugin.interfaces.IMetadataEditorExtension;
-import org.goobi.production.plugin.interfaces.IOpacPlugin;
-import org.goobi.production.plugin.interfaces.IPlugin;
-import org.goobi.production.plugin.interfaces.IServletPlugin;
-import org.goobi.production.plugin.interfaces.IStatisticPlugin;
-import org.goobi.production.plugin.interfaces.IStepPlugin;
-import org.goobi.production.plugin.interfaces.IValidatorPlugin;
-import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
+import org.goobi.production.plugin.interfaces.*;
 
 import lombok.Getter;
 
@@ -56,7 +43,8 @@ public enum PluginType {
     Dashboard(10, "dashboard", IDashboardPlugin.class),
     Administration(11, "administration", IAdministrationPlugin.class),
     Workflow(13, "workflow", IWorkflowPlugin.class),
-    MetadataEditor(14, "metadata", IMetadataEditorExtension.class);
+    MetadataEditor(14, "metadata", IMetadataEditorExtension.class),
+    Footer(15, "footer", IFooterPlugin.class);
 
     @Getter
     private int id;
