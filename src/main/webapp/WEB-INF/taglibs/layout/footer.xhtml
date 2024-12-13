@@ -1,6 +1,6 @@
 <ui:composition
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
 >
     <footer class="footer">
         <div class="d-flex gap-3 justify-content-start align-items-center w-100">
@@ -24,6 +24,64 @@
             <h:outputText
                 styleClass="ms-auto footer-text"
                 value="#{msgs.version} #{HelperForm.version}" />
+            <div class="actions d-flex">
+                <ui:repeat
+                    value="#{FooterBean.footerPlugins}"
+                    var="plugin"
+                >
+                    <div
+                            class="d-inline btn&#45;&#45;title-action"
+                            data-bs-toggle="tooltip"
+                            title="#{plugin.title}">
+                        <button
+                                id="btn#{plugin.title}"
+                                class="btn"
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#footerPlugin#{plugin.id}"
+                        >
+                            <span
+                                    aria-hidden="true"
+                                    class="fa #{plugin.icon}"/>
+                        </button>
+                    </div>
+                    <div class="modal" id="footerPlugin#{plugin.id}">
+                        <div class="modal-dialog modal-fullscreen">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary-400 text-white">
+                                    <h5 class="modal-title h6">
+                                        <span class="fa fa-database me-2" />
+                                        <span>#{plugin.title}</span>
+                                    </h5>
+                                    <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true" class="fa fa-times text-white" />
+                                    </button>
+                                </div>
+                                <div class="modal-body bg-primary-400 text-white">
+                                    <div class="row mt-3">
+                                        <div class="col-12 d-flex">
+                                            <h1>Barcodes scannen</h1>
+                                            <h:form onkeypress="submitOnEnter(event);">
+                                                <h:inputText
+                                                        id="barcodeInput"
+                                                    styleClass="form-control focusable"
+                                                    value="#{plugin.code}"
+                                                />
+                                                <h:commandButton action="#{plugin.scan()}" value="Scannen!" />
+                                            </h:form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Taglibs seems to be unable to include other pages -->
+<!--                    <h:panelGroup rendered="#{plugin.modal != null}">-->
+<!--                        <h:outputText value="#{plugin.modal}" />-->
+<!--                        <ui:include src="#{plugin.modal}" />-->
+<!--                    </h:panelGroup>-->
+                </ui:repeat>
+            </div>
         </div>
     </footer>
 </ui:composition>
