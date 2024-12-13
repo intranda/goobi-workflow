@@ -80,6 +80,7 @@ import org.goobi.production.plugin.interfaces.IOpacPluginVersion2;
 import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+import org.goobi.production.properties.Type;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -2135,8 +2136,20 @@ public class ProzesskopieForm implements Serializable {
                 match = false;
                 for (StringPair sp : prop.getProcessCreationConditions()) {
                     for (ProcessProperty other : configuredProperties) {
-                        if (other.getName().equals(sp.getOne()) && sp.getTwo().equals(other.getValue())) {
-                            match = true;
+                        if (other.getName().equals(sp.getOne())) {
+                            Optional<String> otherValue = Optional.empty();
+                            if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
+                                try {
+                                    otherValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(other.getValue())).getMainValue());
+                                } catch (NumberFormatException e) {
+                                    log.error("Unable to read ID \"{}\"", other.getValue());
+                                }
+                            } else {
+                                otherValue = Optional.ofNullable(other.getValue());
+                            }
+                            if (otherValue.orElse("").equals(sp.getTwo())) {
+                                match = true;
+                            }
                         }
                     }
                 }
