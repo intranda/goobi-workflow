@@ -28,21 +28,21 @@ https://docs.goobi.io/docs/
 
 A complete German documentation regarding Goobi workflow can be found using this URL:
 
-https://docs.goobi.io/goobi-workflow-de/
+https://docs.goobi.io/goobi-workflow/de/
 
 The English documentation for Goobi workflow is located here:
 
-https://docs.goobi.io/goobi-workflow-en/
+https://docs.goobi.io/goobi-workflow/en/
 
 ## Plugin Documentation
 
 Currently there are about 180 different plugins for Goobi workflow. Not all of those are currently documented. However, the new documentation area lists the first new documented plugins here:
 
 German documentation of the plugins:
-https://docs.goobi.io/goobi-workflow-plugins-de/
+https://docs.goobi.io/workflow-plugins/de/
 
 English documentation of the plugins:
-https://docs.goobi.io/goobi-workflow-plugins-en/
+https://docs.goobi.io/workflow-plugins/en/
 
 ## Development
 
@@ -106,6 +106,9 @@ At present, Goobi supports the following file formats:
 - OBJ and STL
 - Open Office
 - Microsoft Office
+- Several video formats
+- Several audio formats
+- Several 3D-object formats
 
 ## Searching for more information?
 
