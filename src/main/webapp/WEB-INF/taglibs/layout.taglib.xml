@@ -9,4 +9,8 @@
         <tag-name>footer</tag-name>
         <source>layout/footer.xhtml</source>
     </tag>
+    <tag>
+        <tag-name>header</tag-name>
+        <source>layout/header.xhtml</source>
+    </tag>
 </facelet-taglib>
