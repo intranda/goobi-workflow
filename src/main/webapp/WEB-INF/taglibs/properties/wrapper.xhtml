@@ -4,6 +4,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:dialog="http://goobi.io/dialog"
     xmlns:properties="http://goobi.io/properties"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 >
     <c:set var="evenContainers" value="#{bean.containerList.size() % 2 == 0}" />
     <h:form id="propertyForm" class="properties-form">
@@ -37,5 +38,19 @@
                 </c:if>
             </c:if>
         </dialog:modal>
+    </h:panelGroup>
+    <h:panelGroup id="vocabularyRecordDetails" layout="block">
+        <dialog:modal id="vocabularyRecordDetailsModal">
+            <dialog:header icon="info" title="#{msgs.vocabulary_entry_details_title}"></dialog:header>
+            <intranda:vocabularyRecordEditor
+                record="#{vocabularyRecordsBean.currentRecord}"
+                readonly="true"
+                showID="false" />
+        </dialog:modal>
+        <script>
+            const setModalTitle = (modal, title) => {
+                document.querySelector(modal).querySelector('h2').textContent = title;
+            };
+        </script>
     </h:panelGroup>
 </ui:composition>

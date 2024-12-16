@@ -7,7 +7,6 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui"
     xmlns:button="http://goobi.io/button"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 >
     <c:set var="scope" value="#{
         fn:contains(bean, 'StepBean') ? 'step'
@@ -35,52 +34,52 @@
             value="#{property.readValue}"
             rendered="#{(property.type.name != 'link') and (property.type.name != 'boolean') and (property.type.name != 'html') and (property.type.name != 'listmultiselect') and (property.type.name != 'vocabularyreference') and (property.type.name != 'vocabularymultireference')}" />
         <h:outputLink
-                pt:aria-label="#{property.name}"
-                pt:data-bs-toggle="tooltip"
-                value="#{property.readValue}"
-                title="#{property.readValue}"
-                target="_blank"
-                rendered="#{property.type.name == 'link'}">
-            <h:outputText value="#{property.readValue}" />
+            pt:aria-label="#{property.name}"
+            pt:data-bs-toggle="tooltip"
+            value="#{property.readValue}"
+            title="#{property.readValue}"
+            target="_blank"
+            rendered="#{property.type.name == 'link'}">
+        <h:outputText value="#{property.readValue}" />
         </h:outputLink>
         <h:commandLink
-                pt:aria-label="#{property.name}"
-                pt:data-bs-toggle="tooltip"
-                value="#{property.readValue}"
-                title="#{property.readValue}"
-                target="_blank"
-                rendered="#{property.type.name == 'vocabularyreference'}">
+            value="#{property.readValue}"
+            target="_blank"
+            rendered="#{property.type.name == 'vocabularyreference'}"
+            styleClass="text-black text-decoration-underline"
+            pt:data-bs-toggle="tooltip"
+            title="#{msgs.details}">
             <f:setPropertyActionListener target="#{vocabularyRecordsBean.currentRecordUri}" value="#{property.value}" />
             <f:ajax
-                    render="vocabularyRecordDetails"
-                    onevent="(data) => {
-                if (data.status == 'success') {
-                    PF('vocabularyRecordDetails').show();
-                }
+                render="vocabularyRecordDetails"
+                onevent="(data) => {
+                    if (data.status == 'success') {
+                        document.querySelector('#vocabularyRecordDetailsModal').showModal();
+                        setModalTitle('#vocabularyRecordDetailsModal', '#{msgs.vocabulary_entry_details_title}: #{property.name}');
+                    }
             }"/>
         </h:commandLink>
         <h:panelGroup rendered="#{property.type.name == 'vocabularymultireference'}">
             <c:forEach
-                    var="val"
-                    items="#{property.vocabularySelectionBean.selection}">
-                <span class="badge badge-no-radius badge-light-grey">
-                    <h:commandLink
-                            pt:aria-label="#{property.name}"
-                            pt:data-bs-toggle="tooltip"
-                            value="#{val.label}"
-                            title="#{val.label}"
-                            target="_blank"
-                    >
-                        <f:setPropertyActionListener target="#{vocabularyRecordsBean.currentRecordUri}" value="#{val.value}" />
-                        <f:ajax
-                                render="vocabularyRecordDetails"
-                                onevent="(data) => {
+                var="val"
+                items="#{property.vocabularySelectionBean.selection}">
+                <h:commandLink
+                    value="#{val.label}"
+                    target="_blank"
+                    styleClass="pe-2 text-black text-decoration-underline"
+                    pt:data-bs-toggle="tooltip"
+                    title="#{msgs.details}"
+                >
+                    <f:setPropertyActionListener target="#{vocabularyRecordsBean.currentRecordUri}" value="#{val.value}" />
+                    <f:ajax
+                        render="vocabularyRecordDetails"
+                        onevent="(data) => {
                             if (data.status == 'success') {
-                                PF('vocabularyRecordDetails').show();
+                                document.querySelector('#vocabularyRecordDetailsModal').showModal();
+                                setModalTitle('#vocabularyRecordDetailsModal', '#{msgs.vocabulary_entry_details_title}: #{property.name}');
                             }
-                        }"/>
-                    </h:commandLink>
-                </span>
+                    }"/>
+                </h:commandLink>
             </c:forEach>
         </h:panelGroup>
         <h:panelGroup rendered="#{property.type.name == 'boolean'}">
@@ -172,16 +171,5 @@
                 </f:ajax>
             </button:row>
         </c:if>
-        <p:dialog id="vocabularyRecordDetails"
-            rendered="true"
-            widgetVar="vocabularyRecordDetails"
-            minHeight="30"
-                  style="min-width: 800px;"
-        >
-            <intranda:vocabularyRecordEditor
-                    record="#{vocabularyRecordsBean.currentRecord}"
-                    readonly="true"
-                    showID="false" />
-        </p:dialog>
     </dd>
 </ui:composition>
