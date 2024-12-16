@@ -58,18 +58,21 @@
                                     </button>
                                 </div>
                                 <div class="modal-body bg-primary-400 text-white">
-                                    <div class="row mt-3">
-                                        <div class="col-12 d-flex">
+                                    <div class="row mt-3 p-5">
+                                        <div class="row">
                                             <h1>Barcodes scannen</h1>
-                                            <h:form onkeypress="submitOnEnter(event);">
-                                                <h:inputText
-                                                        id="barcodeInput"
-                                                    styleClass="form-control focusable"
+                                        </div>
+                                        <h:form>
+                                            <div class="row mt-5">
+                                                <h:inputText id="barcodeInput"
+                                                    styleClass="col-12 form-control focusable fg"
                                                     value="#{plugin.code}"
                                                 />
-                                                <h:commandButton action="#{plugin.scan()}" value="Scannen!" />
-                                            </h:form>
-                                        </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <h:commandButton styleClass="col-12 form-control" action="#{plugin.scan()}" value="Scannen!" />
+                                            </div>
+                                        </h:form>
                                     </div>
                                 </div>
                             </div>
