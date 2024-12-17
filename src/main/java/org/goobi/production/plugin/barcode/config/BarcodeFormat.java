@@ -6,6 +6,7 @@ import de.sub.goobi.helper.GoobiScript;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.goobi.production.plugin.barcode.BarcodeScannerPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ import java.util.regex.Pattern;
 public class BarcodeFormat {
     @JacksonXmlProperty(isAttribute = true)
     private String pattern;
+    @JacksonXmlProperty(localName = "description", isAttribute = true)
+    private String descriptionTemplate;
     @JacksonXmlText
     private String goobiScriptTemplate;
 
@@ -30,6 +33,8 @@ public class BarcodeFormat {
 
     private transient Pattern regexPattern;
     private transient String goobiScript;
+    @JacksonXmlProperty(localName = "_description", isAttribute = true)
+    private transient String description;
 
     public boolean patternMatches(String barcode) {
         return regexPattern().matcher(barcode).matches();
@@ -38,10 +43,16 @@ public class BarcodeFormat {
     public void activate(String barcode) {
         List<String> parameters = determineParameters(barcode);
 //        parameters.forEach(p -> System.err.println("Param: " + p));
-        this.goobiScript = this.goobiScriptTemplate;
+        this.description = fillParameters(this.descriptionTemplate, parameters);
+        this.goobiScript = fillParameters(this.goobiScriptTemplate, parameters);
+    }
+
+    private String fillParameters(String template, List<String> parameters) {
+        String result = template;
         for (int i = 0; i < parameters.size(); i++) {
-            this.goobiScript = this.goobiScript.replaceAll("\\{\\{" + (i+1) + "\\}\\}", parameters.get(i));
+            result = result.replaceAll("\\{\\{" + (i+1) + "\\}\\}", parameters.get(i));
         }
+        return result;
     }
 
     public void execute(String barcode) {
@@ -50,8 +61,9 @@ public class BarcodeFormat {
             int processId = Integer.parseInt(barcode);
             String concreteGoobiScript = this.goobiScript.replaceAll("\\{\\{\\?\\}\\}", barcode);
             gs.execute(List.of(processId), concreteGoobiScript);
+            BarcodeScannerPlugin.success("GoobiScript executed for process \"" + barcode + "\".");
         } catch (NumberFormatException e) {
-            log.error("Invalid process id \"{}\"", barcode);
+            BarcodeScannerPlugin.error("Invalid process id \"" + barcode + "\"");
         }
     }
 
