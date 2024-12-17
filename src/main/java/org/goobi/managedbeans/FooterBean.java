@@ -26,7 +26,8 @@ public class FooterBean implements Serializable {
             try {
                 p.initialize();
             } catch (Exception e) {
-                log.error("An execption occurred during plugin initialization", e);
+                e.printStackTrace();
+                log.error("An exception occurred during plugin initialization", e);
             }
         });
     }

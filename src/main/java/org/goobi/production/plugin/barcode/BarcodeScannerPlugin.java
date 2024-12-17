@@ -1,6 +1,7 @@
 package org.goobi.production.plugin.barcode;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.goobi.production.plugin.barcode.config.BarcodeFormat;
@@ -15,13 +16,18 @@ import java.util.List;
 @Data
 public class BarcodeScannerPlugin implements IFooterPlugin {
     @Override
+    public String getId() {
+        return getTitle().replaceAll("\\s+", "");
+    }
+
+    @Override
     public String getIcon() {
         return "fa-barcode";
     }
 
     @Override
     public void execute() throws Exception {
-        System.err.println("Footer plugin \"" + getTitle() + "\" executed!");
+        success("Footer plugin \"" + getTitle() + "\" executed!");
     }
 
     @Override
@@ -66,18 +72,25 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
 
     public void scan() {
         log.debug("Processing barcode \"{}\"", code);
+        String barcode = code;
+        this.code = "";
 
-        List<BarcodeFormat> applicable = findMatchingBarcodeFormats(code);
+        try {
+            List<BarcodeFormat> applicable = findMatchingBarcodeFormats(barcode);
 
-        if (!applicable.isEmpty()) {
-            applicable.forEach(bf -> bf.activate(code));
-            activeFormats = applicable;
-        } else {
-            if (!activeFormats.isEmpty()) {
-                activeFormats.forEach(bf -> bf.execute(code));
+            if (!applicable.isEmpty()) {
+                applicable.forEach(bf -> bf.activate(barcode));
+                activeFormats = applicable;
             } else {
-                log.warn("No active barcode formats found");
+                if (!activeFormats.isEmpty()) {
+                    activeFormats.forEach(bf -> bf.execute(barcode));
+                } else {
+                    warn("No active barcode actions found!");
+                }
             }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            error("An error occurred while scanning barcode \"" + barcode + "\"!");
         }
     }
 
@@ -85,5 +98,20 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
         return this.config.getBarcode().stream()
                 .filter(bf -> bf.patternMatches(code))
                 .toList();
+    }
+
+    public static void success(String message) {
+        log.debug(message);
+        Helper.setMeldung(message);
+    }
+
+    public static void warn(String message) {
+        log.warn(message);
+        Helper.setFehlerMeldung(message);
+    }
+
+    public static void error(String message) {
+        log.error(message);
+        Helper.setFehlerMeldung(message);
     }
 }
