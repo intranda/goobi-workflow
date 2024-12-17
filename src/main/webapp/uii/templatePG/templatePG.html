@@ -298,32 +298,32 @@
                       </div>
                       <div class="modal-body bg-primary-400 text-white">
                         <div class="container-sm">
-                          <h:form styleClass="row mt-3 p-5 mx-5">
-                            <h4 class="row h1">Barcodes scannen</h4>
-                              <h:panelGroup rendered="#{plugin.activeFormats.size() > 0}">
-                                  <div class="row mt-3">
-                                      <h2>Current actions:</h2>
-                                      <ui:repeat value="#{plugin.activeFormats}" var="format">
-                                          <h:outputText value="#{format.description}" />
-                                      </ui:repeat>
-                                  </div>
-                              </h:panelGroup>
-                            <div class="row mt-3">
+                          <h:form styleClass="mt-3 p-5 mx-5 d-flex flex-column gap-3">
+                            <h4 class="h1">Barcodes scannen</h4>
+                            <h:panelGroup rendered="#{plugin.activeFormats.size() > 0}">
+                                <div>
+                                    <h5 class="h2">Current actions:</h5>
+                                    <ul class="p-0" role="list">
+                                        <ui:repeat value="#{plugin.activeFormats}" var="format">
+                                            <li>
+                                                <h:outputText value="#{format.description}" />
+                                            </li>
+                                        </ui:repeat>
+                                    </ul>
+                                </div>
+                            </h:panelGroup>
                             <h:inputText
-                              id="barcodeInput"
-                              styleClass="col-12 form-control focusable"
-                              value="#{plugin.code}"
-                              style="font-size: 400%;"
+                                id="barcodeInput"
+                                styleClass="form-control text-center"
+                                value="#{plugin.code}"
+                                style="font-size: 400%;"
                             />
-                            </div>
-                            <div class="row mt-3">
-                              <h:commandButton
-                                styleClass="col-12 form-control"
+                            <h:commandButton
+                                styleClass="form-control d-none"
                                 action="#{plugin.scan()}"
                                 value="Scannen!"
                                 style="font-size: 400%;"
-                              />
-                            </div>
+                            />
                             <input type="submit" hidden="true" />
                           </h:form>
                         </div>

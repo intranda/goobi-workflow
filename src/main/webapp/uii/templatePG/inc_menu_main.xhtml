@@ -387,29 +387,31 @@
                             </ul>
                         </li>
                     </h:panelGroup>
-					<ui:repeat
-						value="#{FooterBean.footerPlugins}"
-						var="plugin"
-						>
-                    	<li class="nav-item">
-							<div
-								class="d-flex h-100"
-								data-bs-toggle="tooltip"
-								title="#{plugin.title}">
-								<button
-									id="btn#{plugin.title}"
-									class="btn text-white"
-									type="button"
-									data-bs-toggle="modal"
-									data-bs-target="#footerPlugin#{plugin.id}"
-								>
-								<span
-									aria-hidden="true"
-									class="fa #{plugin.icon} fa-2x"/>
-								</button>
-							</div>
-						</li>
-					</ui:repeat>
+                    <ui:repeat
+                        value="#{FooterBean.footerPlugins}"
+                        var="plugin"
+                        >
+                        <li class="nav-item">
+                            <div
+                                class="nav-link"
+                                data-bs-toggle="tooltip"
+                                title="#{plugin.title}">
+                                <button
+                                    id="btn#{plugin.title}"
+                                    class="btn text-white"
+                                    type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#footerPlugin#{plugin.id}"
+                                    onclick="() => {
+                                        console.log('bob')
+                                    }">
+                                <span
+                                    aria-hidden="true"
+                                    class="fa #{plugin.icon} fa-2x"/>
+                                </button>
+                            </div>
+                        </li>
+                    </ui:repeat>
                 </ul>
             </ui:insert>
         </c:if>
