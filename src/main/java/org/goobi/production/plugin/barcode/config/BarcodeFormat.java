@@ -45,6 +45,7 @@ public class BarcodeFormat {
 //        parameters.forEach(p -> System.err.println("Param: " + p));
         this.description = fillParameters(this.descriptionTemplate, parameters);
         this.goobiScript = fillParameters(this.goobiScriptTemplate, parameters);
+        BarcodeScannerPlugin.success("Barcode action \"" + this.description + "\" activated.");
     }
 
     private String fillParameters(String template, List<String> parameters) {
@@ -61,9 +62,9 @@ public class BarcodeFormat {
             int processId = Integer.parseInt(barcode);
             String concreteGoobiScript = this.goobiScript.replaceAll("\\{\\{\\?\\}\\}", barcode);
             gs.execute(List.of(processId), concreteGoobiScript);
-            BarcodeScannerPlugin.success("GoobiScript executed for process \"" + barcode + "\".");
+            BarcodeScannerPlugin.success("Barcode action \"" + this.description + "\" executed for process \"" + barcode + "\".");
         } catch (NumberFormatException e) {
-            BarcodeScannerPlugin.error("Invalid process id \"" + barcode + "\"");
+            BarcodeScannerPlugin.error("Invalid process id \"" + barcode + "\"!");
         }
     }
 
