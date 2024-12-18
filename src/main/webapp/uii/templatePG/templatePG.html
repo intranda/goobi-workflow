@@ -308,14 +308,18 @@
                                         </ui:repeat>
                                     </ul>
                                 </h:panelGroup>
-                                <h:inputText
-                                    id="barcodeInput"
-                                    pt:placeholder="scan barcode"
-                                    autocomplete="off"
-                                    styleClass="form-control text-center"
-                                    value="#{plugin.code}"
-                                    style="font-size: 800%; caret-color: transparent;"
-                                />
+                                <label>
+                                    <span class="visually-hidden">
+                                        #{msgs.scanBarcode}
+                                    </span>
+                                    <h:inputText
+                                        id="barcodeInput"
+                                        autocomplete="off"
+                                        styleClass="form-control text-center"
+                                        value="#{plugin.code}"
+                                        style="font-size: 800%;"
+                                    />
+                                </label>
                                 <h:commandButton
                                     styleClass="form-control d-none"
                                     action="#{plugin.scan()}"
