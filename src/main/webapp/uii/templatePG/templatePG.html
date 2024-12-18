@@ -285,7 +285,7 @@
                 var="plugin"
                 >
                 <div class="modal" id="footerPlugin#{plugin.id}">
-                    <div class="modal-dialog modal-fullscreen">
+                    <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header bg-primary-400 text-white">
                         <h3 class="modal-title h6">
@@ -298,36 +298,34 @@
                         </div>
                         <div class="modal-body bg-primary-400 text-white">
                             <div class="container-sm d-flex align-items-center" style="height: 80vh;">
-                            <h:form styleClass="mt-3 p-5 mx-5 d-flex flex-column gap-3">
-                                <h:panelGroup rendered="#{plugin.activeFormats.size() > 0}">
-                                    <ul class="p-0" role="list">
-                                        <ui:repeat value="#{plugin.activeFormats}" var="format">
-                                            <li class="alert alert-secondary bg-white">
-                                                <h:outputText value="#{format.description}" />
-                                            </li>
-                                        </ui:repeat>
-                                    </ul>
-                                </h:panelGroup>
-                                <label>
-                                    <span class="visually-hidden">
-                                        #{msgs.scanBarcode}
-                                    </span>
-                                    <h:inputText
-                                        id="barcodeInput"
-                                        autocomplete="off"
-                                        styleClass="form-control text-center"
-                                        value="#{plugin.code}"
-                                        style="font-size: 800%;"
-                                    />
-                                </label>
-                                <h:commandButton
-                                    styleClass="form-control d-none"
-                                    action="#{plugin.scan()}"
-                                    value="Scannen!"
-                                    style="font-size: 400%;"
-                                />
-                                <input type="submit" hidden="true" />
-                            </h:form>
+								<h:form styleClass="d-flex flex-column gap-3 w-75 mx-auto">
+									<h:panelGroup rendered="#{plugin.activeFormats.size() > 0}">
+										<ul class="p-0" role="list">
+											<ui:repeat value="#{plugin.activeFormats}" var="format">
+												<li class="alert alert-secondary bg-white">
+													<h:outputText value="#{format.description}" />
+												</li>
+											</ui:repeat>
+										</ul>
+									</h:panelGroup>
+									<label class="w-100">
+										<span class="visually-hidden">
+											#{msgs.scanBarcode}
+										</span>
+										<h:inputText
+											id="barcodeInput"
+											autocomplete="off"
+											styleClass="form-control text-center"
+											value="#{plugin.code}"
+										/>
+									</label>
+									<h:commandButton
+										styleClass="btn btn-outline text-white border-white"
+										action="#{plugin.scan()}"
+										value="Scannen!"
+									/>
+									<input type="submit" hidden="true" />
+								</h:form>
                             </div>
                         </div>
                     </div>
