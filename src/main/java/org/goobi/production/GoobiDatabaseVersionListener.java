@@ -152,6 +152,15 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             }
         }
 
+        // Fix broken 'titel' processes sort field, should be 'prozesse.titel' since database version 54
+        if (DatabaseVersion.checkIfContentExists("benutzer", "where processses_sort_field = 'titel'")) {
+            try {
+                DatabaseVersion.runSql("UPDATE benutzer SET processses_sort_field = 'prozesse.titel' WHERE processses_sort_field = 'titel';");
+            } catch (SQLException e) {
+                log.error("Error fixing processes sort field", e);
+            }
+        }
+
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
     }
