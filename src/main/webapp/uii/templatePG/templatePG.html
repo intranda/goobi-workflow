@@ -299,7 +299,6 @@
                         <div class="modal-body bg-primary-400 text-white">
                             <div class="container-sm">
                             <h:form styleClass="mt-3 p-5 mx-5 d-flex flex-column gap-3">
-                                <h4 class="h1">Barcodes scannen</h4>
                                 <h:panelGroup rendered="#{plugin.activeFormats.size() > 0}">
                                     <ul class="p-0" role="list">
                                         <ui:repeat value="#{plugin.activeFormats}" var="format">
@@ -315,7 +314,7 @@
                                     autocomplete="off"
                                     styleClass="form-control text-center"
                                     value="#{plugin.code}"
-                                    style="font-size: 400%;"
+                                    style="font-size: 800%; caret-color: transparent;"
                                 />
                                 <h:commandButton
                                     styleClass="form-control d-none"
