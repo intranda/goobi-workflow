@@ -281,56 +281,65 @@
             </div>
             <layout:footer />
             <ui:repeat
-						value="#{FooterBean.footerPlugins}"
-						var="plugin"
-						>
-              <div class="modal" id="footerPlugin#{plugin.id}">
-                <div class="modal-dialog modal-fullscreen">
-                  <div class="modal-content">
-                      <div class="modal-header bg-primary-400 text-white">
-                      <h3 class="modal-title h6">
-                        <span class="fa fa-barcode me-2" />
-                        <span>#{plugin.title}</span>
-                      </h3>
-                      <button type="button" class="btn ms-auto" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" class="fa fa-times text-white" />
-                      </button>
-                      </div>
-                      <div class="modal-body bg-primary-400 text-white">
-                        <div class="container-sm">
-                          <h:form styleClass="mt-3 p-5 mx-5 d-flex flex-column gap-3">
-                            <h4 class="h1">Barcodes scannen</h4>
-                            <h:panelGroup rendered="#{plugin.activeFormats.size() > 0}">
-                                <div>
-                                    <h5 class="h2">Current actions:</h5>
+                value="#{FooterBean.footerPlugins}"
+                var="plugin"
+                >
+                <div class="modal" id="footerPlugin#{plugin.id}">
+                    <div class="modal-dialog modal-fullscreen">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary-400 text-white">
+                        <h3 class="modal-title h6">
+                            <span class="fa fa-barcode me-2" />
+                            <span>#{plugin.title}</span>
+                        </h3>
+                        <button type="button" class="btn ms-auto" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="fa fa-times text-white" />
+                        </button>
+                        </div>
+                        <div class="modal-body bg-primary-400 text-white">
+                            <div class="container-sm">
+                            <h:form styleClass="mt-3 p-5 mx-5 d-flex flex-column gap-3">
+                                <h4 class="h1">Barcodes scannen</h4>
+                                <h:panelGroup rendered="#{plugin.activeFormats.size() > 0}">
                                     <ul class="p-0" role="list">
                                         <ui:repeat value="#{plugin.activeFormats}" var="format">
-                                            <li>
+                                            <li class="alert alert-secondary bg-white">
                                                 <h:outputText value="#{format.description}" />
                                             </li>
                                         </ui:repeat>
                                     </ul>
-                                </div>
-                            </h:panelGroup>
-                            <h:inputText
-                                id="barcodeInput"
-                                styleClass="form-control text-center"
-                                value="#{plugin.code}"
-                                style="font-size: 400%;"
-                            />
-                            <h:commandButton
-                                styleClass="form-control d-none"
-                                action="#{plugin.scan()}"
-                                value="Scannen!"
-                                style="font-size: 400%;"
-                            />
-                            <input type="submit" hidden="true" />
-                          </h:form>
+                                </h:panelGroup>
+                                <h:inputText
+                                    id="barcodeInput"
+                                    autocomplete="off"
+                                    styleClass="form-control text-center"
+                                    value="#{plugin.code}"
+                                    style="font-size: 400%;"
+                                />
+                                <h:commandButton
+                                    styleClass="form-control d-none"
+                                    action="#{plugin.scan()}"
+                                    value="Scannen!"
+                                    style="font-size: 400%;"
+                                />
+                                <input type="submit" hidden="true" />
+                            </h:form>
+                            </div>
                         </div>
-                      </div>
-                  </div>
+                    </div>
+                    </div>
                 </div>
-              </div>
+                <script>
+                    const modal = document.querySelector('#footerPlugin#{plugin.id}');
+                    const barcodeInput = modal.querySelector('[id$="barcodeInput"]');
+                    const modalBody = modal.querySelector('.modal-body');
+                    modal.addEventListener('shown.bs.modal', function () {
+                        barcodeInput.focus();
+                    });
+                    modalBody.addEventListener('click', function () {
+                        barcodeInput.focus();
+                    });
+                </script>
                     <!-- Taglibs seems to be unable to include other pages -->
 <!--                    <h:panelGroup rendered="#{plugin.modal != null}">-->
 <!--                        <h:outputText value="#{plugin.modal}" />-->
