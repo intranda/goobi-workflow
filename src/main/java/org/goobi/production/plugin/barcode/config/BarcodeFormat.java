@@ -61,17 +61,13 @@ public class BarcodeFormat {
 
     public void execute(String barcode) {
         GoobiScript gs = new GoobiScript();
-        try {
-            Optional<Process> process = Optional.ofNullable(ProcessManager.getProcessById(Integer.parseInt(barcode.strip())));
+        Optional<Process> process = Optional.ofNullable(ProcessManager.getProcessByTitle(barcode.strip()));
 
-            process.ifPresentOrElse(p -> {
-                String concreteGoobiScript = this.goobiScript.replaceAll("\\{\\{\\?\\}\\}", p.getId().toString());
-                gs.execute(List.of(p.getId()), concreteGoobiScript);
-                BarcodeScannerPlugin.success("Barcode action \"" + this.description + "\" executed for process \"" + p.getTitel() + "\" [" + p.getId() + "].");
-            }, () -> BarcodeScannerPlugin.error("Process with ID \"" + barcode.strip() + "\" not found!"));
-        } catch (NumberFormatException e) {
-            BarcodeScannerPlugin.error("Invalid process id \"" + barcode.strip() + "\"!");
-        }
+        process.ifPresentOrElse(p -> {
+            String concreteGoobiScript = this.goobiScript.replaceAll("\\{\\{\\?\\}\\}", p.getId().toString());
+            gs.execute(List.of(p.getId()), concreteGoobiScript);
+            BarcodeScannerPlugin.success("Barcode action \"" + this.description + "\" executed for process \"" + p.getTitel() + "\" [" + p.getId() + "].");
+        }, () -> BarcodeScannerPlugin.error("Process with title \"" + barcode.strip() + "\" not found!"));
     }
 
     private List<String> determineParameters(String barcode) {
