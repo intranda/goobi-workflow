@@ -137,11 +137,11 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
         FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
 
         UIComponent parent = FacesContext.getCurrentInstance().getApplication().createComponent(HtmlPanelGroup.COMPONENT_TYPE);
-        parent.setId("modal" + getId());
+        parent.setId("pluginModal" + getId());
 
         Resource componentResource = context.getApplication().getResourceHandler().createResource("barcodeModal.xhtml", "plugins");
         UIComponent composite = application.createComponent(context, componentResource);
-        composite.setId("modalComposite" + getId());
+        composite.setId("pluginModal" + getId());
 
         // This basically creates <composite:implementation>.
         UIComponent implementation = application.createComponent(UIPanel.COMPONENT_TYPE);
@@ -158,7 +158,8 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
         parent.popComponentFromEL(context);
 
         //add some attributes...
-//        parent.getAttributes().put("plugin", this);
+        parent.getAttributes().put("plugin", this); // this might not be required..
+        composite.getAttributes().put("plugin", this);
 
         return parent;
     }
