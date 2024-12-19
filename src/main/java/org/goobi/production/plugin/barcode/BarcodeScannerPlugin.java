@@ -55,6 +55,7 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
     private String code;
     private BarcodeScannerPluginConfiguration config;
     private List<BarcodeFormat> activeFormats = Collections.emptyList();
+    private UIComponent modal;
 
     public static void main(String[] args) throws Exception {
         BarcodeScannerPlugin plugin = new BarcodeScannerPlugin();
@@ -127,11 +128,7 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
         Helper.setFehlerMeldung(message);
     }
 
-    public void setModal(UIComponent c) {
-
-    }
-
-    public UIComponent getModal() {
+    private UIComponent generateModalComponent() {
         FacesContext context = FacesContext.getCurrentInstance();
         Application application = context.getApplication();
         FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
@@ -162,5 +159,16 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
         composite.getAttributes().put("plugin", this);
 
         return parent;
+    }
+
+    public void setModal(UIComponent c) {
+
+    }
+
+    public UIComponent getModal() {
+        if (this.modal == null && this.getModalPath() != null) {
+            this.modal = generateModalComponent();
+        }
+        return this.modal;
     }
 }
