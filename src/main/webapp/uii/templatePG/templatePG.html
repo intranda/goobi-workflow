@@ -284,14 +284,16 @@
                 value="#{FooterBean.footerPlugins}"
                 var="plugin"
                 >
-                <h:panelGroup rendered="#{plugin.getModal() != null}">
+                <ui:fragment rendered="#{plugin.getModalPath() != null}">
+                    <h:outputText value="#{plugin}" />
+                    <h:outputText value="#{plugin.modal}" />
+                    <h:panelGroup binding="#{plugin.modal}" />
 <!--                    <ui:include src="#{plugin.getModal()}">-->
-                    <ui:include src="../includes/barcodePlugin/barcodeModal.xhtml">
-                        <ui:param name="plugin" value="#{plugin}" />
-                    </ui:include>
+<!--                    <ui:include src="../includes/barcodePlugin/barcodeModal.xhtml">-->
+<!--                    </ui:include>-->
 <!--                    <ui:include src="../includes/barcodePlugin/barcodeModal.xhtml" />-->
 <!--                    <ui:include src="/includes/barcodePlugin/barcodeModal.xhtml" />-->
-                </h:panelGroup>
+                </ui:fragment>
             </ui:repeat>
 
         </c:if>
