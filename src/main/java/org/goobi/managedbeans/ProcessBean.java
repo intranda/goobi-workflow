@@ -1440,6 +1440,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     public String reload() {
         if (this.myProzess != null && this.myProzess.getId() != null) {
             this.myProzess = ProcessManager.getProcessById(this.myProzess.getId());
+            loadProcessProperties();
         }
         return "";
     }
