@@ -284,13 +284,8 @@
                 items="#{FooterBean.footerPlugins}"
                 var="plugin"
                 >
-                <c:if test="#{plugin.getModalPath() != null}">
+                <c:if test="#{plugin.modal != null}">
                     <h:panelGroup binding="#{plugin.modal}" />
-<!--                    <ui:include src="#{plugin.getModal()}">-->
-<!--                    <ui:include src="../includes/barcodePlugin/barcodeModal.xhtml">-->
-<!--                    </ui:include>-->
-<!--                    <ui:include src="../includes/barcodePlugin/barcodeModal.xhtml" />-->
-<!--                    <ui:include src="/includes/barcodePlugin/barcodeModal.xhtml" />-->
                 </c:if>
             </c:forEach>
         </c:if>
