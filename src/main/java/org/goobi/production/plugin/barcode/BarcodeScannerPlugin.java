@@ -37,7 +37,7 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
 
     @Override
     public String getModal() {
-        return "includes/footerPluginModal.xhtml";
+        return "/includes/barcodePlugin/barcodeModal.xhtml";
     }
 
     private String code;
