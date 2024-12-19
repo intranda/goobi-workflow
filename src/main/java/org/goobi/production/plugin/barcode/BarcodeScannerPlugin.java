@@ -8,12 +8,24 @@ import org.goobi.production.plugin.barcode.config.BarcodeFormat;
 import org.goobi.production.plugin.barcode.config.BarcodeScannerPluginConfiguration;
 import org.goobi.production.plugin.interfaces.IFooterPlugin;
 
+import javax.annotation.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.faces.application.Application;
+import javax.faces.application.Resource;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIPanel;
+import javax.faces.component.html.HtmlPanelGroup;
+import javax.faces.context.FacesContext;
+import javax.faces.view.facelets.FaceletContext;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 @Data
+@ManagedBean
+@RequestScoped
 public class BarcodeScannerPlugin implements IFooterPlugin {
     @Override
     public String getId() {
@@ -36,8 +48,8 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
     }
 
     @Override
-    public String getModal() {
-        return "/includes/barcodePlugin/barcodeModal.xhtml";
+    public String getModalPath() {
+        return "../includes/barcodePlugin/barcodeModal.xhtml";
     }
 
     private String code;
@@ -113,5 +125,41 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
     public static void error(String message) {
         log.error(message);
         Helper.setFehlerMeldung(message);
+    }
+
+    public void setModal(UIComponent c) {
+
+    }
+
+    public UIComponent getModal() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Application application = context.getApplication();
+        FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
+
+        UIComponent parent = FacesContext.getCurrentInstance().getApplication().createComponent(HtmlPanelGroup.COMPONENT_TYPE);
+        parent.setId("modal" + getId());
+
+        Resource componentResource = context.getApplication().getResourceHandler().createResource("barcodeModal.xhtml", "plugins");
+        UIComponent composite = application.createComponent(context, componentResource);
+        composite.setId("modalComposite" + getId());
+
+        // This basically creates <composite:implementation>.
+        UIComponent implementation = application.createComponent(UIPanel.COMPONENT_TYPE);
+        implementation.setRendererType("javax.faces.Group");
+        composite.getFacets().put(UIComponent.COMPOSITE_FACET_NAME, implementation);
+
+        parent.getChildren().add(composite);
+        parent.pushComponentToEL(context, composite); // This makes #{cc} available.
+        try {
+            faceletContext.includeFacelet(implementation, componentResource.getURL());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        parent.popComponentFromEL(context);
+
+        //add some attributes...
+//        parent.getAttributes().put("plugin", this);
+
+        return parent;
     }
 }
