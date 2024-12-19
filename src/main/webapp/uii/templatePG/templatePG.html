@@ -280,22 +280,19 @@
                 </div>
             </div>
             <layout:footer />
-            <ui:repeat
-                value="#{FooterBean.footerPlugins}"
+            <c:forEach
+                items="#{FooterBean.footerPlugins}"
                 var="plugin"
                 >
-                <ui:fragment rendered="#{plugin.getModalPath() != null}">
-                    <h:outputText value="#{plugin}" />
-                    <h:outputText value="#{plugin.modal}" />
+                <c:if test="#{plugin.getModalPath() != null}">
                     <h:panelGroup binding="#{plugin.modal}" />
 <!--                    <ui:include src="#{plugin.getModal()}">-->
 <!--                    <ui:include src="../includes/barcodePlugin/barcodeModal.xhtml">-->
 <!--                    </ui:include>-->
 <!--                    <ui:include src="../includes/barcodePlugin/barcodeModal.xhtml" />-->
 <!--                    <ui:include src="/includes/barcodePlugin/barcodeModal.xhtml" />-->
-                </ui:fragment>
-            </ui:repeat>
-
+                </c:if>
+            </c:forEach>
         </c:if>
 
 
