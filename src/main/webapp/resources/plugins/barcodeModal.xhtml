@@ -66,7 +66,7 @@
             </div>
         </div>
         <script>
-            const modal = document.querySelector('#pluginModal#{plugin.id}');
+            const modal = document.querySelector('#pluginModal#{cc.attrs.plugin.id}');
             const barcodeInput = modal.querySelector('[id$="barcodeInput"]');
             const modalBody = modal.querySelector('.modal-body');
             modal.addEventListener('shown.bs.modal', function () {
