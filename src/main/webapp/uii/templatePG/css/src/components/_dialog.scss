@@ -2,6 +2,8 @@
     --bs-modal-border-radius: var(--border-radius);
     --bs-modal-inner-border-radius: 0;
     --bs-modal-header-padding: 1em;
+    background-color: rgba(0,0,0,.5);
+    backdrop-filter: blur(3px);
 }
 
 .button-modal-close .fa {
