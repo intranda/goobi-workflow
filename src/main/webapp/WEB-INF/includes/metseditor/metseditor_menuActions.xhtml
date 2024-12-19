@@ -13,93 +13,82 @@
     <composite:interface />
 
     <composite:implementation>
-    	<script type="text/javascript">
-        	function switchExpanded(id){
-				var x = document.getElementById(id).getAttribute("aria-expanded");
-				if (x == "true"){
-					x = "false"
-				} else {
-					x = "true"
-				}
-				document.getElementById(id).setAttribute("aria-expanded", x);
-        	}
-        </script>
         <h:form id="meMenuActionsForm">
-            <ul class="clean">
+            <ul class="navbar-nav">
                 <!-- PAGE TITLE -->
-                <li class="string">#{myPageTitle}</li>
+                <li class="nav-item">
+                    <span class="nav-link">
+                        #{myPageTitle}
+                    </span>
+                </li>
 
                 <!-- PROCESS ID -->
                 <ui:fragment rendered="#{LoginForm.myBenutzer.metsDisplayProcessID}">
-                    <li class="string">Goobi-ID: #{Metadaten.myProzess.id}</li>
+                    <li class="nav-item">Goobi-ID: #{Metadaten.myProzess.id}</li>
                 </ui:fragment>
 
                 <li class="separator">
                 </li>
                 <ui:fragment rendered="#{Metadaten.showOcrButton}">
-                    <li>
+                    <li class="nav-item">
                             <!-- JS function is defined in uii/includes/metseditor/modals/inc_me_modal_altoeditor.xhtml -->
                         <button
                             onclick="openAltoEditor()"
                             type="button"
                             aria-label="#{msgs.mets_editOcrForCurrentImage}"
-                            class="btn btn--icon"
+                            class="nav-link"
                             title="#{msgs.mets_editOcrForCurrentImage}"
                             role="button"
-                            data-toggle="tooltip"
-                            data-placement="bottom">
-                            <i
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="bottom">
+                            <span
                                 class="fa fa-file-text-o fa-lg"
-                                aria-hidden="true"></i>
-                                <i
+                                aria-hidden="true" />
+                            <span
                                 class="fa fa-pencil fa-lg"
-                                aria-hidden="true"></i>
+                                aria-hidden="true" />
 
                         </button>
                     </li>
-                    <li class="no-border #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
+                    <li class="nav-item #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
                         <button
                             jsf:id="ocrButton"
                             aria-label="#{msgs.mets_showOcrForCurrentImage}"
-                            class="btn btn--icon"
+                            class="nav-link"
                             jsf:action="#{NavigationForm.Reload}"
                             title="#{msgs.mets_showOcrForCurrentImage}"
-                            role="button">
-                            <i
+                            role="button"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="bottom">
+                            <span
                                 class="fa fa-file-text-o fa-lg"
-                                aria-hidden="true"></i>
+                                aria-hidden="true" />
                             <f:setPropertyActionListener
                                 value="true"
                                 target="#{Metadaten.treeProperties.showOcr}" />
-                                <x:updateActionListener
-                            value=""
-                            property="#{Metadaten.treeProperties.showThumbnails}" />
-                            <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip" />
-                            <f:passThroughAttribute
-                                name="data-placement"
-                                value="bottom" />
+                            <x:updateActionListener
+                                value=""
+                                property="#{Metadaten.treeProperties.showThumbnails}" />
                         </button>
                     </li>
                 </ui:fragment>
                 <!-- TOGGLE IMAGE VIEW -->
-                <li class="#{Metadaten.treeProperties.showOcr ne 'true' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
+                <li class="nav-item #{Metadaten.treeProperties.showOcr ne 'true' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
                     <button
                         onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
-                        class="btn btn--icon"
+                        class="nav-link"
                         jsf:id="showSinglePage"
                         aria-label="#{msgs.mets_showImagesOne}"
                         jsf:action="#{Metadaten.toggleImageView}"
                         title="#{msgs.mets_showImagesOne}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
                         >
-                        <i class="fa fa-picture-o fa-lg" aria-hidden="true"></i>
+                        <span class="fa fa-picture-o fa-lg" aria-hidden="true" />
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                            <f:setPropertyActionListener
                                 value=""
                                 target="#{Metadaten.treeProperties.showThumbnails}" />
-                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:passThroughAttribute name="data-placement" value="bottom" />
                           <f:setPropertyActionListener
                                 value=""
                                 target="#{Metadaten.treeProperties.showOcr}" />
@@ -107,23 +96,23 @@
                 </li>
 
                 <!-- TOGGLE IMAGE VIEW -->
-                <li class="#{Metadaten.treeProperties.showThumbnails ne '' ? 'active' :''}">
+                <li class="nav-item #{Metadaten.treeProperties.showThumbnails ne '' ? 'active' :''}">
                     <button
                         onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
-                        class="btn btn--icon"
+                        class="nav-link"
                         jsf:id="showThumbnails"
                         aria-label="#{msgs.mets_showImagesThumbs}"
                         jsf:action="#{Metadaten.toggleImageView}"
                         title="#{msgs.mets_showImagesThumbs}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
                         >
-                        <i class="fa fa-picture-o fa-lg" aria-hidden="true"></i>
-                        <i class="fa fa-picture-o fa-lg" aria-hidden="true"></i>
+                        <span class="fa fa-picture-o fa-lg" aria-hidden="true" />
+                        <span class="fa fa-picture-o fa-lg" aria-hidden="true" />
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <x:updateActionListener
                             value="true"
                             property="#{Metadaten.treeProperties.showThumbnails}" />
-                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:passThroughAttribute name="data-placement" value="bottom" />
                         <f:setPropertyActionListener
                                 value=""
                                 target="#{Metadaten.treeProperties.showOcr}" />
@@ -135,7 +124,7 @@
 
 
                 <!-- VALIDATION -->
-                <li>
+                <li class="nav-item">
                     <button
                             style="display: none"
                             jsf:id="startValidationButton"
@@ -143,14 +132,14 @@
                     </button>
 
                     <button
-                        class="btn btn--icon"
+                        class="nav-link"
                         jsf:id="startValidation"
                         aria-label="#{msgs.validieren}"
                         jsf:action="#{Metadaten.Validate}"
-                        title="#{msgs.validieren}">
-                        <i class="fa fa-check fa-lg" aria-hidden="true"></i>
-                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:passThroughAttribute name="data-placement" value="bottom" />
+                        title="#{msgs.validieren}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom">
+                        <span class="fa fa-check fa-lg" aria-hidden="true" />
                         <f:ajax
                             onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
                             render="@form :pageContentCenter @form :treeform" />
@@ -168,31 +157,25 @@
                 </li>
 
                 <!-- CONFIGURATION -->
-                <li>
+                <li
+                    class="nav-item dropdown">
                     <button
                     	id="configDropdown"
                         type="button"
-                        class="btn btn--clean"
+                        class="nav-link dropdown-toggle"
                         aria-label="#{msgs.mets_configuration}"
-                        title="#{msgs.mets_configuration}"
-                        aria-haspopup="true"
                         aria-expanded="false"
-                        onclick="switchExpanded(this.id)"
-                        data-show="submenu"
-                        data-toggle="tooltip"
-                        data-placement="bottom">
-                        <i class="fa fa-cog fa-lg" aria-hidden="true"></i>
+                        data-bs-toggle="dropdown">
+                        <span class="fa fa-cog fa-lg" aria-hidden="true" />
                     </button>
-                    <ul class="clean submenu">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <li>
                             <button
                                 jsf:id="showtreelevel"
                                 jsf:action="#{NavigationForm.Reload}"
                                 class="dropdown-item">
-                                <i class="fa fa-list-ol" aria-hidden="true"></i>
+                                <span class="fa fa-list-ol" aria-hidden="true" />
                                 #{Metadaten.treeProperties.showtreelevel ? msgs.mets_treelevel_hide : msgs.mets_treelevel}
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener
                                     value="#{Metadaten.treeProperties.showtreelevel?false:true}"
                                     property="#{Metadaten.treeProperties.showtreelevel}" />
@@ -206,17 +189,12 @@
                             	jsf:id="showtitle"
                                 jsf:action="#{NavigationForm.Reload}"
                                 class="dropdown-item">
-                                <i class="fa fa-list" aria-hidden="true"></i>
+                                <span class="fa fa-list" aria-hidden="true" />
                                 #{Metadaten.treeProperties.showtitle ? msgs.mets_treeTitle_hide : msgs.mets_treeTitle}
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener
                                     value="#{Metadaten.treeProperties.showtitle?false:true}"
                                     property="#{Metadaten.treeProperties.showtitle}" />
-
-
                                 <f:ajax render="@form :treeform" />
-
                             </button>
                         </li>
 
@@ -225,10 +203,8 @@
                             	jsf:id="showfirstpagenumber"
                                 jsf:action="#{NavigationForm.Reload}"
                                 class="dropdown-item">
-                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="fa fa-exchange" aria-hidden="true" />
                                 #{Metadaten.treeProperties.showfirstpagenumber ? msgs.mets_treePageNumber_hide : msgs.mets_treePageNumber}
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener
                                     value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
                                     property="#{Metadaten.treeProperties.showfirstpagenumber}" />
@@ -243,10 +219,8 @@
                                 jsf:id="fullexpanded"
                                 jsf:action="#{Metadaten.TreeExpand}"
                                 class="dropdown-item">
-                                <i class="fa fa-indent" aria-hidden="true"></i>
+                                <span class="fa fa-indent" aria-hidden="true" />
                                 #{not Metadaten.treeProperties.fullexpanded ? msgs.mets_treeExpand : msgs.mets_treeCompress}
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener
                                     value="#{Metadaten.treeProperties.fullexpanded?false:true}"
                                     property="#{Metadaten.treeProperties.fullexpanded}" />
@@ -260,10 +234,8 @@
                                 jsf:id="displayImage"
                                 jsf:action="#{Metadaten.BildAnzeigen}"
                                 class="dropdown-item">
-                                <i class="fa fa-picture-o" aria-hidden="true"></i>
+                                <span class="fa fa-picture-o" aria-hidden="true" />
                                 #{Metadaten.bildAnzeigen == true ? msgs.metadatenBildAusblenden : msgs.metadatenBildAnzeigen}
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
                             </button>
                         </li>
 
@@ -272,15 +244,12 @@
                                 <button
                                     jsf:id="resetPagination"
                                     class="dropdown-item"
-                                    data-toggle="modal"
-                                    data-target="#resetPaginationModal"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#resetPaginationModal"
                                     type="button">
-                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    <span class="fa fa-refresh" aria-hidden="true" />
                                     #{msgs.mets_resetPagination}
-                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    <f:passThroughAttribute name="data-placement" value="bottom" />
                                 </button>
-
                             </li>
                         </c:if>
 
@@ -289,13 +258,9 @@
                                 jsf:id="toggleTopstruct"
                                 jsf:action="#{Metadaten.changeTopstruct}"
                                 class="dropdown-item">
-                                <i class="fa fa-sitemap" aria-hidden="true"></i>
+                                <span class="fa fa-sitemap" aria-hidden="true" />
                                 #{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
-
                                 <f:ajax render="@form :treeform" />
-
                             </button>
                         </li>
 
@@ -304,10 +269,8 @@
                                 jsf:id="toggleThumbLabel"
                                 jsf:action="#{NavigationForm.Reload}"
                                 class="dropdown-item">
-                                <i class="fa fa-file" aria-hidden="true"></i>
+                                <span class="fa fa-file" aria-hidden="true" />
                                 #{NavigationForm.uiStatus.mets_thumbFilename?msgs.mets_showThumbFileNames:msgs.mets_showThumbPagination}
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener
                                     value="#{NavigationForm.uiStatus.mets_thumbFilename?false:true}"
                                     property="#{NavigationForm.uiStatus.mets_thumbFilename}" />
@@ -319,10 +282,8 @@
                                 jsf:id="toggleHiddenFields"
                                 jsf:action="#{Metadaten.reloadMetadataList}"
                                 class="dropdown-item">
-                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                <span class="fa fa-eye" aria-hidden="true" />
                                 #{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener
                                     value="#{!Metadaten.displayHiddenMetadata}"
                                     property="#{Metadaten.displayHiddenMetadata}" />
@@ -334,10 +295,8 @@
                                     jsf:id="toggleRTL"
                                     jsf:action="#{Metadaten.Reload}"
                                     class="dropdown-item">
-                                     <i class="fa fa-exchange" aria-hidden="true"></i>
+                                     <span class="fa fa-exchange" aria-hidden="true" />
                                     #{Metadaten.pagesRTL?msgs.mets_toggleLTR:msgs.mets_toggleRTL}
-                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    <f:passThroughAttribute name="data-placement" value="bottom" />
                                     <x:updateActionListener
                                         value="#{!Metadaten.pagesRTL}"
                                         property="#{Metadaten.pagesRTL}" />
@@ -350,7 +309,7 @@
                         <ui:repeat var="directory" value="#{Metadaten.allTifFolders}">
                             <li class="#{Metadaten.currentTifFolder == directory ? 'active':''}">
                                 <button jsf:id="changeFolder" class="dropdown-item" jsf:action="#{Metadaten.changeFolder}">
-                                    <i class="fa fa-sitemap" aria-hidden="true"></i>
+                                    <span class="fa fa-sitemap" aria-hidden="true" />
                                     #{directory}
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
                                     <x:updateActionListener value="#{directory}" property="#{Metadaten.currentTifFolder}" />
@@ -364,7 +323,7 @@
 
                 <!-- SAVE -->
                 <c:if test="#{not Metadaten.nurLesenModus}">
-                    <li>
+                    <li class="nav-item">
                         <!-- This button and the hidden button below have to
                         work together to get the wanted effect here. This button
                         is responsible for FIRST UNFOCUSING the currently
@@ -381,14 +340,14 @@
                         in the desired behaviour. In Chromium-browsers, the first submit is sent, resulting in Metadaten.Reload
                         not being called (Florian 06-10-2022) -->
                         <button type="button"
-                            jsf:styleClass="btn btn--icon"
+                            jsf:styleClass="nav-link"
                             id="saveMetsFileButtonSimulation"
                             onclick="document.activeElement.blur();document.getElementById('meMenuActionsForm:saveMetsFileButton').click();"
                             title="#{msgs.speichern}"
-                            data-toggle="tooltip"
-                            data-placement="bottom">
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="bottom">
 
-                            <i class="fa fa-floppy-o fa-lg" aria-hidden="true"></i>
+                            <span class="fa fa-floppy-o fa-lg" aria-hidden="true" />
 
                         </button>
                         <!-- This button may not be removed or merged into the
@@ -412,9 +371,6 @@
                             style="display:none"
                             styleClass="navigationitem"
                             id="saveMetsFileImage">
-                            <f:passThroughAttribute
-                                name="data-placement"
-                                value="bottom" />
                             <span class="fa fa-floppy-o" />
                         </h:panelGroup>
 
@@ -437,56 +393,51 @@
                             rel="tooltip">
                             <f:ajax render="@form"></f:ajax>
                             <f:passThroughAttribute
-                                name="data-placement"
+                                name="data-bs-placement"
                                 value="bottom" />
                         </h:commandButton>
 
                     </li>
                 </c:if>
 
-                <li>
+                <li class="nav-item dropdown">
                     <button
                         id="exit"
                         type="button"
-                        class="btn btn--clean"
-                        aria-haspopup="true"
+                        class="nav-link dropdown-toggle"
                         aria-expanded="false"
-                        onclick="switchExpanded(this.id)"
                         aria-label="#{msgs.mets_leaveMetsEditor}"
                         title="#{msgs.mets_leaveMetsEditor}"
-                        data-show="submenu"
-                        data-placement="left">
-                        <i class="fa fa-home fa-lg" aria-hidden="true"></i>
+                        data-bs-toggle="dropdown">
+                        <span class="fa fa-home fa-lg" aria-hidden="true" />
                     </button>
-                    <ul class="clean submenu">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <c:if test="#{not Metadaten.nurLesenModus}">
-                            <li>
+                            <li class="nav-item">
                                 <h:commandLink
                                     id="saveAndExit"
                                     action="#{Metadaten.XMLschreiben}"
-                                    onclick="goobiWorkflowJS.displayProgressBar(); goobiWorkflowJS.meScrollPos.destroyScrollPos()">
-                                    <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                    onclick="goobiWorkflowJS.displayProgressBar(); goobiWorkflowJS.meScrollPos.destroyScrollPos()"
+                                    styleClass="dropdown-item">
+                                    <span class="fa fa-floppy-o" aria-hidden="true" />
                                     #{msgs.speichernZurueck}
-                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    <f:passThroughAttribute name="data-placement" value="bottom" />
                                 </h:commandLink>
                             </li>
                         </c:if>
 
-                        <li>
+                        <li class="nav-item">
                             <h:commandLink
                                 onclick="goobiWorkflowJS.meScrollPos.destroyScrollPos()"
                                 id="exitOnly"
                                 action="#{Metadaten.goZurueck}"
-                                rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}">
-                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}"
+                                styleClass="dropdown-item">
+                                <span class="fa fa-trash-o" aria-hidden="true" />
                                 #{msgs.goBack}
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
                             </h:commandLink>
                             <h:panelGroup rendered="#{Metadaten.checkForNewerTemporaryMetadataFiles}">
-                                <button type="button" class="dropdown-item" title="#{msgs.goBack}" data-toggle="modal" data-target="#unsavedChanges">
-                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                <button type="button" class="dropdown-item" title="#{msgs.goBack}" data-bs-toggle="modal" data-target="#unsavedChanges">
+                                    <span class="fa fa-trash-o" aria-hidden="true" />
                                     #{msgs.goBack}
                                 </button>
                             </h:panelGroup>

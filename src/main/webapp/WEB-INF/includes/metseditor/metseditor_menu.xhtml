@@ -19,10 +19,10 @@
                 value="#{NavigationForm.uiStatus.mets_scrollPositionStructData}" />
             <h:inputHidden id="scrollToThumb" value="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
 
-            <ul class="clean">
+            <ul role="list" class="navbar-nav">
                 <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Pagination')}">
-                    <li class="#{Metadaten.modusAnsicht == 'Paginierung' ? 'active' : ''}">
-                        <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoPagination">
+                    <li class="nav-item #{Metadaten.modusAnsicht == 'Paginierung' ? 'active' : ''}">
+                        <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoPagination">
                             #{msgs.paginierung}
                             <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax
@@ -33,8 +33,8 @@
                 </ui:fragment>
 
                 <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Structure')}">
-                    <li class="#{Metadaten.modusAnsicht == 'Strukturdaten' ? 'active' : ''}">
-                        <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoStructure">
+                    <li class="nav-item #{Metadaten.modusAnsicht == 'Strukturdaten' ? 'active' : ''}">
+                        <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoStructure">
                             #{msgs.strukturdaten}
                             <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax
@@ -45,8 +45,8 @@
                 </ui:fragment>
 
                 <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Metadata')}">
-                    <li class="#{Metadaten.modusAnsicht == 'Metadaten' ? 'active' : ''}">
-                        <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoMetadata">
+                    <li class="nav-item #{Metadaten.modusAnsicht == 'Metadaten' ? 'active' : ''}">
+                        <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoMetadata">
                             #{msgs.metadaten}
                             <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax
@@ -57,12 +57,12 @@
                 </ui:fragment>
 
                 <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Files')}">
-                    <li class="#{Metadaten.modusAnsicht == 'File' ? 'active' : ''}">
-                        <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoFile">
+                    <li class="nav-item #{Metadaten.modusAnsicht == 'File' ? 'active' : ''}">
+                        <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoFile">
                             #{msgs.fileManipulation}
                             <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
-                             <f:ajax
-                                 onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'File'})}"
+                            <f:ajax
+                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'File'})}"
                                 render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
