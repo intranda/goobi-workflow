@@ -78,9 +78,9 @@
                     </layout:header>
 
                     <!-- CONTENT WRAPPER -->
-                    <div id="pageContentWrapper" class="d-flex flex-nowrap gap-1 p-3" tabindex="-1">
+                    <div id="pageContentWrapper" class="d-flex flex-nowrap gap-1" tabindex="-1">
                         <!-- CONTENT LEFT -->
-                        <div id="pageContentLeft" class="flex-fill">
+                        <div id="pageContentLeft" class="flex-fill bg-light p-2 border-end border-primary">
                             <div class="page-content__left-inner">
                                 <!-- METSEDITOR STRUCTURE -->
                                 <ui:insert name="metseditorStructure" />
@@ -88,7 +88,7 @@
                         </div>
 
                         <!-- CONTENT CENTER -->
-                        <h:panelGroup id="pageContentCenter" styleClass="flex-fill" layout="block">
+                        <h:panelGroup id="pageContentCenter" styleClass="flex-fill p-2 border-end" layout="block">
                             <div class="page-content__center-inner">
                                 <!-- METSEDITOR CONTENT -->
                                 <ui:insert name="metseditorContent" />
@@ -97,7 +97,7 @@
 
                         <!-- CONTENT RIGHT -->
                         <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
-                        <div id="pageContentRight" class="flex-fill">
+                        <div id="pageContentRight" class="flex-fill p-2">
                             <div class="page-content__right-inner">
                                 <!-- METSEDITOR IMAGE -->
                                 <ui:insert name="metseditorImage" />
@@ -108,7 +108,7 @@
 
                 <!-- AJAX LOADER -->
                 <div id="ajaxloader" class="ajax-loader">
-                    <img src="template/img/goobi/ajaxloader2.gif" />
+                    <img src="templatePG/img/goobi/ajaxloader2.gif" />
                 </div>
             </div>
             <layout:footer />
