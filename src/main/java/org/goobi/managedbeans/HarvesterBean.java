@@ -24,9 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
@@ -43,6 +40,8 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import io.goobi.workflow.harvester.HarvesterGoobiImport;
 import io.goobi.workflow.harvester.beans.Job;
 import io.goobi.workflow.harvester.repository.Repository;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 

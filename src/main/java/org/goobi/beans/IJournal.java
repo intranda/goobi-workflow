@@ -21,7 +21,7 @@ package org.goobi.beans;
 
 import java.util.List;
 
-import javax.servlet.http.Part;
+import jakarta.servlet.http.Part;
 
 public interface IJournal {
 

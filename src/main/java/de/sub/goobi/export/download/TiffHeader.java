@@ -28,17 +28,17 @@ package de.sub.goobi.export.download;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import javax.faces.context.FacesContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.FacesContextHelper;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Die Klasse TiffHeader dient zur Generierung einer Tiffheaderdatei *.conf
@@ -61,14 +61,14 @@ public class TiffHeader {
             if (myWerkstueck.getEigenschaftenSize() > 0) {
                 for (Masterpieceproperty eig : myWerkstueck.getEigenschaftenList()) {
 
-                    if (eig.getTitel().equals("TifHeaderDocumentname")) {
+                    if ("TifHeaderDocumentname".equals(eig.getTitel())) {
                         this.tifHeaderDocumentname = eig.getWert();
                     }
-                    if (eig.getTitel().equals("TifHeaderImagedescription")) {
+                    if ("TifHeaderImagedescription".equals(eig.getTitel())) {
                         this.tifHeaderImagedescription = eig.getWert();
                     }
 
-                    if (eig.getTitel().equals("Artist")) {
+                    if ("Artist".equals(eig.getTitel())) {
                         this.artist = eig.getWert();
                     }
                 }

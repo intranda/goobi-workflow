@@ -27,8 +27,6 @@ package org.goobi.production.plugin.interfaces;
 
 import java.io.Serializable;
 
-import javax.faces.event.ActionEvent;
-
 import org.goobi.production.enums.PluginGuiType;
 
 public interface IDashboardPlugin extends IPlugin, Serializable {

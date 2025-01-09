@@ -27,19 +27,18 @@ package de.sub.goobi.helper.servletfilter;
  */
 import java.io.IOException;
 
-import javax.inject.Inject;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.goobi.managedbeans.LoginBean;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import jakarta.inject.Inject;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class SecurityCheckFilter implements Filter {
 
@@ -68,7 +67,7 @@ public class SecurityCheckFilter implements Filter {
         String destination = "index.xhtml";
         if (url.contains("external_index.xhtml") && ConfigurationHelper.getInstance().isEnableExternalUserLogin()) {
             chain.doFilter(request, response);
-        } else if ((userBean == null || userBean.getMyBenutzer() == null) && !url.contains("javax.faces.resource") && !url.contains("wi?")
+        } else if ((userBean == null || userBean.getMyBenutzer() == null) && !url.contains("jakarta.faces.resource") && !url.contains("wi?")
                 && !url.contains("currentUsers.xhtml") && !url.contains("logout.xhtml") && !url.contains("technicalBackground.xhtml")
                 && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)) {
             ((HttpServletResponse) response).sendRedirect(destination);

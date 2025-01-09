@@ -37,10 +37,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.faces.model.SelectItem;
 
 public class ImportProperty implements IProperty {
 

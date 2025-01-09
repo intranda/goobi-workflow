@@ -25,9 +25,8 @@
  */
 package de.sub.goobi.helper;
 
-import javax.inject.Singleton;
-
 import de.sub.goobi.config.ConfigurationHelper;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class StorageProvider {

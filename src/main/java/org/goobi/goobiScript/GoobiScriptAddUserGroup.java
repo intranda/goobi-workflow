@@ -24,10 +24,19 @@
  */
 package org.goobi.goobiScript;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.ehcache.Cache;
+import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ExpiryPolicyBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.EntryUnit;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
@@ -40,9 +49,6 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.extern.log4j.Log4j2;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
 
 @Log4j2
 public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGoobiScript {
@@ -56,7 +62,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
      * multiple steps, the group is loaded from the database into the cache once and reused each time. This saves lots of database requests. The cache
      * only works if the status is Status.STATUS_ALIVE. The status is Status.STATUS_ALIVE after it was registered in the cache manager.
      */
-    private Cache userGroupCache = null;
+    private Cache<String, Usergroup> userGroupCache = null;
 
     @Override
     public String getAction() {
@@ -117,14 +123,21 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
 
         String name = "userGroupCache";
         int maxElementsInMemory = 10;
-        boolean overflowToDisk = false;
-        boolean eternal = false;
-        long timeToLiveSeconds = 3600;
-        long timeToIdleSeconds = 3600;
 
-        this.userGroupCache = new Cache(name, maxElementsInMemory, overflowToDisk, eternal, timeToLiveSeconds, timeToIdleSeconds);
-        CacheManager cacheManager = new CacheManager();
-        cacheManager.addCache(this.userGroupCache);
+        long timeToLiveSeconds = 3600;
+
+        CacheManagerBuilder builder = CacheManagerBuilder.newCacheManagerBuilder();
+
+        CacheManager manager = builder.build();
+        manager.init();
+
+        userGroupCache = manager.createCache(name, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Usergroup.class,
+                ResourcePoolsBuilder.newResourcePoolsBuilder()
+                        .heap(maxElementsInMemory, EntryUnit.ENTRIES))
+
+                .withExpiry(ExpiryPolicyBuilder.timeToIdleExpiration(Duration.of(timeToLiveSeconds, ChronoUnit.SECONDS)))
+                .build());
+
     }
 
     @Override
@@ -133,10 +146,9 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
 
         // Add the group to the cache if it does not already exist
         String group = parameters.get(GROUP);
-        if (!this.userGroupCache.isElementInMemory(group)) {
+        if (!this.userGroupCache.containsKey(group)) {
             Usergroup userGroup = GoobiScriptAddUserGroup.getUsergroupFromDatabase(parameters);
-            Element element = new Element(group, userGroup);
-            this.userGroupCache.put(element);
+            this.userGroupCache.put(group, userGroup);
         }
 
         Process process = ProcessManager.getProcessById(gsr.getProcessId());
@@ -161,8 +173,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
                 step.setBenutzergruppen(groupsOfStep);
             }
 
-            Element element = this.userGroupCache.get(group);
-            Usergroup userGroup = (Usergroup) (element.getObjectValue());
+            Usergroup userGroup = this.userGroupCache.get(group);
 
             if (!groupsOfStep.contains(userGroup)) {
                 groupsOfStep.add(userGroup);

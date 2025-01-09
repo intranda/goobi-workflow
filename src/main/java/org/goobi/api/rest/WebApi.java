@@ -27,8 +27,8 @@ package org.goobi.api.rest;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 
 @ApplicationPath("api")
 public class WebApi extends Application {

@@ -40,8 +40,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.faces.model.SelectItem;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.goobi.beans.Process;
@@ -52,6 +50,7 @@ import org.reflections.util.ConfigurationBuilder;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
+import jakarta.faces.model.SelectItem;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;

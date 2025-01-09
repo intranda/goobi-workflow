@@ -28,12 +28,19 @@ package org.goobi.managedbeans;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
@@ -56,7 +63,12 @@ import org.goobi.production.plugin.interfaces.IPushPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
-import org.goobi.production.properties.*;
+import org.goobi.production.properties.AccessCondition;
+import org.goobi.production.properties.IProperty;
+import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.PropertyParser;
+import org.goobi.production.properties.ShowStepCondition;
+import org.goobi.production.properties.Type;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
@@ -85,6 +97,9 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -1162,7 +1177,10 @@ public class StepBean extends BasicBean implements Serializable {
                                 Optional<String> otherValue = Optional.empty();
                                 if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
                                     try {
-                                        otherValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(other.getValue())).getMainValue());
+                                        otherValue = Optional.of(VocabularyAPIManager.getInstance()
+                                                .vocabularyRecords()
+                                                .get(Long.parseLong(other.getValue()))
+                                                .getMainValue());
                                     } catch (NumberFormatException e) {
                                         log.error("Unable to read ID \"{}\"", other.getValue());
                                     }
@@ -1327,7 +1345,10 @@ public class StepBean extends BasicBean implements Serializable {
                                     Optional<String> otherValue = Optional.empty();
                                     if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
                                         try {
-                                            otherValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(other.getValue())).getMainValue());
+                                            otherValue = Optional.of(VocabularyAPIManager.getInstance()
+                                                    .vocabularyRecords()
+                                                    .get(Long.parseLong(other.getValue()))
+                                                    .getMainValue());
                                         } catch (NumberFormatException e) {
                                             log.error("Unable to read ID \"{}\"", other.getValue());
                                         }
@@ -1374,7 +1395,10 @@ public class StepBean extends BasicBean implements Serializable {
                                         Optional<String> otherValue = Optional.empty();
                                         if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
                                             try {
-                                                otherValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(other.getValue())).getMainValue());
+                                                otherValue = Optional.of(VocabularyAPIManager.getInstance()
+                                                        .vocabularyRecords()
+                                                        .get(Long.parseLong(other.getValue()))
+                                                        .getMainValue());
                                             } catch (NumberFormatException e) {
                                                 log.error("Unable to read ID \"{}\"", other.getValue());
                                             }

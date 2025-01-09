@@ -30,21 +30,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
-
 import de.sub.goobi.config.ConfigurationHelper;
+import de.unigoettingen.sub.commons.cache.ContentServerCacheManager;
+import de.unigoettingen.sub.commons.cache.NoCacheConfiguration;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetAction;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.MetsPdfResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
 import lombok.extern.log4j.Log4j2;
 
-@javax.ws.rs.Path("/process/pdf/{processId}")
+@jakarta.ws.rs.Path("/process/pdf/{processId}")
 @ContentServerBinding
 @Log4j2
 public class GoobiPdfResource extends MetsPdfResource {
@@ -53,7 +54,8 @@ public class GoobiPdfResource extends MetsPdfResource {
             @Context ContainerRequestContext context, @Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") String processId)
             throws ContentLibException {
-        super(context, request, response, "pdf", getMetsFilepath(processId, GetAction.parseParameters(request, context)));
+        super(context, request, response, "pdf", getMetsFilepath(processId, GetAction.parseParameters(request, context)),
+                new ContentServerCacheManager(new NoCacheConfiguration()));
     }
 
     private static String getMetsFilepath(String processId, Map<String, String> parameters) throws ContentLibException {

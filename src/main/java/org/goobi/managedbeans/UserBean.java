@@ -43,14 +43,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.faces.validator.ValidatorException;
-import javax.inject.Named;
-import javax.servlet.http.HttpSession;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -76,6 +68,13 @@ import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.faces.validator.ValidatorException;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -544,7 +543,7 @@ public class UserBean extends BasicBean implements Serializable {
             }
         }
         if (!valid) {
-            String message = Helper.getTranslation("javax.faces.component.UIInput.REQUIRED");
+            String message = Helper.getTranslation("jakarta.faces.component.UIInput.REQUIRED");
             FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value", message);
             throw new ValidatorException(facesMessage);
         }

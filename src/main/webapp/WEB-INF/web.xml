@@ -1,39 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee"
-    xmlns:web="http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-    version="3.1"
-    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+        xmlns = "https://jakarta.ee/xml/ns/jakartaee"
+        xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation = "https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+        version = "6.0"
 >
     <display-name>Goobi</display-name>
+  
     <context-param>
         <param-name>org.omnifaces.SOCKET_ENDPOINT_ENABLED</param-name>
         <param-value>true</param-value>
     </context-param>
-    <context-param>
-        <param-name>facelets.DEVELOPMENT</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <description>State saving method: 'client' or 'server' (=default). See JSF Specification 2.5.2</description>
-        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-        <param-value>server</param-value>
-    </context-param>
-    <context-param>
-        <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
-        <param-value>resources.application</param-value>
-    </context-param>
+
     <context-param>
         <param-name>primefaces.UPLOADER</param-name>
         <param-value>native</param-value>
     </context-param>
     <context-param>
-        <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
+        <param-name>jakarta.faces.FACELETS_LIBRARIES</param-name>
         <param-value>
             /WEB-INF/taglibs/button.taglib.xml;
             /WEB-INF/taglibs/dialog.taglib.xml;
@@ -46,7 +30,7 @@
     </context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -109,20 +93,9 @@
     <listener>
         <listener-class>org.goobi.production.GoobiDatabaseVersionListener</listener-class>
     </listener>
-    <!-- <listener> -->
-    <!-- <listener-class>org.goobi.mq.ActiveMQDirector</listener-class> -->
-    <!-- </listener> -->
-    <!-- xml-Rpc-Server starten <listener> <listener-class> de.sub.goobi.XmlRpc.Listener </listener-class> </listener> -->
-    <!-- Listener für die Modularisierung <listener> <listener-class> de.sub.goobi.Modul.ModulListener </listener-class> </listener> -->
-    <!-- Listener for JobManager -->
     <listener>
         <listener-class>org.goobi.production.flow.jobs.JobManager</listener-class>
     </listener>
-    <!--
-        <listener>
-        <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
-        </listener>
-    -->
     <listener>
         <listener-class>org.goobi.production.GoobiVersionListener</listener-class>
     </listener>
@@ -137,27 +110,14 @@
         <servlet-name>PluginServlet</servlet-name>
         <url-pattern>/ps</url-pattern>
     </servlet-mapping>
+    
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
-    <!-- Error pages -->
-    <!-- <error-page> <exception-type>java.lang.Throwable</exception-type> <location>/ui/error.xhtml</location> </error-page> -->
-    <!-- <servlet> -->
-    <!-- <servlet-name>Goobi REST Service based on Jersey</servlet-name> -->
-    <!-- <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class> -->
-    <!-- <init-param> -->
-    <!-- <param-name>com.sun.jersey.config.property.packages</param-name> -->
-    <!-- <param-value>org.goobi.webapi.resources; org.goobi.webapi.provider</param-value> -->
-    <!-- </init-param> -->
-    <!-- <load-on-startup>1</load-on-startup> -->
-    <!-- </servlet> -->
-    <!-- <servlet-mapping> -->
-    <!-- <servlet-name>Goobi REST Service based on Jersey</servlet-name> -->
-    <!-- <url-pattern>/rest/*</url-pattern> -->
-    <!-- </servlet-mapping> -->
+  
     <resource-ref>
         <res-ref-name>goobi</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>

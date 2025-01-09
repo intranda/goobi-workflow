@@ -28,11 +28,6 @@ package org.goobi.managedbeans;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.faces.context.ExternalContext;
-import javax.inject.Named;
-
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.User;
 import org.goobi.production.enums.PluginGuiType;
@@ -42,6 +37,10 @@ import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.ExternalContext;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 

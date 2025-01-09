@@ -20,12 +20,12 @@ package org.goobi.production.messages;
  */
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.context.ResponseWriterWrapper;
-
 import com.sun.faces.renderkit.html_basic.MessagesRenderer;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.context.ResponseWriterWrapper;
 
 public class EscapableMessagesRenderer extends MessagesRenderer {
 

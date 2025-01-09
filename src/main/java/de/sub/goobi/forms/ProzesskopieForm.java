@@ -47,11 +47,7 @@ import java.util.TreeSet;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.Default;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import javax.naming.NamingException;
-import javax.servlet.http.Part;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
@@ -118,6 +114,10 @@ import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import jakarta.enterprise.inject.Default;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
+import jakarta.servlet.http.Part;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -2140,7 +2140,10 @@ public class ProzesskopieForm implements Serializable {
                             Optional<String> otherValue = Optional.empty();
                             if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
                                 try {
-                                    otherValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(other.getValue())).getMainValue());
+                                    otherValue = Optional.of(VocabularyAPIManager.getInstance()
+                                            .vocabularyRecords()
+                                            .get(Long.parseLong(other.getValue()))
+                                            .getMainValue());
                                 } catch (NumberFormatException e) {
                                     log.error("Unable to read ID \"{}\"", other.getValue());
                                 }

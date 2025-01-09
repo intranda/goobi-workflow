@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -72,6 +71,7 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
+import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;

@@ -30,9 +30,6 @@ import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
-
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
@@ -46,6 +43,8 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 import lombok.extern.log4j.Log4j2;
 
 @Named("StatistikForm")

@@ -15,8 +15,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.faces.model.SelectItem;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -60,6 +58,7 @@ import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import jakarta.faces.model.SelectItem;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -561,7 +560,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     @Override
     public void setSelectedItem(String selectedItem) {
-        List<Item> hits = this.myValues.getItemList().stream()
+        List<Item> hits = this.myValues.getItemList()
+                .stream()
                 .filter(i -> i.getLabel().equals(selectedItem))
                 .toList();
 

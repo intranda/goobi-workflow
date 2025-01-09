@@ -23,8 +23,6 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
@@ -32,6 +30,7 @@ import org.xml.sax.SAXException;
 import io.goobi.workflow.harvester.HarvesterGoobiImport;
 import io.goobi.workflow.harvester.MetadataParser;
 import io.goobi.workflow.harvester.repository.Repository;
+import jakarta.ws.rs.core.Response;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;

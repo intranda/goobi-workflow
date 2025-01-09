@@ -36,12 +36,13 @@ import org.apache.commons.text.StringTokenizer;
 import org.goobi.beans.User;
 import org.goobi.production.enums.UserRole;
 
+import com.jayway.jsonpath.Criteria;
+
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 import lombok.extern.log4j.Log4j2;
-import net.sf.ehcache.search.expression.Criteria;
 
 /**
  * class provides methods used by implementations of IEvaluableFilter

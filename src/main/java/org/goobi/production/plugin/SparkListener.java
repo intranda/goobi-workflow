@@ -31,8 +31,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.rest.AuthorizationFilter;
 import org.goobi.managedbeans.LoginBean;
@@ -43,6 +41,7 @@ import org.goobi.production.plugin.interfaces.IRestPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 import spark.Service;
 import spark.route.ServletRoutes;
