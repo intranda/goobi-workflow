@@ -1,9 +1,9 @@
-<ui:composition 
-    xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -12,13 +12,13 @@
     <composite:interface />
 
     <composite:implementation>
-        <div id="bookmarks" class="bookmarks">
+        <div id="bookmarks" class="bookmarks position-absolute end-0">
             <h:form id="bookmarkForm">
-                <ul class="clean">
+                <ul role="list">
                     <!-- BOOKMARK 1 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc1 != null}">
                         <li class="bookmarks__double">
-                            <button 
+                            <button
                             	jsf:id="showBookmark1"
                                 href="#{NavigationForm.uiStatus.mets_toc1}"
                                 aria-label="#{msgs.mets_bookmarkShow}"
@@ -26,16 +26,16 @@
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
                                 type="submit">
-                                <i class="fa fa-bookmark" aria-hidden="true"></i>
+                                <span class="fa fa-bookmark" aria-hidden="true" />
                             </button>
-                            <button 
+                            <button
                                 jsf:id="removeBookmark1"
-                                aria-label="#{msgs.mets_bookmarkRemove}" 
+                                aria-label="#{msgs.mets_bookmarkRemove}"
                                 jsf:action="#{NavigationForm.Reload}"
-                                class="btn btn--icon btn--icon-gray" 
+                                class="btn btn-blank"
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
-                                <i class="fa fa-times" aria-hidden="true"></i>
+                                <span class="fa fa-times" aria-hidden="true" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
                                 <f:ajax render="bookmarkForm" />
@@ -44,28 +44,28 @@
                     </ui:fragment>
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc1 == null}">
                         <li>
-                            <button 
+                            <button
                                 jsf:id="addBookmark1"
-                                aria-label="#{msgs.mets_bookmarkAdd}" 
-                                class="btn btn--icon btn--icon-gray" 
+                                aria-label="#{msgs.mets_bookmarkAdd}"
+                                class="btn btn-blank"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkAdd}"
                                 type="button">
-                                <i class="fa fa-bookmark-o" aria-hidden="true"></i>
+                                <span class="fa fa-bookmark-o" aria-hidden="true" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:setPropertyActionListener 
+                                <f:setPropertyActionListener
                                     value="#{Metadaten.image.bookmarkUrl}"
                                     target="#{NavigationForm.uiStatus.mets_toc1}" />
-                                
+
                                 <f:ajax render="bookmarkForm" />
                             </button>
                         </li>
                     </ui:fragment>
-        
+
                     <!-- BOOKMARK 2 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc2 != null}">
                         <li class="bookmarks__double">
-                            <button 
+                            <button
                             	jsf:id="showBookmark2"
                                 href="#{NavigationForm.uiStatus.mets_toc2}"
                                 aria-label="#{msgs.mets_bookmarkShow}"
@@ -73,16 +73,16 @@
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
                                 type="submit">
-                                <i class="fa fa-bookmark" aria-hidden="true"></i>
+                                <span class="fa fa-bookmark" aria-hidden="true" />
                             </button>
-                            <button 
+                            <button
                                 jsf:id="removeBookmark2"
-                                aria-label="#{msgs.mets_bookmarkRemove}" 
-                                class="btn btn--icon btn--icon-gray" 
+                                aria-label="#{msgs.mets_bookmarkRemove}"
+                                class="btn btn-blank"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
-                                <i class="fa fa-times" aria-hidden="true"></i>
+                                <span class="fa fa-times" aria-hidden="true" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
                                 <f:ajax render="bookmarkForm" />
@@ -91,27 +91,27 @@
                     </ui:fragment>
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc2 == null and NavigationForm.uiStatus.mets_toc1 != null}">
                         <li>
-                            <button 
+                            <button
                                 jsf:id="addBookmark2"
-                                aria-label="#{msgs.mets_bookmarkAdd}" 
-                                class="btn btn--icon btn--icon-gray" 
+                                aria-label="#{msgs.mets_bookmarkAdd}"
+                                class="btn btn-blank"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkAdd}"
                                 type="button">
-                                <i class="fa fa-bookmark-o" aria-hidden="true"></i>
+                                <span class="fa fa-bookmark-o" aria-hidden="true" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:setPropertyActionListener 
+                                <f:setPropertyActionListener
                                     value="#{Metadaten.image.bookmarkUrl}"
                                     target="#{NavigationForm.uiStatus.mets_toc2}" />
                                 <f:ajax render="bookmarkForm" />
                             </button>
-                        </li>    
+                        </li>
                     </ui:fragment>
-        
+
                     <!-- BOOKMARK 3 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc3 != null}">
                         <li class="bookmarks__double">
-                            <button 
+                            <button
                             	jsf:id="showBookmark3"
                                 href="#{NavigationForm.uiStatus.mets_toc3}"
                                 aria-label="#{msgs.mets_bookmarkShow}"
@@ -119,16 +119,16 @@
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
                                 type="submit">
-                                <i class="fa fa-bookmark" aria-hidden="true"></i>
+                                <span class="fa fa-bookmark" aria-hidden="true" />
                             </button>
-                            <button 
+                            <button
                                 jsf:id="removeBookmark3"
-                                aria-label="#{msgs.mets_bookmarkRemove}" 
-                                class="btn btn--icon btn--icon-gray" 
+                                aria-label="#{msgs.mets_bookmarkRemove}"
+                                class="btn btn-blank"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
-                                <i class="fa fa-times" aria-hidden="true"></i>
+                                <span class="fa fa-times" aria-hidden="true" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
                                 <f:ajax render="bookmarkForm" />
@@ -137,27 +137,27 @@
                     </ui:fragment>
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc3 == null and NavigationForm.uiStatus.mets_toc2 != null}">
                         <li>
-                            <button 
+                            <button
                                 jsf:id="addBookmark3"
-                                aria-label="#{msgs.mets_bookmarkAdd}" 
-                                class="btn btn--icon btn--icon-gray" 
+                                aria-label="#{msgs.mets_bookmarkAdd}"
+                                class="btn btn-blank"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkAdd}"
                                 type="button">
-                                <i class="fa fa-bookmark-o" aria-hidden="true"></i>
+                                <span class="fa fa-bookmark-o" aria-hidden="true" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:setPropertyActionListener 
+                                <f:setPropertyActionListener
                                     value="#{Metadaten.image.bookmarkUrl}"
                                     target="#{NavigationForm.uiStatus.mets_toc3}" />
                                 <f:ajax render="bookmarkForm" />
                             </button>
                         </li>
                     </ui:fragment>
-        
+
                     <!-- BOOKMARK 4 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc4 != null}">
                         <li class="bookmarks__double">
-                            <button 
+                            <button
                             	jsf:id="showBookmark4"
                                 href="#{NavigationForm.uiStatus.mets_toc4}"
                                 aria-label="#{msgs.mets_bookmarkShow}"
@@ -165,16 +165,16 @@
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
                                 type="submit">
-                                <i class="fa fa-bookmark" aria-hidden="true"></i>
+                                <span class="fa fa-bookmark" aria-hidden="true" />
                             </button>
-                            <button 
+                            <button
                                 jsf:id="removeBookmark4"
-                                aria-label="#{msgs.mets_bookmarkRemove}" 
-                                class="btn btn--icon btn--icon-gray" 
+                                aria-label="#{msgs.mets_bookmarkRemove}"
+                                class="btn btn-blank"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
-                                <i class="fa fa-times" aria-hidden="true"></i>
+                                <span class="fa fa-times" aria-hidden="true" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
                                 <f:ajax render="bookmarkForm" />
@@ -183,27 +183,27 @@
                     </ui:fragment>
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc4 == null and NavigationForm.uiStatus.mets_toc3 != null}">
                         <li>
-                            <button 
+                            <button
                                 jsf:id="addBookmark4"
-                                aria-label="#{msgs.mets_bookmarkAdd}" 
-                                class="btn btn--icon btn--icon-gray" 
+                                aria-label="#{msgs.mets_bookmarkAdd}"
+                                class="btn btn-blank"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkAdd}"
                                 type="button">
-                                <i class="fa fa-bookmark-o" aria-hidden="true"></i>
+                                <span class="fa fa-bookmark-o" aria-hidden="true" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:setPropertyActionListener 
+                                <f:setPropertyActionListener
                                     value="#{Metadaten.image.bookmarkUrl}"
                                     target="#{NavigationForm.uiStatus.mets_toc4}" />
                                 <f:ajax render="bookmarkForm" />
                             </button>
                         </li>
                     </ui:fragment>
-        
+
                     <!-- BOOKMARK 5 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc5 != null}">
                         <li class="bookmarks__double">
-                            <button 
+                            <button
                             	jsf:id="showBookmark5"
                                 href="#{NavigationForm.uiStatus.mets_toc5}"
                                 aria-label="#{msgs.mets_bookmarkShow}"
@@ -211,16 +211,16 @@
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
                                 type="submit">
-                                <i class="fa fa-bookmark" aria-hidden="true"></i>
+                                <span class="fa fa-bookmark" aria-hidden="true" />
                             </button>
-                            <button 
+                            <button
                                 jsf:id="removeBookmark5"
-                                aria-label="#{msgs.mets_bookmarkRemove}" 
-                                class="btn btn--icon btn--icon-gray" 
+                                aria-label="#{msgs.mets_bookmarkRemove}"
+                                class="btn btn-blank"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
-                                <i class="fa fa-times" aria-hidden="true"></i>
+                                <span class="fa fa-times" aria-hidden="true" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
                                 <f:ajax render="bookmarkForm" />
@@ -229,16 +229,16 @@
                     </ui:fragment>
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc5 == null and NavigationForm.uiStatus.mets_toc4 != null}">
                         <li>
-                            <button 
-                                jsf:id="addBookmark5" 
+                            <button
+                                jsf:id="addBookmark5"
                                 aria-label="#{msgs.mets_bookmarkAdd}"
-                                class="btn btn--icon btn--icon-gray" 
+                                class="btn btn-blank"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkAdd}"
                                 type="button">
-                                <i class="fa fa-bookmark-o" aria-hidden="true"></i>
+                                <span class="fa fa-bookmark-o" aria-hidden="true" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:setPropertyActionListener 
+                                <f:setPropertyActionListener
                                     value="#{Metadaten.image.bookmarkUrl}"
                                     target="#{NavigationForm.uiStatus.mets_toc5}" />
                                 <f:ajax render="bookmarkForm" />

@@ -1,9 +1,9 @@
-<ui:composition 
-    xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:p="http://primefaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -13,11 +13,11 @@
     <composite:implementation>
         <h:form id="progressform" prependId="false">
             <!-- MODAL -->
-            <div 
-                id="unsavedChanges" 
-                class="modal fade" 
-                tabindex="-1" 
-                role="dialog" 
+            <div
+                id="unsavedChanges"
+                class="modal fade"
+                tabindex="-1"
+                role="dialog"
                 aria-labelledby="unsavedChangesLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -25,7 +25,7 @@
                             <h1 class="modal-title" id="unsavedChangesLabel">
                                 <h:outputText value="#{msgs.metseditorFinish}" />
                             </h1>
-                        
+
                           <button
                             type="button"
                             class="close"
@@ -41,29 +41,31 @@
                         <div class="modal-body">
                             <h:outputText value="#{msgs.metseditorSaveExplanation}" />
                         </div>
-                        
-                        <div class="modal-footer">
-                            <button 
-                                jsf:id="discard" 
-                                class="btn btn--red"
-                                jsf:action="#{Metadaten.discard}" 
-                                title="#{msgs.discard}">
-                                <i class="fa fa-trash-o" style="margin-right: 5px" aria-hidden="true"></i>
 
-                                <h:outputText value="#{msgs.discard}" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <div class="modal-footer">
+                            <button
+                                jsf:id="discard"
+                                class="btn btn--red"
+                                jsf:action="#{Metadaten.discard}"
+                                title="#{msgs.discard}"
+                                data-bs-toggle="tooltip">
+                                <span class="fa fa-trash-o" aria-hidden="true" />
+                                <span>
+                                    <h:outputText value="#{msgs.discard}" />
+                                </span>
                             </button>
 
-                            <button 
-                                jsf:id="overwrite" 
-                                class="btn btn--green" 
+                            <button
+                                jsf:id="overwrite"
+                                class="btn btn--green"
                                 jsf:action="#{Metadaten.XMLschreiben}"
-                                onclick="goobiWorkflowJS.progress.displayProgressBar()" 
-                                title="#{msgs.overwrite}">
-                                <i class="fa fa-floppy-o" style="margin-right: 5px" aria-hidden="true"></i>
-
-                                <h:outputText value="#{msgs.overwrite}" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                onclick="goobiWorkflowJS.progress.displayProgressBar()"
+                                title="#{msgs.overwrite}"
+                                data-bs-toggle="tooltip">
+                                <span class="fa fa-floppy-o" aria-hidden="true" />
+                                <span>
+                                    <h:outputText value="#{msgs.overwrite}" />
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -72,22 +74,22 @@
 
             <!-- PROGRESS PANEL -->
             <h:panelGroup id="progressPanel" styleClass="metseditor_progress-panel" style="display: none">
-                <p:commandButton 
+                <p:commandButton
                     id="progressbutton"
-                    type="button" 
-                    value="Start" 
-                    onclick="PF('pbAjax').start();" 
+                    type="button"
+                    value="Start"
+                    onclick="PF('pbAjax').start();"
                     widgetVar="startButton2" />
 
-                <p:progressBar 
-                    widgetVar="pbAjax" 
-                    ajax="true" 
-                    value="#{Metadaten.progress}" 
+                <p:progressBar
+                    widgetVar="pbAjax"
+                    ajax="true"
+                    value="#{Metadaten.progress}"
                     labelTemplate="{value}%"
-                    styleClass="animated" 
+                    styleClass="animated"
                     global="false">
-                    <p:ajax 
-                        event="complete" 
+                    <p:ajax
+                        event="complete"
                         listener="#{Metadaten.onComplete}" />
                 </p:progressBar>
             </h:panelGroup>

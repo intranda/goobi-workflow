@@ -29,7 +29,7 @@
                     <ui:include src="inc_me_image-imageNavigation.xhtml" />
                 </ui:fragment>
 
-                    
+
                 <!-- OCR -->
                 <div id="image__image-container">
 
@@ -42,9 +42,9 @@
 
 
                     <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}">
-                        <i
+                        <span
                             class="fa fa-ban"
-                            aria-hidden="true"></i>
+                            aria-hidden="true" />
 
                     </ui:fragment>
                 </div>
@@ -88,7 +88,7 @@
                                 style="z-index: -1">
                                 <!-- AJAX LOADER -->
                                 <div id="imageLoader">
-                                    <img src="template/img/goobi/ajaxloader2.gif" />
+                                    <img src="templatePG/img/goobi/ajaxloader2.gif" />
                                 </div>
                             </div>
                             <ui:include src="inc_me_image-objectControls.xhtml" />
@@ -114,24 +114,24 @@
                             </video>
                         </ui:fragment>
 						<ui:fragment rendered="#{Metadaten.image.type == 'object2vr'}">
-							
+
 							<script
 								src="http://localhost:8080/goobi/resources/javascript/libs/object2vr_player.js">
 							</script>
 
 							<div id="containerVR" style="width: 659px; height: 740px;">
 							</div>
-							
+
 							<script type="text/javascript">
                                 // create the object player with the container
-                                setTimeout( () => { 
+                                setTimeout( () => {
                                     console.log("start loading object2vr");
                                     let obj = new object2vrPlayer( "containerVR" );
                                     obj.readConfigUrl( "http://localhost:8080/goobi/api/view/object/2579/sampob_2_media/Totenmaske_Max_Kade_out.xml" );
                                 	console.log("Done loading object2vr");
                                 }, 200);
                             </script>
-                            
+
 						</ui:fragment>
 
 						<ui:fragment rendered="#{Metadaten.image.type == 'unknown'}">
@@ -142,7 +142,7 @@
                                     download="#{Metadaten.image.tooltip}">Download</a>
                             </p>
                         </ui:fragment>
-                        
+
                          <!--                             Image comments -->
                             <ui:fragment
                                 rendered="#{Metadaten.showImageComments}">
@@ -173,7 +173,7 @@
                                 style="z-index: -1">
                                 <!-- AJAX LOADER -->
                                 <div id="imageLoader">
-                                    <img src="template/img/goobi/ajaxloader2.gif" />
+                                    <img src="templatePG/img/goobi/ajaxloader2.gif" />
                                 </div>
                             </div>
                         </ui:fragment>
@@ -194,8 +194,8 @@
                     value="- #{msgs.keinBildVorhanden} -"
                     rendered="#{Metadaten.bildNummer == '-1'}" />
             </div>
-            
-                        
+
+
             <!-- PAGE AREAS -->
 			<h:outputLabel id="pageareas" data-content="pageareas" value="#{Metadaten.pageAreas}" styleClass="d-none"></h:outputLabel>
             <h:commandScript name="deletePageArea" action="#{Metadaten.deletePageAreaCommand}" render="pageareas"/>

@@ -13,12 +13,108 @@
 
     <composite:implementation>
     	<div id="disable-interaction-overlay" style="display: none; position: fixed; top:0px; left: 0px; right: 0px; bottom: 0px; z-index: 999; background-color: rgba(230, 230, 230, 0.7);"></div>
-        <h:form id="treeform">
+        <h:form id="treeform" styleClass="d-flex flex-nowrap">
             <h:inputText id="hiddenwidth" value="#{Metadaten.treeWidth}" style="display:none;" />
+            <!-- METSEDITOR STRUCTURE -->
+            <ol role="list" id="meStructure" class="p-0 flex-grow-1">
+                <ui:repeat value="#{Metadaten.strukturBaum3}" var="item">
+                    <li class="treeView-item" style="--level: #{item.niveau}">
+                        <div class="spacer"/>
+                        <div class="toggle">
+                            <button
+                                jsf:id="expand"
+                                aria-label="#{msgs.expand}"
+                                jsf:action="#{NavigationForm.Reload}"
+                                class="btn btn--icon #{item.node.expanded ? 'expand' : 'expanded'}"
+                                style="--level: #{item.niveau}"
+                                jsf:rendered="#{item.node.hasChildren}">
+                                <span class="#{item.node.expanded ? 'fa fa-caret-down fa-lg' : 'fa fa-caret-right fa-lg'}" />
+                                <x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />
+                                <f:ajax execute="treeform" render="treeform" />
+                            </button>
+                        </div>
+                        <div class="content">
+                            <ui:fragment rendered="#{Metadaten.treeProperties.showMetadataPopup}">
+                                <button
+                                    jsf:id="link"
+                                    aria-label="#{msgs.seite}"
+                                    jsf:immediate="true"
+                                    class="btn btn--icon #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
+                                    style="--level: #{item.niveau}"
+                                    jsf:action="#{Metadaten.loadRightFrame}"
+                                    data-bs-trigger="hover"
+                                    data-bs-container="#treeform"
+                                    data-bs-toggle="popover"
+                                    data-bs-placement="top"
+                                    data-bs-html="true"
+                                    data-bs-content="#{item.node.metadataPopup}">
+                                    <span class="fa fa-file-o" aria-hidden="true" />
+                                    <span jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle" style="margin-left: 5px" aria-hidden="true" />
+                                    <span>
+                                        <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}" />
+                                        <h:outputText value="#{item.node.description}"
+                                            rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
+                                        <h:outputText value="#{item.node.mainTitle}"
+                                            rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
 
+                                        <h:panelGroup rendered="#{Metadaten.treeProperties.showfirstpagenumber and (item.node.firstImage != null or item.node.lastImage != null)}">
+                                            <h:outputText styleClass="page-infoLight" value=" (" style="margin-left:10px;"/>
+                                            <h:outputText styleClass="page-infoLight" value="#{item.node.firstImage.left}:" rendered="#{item.node.firstImage!=null}" />
+                                            <h:outputText styleClass="page-info" value="#{item.node.firstImage.right}" rendered="#{item.node.firstImage!=null}" />
+                                            <h:outputText styleClass="page-infoLight" value=" - " rendered="#{item.node.lastImage != null}"/>
+                                            <h:outputText styleClass="page-infoLight" value="#{item.node.lastImage.left}:" rendered="#{item.node.lastImage != null}" />
+                                            <h:outputText styleClass="page-info" value="#{item.node.lastImage.right}" rendered="#{item.node.lastImage != null}" />
+                                            <h:outputText styleClass="page-infoLight" value=")" />
+                                        </h:panelGroup>
+                                    </span>
+                                    <x:updateActionListener property="#{Metadaten.myStrukturelement}"
+                                        value="#{item.node.struct}" />
+                                    <f:ajax execute="@form"
+                                        render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform :openseadragonform:pageareas" />
+                                    <f:passThroughAttribute name="data-renderimage" value="#{Metadaten.bildZuStrukturelement ? 'true':'false'}" />
+                                </button>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{!Metadaten.treeProperties.showMetadataPopup}">
+                                <button
+                                    jsf:id="link2"
+                                    jsf:immediate="true"
+                                    class="btn btn--icon #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
+                                    style="--level: #{item.niveau}"
+                                    jsf:action="#{Metadaten.loadRightFrame}">
+                                    <span class="fa fa-file-o" aria-hidden="true" />
+                                    <span>
+                                        <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}" />
+                                        <h:outputText value="#{item.node.description}"
+                                            rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
+                                        <h:outputText value="#{item.node.mainTitle}"
+                                            rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
+
+                                        <h:panelGroup rendered="#{Metadaten.treeProperties.showfirstpagenumber and (item.node.firstImage != null or item.node.lastImage != null)}">
+                                            <h:outputText styleClass="page-infoLight" value=" (" style="margin-left:20px;"/>
+                                            <h:outputText styleClass="page-infoLight" value="#{item.node.firstImage.left}:" rendered="#{item.node.firstImage!=null}" />
+                                            <h:outputText styleClass="page-info" value="#{item.node.firstImage.right}" rendered="#{item.node.firstImage!=null}" />
+                                            <h:outputText styleClass="page-infoLight" value=" - " rendered="#{item.node.lastImage != null}"/>
+                                            <h:outputText styleClass="page-infoLight" value="#{item.node.lastImage.left}:" rendered="#{item.node.lastImage != null}" />
+                                            <h:outputText styleClass="page-info" value="#{item.node.lastImage.right}" rendered="#{item.node.lastImage != null}" />
+                                            <h:outputText styleClass="page-infoLight" value=")" />
+                                        </h:panelGroup>
+                                    </span>
+
+                                    <x:updateActionListener property="#{Metadaten.myStrukturelement}"
+                                        value="#{item.node.struct}" />
+                                    <f:ajax execute="@form"
+                                        render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform" />
+                                    <f:passThroughAttribute name="data-renderimage" value="#{Metadaten.bildZuStrukturelement ? 'true':'false'}" />
+                                </button>
+                            </ui:fragment>
+                        </div>
+                    </li>
+                </ui:repeat>
+            </ol>
             <!-- METSEDITOR STRUCTURE ACTIONS -->
             <div id="structureActions" class="module module__structure-actions">
-                <ul>
+                <ul role="list">
                     <li>
                         <button jsf:id="hiddenwidthbutton" class="btn" jsf:action="#{NavigationForm.Reload}" style="display:none;">
                             <span class="fa fa-floppy-o" />
@@ -32,11 +128,13 @@
                             aria-label="#{msgs.verlinkungDesBildesMitStrukturelement}"
                             jsf:action="#{Metadaten.BildBlaettern}"
                             title="#{msgs.verlinkungDesBildesMitStrukturelement}"
-                            class="#{Metadaten.bildZuStrukturelement ? 'active' : ''}"
-                            jsf:rel="tooltip">
-                            <i class="#{Metadaten.bildZuStrukturelement ? 'fa fa-chain' : 'fa fa-chain-broken'}" aria-hidden="true"></i>
+                            class="btn btn-outline #{Metadaten.bildZuStrukturelement ? 'active' : ''}"
+                            jsf:rel="tooltip"
+                            data-renderimage="true"
+                            data-bs-toggle="tooltip"
+                            >
+                            <span class="#{Metadaten.bildZuStrukturelement ? 'fa fa-chain' : 'fa fa-chain-broken'}" aria-hidden="true" />
                             <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
-                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <f:setPropertyActionListener
                                 target="#{Metadaten.bildZuStrukturelement}"
                                 value="#{not Metadaten.bildZuStrukturelement}" />
@@ -45,7 +143,6 @@
                                 execute="@form"
                                 render="@form :openseadragonform" />
                              -->
-                            <f:passThroughAttribute name="data-renderimage" value="true" />
                         </button>
                     </li>
                     <li>
@@ -54,10 +151,12 @@
                             aria-label="#{msgs.mets_treeTitle}"
                             jsf:action="#{NavigationForm.Reload}"
                             jsf:rel="tooltip"
-                            class="#{Metadaten.treeProperties.showtitle ? 'active' : ''}"
-                            title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}">
-                            <i class="fa fa-list" aria-hidden="true"></i>
-                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                            class="btn btn-outline #{Metadaten.treeProperties.showtitle ? 'active' : ''}"
+                            title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}"
+                            data-bs-toggle="tooltip"
+                            >
+                            <span class="fa fa-list" aria-hidden="true" />
+
                             <x:updateActionListener
                                 value="#{Metadaten.treeProperties.showtitle?false:true}"
                                 property="#{Metadaten.treeProperties.showtitle}" />
@@ -69,10 +168,11 @@
                             aria-label="#{msgs.mets_treePageNumber}"
                             jsf:action="#{NavigationForm.Reload}"
                             jsf:rel="tooltip"
-                            class="#{Metadaten.treeProperties.showfirstpagenumber ? 'active' : ''}"
-                            title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}">
-                            <i class="fa fa-exchange" aria-hidden="true"></i>
-                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                            class="btn btn-outline #{Metadaten.treeProperties.showfirstpagenumber ? 'active' : ''}"
+                            title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}"
+                            data-bs-toggle="tooltip"
+                            >
+                            <span class="fa fa-exchange" aria-hidden="true" />
                             <x:updateActionListener
                                 value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
                                 property="#{Metadaten.treeProperties.showfirstpagenumber}" />
@@ -83,10 +183,12 @@
                     	<button
                             jsf:id="printpage2"
                             aria-label="#{msgs.process_generateSimplifiedMetadata}"
+                            class="btn btn-outline"
                             jsf:action="#{Metadaten.myProzess.downloadSimplifiedMetadataAsPDF}"
-                            title="#{msgs.process_generateSimplifiedMetadata}">
-                            <i class="fa fa-print" aria-hidden="true"></i>
-                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                            title="#{msgs.process_generateSimplifiedMetadata}"
+                            data-bs-toggle="tooltip"
+                            >
+                            <span class="fa fa-print" aria-hidden="true" />
                         </button>
                     </li>
                     <ui:fragment rendered="#{!Metadaten.allImages.isEmpty()}">
@@ -94,105 +196,16 @@
                             <h:commandLink target="_blank"
                                 id="printpdf"
                                 action="#{Metadaten.downloadCurrentFolderAsPdf}"
+                                styleClass="btn btn-outline"
                                 aria-label="#{msgs.download_pdf}"
-                                title="#{msgs.download_pdf}">
-                                <i class="fa fa-file-pdf-o"
-                                    aria-hidden="true"></i>
-                                <f:passThroughAttribute name="data-toggle"
-                                    value="tooltip" />
+                                title="#{msgs.download_pdf}"
+                                data-bs-toggle="tooltip">
+                                <span class="fa fa-file-pdf-o"
+                                    aria-hidden="true" />
                             </h:commandLink>
                         </li>
                     </ui:fragment>
                 </ul>
-            </div>
-
-            <!-- METSEDITOR STRUCTURE -->
-            <div class="table__structure">
-                <x:dataTable id="meStructure" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" rowStyleClass="level-#{item.niveau}">
-                    <h:column>
-                        <button
-                            jsf:id="expand"
-                            aria-label="#{msgs.expand}"
-                            jsf:action="#{NavigationForm.Reload}"
-                            class="button-link #{item.node.expanded ? 'expand' : 'expanded'}"
-                            jsf:rendered="#{item.node.hasChildren}">
-                            <i class="#{item.node.expanded ? 'fa fa-caret-down fa-lg' : 'fa fa-caret-right fa-lg'}" />
-                            <x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />
-                            <f:ajax execute="treeform" render="treeform" />
-                        </button>
-                        <ui:fragment rendered="#{Metadaten.treeProperties.showMetadataPopup}">
-                            <button
-                                jsf:id="link"
-                                aria-label="#{msgs.seite}"
-                                jsf:immediate="true"
-                                class="button-link #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
-                                jsf:action="#{Metadaten.loadRightFrame}">
-                                <i class="fa fa-file-o" aria-hidden="true"></i>
-                                <i jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle" style="margin-left: 5px" aria-hidden="true"></i>
-
-                                <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}" />
-                                <f:passThroughAttribute name="data-trigger" value="hover" />
-                                <f:passThroughAttribute name="data-container" value="#treeform" />
-                                <f:passThroughAttribute name="data-toggle" value="popover" />
-                                <f:passThroughAttribute name="data-placement" value="top" />
-                                <f:passThroughAttribute name="data-html" value="true" />
-                                <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
-                                <h:outputText value="#{item.node.description}"
-                                    rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
-                                <h:outputText value="#{item.node.mainTitle}"
-                                    rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
-
-                                <h:panelGroup rendered="#{Metadaten.treeProperties.showfirstpagenumber and (item.node.firstImage != null or item.node.lastImage != null)}">
-	                                <h:outputText styleClass="page-infoLight" value=" (" style="margin-left:10px;"/>
-	                                <h:outputText styleClass="page-infoLight" value="#{item.node.firstImage.left}:" rendered="#{item.node.firstImage!=null}" />
-	                                <h:outputText styleClass="page-info" value="#{item.node.firstImage.right}" rendered="#{item.node.firstImage!=null}" />
-	                                <h:outputText styleClass="page-infoLight" value=" - " rendered="#{item.node.lastImage != null}"/>
-	                                <h:outputText styleClass="page-infoLight" value="#{item.node.lastImage.left}:" rendered="#{item.node.lastImage != null}" />
-	                                <h:outputText styleClass="page-info" value="#{item.node.lastImage.right}" rendered="#{item.node.lastImage != null}" />
-	                                <h:outputText styleClass="page-infoLight" value=")" />
-                                </h:panelGroup>
-                                <x:updateActionListener property="#{Metadaten.myStrukturelement}"
-                                    value="#{item.node.struct}" />
-                                <f:ajax execute="@form"
-                                    render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform :openseadragonform:pageareas" />
-                                <f:passThroughAttribute name="data-renderimage" value="#{Metadaten.bildZuStrukturelement ? 'true':'false'}" />
-                            </button>
-                        </ui:fragment>
-
-                        <ui:fragment rendered="#{!Metadaten.treeProperties.showMetadataPopup}">
-                            <button
-                                jsf:id="link2"
-                                jsf:immediate="true"
-                                class="button-link #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
-                                jsf:action="#{Metadaten.loadRightFrame}">
-                                <i class="fa fa-file-o" aria-hidden="true"></i>
-
-                                <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}" />
-                                <h:outputText value="#{item.node.description}"
-                                    rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
-                                <h:outputText value="#{item.node.mainTitle}"
-                                    rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
-
-                                <h:panelGroup rendered="#{Metadaten.treeProperties.showfirstpagenumber and (item.node.firstImage != null or item.node.lastImage != null)}">
-	                                <h:outputText styleClass="page-infoLight" value=" (" style="margin-left:20px;"/>
-	                                <h:outputText styleClass="page-infoLight" value="#{item.node.firstImage.left}:" rendered="#{item.node.firstImage!=null}" />
-	                                <h:outputText styleClass="page-info" value="#{item.node.firstImage.right}" rendered="#{item.node.firstImage!=null}" />
-	                                <h:outputText styleClass="page-infoLight" value=" - " rendered="#{item.node.lastImage != null}"/>
-	                                <h:outputText styleClass="page-infoLight" value="#{item.node.lastImage.left}:" rendered="#{item.node.lastImage != null}" />
-	                                <h:outputText styleClass="page-info" value="#{item.node.lastImage.right}" rendered="#{item.node.lastImage != null}" />
-	                                <h:outputText styleClass="page-infoLight" value=")" />
-                                </h:panelGroup>
-
-                                <x:updateActionListener property="#{Metadaten.myStrukturelement}"
-                                    value="#{item.node.struct}" />
-                                <f:ajax execute="@form"
-                                    render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform" />
-                                <f:passThroughAttribute name="data-renderimage" value="#{Metadaten.bildZuStrukturelement ? 'true':'false'}" />
-                            </button>
-                        </ui:fragment>
-
-                    </h:column>
-                </x:dataTable>
             </div>
         </h:form>
 
