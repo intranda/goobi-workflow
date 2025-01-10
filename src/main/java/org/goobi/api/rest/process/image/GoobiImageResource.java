@@ -59,7 +59,6 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.commons.cache.ContentServerCacheManager;
-import de.unigoettingen.sub.commons.cache.NoCacheConfiguration;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
@@ -250,7 +249,7 @@ public class GoobiImageResource {
     private ImageResource createImageResource(String processIdString, String folder, String filename)
             throws IllegalRequestException, ContentLibException {
         ImageResource imageResource = new ImageResource(context, request, response, getFilename(folder), getFilename(filename),
-                new ContentServerCacheManager(new NoCacheConfiguration()));
+                ContentServerCacheManager.getInstance());
         Path processFolder = metadataFolderPath.resolve(getFilename(processIdString));
         imageResource.setResourceURI(createGoobiResourceURI(request, getFilename(processIdString), getFilename(folder), getFilename(filename)));
         imageResource.setImageURI(createGoobiImageURI(request, processFolder, getFilename(folder), getFilename(filename)));

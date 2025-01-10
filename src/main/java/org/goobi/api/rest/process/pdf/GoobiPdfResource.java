@@ -32,7 +32,6 @@ import java.util.Map;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.unigoettingen.sub.commons.cache.ContentServerCacheManager;
-import de.unigoettingen.sub.commons.cache.NoCacheConfiguration;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetAction;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
@@ -55,7 +54,7 @@ public class GoobiPdfResource extends MetsPdfResource {
             @PathParam("processId") String processId)
             throws ContentLibException {
         super(context, request, response, "pdf", getMetsFilepath(processId, GetAction.parseParameters(request, context)),
-                new ContentServerCacheManager(new NoCacheConfiguration()));
+                ContentServerCacheManager.getInstance());
     }
 
     private static String getMetsFilepath(String processId, Map<String, String> parameters) throws ContentLibException {
