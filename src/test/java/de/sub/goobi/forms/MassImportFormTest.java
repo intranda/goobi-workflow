@@ -37,13 +37,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.Part;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Process;
@@ -71,6 +64,12 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.mock.MockUploadedFile;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.Part;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ JobCreation.class, FacesContext.class, ExternalContext.class, Helper.class })
@@ -131,12 +130,9 @@ public class MassImportFormTest extends AbstractTest {
     @SuppressWarnings("deprecation")
     private void prepareMocking() {
 
-        //        PowerMock.mockStatic(JobCreation.class);
         PowerMock.mockStatic(FacesContext.class);
         PowerMock.mockStatic(ExternalContext.class);
-        //        EasyMock.expect(JobCreation.generateProcess(EasyMock.isA(ImportObject.class), EasyMock.isA(Process.class)))
-        //        .andReturn(new Process())
-        //        .anyTimes();
+
         FacesContext facesContext = EasyMock.createMock(FacesContext.class);
         UIViewRoot root = EasyMock.createMock(UIViewRoot.class);
         Application application = EasyMock.createMock(Application.class);
@@ -157,7 +153,6 @@ public class MassImportFormTest extends AbstractTest {
         //
         EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
         EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
-        EasyMock.expect(application.createValueBinding(EasyMock.anyString())).andReturn(null).anyTimes();
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));

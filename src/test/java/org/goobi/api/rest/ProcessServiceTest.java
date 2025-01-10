@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-
 import org.easymock.EasyMock;
 import org.goobi.api.rest.model.RestJournalResource;
 import org.goobi.api.rest.model.RestMetadataResource;
@@ -76,6 +74,7 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import jakarta.ws.rs.core.Response;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,

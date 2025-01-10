@@ -1,10 +1,10 @@
 package io.goobi.workflow.api.vocabulary;
 
-import io.goobi.vocabulary.exception.VocabularyException;
-import io.goobi.vocabulary.exchange.Vocabulary;
-import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
-import org.apache.commons.io.IOUtils;
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,24 +13,19 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import javax.servlet.http.Part;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-
+import io.goobi.vocabulary.exception.VocabularyException;
+import io.goobi.vocabulary.exchange.Vocabulary;
+import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({})
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class VocabularyAPITest {
     private VocabularyAPI api;
 

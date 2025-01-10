@@ -42,15 +42,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.StringUtils;
 import org.easymock.EasyMock;
 import org.goobi.api.display.enums.DisplayType;
@@ -79,6 +70,14 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import ugh.dl.Corporate;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -150,7 +149,6 @@ public class MetadatenTest extends AbstractTest {
         locale.add(Locale.GERMAN);
 
         EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
-        EasyMock.expect(application.createValueBinding(EasyMock.anyString())).andReturn(null).anyTimes();
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));

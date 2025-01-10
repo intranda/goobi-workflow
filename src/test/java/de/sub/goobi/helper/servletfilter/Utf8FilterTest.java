@@ -29,15 +29,14 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.easymock.EasyMock;
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class Utf8FilterTest extends AbstractTest {
 

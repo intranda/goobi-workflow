@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.Response;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
@@ -54,6 +52,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import io.goobi.workflow.harvester.repository.Repository;
+import jakarta.ws.rs.core.Response;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 

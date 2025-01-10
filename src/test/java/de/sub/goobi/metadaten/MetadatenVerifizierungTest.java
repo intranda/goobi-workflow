@@ -36,14 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.faces.application.Application;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.Before;
@@ -61,6 +53,13 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -337,14 +336,13 @@ public class MetadatenVerifizierungTest extends AbstractTest {
 
         EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
         EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
-        EasyMock.expect(application.createValueBinding(EasyMock.anyString())).andReturn(null).anyTimes();
 
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("error").anyTimes();
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("error").anyTimes();
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("error").anyTimes();
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString()))
-        .andReturn("error")
-        .anyTimes();
+                .andReturn("error")
+                .anyTimes();
         EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
         EasyMock.expect(Helper.getRequestParameter(EasyMock.anyString())).andReturn("1").anyTimes();

@@ -23,14 +23,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.SessionInfo;
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.forms.SessionForm;
+import jakarta.servlet.http.HttpSession;
 
 public class CurrentUsersTest extends AbstractTest {
 

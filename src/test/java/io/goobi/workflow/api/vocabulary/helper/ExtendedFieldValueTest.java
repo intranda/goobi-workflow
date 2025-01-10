@@ -1,14 +1,14 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
-import io.goobi.vocabulary.exchange.FieldValue;
-import io.goobi.vocabulary.exchange.HateoasHref;
-import io.goobi.vocabulary.exchange.Language;
-import io.goobi.vocabulary.exchange.TranslationDefinition;
-import io.goobi.vocabulary.exchange.TranslationInstance;
-import io.goobi.workflow.api.vocabulary.LanguageAPI;
-import io.goobi.workflow.api.vocabulary.RESTAPI;
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import org.apache.poi.ss.formula.functions.T;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,23 +17,23 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import io.goobi.vocabulary.exchange.FieldValue;
+import io.goobi.vocabulary.exchange.HateoasHref;
+import io.goobi.vocabulary.exchange.Language;
+import io.goobi.vocabulary.exchange.TranslationDefinition;
+import io.goobi.vocabulary.exchange.TranslationInstance;
+import io.goobi.workflow.api.vocabulary.LanguageAPI;
+import io.goobi.workflow.api.vocabulary.RESTAPI;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({})
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ExtendedFieldValueTest {
     private static final Long VALUE_ID = 1L;
     private static final Long FIELD_VALUE_ID = 2L;
