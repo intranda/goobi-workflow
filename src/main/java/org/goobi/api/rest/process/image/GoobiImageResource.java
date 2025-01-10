@@ -47,6 +47,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
@@ -86,7 +87,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
 import lombok.extern.log4j.Log4j2;
-import spark.utils.StringUtils;
 
 /**
  * A IIIF image resource for goobi image urls
