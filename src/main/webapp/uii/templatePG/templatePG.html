@@ -4,7 +4,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:c="http://java.sun.com/jstl/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:x="http://xmlns.jcp.org/jsf/html"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
@@ -141,7 +141,7 @@
 
                         <h:form id="header">
 
-                            <!-- GOOBI SCRIPT RUNNING -->
+                            <!-- GOOBI SCRIPT RUNNING 
                             <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
                                 <div class="d-none">
                                     <o:socket channel="goobiscriptUpdateChannel">
@@ -149,7 +149,7 @@
                                     </o:socket>
                                     <o:commandScript name="updateGoobiScriptIndicator"  render="goobiScriptResults2" />
                                 </div>
-                              </ui:fragment>
+                              </ui:fragment>-->
                             <!-- // GOOBI SCRIPT RUNNING -->
 
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
