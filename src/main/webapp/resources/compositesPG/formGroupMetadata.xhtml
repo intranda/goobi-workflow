@@ -1,0 +1,645 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface>
+        <composite:attribute name="metadata" />
+        <composite:attribute name="person" />
+        <composite:attribute
+            name="cols"
+            default="3" />
+        <composite:attribute
+            name="required"
+            default="false" />
+        <composite:attribute
+            name="renderDuplicate"
+            default="true" />
+        <composite:attribute
+            name="renderDelete"
+            default="true" />
+    </composite:interface>
+
+    <composite:implementation>
+        <!-- FORM GROUP METADATA -->
+        <div class="form-row #{cc.attrs.metadata.validationErrorPresent ? 'has-validation-error' : ''}">
+            <!-- LABEL -->
+            <div class="form-label">
+                <h:outputText
+                    styleClass="form-group__label"
+                    value="#{cc.attrs.metadata.typ}:"
+                    title="#{cc.attrs.metadata.md.type.name}" />
+            </div>
+            <!-- INPUT -->
+            <div class="form-input">
+                <!-- TEXT INPUT -->
+                <x:inputText
+                    id="inputText"
+                    pt:aria-label="#{cc.attrs.metadata.md.type.name}"
+                    styleClass="form-control"
+                    value="#{cc.attrs.metadata.value}"
+                    disabled="#{cc.attrs.metadata.disableMetadataField}"
+                    readonly="#{Metadaten.nurLesenModus}"
+                    rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames'
+                    or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante'
+                    or cc.attrs.metadata.outputType == 'viaf' or cc.attrs.metadata.outputType == 'kulturnav'
+                    or cc.attrs.metadata.outputType == 'easydb' or cc.attrs.metadata.outputType == 'vocabularySearch'
+                    or cc.attrs.metadata.outputType == 'convertibleDate'}">
+                    <f:ajax
+                        execute="@form"
+                        event="valueChange" />
+                </x:inputText>
+
+                <!-- TEXT INPUT READ ONLY -->
+                <x:inputText
+                    id="inputTextRO"
+                    pt:aria-label="#{cc.attrs.metadata.md.type.name}"
+                    styleClass="form-control"
+                    disabled="true"
+                    readonly="true"
+                    value="#{cc.attrs.metadata.value}"
+                    rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" />
+
+                <!-- TEXTAREA -->
+                <x:inputTextarea
+                    id="textarea"
+                    pt:aria-label="#{cc.attrs.metadata.md.type.name}"
+                    styleClass="form-control"
+                    value="#{cc.attrs.metadata.value}"
+                    disabled="#{cc.attrs.metadata.disableMetadataField}"
+                    readonly="#{Metadaten.nurLesenModus}"
+                    rendered="#{cc.attrs.metadata.outputType == 'textarea' or cc.attrs.metadata.outputType == 'generate'}">
+                    <f:ajax
+                        execute="@form"
+                        event="valueChange" />
+                </x:inputTextarea>
+
+                <!-- TEXTAREA FOR HTML -->
+                <x:inputTextarea
+                    id="textareaHtml"
+                    styleClass="form-control textarea-html"
+                    value="#{cc.attrs.metadata.value}"
+                    disabled="#{cc.attrs.metadata.disableMetadataField}"
+                    readonly="#{Metadaten.nurLesenModus}"
+                    rendered="#{cc.attrs.metadata.outputType == 'htmlInput'}">
+                    <f:ajax
+                        execute="@form"
+                        event="valueChange" />
+                </x:inputTextarea>
+
+                <!-- SELECT -->
+                <ui:fragment rendered="#{(cc.attrs.metadata.outputType == 'select1')}">
+                    <div class="form-control form-control--select">
+                        <h:selectOneMenu
+                            id="select"
+                            styleClass="focusable"
+                            pt:aria-label="#{msgs.selectionList}"
+                            value="#{cc.attrs.metadata.selectedItem}"
+                            disabled="#{cc.attrs.metadata.disableMetadataField}"
+                            readonly="#{Metadaten.nurLesenModus}">
+                            <f:selectItems
+                                value="#{cc.attrs.metadata.items}"
+                                itemValue="#{element.label}"
+                                var="element"
+                                itemLabel="#{element.label}" />
+                            <f:ajax
+                                execute="@form"
+                                event="valueChange" />
+                        </h:selectOneMenu>
+                    </div>
+                </ui:fragment>
+
+                <ui:fragment rendered="#{(cc.attrs.metadata.outputType == 'vocabularyList')}">
+                    <div class="form-control form-control--select">
+                        <h:selectOneMenu
+                            id="selectVocabularyList"
+                            styleClass="focusable"
+                            pt:aria-label="#{cc.attrs.metadata.md.type.name}"
+                            value="#{cc.attrs.metadata.selectedItem}"
+                            disabled="#{cc.attrs.metadata.disableMetadataField}"
+                            readonly="#{Metadaten.nurLesenModus}">
+                            <f:selectItems
+                                value="#{cc.attrs.metadata.possibleItems}"
+                                itemValue="#{element.label}"
+                                var="element"
+                                itemLabel="#{element.value}" />
+                            <f:ajax
+                                execute="@form"
+                                event="valueChange" />
+                        </h:selectOneMenu>
+                    </div>
+                </ui:fragment>
+
+
+
+                <!-- MULTISELECT -->
+                <h:selectManyListbox
+                    id="multiSelect"
+                    pt:aria-label="#{cc.attrs.metadata.md.type.name}"
+                    styleClass="form-control"
+                    value="#{cc.attrs.metadata.selectedItems}"
+                    disabled="#{cc.attrs.metadata.disableMetadataField}"
+                    rendered="#{(cc.attrs.metadata.outputType == 'select')}"
+                    readonly="#{Metadaten.nurLesenModus}">
+                    <f:selectItems
+                        value="#{cc.attrs.metadata.items}"
+                        itemValue="#{element.label}"
+                        var="element"
+                        itemLabel="#{element.label}" />
+                    <f:ajax
+                        execute="@form"
+                        event="valueChange" />
+                </h:selectManyListbox>
+
+                <!-- AUTHORITY DATA - NO DANTE, KULTURNAV, VIAF OR EASYDB -->
+                <ui:fragment rendered="#{cc.attrs.metadata.normdata
+                    and cc.attrs.metadata.outputType != 'dante'
+                    and cc.attrs.metadata.outputType != 'kulturnav'
+                    and cc.attrs.metadata.outputType != 'viaf'
+                    and cc.attrs.metadata.outputType != 'easydb'
+                    and cc.attrs.metadata.outputType != 'vocabularySearch'}">
+                    <div class="form-group form-group--inside">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-control form-control--select">
+                                    <h:selectOneMenu
+                                        id="selectNoDante"
+                                        styleClass="focusable"
+                                        pt:aria-label="#{msgs.mets_authority_database}"
+                                        disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
+                                        value="#{cc.attrs.metadata.normDatabase}"
+                                        readonly="#{Metadaten.nurLesenModus}">
+                                        <f:selectItems
+                                            value="#{cc.attrs.metadata.possibleDatabases}"
+                                            var="database"
+                                            itemLabel="#{database}"
+                                            itemValue="#{database}" />
+                                        <f:ajax
+                                            execute="@form"
+                                            event="valueChange" />
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+                            <div
+                                class="col"
+                                style="padding-left: 0px;">
+                                <h:inputText
+                                    id="inputTextNoDante"
+                                    pt:aria-label="#{msgs.mets_authority_database}"
+                                    styleClass="form-control"
+                                    disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
+                                    value="#{cc.attrs.metadata.normdataValue}"
+                                    readonly="#{Metadaten.nurLesenModus}">
+                                    <f:ajax
+                                        execute="@form"
+                                        event="valueChange" />
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
+                </ui:fragment>
+                <!-- AUTHORITY DATA - DANTE, KULTURNAV, VIAF AND EASYDB -->
+                <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'
+                    or cc.attrs.metadata.outputType == 'kulturnav'
+                    or cc.attrs.metadata.outputType == 'viaf'
+                    or cc.attrs.metadata.outputType == 'easydb'
+                    or cc.attrs.metadata.outputType == 'vocabularySearch'}">
+                    <h:inputText
+                        id="danteValue"
+                        pt:aria-label="#{msgs.mets_authority_data}"
+                        styleClass="form-control"
+                        disabled="#{cc.attrs.metadata.disableIdentifierField}"
+                        value="#{cc.attrs.metadata.normdataValue}"
+                        readonly="#{Metadaten.nurLesenModus}">
+                        <f:ajax
+                            execute="@form"
+                            event="valueChange" />
+                    </h:inputText>
+                </ui:fragment>
+                <h:panelGroup layout="block"
+                    class="validation-error"
+                    rendered="#{cc.attrs.metadata.validationErrorPresent}">
+                    <i
+                        class="fa fa-exclamation-circle"
+                        aria-hidden="true">
+                    </i>
+                    <h:outputText value="#{cc.attrs.metadata.validationMessage}" />
+                </h:panelGroup>
+                <!-- ACTIONS -->
+                <ui:fragment rendered="#{cc.attrs.cols eq 3}">
+                    <div class="btn-area duplicate">
+                        <!-- DELETE -->
+                        <button
+                            class="btn btn--icon-light metadataButton"
+                            jsf:id="actionDelete"
+                            aria-label="#{msgs.DELETE_CURRENT_METADATA}"
+                            tabindex="0"
+                            jsf:action="#{Metadaten.Loeschen}"
+                            title="#{msgs.metadatenLoeschen}"
+                            jsf:rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}"
+                            type="button">
+                            <i class="fa fa-lg fa-trash-o"
+                                aria-hidden="true"></i>
+                            <x:updateActionListener
+                                property="#{Metadaten.curMetadatum}"
+                                value="#{cc.attrs.metadata}" />
+                            <f:param
+                                name="ID"
+                                value="#{cc.attrs.metadata.identifier}" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
+                            <f:ajax
+                                execute="@form"
+                                render="@form" />
+                        </button>
+
+                        <!-- COPY -->
+                        <button
+                            class="btn btn--icon-light metadataButton"
+                            jsf:id="actionCopy"
+                            aria-label="#{msgs.metadatenKopieren}"
+                            tabindex="0"
+                            jsf:action="#{Metadaten.Copy}"
+                            title="#{msgs.metadatenKopieren}"
+                            type="button"
+                            jsf:rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly' and Metadaten.isAddableMetadata(cc.attrs.metadata.md)}">
+                            <i class="fa fa-lg fa-copy"
+                                aria-hidden="true"></i>
+                            <x:updateActionListener
+                                property="#{Metadaten.currentMetadata}"
+                                value="#{cc.attrs.metadata.md}" />
+                            <f:param
+                                name="ID"
+                                value="#{cc.attrs.metadata.identifier}" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
+                            <f:ajax
+                                execute="@form"
+                                render="@form" />
+                        </button>
+
+                        <!-- CONVERT -->
+                        <button
+                            jsf:id="actionConvertFromJulian"
+                                class="btn btn--icon-light metadataButton"
+                                aria-label="#{msgs.convertJulianToGregorianDate}"
+                                tabindex="0"
+                                type="button"
+                                jsf:action="#{Metadaten.convertDate('JULIAN')}"
+                                title="#{msgs.convertJulianToGregorianDate}"
+                                jsf:rendered="#{(cc.attrs.metadata.outputType == 'convertibleDate')}">
+                            <i class="fa fa-lg fa-calendar"
+                                aria-hidden="true"></i>
+                            <x:updateActionListener
+                                property="#{Metadaten.curMetadatum}"
+                                value="#{cc.attrs.metadata}" />
+                            <f:param
+                                name="ID"
+                                value="#{cc.attrs.metadata.identifier}" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
+                            <f:ajax
+                                execute="@form"
+                                render="@form" />
+                        </button>
+
+                        <button
+                            jsf:id="actionConvertFromBritish"
+                                class="btn btn--icon-light metadataButton"
+                                aria-label="#{msgs.convertBritishToGregorianDate}"
+                                tabindex="0"
+                                type="button"
+                                jsf:action="#{Metadaten.convertDate('BRITISH')}"
+                                title="#{msgs.convertBritishToGregorianDate}"
+                                jsf:rendered="#{(cc.attrs.metadata.outputType == 'convertibleDate')}">
+                            <i class="fa fa-lg fa-calendar-o"
+                                aria-hidden="true"></i>
+                            <x:updateActionListener
+                                property="#{Metadaten.curMetadatum}"
+                                value="#{cc.attrs.metadata}" />
+                            <f:param
+                                name="ID"
+                                value="#{cc.attrs.metadata.identifier}" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
+                            <f:ajax
+                                execute="@form"
+                                render="@form" />
+                        </button>
+
+
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'generate'}">
+
+                            <button
+                                class="btn btn--icon-light metadataButton"
+                                jsf:id="generate"
+                                aria-label="#{msgs.DELETE_CURRENT_METADATA}"
+                                tabindex="0"
+                                jsf:action="#{cc.attrs.metadata.generateValue}"
+                                title="#{msgs.generieren}"
+                                type="button">
+                                <i
+                                    class="fa fa-lg fa-calculator"
+                                    aria-hidden="true"></i>
+
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:passThroughAttribute
+                                    name="data-placement"
+                                    value="top" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="@form" />
+                            </button>
+
+                        </ui:fragment>
+
+                        <!-- AUTHORITY ICON AND MODAL -->
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
+                            <button
+                                jsf:id="geoname"
+                                class="btn change-icon geonamesIndexTrigger btn--icon-light metadataButton"
+                                title="#{msgs.NORM_geonamesSearch}"
+                                aria-label="#{msgs.NORM_geonamesSearch}"
+                                jsf:onclick="$('#geonamesSearchBox').modal('show');"
+                                type="button">
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="GeoNames"
+                                    src="template/img/Icons_GeoNames_grey.png" />
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="GeoNames"
+                                    src="template/img/Icons_GeoNames_color.png" />
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":geonamesModalContent" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:passThroughAttribute
+                                    name="data-placement"
+                                    value="top" />
+                            </button>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
+                            <button
+                                jsf:id="gnd"
+                                class="btn change-icon gndIndexTrigger btn--icon-light metadataButton"
+                                title="#{msgs.NORM_gndSearch}"
+                                aria-label="#{msgs.NORM_gndSearch}"
+                                jsf:onclick="$('#gndSearchBox').modal('show');"
+                                type="button">
+
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="GND"
+                                    src="template/img/Icons_GND_grey.png" />
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="GND"
+                                    src="template/img/Icons_GND_color.png" />
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":gndModalContent" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:passThroughAttribute
+                                    name="data-placement"
+                                    value="top" />
+                            </button>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'process'}">
+                            <button
+                                jsf:id="openProcessSearchModal2"
+                                class="btn change-icon processIndexTrigger btn--icon-light metadataButton"
+                                title="#{msgs.NORM_processesSearch}"
+                                aria-label="#{msgs.NORM_processesSearch}"
+                                jsf:onclick="$('#processesSearchBox').modal('show');"
+                                type="button">
+                                <i
+                                    class="fa fa-search"
+                                    style="margin-left: 3px" />
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":processModalContent" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:passThroughAttribute
+                                    name="data-placement"
+                                    value="top" />
+                            </button>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
+                            <button
+                                jsf:id="danteSearch"
+                                class="btn change-icon danteIndexTrigger btn--icon-light metadataButton"
+                                title="#{msgs.NORM_danteSearch}"
+                                aria-label="#{msgs.NORM_danteSearch}"
+                                jsf:onclick="$('#danteSearchBox').modal('show');"
+                                type="button">
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="Dante"
+                                    src="template/img/Icons_Dante_grey.png" />
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="Dante"
+                                    src="template/img/Icons_Dante_color.png" />
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":danteModalContent" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:passThroughAttribute
+                                    name="data-placement"
+                                    value="top" />
+                            </button>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'kulturnav'}">
+                            <button
+                                    jsf:id="kulturnavSearch"
+                                    class="btn change-icon danteIndexTrigger btn--icon-light metadataButton"
+                                    title="#{msgs.NORM_kulturnavSearch}"
+                                    aria-label="#{msgs.NORM_kulturnavSearch}"
+                                    jsf:onclick="$('#kulturnavSearchBox').modal('show');"
+                                    type="button">
+                                <img
+                                        class="toggle"
+                                        style="width: 16px;"
+                                        alt="KN"
+                                        src="template/img/import_grey.svg" />
+                                <img
+                                        class="toggle"
+                                        style="width: 16px;"
+                                        alt="KN"
+                                        src="template/img/import.svg" />
+                                <f:setPropertyActionListener
+                                        value="#{cc.attrs.metadata}"
+                                        target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                        execute="@this"
+                                        render=":kulturnavModalContent" />
+                                <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                <f:passThroughAttribute
+                                        name="data-placement"
+                                        value="top" />
+                            </button>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'easydb'}">
+                            <button
+                                jsf:id="easydbSearch"
+                                class="btn change-icon easydbIndexTrigger btn--icon-light metadataButton"
+                                title="#{msgs.NORM_easydbSearch}"
+                                aria-label="#{msgs.NORM_easydbSearch}"
+                                jsf:onclick="$('#easydbSearchBox').modal('show');"
+                                type="button">
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="EasyDB"
+                                    src="template/img/Icons_easydb_grey.png" />
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="EasyDB"
+                                    src="template/img/Icons_easydb_color.png" />
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":easydbModalContent" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:passThroughAttribute
+                                    name="data-placement"
+                                    value="top" />
+                            </button>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
+                            <button
+                                jsf:id="viaf"
+                                class="btn change-icon viafIndexTrigger btn--icon-light metadataButton"
+                                title="#{msgs.NORM_viafSearch}"
+                                aria-label="#{msgs.NORM_viafSearch}"
+                                jsf:onclick="$('#viafSearchBox').modal('show');"
+                                type="button">
+
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="VIAF"
+                                    src="template/img/Icons_Viaf_grey.png" />
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="VIAF"
+                                    src="template/img/Icons_Viaf_color.png" />
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":viafModalContent" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:passThroughAttribute
+                                    name="data-placement"
+                                    value="top" />
+                            </button>
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'vocabularySearch'}">
+                            <button
+                                jsf:id="vocabularySearch"
+                                class="btn change-icon vocabularySearchIndexTrigger btn--icon-light metadataButton"
+                                title="#{msgs.NORM_vocabularySearch}"
+                                aria-label="#{msgs.NORM_vocabularySearch}"
+                                type="button"
+                                jsf:onclick="$('#vocabularySearchBox').modal('show');"
+                                >
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="Vocabulary"
+                                    src="template/img/Icons_Vocabulary_grey.png" />
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="Vocabulary"
+                                    src="template/img/Icons_Vocabulary_color.png" />
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":vocabularySearchModalContent" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:passThroughAttribute
+                                    name="data-placement"
+                                    value="top" />
+                            </button>
+                        </ui:fragment>
+                    </div>
+                </ui:fragment>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:composition>
