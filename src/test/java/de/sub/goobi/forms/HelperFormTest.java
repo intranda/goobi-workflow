@@ -31,12 +31,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.faces.application.Application;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
+import org.checkerframework.checker.regex.qual.Regex;
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
@@ -130,7 +133,9 @@ public class HelperFormTest extends AbstractTest {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
         String fixture = helperForm.getVersion();
-        assertTrue(fixture.startsWith("24."));
+        Pattern versionRegex = Pattern.compile("^\\d{2}\\.\\d{2}(\\.\\d+)?(-dev|-SNAPSHOT)?$");
+        Matcher versionMatcher = versionRegex.matcher(fixture);
+        assertTrue(versionMatcher.find());
     }
 
     @Test
