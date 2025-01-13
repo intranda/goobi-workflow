@@ -40,7 +40,7 @@
                     value="#{msgs.mets_no_persons_assigned}"
                     rendered="#{empty Metadaten.myPersonen}" />
 
-                <x:dataList
+                <ui:repeat
                     id="personList"
                     var="currentPerson"
                     value="#{Metadaten.myPersonen}"
@@ -51,7 +51,7 @@
                         person="#{currentPerson}"
                         renderDelete="true"
                         index="#{rowIndex}" />
-                </x:dataList>
+                </ui:repeat>
 
                 <ui:fragment rendered="#{Metadaten.sizeOfRoles!=0}">
                     <div class="row">

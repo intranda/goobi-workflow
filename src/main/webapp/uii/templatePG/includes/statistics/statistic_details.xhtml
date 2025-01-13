@@ -123,7 +123,7 @@
 
             <hr/>
 
-            <x:dataList id="uaid29" var="element" rendered="#{Manager.renderingElements!=null}"
+            <ui:repeat id="uaid29" var="element" rendered="#{Manager.renderingElements!=null}"
                 value="#{Manager.renderingElements}" layout="ordered list" rowCountVar="rowCount" rowIndexVar="rowIndex">
 
                 <h3 class="font18px" style="margin-top: 20px">
@@ -170,7 +170,7 @@
 				</div>
 
                 </h:panelGroup>
-            </x:dataList>
+            </ui:repeat>
 
         </h:panelGroup>
 

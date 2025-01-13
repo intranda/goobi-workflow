@@ -40,7 +40,7 @@
                     value="#{msgs.mets_no_metadatagroups_assigned}"
                     rendered="#{empty Metadaten.groups}" />
 
-                <x:dataList
+                <ui:repeat
                     id="groupList"
                     var="Item"
                     value="#{Metadaten.groups}"
@@ -100,7 +100,7 @@
                         </h2>
                         <div class="row">
                             <div class="col-12">
-                                <x:dataList
+                                <ui:repeat
                                     id="grpMdList"
                                     var="metadata"
                                     value="#{Item.metadataList}"
@@ -111,9 +111,9 @@
                                         metadata="#{metadata}"
                                         renderDelete="true"
                                         renderDuplicate="true" />
-                                </x:dataList>
+                                </ui:repeat>
 
-                                <x:dataList
+                                <ui:repeat
                                     id="grpPL"
                                     var="currentPerson"
                                     value="#{Item.personList}"
@@ -123,8 +123,8 @@
                                         id="grpPerson"
                                         person="#{currentPerson}"
                                         renderDelete="true" />
-                                </x:dataList>
-                                <x:dataList
+                                </ui:repeat>
+                                <ui:repeat
                                     id="grpCL"
                                     var="currentCorporate"
                                     value="#{Item.corporateList}"
@@ -136,7 +136,7 @@
                                         renderDelete="true"
                                         changeRole="false"
                                         index="#{rowIndex}" />
-                                </x:dataList>
+                                </ui:repeat>
                             </div>
                         </div>
 
@@ -205,7 +205,7 @@
 
 
 
-                </x:dataList>
+                </ui:repeat>
 
                 <br />
 

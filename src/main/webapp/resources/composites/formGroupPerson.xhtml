@@ -361,7 +361,7 @@
 
 
         <!-- ADDITIONAL PARTS -->
-        <x:dataList
+        <ui:repeat
             var="part"
             value="#{cc.attrs.person.additionalNameParts}"
             rendered="#{cc.attrs.person.showAdditionalParts}">
@@ -409,7 +409,7 @@
                     <div class="btn-area"></div>
                 </div>
             </div>
-        </x:dataList>
+        </ui:repeat>
 
         <ui:fragment rendered="#{cc.attrs.person.showAdditionalParts}">
             <div class="row">

@@ -18,7 +18,7 @@
 
         <ui:include src="../calendarJavaScript.xhtml" />
 
-        <x:dataList
+        <ui:repeat
             var="property"
             value="#{properties}">
 
@@ -364,7 +364,7 @@
                     </div>
                 </div>
             </h:panelGroup>
-        </x:dataList>
+        </ui:repeat>
     </composite:implementation>
 
 </ui:composition>

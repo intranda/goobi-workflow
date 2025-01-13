@@ -71,18 +71,18 @@
 
 
                         <br />
-                        <x:dataTable
+                        <h:dataTable
                             rendered="#{messageQueueBean.messageType != null}"
                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                             var="ticket"
                             value="#{messageQueueBean.activeSlowQueryMesssages}">
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_id}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.messageId}" />
-                            </x:column>
+                            </h:column>
 
                             <x:column>
                                 <f:facet name="header">
@@ -114,12 +114,12 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_properties}" />
                                 </f:facet>
-                                <x:dataList
+                                <ui:repeat
                                     var="prop"
                                     value="#{ticket.properties.keySet()}">
                                     <h:outputText value="#{prop}: #{ticket.properties[prop]} " />
                                     <br />
-                                </x:dataList>
+                                </ui:repeat>
                             </x:column>
                             <x:column>
                                 <f:facet name="header">
@@ -134,7 +134,7 @@
                                     <span class="fa fa-trash-o" />
                                 </button>
                             </x:column>
-                        </x:dataTable>
+                        </h:dataTable>
                     </h:panelGroup>
                 </h:form>
             </div>
@@ -262,12 +262,12 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_properties}" />
                                 </f:facet>
-                                <x:dataList
+                                <ui:repeat
                                     var="prop"
                                     value="#{ticket.properties.keySet()}">
                                     <h:outputText value="#{prop}: #{ticket.properties[prop]} " />
                                     <br />
-                                </x:dataList>
+                                </ui:repeat>
                             </x:column>
                             <x:column>
                                 <f:facet name="header">

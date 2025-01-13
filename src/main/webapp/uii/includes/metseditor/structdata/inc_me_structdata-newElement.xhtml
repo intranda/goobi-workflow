@@ -312,7 +312,7 @@
 
                     <!-- ADD ABLE PERSONDATA -->
                     <h:panelGroup rendered="#{Metadaten.addablePersondata.size() > 0}">
-                        <x:dataList
+                        <ui:repeat
                             id="addablePersondata"
                             var="addablePersondata"
                             value="#{Metadaten.addablePersondata}"
@@ -324,12 +324,12 @@
                                 renderDelete="false"
                                 index="#{rowIndex}"
                                 datatype="addablePerson" />
-                        </x:dataList>
+                        </ui:repeat>
                     </h:panelGroup>
 
                     <!-- ADD ABLE METADATA -->
                     <ui:fragment rendered="#{Metadaten.addableMetadata.size() > 0}">
-                        <x:dataList
+                        <ui:repeat
                             id="addableMetadata"
                             var="Item"
                             value="#{Metadaten.addableMetadata}"
@@ -342,7 +342,7 @@
                                 renderDelete="false"
                                 renderDuplicate="false"
                                 index="#{rowIndex}" />
-                        </x:dataList>
+                        </ui:repeat>
                     </ui:fragment>
 
                     <!-- ADD ELEMENT -->

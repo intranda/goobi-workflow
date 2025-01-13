@@ -6,7 +6,6 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:x="http://xmlns.jcp.org/jsf/html"
     xmlns:button="http://goobi.io/button"
     xmlns:properties="http://goobi.io/properties"
     xmlns:dialog="http://goobi.io/dialog"
@@ -72,14 +71,14 @@
                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
                         </div>
                         <div class="col-12 col-md-9">
-                            <x:inputTextarea
+                            <h:inputTextarea
                                 id="textareaValue"
                                 rows="7"
                                 forceId="true"
                                 styleClass="form-control"
                                 value="#{myprocess_item.value}"
                                 disabled="#{scope == 'step' ? myprocess_item.currentStepAccessCondition == 'READ' : myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-                            </x:inputTextarea>
+                            </h:inputTextarea>
                             <h:message
                                 for="textareaValue"
                                 showDetail="true"
@@ -98,14 +97,14 @@
                                 styleClass="control-label"
                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
                             <div class="col-12 col-md-9">
-                                <x:inputText
+                                <h:inputText
                                     id="number"
                                     forceId="true"
                                     styleClass="form-control"
                                     value="#{myprocess_item.value}"
                                     disabled="#{scope == 'step' ? myprocess_item.currentStepAccessCondition == 'READ' : myprocess_item.showProcessGroupAccessCondition == 'READ'}">
                                     <f:validateLongRange minimum="0" />
-                                </x:inputText>
+                                </h:inputText>
                                 <h:message
                                     for="number"
                                     showDetail="true"
@@ -225,7 +224,7 @@
                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
                         </div>
                         <div class="col-12 col-md-9">
-                            <x:inputTextarea
+                            <h:inputTextarea
                                 id="valueArea"
                                 forceId="true"
                                 styleClass="form-control"

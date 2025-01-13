@@ -461,7 +461,7 @@
                                                         <h:outputText value="#{msgs.usergroup_assignedRoles}"
                                                        		rendered="#{not empty item.benutzergruppen}" />
                                                         <h:panelGroup rendered="#{not empty item.benutzergruppen}" >
-                                                            <x:dataList
+                                                            <ui:repeat
                                                                 value="#{item.benutzergruppen}"
                                                                 var="group"
                                                                 rowCountVar="count"
@@ -470,7 +470,7 @@
                                                                 <h:outputText
                                                                     value=", "
                                                                     rendered="#{index lt count-1}"></h:outputText>
-                                                            </x:dataList>
+                                                            </ui:repeat>
                                                         </h:panelGroup>
                                                     </h:panelGrid>
 

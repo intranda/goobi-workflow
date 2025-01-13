@@ -82,7 +82,7 @@
                                         <h:outputText
                                             value="#{msgs.institution_allSelected}"
                                             rendered="#{item.allowAllRulesets}" />
-                                        <x:dataList
+                                        <ui:repeat
                                             var="intern"
                                             rendered="#{!item.allowAllRulesets}"
                                             value="#{item.allowedRulesets}"
@@ -95,7 +95,7 @@
                                                     value=","
                                                     rendered="#{rowIndex + 1 lt rowCount}" />
                                             </ui:fragment>
-                                        </x:dataList>
+                                        </ui:repeat>
 
                                     </x:column>
 
@@ -106,7 +106,7 @@
                                         <h:outputText
                                             value="#{msgs.institution_allSelected}"
                                             rendered="#{item.allowAllDockets}" />
-                                        <x:dataList
+                                        <ui:repeat
                                             var="intern"
                                             rendered="#{!item.allowAllDockets}"
                                             value="#{item.allowedDockets}"
@@ -117,7 +117,7 @@
                                             <h:outputText
                                                 value=","
                                                 rendered="#{rowIndex + 1 lt rowCount}" />
-                                        </x:dataList>
+                                        </ui:repeat>
 
                                     </x:column>
                                     <x:column>
@@ -127,7 +127,7 @@
                                         <h:outputText
                                             value="#{msgs.institution_allSelected}"
                                             rendered="#{item.allowAllAuthentications}" />
-                                        <x:dataList
+                                        <ui:repeat
                                             var="intern"
                                             rendered="#{!item.allowAllAuthentications}"
                                             value="#{item.allowedAuthentications}"
@@ -140,7 +140,7 @@
                                                     value=","
                                                     rendered="#{rowIndex + 1 lt rowCount}" />
                                             </ui:fragment>
-                                        </x:dataList>
+                                        </ui:repeat>
 
 
                                     </x:column>
@@ -158,7 +158,7 @@
                                                 escape="false"
                                                 styleClass="fw-bold"
                                                 />
-                                            <x:dataList
+                                            <ui:repeat
                                                 var="intern"
                                                 value="#{item.allowedAdministrationPlugins}"
                                                 layout="ordered list"
@@ -170,13 +170,13 @@
                                                         value=","
                                                         rendered="#{rowIndex + 1 lt rowCount}" />
                                                 </ui:fragment>
-                                            </x:dataList>
+                                            </ui:repeat>
 
                                             <h:outputText
                                                 value=" &lt;br/&gt;#{msgs.instituiton_workflowPlugin}: "
                                                 styleClass="fw-bold"
                                                 escape="false" />
-                                            <x:dataList
+                                            <ui:repeat
                                                 var="intern"
                                                 value="#{item.allowedWorkflowPlugins}"
                                                 layout="ordered list"
@@ -188,13 +188,13 @@
                                                         value=","
                                                         rendered="#{rowIndex + 1 lt rowCount}" />
                                                 </ui:fragment>
-                                            </x:dataList>
+                                            </ui:repeat>
 
                                             <h:outputText
                                                 value="&lt;br/&gt;#{msgs.instituiton_statisticsPlugin}: "
                                                 styleClass="fw-bold"
                                                 escape="false" />
-                                            <x:dataList
+                                            <ui:repeat
                                                 var="intern"
                                                 value="#{item.allowedStatisticsPlugins}"
                                                 layout="ordered list"
@@ -206,12 +206,12 @@
                                                         value=","
                                                         rendered="#{rowIndex + 1 lt rowCount}" />
                                                 </ui:fragment>
-                                            </x:dataList>
+                                            </ui:repeat>
                                             <h:outputText
                                                 value="&lt;br/&gt;#{msgs.instituiton_dashboardPlugin}: "
                                                 styleClass="fw-bold"
                                                 escape="false" />
-                                            <x:dataList
+                                            <ui:repeat
                                                 var="intern"
                                                 value="#{item.allowedDashboardPlugins}"
                                                 layout="ordered list"
@@ -223,7 +223,7 @@
                                                         value=","
                                                         rendered="#{rowIndex + 1 lt rowCount}" />
                                                 </ui:fragment>
-                                            </x:dataList>
+                                            </ui:repeat>
 
                                         </ui:fragment>
                                     </x:column>

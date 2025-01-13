@@ -497,7 +497,7 @@
                                 layout="block"
                                 id="list"
                                 class="row pre-scrollable">
-                                <x:dataList
+                                <ui:repeat
                                     value="#{Metadaten.currentMetadataToPerformSearch.dataList}"
                                     var="normdataList">
                                     <hr />
@@ -508,7 +508,7 @@
 
                                         <div class="col-sm-11">
 
-                                            <x:dataList
+                                            <ui:repeat
                                                 value="#{normdataList}"
                                                 var="normdata">
                                                 <div class="row">
@@ -517,7 +517,7 @@
                                                     </div>
 
                                                     <div class="col-sm-8">
-                                                        <x:dataList
+                                                        <ui:repeat
                                                             value="#{normdata.values}"
                                                             var="value">
                                                             <div class="row">
@@ -537,10 +537,10 @@
                                                                         rendered="#{value.url == null}" />
                                                                 </div>
                                                             </div>
-                                                        </x:dataList>
+                                                        </ui:repeat>
                                                     </div>
                                                 </div>
-                                            </x:dataList>
+                                            </ui:repeat>
                                         </div>
                                         <h:panelGroup
                                             layout="block"
@@ -565,7 +565,7 @@
                                             </button>
                                         </h:panelGroup>
                                     </div>
-                                </x:dataList>
+                                </ui:repeat>
                                 <h:outputText
                                     value="#{msgs.NORM_noHits}"
                                     rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}"
@@ -971,7 +971,7 @@
                                     showDetail="true"
                                     styleClass="help-inline font-danger" />
 
-                                <x:dataList
+                                <ui:repeat
                                     value="#{Metadaten.currentMetadataToPerformSearch.resultList}"
                                     var="geonames">
                                     <hr />
@@ -1099,7 +1099,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                </x:dataList>
+                                </ui:repeat>
 
                                 <h:outputText
                                     value="#{msgs.NORM_noHits}"
@@ -1190,7 +1190,7 @@
                                 id="resultList"
                                 class="row pre-scrollable"
                                 style="max-height:550px;">
-                                <x:dataList
+                                <ui:repeat
                                     value="#{Metadaten.currentMetadataToPerformSearch.normdataList}"
                                     var="normdataRecord">
                                     <hr />
@@ -1212,7 +1212,7 @@
                                                     </h:selectOneMenu>
                                                 </div>
                                             </div>
-                                            <x:dataList
+                                            <ui:repeat
                                                 value="#{normdataRecord.normdataList}"
                                                 var="normdata">
 
@@ -1225,7 +1225,7 @@
                                                     </div>
 
                                                     <div class="col-sm-8">
-                                                        <x:dataList
+                                                        <ui:repeat
                                                             value="#{normdata.values}"
                                                             var="value">
                                                             <div class="row">
@@ -1245,10 +1245,10 @@
                                                                         rendered="#{value.url == null}" />
                                                                 </div>
                                                             </div>
-                                                        </x:dataList>
+                                                        </ui:repeat>
                                                     </div>
                                                 </h:panelGroup>
-                                            </x:dataList>
+                                            </ui:repeat>
 
 
                                         </div>
@@ -1272,7 +1272,7 @@
                                             </button>
                                         </h:panelGroup>
                                     </div>
-                                </x:dataList>
+                                </ui:repeat>
                                 <h:outputText
                                     value="#{msgs.NORM_noHits}"
                                     rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}"

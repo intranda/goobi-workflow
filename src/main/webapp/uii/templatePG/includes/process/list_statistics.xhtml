@@ -183,7 +183,7 @@
 								rendered="#{ProzessverwaltungForm.statisticsManager.statisticMode.restrictedDate}">
 							</h:panelGroup>
 
-							<x:dataList var="element"
+							<ui:repeat var="element"
 								value="#{ProzessverwaltungForm.statisticsManager.renderingElements}"
 								layout="ordered list" rowCountVar="rowCount"
 								rowIndexVar="rowIndex">
@@ -286,7 +286,7 @@
 										</button>
 									</h:panelGroup>
 								</h:panelGroup>
-							</x:dataList>
+							</ui:repeat>
 						</h:form>
 
 					</intranda:box>

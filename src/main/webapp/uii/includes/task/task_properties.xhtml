@@ -15,16 +15,16 @@
 
 				<table class="table table-hover table-bordered">
 
-		            <x:dataList var="container" value="#{AktuelleSchritteForm.containerList}" rowCountVar="rowCount" rowIndexVar="rowIndex" id="allProperties">
-		                <x:dataList var="proc" value="#{AktuelleSchritteForm.containerlessProperties}" rowCountVar="propCount" rowIndexVar="propInd" id="containerless">
+		            <ui:repeat var="container" value="#{AktuelleSchritteForm.containerList}" rowCountVar="rowCount" rowIndexVar="rowIndex" id="allProperties">
+		                <ui:repeat var="proc" value="#{AktuelleSchritteForm.containerlessProperties}" rowCountVar="propCount" rowIndexVar="propInd" id="containerless">
 
 							<h:panelGroup rendered="#{container == 0}">
 								<tr>
 									<td><h:outputText value="#{proc.name}" /></td>
 									<td>
-										<x:dataList var="val" value="#{proc.valueList}" rendered="#{proc.type.name == 'listmultiselect'}">
+										<ui:repeat var="val" value="#{proc.valueList}" rendered="#{proc.type.name == 'listmultiselect'}">
                                         	<h:outputText value="#{val}" styleClass="badge badge-no-radius badge-light-grey"/>
-                                        </x:dataList>
+                                        </ui:repeat>
                                         <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name == 'html'}" escape="false" />
                                         <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html' and proc.type.name != 'listmultiselect'}" />
 		                                <h:outputLink value="#{proc.readValue}" title="#{proc.readValue}" target="_blank"
@@ -60,23 +60,23 @@
 			                        </td>
 								</tr>
 							</h:panelGroup>
-		                </x:dataList>
+		                </ui:repeat>
 		                <h:panelGroup rendered="#{rowIndex lt rowCount and rowIndex != 0}">
 		                   	<tr>
 								<td colspan="3"><h:outputText value="&amp;nbsp;" escape="false" /></td>
 							</tr>
 		                </h:panelGroup>
 
-		                <x:dataList var="process_item" value="#{AktuelleSchritteForm.containers[container].propertyList}" rowCountVar="propCount"
+		                <ui:repeat var="process_item" value="#{AktuelleSchritteForm.containers[container].propertyList}" rowCountVar="propCount"
 		                    rowIndexVar="propInd" id="container">
 
 		                    <h:panelGroup rendered="#{container != 0}">
 		                        <tr>
 									<td><h:outputText value="#{process_item.name}" /></td>
 									<td>
-                                        <x:dataList var="val" value="#{process_item.valueList}" rendered="#{process_item.type.name == 'listmultiselect'}">
+                                        <ui:repeat var="val" value="#{process_item.valueList}" rendered="#{process_item.type.name == 'listmultiselect'}">
                                         	<h:outputText value="#{val}" styleClass="badge badge-no-radius badge-light-grey"/>
-                                        </x:dataList>
+                                        </ui:repeat>
                                         <h:outputText value="#{process_item.readValue}" rendered="#{process_item.type.name == 'html'}" escape="false" />
                                         <h:outputText value="#{process_item.readValue}" rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean' and process_item.type.name != 'html' and process_item.type.name != 'listmultiselect'}" />
 		                                <h:outputLink value="#{process_item.readValue}" title="#{process_item.readValue}" target="_blank"
@@ -115,8 +115,8 @@
 								</tr>
 		                    </h:panelGroup>
 
-		                </x:dataList>
-		            </x:dataList>
+		                </ui:repeat>
+		            </ui:repeat>
 
                     <c:forEach items="#{AktuelleSchritteForm.displayableMetadataMap}" var="metadata">
                         <tr>
@@ -136,7 +136,7 @@
 
         <h:form styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);" id="editProperties"
             rendered="#{AktuelleSchritteForm.modusBearbeiten=='eigenschaft' and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
-            <x:dataList var="myprocess_item" value="#{AktuelleSchritteForm.containerProperties}" id="item">
+            <ui:repeat var="myprocess_item" value="#{AktuelleSchritteForm.containerProperties}" id="item">
                 <div class="row">
                     <div class="col-sm-12">
 
@@ -252,7 +252,7 @@
                         </h:panelGroup>
                     </div>
                 </div>
-            </x:dataList>
+            </ui:repeat>
 
             <div class="form-actions">
 

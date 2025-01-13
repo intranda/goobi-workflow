@@ -235,7 +235,7 @@
                                     <hr />
                                 </h:panelGroup>
 
-                                <x:dataList
+                                <ui:repeat
                                     var="element"
                                     value="#{ProzessverwaltungForm.statisticsManager.renderingElements}"
                                     layout="ordered list"
@@ -346,7 +346,7 @@
                                             </button>
                                         </h:panelGroup>
                                     </h:panelGroup>
-                                </x:dataList>
+                                </ui:repeat>
                             </h:form>
 
                         </div>

@@ -29,13 +29,13 @@
 
                 <table class="table table-hover table-bordered">
 
-                    <x:dataList
+                    <ui:repeat
                         var="container"
                         value="#{propertyOwner.containerList}"
                         rowCountVar="rowCount"
                         rowIndexVar="rowIndex"
                         id="allProperties">
-                        <x:dataList
+                        <ui:repeat
                             var="proc"
                             value="#{propertyOwner.containerlessProperties}"
                             rowCountVar="propCount"
@@ -49,14 +49,14 @@
                                         <h:outputText value="#{proc.name}" />
                                     </td>
                                     <td>
-                                        <x:dataList
+                                        <ui:repeat
                                             var="val"
                                             value="#{proc.valueList}"
                                             rendered="#{proc.type.name == 'listmultiselect'}">
                                             <h:outputText
                                                 value="#{val}"
                                                 styleClass="badge badge-no-radius badge-light-grey" />
-                                        </x:dataList>
+                                        </ui:repeat>
                                         <h:outputText
                                             value="#{proc.readValue}"
                                             rendered="#{proc.type.name == 'html'}"
@@ -141,7 +141,7 @@
                                 </tr>
                             </h:panelGroup>
 
-                        </x:dataList>
+                        </ui:repeat>
                         <!-- // PROPERTIES OF CONTAINER 0 -->
 
                         <!-- BLANK LINE -->
@@ -157,7 +157,7 @@
                         <!-- // BLANK LINE -->
 
                         <!-- PROPERTIES OF CONTAINER NOT 0 -->
-                        <x:dataList
+                        <ui:repeat
                             var="process_item"
                             value="#{propertyOwner.containers[container].propertyList}"
                             rowCountVar="propCount"
@@ -170,14 +170,14 @@
                                         <h:outputText value="#{process_item.name}" />
                                     </td>
                                     <td>
-                                        <x:dataList
+                                        <ui:repeat
                                             var="val"
                                             value="#{process_item.valueList}"
                                             rendered="#{process_item.type.name == 'listmultiselect'}">
                                             <h:outputText
                                                 value="#{val}"
                                                 styleClass="badge badge-no-radius badge-light-grey" />
-                                        </x:dataList>
+                                        </ui:repeat>
                                         <h:outputText
                                             value="#{process_item.readValue}"
                                             rendered="#{process_item.type.name == 'html'}"
@@ -257,10 +257,10 @@
                                 </tr>
                             </h:panelGroup>
 
-                        </x:dataList>
+                        </ui:repeat>
                         <!-- // PROPERTIES OF CONTAINER NOT 0 -->
 
-                    </x:dataList>
+                    </ui:repeat>
 
                     <!-- METADATA TO DISPLAY -->
                     <c:forEach
@@ -308,7 +308,7 @@
                         icon="fa-edit">
 
                         <!-- PROPERTY TO EDIT -->
-                        <x:dataList
+                        <ui:repeat
                             var="myprocess_item"
                             value="#{propertyOwner.containerProperties}"
                             id="item">
@@ -554,7 +554,7 @@
                             </h:panelGroup>
                             <!-- // VALUE AS HTML -->
 
-                        </x:dataList>
+                        </ui:repeat>
                         <!-- // PROPERTY TO EDIT -->
 
 

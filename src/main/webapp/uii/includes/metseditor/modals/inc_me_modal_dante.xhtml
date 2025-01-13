@@ -105,7 +105,7 @@
                                 styleClass="modal__geonames-list scrollable"
                                 rendered="#{Metadaten.currentMetadataToPerformSearch.normdataList ne null and Metadaten.currentMetadataToPerformSearch.normdataList.size() != 0}">
 
-                                <x:dataList
+                                <ui:repeat
                                     value="#{Metadaten.currentMetadataToPerformSearch.normdataList}"
                                     var="normdataRecord">
                                     <hr />
@@ -123,7 +123,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <x:dataList
+                                            <ui:repeat
                                                 value="#{normdataRecord.normdataList}"
                                                 var="normdata">
                                                 <h:panelGroup
@@ -135,7 +135,7 @@
                                                     </div>
 
                                                     <div class="col-sm-8">
-                                                        <x:dataList
+                                                        <ui:repeat
                                                             value="#{normdata.values}"
                                                             var="value">
                                                             <div class="row">
@@ -155,10 +155,10 @@
                                                                         rendered="#{value.url == null}" />
                                                                 </div>
                                                             </div>
-                                                        </x:dataList>
+                                                        </ui:repeat>
                                                     </div>
                                                 </h:panelGroup>
-                                            </x:dataList>
+                                            </ui:repeat>
                                         </div>
 
 
@@ -183,7 +183,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                </x:dataList>
+                                </ui:repeat>
 
                                 <h:outputText
                                     value="#{msgs.NORM_noHits}"

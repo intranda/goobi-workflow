@@ -14,7 +14,7 @@
 
 	<composite:implementation>
 
-		<x:dataList
+		<ui:repeat
 			var="item"
 			value="#{ProzessverwaltungForm.myProzess.vorlagenList}"
 			id="templateList">
@@ -83,6 +83,6 @@
 				</div>
 			</div>
 
-		</x:dataList>
+		</ui:repeat>
 	</composite:implementation>
 </ui:composition>

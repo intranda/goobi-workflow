@@ -193,7 +193,7 @@
                                     </div>
 
                                     <div class="col-12 col-md-9">
-                                        <x:dataList
+                                        <ui:repeat
                                             id="up"
                                             var="intern"
                                             styleClass="form-control"
@@ -206,7 +206,7 @@
                                             <h:outputText
                                                 value=","
                                                 rendered="#{rowIndex + 1 lt rowCount}" />
-                                        </x:dataList>
+                                        </ui:repeat>
 
                                         <intranda:formHelp
                                             content="#{msgs.helpProjects}"
@@ -223,7 +223,7 @@
                                     </div>
 
                                     <div class="col-12 col-md-9">
-                                        <x:dataList
+                                        <ui:repeat
                                             id="ug"
                                             var="intern"
                                             styleClass="form-control"
@@ -236,7 +236,7 @@
                                             <h:outputText
                                                 value=","
                                                 rendered="#{rowIndex + 1 lt rowCount}" />
-                                        </x:dataList>
+                                        </ui:repeat>
 
                                         <intranda:formHelp
                                             content="#{msgs.helpUsergroups}"

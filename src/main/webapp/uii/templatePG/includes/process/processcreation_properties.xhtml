@@ -19,7 +19,7 @@
                 refocusAfterAjax(data);
             }
         }">
-            <x:dataList
+            <ui:repeat
                 var="property"
                 value="#{properties}">
                 <!-- TEXT -->
@@ -219,7 +219,7 @@
                         </div>
                     </div>
                 </h:panelGroup>
-            </x:dataList>
+            </ui:repeat>
         </f:ajax>
         <script>
             function refocusAfterAjax (data) {

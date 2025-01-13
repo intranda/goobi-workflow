@@ -134,12 +134,12 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_properties}" />
                                 </f:facet>
-                                <x:dataList
+                                <ui:repeat
                                     var="prop"
                                     value="#{ticket.properties.keySet()}">
                                     <h:outputText value="#{prop}: #{ticket.properties[prop]} " />
                                     <br />
-                                </x:dataList>
+                                </ui:repeat>
                             </x:column>
                             <x:column headerClass="gw-table-fixed__actions">
                                 <f:facet name="header">
@@ -308,12 +308,12 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_properties}" />
                                 </f:facet>
-                                <x:dataList
+                                <ui:repeat
                                     var="prop"
                                     value="#{ticket.properties.keySet()}">
                                     <h:outputText value="#{prop}: #{ticket.properties[prop]} " />
                                     <br />
-                                </x:dataList>
+                                </ui:repeat>
                             </x:column>
                             <x:column>
                                 <f:facet name="header">

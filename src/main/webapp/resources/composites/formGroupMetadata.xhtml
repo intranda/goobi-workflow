@@ -302,9 +302,8 @@
                             <i
                                 class="fa fa-lg fa-trash-o"
                                 aria-hidden="true"></i>
-                            <x:updateActionListener
-                                property="#{Metadaten.curMetadatum}"
-                                value="#{cc.attrs.metadata}" />
+                                <f:setPropertyActionListener value="#{cc.attrs.metadata}" target="#{Metadaten.curMetadatum}"></f:setPropertyActionListener>
+        
                             <f:param
                                 name="ID"
                                 value="#{cc.attrs.metadata.identifier}" />
@@ -332,9 +331,8 @@
                             <i
                                 class="fa fa-lg fa-copy"
                                 aria-hidden="true"></i>
-                            <x:updateActionListener
-                                property="#{Metadaten.currentMetadata}"
-                                value="#{cc.attrs.metadata.md}" />
+                              <f:setPropertyActionListener value="#{cc.attrs.metadata.md}" target="#{Metadaten.currentMetadata}"></f:setPropertyActionListener>  
+                         
                             <f:param
                                 name="ID"
                                 value="#{cc.attrs.metadata.identifier}" />
@@ -362,9 +360,8 @@
                             <i
                                 class="fa fa-lg fa-calendar"
                                 aria-hidden="true"></i>
-                            <x:updateActionListener
-                                property="#{Metadaten.curMetadatum}"
-                                value="#{cc.attrs.metadata}" />
+                                <f:setPropertyActionListener value="#{cc.attrs.metadata}" target="#{Metadaten.curMetadatum}"></f:setPropertyActionListener>
+         
                             <f:param
                                 name="ID"
                                 value="#{cc.attrs.metadata.identifier}" />
@@ -391,9 +388,8 @@
                             <i
                                 class="fa fa-lg fa-calendar-o"
                                 aria-hidden="true"></i>
-                            <x:updateActionListener
-                                property="#{Metadaten.curMetadatum}"
-                                value="#{cc.attrs.metadata}" />
+                                <f:setPropertyActionListener value="#{cc.attrs.metadata}" target="#{Metadaten.curMetadatum}"></f:setPropertyActionListener>
+
                             <f:param
                                 name="ID"
                                 value="#{cc.attrs.metadata.identifier}" />

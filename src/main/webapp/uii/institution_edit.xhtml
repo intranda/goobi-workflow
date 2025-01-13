@@ -210,7 +210,7 @@
                                 <h:panelGroup
                                     layout="block"
                                     styleClass="#{institutionBean.displayMode eq 'tab2'?'tab-pane active':'tab-pane'}">
-                                    <x:dataList
+                                    <ui:repeat
                                         value="#{institutionBean.institution.allowedRulesets}"
                                         var="item">
 
@@ -221,13 +221,13 @@
                                             field="#{item.selected}"
                                             help="#{msgs.helpSelectRuleset}"
                                             style="border-bottom:1px solid #ddd;" />
-                                    </x:dataList>
+                                    </ui:repeat>
                                 </h:panelGroup>
 
                                 <h:panelGroup
                                     layout="block"
                                     styleClass="#{institutionBean.displayMode eq 'tab3'?'tab-pane active':'tab-pane'}">
-                                    <x:dataList
+                                    <ui:repeat
                                         value="#{institutionBean.institution.allowedDockets}"
                                         var="item">
                                         <intranda:formInputCheckBox
@@ -237,13 +237,13 @@
                                             field="#{item.selected}"
                                             help="#{msgs.helpSelectDocket}"
                                             style="border-bottom:1px solid #ddd;" />
-                                    </x:dataList>
+                                    </ui:repeat>
                                 </h:panelGroup>
 
                                 <h:panelGroup
                                     layout="block"
                                     styleClass="#{institutionBean.displayMode eq 'tab4'?'tab-pane active':'tab-pane'}">
-                                    <x:dataList
+                                    <ui:repeat
                                         value="#{institutionBean.institution.allowedAuthentications}"
                                         var="item"
                                         varStatus="varStatus">
@@ -254,7 +254,7 @@
                                             field="#{item.selected}"
                                             help="#{msgs.helpSelectAuthentication}"
                                             style="border-bottom:1px solid #ddd;" />
-                                    </x:dataList>
+                                    </ui:repeat>
                                 </h:panelGroup>
 
                                 <h:panelGroup

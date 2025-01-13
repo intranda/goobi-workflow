@@ -78,13 +78,13 @@
                             <table
                                 class="table table-hover table-bordered"
                                 id="propertyTable">
-                                <x:dataList
+                                <ui:repeat
                                     var="container"
                                     value="#{ProzessverwaltungForm.containerList}"
                                     id="container"
                                     rowCountVar="rowCount"
                                     rowIndexVar="rowIndex">
-                                    <x:dataList
+                                    <ui:repeat
                                         var="proc"
                                         value="#{ProzessverwaltungForm.containerlessProperties}"
                                         id="containerless"
@@ -98,9 +98,9 @@
                                                     data-toggle="tooltip"
                                                     rel="tooltip">#{proc.name}</span></td>
                                                 <td>
-                                                	<x:dataList var="val" value="#{proc.valueList}" rendered="#{proc.type.name == 'listmultiselect'}">
+                                                	<ui:repeat var="val" value="#{proc.valueList}" rendered="#{proc.type.name == 'listmultiselect'}">
 		                                        		<h:outputText value="#{val}" styleClass="badge badge-no-radius badge-light-grey"/>
-		                                        	</x:dataList>
+		                                        	</ui:repeat>
                                         			<h:outputText
                                                         value="#{proc.readValue}"
                                                         rendered="#{proc.type.name == 'html'}"
@@ -169,7 +169,7 @@
                                                 </c:if>
                                             </tr>
                                         </h:panelGroup>
-                                    </x:dataList>
+                                    </ui:repeat>
 
                                     <h:panelGroup rendered="#{rowIndex lt rowCount and rowIndex != 0}">
                                         <tr>
@@ -179,7 +179,7 @@
                                         </tr>
                                     </h:panelGroup>
 
-                                    <x:dataList
+                                    <ui:repeat
                                         var="process_item"
                                         id="container"
                                         value="#{ProzessverwaltungForm.containers[container].propertyList}"
@@ -191,9 +191,9 @@
                                                     title="&quot;{process.#{process_item.name}}&quot;"
                                                     rel="tooltip">#{process_item.name}</span></td>
                                                 <td>
-                                                	<x:dataList var="val" value="#{process_item.valueList}" rendered="#{process_item.type.name == 'listmultiselect'}">
+                                                	<ui:repeat var="val" value="#{process_item.valueList}" rendered="#{process_item.type.name == 'listmultiselect'}">
 			                                        	<h:outputText value="#{val}" styleClass="badge badge-no-radius badge-light-grey"/>
-			                                        </x:dataList>
+			                                        </ui:repeat>
                                         			<h:outputText
                                                         value="#{process_item.readValue}"
                                                         rendered="#{process_item.type.name == 'html'}"
@@ -260,8 +260,8 @@
 
                                             </tr>
                                         </h:panelGroup>
-                                    </x:dataList>
-                                </x:dataList>
+                                    </ui:repeat>
+                                </ui:repeat>
                             </table>
                             <div class="dataTables_info">
                                 <!-- Neu-Schaltknopf -->
@@ -318,7 +318,7 @@
                             </div>
                             <div class="box-content nopadding">
 
-                                <x:dataList
+                                <ui:repeat
                                     var="myprocess_item"
                                     value="#{ProzessverwaltungForm.containerProperties}">
                                     <h:panelGroup>
@@ -509,7 +509,7 @@
 
 
 
-                                </x:dataList>
+                                </ui:repeat>
                                 <h:panelGroup>
                                     <div class="form-actions">
 

@@ -379,7 +379,7 @@
 
                             <ui:fragment rendered="#{cc.attrs.field.viafSearch.records.size() gt 0}">
                                 <div class="pt-2 ">
-                                    <x:dataList
+                                    <ui:repeat
                                         value="#{cc.attrs.field.viafSearch.records}"
                                         var="record">
                                         <div class="border-bottom py-2">
@@ -396,7 +396,7 @@
                                                 </a>
                                             </div>
 
-                                            <x:dataList
+                                            <ui:repeat
                                                 value="#{record.displayableData}"
                                                 var="normdata">
                                                 <div class="row border-0">
@@ -405,16 +405,16 @@
                                                     </div>
 
                                                     <div class="col-12 col-md-8 min-height-reset p-0">
-                                                        <x:dataList
+                                                        <ui:repeat
                                                             value="#{normdata.values}"
                                                             var="value">
                                                             <h:outputText value="#{value.text}" />
-                                                        </x:dataList>
+                                                        </ui:repeat>
                                                     </div>
                                                 </div>
-                                            </x:dataList>
+                                            </ui:repeat>
 
-                                            <x:dataList
+                                            <ui:repeat
                                                 value="#{record.authorityDatabaseUrls}"
                                                 var="database">
                                                 <div class="row border-0">
@@ -475,9 +475,9 @@
                                                         </ui:fragment>
                                                     </div>
                                                 </div>
-                                            </x:dataList>
+                                            </ui:repeat>
                                         </div>
-                                    </x:dataList>
+                                    </ui:repeat>
                                 </div>
                             </ui:fragment>
 

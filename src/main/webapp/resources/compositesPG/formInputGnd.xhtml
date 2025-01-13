@@ -186,12 +186,12 @@
                             id="gndSearchlist"
                             layout="block"
                             styleClass="modal-dialog-scrollable modal-results">
-                            <x:dataList
+                            <ui:repeat
                                 value="#{cc.attrs.field.dataList}"
                                 var="normdataList">
                                 <div class="row">
                                     <div class="col-11">
-                                        <x:dataList
+                                        <ui:repeat
                                             value="#{normdataList}"
                                             var="normdata">
                                             <div class="row">
@@ -200,7 +200,7 @@
                                                 </div>
 
                                                 <div class="col-8">
-                                                    <x:dataList
+                                                    <ui:repeat
                                                         value="#{normdata.values}"
                                                         var="value">
                                                         <div class="row">
@@ -220,10 +220,10 @@
                                                                     rendered="#{value.url == null}" />
                                                             </div>
                                                         </div>
-                                                    </x:dataList>
+                                                    </ui:repeat>
                                                 </div>
                                             </div>
-                                        </x:dataList>
+                                        </ui:repeat>
                                     </div>
 
                                     <div class="col-1">
@@ -246,7 +246,7 @@
                                     </div>
                                 </div>
                                 <hr />
-                            </x:dataList>
+                            </ui:repeat>
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>

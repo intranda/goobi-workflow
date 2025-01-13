@@ -38,7 +38,7 @@
                 </h:selectOneMenu>
 
                 <h:panelGroup id="multiselect-id">
-                    <x:dataList
+                    <ui:repeat
                             id="datalist-id"
                             value="#{cc.attrs.selectionBean.selection}"
                             var="selection">
@@ -52,7 +52,7 @@
                             </span>
                             <f:ajax execute="@form" render="@form"/>
                         </button>
-                    </x:dataList>
+                    </ui:repeat>
                 </h:panelGroup>
             </h:panelGroup>
         </div>

@@ -64,7 +64,7 @@
                             <!-- HIDDEN BUTTON TO SET REPRESENTATIVE -->
 
                             <h:panelGroup id="pagePaginationList">
-                                <x:dataList
+                                <ui:repeat
                                     value="#{Metadaten.allPages}"
                                     var="page"
                                     id="pagesList">
@@ -172,7 +172,7 @@
                                         </h:panelGroup>
                                     </div>
 
-                                </x:dataList>
+                                </ui:repeat>
                             </h:panelGroup>
                         </h:panelGroup>
                     </div>

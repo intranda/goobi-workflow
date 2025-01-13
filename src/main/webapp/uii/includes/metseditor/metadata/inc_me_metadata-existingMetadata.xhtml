@@ -26,7 +26,7 @@
             <div class="module__box-body">
                 <h:outputText value="#{msgs.mets_no_metadata_assigned}" rendered="#{empty Metadaten.myMetadaten}" />
 
-                <x:dataList
+                <ui:repeat
                     id="metadataList"
                     var="Item"
                     value="#{Metadaten.myMetadaten}"
@@ -36,7 +36,7 @@
                         id="metadata"
                         metadata="#{Item}"
                         index="#{rowIndex}" />
-                </x:dataList>
+                </ui:repeat>
 
                 <ui:fragment rendered="#{Metadaten.sizeOfMetadata!=0}">
                     <div class="row">

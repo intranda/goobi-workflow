@@ -87,9 +87,8 @@
                         <i
                             class="fa fa-lg fa-trash-o"
                             aria-hidden="true"></i>
-                        <x:updateActionListener
-                            property="#{Metadaten.currentCorporate}"
-                            value="#{cc.attrs.corporate.corporate}" />
+                            <f:setPropertyActionListener value="#{cc.attrs.corporate.corporate}" target="#{Metadaten.currentCorporate}" />
+    
                         <f:passThroughAttribute
                             name="data-toggle"
                             value="tooltip" />
@@ -114,9 +113,8 @@
                         <i
                             class="fa fa-lg fa-copy"
                             aria-hidden="true"></i>
-                        <x:updateActionListener
-                            property="#{Metadaten.currentCorporate}"
-                            value="#{cc.attrs.corporate.corporate}" />
+                            <f:setPropertyActionListener value="#{cc.attrs.corporate.corporate}" target="#{Metadaten.currentCorporate}"/>
+                       
                         <f:passThroughAttribute
                             name="data-toggle"
                             value="tooltip" />
@@ -207,7 +205,7 @@
 
 
         <!-- SUB NAMES -->
-        <x:dataList
+        <ui:repeat
             var="part"
             value="#{cc.attrs.corporate.subNames}">
 
@@ -282,7 +280,7 @@
                     </div>
                 </div>
             </div>
-        </x:dataList>
+        </ui:repeat>
 
         <!-- PART NAME -->
         <div class="form-group form-group--flex">

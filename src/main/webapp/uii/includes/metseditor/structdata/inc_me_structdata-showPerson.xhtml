@@ -29,9 +29,9 @@
                         </p>
                     </ui:fragment>
 
-                    <x:dataList var="Item" value="#{Metadaten.myPersonen}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+                    <ui:repeat var="Item" value="#{Metadaten.myPersonen}" rowCountVar="rowCount" rowIndexVar="rowIndex">
                         <intranda:formGroupPerson person="#{Item}" index="#{rowIndex}" />
-                    </x:dataList>
+                    </ui:repeat>
                 </h:panelGroup>
             </div>
         </div>

@@ -216,7 +216,7 @@
                         <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'corporate'}">
                             <ui:fragment rendered="#{Metadaten.currentMetadataToPerformSearch.viafSearch.records.size() gt 0}">
                                 <div class="modal__viaf-list scrollable">
-                                    <x:dataList value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.records}" var="record">
+                                    <ui:repeat value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.records}" var="record">
                                         <div class="modal__viaf-list-link">
                                             <a 
                                                 href="#{record.getFieldValues('024','7',' ','a').get(0)}" 
@@ -229,21 +229,21 @@
                                             </a>
                                         </div>
     
-                                        <x:dataList value="#{record.displayableData}" var="normdata">
+                                        <ui:repeat value="#{record.displayableData}" var="normdata">
                                             <div class="row">
                                                 <div class="col-4">
                                                     <h:outputText value="#{msgs[normdata.key]}:" />
                                                 </div>
     
                                                 <div class="col-8">
-                                                    <x:dataList value="#{normdata.values}" var="value">
+                                                    <ui:repeat value="#{normdata.values}" var="value">
                                                         <h:outputText value="#{value.text}" />
-                                                    </x:dataList>
+                                                    </ui:repeat>
                                                 </div>
                                             </div>
-                                        </x:dataList>
+                                        </ui:repeat>
     
-                                        <x:dataList value="#{record.authorityDatabaseUrls}" var="database">
+                                        <ui:repeat value="#{record.authorityDatabaseUrls}" var="database">
                                             <div class="row">
                                                 <div class="col-4">
                                                     <h:outputText value="#{msgs.NORM_authorityData} " />
@@ -288,10 +288,10 @@
                                                     </ui:fragment>
                                                 </div>
                                             </div>
-                                        </x:dataList>
+                                        </ui:repeat>
     
                                         <hr />
-                                    </x:dataList>    
+                                    </ui:repeat>    
                                 </div>
                             </ui:fragment>
 

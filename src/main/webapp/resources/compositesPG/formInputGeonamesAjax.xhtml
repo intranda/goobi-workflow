@@ -196,7 +196,7 @@
                             <h:panelGroup
                                 layout="block"
                                 rendered="#{cc.attrs.field.resultList ne null and cc.attrs.field.resultList.size() != 0}">
-                                <x:dataList
+                                <ui:repeat
                                     value="#{cc.attrs.field.resultList}"
                                     var="geonames">
                                     <div class="form-group form-group--flex">
@@ -311,7 +311,7 @@
                                         </div>
                                     </div>
 
-                                </x:dataList>
+                                </ui:repeat>
                             </h:panelGroup>
 
                             <h:outputText
