@@ -161,8 +161,8 @@
 									<span>
 										<h:outputText value="#{msgs.calculateStatistics}" />
 									</span>
-									<x:updateActionListener
-										property="#{ProzessverwaltungForm.showStatistics}"
+									<f:setPropertyActionListener
+										target="#{ProzessverwaltungForm.showStatistics}"
 										value="true" />
 								</button>
 							</div>
@@ -215,8 +215,8 @@
 										<span>
 											<h:outputText value="#{msgs.download_excel}" />
 										</span>
-										<x:updateActionListener value="#{element}"
-											property="#{ProzessverwaltungForm.myCurrentTable}" />
+										<f:setPropertyActionListener value="#{element}"
+											target="#{ProzessverwaltungForm.myCurrentTable}" />
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
 									</button>
 
@@ -227,8 +227,8 @@
 										<span>
 											<h:outputText value="#{msgs.download_csv}" />
 										</span>
-										<x:updateActionListener value="#{element}"
-											property="#{ProzessverwaltungForm.myCurrentTable}" />
+										<f:setPropertyActionListener value="#{element}"
+											target="#{ProzessverwaltungForm.myCurrentTable}" />
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
 									</button>
 								</h:panelGroup>
@@ -267,8 +267,8 @@
 											<span>
 												<h:outputText value="#{msgs.download_excel}" />
 											</span>
-											<x:updateActionListener value="#{element}"
-												property="#{ProzessverwaltungForm.myCurrentTable}" />
+											<f:setPropertyActionListener value="#{element}"
+												target="#{ProzessverwaltungForm.myCurrentTable}" />
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 										</button>
 
@@ -280,8 +280,8 @@
 											<span>
 												<h:outputText value="#{msgs.download_csv}" />
 											</span>
-											<x:updateActionListener value="#{element}"
-												property="#{ProzessverwaltungForm.myCurrentTable}" />
+											<f:setPropertyActionListener value="#{element}"
+												target="#{ProzessverwaltungForm.myCurrentTable}" />
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 										</button>
 									</h:panelGroup>

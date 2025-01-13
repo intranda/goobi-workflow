@@ -29,8 +29,8 @@
 				<f:passThroughAttribute
 					name="data-toggle"
 					value="tooltip" />
-				<x:updateActionListener
-					property="#{ProzesskopieForm.prozessVorlage}"
+				<f:setPropertyActionListener
+					target="#{ProzesskopieForm.prozessVorlage}"
 					value="#{item}" />
 			</button>
 
@@ -167,8 +167,8 @@
 		&lt;f:passThroughAttribute
 			name=&quot;data-toggle&quot;
 			value=&quot;tooltip&quot; /&gt;
-		&lt;x:updateActionListener
-			property=&quot;CHANGE_ME&quot;
+		&lt;f:setPropertyActionListener
+			target=&quot;CHANGE_ME&quot;
 			value=&quot;CHANGE_ME&quot; /&gt;
 	&lt;/button&gt;
 

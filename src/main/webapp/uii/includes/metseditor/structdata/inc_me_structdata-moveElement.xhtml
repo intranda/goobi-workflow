@@ -43,8 +43,8 @@
                                     <i class="fa fa-file-o" aria-hidden="true"></i>
                                     <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '') ? item.node.description : item.node.mainTitle}" />
 
-                                    <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
-                                    <x:updateActionListener property="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
+                                    <f:setPropertyActionListener target="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
+                                    <f:setPropertyActionListener target="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
 
                                     <f:passThroughAttribute name="data-trigger" value="hover" />
                                     <f:passThroughAttribute name="data-container" value="body" />
@@ -85,7 +85,7 @@
                                 title="#{msgs.verschiebenAbbrechen}">
                                 <h:outputText value="#{msgs.abbrechen}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
+                                <f:setPropertyActionListener target="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
                                 <f:ajax
                                     onevent="data => goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos:false})"
                                     render=":pageContentCenter"

@@ -68,7 +68,7 @@
 <!--                                 <i class="fa fa-arrows" aria-hidden="true"></i> -->
                                 <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
+                                <f:setPropertyActionListener target="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
                                 <f:ajax
                                     onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
                                     render=":pageContentCenter"
@@ -86,7 +86,7 @@
 <!--                                 <i class="fa fa-puzzle-piece" aria-hidden="true"></i> -->
                                 <h:outputText value="#{msgs.copyDocstructFromOtherProcess}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" />
+                                <f:setPropertyActionListener target="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" />
                                 <f:ajax
                                     onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
                                     render=":pageContentCenter"

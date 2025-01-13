@@ -101,8 +101,8 @@
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showDebugMessages}" />
                                             </span>
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_debug']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_debug']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_debug']}" />
                                         </button>
                                     </li>
@@ -116,8 +116,8 @@
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showFileMessages}" />
                                             </span>
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_file']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_file']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_file']}" />
                                         </button>
                                     </li>
@@ -131,8 +131,8 @@
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showInfoMessages}" />
                                             </span>
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_info']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_info']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_info']}" />
                                         </button>
 
@@ -147,8 +147,8 @@
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showUserMessages}" />
                                             </span>
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_user']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_user']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_user']}" />
                                         </button>
                                     </li>
@@ -162,8 +162,8 @@
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showUserImportantMessages}" />
                                             </span>
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_important']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_important']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_important']}" />
                                         </button>
                                     </li>
@@ -177,8 +177,8 @@
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showWarnMessages}" />
                                             </span>
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_warn']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_warn']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_warn']}" />
                                         </button>
 
@@ -193,8 +193,8 @@
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showErrorMessages}" />
                                             </span>
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_error']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_error']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_error']}" />
                                         </button>
                                     </li>

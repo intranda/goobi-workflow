@@ -106,7 +106,7 @@
 					<span>
 						<h:outputText value="#{msgs.calculateStatistics}" />
 					</span>
-						<x:updateActionListener property="#{Form.showStatistics}" value="true" />
+						<f:setPropertyActionListener target="#{Form.showStatistics}" value="true" />
 				</button>
 			</div>
 			<div class="col-sm-3">
@@ -151,7 +151,7 @@
 						<span>
 							<h:outputText value="#{msgs.download_excel}" />
 						</span>
-						 <x:updateActionListener value="#{element}" property="#{Form.myCurrentTable}" />
+						 <f:setPropertyActionListener value="#{element}" target="#{Form.myCurrentTable}" />
 					</button>
 
 					<button
@@ -165,7 +165,7 @@
 						<span>
 							<h:outputText value="#{msgs.download_csv}" />
 						</span>
-						 <x:updateActionListener value="#{element}" property="#{Form.myCurrentTable}" />
+						 <f:setPropertyActionListener value="#{element}" target="#{Form.myCurrentTable}" />
 					</button>
 				</div>
 

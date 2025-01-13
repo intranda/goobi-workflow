@@ -53,8 +53,8 @@
 			                             <button jsf:id="duplicateProperty" jsf:action="#{AktuelleSchritteForm.duplicateProperty}" title="#{msgs.duplicate}" class="btn btn-small margin-left-5"
 	                                            jsf:rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
 	                                          <span class="fa fa-plus" />
-	                                         <x:updateActionListener property="#{AktuelleSchritteForm.processProperty}" value="#{proc}" />
-	                                         <x:updateActionListener property="#{AktuelleSchritteForm.container}" value="0" />
+	                                         <f:setPropertyActionListener target="#{AktuelleSchritteForm.processProperty}" value="#{proc}" />
+	                                         <f:setPropertyActionListener target="#{AktuelleSchritteForm.container}" value="0" />
 	                                     </button>
 
 			                        </td>
@@ -105,7 +105,7 @@
 			                                	<button jsf:id="duplicateContainer" jsf:action="#{AktuelleSchritteForm.duplicateContainer}" title="#{msgs.duplicate}"
                                                     jsf:rendered="#{process_item.duplicationAllowed and process_item.type.name != 'metadata'}" class="btn btn-small margin-left-5">
                                                      <span class="fa fa-plus" />
-                                                    <x:updateActionListener property="#{AktuelleSchritteForm.container}" value="#{container}" />
+                                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.container}" value="#{container}" />
                                                 </button>
 
 			                                </h:panelGroup>

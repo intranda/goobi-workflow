@@ -424,17 +424,11 @@
                                         class="tab-pane active"
                                         rendered="#{NavigationForm.activeTab == 'productionStatistics'}">
                                         <div>
-                                            <x:aliasBeansScope>
-                                                <x:aliasBean
-                                                    alias="#{Form}"
-                                                    value="#{ProjekteForm}" />
-                                                <x:aliasBean
-                                                    alias="#{Manager}"
-                                                    value="#{ProjekteForm.statisticsManager1}" />
                                                 <f:subview id="id1">
+                                                    <ui:param name="#{Form}" value="#{ProjekteForm}"/>
+                                                    <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager1}"/>
                                                     <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
                                                 </f:subview>
-                                            </x:aliasBeansScope>
                                         </div>
                                     </h:panelGroup>
 
@@ -444,18 +438,14 @@
                                         class="tab-pane active"
                                         rendered="#{NavigationForm.activeTab == 'productionThroughput'}">
                                         <div>
-                                            <x:aliasBeansScope>
-                                                <x:aliasBean
-                                                    alias="#{Form}"
-                                                    value="#{ProjekteForm}" />
-                                                <x:aliasBean
-                                                    alias="#{Manager}"
-                                                    value="#{ProjekteForm.statisticsManager2}" />
+                                 
 
                                                 <f:subview id="id2">
+                                                    <ui:param name="#{Form}" value="#{ProjekteForm}"/>
+                                                    <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager2}"/>
+                                                
                                                     <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
                                                 </f:subview>
-                                            </x:aliasBeansScope>
                                         </div>
                                     </h:panelGroup>
 
@@ -465,17 +455,13 @@
                                         class="tab-pane active"
                                         rendered="#{NavigationForm.activeTab == 'errorTracking'}">
                                         <div>
-                                            <x:aliasBeansScope>
-                                                <x:aliasBean
-                                                    alias="#{Form}"
-                                                    value="#{ProjekteForm}" />
-                                                <x:aliasBean
-                                                    alias="#{Manager}"
-                                                    value="#{ProjekteForm.statisticsManager3}" />
+                                            
+
                                                 <f:subview id="id3">
+                                                                   <ui:param name="#{Form}" value="#{ProjekteForm}"/>
+                                                    <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager3}"/>
                                                     <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
                                                 </f:subview>
-                                            </x:aliasBeansScope>
                                         </div>
                                     </h:panelGroup>
                                     <h:panelGroup
@@ -484,17 +470,12 @@
                                         class="tab-pane active"
                                         rendered="#{NavigationForm.activeTab == 'storageCalculator'}">
                                         <div>
-                                            <x:aliasBeansScope>
-                                                <x:aliasBean
-                                                    alias="#{Form}"
-                                                    value="#{ProjekteForm}" />
-                                                <x:aliasBean
-                                                    alias="#{Manager}"
-                                                    value="#{ProjekteForm.statisticsManager4}" />
+                                              
                                                 <f:subview id="id4">
+                                                                 <ui:param name="#{Form}" value="#{ProjekteForm}"/>
+                                                    <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager4}"/>
                                                     <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
                                                 </f:subview>
-                                            </x:aliasBeansScope>
                                         </div>
                                     </h:panelGroup>
                                     <h:panelGroup

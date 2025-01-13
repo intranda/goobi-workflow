@@ -64,8 +64,8 @@
                                 <i
                                     class="fa fa-lg fa-trash-o"
                                     aria-hidden="true"></i>
-                                <x:updateActionListener
-                                    property="#{Metadaten.currentGroup}"
+                                <f:setPropertyActionListener
+                                    target="#{Metadaten.currentGroup}"
                                     value="#{Item}" />
                                 <f:passThroughAttribute
                                     name="data-toggle"
@@ -84,8 +84,8 @@
                                 <i
                                     class="fa fa-lg fa-copy"
                                     aria-hidden="true"></i>
-                                <x:updateActionListener
-                                    property="#{Metadaten.currentGroup}"
+                                <f:setPropertyActionListener
+                                    target="#{Metadaten.currentGroup}"
                                     value="#{Item}" />
                                 <f:passThroughAttribute
                                     name="data-toggle"

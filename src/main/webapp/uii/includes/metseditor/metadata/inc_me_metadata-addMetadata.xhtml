@@ -386,9 +386,9 @@
                                 jsf:immediate="false"
                                 type="button">
                                 #{msgs.abbrechen}
-                                <x:updateActionListener
+                                <f:setPropertyActionListener
                                     value=""
-                                    property="#{Metadaten.metadatum.value}" />
+                                    target="#{Metadaten.metadatum.value}" />
                                 <f:ajax
 
                                     onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"

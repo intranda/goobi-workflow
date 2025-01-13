@@ -44,16 +44,16 @@
 										<button jsf:id="editBatchProperty" jsf:action="task_batch_edit" title="#{msgs.bearbeiten}" class="btn btn-small"
 			                                jsf:rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
 			                                <span class="fa fa-pencil" />
-			                                <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
-	                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
-	                                        <x:updateActionListener property="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
+			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
+	                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
+	                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
 			                            </button>
 
 			                             <button jsf:id="duplicateBatchProperty" jsf:action="#{AktuelleSchritteForm.batchHelper.duplicateProperty}" title="#{msgs.duplicate}" class="btn btn-small margin-left-5"
 	                                            jsf:rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
 	                                          <span class="fa fa-plus" />
-	                                         <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
-	                                         <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
+	                                         <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
+	                                         <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
 	                                     </button>
 
 			                        </td>
@@ -97,15 +97,15 @@
 	                                        <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 			                                    <button jsf:id="editContainer" jsf:action="task_batch_edit" title="#{msgs.bearbeiten}" class="btn btn-small" jsf:rendered="#{AktuelleSchritteForm.batchHelper.containerAccess[container] and process_item.type.name != 'metadata'}">
 			                                        <span class="fa fa-pencil" />
-			                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
+			                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.container}"
                                                         value="#{container}" />
-                                                    <x:updateActionListener property="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
+                                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
 			                                    </button>
 
 			                                	<button jsf:id="duplicateContainer" jsf:action="#{AktuelleSchritteForm.batchHelper.duplicateContainer}" title="#{msgs.duplicate}"
                                                     jsf:rendered="#{process_item.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and process_item.type.name != 'metadata'}" class="btn btn-small margin-left-5">
                                                      <span class="fa fa-plus" />
-                                                    <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
+                                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.container}"
                                                         value="#{container}" />
                                                 </button>
 

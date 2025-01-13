@@ -49,8 +49,8 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.myBenutzergruppe}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.myBenutzergruppe}"
 											value="#{item}" />
 										<f:setPropertyActionListener
 											target="#{ProzessverwaltungForm.userDisplayMode}"
@@ -119,8 +119,8 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.myBenutzer}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.myBenutzer}"
 											value="#{item}" />
 										<f:setPropertyActionListener
 											target="#{ProzessverwaltungForm.userDisplayMode}"
@@ -196,8 +196,8 @@
 												<f:passThroughAttribute
 													name="data-toggle"
 													value="tooltip" />
-												<x:updateActionListener
-													property="#{ProzessverwaltungForm.myBenutzergruppe}"
+												<f:setPropertyActionListener
+													target="#{ProzessverwaltungForm.myBenutzergruppe}"
 													value="#{item}" />
 												<f:ajax render=":myform" />
 											</button>
@@ -229,8 +229,8 @@
 												<f:passThroughAttribute
 													name="data-toggle"
 													value="tooltip" />
-												<x:updateActionListener
-													property="#{ProzessverwaltungForm.myBenutzer}"
+												<f:setPropertyActionListener
+													target="#{ProzessverwaltungForm.myBenutzer}"
 													value="#{item}" />
 												<f:ajax render=":myform" />
 											</button>

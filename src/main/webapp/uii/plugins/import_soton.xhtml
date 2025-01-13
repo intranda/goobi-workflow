@@ -75,8 +75,8 @@
 							class="btn"
 							jsf:rendered="#{MassImportForm.docstructssize > 1}">
 							<span class=" fa fa-minus" />
-							<x:updateActionListener
-								property="#{MassImportForm.plugin.docstruct}"
+							<f:setPropertyActionListener
+								target="#{MassImportForm.plugin.docstruct}"
 								value="#{docstruct}" />
 						</button>
 					</td>

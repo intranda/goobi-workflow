@@ -142,13 +142,14 @@
             </ul>
             
              <h:commandButton id="imageBack20" style="display:none">
-                <x:updateActionListener value="#{Metadaten.imageIndex -20}" property="#{Metadaten.imageIndex}" />
+             <f:setPropertyActionListener value="#{Metadaten.imageIndex -20}" target="#{Metadaten.imageIndex}"></f:setPropertyActionListener>
                         <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                 <f:passThroughAttribute name="data-renderimage" value="true" />
             </h:commandButton>
         
             <h:commandButton id="imageNext20" style="display:none">
-                <x:updateActionListener value="#{Metadaten.imageIndex +20}" property="#{Metadaten.imageIndex}" />
+                        <f:setPropertyActionListener value="#{Metadaten.imageIndex +20}" target="#{Metadaten.imageIndex}"></f:setPropertyActionListener>
+            
                         <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                 <f:passThroughAttribute name="data-renderimage" value="true" />
             </h:commandButton>

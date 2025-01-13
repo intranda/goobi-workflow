@@ -87,15 +87,15 @@
 							<span>
 								<h:outputText value="#{msgs.denErzeugtenBandOeffnen}" />
 							</span>
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.myProzess}"
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.myProzess}"
 								value="#{ProzesskopieForm.prozessKopie}" />
-							<x:updateActionListener
+							<f:setPropertyActionListener
 								value=""
-								property="#{ProzessverwaltungForm.modusBearbeiten}" />
-							<x:updateActionListener
+								target="#{ProzessverwaltungForm.modusBearbeiten}" />
+							<f:setPropertyActionListener
 								value="aktuell"
-								property="#{ProzessverwaltungForm.modusAnzeige}" />
+								target="#{ProzessverwaltungForm.modusAnzeige}" />
 						</button>
 
 					</intranda:box>

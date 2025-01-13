@@ -146,8 +146,8 @@
                                                 class="btn btn-blank">
                                                 <i
                                                     class="fa #{item.panelAusgeklappt?'fa-chevron-down':'fa-chevron-right'}" />
-                                                <x:updateActionListener
-                                                    property="#{item.panelAusgeklappt}"
+                                                <f:setPropertyActionListener
+                                                    target="#{item.panelAusgeklappt}"
                                                     value="#{not item.panelAusgeklappt}" />
                                                 <f:passThroughAttribute
                                                     name="data-toggle"

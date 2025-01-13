@@ -39,8 +39,8 @@
                                         class="btn btn-mini"
                                         jsf:rel="tooltip">
                                         <span class="fa fa-pencil" />
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.modusBearbeiten}"
                                             value="prozess" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
@@ -425,20 +425,15 @@
                         id="processJournal"
                         enctype="multipart/form-data"
                         prependId="false">
-                        <x:aliasBeansScope>
-                            <x:aliasBean
-                                alias="#{showBigButton}"
-                                value="true" />
-                            <x:aliasBean
-                                alias="#{showFolderSelection}"
-                                value="true" />
-                            <x:aliasBean
-                                alias="#{bean}"
-                                value="#{ProzessverwaltungForm.myProzess}" />
+                        
+                        <ui:param name="#{showBigButton}" value="true" />
+                           <ui:param name="#{showFolderSelection}" value="true" />
+                              <ui:param name="#{ProzessverwaltungForm.myProzess}" value="#{bean}" />
+                    
                             <f:subview id="sublog">
                                 <ui:include src="../journal.xhtml" />
                             </f:subview>
-                        </x:aliasBeansScope>
+                     
                     </h:form>
 
 
@@ -542,8 +537,8 @@
                                         jsf:id="absenden"
                                         jsf:action="#{ProzessverwaltungForm.Speichern}">
                                         <span class="fa fa-save margin-right-5" />
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.modusBearbeiten}"
                                             value="" />
                                         <h:outputText value="#{msgs.speichern}" />
                                     </button>
@@ -555,8 +550,8 @@
                                         jsf:action="#{NavigationForm.Reload}"
                                         jsf:rendered="#{ProzessverwaltungForm.myProzess.id != null}">
                                         <h:outputText value="#{msgs.abbrechen}" />
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.modusBearbeiten}"
                                             value="" />
                                     </button>
 

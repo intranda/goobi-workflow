@@ -271,8 +271,8 @@
                                                                 class="dropdown-item">
                                                                 <h:outputText value="#{backupFile.fileName}" />
 
-                                                                <x:updateActionListener
-                                                                    property="#{configFileEditorBean.selectedFile}"
+                                                                <f:setPropertyActionListener
+                                                                    target="#{configFileEditorBean.selectedFile}"
                                                                     value="#{backupFile}" />
                                                             </button>
                                                         </li>

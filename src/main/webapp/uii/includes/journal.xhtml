@@ -120,8 +120,8 @@
                                             class="dropdown-item">
                                             <span class="fa #{NavigationForm.uiStatus['process_log_level_debug']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showDebugMessages}" />
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_debug']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_debug']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_debug']}" />
                                         </button>
                                     </li>
@@ -132,8 +132,8 @@
                                             class="dropdown-item">
                                             <span class="fa #{NavigationForm.uiStatus['process_log_level_file']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showFileMessages}" />
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_file']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_file']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_file']}" />
                                         </button>
                                     </li>
@@ -144,8 +144,8 @@
                                             class="dropdown-item">
                                             <span class="fa #{NavigationForm.uiStatus['process_log_level_info']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showInfoMessages}" />
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_info']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_info']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_info']}" />
                                         </button>
 
@@ -157,8 +157,8 @@
                                             class="dropdown-item">
                                             <span class="fa #{NavigationForm.uiStatus['process_log_level_user']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showUserMessages}" />
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_user']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_user']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_user']}" />
                                         </button>
                                     </li>
@@ -169,8 +169,8 @@
                                             class="dropdown-item">
                                             <span class="fa #{NavigationForm.uiStatus['process_log_level_warn']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showWarnMessages}" />
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_warn']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_warn']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_warn']}" />
                                         </button>
 
@@ -182,8 +182,8 @@
                                             class="dropdown-item">
                                             <span class="fa #{NavigationForm.uiStatus['process_log_level_error']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
                                             <h:outputText value="#{msgs.process_log_showErrorMessages}" />
-                                            <x:updateActionListener
-                                                property="#{NavigationForm.uiStatus['process_log_level_error']}"
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus['process_log_level_error']}"
                                                 value="#{not NavigationForm.uiStatus['process_log_level_error']}" />
                                         </button>
                                     </li>

@@ -39,8 +39,8 @@
                             <h:outputText value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}" />
                         </span>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
-                        <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
                     </button>
                 </li>
 
@@ -104,7 +104,7 @@
                             <h:outputText value="#{msgs.importDms}" />
                         </span>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
                     </button>
                 </li>
                 <li>
@@ -115,7 +115,7 @@
                             <h:outputText value="#{msgs.importDms}" />
                         </span>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
                     </button>
                 </li>
 
@@ -142,8 +142,8 @@
                                 <h:outputText
                                     value="#{msgs.imHomeVerzeichnisVerlinken}" />
                             </span>
-                            <x:updateActionListener
-                                property="#{ProzessverwaltungForm.myProzess}"
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
                                 value="#{item}" />
                         </button>
                     </li>
@@ -160,8 +160,8 @@
                                 <h:outputText
                                     value="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" />
                             </span>
-                            <x:updateActionListener
-                                property="#{ProzessverwaltungForm.myProzess}"
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
                                 value="#{item}" />
                         </button>
                     </li>
@@ -178,8 +178,8 @@
                                 <h:outputText
                                     value="#{msgs.ausHomeverzeichnisEntfernen}" />
                             </span>
-                            <x:updateActionListener
-                                property="#{ProzessverwaltungForm.myProzess}"
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
                                 value="#{item}" />
                         </button>
                     </li>
@@ -227,8 +227,8 @@
                             <span>
                                 <h:outputText value="#{msgs.downloadMets}" />
                             </span>
-                            <x:updateActionListener
-                                property="#{ProzessverwaltungForm.myProzess}"
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
                                 value="#{item}" />
                         </button>
                     </li>
@@ -245,8 +245,8 @@
                                 <h:outputText
                                     value="#{msgs.process_generatePdfForEntireObject}" />
                             </span>
-                            <x:updateActionListener
-                                property="#{ProzessverwaltungForm.myProzess}"
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
                                 value="#{item}" />
                         </h:commandLink>
                     </li>
@@ -263,8 +263,8 @@
                                 <h:outputText
                                     value="#{msgs.process_generateSimplifiedMetadata}" />
                             </span>
-                            <x:updateActionListener
-                                property="#{ProzessverwaltungForm.myProzess}"
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
                                 value="#{item}" />
                         </button>
                     </li>

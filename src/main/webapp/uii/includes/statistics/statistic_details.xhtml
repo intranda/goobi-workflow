@@ -93,7 +93,7 @@
                         jsf:action="#{Manager.calculate}" >
                         <span class="margin-right-10 fa fa-cog" />
                         <h:outputText value="#{msgs.calculateStatistics}" />
-                        <x:updateActionListener property="#{Form.showStatistics}" value="true" />
+                        <f:setPropertyActionListener target="#{Form.showStatistics}" value="true" />
                     </button>
 			</div>
 			<div class="col-sm-3">
@@ -127,13 +127,13 @@
 					<button class="btn expandbutton" style="margin-right: 15px" jsf:id="createExcel" jsf:action="#{Form.downloadStatisticsAsExcel}" title="#{msgs.download_excel}" jsf:rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}">
 						<span class="margin-right-10 fa fa-floppy-o" />
 						<h:outputText value="#{msgs.download_excel}" />
-						 <x:updateActionListener value="#{element}" property="#{Form.myCurrentTable}" />
+						 <f:setPropertyActionListener value="#{element}" target="#{Form.myCurrentTable}" />
 					</button>
 
 					<button class="btn expandbutton" jsf:id="createCsv" jsf:action="#{Form.downloadStatisticsAsCsv}" title="#{msgs.download_csv}" jsf:rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}">
 						<span class="margin-right-10 fa fa-floppy-o" />
 						<h:outputText value="#{msgs.download_csv}" />
-						 <x:updateActionListener value="#{element}" property="#{Form.myCurrentTable}" />
+						 <f:setPropertyActionListener value="#{element}" target="#{Form.myCurrentTable}" />
 					</button>
 
                 </h:panelGroup>

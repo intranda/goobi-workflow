@@ -86,9 +86,8 @@
                         <i
                             class="fa fa-lg fa-trash-o"
                             aria-hidden="true"></i>
-                        <x:updateActionListener
-                            property="#{Metadaten.curPerson}"
-                            value="#{cc.attrs.person}" />
+                            <f:setPropertyActionListener value="#{cc.attrs.person}" target="#{Metadaten.curPerson}"></f:setPropertyActionListener>
+      
                         <f:param
                             name="ID"
                             value="#{cc.attrs.person.identifier}" />
@@ -116,9 +115,8 @@
                         <i
                             class="fa fa-lg fa-copy"
                             aria-hidden="true"></i>
-                        <x:updateActionListener
-                            property="#{Metadaten.currentPerson}"
-                            value="#{cc.attrs.person.p}" />
+                            <f:setPropertyActionListener value="#{cc.attrs.person.p}" target="#{Metadaten.currentPerson}"></f:setPropertyActionListener>
+     
                         <f:param
                             name="ID"
                             value="#{cc.attrs.person.identifier}" />

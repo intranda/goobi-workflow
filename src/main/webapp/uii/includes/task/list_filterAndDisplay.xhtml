@@ -36,7 +36,7 @@
 						<button jsf:id="processId" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.id}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['processId']}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['processId']}" />
 						</button>
 					</li>
 					<li>
@@ -44,7 +44,7 @@
 						<button jsf:id="batchId" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.batch}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['batchId']}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['batchId']}" />
 						</button>
 					</li>
 					<!-- <li>
@@ -52,7 +52,7 @@
 						<button jsf:id="modules" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['modules']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.module}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['modules']}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['modules']}" />
 						</button>
 					</li> -->
 					<li>
@@ -60,7 +60,7 @@
 						<button jsf:id="processDate" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.vorgangsdatum}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['processDate']}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['processDate']}" />
 						</button>
 					</li>
 					<li>
@@ -68,7 +68,7 @@
 						<button jsf:id="lockings" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.sperrungen}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['lockings']}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['lockings']}" />
 						</button>
 					</li>
                         <li>
@@ -79,8 +79,8 @@
                                 class="dropdown-item">
                                 <span class="fa #{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.NumberOfImages}" />
-                                <x:updateActionListener
-                                    property="#{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}"
+                                <f:setPropertyActionListener
+                                    target="#{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}"
                                     value="#{not AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}" />
                             </button>
                         </li>
@@ -103,7 +103,7 @@
 						<button jsf:id="showAutomaticTasks" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
 							<span class="fa #{AktuelleSchritteForm.showAutomaticTasks?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.showAutomaticTasks}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.showAutomaticTasks}" value="#{not AktuelleSchritteForm.showAutomaticTasks}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.showAutomaticTasks}" value="#{not AktuelleSchritteForm.showAutomaticTasks}" />
 						</button>
 					</li>
 					<li>
@@ -111,7 +111,7 @@
 						<button jsf:id="hideCorrectionTasks" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
 							<span class="fa #{AktuelleSchritteForm.hideCorrectionTasks?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.hideCorrectionTasks}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.hideCorrectionTasks}" value="#{not AktuelleSchritteForm.hideCorrectionTasks}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.hideCorrectionTasks}" value="#{not AktuelleSchritteForm.hideCorrectionTasks}" />
 						</button>
 					</li>
 					<li>
@@ -119,8 +119,8 @@
 						<button jsf:id="onlyOwnSteps" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
 							<span class="fa #{AktuelleSchritteForm.nurEigeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.nurEigeneAufgabenAnzeigen}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.nurEigeneSchritte}" value="#{not AktuelleSchritteForm.nurEigeneSchritte}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.nurOffeneSchritte}" value="#{false}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.nurEigeneSchritte}" value="#{not AktuelleSchritteForm.nurEigeneSchritte}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.nurOffeneSchritte}" value="#{false}" />
 						</button>
 					</li>
 					<li>
@@ -128,8 +128,8 @@
 						<button jsf:id="onlyOpenSteps" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
 							<span class="fa #{AktuelleSchritteForm.nurOffeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.nurOffeneAufgabenAnzeigen}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.nurOffeneSchritte}" value="#{not AktuelleSchritteForm.nurOffeneSchritte}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.nurEigeneSchritte}" value="#{false}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.nurOffeneSchritte}" value="#{not AktuelleSchritteForm.nurOffeneSchritte}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.nurEigeneSchritte}" value="#{false}" />
 						</button>
 					</li>
 					<li>
@@ -137,7 +137,7 @@
 						<button jsf:id="hideStepsFromOtherUsers" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
 							<span class="fa #{not AktuelleSchritteForm.hideStepsFromOtherUsers?'fa-check-square-o':'fa-square-o'} margin-right-5" />
 							<h:outputText value="#{msgs.showTasksFromOtherUsers}" />
-							<x:updateActionListener property="#{AktuelleSchritteForm.hideStepsFromOtherUsers}" value="#{not AktuelleSchritteForm.hideStepsFromOtherUsers}" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.hideStepsFromOtherUsers}" value="#{not AktuelleSchritteForm.hideStepsFromOtherUsers}" />
 						</button>
 					</li>
 

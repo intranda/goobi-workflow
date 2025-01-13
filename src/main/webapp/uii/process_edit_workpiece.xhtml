@@ -126,8 +126,8 @@
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
+								<f:setPropertyActionListener
+									target="#{ProzessverwaltungForm.modusBearbeiten}"
 									value="werkstueckeigenschaft" />
 							</button>
 						</div>
@@ -176,11 +176,11 @@
 													jsf:action="process_edit_workpiece"
 													title="#{msgs.bearbeiten}">
 													<span class="fa fa-pencil" />
-													<x:updateActionListener
-														property="#{ProzessverwaltungForm.myWerkstueckEigenschaft}"
+													<f:setPropertyActionListener
+														target="#{ProzessverwaltungForm.myWerkstueckEigenschaft}"
 														value="#{item}" />
-													<x:updateActionListener
-														property="#{ProzessverwaltungForm.modusBearbeiten}"
+													<f:setPropertyActionListener
+														target="#{ProzessverwaltungForm.modusBearbeiten}"
 														value="werkstueckeigenschaft" />
 												</button>
 											</div>
@@ -233,8 +233,8 @@
 							jsf:immediate="true"
 							jsf:action="#{NavigationForm.Reload}">
 							<h:outputText value="#{msgs.abbrechen}" />
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}"
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.modusBearbeiten}"
 								value="" />
 						</button>
 
@@ -248,8 +248,8 @@
 							<span>
 								<h:outputText value="#{msgs.speichern}" />
 							</span>
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}"
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.modusBearbeiten}"
 								value="" />
 						</button>
 
@@ -264,8 +264,8 @@
 							<span>
 								<h:outputText value="#{msgs.loeschen}" />
 							</span>
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}"
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.modusBearbeiten}"
 								value="" />
 						</button>
 

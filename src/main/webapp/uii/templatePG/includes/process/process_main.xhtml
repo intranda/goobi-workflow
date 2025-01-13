@@ -43,8 +43,8 @@
 										class="btn d-flex align-items-center btn--title-action"
 										jsf:rel="tooltip">
 										<span class="fa fa-pencil" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.modusBearbeiten}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.modusBearbeiten}"
 											value="prozess" />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -571,8 +571,8 @@
 								jsf:action="#{NavigationForm.Reload}"
 								jsf:rendered="#{ProzessverwaltungForm.myProzess.id != null}">
 								<h:outputText value="#{msgs.abbrechen}" />
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
+								<f:setPropertyActionListener
+									target="#{ProzessverwaltungForm.modusBearbeiten}"
 									value="" />
 							</button>
 
@@ -585,8 +585,8 @@
 								<span>
 									<h:outputText value="#{msgs.speichern}" />
 								</span>
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
+								<f:setPropertyActionListener
+									target="#{ProzessverwaltungForm.modusBearbeiten}"
 									value="" />
 							</button>
 

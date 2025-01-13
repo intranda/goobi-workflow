@@ -129,11 +129,11 @@
                                             class="btn btn-blank ms-2"
                                             jsf:rendered="#{proc.duplicationAllowed and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
                                             <span class="fa fa-plus" />
-                                            <x:updateActionListener
-                                                property="#{propertyOwner.processProperty}"
+                                            <f:setPropertyActionListener
+                                                target="#{propertyOwner.processProperty}"
                                                 value="#{proc}" />
-                                            <x:updateActionListener
-                                                property="#{propertyOwner.container}"
+                                            <f:setPropertyActionListener
+                                                target="#{propertyOwner.container}"
                                                 value="0" />
                                         </button>
 
@@ -245,8 +245,8 @@
                                                     jsf:rendered="#{process_item.duplicationAllowed and process_item.type.name != 'metadata'}"
                                                     class="btn btn-blank ms-2">
                                                     <span class="fa fa-plus" />
-                                                    <x:updateActionListener
-                                                        property="#{propertyOwner.container}"
+                                                    <f:setPropertyActionListener
+                                                        target="#{propertyOwner.container}"
                                                         value="#{container}" />
                                                 </button>
 

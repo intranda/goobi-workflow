@@ -207,7 +207,7 @@
 
                                                                 <button jsf:id="removeFilter" class="btn button-no-style" aria-label="#{msgs.removeFilter}" jsf:action="#{ProzessverwaltungForm.deleteField}" jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
                                                                     <span class="fa fa-minus margin-bottom-regular" />
-                                                                    <x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
+                                                                    <f:setPropertyActionListener target="#{ProzessverwaltungForm.currentField}" value="#{field}" />
                                                                     <f:ajax render="@form" execute="@form" />
                                                                 </button>
                                                             </h:column>
@@ -301,7 +301,7 @@
                                                     <button class="btn expandbutton" jsf:id="action30" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsStatusVolumes}" title="#{msgs.statusOfVolumes}">
                                                         <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.statusOfVolumes}" />
-                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
@@ -309,7 +309,7 @@
                                                     <button class="btn expandbutton" jsf:id="action31" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsUsergroups}" title="#{msgs.statusForUsers}">
                                                         <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.statusForUsers}" />
-                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
@@ -317,7 +317,7 @@
                                                     <button class="btn expandbutton" jsf:id="action32" jsf:rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}" jsf:action="#{ProzessverwaltungForm.statisticsRuntimeSteps}" title="#{msgs.runtimeOfSteps}">
                                                         <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.runtimeOfSteps}" />
-                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
@@ -325,7 +325,7 @@
                                                     <button class="btn expandbutton" jsf:id="action33" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsProduction}" title="#{msgs.productionStatistics}">
                                                         <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.productionStatistics}" />
-                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
@@ -333,7 +333,7 @@
                                                     <button class="btn expandbutton" jsf:id="action34" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsTroughput}" title="#{msgs.productionThroughput}">
                                                         <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.productionThroughput}" />
-                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
@@ -341,7 +341,7 @@
                                                     <button class="btn expandbutton" jsf:id="action35" jsf:action="#{ProzessverwaltungForm.statisticsStorage}" title="#{msgs.storageCalculator}">
                                                         <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.storageCalculator}" />
-                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
@@ -349,7 +349,7 @@
                                                     <button class="btn expandbutton" jsf:id="action36" jsf:rendered="#{!HelperForm.anonymized}" jsf:action="#{ProzessverwaltungForm.statisticsCorrection}" title="#{msgs.errorTracking}">
                                                         <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.errorTracking}" />
-                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                                 <li class="action-intent-li">
@@ -357,7 +357,7 @@
                                                     <button class="btn expandbutton" jsf:id="action37" jsf:action="#{ProzessverwaltungForm.statisticsProject}" title="#{msgs.projectAssociation}">
                                                         <span class="margin-right-10 fa fa-angle-right" />
                                                         <h:outputText value="#{msgs.projectAssociation}" />
-                                                        <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </button>
                                                 </li>
                                             </ul>

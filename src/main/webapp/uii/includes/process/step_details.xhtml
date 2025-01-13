@@ -63,8 +63,8 @@
                             <f:passThroughAttribute
                                 name="data-toggle"
                                 value="tooltip" />
-                            <x:updateActionListener
-                                property="#{ProzessverwaltungForm.modusBearbeiten}"
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.modusBearbeiten}"
                                 value="schritt" />
                         </button>
                     </div>
@@ -728,8 +728,8 @@
                             jsf:action="#{ProzessverwaltungForm.SchrittUebernehmen}">
                             <span class="fa fa-save margin-right-5" />
                             <h:outputText value="#{msgs.speichern}" />
-                            <x:updateActionListener
-                                property="#{ProzessverwaltungForm.modusBearbeiten}"
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.modusBearbeiten}"
                                 value="" />
                         </button>
 
@@ -741,8 +741,8 @@
                             jsf:action="#{NavigationForm.Reload}"
                             jsf:immediate="true">
                             #{msgs.abbrechen}
-                            <x:updateActionListener
-                                property="#{ProzessverwaltungForm.modusBearbeiten}"
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.modusBearbeiten}"
                                 value="" />
                         </button>
 

@@ -84,11 +84,11 @@
 													aria-label="#{msgs.process_changeTemplate}"
 													class="dropdown-item">
 													<h:outputText value="#{template.titel}" />
-													<x:updateActionListener
-														property="#{ProzessverwaltungForm.template}"
+													<f:setPropertyActionListener
+														target="#{ProzessverwaltungForm.template}"
 														value="#{template}" />
-													<x:updateActionListener
-														property="#{ProzessverwaltungForm.processToChange}"
+													<f:setPropertyActionListener
+														target="#{ProzessverwaltungForm.processToChange}"
 														value="#{ProzessverwaltungForm.myProzess}" />
 													<f:passThroughAttribute
 														name="data-toggle"
@@ -135,8 +135,8 @@
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.mySchritt}"
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
 												value="#{item}" />
 											<f:ajax render="@form" />
 										</button>
@@ -152,8 +152,8 @@
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.mySchritt}"
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
 												value="#{item}" />
 											<f:ajax render="@form" />
 										</button>
@@ -169,8 +169,8 @@
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.mySchritt}"
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
 												value="#{item}" />
 											<f:ajax render="@form" />
 										</button>
@@ -186,8 +186,8 @@
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.mySchritt}"
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
 												value="#{item}" />
 											<f:ajax render="@form" />
 										</button>
@@ -214,9 +214,9 @@
 												<i
 													class="fa fa-angle-down #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
 											</h:panelGroup>
-											<x:updateActionListener
+											<f:setPropertyActionListener
 												value="#{item.panelAusgeklappt?false:true}"
-												property="#{item.panelAusgeklappt}" />
+												target="#{item.panelAusgeklappt}" />
 											<f:ajax render="possibleActions1" />
 											<h:panelGroup rendered="#{item.typAutomatisch}">
 												<i
@@ -575,8 +575,8 @@
 										aria-label="#{msgs.statusRunterSetzen}"
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
 										<span class="fa fa-chevron-left font-light" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.mySchrittReload}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -597,8 +597,8 @@
 										aria-label="#{msgs.statusHoeherSetzen}"
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
 										<span class="fa fa-chevron-right font-light" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.mySchrittReload}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -626,11 +626,11 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.mySchrittReload}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.modusBearbeiten}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.modusBearbeiten}"
 											value="" />
 									</button>
 
@@ -646,11 +646,11 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<x:updateActionListener
-											property="#{NavigationForm.uiStatus.pluginSimulation}"
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.pluginSimulation}"
 											value="#{true}" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.mySchrittReload}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
 									</button>
 
@@ -693,8 +693,8 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.mySchritt}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchritt}"
 											value="#{item}" />
 										<span class="fa fa-globe" />
 									</button>

@@ -56,10 +56,9 @@
                                             class="thumbnails__thumb-placeholder"
                                             src="#{HelperForm.servletPathWithHostAsUrl}/uii/template/img/thumbnail-placeholder.png" />
                                     </ui:fragment>
-                                    <x:updateActionListener 
-                                        value="false"
-                                        property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
-                                    <x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
+                                    <f:setPropertyActionListener value="false" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"></f:setPropertyActionListener>
+                                    <f:setPropertyActionListener value="#{image.order -1}" target="#{Metadaten.imageIndex}"></f:setPropertyActionListener>
+                
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax render=":pagePaginationList :openseadragonform :altoEditAutocomplete" execute="@form" />
                                     <f:passThroughAttribute name="data-renderimage" value="true" />

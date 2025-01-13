@@ -35,7 +35,7 @@
                             class="#{Metadaten.bildZuStrukturelement ? 'active' : ''}"
                             jsf:rel="tooltip">
                             <i class="#{Metadaten.bildZuStrukturelement ? 'fa fa-chain' : 'fa fa-chain-broken'}" aria-hidden="true"></i>
-                            <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
+                            <f:setPropertyActionListener value="0" target="#{Metadaten.numberOfNavigation}" />
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <f:setPropertyActionListener
                                 target="#{Metadaten.bildZuStrukturelement}"
@@ -58,9 +58,9 @@
                             title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}">
                             <i class="fa fa-list" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                            <x:updateActionListener
+                            <f:setPropertyActionListener
                                 value="#{Metadaten.treeProperties.showtitle?false:true}"
-                                property="#{Metadaten.treeProperties.showtitle}" />
+                                target="#{Metadaten.treeProperties.showtitle}" />
                                 <f:ajax render="@form"/>
                         </button>
                     </li>
@@ -73,9 +73,9 @@
                             title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}">
                             <i class="fa fa-exchange" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                            <x:updateActionListener
+                            <f:setPropertyActionListener
                                 value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
-                                property="#{Metadaten.treeProperties.showfirstpagenumber}" />
+                                target="#{Metadaten.treeProperties.showfirstpagenumber}" />
                             <f:ajax render="@form"/>
                         </button>
                     </li>
@@ -117,7 +117,7 @@
                             class="button-link #{item.node.expanded ? 'expand' : 'expanded'}"
                             jsf:rendered="#{item.node.hasChildren}">
                             <i class="#{item.node.expanded ? 'fa fa-caret-down fa-lg' : 'fa fa-caret-right fa-lg'}" />
-                            <x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />
+                            <f:setPropertyActionListener target="#{item.node.expanded}" value="#{not item.node.expanded}" />
                             <f:ajax execute="treeform" render="treeform" />
                         </button>
                         <ui:fragment rendered="#{Metadaten.treeProperties.showMetadataPopup}">
@@ -151,7 +151,7 @@
 	                                <h:outputText styleClass="page-info" value="#{item.node.lastImage.right}" rendered="#{item.node.lastImage != null}" />
 	                                <h:outputText styleClass="page-infoLight" value=")" />
                                 </h:panelGroup>
-                                <x:updateActionListener property="#{Metadaten.myStrukturelement}"
+                                <f:setPropertyActionListener target="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
                                     render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform :openseadragonform:pageareas" />
@@ -183,7 +183,7 @@
 	                                <h:outputText styleClass="page-infoLight" value=")" />
                                 </h:panelGroup>
 
-                                <x:updateActionListener property="#{Metadaten.myStrukturelement}"
+                                <f:setPropertyActionListener target="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
                                     render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform" />

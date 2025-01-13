@@ -68,7 +68,7 @@
 								<li>
 									<button jsf:id="currentFilter" jsf:action="#{Form.FilterAlleStart}" class="dropdown-item">
 										<h:outputText value="#{fil}" />
-										<x:updateActionListener property="#{Form.filter}" value="#{fil}" />
+										<f:setPropertyActionListener target="#{Form.filter}" value="#{fil}" />
 									</button>
 								</li>
 							</ui:repeat>

@@ -111,7 +111,7 @@
                                                 <!-- <h:graphicImage value="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" /> -->
                                                 <span class="margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
                                                 <h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
-                                            	<x:updateActionListener property="#{NavigationForm.uiStatus.pluginSimulation}" value="#{false}" />
+                                            	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.pluginSimulation}" value="#{false}" />
                                             </button>
                                         </li>
                                     </h:panelGroup>

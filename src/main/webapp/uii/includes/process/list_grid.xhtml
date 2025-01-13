@@ -85,7 +85,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 									<button jsf:action="#{NavigationForm.Reload}" jsf:id="grid_show_tasks"
 										jsf:rel="tooltip" title="#{msgs.process_grid_details}" class="button-link">
 										<span class="fa #{item.panelAusgeklappt?'fa-chevron-down':'fa-chevron-right'} font-black margin-left-5 margin-right-5" />
-										<x:updateActionListener property="#{item.panelAusgeklappt}" value="#{not item.panelAusgeklappt}" />
+										<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="#{not item.panelAusgeklappt}" />
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
 										<f:ajax render=":myform" />
 									</button>
@@ -113,8 +113,8 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 													<span class="fa fa-pencil margin-right-10" />
 													<h:outputText value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
-													<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+													<f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+													<f:setPropertyActionListener target="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
 												</button>
 											</li>
 
@@ -166,7 +166,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 													<span class="fa fa-globe margin-right-10" />
 													<h:outputText value="#{msgs.importDms}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+													<f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 												</button>
 											</li>
 											<li>
@@ -175,7 +175,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 													<i class="font-light fa fa-globe margin-right-10" />
 													<h:outputText value="#{msgs.importDms}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+													<f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 												</button>
 											</li>
 
@@ -185,7 +185,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 													<button jsf:action="#{ProzessverwaltungForm.downloadToHome}" jsf:id="grid_action16" class="dropdown-item" title="#{msgs.imHomeVerzeichnisVerlinken}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}">
 														<span class="fa fa-cloud-download margin-right-10" />
 														<h:outputText value="#{msgs.imHomeVerzeichnisVerlinken}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</button>
 												</li>
@@ -194,7 +194,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 													<button jsf:action="#{ProzessverwaltungForm.downloadToHome}" jsf:id="grid_action17" class="dropdown-item" title="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}">
 														<span class="fa fa-cloud-download margin-right-10" />
 														<h:outputText value="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</button>
 												</li>
@@ -203,7 +203,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 													<button jsf:action="#{ProzessverwaltungForm.uploadFromHome}" jsf:id="grid_action18" class="dropdown-item" title="#{msgs.ausHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.ausHomeverzeichnisEntfernen}')) return false" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 														<span class="fa fa-cloud-upload margin-right-10" />
 														<h:outputText value="#{msgs.ausHomeverzeichnisEntfernen}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</button>
 												</li>
@@ -215,7 +215,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 													<button jsf:id="grid_ubid119" jsf:action="#{ProzessverwaltungForm.createXML}" class="dropdown-item" title="#{msgs.createXML}">
 														<span class="fa fa-floppy-o margin-right-10" />
 														<h:outputText value="#{msgs.createXML}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</button>
 												</li>
@@ -224,7 +224,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 													<button jsf:id="grid_ubid1119" jsf:action="#{ProzessverwaltungForm.downloadDocket}" class="dropdown-item" title="#{msgs.laufzettelDrucken}">
 														<span class="fa fa-print margin-right-10" />
 														<h:outputText value="#{msgs.process_generateDocket}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</button>
 												</li>
@@ -233,7 +233,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 													<button jsf:action="#{ProzessverwaltungForm.exportMets}" jsf:id="grid_action19" class="dropdown-item" title="#{msgs.exportMets}" jsf:rendered="#{item.displayMETSButton}">
 														<span class="fa fa-floppy-o margin-right-10" />
 														<h:outputText value="#{msgs.exportMets}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</button>
 												</li>
@@ -242,7 +242,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 													<button jsf:action="#{ProzessverwaltungForm.exportPdf}" jsf:id="grid_action20" class="dropdown-item" title="#{msgs.exportPdf}" jsf:rendered="#{item.displayPDFButton}">
 														<span class="fa fa-floppy-o margin-right-10" />
 														<h:outputText value="#{msgs.exportPdf}" />
-														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</button>
 												</li>

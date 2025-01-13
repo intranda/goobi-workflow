@@ -334,8 +334,8 @@
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{SearchForm.currentRow}"
+											<f:setPropertyActionListener
+												target="#{SearchForm.currentRow}"
 												value="#{row}" />
 										</button>
 									<!-- // PLUS AND MINUS BUTTONS -->
@@ -372,13 +372,13 @@
 
 							<!-- BUTTONS -->
 							<div class="form-actions">
-								<a
+								<button
 									jsf:id="cancel"
 									class="btn btn-blank me-2"
 									jsf:immediate="true"
 									jsf:action="#{SearchForm.resetFilter}">
 									<h:outputText value="#{msgs.clear}" />
-								</a>
+								</button>
 
 								<button
 									class="btn btn-primary-400 search-button"

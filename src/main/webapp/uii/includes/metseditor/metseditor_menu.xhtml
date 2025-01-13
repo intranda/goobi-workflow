@@ -24,7 +24,7 @@
                     <li class="#{Metadaten.modusAnsicht == 'Paginierung' ? 'active' : ''}">
                         <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoPagination">
                             #{msgs.paginierung}
-                            <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
+                            <f:setPropertyActionListener value="Paginierung" target="#{Metadaten.modusAnsicht}" />
                             <f:ajax
                                 onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Paginierung'})}"
                                 render="@form :pageContentCenter" />
@@ -36,7 +36,7 @@
                     <li class="#{Metadaten.modusAnsicht == 'Strukturdaten' ? 'active' : ''}">
                         <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoStructure">
                             #{msgs.strukturdaten}
-                            <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
+                            <f:setPropertyActionListener value="Strukturdaten" target="#{Metadaten.modusAnsicht}" />
                             <f:ajax
                                 onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Strukturdaten'})}"
                                 render="@form :pageContentCenter" />
@@ -48,7 +48,7 @@
                     <li class="#{Metadaten.modusAnsicht == 'Metadaten' ? 'active' : ''}">
                         <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoMetadata">
                             #{msgs.metadaten}
-                            <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
+                            <f:setPropertyActionListener value="Metadaten" target="#{Metadaten.modusAnsicht}" />
                             <f:ajax
                                 onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Metadaten'})}"
                                 render="@form :pageContentCenter" />
@@ -60,7 +60,7 @@
                     <li class="#{Metadaten.modusAnsicht == 'File' ? 'active' : ''}">
                         <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoFile">
                             #{msgs.fileManipulation}
-                            <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
+                            <f:setPropertyActionListener value="File" target="#{Metadaten.modusAnsicht}" />
                              <f:ajax
                                  onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'File'})}"
                                 render="@form :pageContentCenter" />

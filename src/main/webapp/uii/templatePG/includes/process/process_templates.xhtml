@@ -45,8 +45,8 @@
 									<f:passThroughAttribute
 										name="data-toggle"
 										value="tooltip" />
-									<x:updateActionListener
-										property="#{ProzessverwaltungForm.myVorlageReload}"
+									<f:setPropertyActionListener
+										target="#{ProzessverwaltungForm.myVorlageReload}"
 										value="#{item}" />
 								</h:commandLink>
 								<button

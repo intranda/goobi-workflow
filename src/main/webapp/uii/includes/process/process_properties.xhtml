@@ -138,14 +138,14 @@
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />
-                                                            <x:updateActionListener
-                                                                property="#{ProzessverwaltungForm.processProperty}"
+                                                            <f:setPropertyActionListener
+                                                                target="#{ProzessverwaltungForm.processProperty}"
                                                                 value="#{proc}" />
-                                                            <x:updateActionListener
-                                                                property="#{ProzessverwaltungForm.container}"
+                                                            <f:setPropertyActionListener
+                                                                target="#{ProzessverwaltungForm.container}"
                                                                 value="0" />
-                                                            <x:updateActionListener
-                                                                property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                                            <f:setPropertyActionListener
+                                                                target="#{ProzessverwaltungForm.modusBearbeiten}"
                                                                 value="eigenschaft" />
                                                         </button> <button
                                                             jsf:action="#{ProzessverwaltungForm.duplicateProperty}"
@@ -159,11 +159,11 @@
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />
-                                                            <x:updateActionListener
-                                                                property="#{ProzessverwaltungForm.processProperty}"
+                                                            <f:setPropertyActionListener
+                                                                target="#{ProzessverwaltungForm.processProperty}"
                                                                 value="#{proc}" />
-                                                            <x:updateActionListener
-                                                                property="#{ProzessverwaltungForm.container}"
+                                                            <f:setPropertyActionListener
+                                                                target="#{ProzessverwaltungForm.container}"
                                                                 value="0" />
                                                         </button></td>
                                                 </c:if>
@@ -234,11 +234,11 @@
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />
-                                                            <x:updateActionListener
-                                                                property="#{ProzessverwaltungForm.container}"
+                                                            <f:setPropertyActionListener
+                                                                target="#{ProzessverwaltungForm.container}"
                                                                 value="#{container}" />
-                                                            <x:updateActionListener
-                                                                property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                                            <f:setPropertyActionListener
+                                                                target="#{ProzessverwaltungForm.modusBearbeiten}"
                                                                 value="eigenschaft" />
                                                         </button> <!-- duplicate container --> <button
                                                             class="btn button-link button-schaltknopf"
@@ -251,8 +251,8 @@
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />
-                                                            <x:updateActionListener
-                                                                property="#{ProzessverwaltungForm.container}"
+                                                            <f:setPropertyActionListener
+                                                                target="#{ProzessverwaltungForm.container}"
                                                                 value="#{container}" />
                                                         </button>
                                                     </td>
@@ -271,11 +271,11 @@
                                     jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                                     title="#{msgs.eigenschaftHinzufuegen}"
                                     class="btn btn-lightgrey font-size-s">
-                                    <x:updateActionListener
-                                        property="#{ProzessverwaltungForm.container}"
+                                    <f:setPropertyActionListener
+                                        target="#{ProzessverwaltungForm.container}"
                                         value="0" />
-                                    <x:updateActionListener
-                                        property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                    <f:setPropertyActionListener
+                                        target="#{ProzessverwaltungForm.modusBearbeiten}"
                                         value="eigenschaft" />
                                     <span class="fa fa-plus margin-right-5" />
                                     <h:outputText value="#{msgs.eigenschaftHinzufuegen}" />
@@ -519,8 +519,8 @@
                                             class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
                                             jsf:action="#{ProzessverwaltungForm.saveCurrentProperty}">
                                             <span class="fa fa-save margin-right-5" />
-                                            <x:updateActionListener
-                                                property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            <f:setPropertyActionListener
+                                                target="#{ProzessverwaltungForm.modusBearbeiten}"
                                                 value="" />
                                             <h:outputText value="#{msgs.speichern}" />
                                         </button>
@@ -531,8 +531,8 @@
                                             jsf:immediate="true"
                                             jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="#{msgs.abbrechen}" />
-                                            <x:updateActionListener
-                                                property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            <f:setPropertyActionListener
+                                                target="#{ProzessverwaltungForm.modusBearbeiten}"
                                                 value="" />
                                         </button>
 
@@ -541,8 +541,8 @@
                                             class="btn btn-danger font-size-s"
                                             jsf:action="#{ProzessverwaltungForm.deleteProperty}"
                                             onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false">
-                                            <x:updateActionListener
-                                                property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            <f:setPropertyActionListener
+                                                target="#{ProzessverwaltungForm.modusBearbeiten}"
                                                 value="" />
                                             <span class="fa fa-trash-o margin-right-5" />
                                             <h:outputText value="#{msgs.loeschen}" />

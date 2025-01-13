@@ -70,8 +70,8 @@
                                 <i
                                     class="fa #{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.auswahlboxen}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" />
                             </button>
                         </li>
@@ -82,8 +82,8 @@
                                 class="dropdown-item">
                                 <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.id}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processId']}" />
                             </button>
                         </li>
@@ -94,8 +94,8 @@
                                 class="dropdown-item">
                                 <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.thumbnail}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}"
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}" />
                             </button>
                         </li>
@@ -107,8 +107,8 @@
                                 <i
                                     class="fa #{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.metadatadetails}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}"
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}" />
                             </button>
                         </li>
@@ -121,8 +121,8 @@
                                 <i
                                     class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.regelsatz}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}" />
                             </button>
                         </li>
@@ -133,8 +133,8 @@
                                 class="dropdown-item">
                                 <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.batch}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}"
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['batchId']}" />
                             </button>
                         </li>
@@ -145,8 +145,8 @@
                                 class="dropdown-item">
                                 <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.vorgangsdatum}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processDate']}" />
                             </button>
                         </li>
@@ -157,8 +157,8 @@
                                 class="dropdown-item">
                                 <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.sperrungen}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['lockings']}" />
                             </button>
                         </li>
@@ -169,8 +169,8 @@
                                 class="dropdown-item">
                                 <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.ausgelagerung}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" />
                             </button>
                         </li>
@@ -183,8 +183,8 @@
                                 class="dropdown-item">
                                 <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                 <h:outputText value="#{msgs.NumberOfImages}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}" />
                             </button>
                         </li>
@@ -221,8 +221,8 @@
                                     class="dropdown-item">
                                     <span class="fa #{ProzessverwaltungForm.showClosedProcesses?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                     <h:outputText value="#{msgs.showClosedProcesses}" />
-                                    <x:updateActionListener
-                                        property="#{ProzessverwaltungForm.showClosedProcesses}"
+                                    <f:setPropertyActionListener
+                                        target="#{ProzessverwaltungForm.showClosedProcesses}"
                                         value="#{not ProzessverwaltungForm.showClosedProcesses}" />
                                 </button>
                             </li>
@@ -235,8 +235,8 @@
                                     class="dropdown-item">
                                     <span class="fa #{ProzessverwaltungForm.showArchivedProjects?'fa-check-square-o':'fa-square-o'} margin-right-5" />
                                     <h:outputText value="#{msgs.showArchivedProjects}" />
-                                    <x:updateActionListener
-                                        property="#{ProzessverwaltungForm.showArchivedProjects}"
+                                    <f:setPropertyActionListener
+                                        target="#{ProzessverwaltungForm.showArchivedProjects}"
                                         value="#{not ProzessverwaltungForm.showArchivedProjects}" />
                                 </button>
                             </li>

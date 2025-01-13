@@ -140,8 +140,8 @@
 									<h:outputText
 										value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
 								</span>
-								<x:updateActionListener
-									property="#{NavigationForm.uiStatus.pluginSimulation}"
+								<f:setPropertyActionListener
+									target="#{NavigationForm.uiStatus.pluginSimulation}"
 									value="#{false}" />
 							</button>
 

@@ -411,8 +411,8 @@
                                                 jsf:action="#{ProzessverwaltungForm.deleteField}"
                                                 jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
                                                 <span class="fa fa-minus" />
-                                                <x:updateActionListener
-                                                    property="#{ProzessverwaltungForm.currentField}"
+                                                <f:setPropertyActionListener
+                                                    target="#{ProzessverwaltungForm.currentField}"
                                                     value="#{field}" />
                                                 <f:ajax
                                                     render="@form"
@@ -570,8 +570,8 @@
                                         <span>
                                             <h:outputText value="#{msgs.statusOfVolumes}" />
                                         </span>
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.showStatistics}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.showStatistics}"
                                             value="true" />
                                     </button>
                                     <!-- StatisticsUsergroups -->
@@ -587,8 +587,8 @@
                                         <span>
                                             <h:outputText value="#{msgs.statusForUsers}" />
                                         </span>
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.showStatistics}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.showStatistics}"
                                             value="true" />
                                     </button>
                                     <!-- StatisticsRuntimeSteps -->
@@ -604,8 +604,8 @@
                                         <span>
                                             <h:outputText value="#{msgs.runtimeOfSteps}" />
                                         </span>
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.showStatistics}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.showStatistics}"
                                             value="true" />
                                     </button>
                                     <!-- StatisticsProduction -->
@@ -621,8 +621,8 @@
                                         <span>
                                             <h:outputText value="#{msgs.productionStatistics}" />
                                         </span>
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.showStatistics}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.showStatistics}"
                                             value="true" />
                                     </button>
                                     <!-- StatisticsTroughput -->
@@ -638,8 +638,8 @@
                                         <span>
                                             <h:outputText value="#{msgs.productionThroughput}" />
                                         </span>
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.showStatistics}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.showStatistics}"
                                             value="true" />
                                     </button>
                                     <!-- StatisticsStorage -->
@@ -654,8 +654,8 @@
                                         <span>
                                             <h:outputText value="#{msgs.storageCalculator}" />
                                         </span>
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.showStatistics}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.showStatistics}"
                                             value="true" />
                                     </button>
                                     <!-- StatisticsCorrection -->
@@ -671,8 +671,8 @@
                                         <span>
                                             <h:outputText value="#{msgs.errorTracking}" />
                                         </span>
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.showStatistics}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.showStatistics}"
                                             value="true" />
                                     </button>
                                     <!-- ProjectAssociationss -->
@@ -687,8 +687,8 @@
                                         <span>
                                             <h:outputText value="#{msgs.projectAssociation}" />
                                         </span>
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.showStatistics}"
+                                        <f:setPropertyActionListener
+                                            target="#{ProzessverwaltungForm.showStatistics}"
                                             value="true" />
                                     </button>
                                 </div>

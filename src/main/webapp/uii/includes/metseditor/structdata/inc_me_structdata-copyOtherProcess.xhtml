@@ -59,8 +59,8 @@
                                     jsf:action="#{NavigationForm.Reload}"
                                     title="#{msgs.verschiebenAbbrechen}">
                                     <h:outputText value="#{msgs.abbrechen}" />
-                                    <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
-                                    <x:updateActionListener value="false" property="#{Metadaten.displayInsertion}" />
+                                    <f:setPropertyActionListener target="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
+                                    <f:setPropertyActionListener value="false" target="#{Metadaten.displayInsertion}" />
                                     <f:ajax
                                         onevent="data => goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false})"
                                         render=":pageContentCenter"
@@ -103,7 +103,7 @@
                                         <f:passThroughAttribute name="data-placement" value="right" />
                                         <f:passThroughAttribute name="data-html" value="true" />
                                         <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
-                                        <x:updateActionListener property="#{item.node.selected}" value="#{!item.node.selected}" />
+                                        <f:setPropertyActionListener target="#{item.node.selected}" value="#{!item.node.selected}" />
                                     </button>
 
                                     <h:outputText rendered="#{!item.node.einfuegenErlaubt}"
@@ -129,7 +129,7 @@
                                         styleClass="btn btn--gray"
                                         action="#{Metadaten.rememberFilteredProcessStruct}">
                                         <h:outputText value="#{msgs.weiter}" />
-                                        <x:updateActionListener value="true" property="#{Metadaten.displayInsertion}" />
+                                        <f:setPropertyActionListener value="true" target="#{Metadaten.displayInsertion}" />
                                     </h:commandLink>
                                 </div>
                             </div>
@@ -166,8 +166,8 @@
                                     <f:passThroughAttribute name="data-placement" value="right" />
                                     <f:passThroughAttribute name="data-html" value="true" />
                                     <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
-                                    <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
-                                    <x:updateActionListener property="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
+                                    <f:setPropertyActionListener target="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
+                                    <f:setPropertyActionListener target="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
                                 </button>
 
                                 <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">
@@ -199,8 +199,8 @@
                                     class="btn btn--gray"
                                     jsf:action="#{NavigationForm.Reload}">
                                     #{msgs.abbrechen}
-                                    <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
-                                    <x:updateActionListener property="#{Metadaten.displayInsertion}" value="false" />
+                                    <f:setPropertyActionListener target="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
+                                    <f:setPropertyActionListener target="#{Metadaten.displayInsertion}" value="false" />
                                 </button>
                                 <!-- BACK -->
                                 <h:commandLink
@@ -208,7 +208,7 @@
                                     styleClass="btn btn--gray"
                                     action="#{NavigationForm.Reload}">
                                     <h:outputText value="#{msgs.zurueck}" />
-                                    <x:updateActionListener value="false" property="#{Metadaten.displayInsertion}" />
+                                    <f:setPropertyActionListener value="false" target="#{Metadaten.displayInsertion}" />
                                 </h:commandLink>
                             </div>
                         </div>

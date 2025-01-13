@@ -224,8 +224,8 @@
                                             class="dropdown-item"
                                             jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="1 - #{msgs.seitenzaehlung}" />
-                                            <x:updateActionListener
-                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                            <f:setPropertyActionListener
+                                                target="#{Metadaten.paginierungSeitenProImage}"
                                                 value="1" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
@@ -237,8 +237,8 @@
                                             jsf:action="#{NavigationForm.Reload}"
                                             title="#{msgs.spaltenzaehlung}">
                                             <h:outputText value="2 - #{msgs.spaltenzaehlung}" />
-                                            <x:updateActionListener
-                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                            <f:setPropertyActionListener
+                                                target="#{Metadaten.paginierungSeitenProImage}"
                                                 value="2" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
@@ -249,8 +249,8 @@
                                             class="dropdown-item"
                                             jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="3 - #{msgs.blattzaehlung}" />
-                                            <x:updateActionListener
-                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                            <f:setPropertyActionListener
+                                                target="#{Metadaten.paginierungSeitenProImage}"
                                                 value="3" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
@@ -261,8 +261,8 @@
                                             class="dropdown-item"
                                             jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="4 - #{msgs.blattzaehlungrectoverso}" />
-                                            <x:updateActionListener
-                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                            <f:setPropertyActionListener
+                                                target="#{Metadaten.paginierungSeitenProImage}"
                                                 value="4" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
@@ -273,8 +273,8 @@
                                             class="dropdown-item"
                                             jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="5 - #{msgs.seitenzaehlungrectoverso}" />
-                                            <x:updateActionListener
-                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                            <f:setPropertyActionListener
+                                                target="#{Metadaten.paginierungSeitenProImage}"
                                                 value="5" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
@@ -285,8 +285,8 @@
                                             class="dropdown-item"
                                             jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="6 - #{msgs.doublepages}" />
-                                            <x:updateActionListener
-                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                            <f:setPropertyActionListener
+                                                target="#{Metadaten.paginierungSeitenProImage}"
                                                 value="6" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
@@ -415,8 +415,8 @@
                                         <span class="fa fa-file-o fa-lg fa-with-bg" />
                                         <!--                                         <i class="fa fa-file-o fa-lg" aria-hidden="true"></i> -->
                                         <span>#{msgs.nurDieMarkiertenSeiten}</span>
-                                        <x:updateActionListener
-                                            property="#{Metadaten.paginierungAbSeiteOderMarkierung}"
+                                        <f:setPropertyActionListener
+                                            target="#{Metadaten.paginierungAbSeiteOderMarkierung}"
                                             value="2" />
                                         <f:ajax
                                             execute="@form"
@@ -432,8 +432,8 @@
                                         <span class="fa fa-files-o fa-lg fa-with-bg" />
                                         <!--                                         <i class="fa fa-files-o fa-lg" aria-hidden="true"></i> -->
                                         <span>#{msgs.abDerErstenMarkiertenSeite}</span>
-                                        <x:updateActionListener
-                                            property="#{Metadaten.paginierungAbSeiteOderMarkierung}"
+                                        <f:setPropertyActionListener
+                                            target="#{Metadaten.paginierungAbSeiteOderMarkierung}"
                                             value="1" />
                                         <f:ajax
                                             execute="@form"

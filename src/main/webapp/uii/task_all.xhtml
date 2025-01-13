@@ -45,11 +45,10 @@
 										</div>
 
 
-										<x:aliasBeansScope>
-											<x:aliasBean alias="#{Form}" value="#{AktuelleSchritteForm}" />
-											<x:aliasBean alias="#{label}" value="#{msgs.filterTasks}" />
+							
 											<f:subview id="sub1">
-
+                                                <ui:param name="#{Form}" value="#{AktuelleSchritteForm}"/>
+                                                <ui:param name="#{label}" value="#{msgs.filterTasks}"/>
 												<div class="gw-table__filters">
 													<ui:include
 														src="templatePG/includes/task/list_filterAndDisplay.xhtml" />
@@ -58,7 +57,7 @@
 												</div>
 
 											</f:subview>
-										</x:aliasBeansScope>
+									
 
 
 									</div>

@@ -158,7 +158,7 @@
     												<span class="fa fa-clipboard" />
     												<f:passThroughAttribute name="data-toggle" value="tooltip" />
     												<f:passThroughAttribute name="aria-label" value="#{msgs.duplicate}" />
-    												<x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
+    												<f:setPropertyActionListener target="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
     											</button>
     										</div>
 

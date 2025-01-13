@@ -100,8 +100,8 @@
                                     class="btn btn-blank"
                                     jsf:immediate="true"
                                     jsf:action="#{NavigationForm.Reload}"> <h:outputText value="#{msgs.abbrechen}" />
-                                    <x:updateActionListener
-                                        property="#{NavigationForm.uiStatus.batch_edit}"
+                                    <f:setPropertyActionListener
+                                        target="#{NavigationForm.uiStatus.batch_edit}"
                                         value="" />
                                 </a>
 
@@ -114,8 +114,8 @@
                                     <span>
                                         <h:outputText value="#{msgs.speichern}" />
                                     </span>
-                                    <x:updateActionListener
-                                        property="#{NavigationForm.uiStatus.batch_edit}"
+                                    <f:setPropertyActionListener
+                                        target="#{NavigationForm.uiStatus.batch_edit}"
                                         value="" />
                                 </button>
 
@@ -147,8 +147,8 @@
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                        <x:updateActionListener
-                                            property="#{NavigationForm.uiStatus.batch_edit}"
+                                        <f:setPropertyActionListener
+                                            target="#{NavigationForm.uiStatus.batch_edit}"
                                             value="edit" />
                                     </button>
                                 </div>
