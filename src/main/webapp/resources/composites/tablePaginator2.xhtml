@@ -31,7 +31,7 @@
 
 				<div class="margin-sides-10">
 					<!-- aktuelle Seite anzeigen -->
-					<x:outputText id="txtMoveTo12" forceId="true"
+					<h:outputText id="txtMoveTo12" forceId="true"
 						value="#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}"
 						onclick="document.getElementById('txtMoveTo22').style.display='inline';
 			       document.getElementById('txtMoveTo12').style.display='none';
@@ -39,13 +39,13 @@
 			       document.getElementById('txtMoveTo22').select();" />
 
 					<!-- Seite direkt anspringen -->
-					<x:inputText id="txtMoveTo22" forceId="true"
+					<h:inputText id="txtMoveTo22" forceId="true"
 						value="#{cc.attrs.paginator.txtMoveTo}" style="display:none;width:30px"
 						required="true"
 						onblur="document.getElementById('txtMoveTo22').style.display='none';
       				 document.getElementById('txtMoveTo12').style.display='inline';"
 						onkeypress="return submitEnter('cmdMoveTo',event)" />
-					<x:commandButton action="#{NavigationForm.Reload}" id="cmdMoveTo2"
+					<h:commandButton action="#{NavigationForm.Reload}" id="cmdMoveTo2"
 						forceId="true" value="go" style="display:none" />
 				</div>
 

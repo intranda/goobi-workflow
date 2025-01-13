@@ -264,7 +264,7 @@
                                             <h:outputText
                                                 styleClass="form-group__label"
                                                 value="#{msgs.alleSeiten}" />
-                                            <x:selectManyListbox
+                                            <h:selectManyListbox
                                                 id="selectPages"
                                                 pt:aria-label="#{msgs.alleSeiten}"
                                                 styleClass="form-control"
@@ -277,7 +277,7 @@
                                                     var="page"
                                                     itemLabel="#{page.label}"
                                                     itemValue="#{page.physicalPageNo}" />
-                                            </x:selectManyListbox>
+                                            </h:selectManyListbox>
                                         </div>
                                         <div class="col-2">
                                             <button
@@ -319,13 +319,13 @@
                                             <h:outputText
                                                 styleClass="form-group__label"
                                                 value="#{msgs.zugehoerigeSeiten}" />
-                                            <x:selectManyListbox
+                                            <h:selectManyListbox
                                                 id="selectPages2"
                                                 pt:aria-label="#{msgs.zugehoerigeSeiten}"
                                                 styleClass="form-control"
                                                 value="#{Metadaten.structSeitenAuswahl}">
                                                 <f:selectItems value="#{Metadaten.structSeiten}" />
-                                            </x:selectManyListbox>
+                                            </h:selectManyListbox>
                                         </div>
                                     </div>
                                 </div>

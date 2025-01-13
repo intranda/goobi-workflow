@@ -170,14 +170,14 @@
                                         #{msgs.search}
                                     </button>
                                 </div>
-                                <x:commandButton
+                                <h:commandButton
                                         type="submit"
                                         id="FilterAlle"
                                         forceId="true"
                                         style="display: none;"
                                         action="#{vocabularyRecordsBean.reload()}">
                                     <f:ajax render="@form" execute="@form"></f:ajax>
-                                </x:commandButton>
+                                </h:commandButton>
                             </div> <!-- /__search-bar -->
                         </div> <!-- /__filters -->
                     </div> <!-- /__search -->

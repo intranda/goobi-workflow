@@ -608,14 +608,14 @@
                                     </div>
 
                                     <div class="col-12 col-md-9">
-                                        <x:inputText
+                                        <h:inputText
                                             id="metadataSaveTime"
                                             forceId="true"
                                             styleClass="form-control"
                                             value="#{LoginForm.myBenutzer.metsEditorTime}"
                                             required="true">
                                             <f:validator validatorId="org.goobi.validator.TimeValidator" />
-                                        </x:inputText>
+                                        </h:inputText>
 
                                         <intranda:formHelp
                                             content="#{msgs.helpMetadataSaveTime}"

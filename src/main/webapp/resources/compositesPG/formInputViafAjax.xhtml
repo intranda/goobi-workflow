@@ -84,7 +84,7 @@
                 layout="block"
                 styleClass="#{cc.attrs.classRight} d-flex flex-column gap-1">
 
-                <x:inputText
+                <h:inputText
                     id="inputTextViaf"
                     pt:aria-label="#{cc.attrs.label}"
                     styleClass="form-control form_field"
@@ -93,7 +93,7 @@
                     value="#{cc.attrs.field.value}"
                     tabindex="-1" />
 
-                <x:inputText
+                <h:inputText
                     id="viafId"
                     pt:aria-label="#{cc.attrs.label}"
                     styleClass="form-control form_field"
@@ -229,7 +229,7 @@
                                             <div class="col-12 col-md-8">
                                                 <h:panelGroup id="search_fields">
                                                     <ui:fragment rendered="#{filter.searchField != 'local.sources'}">
-                                                        <x:inputText
+                                                        <h:inputText
                                                             id="input_processes"
                                                             pt:aria-label="#{msgs.suchbegriff}"
                                                             styleClass="form-control"
@@ -240,7 +240,7 @@
                                                     </ui:fragment>
 
                                                     <ui:fragment rendered="#{filter.searchField == 'local.sources'}">
-                                                        <x:selectOneMenu
+                                                        <h:selectOneMenu
                                                             styleClass="form-control"
                                                             id="select_databases"
                                                             value="#{filter.searchValue}">
@@ -249,7 +249,7 @@
                                                                 itemLabel="#{item.label}"
                                                                 itemValue="#{item.value}"
                                                                 var="item" />
-                                                        </x:selectOneMenu>
+                                                        </h:selectOneMenu>
                                                     </ui:fragment>
                                                 </h:panelGroup>
                                             </div>

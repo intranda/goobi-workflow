@@ -52,16 +52,16 @@
         								}
         							</script>
     								<div class="mb-3">
-    									<x:inputText id="login" pt:aria-label="#{msgs.login}" forceId="true" styleClass="form-control p-2"
+    									<h:inputText id="login" pt:aria-label="#{msgs.login}" forceId="true" styleClass="form-control p-2"
     										value="#{LoginForm.login}" >
     										<f:passThroughAttribute name="placeholder" value="#{msgs.login}" />
-    									</x:inputText>
+    									</h:inputText>
     								</div>
         							<div class="mb-3">
-    									<x:inputSecret id="passwort" pt:aria-label="#{msgs.passwort}" forceId="true" styleClass="form-control p-2"
+    									<h:inputSecret id="passwort" pt:aria-label="#{msgs.passwort}" forceId="true" styleClass="form-control p-2"
     										value="#{LoginForm.passwort}" autocomplete="off" >
     										<f:passThroughAttribute name="placeholder" value="#{msgs.passwort}" />
-    									</x:inputSecret>
+    									</h:inputSecret>
     								</div>
         							<div class="submit mt-4">
         								<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">

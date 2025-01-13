@@ -56,7 +56,7 @@
                             <div class="col-10">
                                 <!-- TODO: display object type, search type and search fields -->
                                 <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'easydb'}">
-                                    <x:inputText
+                                    <h:inputText
                                         id="easydbSearch"
                                         styleClass="form-control"
                                         onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"

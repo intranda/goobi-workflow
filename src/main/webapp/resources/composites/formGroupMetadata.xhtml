@@ -91,7 +91,7 @@
                 <!-- INPUT -->
                 <div class="#{cc.attrs.cols eq 2 ? 'col-9' : 'col-7'}">
                     <!-- TEXT INPUT -->
-                    <x:inputText
+                    <h:inputText
                         id="inputText"
                         pt:aria-label="#{cc.attrs.metadata.md.type.name}"
                         styleClass="form-control"
@@ -106,10 +106,10 @@
                         <f:ajax
                             execute="@form"
                             event="valueChange" />
-                    </x:inputText>
+                    </h:inputText>
 
                     <!-- TEXT INPUT READ ONLY -->
-                    <x:inputText
+                    <h:inputText
                         id="inputTextRO"
                         pt:aria-label="#{cc.attrs.metadata.md.type.name}"
                         styleClass="form-control"
@@ -119,7 +119,7 @@
                         rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" />
 
                     <!-- TEXTAREA -->
-                    <x:inputTextarea
+                    <h:inputTextarea
                         id="textarea"
                         pt:aria-label="#{cc.attrs.metadata.md.type.name}"
                         styleClass="form-control"
@@ -130,10 +130,10 @@
                         <f:ajax
                             execute="@form"
                             event="valueChange" />
-                    </x:inputTextarea>
+                    </h:inputTextarea>
 
                     <!-- TEXTAREA FOR HTML -->
-                    <x:inputTextarea
+                    <h:inputTextarea
                         id="textareaHtml"
                         styleClass="form-control textarea-html"
                         value="#{cc.attrs.metadata.value}"
@@ -143,7 +143,7 @@
                         <f:ajax
                             execute="@form"
                             event="valueChange" />
-                    </x:inputTextarea>
+                    </h:inputTextarea>
 
                     <!-- SELECT -->
                     <ui:fragment rendered="#{(cc.attrs.metadata.outputType == 'select1')}">

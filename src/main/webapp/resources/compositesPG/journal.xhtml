@@ -213,7 +213,7 @@
                         </div>
                     </h:panelGroup>
 
-                    <x:selectOneMenu
+                    <h:selectOneMenu
                         pt:aria-label="#{msgs.process_log_file_FolderSelection}"
                         styleClass="form-select me-3 pe-5"
                         style="width: auto;"
@@ -221,7 +221,7 @@
                         rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload' and cc.attrs.showFolderSelection!='false'}">
                         <f:selectItems value="#{cc.attrs.bean.visibleFolder}" />
                         <f:ajax render="@form" />
-                    </x:selectOneMenu>
+                    </h:selectOneMenu>
 
                     <button
                         jsf:id="adapt_display_comments"

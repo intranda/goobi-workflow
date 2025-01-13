@@ -33,11 +33,11 @@
 				</h:panelGroup>
 			</div>
 			<div class="#{cc.attrs.classRight}">
-				<x:inputText id="#{cc.attrs.name}" forceId="#{cc.attrs.forceId}"
+				<h:inputText id="#{cc.attrs.name}" forceId="#{cc.attrs.forceId}"
 					styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" required="#{cc.attrs.required}"
 					readonly="#{cc.attrs.readonly}" onfocus="#{cc.attrs.onfocus}" tabindex="#{cc.attrs.tabindex}">
 						<f:ajax execute="#{cc.attrs.execute}" render="#{cc.attrs.render}" event="blur"/>
-					</x:inputText>
+					</h:inputText>
 				<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
 				<intranda:formHelp content="#{cc.attrs.help}" />
 			</div>

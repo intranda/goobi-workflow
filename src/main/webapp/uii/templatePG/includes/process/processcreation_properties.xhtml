@@ -32,13 +32,13 @@
                                 labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                         </div>
                         <div class="col-12 col-md-9">
-                            <x:inputText
+                            <h:inputText
                                 id="value"
                                 styleClass="form-control"
                                 value="#{property.value}"
                                 readonly="#{property.showProcessGroupAccessCondition == 'READ'}"
                                 binding="#{value}">
-                            </x:inputText>
+                            </h:inputText>
                             <intranda:formHelp msgFor="#{value.clientId}" content="#{msgs.helpPropertyValue}" />
                         </div>
                     </div>
@@ -53,13 +53,13 @@
                                 labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                         </div>
                         <div class="col-12 col-md-9">
-                            <x:inputTextarea
+                            <h:inputTextarea
                                 id="textareaValue"
                                 rows="7"
                                 styleClass="form-control"
                                 value="#{property.value}"
                                 readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
-                            </x:inputTextarea>
+                            </h:inputTextarea>
                             <h:message
                                 for="textareaValue"
                                 showDetail="true"
@@ -78,14 +78,14 @@
                                 labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                         </div>
                         <div class="col-12 col-md-9">
-                            <x:inputText
+                            <h:inputText
                                 id="number"
                                 forceId="true"
                                 styleClass="form-control"
                                 value="#{property.value}"
                                 readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
                                 <f:validateLongRange minimum="0" />
-                            </x:inputText>
+                            </h:inputText>
                             <h:message
                                 for="number"
                                 showDetail="true"
@@ -204,13 +204,13 @@
                                 labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                         </div>
                         <div class="col-12 col-md-9">
-                            <x:inputTextarea
+                            <h:inputTextarea
                                 id="valueArea"
                                 forceId="true"
                                 styleClass="form-control"
                                 value="#{property.value}"
                                 readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
-                            </x:inputTextarea>
+                            </h:inputTextarea>
                             <h:message
                                 for="valueArea"
                                 showDetail="true"

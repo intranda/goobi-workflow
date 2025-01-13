@@ -40,7 +40,7 @@
 
 				<div class="dataTables__paginator__page-count">
 					<!-- aktuelle Seite anzeigen -->
-					<x:outputText id="txtMoveTo1" forceId="false"
+					<h:outputText id="txtMoveTo1" forceId="false"
 						value="#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}"
 						onclick="document.querySelector('[id$=txtMoveTo2]').style.display='inline';
 			       		document.querySelector('[id$=txtMoveTo1]').style.display='none';
@@ -48,15 +48,15 @@
 							document.querySelector('[id$=txtMoveTo2]').select();" />
 
 					<!-- Seite direkt anspringen -->
-					<x:inputText id="txtMoveTo2" forceId="false"
+					<h:inputText id="txtMoveTo2" forceId="false"
 						value="#{cc.attrs.paginator.txtMoveTo}" style="display:none;width:30px"
 						required="true"
 						onblur="document.querySelector('[id$=txtMoveTo2]').style.display='none';document.querySelector('[id$=txtMoveTo1]').style.display='inline';"
 						onkeypress="return submitEnter(document.querySelector('[id$=cmdMoveTo]').id,event)" />
-					<x:commandButton action="#{NavigationForm.Reload}" id="cmdMoveTo"
+					<h:commandButton action="#{NavigationForm.Reload}" id="cmdMoveTo"
 						forceId="false" value="go" style="display:none" >
 
-					</x:commandButton>
+					</h:commandButton>
 				</div>
 
 				<button class="btn btn-primary-400"
