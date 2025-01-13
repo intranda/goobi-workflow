@@ -41,7 +41,14 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         if (log.isDebugEnabled()) {
             log.debug("Checking for database version");
         }
-        int currentVersion = DatabaseVersion.getCurrentVersion();
+        int currentVersion;
+        try {
+            currentVersion = DatabaseVersion.getCurrentVersion();
+        } catch (SQLException e) {
+            log.error("Unable to detect current database version, skipping database upgrades!", e);
+            return;
+        }
+
         if (log.isDebugEnabled()) {
             log.debug("Current version is " + currentVersion);
         }
@@ -142,6 +149,15 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 DatabaseVersion.runSql("ALTER TABLE benutzer ADD COLUMN displayNumberOfImagesColumn tinyint(1);");
             } catch (SQLException e) {
                 log.error(e);
+            }
+        }
+
+        // Fix broken 'titel' processes sort field, should be 'prozesse.titel' since database version 54
+        if (DatabaseVersion.checkIfContentExists("benutzer", "where processses_sort_field = 'titel'")) {
+            try {
+                DatabaseVersion.runSql("UPDATE benutzer SET processses_sort_field = 'prozesse.titel' WHERE processses_sort_field = 'titel';");
+            } catch (SQLException e) {
+                log.error("Error fixing processes sort field", e);
             }
         }
 

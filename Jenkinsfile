@@ -234,6 +234,9 @@ pipeline {
           branch 'master'
           branch 'hotfix_release_*'
           branch 'develop'
+          expression {
+            return env.BRANCH_NAME =~ /_docker$/
+          }
         }
       }
       steps {
@@ -247,6 +250,9 @@ pipeline {
             //}
             if (env.GIT_BRANCH == 'origin/develop' || env.GIT_BRANCH == 'develop') {
               dockerimage_public.push("develop")
+            } else if (env.GIT_BRANCH.endsWith('_docker')) {
+              image_tag = env.GIT_BRANCH.substring(0, env.GIT_BRANCH.size()-7).replaceAll("/","_")
+              dockerimage_public.push(image_tag)
             }
             if (latestTag != '') {
               dockerimage_public.push(latestTag)

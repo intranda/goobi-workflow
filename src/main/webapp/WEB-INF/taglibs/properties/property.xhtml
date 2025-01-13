@@ -5,6 +5,7 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:p="http://primefaces.org/ui"
     xmlns:button="http://goobi.io/button"
 >
     <c:set var="scope" value="#{
@@ -33,30 +34,52 @@
             value="#{property.readValue}"
             rendered="#{(property.type.name != 'link') and (property.type.name != 'boolean') and (property.type.name != 'html') and (property.type.name != 'listmultiselect') and (property.type.name != 'vocabularyreference') and (property.type.name != 'vocabularymultireference')}" />
         <h:outputLink
-                pt:aria-label="#{property.name}"
-                pt:data-bs-toggle="tooltip"
-                value="#{property.readValue}"
-                title="#{property.readValue}"
-                target="_blank"
-                rendered="#{property.type.name == 'link'}">
-            <h:outputText value="#{property.readValue}" />
+            pt:aria-label="#{property.name}"
+            pt:data-bs-toggle="tooltip"
+            value="#{property.readValue}"
+            title="#{property.readValue}"
+            target="_blank"
+            rendered="#{property.type.name == 'link'}">
+        <h:outputText value="#{property.readValue}" />
         </h:outputLink>
-        <h:outputLink
-                pt:aria-label="#{property.name}"
-                pt:data-bs-toggle="tooltip"
-                value="#{property.value}"
-                title="#{property.value}"
-                target="_blank"
-                rendered="#{property.type.name == 'vocabularyreference'}">
-            <h:outputText value="#{property.readValue}" />
-        </h:outputLink>
+        <h:commandLink
+            value="#{property.readValue}"
+            target="_blank"
+            rendered="#{property.type.name == 'vocabularyreference'}"
+            styleClass="text-black text-decoration-underline"
+            pt:data-bs-toggle="tooltip"
+            title="#{msgs.details}">
+            <f:setPropertyActionListener target="#{vocabularyRecordsBean.currentRecordUri}" value="#{property.value}" />
+            <f:ajax
+                render="vocabularyRecordDetails"
+                onevent="(data) => {
+                    if (data.status == 'success') {
+                        document.querySelector('#vocabularyRecordDetailsModal').showModal();
+                        setModalTitle('#vocabularyRecordDetailsModal', '#{msgs.vocabulary_entry_details_title}: #{property.name}');
+                    }
+            }"/>
+        </h:commandLink>
         <h:panelGroup rendered="#{property.type.name == 'vocabularymultireference'}">
             <c:forEach
-                    var="val"
-                    items="#{property.getMultiVocabularyReferenceList()}">
-                <h:outputText
-                        value="#{val}"
-                        styleClass="badge badge-no-radius badge-light-grey" />
+                var="val"
+                items="#{property.vocabularySelectionBean.selection}">
+                <h:commandLink
+                    value="#{val.label}"
+                    target="_blank"
+                    styleClass="pe-2 text-black text-decoration-underline"
+                    pt:data-bs-toggle="tooltip"
+                    title="#{msgs.details}"
+                >
+                    <f:setPropertyActionListener target="#{vocabularyRecordsBean.currentRecordUri}" value="#{val.value}" />
+                    <f:ajax
+                        render="vocabularyRecordDetails"
+                        onevent="(data) => {
+                            if (data.status == 'success') {
+                                document.querySelector('#vocabularyRecordDetailsModal').showModal();
+                                setModalTitle('#vocabularyRecordDetailsModal', '#{msgs.vocabulary_entry_details_title}: #{property.name}');
+                            }
+                    }"/>
+                </h:commandLink>
             </c:forEach>
         </h:panelGroup>
         <h:panelGroup rendered="#{property.type.name == 'boolean'}">
@@ -72,7 +95,7 @@
             </h:panelGroup>
         </h:panelGroup>
         <c:if test="#{editable and LoginForm.hasRole('Workflow_General_Details_Edit')}">
-            <button:row styleClass="ms-auto">
+            <button:row styleClass="ms-auto my-auto ps-2">
                 <f:ajax
                     render="propertyEditArea"
                     onevent="(data) => {

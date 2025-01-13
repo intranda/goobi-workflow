@@ -50,10 +50,7 @@ public class ExtendedFieldInstance extends FieldInstance {
 
     private List<ExtendedVocabularyRecord> getAllRecords(Long vocabularyId) {
         return VocabularyAPIManager.getInstance().vocabularyRecords()
-                .list(vocabularyId)
-                .all()
-                .request()
-                .getContent();
+                .getAllHierarchicalRecords(vocabularyId);
     }
 
     public ExtendedFieldInstance(FieldInstance orig) {
@@ -78,7 +75,7 @@ public class ExtendedFieldInstance extends FieldInstance {
                     .collect(Collectors.toList());
         } else if (this.definition.getReferenceVocabularyId() != null) {
             this.selectableItems = recordsResolver.apply(this.definition.getReferenceVocabularyId()).stream()
-                    .map(r -> new SelectItem(Long.toString(r.getId()), r.getMainValue()))
+                    .map(r -> new SelectItem(Long.toString(r.getId()), r.getSelectItemLabel()))
                     .collect(Collectors.toList());
         }
         this.selectionBean = new FormInputMultiSelectHelper(() -> this.selectableItems, this::getSelection, this::setSelection);

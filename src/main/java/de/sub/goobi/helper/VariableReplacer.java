@@ -39,12 +39,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.naming.ConfigurationException;
 
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.text.StringTokenizer;
 import org.goobi.beans.Masterpiece;
@@ -64,6 +67,7 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import org.goobi.production.properties.Type;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -491,7 +495,24 @@ public class VariableReplacer {
             List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
             for (ProcessProperty pe : ppList) {
                 if (pe.getName().equalsIgnoreCase(propertyTitle)) {
-                    inString = inString.replace(r.group(), pe.getValue() == null ? "" : pe.getValue());
+                    Optional<String> newValue;
+                    if (Type.VOCABULARYREFERENCE.equals(pe.getType())) {
+                        newValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(pe.getValue()).getMainValue());
+                    } else if (Type.VOCABULARYMULTIREFERENCE.equals(pe.getType())) {
+                        if (!StringUtils.isBlank(pe.getValue())) {
+                            String value = pe.getValue();
+                            // weird case, but only use first value here
+                            if (value.contains("; ")) {
+                                value = value.substring(0, value.indexOf("; "));
+                            }
+                            newValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(value).getMainValue());
+                        } else {
+                            newValue = Optional.empty();
+                        }
+                    } else {
+                        newValue = Optional.ofNullable(pe.getValue());
+                    }
+                    inString = inString.replace(r.group(), newValue.orElse(""));
                     break;
                 }
             }
@@ -503,8 +524,16 @@ public class VariableReplacer {
             List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
             for (ProcessProperty pe : ppList) {
                 if (pe.getName().equalsIgnoreCase(propertyTitle)) {
-                    if (pe.getValue() != null) {
-                        newValues.add(pe.getValue());
+                    if (Type.VOCABULARYREFERENCE.equals(pe.getType())) {
+                        Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(pe.getValue()).getMainValue()).ifPresent(newValues::add);
+                    } else if (Type.VOCABULARYMULTIREFERENCE.equals(pe.getType())) {
+                        if (!StringUtils.isBlank(pe.getValue())) {
+                            for (String ref : pe.getValue().split("; ")) {
+                                Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(ref).getMainValue()).ifPresent(newValues::add);
+                            }
+                        }
+                    } else {
+                        Optional.ofNullable(pe.getValue()).ifPresent(newValues::add);
                     }
                 }
             }

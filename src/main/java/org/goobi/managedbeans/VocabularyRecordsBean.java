@@ -86,6 +86,18 @@ public class VocabularyRecordsBean implements Serializable {
         return RETURN_PAGE_OVERVIEW;
     }
 
+    public String getCurrentRecordUri() {
+        return Optional.ofNullable(currentRecord).map(r -> r.getId().toString()).orElse(null);
+    }
+
+    public void setCurrentRecordUri(String id) {
+        try {
+            currentRecord = api.vocabularyRecords().get(Long.parseLong(id));
+        } catch (NumberFormatException e) {
+            log.error("Wrong record ID \"{}\"", id);
+        }
+    }
+
     private void loadPaginator() {
         // TODO: Unclean to have static Helper access to user here..
         this.paginator = new HATEOASPaginator<>(

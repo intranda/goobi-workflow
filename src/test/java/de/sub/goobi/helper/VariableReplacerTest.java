@@ -27,12 +27,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.VocabularyRecordAPI;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import org.easymock.EasyMock;
-import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
+import org.goobi.beans.*;
 import org.goobi.beans.Process;
-import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
+import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.PropertyParser;
+import org.goobi.production.properties.Type;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +50,7 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ DateTimeHelper.class })
+@PrepareForTest({ DateTimeHelper.class, PropertyParser.class, VocabularyAPIManager.class })
 @PowerMockIgnore({ "javax.management.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.net.ssl.*", "jdk.internal.reflect.*", "javax.crypto.*" })
 public class VariableReplacerTest extends AbstractTest {
 
@@ -193,6 +196,60 @@ public class VariableReplacerTest extends AbstractTest {
 
         assertEquals("", replacer.replace("{folder.notExisting}"));
         assertTrue(replacer.replace("{folder.master}").contains("testprocess_master"));
+    }
+
+    @Test
+    public void testVocabularyProcessProperties() {
+        VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
+
+        ProcessProperty appleProperty = new ProcessProperty();
+        appleProperty.setName("AppleProperty");
+        appleProperty.setType(Type.VOCABULARYREFERENCE);
+        appleProperty.setValue("http://localhost:8081/api/v1/records/13");
+
+        ProcessProperty bananaProperty = new ProcessProperty();
+        bananaProperty.setName("BananaProperty");
+        bananaProperty.setType(Type.VOCABULARYREFERENCE);
+        bananaProperty.setValue("http://localhost:8081/api/v1/records/14");
+
+        ProcessProperty fruitsProperty = new ProcessProperty();
+        fruitsProperty.setName("FruitsProperty");
+        fruitsProperty.setType(Type.VOCABULARYMULTIREFERENCE);
+        fruitsProperty.setValue("http://localhost:8081/api/v1/records/13; http://localhost:8081/api/v1/records/14");
+
+        ExtendedVocabularyRecord appleRecord = EasyMock.createMock(ExtendedVocabularyRecord.class);
+        EasyMock.expect(appleRecord.getMainValue()).andReturn("Apple").anyTimes();
+        EasyMock.replay(appleRecord);
+
+        ExtendedVocabularyRecord bananaRecord = EasyMock.createMock(ExtendedVocabularyRecord.class);
+        EasyMock.expect(bananaRecord.getMainValue()).andReturn("Banana").anyTimes();
+        EasyMock.replay(bananaRecord);
+
+        VocabularyRecordAPI recordAPI = EasyMock.createMock(VocabularyRecordAPI.class);
+        EasyMock.expect(recordAPI.get(appleProperty.getValue())).andReturn(appleRecord).anyTimes();
+        EasyMock.expect(recordAPI.get(bananaProperty.getValue())).andReturn(bananaRecord).anyTimes();
+        EasyMock.replay(recordAPI);
+
+        VocabularyAPIManager vocabularyAPIManager = EasyMock.createMock(VocabularyAPIManager.class);
+        EasyMock.expect(vocabularyAPIManager.vocabularyRecords()).andReturn(recordAPI).anyTimes();
+        EasyMock.replay(vocabularyAPIManager);
+
+        PowerMock.mockStatic(VocabularyAPIManager.class);
+        EasyMock.expect(VocabularyAPIManager.getInstance()).andReturn(vocabularyAPIManager).anyTimes();
+
+        PropertyParser parser = EasyMock.createMock(PropertyParser.class);
+        EasyMock.expect(parser.getPropertiesForProcess(process)).andReturn(List.of(appleProperty, bananaProperty, fruitsProperty)).anyTimes();
+        EasyMock.replay(parser);
+
+        PowerMock.mockStatic(PropertyParser.class);
+        EasyMock.expect(PropertyParser.getInstance()).andReturn(parser).anyTimes();
+
+        PowerMock.replayAll();
+
+        assertEquals("Apple", replacer.replace("{process.AppleProperty}"));
+        assertEquals("Banana", replacer.replace("{process.BananaProperty}"));
+        assertEquals("Apple", replacer.replace("{process.FruitsProperty}"));
+        assertEquals("Apple,Banana", replacer.replace("{processes.FruitsProperty}"));
     }
 
     @Test

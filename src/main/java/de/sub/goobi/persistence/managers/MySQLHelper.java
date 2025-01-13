@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.format.DateTimeFormat;
@@ -57,7 +58,6 @@ import lombok.extern.log4j.Log4j2;
 public class MySQLHelper implements Serializable {
 
     private static final long serialVersionUID = -1396485589047649760L;
-    private static final int MAX_TRIES_NEW_CONNECTION = 5;
     private static final int TIME_FOR_CONNECTION_VALID_CHECK = 5;
 
     private static MySQLHelper helper = new MySQLHelper();
@@ -189,32 +189,32 @@ public class MySQLHelper implements Serializable {
     }
 
     public Connection getConnection() throws SQLException {
+        Connection connection = null;
 
-        Connection connection = this.cm.getDataSource().getConnection(); //NOSONAR, Connection is closed by the methods that requested the connection
-        if (connection.isValid(TIME_FOR_CONNECTION_VALID_CHECK)) {
-            return connection;
+        int maxAttempts = ConfigurationHelper.getInstance().getMaxDatabaseConnectionRetries();
+
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                connection = this.cm.getDataSource().getConnection(); //NOSONAR, Connection is closed by the methods that requested the connection
+                if (connection.isValid(TIME_FOR_CONNECTION_VALID_CHECK)) {
+                    return connection;
+                }
+            } catch (SQLException e) {
+                log.error("Connection failed: Trying to get new connection. Attempt: {} of {}", attempt, maxAttempts);
+            }
         }
 
-        for (int i = 0; i < MAX_TRIES_NEW_CONNECTION; i++) {
-
-            log.warn("Connection failed: Trying to get new connection. Attempt:" + i);
-
+        try {
+            log.error("Connection failed: Trying to get a connection from a new ConnectionManager");
+            this.cm = new ConnectionManager();
             connection = this.cm.getDataSource().getConnection(); //NOSONAR, Connection is closed by the methods that requested the connection
 
             if (connection.isValid(TIME_FOR_CONNECTION_VALID_CHECK)) {
                 return connection;
             }
+        } catch (SQLException e) {
+            log.error("Connection failed!");
         }
-
-        log.warn("Connection failed: Trying to get a connection from a new ConnectionManager");
-        this.cm = new ConnectionManager();
-        connection = this.cm.getDataSource().getConnection(); //NOSONAR, Connection is closed by the methods that requested the connection
-
-        if (connection.isValid(TIME_FOR_CONNECTION_VALID_CHECK)) {
-            return connection;
-        }
-
-        log.error("Connection failed!");
 
         return connection;
     }
