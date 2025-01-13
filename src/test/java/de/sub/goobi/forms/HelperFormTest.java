@@ -39,7 +39,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
-import org.checkerframework.checker.regex.qual.Regex;
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
