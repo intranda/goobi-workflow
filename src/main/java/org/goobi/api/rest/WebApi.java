@@ -24,19 +24,34 @@
  */
 package org.goobi.api.rest;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.glassfish.jersey.internal.inject.AbstractBinder;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.server.ResourceConfig;
 
+import de.unigoettingen.sub.commons.cache.ContentServerCacheManager;
+import de.unigoettingen.sub.commons.contentlib.servlet.rest.EhCacheShutdownListener;
 import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
 
 @ApplicationPath("api")
-public class WebApi extends Application {
+public class WebApi extends ResourceConfig {
 
-    @Override
-    public Map<String, Object> getProperties() {
-        Map<String, Object> props = new HashMap<>();
-        props.put("jersey.config.server.provider.classnames", "org.glassfish.jersey.media.multipart.MultiPartFeature");
-        return props;
+    public WebApi() {
+        super();
+        register(MultiPartFeature.class);
+        register(new EhCacheShutdownListener());
+        register(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bind(ContentServerCacheManager.getInstance()).to(ContentServerCacheManager.class);
+            }
+        });
+        packages(true, "org.goobi.api.rest");
     }
+
+    //    @Override
+    //    public Map<String, Object> getProperties() {
+    //        Map<String, Object> props = new HashMap<>();
+    //        props.put("jersey.config.server.provider.classnames", "org.glassfish.jersey.media.multipart.MultiPartFeature");
+    //        return props;
+    //    }
 }
