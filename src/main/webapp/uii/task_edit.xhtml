@@ -116,21 +116,8 @@
                             id="journal2"
                             enctype="multipart/form-data"
                             prependId="false">
-
-                            <ui:include src="templatePG/includes/journal.xhtml">
-                                <ui:param
-                                    name="showBigButton"
-                                    value="true" />
-                                <ui:param
-                                    name="showFolderSelection"
-                                    value="false" />
-                                <ui:param
-                                    name="showImageComments"
-                                    value="false" />
-                                <ui:param
-                                    name="bean"
-                                    value="#{AktuelleSchritteForm.mySchritt.prozess}" />
-                            </ui:include>
+                            <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{AktuelleSchritteForm.mySchritt.prozess}" /> 
+                           
                         </h:form>
                     </div>
                 </div>

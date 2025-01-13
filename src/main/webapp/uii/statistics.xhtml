@@ -424,12 +424,7 @@
                                         class="tab-pane active"
                                         rendered="#{NavigationForm.activeTab == 'productionStatistics'}">
                                         <div>
-                                                <f:subview id="id1">
-                                                    <ui:include  src="templatePG/includes/statistics/statistic_details.xhtml">
-                                                        <ui:param name="#{Form}" value="#{ProjekteForm}"/>
-                                                        <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager1}"/>
-                                                    </ui:include>
-                                                </f:subview>
+                                            <intranda:statistic_details id="id1" Manager="#{ProjekteForm.statisticsManager1}"/>
                                         </div>
                                     </h:panelGroup>
 
@@ -439,14 +434,9 @@
                                         class="tab-pane active"
                                         rendered="#{NavigationForm.activeTab == 'productionThroughput'}">
                                         <div>
+                                              <intranda:statistic_details id="id2" Manager="#{ProjekteForm.statisticsManager2}"/>
                                  
 
-                                                <f:subview id="id2">
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" >
-                                                        <ui:param name="#{Form}" value="#{ProjekteForm}"/>
-                                                        <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager2}"/>
-                                                    </ui:include>                                                
-                                                </f:subview>
                                         </div>
                                     </h:panelGroup>
 
@@ -456,14 +446,8 @@
                                         class="tab-pane active"
                                         rendered="#{NavigationForm.activeTab == 'errorTracking'}">
                                         <div>
-                                            
-
-                                                <f:subview id="id3">
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" >
-                                                                   <ui:param name="#{Form}" value="#{ProjekteForm}"/>
-                                                    <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager3}"/>
-                                                    </ui:include>
-                                                </f:subview>
+                                              <intranda:statistic_details id="id3" Manager="#{ProjekteForm.statisticsManager3}"/>
+                                           
                                         </div>
                                     </h:panelGroup>
                                     <h:panelGroup
@@ -472,13 +456,8 @@
                                         class="tab-pane active"
                                         rendered="#{NavigationForm.activeTab == 'storageCalculator'}">
                                         <div>
-                                              
-                                                <f:subview id="id4">
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" >
-                                                                 <ui:param name="#{Form}" value="#{ProjekteForm}"/>
-                                                    <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager4}"/>
-                                                    </ui:include>
-                                                </f:subview>
+                                             <intranda:statistic_details id="id4" Manager="#{ProjekteForm.statisticsManager4}"/>
+                                             
                                         </div>
                                     </h:panelGroup>
                                     <h:panelGroup

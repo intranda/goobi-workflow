@@ -12,6 +12,7 @@
 >
 
     <composite:interface>
+      <composite:attribute name="Manager" type="org.goobi.production.flow.statistics.StatisticsManager" />      
     </composite:interface>
 
     <composite:implementation>
@@ -21,7 +22,7 @@
 				<div class="form-group">
 					<h:outputLabel for="cal01a" styleClass="control-label" value="#{msgs.zeitraum} #{msgs.from}" />
 					<h:panelGroup style="display:block">
-						<intranda:formInputCalendar3 id="cal01a" name="startdate" field="#{Manager.sourceDateFrom}" required="false" />
+						<intranda:formInputCalendar3 id="cal01a" name="startdate" field="#{cc.attrs.Manager.sourceDateFrom}" required="false" />
 					</h:panelGroup>
 				</div>
 			</div>
@@ -29,7 +30,7 @@
 				<div class="form-group">
 					<h:outputLabel for="cal02a" styleClass="control-label" value="#{msgs.to}" />
 					<h:panelGroup style="display:block">
-						<intranda:formInputCalendar3 id="cal02a" name="enddate" field="#{Manager.sourceDateTo}" required="false" />
+						<intranda:formInputCalendar3 id="cal02a" name="enddate" field="#{cc.attrs.Manager.sourceDateTo}" required="false" />
 					</h:panelGroup>
 				</div>
 			</div>
@@ -37,15 +38,15 @@
 				<div class="form-group">
 					<h:outputLabel for="field01a" styleClass="control-label" value="- #{msgs.orLast} -" />
 					<x:inputText id="field01a" styleClass="form-control"
-						value="#{Manager.sourceNumberOfTimeUnitsAsString}" required="false" />
+						value="#{cc.attrs.Manager.sourceNumberOfTimeUnitsAsString}" required="false" />
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="form-group">
 					<h:outputLabel for="field02a" styleClass="control-label" value="#{msgs.einheiten}" />
-					<h:selectOneMenu id="field02a" value="#{Manager.sourceTimeUnit}" converter="StatisticsTimeUnitConverter"
+					<h:selectOneMenu id="field02a" value="#{cc.attrs.Manager.sourceTimeUnit}" converter="StatisticsTimeUnitConverter"
 						styleClass="form-select">
-						<f:selectItems value="#{Manager.allTimeUnits}" var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
+						<f:selectItems value="#{cc.attrs.Manager.allTimeUnits}" var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
 					</h:selectOneMenu>
 
 				</div>
@@ -56,9 +57,9 @@
 			<div class="col-sm-3">
 				<div class="form-group">
 					<h:outputLabel for="field03a" styleClass="control-label" value="#{msgs.einheit}" />
-					<h:selectOneMenu id="field03a" value="#{Manager.targetTimeUnit}" converter="StatisticsTimeUnitConverter"
+					<h:selectOneMenu id="field03a" value="#{cc.attrs.Manager.targetTimeUnit}" converter="StatisticsTimeUnitConverter"
 						styleClass="form-select">
-						<f:selectItems value="#{Manager.allTimeUnits}" var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
+						<f:selectItems value="#{cc.attrs.Manager.allTimeUnits}" var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
 					</h:selectOneMenu>
 				</div>
 			</div>
@@ -66,9 +67,9 @@
 			<div class="col-sm-3">
 				<div class="form-group">
 					<h:outputLabel for="field04a" styleClass="control-label" value="#{msgs.anzeige}" />
-					<h:selectOneMenu id="field04a" value="#{Manager.targetCalculationUnit}"
+					<h:selectOneMenu id="field04a" value="#{cc.attrs.Manager.targetCalculationUnit}"
 						converter="StatisticsCalculationUnitConverter" styleClass="form-select">
-						<f:selectItems value="#{Manager.allCalculationUnits}" var="unit" itemLabel="#{unit.title}"
+						<f:selectItems value="#{cc.attrs.Manager.allCalculationUnits}" var="unit" itemLabel="#{unit.title}"
 							itemValue="#{unit}" />
 					</h:selectOneMenu>
 				</div>
@@ -77,9 +78,9 @@
 			<div class="col-sm-3">
 				<div class="form-group">
 					<h:outputLabel for="field05a" styleClass="control-label" value="#{msgs.ausgabe}" />
-					<h:selectOneMenu id="field05a" value="#{Manager.targetResultOutput}"
+					<h:selectOneMenu id="field05a" value="#{cc.attrs.Manager.targetResultOutput}"
 						converter="StatisticsResultOutputConverter" styleClass="form-select">
-						<f:selectItems value="#{Manager.allResultOutputs}" var="out" itemLabel="#{out.title}" itemValue="#{out}" />
+						<f:selectItems value="#{cc.attrs.Manager.allResultOutputs}" var="out" itemLabel="#{out.title}" itemValue="#{out}" />
 					</h:selectOneMenu>
 				</div>
 			</div>
@@ -87,7 +88,7 @@
 			<div class="col-sm-3">
 				<div class="form-group">
 					<h:outputLabel for="field06a" styleClass="control-label" value="#{msgs.showAverage}" />
-					<h:selectOneMenu id="field06a" value="#{Manager.showAverage}" styleClass="form-select">
+					<h:selectOneMenu id="field06a" value="#{cc.attrs.Manager.showAverage}" styleClass="form-select">
 						<f:selectItem itemValue="#{true}" itemLabel="#{msgs.ja}"></f:selectItem>
 						<f:selectItem itemValue="#{false}" itemLabel="#{msgs.nein}"></f:selectItem>
 					</h:selectOneMenu>
@@ -101,30 +102,30 @@
 					jsf:id="myStatisticButtons"
 					title="#{msgs.calculateStatistics}"
 					class="btn btn-neutral-600"
-					jsf:action="#{Manager.calculate}" >
+					jsf:action="#{cc.attrs.Manager.calculate}" >
 					<span class="fa fa-cog" />
 					<span>
 						<h:outputText value="#{msgs.calculateStatistics}" />
 					</span>
-						<f:setPropertyActionListener target="#{Form.showStatistics}" value="true" />
+						<f:setPropertyActionListener target="#{ProjekteForm.showStatistics}" value="true" />
 				</button>
 			</div>
 			<div class="col-sm-3">
-				<h:panelGroup rendered="#{Manager.renderLoopOption}">
+				<h:panelGroup rendered="#{cc.attrs.Manager.renderLoopOption}">
 					<div class="form-check__wrapper">
-						<h:selectBooleanCheckbox id="loops" value="#{Manager.includeLoops}" title="#{msgs.includeLoops}" styleClass="form-check-input"/>
+						<h:selectBooleanCheckbox id="loops" value="#{cc.attrs.Manager.includeLoops}" title="#{msgs.includeLoops}" styleClass="form-check-input"/>
 						<h:outputLabel for="loops" value=" #{msgs.includeLoops}" />
 					</div>
 				</h:panelGroup>
 			</div>
 		</div>
 
-        <h:panelGroup rendered="#{Manager != null and !Manager.statisticMode.isSimple and Form.showStatistics}">
+        <h:panelGroup rendered="#{cc.attrs.Manager != null and !Manager.statisticMode.isSimple and Form.showStatistics}">
 
             <hr/>
 
-            <ui:repeat id="uaid29" var="element" rendered="#{Manager.renderingElements!=null}"
-                value="#{Manager.renderingElements}" layout="ordered list" rowCountVar="rowCount" rowIndexVar="rowIndex">
+            <ui:repeat id="uaid29" var="element" rendered="#{cc.attrs.Manager.renderingElements!=null}"
+                value="#{cc.attrs.Manager.renderingElements}" layout="ordered list" rowCountVar="rowCount" rowIndexVar="rowIndex">
 
                 <h3 class="font18px" style="margin-top: 20px">
                     <h:outputText id="uaid30" value="#{element.title}" />
@@ -143,7 +144,7 @@
 					<button
 						class="btn btn-blank"
 						jsf:id="createExcel"
-						jsf:action="#{Form.downloadStatisticsAsExcel}"
+						jsf:action="#{ProjekteForm.downloadStatisticsAsExcel}"
 						title="#{msgs.download_excel}"
 						jsf:rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}"
 						>
@@ -151,13 +152,13 @@
 						<span>
 							<h:outputText value="#{msgs.download_excel}" />
 						</span>
-						 <f:setPropertyActionListener value="#{element}" target="#{Form.myCurrentTable}" />
+						 <f:setPropertyActionListener value="#{element}" target="#{ProjekteForm.myCurrentTable}" />
 					</button>
 
 					<button
 						class="btn btn-blank"
 						jsf:id="createCsv"
-						jsf:action="#{Form.downloadStatisticsAsCsv}"
+						jsf:action="#{ProjekteForm.downloadStatisticsAsCsv}"
 						title="#{msgs.download_csv}"
 						jsf:rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}"
 						>
@@ -165,7 +166,7 @@
 						<span>
 							<h:outputText value="#{msgs.download_csv}" />
 						</span>
-						 <f:setPropertyActionListener value="#{element}" target="#{Form.myCurrentTable}" />
+						 <f:setPropertyActionListener value="#{element}" target="#{ProjekteForm.myCurrentTable}" />
 					</button>
 				</div>
 
