@@ -16,12 +16,14 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import javax.faces.model.SelectItem;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -242,5 +244,35 @@ public class VocabularyRecordAPITest {
         newRecord.setMetadata(true);
         newRecord.setFields(Collections.emptySet());
         VocabularyRecord result = api.save(newRecord);
+    }
+
+    @Test
+    public void givenVocabularyIsNotEmpty_whenGetRecordSelectItems_thenReturnCorrectList() {
+        VocabularyRecordPageResult pageResult = new VocabularyRecordPageResult();
+        pageResult.setContent(new LinkedList<>(List.of(new ExtendedVocabularyRecord(vocabularyRecord))));
+
+        setupResponseSuccess(true);
+        setupResponse(vocabularyRecord, VocabularyRecord.class);
+        setupResponse(vocabulary, Vocabulary.class);
+        setupResponse(schema, VocabularySchema.class);
+        setupResponse(pageResult, VocabularyRecordPageResult.class);
+        setupResponseFinish();
+
+        List<SelectItem> items = api.getRecordSelectItems(0L);
+    }
+
+    @Test
+    public void givenVocabularyIsNotEmpty_whenGetAllHierarchicalRecords_thenReturnCorrectList() {
+        VocabularyRecordPageResult pageResult = new VocabularyRecordPageResult();
+        pageResult.setContent(new LinkedList<>(List.of(new ExtendedVocabularyRecord(vocabularyRecord))));
+
+        setupResponseSuccess(true);
+        setupResponse(vocabularyRecord, VocabularyRecord.class);
+        setupResponse(vocabulary, Vocabulary.class);
+        setupResponse(schema, VocabularySchema.class);
+        setupResponse(pageResult, VocabularyRecordPageResult.class);
+        setupResponseFinish();
+
+        List<ExtendedVocabularyRecord> items = api.getAllHierarchicalRecords(0L);
     }
 }
