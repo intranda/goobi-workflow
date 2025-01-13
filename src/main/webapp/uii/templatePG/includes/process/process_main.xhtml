@@ -458,20 +458,9 @@
 						id="processJournal"
 						enctype="multipart/form-data"
 						prependId="false">
-						<ui:include src="../journal.xhtml">
-                            <ui:param
-                                name="showBigButton"
-                                value="true" />
-                            <ui:param
-                                name="showFolderSelection"
-                                value="true" />
-                            <ui:param
-                                    name="showImageComments"
-                                    value="true" />
-                            <ui:param
-                                name="bean"
-                                value="#{ProzessverwaltungForm.myProzess}" />
-                        </ui:include>
+                                     <intranda:journal showImageComments="true" showBigButton="true" showFolderSelection="true" bean="#{ProzessverwaltungForm.myProzess}" /> 
+                        
+                       
                     </h:form>
 				</div>
 				<!-- // JOURNAL -->

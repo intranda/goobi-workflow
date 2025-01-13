@@ -4,16 +4,26 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:x="http://xmlns.jcp.org/jsf/html"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
+ xmlns:c="http://java.sun.com/jsp/jstl/core"    
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
     <composite:interface>
+    
+    <composite:attribute name="showBigButton" required="false" default="false"  />
+    <composite:attribute name="showFolderSelection" required="false" default="false" />
+    <composite:attribute name="showImageComments" required="false" default="false" />
+    
+    
+    <composite:attribute name="bean" type="org.goobi.beans.IJournal" required="true"/>
+    
+    
     </composite:interface>
 
-    <composite:implementation>
+
+<composite:implementation>
 
         <!-- Custom plugin styles -->
         <!--
@@ -24,22 +34,22 @@
         -->
 
         <script type="text/javascript">
-									/*
-									    function switchExpanded( id ) {
-									        console.log(1)
-									        console.log( "called by: " + id );
-									        var x = document.getElementById( id ).getAttribute( "aria-expanded" );
-									        console.log( x )
-									        if ( x == "true" ) {
-									            x = "false"
-									        }
-									        else {
-									            x = "true"
-									        }
-									        document.getElementById( id ).setAttribute( "aria-expanded", x );
-									                            }
-									 */
-								</script>
+                                    /*
+                                        function switchExpanded( id ) {
+                                            console.log(1)
+                                            console.log( "called by: " + id );
+                                            var x = document.getElementById( id ).getAttribute( "aria-expanded" );
+                                            console.log( x )
+                                            if ( x == "true" ) {
+                                                x = "false"
+                                            }
+                                            else {
+                                                x = "true"
+                                            }
+                                            document.getElementById( id ).setAttribute( "aria-expanded", x );
+                                                                }
+                                     */
+                                </script>
 
         <!-- Get box title -->
         <c:if test="#{NavigationForm.uiStatus['toggleJournal'] == null or NavigationForm.uiStatus['toggleJournal'] == '' }">
@@ -207,20 +217,20 @@
                         pt:aria-label="#{msgs.process_log_file_FolderSelection}"
                         styleClass="form-select me-3 pe-5"
                         style="width: auto;"
-                        value="#{bean.currentFolder}"
-                        rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload' and showFolderSelection}">
-                        <f:selectItems value="#{bean.visibleFolder}" />
+                        value="#{cc.attrs.bean.currentFolder}"
+                        rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload' and cc.attrs.showFolderSelection!='false'}">
+                        <f:selectItems value="#{cc.attrs.bean.visibleFolder}" />
                         <f:ajax render="@form" />
                     </x:selectOneMenu>
 
                     <button
                         jsf:id="adapt_display_comments"
-                        jsf:rendered="#{showImageComments}"
+                        jsf:rendered="#{cc.attrs.showImageComments !='false'}"
                         data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
                         class="btn d-flex align-items-center btn--title-action-neutral">
-                        <span class="fa #{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-list-ol' : 'fa-comment'}" />
+                        <span class="fa #{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-list-ol' : 'fa-comment-o'}" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal']=='fileUpload' ? 'imageComments' : '' }"
                             target="#{NavigationForm.uiStatus['toggleJournal']}" />
@@ -229,7 +239,7 @@
                     <button
                         jsf:id="adapt_display_folders"
                         data-toggle="tooltip"
-                        jsf:rendered="#{showFolderSelection}"
+                        jsf:rendered="#{cc.attrs.showFolderSelection=!'false'}"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         class="btn d-flex align-items-center btn--title-action-neutral">
@@ -245,7 +255,7 @@
                         jsf:action="#{NavigationForm.Reload}"
                         title="#{msgs.resizeBox}"
                         aria-label="#{msgs.resizeBox}"
-                        jsf:rendered="#{showBigButton}">
+                        jsf:rendered="#{cc.attrs.showBigButton!='false'}">
                         <span class="fa #{NavigationForm.uiStatus['journalBig']?'fa-compress':'fa-expand'}" />
                         <f:setPropertyActionListener
                             target="#{NavigationForm.uiStatus['journalBig']}"
@@ -261,11 +271,11 @@
                     class="gw-table-fixed #{NavigationForm.uiStatus['journalBig']?'journal-big':''}"
                     tabindex="0"
                     data-scrolldown="true">
-                    <h:panelGroup rendered="#{bean.journal.size()>0}">
+                    <h:panelGroup rendered="#{cc.attrs.bean.journal.size()>0}">
                         <ol class="feed" role="list">
                             <ui:repeat
                                 var="entry"
-                                value="#{bean.journal}"
+                                value="#{cc.attrs.bean.journal}"
                                 varStatus="row">
                                 <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
                                     
@@ -318,7 +328,7 @@
                                                     <button
                                                         jsf:id="downloadFile"
                                                         class="btn btn-primary-400"
-                                                        jsf:action="#{bean.downloadFile(entry)}"
+                                                        jsf:action="#{cc.attrs.bean.downloadFile(entry)}"
                                                         title="#{msgs.downloadFile}">
                                                         <span class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
                                                         <span>
@@ -330,7 +340,7 @@
                                                         onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
                                                         jsf:rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
                                                         class="btn btn-blank"
-                                                        jsf:action="#{bean.deleteFile(entry)}"
+                                                        jsf:action="#{cc.attrs.bean.deleteFile(entry)}"
                                                         title="#{msgs.deleteFile}">
                                                         <span class="fa fa-trash-o" />
                                                     </button>
@@ -355,6 +365,8 @@
                             <h:outputText
                                 styleClass="flex-label"
                                 value="#{msgs.process_log_firstContent}:" />
+                                
+                                <h:outputText value="#{cc.attrs.showBigButton}"></h:outputText>
                         </div>
                         <div class="form-input">
                             <div class="input-group">
@@ -363,12 +375,12 @@
                                     styleClass="form-control"
                                     pt:aria-label="#{msgs.process_log_firstContent}"
                                     rows="3"
-                                    value="#{bean.content}" />
+                                    value="#{cc.attrs.bean.content}" />
                                 <label class="input-group-text py-0 align-self-stretch fs-400">
                                     <h:selectBooleanCheckbox
                                         id="priorityCheck"
                                         styleClass="form-check-input mt-0 me-3"
-                                        value="#{bean.priorityComment}"
+                                        value="#{cc.attrs.bean.priorityComment}"
                                         pt:aria-label="#{msgs.process_log_file_priorityComment}" />
                                         #{msgs.process_log_file_priorityComment}
                                 </label>
@@ -385,17 +397,17 @@
                                 <h:inputFile
                                     id="thirdtab_fileupload3"
                                     pt:aria-label="#{msgs.fileUpload}"
-                                    value="#{bean.uploadedFile}"
+                                    value="#{cc.attrs.bean.uploadedFile}"
                                     storage="file"
                                     required="false"
                                     styleClass="form-control">
-                                    <f:ajax listener="#{bean.uploadFile}" />
+                                    <f:ajax listener="#{cc.attrs.bean.uploadFile}" />
                                 </h:inputFile>
                                 <h:selectOneMenu
                                     id="folderSelection"
                                     styleClass="form-select"
-                                    value="#{bean.uploadFolder}"
-                                    rendered="#{showFolderSelection}">
+                                    value="#{cc.attrs.bean.uploadFolder}"
+                                    rendered="#{cc.attrs.showFolderSelection !='false'}">
                                     <f:selectItem
                                         itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
                                         itemValue="intern" />
@@ -411,7 +423,7 @@
                             id="addToLog"
                             type="submit"
                             class="btn btn-primary-400"
-                            jsf:action="#{bean.addJournalEntry}">
+                            jsf:action="#{cc.attrs.bean.addJournalEntry}">
                             <h:outputText value="#{msgs.nachrichtHinzufuegen}" />
                         </button>
                     </div>
@@ -428,7 +440,7 @@
                             class="table table-hover table-bordered">
                             <ui:repeat
                                 var="entry"
-                                value="#{bean.filesInSelectedFolder}"
+                                value="#{cc.attrs.bean.filesInSelectedFolder}"
                                 varStatus="row">
                                 <tr>
                                     <td>
@@ -442,10 +454,10 @@
                                         <!-- delete button, removed for some folder -->
                                         <button
                                             jsf:id="deleteFile2"
-                                            jsf:rendered="#{bean.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
+                                            jsf:rendered="#{cc.attrs.bean.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
                                             class="btn btn-blank"
                                             style="color: #333;"
-                                            jsf:action="#{bean.deleteFile(entry)}"
+                                            jsf:action="#{cc.attrs.bean.deleteFile(entry)}"
                                             title="#{msgs.deleteFile}">
                                             <span class="fa fa-trash-o" />
                                         </button>
@@ -454,7 +466,7 @@
                                             jsf:id="downloadFile"
                                             class="btn btn-blank"
                                             style="color: #333;"
-                                            jsf:action="#{bean.downloadFile(entry)}"
+                                            jsf:action="#{cc.attrs.bean.downloadFile(entry)}"
                                             title="#{msgs.downloadFile}">
                                             <span class="fa fa-download" />
                                         </button>
@@ -468,7 +480,7 @@
 
             </ui:fragment>
             <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']=='imageComments'}">
-                <ui:include src="imageComments.xhtml" />
+                <ui:include src="/uii/includes/imageComments.xhtml" />
             </ui:fragment>
 
         </intranda:box>

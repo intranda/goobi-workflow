@@ -727,17 +727,9 @@
 
                 <!-- JOURNAL -->
                 <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-5'}">
-                    <ui:include src="templatePG/includes/journal.xhtml">
-                        <ui:param
-                            name="showBigButton"
-                            value="true" />
-                        <ui:param
-                            name="showFolderSelection"
-                            value="false" />
-                        <ui:param
-                            name="bean"
-                            value="#{ProjekteForm.myProjekt}" />
-                    </ui:include>
+                <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{ProjekteForm.myProjekt}" /> 
+                
+                   
                 </div>
                 <!-- JOURNAL -->
 

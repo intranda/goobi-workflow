@@ -293,19 +293,7 @@
             id="journal"
             enctype="multipart/form-data"
             prependId="false">
-            <ui:include src="../journal.xhtml">
-                <ui:param
-                    name="showBigButton"
-                    value="true" />
-                <ui:param
-                    name="showFolderSelection"
-                    value="false" />
-                <ui:param
-                    name="showImageComments"
-                    value="false" />
-                <ui:param
-                    name="bean"
-                    value="#{currentStep.prozess}" />
+             <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{currentStep.prozess}" /> 
             </ui:include>
         </h:form>
         <!-- // JOURNAL -->
