@@ -51,7 +51,7 @@
                             <h:outputText value="#{entry.value}" />
                         </h:column>
 
-                        <x:column headerClass="gw-table-fixed__actions">
+                        <h:column headerClass="gw-table-fixed__actions">
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.auswahl}" />
                             </f:facet>
@@ -72,7 +72,7 @@
                                 </button>
                             </div>
 
-                        </x:column>
+                        </h:column>
 
                     </h:dataTable>
 
@@ -91,46 +91,46 @@
                       <div class="gw-table gw-table-fixed">
                       <div class="gw-table__wrapper">
 
-                        <x:dataTable
+                        <h:dataTable
                             rendered="#{messageQueueBean.messageType != null}"
                             styleClass="table table-hover table-bordered"
                             var="ticket"
                             value="#{messageQueueBean.activeSlowQueryMesssages}">
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_id}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.messageId}" />
-                            </x:column>
+                            </h:column>
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_type}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.taskType}" />
-                            </x:column>
+                            </h:column>
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_processId}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.processId}" />
-                            </x:column>
+                            </h:column>
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_stepId}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.stepId}" />
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_stepName}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.stepName}" />
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_properties}" />
                                 </f:facet>
@@ -140,8 +140,8 @@
                                     <h:outputText value="#{prop}: #{ticket.properties[prop]} " />
                                     <br />
                                 </ui:repeat>
-                            </x:column>
-                            <x:column headerClass="gw-table-fixed__actions">
+                            </h:column>
+                            <h:column headerClass="gw-table-fixed__actions">
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.auswahl}" />
                                 </f:facet>
@@ -155,8 +155,8 @@
                                     <span class="fa fa-trash-o" />
                                 </button>
                                 </div>
-                            </x:column>
-                        </x:dataTable>
+                            </h:column>
+                        </h:dataTable>
                         </div>
                     </div>
 
@@ -218,7 +218,7 @@
                             <h:outputText value="#{entry.value}" />
                         </h:column>
 
-                        <x:column headerClass="gw-table-fixed__actions">
+                        <h:column headerClass="gw-table-fixed__actions">
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.auswahl}" />
                             </f:facet>
@@ -240,7 +240,7 @@
                                 </button>
                             </div>
 
-                        </x:column>
+                        </h:column>
 
                     </h:dataTable>
                   </div>
@@ -257,54 +257,46 @@
                     <div class="gw-table gw-table-fixed">
                       <div class="gw-table__wrapper">
 
-                        <x:dataTable
+                        <h:dataTable
                             rendered="#{messageQueueBean.messageType != null}"
                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                             var="ticket"
                             value="#{messageQueueBean.activeFastQueryMesssages}">
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_id}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.messageId}" />
-                            </x:column>
+                            </h:column>
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_type}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.taskType}" />
-                            </x:column>
+                            </h:column>
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_processId}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.processId}" />
-                            </x:column>
+                            </h:column>
 
-                            <!--                             <x:column> -->
-                            <!--                                 <f:facet name="header"> -->
-                            <!--                                     <h:outputText value="#{msgs.message_queue_ticket_processName}" /> -->
-                            <!--                                 </f:facet> -->
-                            <!--                                 <h:outputText value="#{ticket.processName}" /> -->
-                            <!--                             </x:column> -->
-
-
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_stepId}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.stepId}" />
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_stepName}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.stepName}" />
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_properties}" />
                                 </f:facet>
@@ -314,8 +306,8 @@
                                     <h:outputText value="#{prop}: #{ticket.properties[prop]} " />
                                     <br />
                                 </ui:repeat>
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.auswahl}" />
                                 </f:facet>
@@ -327,8 +319,8 @@
                                     title="#{msgs.message_queue_cancel_ticket}">
                                     <span class="fa fa-trash-o" />
                                 </button>
-                            </x:column>
-                        </x:dataTable>
+                            </h:column>
+                        </h:dataTable>
 
                         </div> <!-- /gw-table__wrapper -->
                       </div> <!-- /gw-table -->

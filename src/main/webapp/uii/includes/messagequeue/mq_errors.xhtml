@@ -2,47 +2,46 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://xmlns.jcp.org/jsf/html">
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
 	<h3>#{msgs.errors}</h3>
 	<h:form>
-		<x:dataTable
+		<h:dataTable
 			styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
 			var="ticket" value="#{messageQueueBean.paginator.list}">
-			<x:column>
+			<h:column>
 				<f:facet name="header">
 					<h:outputText value="#{msgs.message_queue_ticket_id}" />
 				</f:facet>
 				<h:outputText value="#{ticket.ticketId}" />
-			</x:column>
+			</h:column>
 	
-			<x:column>
+			<h:column>
 				<f:facet name="header">
 					<h:outputText value="#{msgs.time}" />
 				</f:facet>
 				<h:outputText value="#{ticket.time}" />
-			</x:column>
+			</h:column>
 	
-			<x:column>
+			<h:column>
 				<f:facet name="header">
 					<h:outputText value="#{msgs.status}" />
 				</f:facet>
 				<h:outputText value="#{ticket.status}" />
-			</x:column>
+			</h:column>
 
-			<x:column>
+			<h:column>
 				<f:facet name="header">
 					<h:outputText value="#{msgs.message}" />
 				</f:facet>
 				<h:outputText value="#{ticket.message}" />
-			</x:column>
+			</h:column>
 
-			<x:column>
+			<h:column>
 				<f:facet name="header">
 					<h:outputText value="#{msgs.originalMessage}" />
 				</f:facet>
 				<h:outputText value="#{ticket.originalMessage}" />
-			</x:column>
-		</x:dataTable>
+			</h:column>
+		</h:dataTable>
 	</h:form>
 </ui:composition>

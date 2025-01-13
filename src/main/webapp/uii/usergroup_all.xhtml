@@ -48,11 +48,11 @@
 
 								<!-- TABLE WITH ALL GROUPS -->
 								<div class="gw-table__wrapper">
-    								<x:dataTable id="usergrouptable" styleClass="table table-hover table-bordered"
+    								<h:dataTable id="usergrouptable" styleClass="table table-hover table-bordered"
     									var="item" value="#{BenutzergruppenForm.paginator.list}">
 
     									<!-- NAME COLUMN -->
-                                        <x:column>
+                                        <h:column>
     										<f:facet name="header">
     											<h:outputText value="#{msgs.name}" />
     										</f:facet>
@@ -79,12 +79,12 @@
     														boxSmall="true"
     														title="#{msgs.benutzer}">
 
-    														<x:dataTable var="step" value="#{item.benutzer}"
+    														<h:dataTable var="step" value="#{item.benutzer}"
     															styleClass="table table-hover table-bordered ">
     															<h:column>
     																<h:outputText value="#{step.nachVorname}" />
     															</h:column>
-    														</x:dataTable>
+    														</h:dataTable>
     													</intranda:box>
     												</div>
                                                     <!-- // BOX WITH USERS -->
@@ -116,20 +116,20 @@
     										</h:panelGroup>
                                             <!-- // EXPANDED DETAILS OF THE GROUP -->
 
-    									</x:column>
+    									</h:column>
                                         <!-- // NAME COLUMN -->
 
                                         <!-- INSTITUTION COLUMN -->
-    									<x:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
+    									<h:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
     											<f:facet name="header">
     													<h:outputText value="#{msgs.institution}" />
     											</f:facet>
     											<h:outputText value="#{item.institution.shortName}" />
-    									</x:column>
+    									</h:column>
                                         <!-- // INSTITUTION COLUMN -->
 
                                         <!-- ACTION COLUMN -->
-    									<x:column headerClass="gw-table-fixed__actions">
+    									<h:column headerClass="gw-table-fixed__actions">
     										<f:facet name="header">
     											<h:outputText value="#{msgs.auswahl}" />
     										</f:facet>
@@ -162,10 +162,10 @@
     											</button>
     										</div>
 
-    									</x:column>
+    									</h:column>
                                         <!-- // ACTION COLUMN -->
 
-    								</x:dataTable>
+    								</h:dataTable>
 								</div>
 
                                 <!-- ACTION AREA -->

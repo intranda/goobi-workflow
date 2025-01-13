@@ -46,40 +46,40 @@
 								<!-- TABLE -->
 
 								<div class="gw-table__wrapper">
-									<x:dataTable
+									<h:dataTable
 										id="projectList"
 										styleClass="table table-hover table-bordered"
 										var="item"
 										value="#{ProjekteForm.paginator.list}"
 										>
 
-									<x:column>
+									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.name}" />
 										</f:facet>
 										<h:outputText value="#{item.titel}" />
-									</x:column>
+									</h:column>
 
-									<x:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
+									<h:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
 											<f:facet name="header">
 													<h:outputText value="#{msgs.institution}" />
 											</f:facet>
 											<h:outputText value="#{item.institution.shortName}" />
-									</x:column>
+									</h:column>
 
-									<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs" style="max-width:180px;">
+									<h:column headerstyleClass="hidden-xs" styleClass="hidden-xs" style="max-width:180px;">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.internesSpeicherformat}" />
 										</f:facet>
 										<h:outputText value="#{item.fileFormatInternal}" />
-									</x:column>
+									</h:column>
 
-									<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs"  style="max-width:180px;">
+									<h:column headerstyleClass="hidden-xs" styleClass="hidden-xs"  style="max-width:180px;">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.dmsExportformat}" />
 										</f:facet>
 										<h:outputText value="#{item.fileFormatDmsExport}" />
-									</x:column>
+									</h:column>
 
 									<h:column>
 										<f:facet name="header">
@@ -93,7 +93,7 @@
 										</h:panelGroup>
 									</h:column>
 
-									<x:column headerClass="gw-table-fixed__actions">
+									<h:column headerClass="gw-table-fixed__actions">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
@@ -127,9 +127,9 @@
 												<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
 											</button>
 										</div>
-									</x:column>
+									</h:column>
 
-								</x:dataTable>
+								</h:dataTable>
 								</div>
 
 								<div class="box__actions">

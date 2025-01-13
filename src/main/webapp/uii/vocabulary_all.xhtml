@@ -56,7 +56,7 @@
                             </div>
 
                             <div class="gw-table__wrapper">
-                                <x:dataTable
+                                <h:dataTable
                                         id="vocabularies"
                                         styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                                         var="item"
@@ -75,7 +75,7 @@
                                         <h:outputText value="#{item.description}"/>
                                     </h:column>
 
-                                    <x:column headerClass="gw-table-fixed__actions">
+                                    <h:column headerClass="gw-table-fixed__actions">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}"/>
                                         </f:facet>
@@ -119,8 +119,8 @@
                                             </button>
                                         </div>
 
-                                    </x:column>
-                                </x:dataTable>
+                                    </h:column>
+                                </h:dataTable>
 
                             </div> <!-- /gw-table__wrapper -->
                         </div> <!-- /gw-table -->

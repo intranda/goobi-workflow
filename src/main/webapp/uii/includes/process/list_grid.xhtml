@@ -264,7 +264,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 						</table>
 
 					<h:panelGroup style="display:block; width:100%;padding:10px 10px 0 10px;" rendered="#{item.panelAusgeklappt}">
-						<x:dataTable styleClass="table table-hover table-bordered" style="border-right: 1px solid #ddd;" id="grid_prozessdetails" var="step" value="#{item.schritteList}">
+						<h:dataTable styleClass="table table-hover table-bordered" style="border-right: 1px solid #ddd;" id="grid_prozessdetails" var="step" value="#{item.schritteList}">
 							<h:column>
 								<h:outputText value="#{step.reihenfolge}" styleClass="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
 							</h:column>
@@ -311,7 +311,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 								</ul>
 								<h:outputText value="#{step.bearbeitungsstatusEnum.title}" rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}"/>
 							</h:column>
-						</x:dataTable>
+						</h:dataTable>
 					</h:panelGroup>
 
 					</div>

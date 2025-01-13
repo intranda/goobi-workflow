@@ -49,47 +49,47 @@
 							<div class="gw-table-fixed__wrapper">
 
 								<!-- Table of current sessions -->
-								<x:dataTable id="userTable" styleClass="table table-hover table-bordered" var="item" value="#{SessionForm.sessions}">
+								<h:dataTable id="userTable" styleClass="table table-hover table-bordered" var="item" value="#{SessionForm.sessions}">
 
-									<x:column headerClass="gw-table-fixed__sizeXS">
+									<h:column headerClass="gw-table-fixed__sizeXS">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.benutzer}" />
 										</f:facet>
 										<h:outputText value="#{item.userName}" />
-									</x:column>
+									</h:column>
 
-									<x:column rendered="#{LoginForm.hasRole('Statistics_CurrentUsers_Details')}"
+									<h:column rendered="#{LoginForm.hasRole('Statistics_CurrentUsers_Details')}"
 										headerClass="gw-table-fixed__sizeXS">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.ip}" />
 										</f:facet>
 										<h:outputText value="#{item.userIpAddress}" />
-									</x:column>
+									</h:column>
 
-									<x:column headerClass="gw-table-fixed__sizeXXL">
+									<h:column headerClass="gw-table-fixed__sizeXXL">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.browser}" />
 										</f:facet>
 										<h:graphicImage pt:aria-label="#{msgs.browser}" styleClass="me-4" value="templatePG/img/browser/#{item.browserIconFileName}" />
 										<h:outputText value="#{item.browserName}" />
-									</x:column>
+									</h:column>
 
-									<x:column headerClass="gw-table-fixed__sizeXXS"
+									<h:column headerClass="gw-table-fixed__sizeXXS"
 										rendered="#{LoginForm.hasRole('Statistics_CurrentUsers_Details')}">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.aktivSeit}" />
 										</f:facet>
 										<h:outputText value="#{item.sessionCreatedFormatted}" />
-									</x:column>
+									</h:column>
 
-									<x:column headerClass="gw-table-fixed__sizeXXS">
+									<h:column headerClass="gw-table-fixed__sizeXXS">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.letzterZugriff}" />
 										</f:facet>
 										<h:outputText value="#{item.lastAccessFormatted}" />
-									</x:column>
+									</h:column>
 
-								</x:dataTable>
+								</h:dataTable>
 							</div>
 
 							<h:commandScript name="reloadTable" render="@form" />

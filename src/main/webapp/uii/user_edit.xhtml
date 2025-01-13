@@ -155,7 +155,7 @@
                                                 labelRequired="true" />
                                         </div>
                                         <div class="col-12 col-md-9">
-                                            <x:inputText
+                                            <h:inputText
                                                 id="loginAs"
                                                 forceId="true"
                                                 styleClass="form-control"
@@ -164,7 +164,7 @@
                                                 readonly="false"
                                                 validatorMessage="#{msgs.loginWrongCharacter}">
                                                 <f:validateRegex pattern="[a-z0-9\._-]+" />
-                                            </x:inputText>
+                                            </h:inputText>
                                             <h:message
                                                 for="loginAs"
                                                 showDetail="true"
@@ -321,14 +321,14 @@
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
                                                     <div class="gw-table__wrapper">
 
-                                                        <x:dataTable
+                                                        <h:dataTable
                                                             id="newgroups"
                                                             styleClass="table table-hover dataTable table-bordered"
                                                             columnClasses="align-middle"
                                                             var="item"
                                                             value="#{BenutzerverwaltungForm.usergroupPaginator.list}">
 
-                                                            <x:column styleClass="gw-table__actions">
+                                                            <h:column styleClass="gw-table__actions">
 
                                                                 <div
                                                                     class="gw-table__actions__container align-items-center">
@@ -353,12 +353,12 @@
                                                                     <h:outputText value="#{item.titel}" />
                                                                 </div>
                                                                 <!-- /gw-table__actions__container -->
-                                                            </x:column>
-                                                            <x:column>
+                                                            </h:column>
+                                                            <h:column>
                                                                 <h:outputText value="#{item.institution.shortName}" />
-                                                            </x:column>
+                                                            </h:column>
 
-                                                        </x:dataTable>
+                                                        </h:dataTable>
                                                     </div>
                                                     <!-- /gw-table__wrapper -->
                                                 </div>
@@ -407,7 +407,7 @@
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
                                                     <div class="gw-table__wrapper">
 
-                                                        <x:dataTable
+                                                        <h:dataTable
                                                             id="currentGroups"
                                                             styleClass="
                           table
@@ -422,7 +422,7 @@
                                                             <h:column>
                                                                 <h:outputText value="#{item.titel}" />
                                                             </h:column>
-                                                            <x:column>
+                                                            <h:column>
 
                                                                 <div
                                                                     class="d-flex justify-content-between align-items-center">
@@ -444,8 +444,8 @@
 
                                                                 </div>
 
-                                                            </x:column>
-                                                        </x:dataTable>
+                                                            </h:column>
+                                                        </h:dataTable>
 
                                                     </div>
                                                     <!-- /gw-table__wrapper -->
@@ -520,13 +520,13 @@
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
 
                                                     <div class="gw-table__wrapper">
-                                                        <x:dataTable
+                                                        <h:dataTable
                                                             id="newprojects"
                                                             styleClass="table table-bordered table-hover"
                                                             var="item"
                                                             value="#{BenutzerverwaltungForm.projectPaginator.list}">
 
-                                                            <x:column styleClass="gw-table__actions">
+                                                            <h:column styleClass="gw-table__actions">
 
                                                                 <!-- Hinzufügen-Schaltknopf -->
                                                                 <div
@@ -549,12 +549,12 @@
                                                                     <h:outputText value="#{item.titel}" />
                                                                 </div>
 
-                                                            </x:column>
+                                                            </h:column>
 
-                                                            <x:column styleClass="align-middle">
+                                                            <h:column styleClass="align-middle">
                                                                 <h:outputText value="#{item.institution.shortName}" />
-                                                            </x:column>
-                                                        </x:dataTable>
+                                                            </h:column>
+                                                        </h:dataTable>
                                                     </div>
                                                     <!-- /gw-table__wrapper -->
 
@@ -595,7 +595,7 @@
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
                                                     <div class="gw-table__wrapper">
 
-                                                        <x:dataTable
+                                                        <h:dataTable
                                                             id="currentProjects"
                                                             styleClass="
                         table
@@ -612,7 +612,7 @@
                                                                 <h:outputText value="#{item.titel}" />
                                                             </h:column>
 
-                                                            <x:column>
+                                                            <h:column>
 
                                                                 <div
                                                                     class="d-flex justify-content-between align-items-center">
@@ -632,9 +632,9 @@
                                                                         <f:ajax render=":myform" />
                                                                     </button>
                                                                 </div>
-                                                            </x:column>
+                                                            </h:column>
 
-                                                        </x:dataTable>
+                                                        </h:dataTable>
                                                     </div>
                                                     <!-- /gw-table__wrapper -->
                                                 </div>

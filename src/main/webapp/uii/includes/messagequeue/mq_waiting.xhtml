@@ -43,7 +43,7 @@
                             <h:outputText value="#{entry.value}" />
                         </h:column>
 
-                        <x:column>
+                        <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.auswahl}" />
                             </f:facet>
@@ -62,7 +62,7 @@
                                     value="#{entry.key}" />
                             </button>
 
-                        </x:column>
+                        </h:column>
 
                     </h:dataTable>
 
@@ -84,33 +84,33 @@
                                 <h:outputText value="#{ticket.messageId}" />
                             </h:column>
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_type}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.taskType}" />
-                            </x:column>
+                            </h:column>
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_processId}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.processId}" />
-                            </x:column>
+                            </h:column>
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_stepId}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.stepId}" />
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_stepName}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.stepName}" />
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_properties}" />
                                 </f:facet>
@@ -120,8 +120,8 @@
                                     <h:outputText value="#{prop}: #{ticket.properties[prop]} " />
                                     <br />
                                 </ui:repeat>
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.auswahl}" />
                                 </f:facet>
@@ -133,7 +133,7 @@
                                     title="#{msgs.message_queue_cancel_ticket}">
                                     <span class="fa fa-trash-o" />
                                 </button>
-                            </x:column>
+                            </h:column>
                         </h:dataTable>
                     </h:panelGroup>
                 </h:form>
@@ -185,7 +185,7 @@
                             <h:outputText value="#{entry.value}" />
                         </h:column>
 
-                        <x:column>
+                        <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.auswahl}" />
                             </f:facet>
@@ -204,7 +204,7 @@
                                     value="#{entry.key}" />
                             </button>
 
-                        </x:column>
+                        </h:column>
 
                     </h:dataTable>
 
@@ -212,53 +212,46 @@
 
 
                         <br />
-                        <x:dataTable
+                        <h:dataTable
                             rendered="#{messageQueueBean.messageType != null}"
                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                             var="ticket"
                             value="#{messageQueueBean.activeFastQueryMesssages}">
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_id}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.messageId}" />
-                            </x:column>
+                            </h:column>
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_type}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.taskType}" />
-                            </x:column>
+                            </h:column>
 
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_processId}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.processId}" />
-                            </x:column>
-                            <!--                             <x:column> -->
-                            <!--                                 <f:facet name="header"> -->
-                            <!--                                     <h:outputText value="#{msgs.message_queue_ticket_processName}" /> -->
-                            <!--                                 </f:facet> -->
-                            <!--                                 <h:outputText value="#{ticket.processName}" /> -->
-                            <!--                             </x:column> -->
+                            </h:column>
 
-
-                            <x:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_stepId}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.stepId}" />
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_stepName}" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.stepName}" />
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_properties}" />
                                 </f:facet>
@@ -268,8 +261,8 @@
                                     <h:outputText value="#{prop}: #{ticket.properties[prop]} " />
                                     <br />
                                 </ui:repeat>
-                            </x:column>
-                            <x:column>
+                            </h:column>
+                            <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.auswahl}" />
                                 </f:facet>
@@ -281,8 +274,8 @@
                                     title="#{msgs.message_queue_cancel_ticket}">
                                     <span class="fa fa-trash-o" />
                                 </button>
-                            </x:column>
-                        </x:dataTable>
+                            </h:column>
+                        </h:dataTable>
                     </h:panelGroup>
                 </h:form>
             </div>

@@ -448,11 +448,11 @@
 																  title="#{msgs.badgeCorrection}"
 																  icon="fa-bullhorn"
 																  boxScope="bg-white">
-																	<x:dataTable var="intern" style="width:400px;"
+																	<h:dataTable var="intern" style="width:400px;"
 																		rendered="#{item.eigenschaftenSize!=0}"
 																		value="#{item.eigenschaftenList}"
 																		styleClass="table table-hover table-bordered">
-																		<x:column style="vertical-align: top;">
+																		<h:column style="vertical-align: top;">
 																			<h:outputText value="#{intern.titel}" /><br/>
                                                                             <h:outputText styleClass="font-light" value="#{intern.creationDate}">
 																				<f:convertDateTime
@@ -460,11 +460,11 @@
 																					dateStyle="long"
 																					timeStyle="medium" />
 																			</h:outputText>
-																		</x:column>
-																		<x:column style="vertical-align: top;">
+																		</h:column>
+																		<h:column style="vertical-align: top;">
 																			<h:outputText value="#{intern.wert}" />
-																		</x:column>
-																	</x:dataTable>
+																		</h:column>
+																	</h:dataTable>
 																</intranda:box>
 															</f:facet>
 															<h:panelGroup class="badge badge-intranda-red mw-100 text-wrap">

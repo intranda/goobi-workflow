@@ -107,14 +107,14 @@
 					<div class="gw-table gw-table-fixed">
 
 						<div class="gw-table__wrapper">
-							<x:dataTable
+							<h:dataTable
 								styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
 								id="steps"
 								var="item"
 								value="#{ProzessverwaltungForm.myProzess.schritteList}">
 
 								<!-- ORDER -->
-								<x:column
+								<h:column
 									id="ordercolumn" headerstyleClass="gw-table-fixed__sizeXXS">
 									<f:facet name="header">
 										<h:outputText value="#{msgs.nr}" />
@@ -192,7 +192,7 @@
 											<f:ajax render="@form" />
 										</button>
 									</div>
-								</x:column>
+								</h:column>
 								<!-- // ORDER -->
 
 								<!-- +++++++++++++++++  alle Eigenschaften auflisten - mit CSS ++++++++++++++++++++++++ -->
@@ -491,7 +491,7 @@
 								</h:column>
 								<!-- +++++++++++++++++  // alle Eigenschaften auflisten mit CSS ++++++++++++++++++++++++ -->
 
-								<x:column headerstyleClass="gw-table-fixed__sizeXXS">
+								<h:column headerstyleClass="gw-table-fixed__sizeXXS">
 									<f:facet name="header">
 										<h:outputText value="#{msgs.status}" />
 									</f:facet>
@@ -608,9 +608,9 @@
 									</button>
 
 
-								</x:column>
+								</h:column>
 
-								<x:column headerstyleClass="gw-table-fixed__sizeXXS"
+								<h:column headerstyleClass="gw-table-fixed__sizeXXS"
 									rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
 									<f:facet name="header">
 										<h:outputText value="#{msgs.auswahl}" />
@@ -699,9 +699,9 @@
 										<span class="fa fa-globe" />
 									</button>
 
-								</x:column>
+								</h:column>
 
-							</x:dataTable>
+							</h:dataTable>
 						</div>
 					</div>
 				</intranda:box>

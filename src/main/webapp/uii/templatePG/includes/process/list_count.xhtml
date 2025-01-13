@@ -81,25 +81,25 @@
 							<div class="gw-table__wrapper">
 	
 								<!-- TABLE -->
-								<x:dataTable styleClass="table table-bordered table-fixed table-hover"
+								<h:dataTable styleClass="table table-bordered table-fixed table-hover"
 									var="item" value="#{ProzessverwaltungForm.myAnzahlList}">
 	
 									<!-- Title -->
-									<x:column styleClass="tableColumnMaxWidthLong">
+									<h:column styleClass="tableColumnMaxWidthLong">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.titel}" />
 										</f:facet>
 										<span title="#{item.title}" data-toggle="tooltip">#{item.title}</span>
-									</x:column>
+									</h:column>
 	
 									<!-- Images -->
-									<x:column>
+									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.images}" />
 										</f:facet>
 										<h:outputText value="#{item.images}" />
-									</x:column>
-									<x:column>
+									</h:column>
+									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.relativeAnzahl}" />
 										</f:facet>
@@ -109,16 +109,16 @@
 												title="#{item.images} #{msgs.images}" data-toggle="tooltip"
 												aria-label="#{item.relImages * 1}% #{item.images} #{msgs.images}"></div>
 										</div>
-									</x:column>
+									</h:column>
 	
 									<!-- Docstructs -->
-									<x:column>
+									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.docstructs}" />
 										</f:facet>
 										<h:outputText value="#{item.docstructs}" />
-									</x:column>
-									<x:column>
+									</h:column>
+									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.relativeAnzahl}" />
 										</f:facet>
@@ -129,16 +129,16 @@
 												data-toggle="tooltip"
 												aria-label="#{item.relDocstructs * 1}% #{item.docstructs} #{msgs.docstructs}"></div>
 										</div>
-									</x:column>
+									</h:column>
 	
 									<!-- Metadata -->
-									<x:column>
+									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.metadata}" />
 										</f:facet>
 										<h:outputText value="#{item.metadata}" />
-									</x:column>
-									<x:column>
+									</h:column>
+									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.relativeAnzahl}" />
 										</f:facet>
@@ -149,9 +149,9 @@
 												data-toggle="tooltip"
 												aria-label="#{item.relMetadata * 1}% #{item.relMetadata} #{msgs.metadata}"></div>
 										</div>
-									</x:column>
+									</h:column>
 	
-								</x:dataTable>
+								</h:dataTable>
 							
 							</div>
 						</div>

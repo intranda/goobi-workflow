@@ -425,9 +425,10 @@
                                         rendered="#{NavigationForm.activeTab == 'productionStatistics'}">
                                         <div>
                                                 <f:subview id="id1">
-                                                    <ui:param name="#{Form}" value="#{ProjekteForm}"/>
-                                                    <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager1}"/>
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
+                                                    <ui:include  src="templatePG/includes/statistics/statistic_details.xhtml">
+                                                        <ui:param name="#{Form}" value="#{ProjekteForm}"/>
+                                                        <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager1}"/>
+                                                    </ui:include>
                                                 </f:subview>
                                         </div>
                                     </h:panelGroup>
@@ -441,10 +442,10 @@
                                  
 
                                                 <f:subview id="id2">
-                                                    <ui:param name="#{Form}" value="#{ProjekteForm}"/>
-                                                    <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager2}"/>
-                                                
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
+                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" >
+                                                        <ui:param name="#{Form}" value="#{ProjekteForm}"/>
+                                                        <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager2}"/>
+                                                    </ui:include>                                                
                                                 </f:subview>
                                         </div>
                                     </h:panelGroup>
@@ -458,9 +459,10 @@
                                             
 
                                                 <f:subview id="id3">
+                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" >
                                                                    <ui:param name="#{Form}" value="#{ProjekteForm}"/>
                                                     <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager3}"/>
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
+                                                    </ui:include>
                                                 </f:subview>
                                         </div>
                                     </h:panelGroup>
@@ -472,9 +474,10 @@
                                         <div>
                                               
                                                 <f:subview id="id4">
+                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" >
                                                                  <ui:param name="#{Form}" value="#{ProjekteForm}"/>
                                                     <ui:param name="#{Manager}" value="#{ProjekteForm.statisticsManager4}"/>
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
+                                                    </ui:include>
                                                 </f:subview>
                                         </div>
                                     </h:panelGroup>
@@ -489,8 +492,8 @@
                                                 value="#{msgs.volumes} (#{ProjekteForm.myProjekt.numberOfVolumes})" />
                                         </h3>
 
-                                        <h:graphicImage
-                                            id="vzid36"
+                                        <x:graphicImage
+                                            id="chart1"
                                             alt="volumes"
                                             title="#{ProjekteForm.myProjekt.titel}"
                                             value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatVolumes}" />
@@ -595,7 +598,7 @@
                                             <x:graphicImage
                                                 pt:aria-label="#{msgs.chart}"
                                                 forceId="true"
-                                                id="vzid36"
+                                                id="chart2"
                                                 rendered="#{ProjekteForm.projectProgressImage != ''}"
                                                 value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectProgressImage}" />
 

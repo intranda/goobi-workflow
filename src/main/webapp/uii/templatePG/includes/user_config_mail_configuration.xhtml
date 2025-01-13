@@ -75,7 +75,7 @@
                     styleClass="table table-bordered table-hover"
                     value="#{proj.stepList}"
                     var="step">
-                    <x:column>
+                    <h:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.arbeitsschritt}" />
                         </f:facet>
@@ -83,9 +83,9 @@
                         <f:facet name="footer">
                             <h:outputText value="#{msgs.alleAuswaehlen}" />
                         </f:facet>
-                    </x:column>
+                    </h:column>
 
-                    <x:column>
+                    <h:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_open}" />
                         </f:facet>
@@ -114,8 +114,8 @@
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
-                    </x:column>
-                    <x:column>
+                    </h:column>
+                    <h:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_inWork}" />
                         </f:facet>
@@ -146,8 +146,8 @@
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
-                    </x:column>
-                    <x:column>
+                    </h:column>
+                    <h:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_done}" />
                         </f:facet>
@@ -179,8 +179,8 @@
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
-                    </x:column>
-                    <x:column>
+                    </h:column>
+                    <h:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_error}" />
                         </f:facet>
@@ -210,7 +210,7 @@
                                 <f:ajax render="@form" />
                             </button>
                         </f:facet>
-                    </x:column>
+                    </h:column>
                 </h:dataTable>
 
             </h:panelGroup>

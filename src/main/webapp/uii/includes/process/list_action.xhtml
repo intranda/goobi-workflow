@@ -140,7 +140,7 @@
 	                                                </li>
 
 	                                                <li class="action-intent-li">
-	                                                    <x:inputTextarea id="goobiScriptfield" pt:aria-label="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
+	                                                    <h:inputTextarea id="goobiScriptfield" pt:aria-label="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
 	                                                </li>
 	                                                <li class="action-intent-li">
 	                                                    <!-- GoobiScript für selektierte Treffer der Seite -->
@@ -188,7 +188,7 @@
                                                 <ul id="possibleActions10" class="action-intent-ul">
                                                     <li class="action-intent-li">
 
-                                                        <x:dataTable value="#{ProzessverwaltungForm.searchField}" var="field" rowIndexVar="id">
+                                                        <h:dataTable value="#{ProzessverwaltungForm.searchField}" var="field" rowIndexVar="id">
 
                                                             <h:column>
                                                                 <h:outputText value="#{msgs.column} #{id +1}:" styleClass="margin-right-5 margin-bottom-regular" />
@@ -212,7 +212,7 @@
                                                                 </button>
                                                             </h:column>
 
-                                                        </x:dataTable>
+                                                        </h:dataTable>
 
                                                     </li>
 

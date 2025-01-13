@@ -31,7 +31,7 @@
 					<div class="gw-table gw-table-fixed">
 						<div class="gw-table__wrapper">
 
-							<x:dataTable
+							<h:dataTable
 								styleClass="table table-bordered table-fixed table-hover"
 								var="item"
 								value="#{ProzessverwaltungForm.usergroupPaginator.list}"
@@ -61,7 +61,7 @@
 										<h:outputText value="#{item.titel}" />
 									</span>
 								</h:column>
-							</x:dataTable>
+							</h:dataTable>
 						</div>
 					</div>
 					<div class="box__actions">
@@ -101,7 +101,7 @@
 					<div class="gw-table gw-table-fixed">
 						<div class="gw-table__wrapper">
 
-							<x:dataTable
+							<h:dataTable
 								styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
 								var="item"
 								value="#{ProzessverwaltungForm.userPaginator.list}"
@@ -129,7 +129,7 @@
 									</button>
 									<h:outputText value="#{item.nachname}, #{item.vorname}" />
 								</h:column>
-							</x:dataTable>
+							</h:dataTable>
 						</div>
 					</div>
 					<div class="box__actions">

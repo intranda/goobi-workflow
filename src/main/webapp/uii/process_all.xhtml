@@ -157,7 +157,7 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.id}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
-														ajaxRender="processAllProcessesBox:myform"
+														ajaxRender="processAllProcessesBoh:myform"
 														reverseOrder="true"
 														sortField="prozesse.ProzesseID" />
 
@@ -185,7 +185,7 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.batch}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
-														ajaxRender="processAllProcessesBox:myform"
+														ajaxRender="processAllProcessesBoh:myform"
                                                         sortField="prozesse.batchID" />
 
                                                     <!-- PROCESS TITLE COLUMN HEADER -->
@@ -195,7 +195,7 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}"
 														rendered="true"
-														ajaxRender="processAllProcessesBox:myform"
+														ajaxRender="processAllProcessesBoh:myform"
 														id="ajaxcolumn"
                                                         sortField="prozesse.titel" />
 
@@ -207,7 +207,7 @@
                                                             <intranda:columnheader
                                                                 addClass="header__custom-column header__col-m"
                                                                 form="#{ProzessverwaltungForm}"
-                                                                ajaxRender="processAllProcessesBox:myform"
+                                                                ajaxRender="processAllProcessesBoh:myform"
                                                                 value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
                                                                 sortField="#{var}"
                                                                 rendered="#{LoginForm.isDisplaySortfield(var)}" />
@@ -226,7 +226,7 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.vorgangsdatum}"
 														rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
-														ajaxRender="processAllProcessesBox:myform"
+														ajaxRender="processAllProcessesBoh:myform"
                                                         sortField="prozesse.erstellungsdatum" />
 
                                                     <!-- RULESET COLUMN HEADER -->
@@ -243,7 +243,7 @@
 														name="fortschritt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.status}"
-														ajaxRender="processAllProcessesBox:myform"
+														ajaxRender="processAllProcessesBoh:myform"
                                                         sortField="prozesse.sortHelperStatus" />
 
                                                     <!-- PROJECT COLUMN HEADER -->
@@ -253,7 +253,7 @@
 														name="projekt"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.projekt}"
-														ajaxRender="processAllProcessesBox:myform"
+														ajaxRender="processAllProcessesBoh:myform"
                                                         sortField="projekte.titel" />
 
                                                     <!-- INSTITUTION COLUMN HEADER -->
@@ -264,7 +264,7 @@
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.institution}"
 														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['institution']}"
-														ajaxRender="processAllProcessesBox:myform"
+														ajaxRender="processAllProcessesBoh:myform"
                                                         sortField="institution.shortName" />
 
                                                     <!-- LOCKINGS COLUMN HEADER -->
@@ -275,7 +275,7 @@
 														name="sperrungen"
 														form="#{ProzessverwaltungForm}"
 														value="#{msgs.sperrungen}"
-														ajaxRender="processAllProcessesBox:myform"
+														ajaxRender="processAllProcessesBoh:myform"
                                                         sortable="false" />
 
                                                     <!-- LAST STATUS UPDATE DATE COLUMN HEADER -->
@@ -319,7 +319,7 @@
 														name="numberOfImages"
                                                         sortField="sortHelperImages"
 														form="#{ProzessverwaltungForm}"
-														ajaxRender="processAllProcessesBox:myform" />
+														ajaxRender="processAllProcessesBoh:myform" />
 
                                                     <!-- BUTTONS COLUMN HEADER -->
 													<intranda:columnheader
@@ -353,7 +353,7 @@
 																<f:setPropertyActionListener
 																	target="#{item.selected}"
 																	value="#{item.selected?false:true}" />
-																<f:ajax render="processAllProcessesBox:myform" />
+																<f:ajax render="processAllProcessesBoh:myform" />
 															</button>
 														</div>
 													</td>
@@ -429,7 +429,7 @@
 															src="templatePG/includes/ajaxPlusMinusButton.xhtml">
 															<ui:param
                                                                 name="ajaxRender"
-                                                                value="processAllProcessesBox:myform" />
+                                                                value="processAllProcessesBoh:myform" />
                                                             <ui:param
 																name="tooltips"
 																value="#processTable" />
@@ -447,7 +447,7 @@
 																<div class="gw-table">
 																	<div class="gw-table__wrapper">
 
-																		<x:dataTable
+																		<h:dataTable
 																			styleClass="table table-hover table-bordered"
 																			id="prozessdetails"
 																			var="step"
@@ -593,7 +593,7 @@
 
 																			</h:column>
 
-																		</x:dataTable>
+																		</h:dataTable>
 
 																	</div>
 																	<!--/gw-table-->

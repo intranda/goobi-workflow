@@ -274,7 +274,7 @@
                                         </ui:repeat>
                                     </div>
                                     <div class="mb-2">
-                                        <x:inputTextarea
+                                        <h:inputTextarea
                                             id="goobiScriptfield"
                                             pt:aria-label="goobiScriptfield"
                                             forceId="true"
@@ -371,7 +371,7 @@
                                     id="possibleActions10"
                                     styleClass="ms-5 mt-2"
                                     rendered="#{ProzessverwaltungForm.dispaySearchResult}">
-                                    <x:dataTable
+                                    <h:dataTable
                                         value="#{ProzessverwaltungForm.searchField}"
                                         var="field"
                                         rowIndexVar="id"
@@ -419,7 +419,7 @@
                                                     execute="@form" />
                                             </button>
                                         </h:column>
-                                    </x:dataTable>
+                                    </h:dataTable>
                                     <button
                                         class="btn btn-link d-block"
                                         jsf:action="#{ProzessverwaltungForm.generateResultXls}"

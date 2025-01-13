@@ -55,27 +55,27 @@
                                 <div class="gw-table__wrapper">
 
                                 <!-- Datentabelle -->
-                                <x:dataTable
+                                <h:dataTable
                                     id="ldaps"
                                     styleClass="table table-hover table-bordered"
                                     var="item"
                                     value="#{institutionBean.paginator.list}">
 
-                                    <x:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.institution_longName}" />
                                         </f:facet>
                                         <h:outputText value="#{item.longName}" />
-                                    </x:column>
+                                    </h:column>
 
-                                    <x:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.institution_shortName}" />
                                         </f:facet>
                                         <h:outputText value="#{item.shortName}" />
-                                    </x:column>
+                                    </h:column>
 
-                                    <x:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.regelsaetze}" />
                                         </f:facet>
@@ -97,9 +97,9 @@
                                             </ui:fragment>
                                         </ui:repeat>
 
-                                    </x:column>
+                                    </h:column>
 
-                                    <x:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.dockets}" />
                                         </f:facet>
@@ -119,8 +119,8 @@
                                                 rendered="#{rowIndex + 1 lt rowCount}" />
                                         </ui:repeat>
 
-                                    </x:column>
-                                    <x:column>
+                                    </h:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.authentication}" />
                                         </f:facet>
@@ -143,8 +143,8 @@
                                         </ui:repeat>
 
 
-                                    </x:column>
-                                    <x:column>
+                                    </h:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.instituiton_plugins}" />
                                         </f:facet>
@@ -226,11 +226,11 @@
                                             </ui:repeat>
 
                                         </ui:fragment>
-                                    </x:column>
+                                    </h:column>
 
 
 
-                                    <x:column headerClass="gw-table-fixed__actions">
+                                    <h:column headerClass="gw-table-fixed__actions">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
@@ -253,9 +253,9 @@
                                             </button>
                                         </div>
 
-                                    </x:column>
+                                    </h:column>
 
-                                </x:dataTable>
+                                </h:dataTable>
 
                                 </div> <!-- /gw-table__table-wrapper -->
 
