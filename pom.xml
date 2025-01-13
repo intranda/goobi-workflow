@@ -5,6 +5,7 @@
         <groupId>io.goobi.workflow</groupId>
         <artifactId>workflow-base</artifactId>
         <version>tomcat10-SNAPSHOT</version>
+        
         <relativePath/>
     </parent>
     <artifactId>workflow-core</artifactId>

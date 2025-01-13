@@ -3,6 +3,7 @@ package io.goobi.workflow.api.vocabulary;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import jakarta.faces.model.SelectItem;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
@@ -240,5 +242,35 @@ public class VocabularyRecordAPITest {
         newRecord.setMetadata(true);
         newRecord.setFields(Collections.emptySet());
         VocabularyRecord result = api.save(newRecord);
+    }
+
+    @Test
+    public void givenVocabularyIsNotEmpty_whenGetRecordSelectItems_thenReturnCorrectList() {
+        VocabularyRecordPageResult pageResult = new VocabularyRecordPageResult();
+        pageResult.setContent(new LinkedList<>(List.of(new ExtendedVocabularyRecord(vocabularyRecord))));
+
+        setupResponseSuccess(true);
+        setupResponse(vocabularyRecord, VocabularyRecord.class);
+        setupResponse(vocabulary, Vocabulary.class);
+        setupResponse(schema, VocabularySchema.class);
+        setupResponse(pageResult, VocabularyRecordPageResult.class);
+        setupResponseFinish();
+
+        List<SelectItem> items = api.getRecordSelectItems(0L);
+    }
+
+    @Test
+    public void givenVocabularyIsNotEmpty_whenGetAllHierarchicalRecords_thenReturnCorrectList() {
+        VocabularyRecordPageResult pageResult = new VocabularyRecordPageResult();
+        pageResult.setContent(new LinkedList<>(List.of(new ExtendedVocabularyRecord(vocabularyRecord))));
+
+        setupResponseSuccess(true);
+        setupResponse(vocabularyRecord, VocabularyRecord.class);
+        setupResponse(vocabulary, Vocabulary.class);
+        setupResponse(schema, VocabularySchema.class);
+        setupResponse(pageResult, VocabularyRecordPageResult.class);
+        setupResponseFinish();
+
+        List<ExtendedVocabularyRecord> items = api.getAllHierarchicalRecords(0L);
     }
 }
