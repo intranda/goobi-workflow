@@ -496,19 +496,16 @@ public class VariableReplacer {
             for (ProcessProperty pe : ppList) {
                 if (pe.getName().equalsIgnoreCase(propertyTitle)) {
                     Optional<String> newValue;
-                    if (Type.VOCABULARYREFERENCE.equals(pe.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pe.getType())) {
-                        newValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(pe.getValue()).getMainValue());
-                    } else {
-                        newValue = Optional.ofNullable(pe.getValue());
-                    }
                     if (Type.VOCABULARYREFERENCE.equals(pe.getType())) {
                         newValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(pe.getValue()).getMainValue());
                     } else if (Type.VOCABULARYMULTIREFERENCE.equals(pe.getType())) {
                         if (!StringUtils.isBlank(pe.getValue())) {
-                            for (String ref : pe.getValue().split("; ")) {
-                                newValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(ref).getMainValue());
-                                break;
+                            String value = pe.getValue();
+                            // weird case, but only use first value here
+                            if (value.contains("; ")) {
+                                value = value.substring(0, value.indexOf("; "));
                             }
+                            newValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(value).getMainValue());
                         } else {
                             newValue = Optional.empty();
                         }
