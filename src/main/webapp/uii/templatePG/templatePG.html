@@ -141,15 +141,14 @@
 
                         <h:form id="header">
 
-                            <!-- GOOBI SCRIPT RUNNING 
+                            <!-- GOOBI SCRIPT RUNNING -->
                             <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
                                 <div class="d-none">
                                     <o:socket channel="goobiscriptUpdateChannel">
                                         <f:ajax render="goobiScriptResults2" event="update"/>
                                     </o:socket>
-                                    <o:commandScript name="updateGoobiScriptIndicator"  render="goobiScriptResults2" />
                                 </div>
-                              </ui:fragment>-->
+                              </ui:fragment>
                             <!-- // GOOBI SCRIPT RUNNING -->
 
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />

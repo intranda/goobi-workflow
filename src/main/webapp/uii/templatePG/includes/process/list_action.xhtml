@@ -294,7 +294,7 @@
                                             jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}"
                                             pt:data-modalid="goobiScriptModal">
                                             <f:ajax
-                                                render="goobiScriptModalWrapper goobiScriptMessages"
+                                                render="goobiScriptModalWrapper boxProcessesAllActions:goobiScriptMessages"
                                                 execute="goobiScriptfield"
                                                 onevent="(data) => showGoobiScriptModal({data, modalID: 'boxProcessesAllActions\:goobiScriptModal'})" />
                                             <span class="btn btn-blank">
@@ -313,7 +313,7 @@
                                         jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptPage}"
                                         pt:data-modalid="goobiScriptModal">
                                         <f:ajax
-                                            render="goobiScriptModalWrapper goobiScriptMessages"
+                                            render="goobiScriptModalWrapper boxProcessesAllActions:goobiScriptMessages"
                                             execute="goobiScriptfield"
                                             onevent="(data) => showGoobiScriptModal({data, modalID: 'boxProcessesAllActions\:goobiScriptModal'})" />
                                         <span class="btn btn-blank">
@@ -331,7 +331,7 @@
                                         jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptHits}"
                                         pt:data-modalid="goobiScriptModal">
                                         <f:ajax
-                                            render="goobiScriptModalWrapper goobiScriptMessages"
+                                            render="goobiScriptModalWrapper boxProcessesAllActions:goobiScriptMessages"
                                             execute="goobiScriptfield"
                                             onevent="(data) => showGoobiScriptModal({data, modalID: 'boxProcessesAllActions\:goobiScriptModal'})" />
                                         <span class="btn btn-blank">

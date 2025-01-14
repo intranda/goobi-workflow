@@ -1364,14 +1364,14 @@
 	            }
 
 	            function initGoobiScriptCodeMirror() {
-	            	var goobiScriptTextArea = document.getElementById("goobiScriptfield");
+	            	var goobiScriptTextArea = document.getElementById("boxProcessesAllActions:goobiScriptfield");
 	            	if(goobiScriptTextArea) {
 	                	goobiScriptCodeMirror = CodeMirror.fromTextArea(goobiScriptTextArea, {
 							lineNumbers: true,
 							mode: 'yaml'
 						});
 	                	goobiScriptCodeMirror.on('change', editor => {
-							document.getElementById("goobiScriptfield").innerHTML = editor.getValue();
+							document.getElementById("boxProcessesAllActions:goobiScriptfield").innerHTML = editor.getValue();
 					    });
 	            	}
 	            }
