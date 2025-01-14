@@ -34,6 +34,7 @@ import java.util.List;
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.unigoettingen.sub.commons.cache.ContentServerCacheManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerResource;
@@ -54,7 +55,7 @@ public abstract class AbstractImageResource extends ImageResource {
 
     protected AbstractImageResource(ContainerRequestContext context, HttpServletRequest request,
             HttpServletResponse response, String foldername, String filename) {
-        super(context, request, response, foldername, filename, null);
+        super(context, request, response, foldername, filename, ContentServerCacheManager.getInstance());
     }
 
     @GET

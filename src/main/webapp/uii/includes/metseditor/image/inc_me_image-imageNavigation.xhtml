@@ -63,11 +63,7 @@
                 
                 
 
-                <!-- TODO: was macht diese hidden input Feld? -->
-                <!-- <li>
-                    <x:inputText id="hiddenImageNo" value="#{Metadaten.imageIndex}" />
-                </li> -->
-                
+           
                 <li id="autocomplete" class="image__controls-jump-to-image no-hover">
                 <!-- 
 				<span id="currentPageIndicator">#{Metadaten.imageIndex +1} / #{Metadaten.sizeOfImageList}</span>
@@ -154,7 +150,7 @@
                 <f:passThroughAttribute name="data-renderimage" value="true" />
             </h:commandButton>
             
-            <x:inputText id="hiddenImageNo" style="display: none" value="#{Metadaten.imageIndex}" />
+            <h:inputText id="hiddenImageNo" style="display: none" value="#{Metadaten.imageIndex}" />
             
             
         </nav>
