@@ -198,16 +198,22 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
     }
 
     private void request(String url, Optional<Long> pageSize, Optional<Long> pageNumber) {
-        url = updatePageAndSizeUrlParameters(url, pageSize, pageNumber, sortField, searchParameter);
-        Invocation.Builder builder = client
-                .target(url)
-                .request(MediaType.APPLICATION_JSON);
-        builder = setupBearerTokenAuthenticationIfPresent(builder);
-        try (Response response = builder.get()) {
-            if (response.getStatus() / 100 != 2) {
-                throw new APIException(url, "GET", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
+        try {
+            url = updatePageAndSizeUrlParameters(url, pageSize, pageNumber, sortField, searchParameter);
+            Invocation.Builder builder = client
+                    .target(url)
+                    .request(MediaType.APPLICATION_JSON);
+            builder = setupBearerTokenAuthenticationIfPresent(builder);
+            try (Response response = builder.get()) {
+                if (response.getStatus() / 100 != 2) {
+                    throw new APIException(url, "GET", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
+                }
+                setCurrentPage(response.readEntity(pageClass));
             }
-            setCurrentPage(response.readEntity(pageClass));
+        } catch (APIException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw new APIException(url, "GET", -1, e.getMessage(), null, e);
         }
     }
 
