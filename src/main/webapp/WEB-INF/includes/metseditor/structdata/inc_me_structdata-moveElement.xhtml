@@ -5,9 +5,10 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:section="http://goobi.io/section">
 
     <composite:interface />
 
@@ -15,85 +16,100 @@
 
 
         <ui:fragment rendered="#{Metadaten.modusStrukturelementVerschieben}">
-            <div id="meStructdataChangeBox" class="module module__box module__box--white module__box--collapsable structdata__change">
-                <div class="module__box-title">
-                    <h1>
-                        <i class="fa fa-bars" aria-hidden="true"></i>
-                        <span>#{msgs.docstructAnAndereStelleSchieben}</span>
-                        <button type="button" aria-label="#{msgs.minimizeBox}" class="btn btn--clean" data-toggle="box-body">
-                            <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
+            <div id="meStructdataChangeBox" class="structdata__change">
+                <section:section type="outline">
+                    <section:header
+                        icon="bars"
+                        title="#{msgs.docstructAnAndereStelleSchieben}">
+                        <button
+                            type="button"
+                            aria-label="#{msgs.minimizeBox}"
+                            class="btn"
+                            data-bs-target="#moveElementBoxBody"
+                            data-bs-toggle="collapse"
+                            aria-expanded="true"
+                            aria-controls="moveElementBoxBody">
+                            <span
+                                class="collapse-caret fa fa-angle-up"
+                                aria-hidden="true" />
+                            <span
+                                class="extend-caret fa fa-angle-down"
+                                aria-hidden="true" />
                         </button>
-                    </h1>
-                </div>
-                <div class="module__box-body">
-                    <p>
-                        <h:outputText value="#{msgs.strukturelementVerschiebenErlaeuterung}" />
-                    </p>
+                    </section:header>
+                    <div id="moveElementBoxBody" class="collapse show">
+                        <section:body>
+                            <p class="p-3 m-0 border-bottom">
+                                <h:outputText value="#{msgs.strukturelementVerschiebenErlaeuterung}" />
+                            </p>
+                            <div class="py-3 border-bottom">
+                                <ui:repeat
+                                    var="item"
+                                    value="#{Metadaten.strukturBaum3Alle}">
+                                    <li
+                                        class="treeView-item"
+                                        style="--level: #{item.niveau};">
+                                        <div class="spacer" />
+                                        <div class="toggle" />
+                                        <div class="content">
+                                            <button
+                                                jsf:id="moveNode"
+                                                class="btn document"
+                                                jsf:action="#{Metadaten.KnotenVerschieben}"
+                                                jsf:rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
+                                                <span class="fa fa-file-o" aria-hidden="true" />
+                                                <span>
+                                                    <h:outputText
+                                                        value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '') ? item.node.description : item.node.mainTitle}" />
+                                                </span>
+                                                <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
+                                                <x:updateActionListener property="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
 
-                    <hr />
+                                                <f:passThroughAttribute name="data-trigger" value="hover" />
+                                                <f:passThroughAttribute name="data-container" value="body" />
+                                                <f:passThroughAttribute name="data-toggle" value="popover" />
+                                                <f:passThroughAttribute name="data-placement" value="right" />
+                                                <f:passThroughAttribute name="data-html" value="true" />
+                                                <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
+                                            </button>
+                                            <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">
+                                                <span class="fa fa-file-o" aria-hidden="true" />
+                                                <h:outputText
+                                                    value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}"
+                                                    styleClass="#{item.node.selected ? 'selected' : 'unselected'} ps-2">
 
-                    <div class="table__structure">
-                        <h:dataTable value="#{Metadaten.strukturBaum3Alle}" var="item">
-                            <h:column styleClass="level-#{item.niveau}">
+                                                    <f:passThroughAttribute name="data-trigger" value="hover" />
+                                                    <f:passThroughAttribute name="data-container" value="body" />
+                                                    <f:passThroughAttribute name="data-toggle" value="popover" />
+                                                    <f:passThroughAttribute name="data-placement" value="right" />
+                                                    <f:passThroughAttribute name="data-html" value="true" />
+                                                    <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
+                                                </h:outputText>
+                                            </h:panelGroup>
+                                        </div>
+                                    </li>
+                                </ui:repeat>
+                            </div>
+                            <!-- ACTION -->
+                            <div class="p-3 d-flex justify-content-end gap-2">
                                 <button
-                                    jsf:id="moveNode"
-                                    class="btn document"
-                                    jsf:action="#{Metadaten.KnotenVerschieben}"
-                                    jsf:rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
-                                    <i class="fa fa-file-o" aria-hidden="true"></i>
-                                    <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '') ? item.node.description : item.node.mainTitle}" />
-
+                                    jsf:id="cancelMove"
+                                    class="btn btn-blank"
+                                    jsf:immediate="true"
+                                    jsf:action="#{NavigationForm.Reload}"
+                                    title="#{msgs.verschiebenAbbrechen}">
+                                    <h:outputText value="#{msgs.abbrechen}" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
-                                    <x:updateActionListener property="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
-
-                                    <f:passThroughAttribute name="data-trigger" value="hover" />
-                                    <f:passThroughAttribute name="data-container" value="body" />
-                                    <f:passThroughAttribute name="data-toggle" value="popover" />
-                                    <f:passThroughAttribute name="data-placement" value="right" />
-                                    <f:passThroughAttribute name="data-html" value="true" />
-                                    <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
+                                    <f:ajax
+                                        onevent="data => goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos:false})"
+                                        render=":pageContentCenter"
+                                    />
                                 </button>
-                                <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">
-                                    <i class="fa fa-file-o" aria-hidden="true"></i>
-                                    <h:outputText
-                                        value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}"
-                                        styleClass="#{item.node.selected ? 'selected' : 'unselected'}">
-
-                                        <f:passThroughAttribute name="data-trigger" value="hover" />
-                                        <f:passThroughAttribute name="data-container" value="body" />
-                                        <f:passThroughAttribute name="data-toggle" value="popover" />
-                                        <f:passThroughAttribute name="data-placement" value="right" />
-                                        <f:passThroughAttribute name="data-html" value="true" />
-                                        <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
-                                    </h:outputText>
-                                </h:panelGroup>
-                            </h:column>
-                        </h:dataTable>
+                            </div>
+                        </section:body>
                     </div>
-
-                    <hr />
-
-                    <!-- ACTION -->
-                    <div class="row">
-                        <div class="col-auto mr-auto"></div>
-                        <div class="col-auto">
-                            <button
-                                jsf:id="cancelMove"
-                                class="btn btn--gray"
-                                jsf:immediate="true"
-                                jsf:action="#{NavigationForm.Reload}"
-                                title="#{msgs.verschiebenAbbrechen}">
-                                <h:outputText value="#{msgs.abbrechen}" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
-                                <f:ajax
-                                    onevent="data => goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos:false})"
-                                    render=":pageContentCenter"
-                                />
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                </section:section>
             </div>
         </ui:fragment>
     </composite:implementation>
