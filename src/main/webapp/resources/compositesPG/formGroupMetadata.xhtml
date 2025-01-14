@@ -46,15 +46,16 @@
                     value="#{cc.attrs.metadata.value}"
                     disabled="#{cc.attrs.metadata.disableMetadataField}"
                     readonly="#{Metadaten.nurLesenModus}"
-                    rendered="#{cc.attrs.metadata.outputType == 'input'
-                    or cc.attrs.metadata.outputType == 'convertibleDate'}">
+                    rendered="#{(cc.attrs.metadata.outputType == 'input'
+                    or cc.attrs.metadata.outputType == 'convertibleDate')
+                    and !cc.attrs.metadata.normdata}">
                     <f:ajax
                         execute="@form"
                         event="valueChange" />
                 </h:inputText>
 
                 <!-- TEXT INPUT READ ONLY -->
-                <x:inputText
+                <h:inputText
                     id="inputTextRO"
                     pt:aria-label="#{cc.attrs.metadata.md.type.name}"
                     styleClass="form-control"
