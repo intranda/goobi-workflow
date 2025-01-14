@@ -89,14 +89,10 @@
 											<ui:include
 												src="templatePG/includes/process/list_filterAndDisplay.xhtml" />
                                                 
-                                            <ui:param name="#{showBigButton}" value="true" />
-                                            <ui:param name="#{label}" value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.filterProcesses:msgs.filterProcessTemplates}" />
-                                            <ui:param name="#{ProzessverwaltungForm}" value="#{Form}" />
-												<f:subview id="sub1">
-													<ui:include
-														src="templatePG/includes/task/list_searchAndSave.xhtml" />
-												</f:subview>
-											
+                                        
+                                            
+                                             <intranda:list_searchAndSave bean="#{ProzessverwaltungForm}" label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.filterProcesses:msgs.filterProcessTemplates}" />
+                                            
 										</div>
 
 									</div>
