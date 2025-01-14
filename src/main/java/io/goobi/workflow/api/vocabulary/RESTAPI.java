@@ -16,6 +16,8 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class RESTAPI {
             if (url.contains("{{" + i + "}}")) {
                 url = url.replace("{{" + i + "}}", parameters[i].toString());
             } else {
-                queryParams.add(parameters[i].toString());
+                queryParams.add(URLEncoder.encode(parameters[i].toString(), StandardCharsets.UTF_8));
             }
         }
         if (!queryParams.isEmpty()) {

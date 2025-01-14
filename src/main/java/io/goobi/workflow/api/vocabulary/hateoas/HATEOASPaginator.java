@@ -13,6 +13,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -231,8 +233,8 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
         }
         pageSize.ifPresent(value -> parameters.put("size", String.valueOf(value)));
         pageNumber.ifPresent(value -> parameters.put("page", String.valueOf(value)));
-        sortField.ifPresent(s -> parameters.put("sort", s));
-        searchParameter.ifPresent(s -> parameters.put("search", s));
+        sortField.ifPresent(s -> parameters.put("sort", URLEncoder.encode(s, StandardCharsets.UTF_8)));
+        searchParameter.ifPresent(s -> parameters.put("search", URLEncoder.encode(s, StandardCharsets.UTF_8)));
         if (searchParameter.isEmpty()) {
             parameters.remove("search");
         }
