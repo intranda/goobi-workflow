@@ -921,6 +921,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("S3SocketTimeout", 10000);
     }
 
+    public boolean isS3UseForcePathStyle() {
+        return getLocalBoolean("S3ForcePathStyle", false);
+    }
+
     /*
      * category in goobi_config.properties: PROXY SERVER
      */
