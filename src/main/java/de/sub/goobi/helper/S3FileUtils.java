@@ -138,6 +138,7 @@ public class S3FileUtils implements StorageProviderInterface {
                     .targetThroughputInGbps(20.0)
                     .endpointOverride(endpoint)
                     .credentialsProvider(prov)
+                    .forcePathStyle(conf.isS3UseForcePathStyle())
                     .checksumValidationEnabled(false)
                     .build();
         } else {
