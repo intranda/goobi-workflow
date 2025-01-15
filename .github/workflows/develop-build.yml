@@ -45,6 +45,7 @@ jobs:
           generate_release_notes: true
           draft: false
           prerelease: true
+          target_commitish: develop
           files: |
             **/target/*.war
             install/*
