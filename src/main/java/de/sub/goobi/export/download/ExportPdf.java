@@ -47,7 +47,6 @@ import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -56,7 +55,6 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.CreatePdfFromServletThread;
 import lombok.extern.log4j.Log4j2;
-import ugh.dl.Fileformat;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
@@ -75,7 +73,6 @@ public class ExportPdf extends ExportMets {
         /*
          * -------------------------------- Read Document --------------------------------
          */
-        Fileformat gdzfile = myProzess.readMetadataFile();
         String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
 
@@ -83,11 +80,6 @@ public class ExportPdf extends ExportMets {
          * -------------------------------- first of all write mets-file in images-Folder of process --------------------------------
          */
 
-        Path metsTempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), ".xml");
-        writeMetsFile(myProzess, metsTempFile.toString(), gdzfile, true);
-        Helper.setMeldung(null, myProzess.getTitel() + ": ", "mets file created");
-        Helper.setMeldung(null, myProzess.getTitel() + ": ", "start pdf generation now");
-        log.debug("METS file created: " + metsTempFile);
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
         String fullpath = req.getRequestURL().toString();
@@ -107,7 +99,7 @@ public class ExportPdf extends ExportMets {
              * -------------------------------- use contentserver api for creation of pdf-file --------------------------------
              */
             CreatePdfFromServletThread pdf = new CreatePdfFromServletThread();
-            pdf.setMetsURL(metsTempFile.toUri().toURL());
+            pdf.setMetsURL(Path.of(myProzess.getMetadataFilePath()).toUri().toURL());
             pdf.setTargetFolder(Paths.get(zielVerzeichnis));
             pdf.setInternalServletPath(myBasisUrl);
             pdf.setImagePath(imagesPath);
@@ -129,7 +121,7 @@ public class ExportPdf extends ExportMets {
                  * -------------------------------- using mets file --------------------------------
                  */
 
-                if (StorageProvider.getInstance().isFileExists(metsTempFile)) {
+                if (StorageProvider.getInstance().isFileExists(Path.of(myProzess.getMetadataFilePath()))) {
 
                     goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
                             .path("api")
@@ -137,10 +129,11 @@ public class ExportPdf extends ExportMets {
                             .path("pdf")
                             .path(Integer.toString(myProzess.getId()))
                             .path(myProzess.getTitel() + ".pdf")
-                            .queryParam("metsFile", metsTempFile)
+                            .queryParam("metsFile", Path.of(myProzess.getMetadataFilePath()).toUri().toString())
                             .queryParam("imageSource", imagesPath.toUri())
                             .queryParam("pdfSource", pdfPath.toUri())
                             .queryParam("altoSource", altoPath.toUri())
+                            .queryParam("goobiMetsFile", "true")
                             .build()
                             .toURL();
 
