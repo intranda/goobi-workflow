@@ -120,7 +120,7 @@
 			</div>
 		</div>
 
-        <h:panelGroup rendered="#{cc.attrs.Manager != null and !Manager.statisticMode.isSimple and Form.showStatistics}">
+        <h:panelGroup rendered="#{cc.attrs.Manager != null and !cc.attrs.Manager.statisticMode.isSimple and ProjekteForm.showStatistics}">
 
             <hr/>
 
@@ -135,10 +135,10 @@
 
                     <h:graphicImage style="margin-bottom:15px" url="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}"
                         alt="#{element.title}" title="#{element.title}"
-                        rendered="#{element.dataTable.showableInChart and (Manager.targetResultOutput=='chart' or Manager.targetResultOutput=='chartAndTable')}" />
+                        rendered="#{element.dataTable.showableInChart and (cc.attrs.Manager.targetResultOutput=='chart' or cc.attrs.Manager.targetResultOutput=='chartAndTable')}" />
 
                     <h:outputText id="uaid34" value="#{element.htmlTableRenderer.rendering}" escape="false"
-                        rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}" />
+                        rendered="#{element.dataTable.showableInTable and (cc.attrs.Manager.targetResultOutput== 'table' or cc.attrs.Manager.targetResultOutput=='chartAndTable')}" />
 
 				<div class="box__actions justify-content-start">
 					<button
@@ -146,7 +146,7 @@
 						jsf:id="createExcel"
 						jsf:action="#{ProjekteForm.downloadStatisticsAsExcel}"
 						title="#{msgs.download_excel}"
-						jsf:rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}"
+						jsf:rendered="#{element.dataTable.showableInTable and (cc.attrs.Manager.targetResultOutput== 'table' or cc.attrs.Manager.targetResultOutput=='chartAndTable')}"
 						>
 						<span class="fa fa-floppy-o" />
 						<span>
@@ -160,7 +160,7 @@
 						jsf:id="createCsv"
 						jsf:action="#{ProjekteForm.downloadStatisticsAsCsv}"
 						title="#{msgs.download_csv}"
-						jsf:rendered="#{element.dataTable.showableInTable and (Manager.targetResultOutput== 'table' or Manager.targetResultOutput=='chartAndTable')}"
+						jsf:rendered="#{element.dataTable.showableInTable and (cc.attrs.Manager.targetResultOutput== 'table' or cc.attrs.Manager.targetResultOutput=='chartAndTable')}"
 						>
 						<span class="fa fa-floppy-o" />
 						<span>
