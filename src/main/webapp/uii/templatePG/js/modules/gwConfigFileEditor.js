@@ -2,7 +2,7 @@ let configFileEditor;
 let debug = false;
 
 const initConfigFileEditor = function initConfigFileEditor() {
-	let configFileTextArea = document.getElementById("configFileEditor");
+	let configFileTextArea = document.getElementById("configFileEditorForm:contentbox:configFileEditor");
 	if (configFileTextArea) {
 		let type = "xml";
 		let typeElement = document.getElementById("currentConfigFileType");

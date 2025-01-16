@@ -148,7 +148,7 @@
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}">
                                                 <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
                                                 <f:ajax
-                                                    render="configFileEditorForm"
+                                                    render="@form"
                                                     onevent="function() { gwConfigEditor.init();}" />
                                             </button>
                                         </h:panelGroup>
