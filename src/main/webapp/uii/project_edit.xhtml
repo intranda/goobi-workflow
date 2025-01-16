@@ -581,7 +581,7 @@
                                                 <div class="form-actions">
 
                                                     <!-- Abbrechen-Schaltknopf -->
-                                                    <a
+                                                    <button
                                                         jsf:id="cancelFileformat"
                                                         class="btn btn-blank"
                                                         jsf:immediate="true"
@@ -589,8 +589,9 @@
                                                             <h:outputText value="#{msgs.abbrechen}" />
                                                     </span> <f:setPropertyActionListener
                                                             target="#{ProjekteForm.displayMode}"
-                                                            value="tab4" /> <f:ajax render=":myform" />
-                                                    </a>
+                                                            value="tab4" /> 
+                                                            <f:ajax render=":myform" />
+                                                    </button>
 
                                                     <!-- Speichern-Schaltknopf -->
                                                     <button
@@ -727,8 +728,10 @@
 
                 <!-- JOURNAL -->
                 <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-5'}">
-                <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{ProjekteForm.myProjekt}" /> 
+                   <ui:fragment rendered="#{ProjekteForm.myProjekt.id != null}">
                 
+                <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{ProjekteForm.myProjekt}" /> 
+                </ui:fragment>
                    
                 </div>
                 <!-- JOURNAL -->
