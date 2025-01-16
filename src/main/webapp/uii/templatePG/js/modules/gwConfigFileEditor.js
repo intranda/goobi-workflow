@@ -24,7 +24,7 @@ const initConfigFileEditor = function initConfigFileEditor() {
 		document.addEventListener('DOMContentLoaded', function() {
 			stickyBoxes();
 		});
-		jsf.ajax.addOnEvent( function( data ) {
+		faces.ajax.addOnEvent( function( data ) {
 				if (data.status === "success"){
 				stickyBoxes();
 			}

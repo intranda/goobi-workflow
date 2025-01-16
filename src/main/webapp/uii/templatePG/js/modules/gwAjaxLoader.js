@@ -10,7 +10,7 @@ export default gwAjaxLoader = ( function() {
       if (_debug) console.log('%c## Initialized gwAjaxLoader ##', 'color: #368ee0')
 
       // listen for jsf ajax envents
-      jsf.ajax.addOnEvent((data) => _handleAjaxLoader(data, selector = _defaultSelector))
+      faces.ajax.addOnEvent((data) => _handleAjaxLoader(data, selector = _defaultSelector))
 
     }
 
@@ -18,7 +18,7 @@ export default gwAjaxLoader = ( function() {
       if (_debug) console.log('%c## called gwAjaxLoader._handleAjaxLoader ##', 'color: orange')
       try {
 
-        jsf.ajax.addOnEvent(function (data) {
+        faces.ajax.addOnEvent(function (data) {
           const ajaxstatus = data.status; // Can be "begin", "complete" and "success"
           const ajaxloader = document.querySelector(selector);
           const source = data.source;
