@@ -126,7 +126,26 @@
                                 value="eigenschaft" />
                         </button>
                     </c:if>
-                    <c:if test="#{scope != 'batch'}">
+                    <c:if test="#{scope == 'step'}">
+                        <button
+                            jsf:id="editProperty"
+                            jsf:action="task_edit"
+                            title="#{msgs.bearbeiten}"
+                            class="btn btn-blank"
+                            jsf:rendered="#{!isBatchStep and property.currentStepAccessCondition ne 'READ' and property.type.name != 'metadata'}">
+                            <span class="fa fa-pencil" />
+                            <f:setPropertyActionListener
+                                target="#{bean.processProperty}"
+                                value="#{property}" />
+                            <f:setPropertyActionListener
+                                target="#{bean.container}"
+                                value="0" />
+                            <f:setPropertyActionListener
+                                target="#{bean.modusBearbeiten}"
+                                value="eigenschaft" />
+                        </button>
+                    </c:if>
+                    <c:if test="#{scope == 'process'}">
                         <button
                             class="btn btn-blank"
                             data-bs-toggle="tooltip"

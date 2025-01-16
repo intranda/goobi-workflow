@@ -12,9 +12,9 @@
         : fn:contains(bean, 'BatchProcessHelper')? 'batch'
         : 'process'
     }" />
-    
+
     <div class="properties-group">
- 
+
         <section:section
             type="outline">
             <section:header
@@ -48,7 +48,7 @@
                                     class="fa fa-plus" />
                             </button>
                         </c:if>
-                        <c:if test="#{scope == 'step'}">
+                        <c:if test="#{scope == 'step' and !add}">
                             <button
                                 class="btn d-flex align-items-center btn--title-action-neutral"
                                 data-bs-toggle="tooltip"
