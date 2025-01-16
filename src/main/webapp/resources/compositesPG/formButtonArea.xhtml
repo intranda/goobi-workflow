@@ -23,14 +23,16 @@
 
 		<div class="form-actions">
 
-			<!-- CANCEL -->
-			<a
-				jsf:id="cancel"
-				class="btn btn-blank"
-				jsf:immediate="true"
-				jsf:action="#{cc.attrs.actionCancel}"> #{msgs.abbrechen} </a>
+            <!-- CANCEL -->
+            <button
+                id="cancel"
+                class="btn btn-blank"
+                jsf:immediate="true"
+                jsf:action="#{cc.attrs.actionCancel}">
+                <span>#{msgs.abbrechen}</span>
+            </button>
 
-			<!-- SAVE -->
+            <!-- SAVE -->
 			<button
 				class="btn btn-success submitOnEnter"
 				id="save"
