@@ -80,13 +80,15 @@ public class OpenApiResource {
             SwaggerConfiguration oasConfig = new SwaggerConfiguration()
                     .prettyPrint(true)
                     .readAllResources(false)
+                    .resourcePackages(Stream.of("org.goobi.api.rest").collect(Collectors.toSet()))
 
-                    .resourcePackages(Stream.of("org.goobi.api.rest").collect(Collectors.toSet()));
+            ;
 
             OpenAPI openApi = new JaxrsOpenApiContextBuilder<>()
                     .servletConfig(servletConfig)
                     .application(application)
                     .openApiConfiguration(oasConfig)
+
                     .buildContext(true)
                     .read();
 
