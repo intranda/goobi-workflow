@@ -750,6 +750,16 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     }
 
     @Override
+    public String getUploadFolder() {
+        return getDownloadFolder().toString();
+    }
+
+    @Override
+    public void setUploadFolder(String uploadFolder) {
+        // do nothing
+    }
+
+    @Override
     public EntryType getEntryType() {
         return EntryType.USER;
     }

@@ -560,7 +560,7 @@
 
                                                     <div class="box__actions">
                                                         <!-- Cancel -->
-                                                        <a
+                                                        <button
                                                             jsf:id="cancelProject"
                                                             class="btn btn-blank me-auto"
                                                             jsf:action="#{NavigationForm.Reload}"> <span> <h:outputText
@@ -568,7 +568,7 @@
                                                         </span> <f:setPropertyActionListener
                                                                 target="#{BenutzerverwaltungForm.displayMode}"
                                                                 value="tab3" /> <f:ajax render=":myform" />
-                                                        </a>
+                                                        </button>
                                                         <!-- Paginator -->
                                                         <intranda:tablePaginator
                                                             id="projects"
@@ -705,13 +705,13 @@
                                 <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id != null}">
 
                                     <!-- Cancel -->
-                                    <a
+                                    <button
                                         jsf:id="cancelEdition"
                                         class="btn btn-blank"
                                         jsf:immediate="true"
                                         jsf:action="#{BenutzerverwaltungForm.cancelEdit}"> <h:outputText
                                             value="#{msgs.abbrechen}" />
-                                    </a>
+                                    </button>
 
                                     <!-- Save -->
                                     <button
@@ -745,8 +745,9 @@
 
                 <!-- JOURNAL -->
                 <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-4'}">
+                <ui:fragment rendered="#{BenutzerverwaltungForm.myClass.id != null}">
                     <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{BenutzerverwaltungForm.myClass}" /> 
-
+                </ui:fragment>
                 </div>
                 <!-- // JOURNAL -->
 
