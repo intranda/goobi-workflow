@@ -46,7 +46,7 @@
         </type>
     	<type format="default" colorType="default" compression="default" embeddedColorProfile="both" minSize="0" maxSize="0">
     		<settings allowRenderWithJAI="false" allowSubSampling="true" scaleWithScalr="false" mergeWithJAI="false" 
-    		forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true" preferredImageReader="com.twelvemonkeys"></settings>
+    		forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true" preferredImageReader="com.github.jaiimageio"></settings>
     	</type>
     </imageTypeSettings>
     
