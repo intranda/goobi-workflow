@@ -70,8 +70,8 @@
 							<f:passThroughAttribute
 								name="data-toggle"
 								value="tooltip" />
-							<f:setPropertyActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}"
+							<f:setPropertyActionListener 
+                                target="#{ProzessverwaltungForm.modusBearbeiten}"
 								value="schritt" />
 						</button>
 					</div>
@@ -80,6 +80,7 @@
 
 				<!-- BOX CONTENT -->
 				<h:panelGrid
+                
 					columns="2"
 					styleClass="table table-hover table-bordered">
 
@@ -792,7 +793,7 @@
 						jsf:action="#{NavigationForm.Reload}">
 						<h:outputText value="#{msgs.abbrechen}" />
 						<f:setPropertyActionListener
-							property="#{ProzessverwaltungForm.modusBearbeiten}"
+							target="#{ProzessverwaltungForm.modusBearbeiten}"
 							value="" />
 					</button>
 
@@ -807,7 +808,7 @@
 							<h:outputText value="#{msgs.speichern}" />
 						</span>
 						<f:setPropertyActionListener
-							property="#{ProzessverwaltungForm.modusBearbeiten}"
+							target="#{ProzessverwaltungForm.modusBearbeiten}"
 							value="" />
 					</button>
 
@@ -899,11 +900,10 @@
 			}
 
 			function txtAutomatischAnzeigen() {
-				var myelement = document
-						.getElementById("chkautomatisch");
+				var myelement = document.querySelector("[id$='chkautomatisch']");
+					
 				if (myelement != null) {
-					if (document
-							.getElementById("chkautomatisch").checked) {
+					if (myelement.checked) {
 						document
 								.getElementById("scripttable").style.display = "block";
 					} else {
@@ -925,7 +925,7 @@
 			}
 
 			function showThumbsSettings(){
-				var element = document.getElementById("autoThumbnail");
+				var element = document.querySelector("[id$='autoThumbnail']");
 				if(element != null){
 					if(element.checked){
 						document.getElementById("thumbsSettings").style.display="block";
