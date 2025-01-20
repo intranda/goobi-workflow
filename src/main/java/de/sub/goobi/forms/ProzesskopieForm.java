@@ -1659,9 +1659,9 @@ public class ProzesskopieForm implements Serializable {
                 field.setWert(String.valueOf(System.currentTimeMillis() + counter));
                 counter++;
             }
-            if (field.getMetadata() != null && "TitleDocMain".equals(field.getMetadata()) && currentTitle.length() == 0) {
+            if (field.getMetadata() != null && "TitleDocMain".equals(field.getMetadata()) && currentTitle.isEmpty()) {
                 currentTitle = field.getWert();
-            } else if (field.getMetadata() != null && "ListOfCreators".equals(field.getMetadata()) && currentAuthors.length() == 0) {
+            } else if (field.getMetadata() != null && "ListOfCreators".equals(field.getMetadata()) && currentAuthors.isEmpty()) {
                 currentAuthors = field.getWert();
             }
 
@@ -1734,7 +1734,7 @@ public class ProzesskopieForm implements Serializable {
                      */
                     if (("ATS".equals(myField.getTitel()) || "TSL".equals(myField.getTitel())) && myField.getShowDependingOnDoctype(getDocType())
                             && (myField.getWert() == null || "".equals(myField.getWert()))) {
-                        if (atstsl == null || atstsl.length() == 0) {
+                        if (StringUtils.isBlank(atstsl)) {
                             atstsl = createAtstsl(currentTitle, currentAuthors);
                         }
                         myField.setWert(this.atstsl);
@@ -1935,7 +1935,7 @@ public class ProzesskopieForm implements Serializable {
 
     public String createAtstsl(String title, String author) {
         StringBuilder result = new StringBuilder(8);
-        if (author != null && author.trim().length() > 0) {
+        if (StringUtils.isNotBlank(author)) {
             result.append(author.length() > 4 ? author.substring(0, 4) : author);
             result.append(title.length() > 4 ? title.substring(0, 4) : title);
         } else {
@@ -1998,15 +1998,15 @@ public class ProzesskopieForm implements Serializable {
         String key = this.getErrorMessageKeyOfFolder(this.uploadFolder);
         String message = "";
 
-        if (key != null && key.length() > 0) {
+        if (StringUtils.isNotBlank(key)) {
             String result = Helper.getTranslation(key, this.uploadRegex);
-            if (result != null && result.length() > 0 && !result.equals(key)) {
+            if (StringUtils.isNotBlank(result) && !result.equals(key)) {
                 message = result;
             } else {
                 message = "";
             }
         }
-        if (message.length() == 0) {
+        if (StringUtils.isBlank(message)) {
             message = "The selected file could not be uploaded because it does not match the specified file format.";
         }
         return message;
