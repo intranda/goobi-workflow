@@ -95,7 +95,7 @@ public class BatchBean extends BasicBean implements Serializable {
         this.selectedBatches = new ArrayList<>();
         for (Process p : this.selectedProcesses) {
             if (p.getBatch() != null && !this.currentBatches.contains(p.getBatch())) {
-                generateBatch(p.getBatch());
+                currentBatches.add(generateBatch(p.getBatch()));
             }
         }
     }
