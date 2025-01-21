@@ -108,8 +108,15 @@
 
             <!-- METSEDITOR STRUCTURE -->
             <div class="table__structure">
-                <h:dataTable id="meStructure" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" rowStyleClass="level-#{item.niveau}">
-                    <h:column>
+            <table>
+            <ui:repeat var="item" value="#{Metadaten.strukturBaum3}">
+            <tr class="level-#{item.niveau}">
+            
+          
+            
+          
+<!--                 <h:dataTable  id="meStructure" forceId="true" value="#{Metadaten.strukturBaum3}" var="item"  rowClasses="level-#{item.niveau}"> -->
+                    <td>
                         <button
                             jsf:id="expand"
                             aria-label="#{msgs.expand}"
@@ -191,8 +198,14 @@
                             </button>
                         </ui:fragment>
 
-                    </h:column>
-                </h:dataTable>
+
+                    </td>
+<!--                 </h:dataTable> -->
+  </tr>
+            
+            
+            </ui:repeat>
+              </table>
             </div>
         </h:form>
 
