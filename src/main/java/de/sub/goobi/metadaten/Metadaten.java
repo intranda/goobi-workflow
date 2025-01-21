@@ -712,7 +712,7 @@ public class Metadaten implements Serializable {
             Metadata metadata = new Metadata(md.getType());
             metadata.setValue(md.getValue());
             if (StringUtils.isNotBlank(md.getAuthorityValue())) {
-                metadata.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
+                metadata.setAuthorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
             }
             mg.addMetadata(metadata);
         }
@@ -722,7 +722,7 @@ public class Metadaten implements Serializable {
             Person person = new Person(p.getType());
             person.setFirstname(p.getFirstname());
             person.setLastname(p.getLastname());
-            person.setAutorityFile(p.getAuthorityID(), p.getAuthorityURI(), p.getAuthorityValue());
+            person.setAuthorityFile(p.getAuthorityID(), p.getAuthorityURI(), p.getAuthorityValue());
             if (p.getAdditionalNameParts() != null && !p.getAdditionalNameParts().isEmpty()) {
                 for (NamePart np : p.getAdditionalNameParts()) {
                     NamePart newNamePart = new NamePart(np.getType(), np.getValue());
@@ -743,7 +743,7 @@ public class Metadaten implements Serializable {
             }
             corporate.setPartName(c.getPartName());
             if (c.getAuthorityID() != null && c.getAuthorityURI() != null && c.getAuthorityValue() != null) {
-                corporate.setAutorityFile(c.getAuthorityID(), c.getAuthorityURI(), c.getAuthorityValue());
+                corporate.setAuthorityFile(c.getAuthorityID(), c.getAuthorityURI(), c.getAuthorityValue());
             }
             mg.addCorporate(corporate);
         }
@@ -784,7 +784,7 @@ public class Metadaten implements Serializable {
 
             if (currentMetadata.getAuthorityID() != null && currentMetadata.getAuthorityURI() != null
                     && currentMetadata.getAuthorityValue() != null) {
-                md.setAutorityFile(currentMetadata.getAuthorityID(), currentMetadata.getAuthorityURI(), currentMetadata.getAuthorityValue());
+                md.setAuthorityFile(currentMetadata.getAuthorityID(), currentMetadata.getAuthorityURI(), currentMetadata.getAuthorityValue());
             }
 
             currentMetadata.getParent().addMetadata(md);
@@ -811,7 +811,7 @@ public class Metadaten implements Serializable {
             corporate.setPartName(currentCorporate.getPartName());
             if (currentCorporate.getAuthorityID() != null && currentCorporate.getAuthorityURI() != null
                     && currentCorporate.getAuthorityValue() != null) {
-                corporate.setAutorityFile(currentCorporate.getAuthorityID(), currentCorporate.getAuthorityURI(),
+                corporate.setAuthorityFile(currentCorporate.getAuthorityID(), currentCorporate.getAuthorityURI(),
                         currentCorporate.getAuthorityValue());
             }
 
@@ -846,7 +846,7 @@ public class Metadaten implements Serializable {
                 }
             }
             if (currentPerson.getAuthorityID() != null && currentPerson.getAuthorityURI() != null && currentPerson.getAuthorityValue() != null) {
-                per.setAutorityFile(currentPerson.getAuthorityID(), currentPerson.getAuthorityURI(), currentPerson.getAuthorityValue());
+                per.setAuthorityFile(currentPerson.getAuthorityID(), currentPerson.getAuthorityURI(), currentPerson.getAuthorityValue());
             }
 
             currentPerson.getParent().addPerson(per);
@@ -884,7 +884,7 @@ public class Metadaten implements Serializable {
             md.setValue(this.selectedMetadatum.getValue());
 
             if (StringUtils.isNotBlank(selectedMetadatum.getNormdataValue())) {
-                md.setAutorityFile(selectedMetadatum.getMd().getAuthorityID(), selectedMetadatum.getMd().getAuthorityURI(),
+                md.setAuthorityFile(selectedMetadatum.getMd().getAuthorityID(), selectedMetadatum.getMd().getAuthorityURI(),
                         selectedMetadatum.getMd().getAuthorityValue());
             }
             if (currentGroup != null) {
@@ -966,7 +966,7 @@ public class Metadaten implements Serializable {
                 Person p = new Person(mp.getP().getType());
                 p.setFirstname(mp.getP().getFirstname());
                 p.setLastname(mp.getP().getLastname());
-                p.setAutorityFile(mp.getP().getAuthorityID(), mp.getP().getAuthorityURI(), mp.getP().getAuthorityValue());
+                p.setAuthorityFile(mp.getP().getAuthorityID(), mp.getP().getAuthorityURI(), mp.getP().getAuthorityValue());
                 md.addPerson(p);
             }
             for (MetaCorporate mc : selectedGroup.getCorporateList()) {
@@ -1130,7 +1130,7 @@ public class Metadaten implements Serializable {
         } else {
             // we have a default metadata field, clear it
             currentMetadata.setValue("");
-            currentMetadata.setAutorityFile("", "", "");
+            currentMetadata.setAuthorityFile("", "", "");
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
@@ -1147,7 +1147,7 @@ public class Metadaten implements Serializable {
             // we have a default field, clear it
             currentPerson.setFirstname("");
             currentPerson.setLastname("");
-            currentPerson.setAutorityFile("", "", "");
+            currentPerson.setAuthorityFile("", "", "");
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
@@ -1182,7 +1182,7 @@ public class Metadaten implements Serializable {
         } else {
             // we have a default field, clear it
             currentCorporate.setValue("");
-            currentCorporate.setAutorityFile("", "", "");
+            currentCorporate.setAuthorityFile("", "", "");
         }
         MetadatenalsBeanSpeichern(myDocStruct);
         if (!SperrungAktualisieren()) {
