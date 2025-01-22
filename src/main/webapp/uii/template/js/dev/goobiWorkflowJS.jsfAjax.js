@@ -21,7 +21,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $.extend( true, _defaults, config );
 
             // listen to jsf ajax event
-            if (typeof jsf !== 'undefined') {
+            if (typeof faces !== 'undefined') {
                 faces.ajax.addOnEvent(function (data) {
                     if (_debug) {
                         console.log('JSF AJAX - data: ', data);

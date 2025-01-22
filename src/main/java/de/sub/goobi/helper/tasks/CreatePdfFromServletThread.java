@@ -42,7 +42,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -178,7 +177,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             }
             method = new HttpGet(goobiContentServerUrl.toString());
 
-            Builder builder = RequestConfig.custom();
+            RequestConfig.Builder builder = RequestConfig.custom();
             builder.setSocketTimeout(contentServerTimeOut);
             RequestConfig rc = builder.build();
             method.setConfig(rc);
