@@ -6,50 +6,60 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:section="http://goobi.io/section">
 
     <composite:interface />
 
     <composite:implementation>
         <h:form id="fileUpload" enctype="multipart/form-data">
-            <div id="meFileUploadBox" class="module module__box module__box--gray module__box--collapsable">
-                <div class="module__box-title">
-                    <h1>
-                        <i class="fa fa-bars" aria-hidden="true"></i>
-                        <span>#{msgs.fileUpload}</span>
-                        <button type="button" aria-label="#{msgs.minimizeBox}" class="btn btn--clean" data-toggle="box-body">
-                            <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
+            <div id="meFileUploadBox" class="pb-2">
+                <section:section type="neutral">
+                    <section:header
+                        icon="bars"
+                        title="#{msgs.fileUpload}">
+                        <button
+                            type="button"
+                            aria-label="#{msgs.minimizeBox}"
+                            class="btn"
+                            data-bs-target="#uploadBoxBody"
+                            data-bs-toggle="collapse"
+                            aria-expanded="true"
+                            aria-controls="uploadBoxBody">
+                            <span
+                                class="collapse-caret fa fa-angle-up"
+                                aria-hidden="true" />
+                            <span
+                                class="extend-caret fa fa-angle-down"
+                                aria-hidden="true" />
                         </button>
-                    </h1>
-                </div>
-                <div class="module__box-body">
-                    <div class="form-group form-group--flex">
-                        <div class="row justify-content-between">
-                            <div class="col-3">
-                                <label>#{msgs.filename}:</label>
-                            </div>
-                            <div class="col-9">
-                                    <h:inputFile
-                                        id="fileupload"
-                                        pt:aria-label="#{msgs.selectFile}"
-                                        styleClass="form-control  form-control-file"
-                                        value="#{Metadaten.fileManipulation.uploadedFile}"
-                                        storage="file"
-                                        required="false" />
-                            </div>
-                        </div>
-                    </div>
+                    </section:header>
+                    <div id="uploadBoxBody" class="collapse show">
+                        <section:body>
 
-                    <div class="form-group form-group--flex">
-                        <div class="row justify-content-between">
-                            <div class="col-3">
-                                <label>#{msgs.aktuellerOrdner}:</label>
+                            <div class="form-row">
+                                <div class="form-label">
+                                    <label>#{msgs.filename}:</label>
+                                </div>
+                                <div class="form-input">
+                                        <h:inputFile
+                                            id="fileupload"
+                                            pt:aria-label="#{msgs.selectFile}"
+                                            styleClass="form-control  form-control-file"
+                                            value="#{Metadaten.fileManipulation.uploadedFile}"
+                                            storage="file"
+                                            required="false" />
+                                </div>
                             </div>
-                            <div class="col-9">
-                                <div class="form-control form-control--select">
-                                    <h:selectOneMenu id="currentFolder1" styleClass="focusable" pt:aria-label="#{msgs.directory}" value="#{Metadaten.fileManipulation.currentFolder}">
+
+                            <div class="form-row">
+                                <div class="form-label">
+                                    <label>#{msgs.aktuellerOrdner}:</label>
+                                </div>
+                                <div class="form-input">
+                                    <h:selectOneMenu id="currentFolder1" styleClass="form-select" pt:aria-label="#{msgs.directory}" value="#{Metadaten.fileManipulation.currentFolder}">
                                         <f:selectItems
                                             value="#{Metadaten.allTifFolders}"
                                             var="folder"
@@ -58,93 +68,62 @@
                                     </h:selectOneMenu>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <ui:fragment rendered="#{Metadaten.allPages != null}">
-                        <div class="form-group form-group--flex">
-                            <div class="row justify-content-between">
-                                <div class="col-3">
-                                    <label>#{msgs.position}:</label>
-                                </div>
-                                <div class="col-9">
-                                    <div class="form-control form-control--select">
-                                        <h:selectOneMenu id="paginationSelection" styleClass="focusable" pt:aria-label="#{msgs.paginierung}" value="#{Metadaten.fileManipulation.insertPage}">
+                            <ui:fragment rendered="#{Metadaten.allPages != null}">
+                                <div class="form-row">
+                                    <div class="form-label">
+                                        <label>#{msgs.position}:</label>
+                                    </div>
+                                    <div class="form-input">
+                                        <h:selectOneMenu id="paginationSelection" styleClass="form-select" pt:aria-label="#{msgs.paginierung}" value="#{Metadaten.fileManipulation.insertPage}">
                                             <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                             <f:selectItem itemLabel="#{msgs.asLastPage}" itemValue="lastPage" />
                                         </h:selectOneMenu>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </ui:fragment>
+                            </ui:fragment>
 
-                    <div class="form-group form-group--flex">
-                        <div class="row justify-content-between">
-                            <div class="col-3">
-                                <label>#{msgs.newFileName}:</label>
+                            <div class="form-row">
+                                <div class="form-label">
+                                    <label>#{msgs.newFileName}:</label>
+                                </div>
+                                <div class="form-input">
+                                    <h:inputText
+                                        id="uploadedFileName"
+                                        pt:aria-label="#{msgs.filename}"
+                                        styleClass="form-control"
+                                        value="#{Metadaten.fileManipulation.uploadedFileName}" />
+                                </div>
                             </div>
-                            <div class="col-9">
-                                <h:inputText
-                                    id="uploadedFileName"
-                                    pt:aria-label="#{msgs.filename}"
-                                    styleClass="form-control"
-                                    value="#{Metadaten.fileManipulation.uploadedFileName}" />
+
+                            <div class="form-row">
+                                <div class="form-label">
+                                    <label>#{msgs.paginierung}:</label>
+                                </div>
+                                <div class="form-input">
+                                    <h:selectOneRadio id="insertMode" styleClass="select-radio select-radio-horizontal" value="#{Metadaten.fileManipulation.insertMode}">
+                                        <f:selectItem itemValue="uncounted" itemLabel="#{msgs.insertAsUncounted}" />
+                                        <f:selectItem itemValue="insertIntoPagination" itemLabel="#{msgs.insertIntoPagination}" />
+                                    </h:selectOneRadio>
+                                </div>
                             </div>
-                        </div>
+                            <div class="p-3 d-flex justify-content-end gap-2">
+                                <button
+                                    type="button"
+                                    jsf:id="uploadFile"
+                                    class="btn btn-blank"
+                                    jsf:action="#{Metadaten.fileManipulation.uploadFile}">
+                                    #{msgs.uploadFile}
+                                    <f:ajax
+                                        onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data)}"
+                                        execute="@form"
+                                        render=":pageContentCenter"
+                                    />
+                                </button>
+                            </div>
+                        </section:body>
                     </div>
-
-                    <div class="form-group form-group--flex">
-                        <div class="row justify-content-between">
-                            <div class="col-3">
-                                <label>#{msgs.paginierung}:</label>
-                            </div>
-                            <div class="col-9">
-                                <!-- REQUIRED LIB: xmlns:jsf="http://xmlns.jcp.org/jsf" -->
-                                <!-- TODO: radio buttons als plain html umbauen -->
-                                <!-- <div class="form-check">
-                                    <ui:repeat var="filter" value="#{Metadaten.fileManipulation.insertMode}">
-                                        <label for="#{filter.label}"> -->
-                                            <!-- jsf:id is needed for automatic setting of the current value from the bean -->
-                                            <!-- pt:name is needed binding this input to the bean variable via passthrough -->
-                                            <!-- <input type="radio" id="#{filter.label}" jsf:id="#{filter.label}" name="selectPagination"
-                                                pt:name="selectPagination" value="#{filter.label}" />
-                                            <span class="custom-control__icon">
-                                                <i class="fa fa-circle-o" aria-hidden="true"></i>
-                                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
-                                            </span>
-                                            #{msg[filter.label]}
-                                        </label>
-                                    </ui:repeat>
-                                </div> -->
-                                <h:selectOneRadio id="insertMode" styleClass="select-radio" value="#{Metadaten.fileManipulation.insertMode}" layout="pageDirection">
-                                    <f:selectItem itemValue="uncounted" itemLabel="#{msgs.insertAsUncounted}" />
-                                    <f:selectItem itemValue="insertIntoPagination" itemLabel="#{msgs.insertIntoPagination}" />
-                                </h:selectOneRadio>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr />
-
-                    <div class="row">
-                        <div class="col-auto mr-auto"></div>
-                        <div class="col-auto">
-                            <button
-                                type="button"
-                                jsf:id="uploadFile"
-                                class="btn btn--gray"
-                                jsf:action="#{Metadaten.fileManipulation.uploadFile}">
-                                #{msgs.uploadFile}
-                                <f:ajax
-                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data)}"
-                                    execute="@form"
-                                    render=":pageContentCenter"
-                                />
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                </section:section>
             </div>
         </h:form>
     </composite:implementation>
