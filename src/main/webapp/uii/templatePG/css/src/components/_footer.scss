@@ -2,7 +2,7 @@
     --footer-text: var(--clr-white);
     --footer-bg: var(--clr-neutral-600);
     background: var(--footer-bg);
-    display: flex;
+    display: none;
     color: var(--footer-text);
     gap: 1rem;
     justify-content: flex-start;
@@ -10,6 +10,12 @@
     padding-block: 0.5rem;
     padding-inline: 1.5rem;
     width: 100%;
+}
+
+@media screen and (min-width: 500px) {
+    .footer {
+        display: flex;
+    }
 }
 
 .footer-text {
