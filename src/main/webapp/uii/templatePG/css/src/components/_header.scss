@@ -1,4 +1,5 @@
 .header__bottom {
+  --stats-gap: 0.46875rem;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -16,14 +17,21 @@
 
   .stats {
     display: flex;
-    align-items: stretch;
+    align-items: flex-end;
     list-style: none;
     padding-left: 0; // ul reset
-    gap: 0.9375rem;
-    li {
+    gap: var(--stats-gap);
+    .stats-content {
+      color: var(--clr-white, #fff);
       display: flex;
-
+      gap: var(--stats-gap);
       padding: 0.625rem 0.9375rem;
+    }
+    .stats-text {
+      display: none;
+    }
+    li {
+      --border-radius: 12px;
       border-radius: var(--border-radius);
     }
     #ajaxloader {
@@ -34,9 +42,7 @@
     }
     button,
     &__date {
-      color: var(--clr-white, #fff);
-      display: flex;
-      gap: 0.9375rem;
+      display: none;
     }
     button {
       background-color: transparent;
@@ -51,11 +57,24 @@
     }
     i,
     .fa {
-      font-size: 1.75rem;
+      font-size: 1rem;
     }
-
-    @media (max-width: 767px) {
-      display: none;
+    @media screen and (min-width: 800px) {
+      .stats-content {
+        gap: calc(var(--stats-gap) * 2);
+      }
+      .stats-text {
+        display: inline;
+      }
+      .fa {
+        font-size: 1.75rem;
+      }
+      & li  {
+        --border-radius: 0;
+      }
+      &__date {
+        display: flex;
+      }
     }
   }
 }

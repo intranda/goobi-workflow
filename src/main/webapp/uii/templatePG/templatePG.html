@@ -189,25 +189,35 @@
                                     <!-- // AJAX LOADER -->
 
                                     <!-- GOOBI SCRIPT -->
-                                    <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
-	                                  <li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script">
-                                      <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
-                                        <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
-                                        <div class="details">
-                                          <span class="big">#{msgs.goobiScript_isActive}</span>
+                                    <!-- <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}"> -->
+	                                  <li
+                                      class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script"
+                                      title="#{msgs.goobiScript_isActive}"
+                                      data-bs-toggle="tooltip">
+                                      <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="stats-content">
+                                        <span
+                                          aria-hidden="true"
+                                          class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}" />
+                                        <span class="details">
+                                          <span class="stats-text">#{msgs.goobiScript_isActive}</span>
                                           <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
-                                        </div>
+                                        </span>
                                       </button>
                                     </li>
-                                    </ui:fragment>
+                                    <!-- </ui:fragment> -->
 
                                     <!-- CURRENT USERS -->
-                                    <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
+                                    <h:panelGroup
+                                      rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}"
+                                      title="#{msgs.aktiveBenutzer}"
+                                      data-bs-toggle="tooltip">
                                       <li class='bg-neutral-400 stats__current-users'>
-                                        <button jsf:action="currentUsers" jsf:id="currentUsers">
-                                          <i class="fa fa-users"></i>
+                                        <button jsf:action="currentUsers" jsf:id="currentUsers" class="stats-content">
+                                          <span
+                                            aria-hidden="true"
+                                            class="fa fa-users" />
                                           <div class="details">
-                                            <span>#{msgs.aktiveBenutzer}</span>
+                                            <span class="stats-text">#{msgs.aktiveBenutzer}</span>
                                             <span>#{SessionForm.numberOfSessions}</span>
                                             <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
                                           </div>
@@ -218,18 +228,22 @@
 
                                     <!-- DATE -->
                                     <li class="bg-neutral-400 stats__date">
-                                      <i class="fa fa-calendar"></i>
-                                      <div class="details">
-                                        <span class="big">
-                                        <h:outputText value="#{SessionForm.currentTime}" />
-                                        <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
-                                          <div style="height: 12px;width: 20px;display: inline-block;"></div>
-                                        </a>
-                                        </span>
-                                        <span>
-                                        <h:outputText value="#{SessionForm.date}">
-                                          <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
-                                          </h:outputText>
+                                      <div class="stats-content">
+                                        <span
+                                          class="fa fa-calendar"
+                                          aria-hidden="true" />
+                                        <span class="details">
+                                          <span class="big">
+                                          <h:outputText value="#{SessionForm.currentTime}" />
+                                          <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
+                                            <div style="height: 12px;width: 20px;display: inline-block;"></div>
+                                          </a>
+                                          </span>
+                                          <span>
+                                          <h:outputText value="#{SessionForm.date}">
+                                            <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+                                            </h:outputText>
+                                          </span>
                                         </span>
                                       </div>
                                     </li>
