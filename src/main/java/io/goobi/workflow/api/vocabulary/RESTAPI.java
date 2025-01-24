@@ -3,6 +3,8 @@ package io.goobi.workflow.api.vocabulary;
 import static io.goobi.workflow.api.vocabulary.VocabularyAPIManager.setupBearerTokenAuthenticationIfPresent;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class RESTAPI {
             if (url.contains("{{" + i + "}}")) {
                 url = url.replace("{{" + i + "}}", parameters[i].toString());
             } else {
-                queryParams.add(parameters[i].toString());
+                queryParams.add(URLEncoder.encode(parameters[i].toString(), StandardCharsets.UTF_8));
             }
         }
         if (!queryParams.isEmpty()) {

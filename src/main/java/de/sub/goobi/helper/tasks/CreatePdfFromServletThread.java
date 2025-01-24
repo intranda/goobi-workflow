@@ -144,6 +144,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                         .queryParam("imageSource", getImagePath().toUri())
                         .queryParam("pdfSource", getPdfPath().toUri())
                         .queryParam("altoSource", getAltoPath().toUri())
+                        .queryParam("goobiMetsFile", "true")
                         .build()
                         .toURL();
 

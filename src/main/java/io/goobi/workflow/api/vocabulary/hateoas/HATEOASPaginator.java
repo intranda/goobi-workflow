@@ -2,6 +2,8 @@ package io.goobi.workflow.api.vocabulary.hateoas;
 
 import static io.goobi.workflow.api.vocabulary.VocabularyAPIManager.setupBearerTokenAuthenticationIfPresent;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -200,17 +202,23 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
     }
 
     private void request(String url, Optional<Long> pageSize, Optional<Long> pageNumber) {
-        url = updatePageAndSizeUrlParameters(url, pageSize, pageNumber, sortField, searchParameter);
-        Invocation.Builder builder = client
-                .target(url)
-                .request(MediaType.APPLICATION_JSON);
-        builder = setupBearerTokenAuthenticationIfPresent(builder);
-        try (Response response = builder.get()) {
-            if (response.getStatus() / 100 != 2) {
-                throw new APIException(url, "GET", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class),
-                        null);
+        try {
+            url = updatePageAndSizeUrlParameters(url, pageSize, pageNumber, sortField, searchParameter);
+            Invocation.Builder builder = client
+                    .target(url)
+                    .request(MediaType.APPLICATION_JSON);
+            builder = setupBearerTokenAuthenticationIfPresent(builder);
+            try (Response response = builder.get()) {
+                if (response.getStatus() / 100 != 2) {
+                    throw new APIException(url, "GET", response.getStatus(), "Vocabulary server error",
+                            response.readEntity(VocabularyException.class), null);
+                }
+                setCurrentPage(response.readEntity(pageClass));
             }
-            setCurrentPage(response.readEntity(pageClass));
+        } catch (APIException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw new APIException(url, "GET", -1, e.getMessage(), null, e);
         }
     }
 
@@ -229,8 +237,8 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
         }
         pageSize.ifPresent(value -> parameters.put("size", String.valueOf(value)));
         pageNumber.ifPresent(value -> parameters.put("page", String.valueOf(value)));
-        sortField.ifPresent(s -> parameters.put("sort", s));
-        searchParameter.ifPresent(s -> parameters.put("search", s));
+        sortField.ifPresent(s -> parameters.put("sort", URLEncoder.encode(s, StandardCharsets.UTF_8)));
+        searchParameter.ifPresent(s -> parameters.put("search", URLEncoder.encode(s, StandardCharsets.UTF_8)));
         if (searchParameter.isEmpty()) {
             parameters.remove("search");
         }

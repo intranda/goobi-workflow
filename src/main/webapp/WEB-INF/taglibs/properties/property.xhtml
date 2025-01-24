@@ -94,7 +94,7 @@
                     class="fa fa-square-o fa-lg" />
             </h:panelGroup>
         </h:panelGroup>
-        <c:if test="#{editable and LoginForm.hasRole('Workflow_General_Details_Edit')}">
+        <c:if test="#{editable}">
             <button:row styleClass="ms-auto my-auto ps-2">
                 <f:ajax
                     render="propertyEditArea"
@@ -126,7 +126,26 @@
                                 value="eigenschaft" />
                         </button>
                     </c:if>
-                    <c:if test="#{scope != 'batch'}">
+                    <c:if test="#{scope == 'step'}">
+                        <button
+                            jsf:id="editProperty"
+                            jsf:action="task_edit"
+                            title="#{msgs.bearbeiten}"
+                            class="btn btn-blank"
+                            jsf:rendered="#{!isBatchStep and property.currentStepAccessCondition ne 'READ' and property.type.name != 'metadata'}">
+                            <span class="fa fa-pencil" />
+                            <f:setPropertyActionListener
+                                target="#{bean.processProperty}"
+                                value="#{property}" />
+                            <f:setPropertyActionListener
+                                target="#{bean.container}"
+                                value="0" />
+                            <f:setPropertyActionListener
+                                target="#{bean.modusBearbeiten}"
+                                value="eigenschaft" />
+                        </button>
+                    </c:if>
+                    <c:if test="#{scope == 'process' and LoginForm.hasRole('Workflow_General_Details_Edit')}">
                         <button
                             class="btn btn-blank"
                             data-bs-toggle="tooltip"
@@ -157,7 +176,7 @@
                         class="btn btn-blank"
                         title="#{msgs.duplicate}"
                         jsf:id="duplicateProperty"
-                        jsf:rendered="#{proc.type.name != 'metadata' and scope == 'process'}">
+                        jsf:rendered="#{proc.type.name != 'metadata' and scope == 'process' and LoginForm.hasRole('Workflow_General_Details_Edit')}">
                         <span
                             aria-hidden="true"
                             class="fa fa-clipboard" />
