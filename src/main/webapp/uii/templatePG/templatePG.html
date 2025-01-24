@@ -189,22 +189,22 @@
                                     <!-- // AJAX LOADER -->
 
                                     <!-- GOOBI SCRIPT -->
-                                    <!-- <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}"> -->
-	                                  <li
-                                      class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script"
-                                      title="#{msgs.goobiScript_isActive}"
-                                      data-bs-toggle="tooltip">
-                                      <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="stats-content">
-                                        <span
-                                          aria-hidden="true"
-                                          class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}" />
-                                        <span class="details">
-                                          <span class="stats-text">#{msgs.goobiScript_isActive}</span>
-                                          <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
-                                        </span>
-                                      </button>
-                                    </li>
-                                    <!-- </ui:fragment> -->
+                                    <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+                                      <li
+                                        class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script"
+                                        title="#{msgs.goobiScript_isActive}"
+                                        data-bs-toggle="tooltip">
+                                        <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="stats-content">
+                                          <span
+                                            aria-hidden="true"
+                                            class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}" />
+                                          <span class="details">
+                                            <span class="stats-text">#{msgs.goobiScript_isActive}</span>
+                                            <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
+                                          </span>
+                                        </button>
+                                      </li>
+                                    </ui:fragment>
 
                                     <!-- CURRENT USERS -->
                                     <h:panelGroup
