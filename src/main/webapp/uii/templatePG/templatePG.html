@@ -208,10 +208,11 @@
 
                                     <!-- CURRENT USERS -->
                                     <h:panelGroup
-                                      rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}"
-                                      title="#{msgs.aktiveBenutzer}"
-                                      data-bs-toggle="tooltip">
-                                      <li class='bg-neutral-400 stats__current-users'>
+                                      rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
+                                      <li
+                                        class='bg-neutral-400 stats__current-users'
+                                        data-bs-toggle="tooltip"
+                                        title="#{msgs.aktiveBenutzer}">
                                         <button jsf:action="currentUsers" jsf:id="currentUsers" class="stats-content">
                                           <span
                                             aria-hidden="true"
