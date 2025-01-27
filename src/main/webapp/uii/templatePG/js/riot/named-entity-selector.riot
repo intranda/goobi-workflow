@@ -1,0 +1,342 @@
+<named-entity-selector>
+    <h4 class="h6 m-0">{msgs.title__named_entity_editor}</h4>
+    <div class="named-entity-editor">
+        <div class="named-entity-editor-group">
+            <div class="named-entity-editor-row named-entity-editor-entity" each="{entity in this.entities}">
+                <button class="btn named-entity-entity" type="button" onclick="{selectEntity}" title="{msgs.edit_entity}" data-toggle="tooltip">
+                    <div class="named-entity-type">{getTypeLabel(entity.type)}</div>
+                    <div class="named-entity-name">
+                        {entity.label} ({entity.uri})
+                    </div>
+                </button>
+                <div id="entityActions" class="entityactions">
+                    <button class="btn btn--danger" type="button" onclick="{deleteEntity}" title="{msgs.action__delete_entity}" data-toggle="tooltip">
+                        <span class="fa fa-trash-o" aria-hidden="true" />
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="named-entity-editor-row named-entity-editor-input">
+        <div id="namedEntityType">
+            <label class="form-group__label" for="entityTypeSelector">{msgs.label__named_entity_type}:</label>
+            <select ref="entityTypeSelection" disabled data-enable="select-word" id="entityTypeSelector" class="form-control form-control--select" onchange="{checkCreateEntityButtonActive}">
+                <option value="">{msgs.bitteAuswaehlen}</option>
+                <option each="{type in this.entityTypes}" value="{type.value}">{type.label}</option>
+            </select>
+        </div>
+        <div id="authorityEntity" class="flex-wrap">
+            <label class="form-group__label text-nowrap align-self-flex-start" for="entityValueInput">{msgs.label__named_entity}:</label>
+            <div class="input-stack">
+                <select ref="entityValueSelection" disabled data-enable="select-word" id="entityValueSelector" class="form-control form-control--select" onchange="{handleEntitySelectChange}" >
+                    <option value="">{msgs.bitteAuswaehlen}</option>
+                    <option each="{entity in this.entityValues}" value="{entity.uri}">{entity.value} ({entity.uri})</option>
+                </select>
+                <input ref="entityValueInput" disabled data-enable="select-word" class="form-control form-control--input" onchange="{handleEntityInputChange}" oninput="{checkCreateEntityButtonActive}"/>
+            </div>
+        </div>
+        <div id="entityActions" class="mt-auto">
+            <button disabled class="btn btn--gray ml-auto" type="button" ref="createEntityButton" onclick="{createEntity}">{msgs.action__set_named_entity}</button>
+        </div>
+    </div>
+
+	<style>
+        .alignRight {
+            text-align: right;
+        }
+        .align-self-flex-start {
+            align-self: flex-start;
+        }
+        .form-control {
+            display: inline;
+            width: auto;
+        }
+        .form-group__label {
+            margin-right: 10px;
+        }
+        .input-stack {
+            display: flex;
+            flex-direction: column;
+        }
+        .named-entity-editor {
+            padding-top: 0;
+            overflow-y: scroll;
+        }
+        .named-entity-editor-row {
+            display: flex;
+            gap: 2em;
+            justify-content: space-between;
+            /* display: grid;
+            grid-template-columns: 3fr 5fr 2fr;
+            padding: 3px; */
+        }
+        .named-entity-editor-row.-active .named-entity-entity {
+            color: black;
+            font-weight: bold;
+        }
+        .entityactions {
+            align-items: center;
+            display: flex;
+        }
+        .named-entity-editor-row .btn--gray,
+        .named-entity-editor-row .btn--danger {
+            align-items: center;
+            display: flex;
+            height: 25px;
+        }
+        .named-entity-editor-entity {
+            border-bottom: 1px solid #ddd;
+            padding: var(--alto-padding);
+        }
+        .named-entity-editor-entity:last-of-type {
+            border: 0;
+        }
+        .named-entity-entity {
+            display: flex;
+            flex-grow: 2;
+        }
+        .named-entity-type {
+            width: 10%;
+        }
+        .named-entity-name {
+            flex-grow: 1;
+            text-align: initial;
+        }
+        .named-entity-editor-input {
+            align-items: center;
+            border-top: 1px solid #bbb;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: var(--alto-padding);
+        }
+        .named-entity-editor-input > * {
+            align-items: center;
+            align-self: flex-start;
+            display: flex;
+            flex-grow: 1;
+        }
+        .named-entity-editor-input > * > select {
+            min-width: 10em;
+        }
+    </style>
+
+    <script>
+
+        const SELECTED_WORD_CLASS = "selected-word";
+        const SELECTOR_ENABLE_ON_WORD_SELECTED = "[data-enable='select-word']";
+        const SELECTOR_ENTITY_EDITOR_ROW = ".named-entity-editor-row";
+        const ACTIVE_CLASS = "-active";
+        const CHANGE_ACTION_SET_ENTITY = "setNamedEntity";
+
+        /*
+        entity: {
+            label: "Name",
+            uri: "https://normadata/name",
+            type: "person",
+            words: ["Textword_21", "Textword_22", "Textword_23"]
+        }
+        entityType: {
+            value: "person",
+            label: "Person"
+        }
+        entityValue: {
+            value: "Name",
+            uri: "https://normadata/name"
+        }
+        */
+
+        this.on('before-mount', () => {
+            console.log("initializing named entity selector with", opts);
+            this.msgs = this.opts.msgs;
+            this.entities = this.opts.namedEntities;
+            this.selectedWords = [];    //html elements
+            this.selectedEntity = undefined;
+            this.entityTypes = this.opts.types;
+            this.entityValues = JSON.parse(this.opts.entities);
+
+        })
+
+        this.on('mount', () => {
+            document.querySelectorAll(this.opts.wordSelector).forEach( wordElement => {
+                wordElement.addEventListener("click", e => {
+                    this.handleWordClick(e.target);
+                });
+            });
+            document.querySelector(this.opts.wordContainerSelector).addEventListener("click", e => {
+                if(!e?.target?.matches(this.opts.wordSelector)) {
+    		        this.resetSelection();
+                }
+            });
+            //save now to write existing entities into changes list
+            this.saveEntities();
+        });
+
+        handleEntitySelectChange(event) {
+            const uri = event.target.value;
+            const entityValue = this.entityValues.find(ent => ent.uri == uri);
+            this.refs.entityValueInput.value = event.target.selectedOptions[0]?.innerText;
+            this.refs.entityValueInput.dataset.uri = uri;
+            this.checkCreateEntityButtonActive();
+        }
+
+        handleEntityInputChange(event) {
+            this.refs.entityValueInput.dataset.uri = "";
+        }
+
+        handleWordClick(element) {
+                const alreadySelected = element.classList.contains(SELECTED_WORD_CLASS);
+                if(this.selectedEntity) {
+                    if(alreadySelected) {
+                        this.removeFromEntity(element, this.selectedEntity)
+                    } else {
+                         this.addToEntity(element, this.selectedEntity);
+                    }
+                } else {
+                    this.activateInputElements();
+                    if(alreadySelected) {
+                         this.removeSelectedWord(element)
+                    } else {
+                         this.addSelectedWord(element);
+                    }
+                }
+        }
+
+        checkCreateEntityButtonActive() {
+            this.refs.createEntityButton.disabled = this.refs.entityTypeSelection.disabled || !this.refs.entityTypeSelection.value || this.refs.entityValueInput.disabled || !this.refs.entityValueInput.value;
+
+        }
+
+        activateInputElements(enable) {
+            if(enable === undefined) {
+                enable = true;
+            }
+            document.querySelectorAll(SELECTOR_ENABLE_ON_WORD_SELECTED).forEach(ele => ele.disabled = !enable);
+            this.checkCreateEntityButtonActive();
+        }
+
+        addSelectedWord(element) {
+            element.classList.add(SELECTED_WORD_CLASS);
+            this.selectedWords.push(element);
+        }
+
+        removeSelectedWord(element) {
+            element.classList.remove(SELECTED_WORD_CLASS);
+            let index = this.selectedWords.indexOf(element);
+            this.selectedWords.splice(index, 1);
+        }
+
+        removeFromEntity(element, entity) {
+            element.classList.remove(SELECTED_WORD_CLASS);
+            let id = element.id;
+            let index = entity.words.indexOf(id);
+            if(index > -1) {
+                entity.words.splice(index, 1);
+            }
+            this.saveEntities();
+        }
+
+        selectEntity(event) {
+            const entity = event.item.entity;
+            this.resetSelection();
+            this.selectedEntity = entity;
+            entity.words.map(id => document.getElementById(id)).forEach(element => this.addSelectedWord(element));
+            this.highlightEntity(event.target);
+
+        }
+
+        highlightEntity(element) {
+            document.querySelectorAll(SELECTOR_ENTITY_EDITOR_ROW).forEach(ele => ele.classList.remove(ACTIVE_CLASS));
+            if(element) {
+                element.closest(SELECTOR_ENTITY_EDITOR_ROW)?.classList.add(ACTIVE_CLASS);
+            }
+        }
+
+        deleteEntity(event) {
+            const entity = event.item.entity;
+            let entityIndex = this.entities.indexOf(entity);
+            if(entityIndex > -1) {
+                this.entities.splice(entityIndex, 1);
+            }
+            this.resetSelection();
+            this.resetEntityValueSelection();
+            this.saveEntities();
+        }
+
+        addToEntity(element, entity) {
+            element.classList.add(SELECTED_WORD_CLASS);
+            if(!entity.words) {
+                entity.words = [];
+            }
+            entity.words.push(element.id);
+            this.saveEntities();
+        }
+
+        resetSelection() {
+            if(this.selectedEntity) {
+                this.selectedEntity.words.map(id => document.getElementById(id)).forEach(ele => ele.classList.remove(SELECTED_WORD_CLASS));
+                this.selectedEntity = undefined;
+            } else {
+                this.selectedWords.forEach(ele => ele.classList.remove(SELECTED_WORD_CLASS));
+            }
+            this.selectedWords = [];
+            this.activateInputElements(false);
+            this.highlightEntity(null);
+        }
+
+        resetEntityValueSelection() {
+            this.refs.entityValueInput.value = "";
+            this.refs.entityValueInput.dataset.uri = "";
+        }
+
+        getTypeLabel(typeValue) {
+            let type = this.entityTypes.find(t => t.value === typeValue);
+            return type ? type.label : type;
+        }
+
+        createEntity() {
+            const authorityUri = this.refs.entityValueInput.dataset.uri;
+            if(authorityUri) {
+                let entity = {
+                    uri : authorityUri,
+                    type : this.refs.entityTypeSelection.value,
+                    label : this.entityValues.find(v => v.uri === authorityUri).value,
+                    words : this.selectedWords.map(w => w.id),
+                }
+                this.entities.push(entity);
+            } else {
+                let entity = {
+                    type : this.refs.entityTypeSelection.value,
+                    label : this.refs.entityValueInput.value,
+                    words : this.selectedWords.map(w => w.id),
+                }
+                this.entities.push(entity);
+            }
+            this.saveEntities();
+            this.resetEntityValueSelection();
+            this.resetSelection();
+
+        }
+
+        saveEntities() {
+            console.log("save entities", this.entities);
+            const changesList = this.entities.map(entity => {
+                return  {
+                    action: CHANGE_ACTION_SET_ENTITY,
+                    entity: {
+                        label: entity.label,
+                        type: entity.type,
+                        uri: entity.uri
+                    },
+                    words: entity.words
+                }
+            })
+            this.opts.changeCallback(changesList);
+        }
+
+    </script>
+
+
+
+
+</named-entity-selector>
