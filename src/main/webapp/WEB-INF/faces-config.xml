@@ -70,8 +70,8 @@
 
     <render-kit>
         <renderer>
-            <component-family>javax.faces.Messages</component-family>
-            <renderer-type>javax.faces.Messages</renderer-type>
+            <component-family>jakarta.faces.Messages</component-family>
+            <renderer-type>jakarta.faces.Messages</renderer-type>
             <renderer-class>org.goobi.production.messages.EscapableMessagesRenderer</renderer-class>
         </renderer>
     </render-kit>

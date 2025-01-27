@@ -30,6 +30,9 @@ import java.util.stream.Stream;
 
 import org.goobi.production.GoobiVersion;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -69,6 +72,7 @@ public class OpenApiResource {
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
+    @JsonInclude(Include.NON_NULL)
     public OpenAPI getOpenApi() {
         String contextPath = servletConfig.getServletContext().getContextPath();
         return initSwagger(servletConfig, application, contextPath);
@@ -80,9 +84,7 @@ public class OpenApiResource {
             SwaggerConfiguration oasConfig = new SwaggerConfiguration()
                     .prettyPrint(true)
                     .readAllResources(false)
-                    .resourcePackages(Stream.of("org.goobi.api.rest").collect(Collectors.toSet()))
-
-            ;
+                    .resourcePackages(Stream.of("org.goobi.api.rest").collect(Collectors.toSet()));
 
             OpenAPI openApi = new JaxrsOpenApiContextBuilder<>()
                     .servletConfig(servletConfig)
