@@ -92,7 +92,7 @@
                                             <h:panelGroup
                                                 rendered="#{page.type == 'div'}">
                                                 <button
-                                                    class="btn btn--icon"
+                                                    class="btn btn-outline"
                                                     title="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
                                                     aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
                                                     jsf:action="#{Metadaten.loadImageInThumbnailList}"
@@ -118,7 +118,7 @@
                                                         render="mainimagearea" />
                                                 </button>
                                                 <button
-                                                    class="btn btn--icon star"
+                                                    class="btn btn-outline star"
                                                     title="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
                                                     aria-label="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
                                                     jsf:action="#{Metadaten.updateRepresentativePage}"
@@ -145,7 +145,7 @@
                                                 styleClass="pagination__left__page__item">
                                                 <button
                                                     jsf:id="deletePageArea"
-                                                    class="btn btn--icon"
+                                                    class="btn btn-outline"
                                                     title="#{msgs.mets_deletePageArea}"
                                                     jsf:action="#{Metadaten.deletePageArea(page.docStruct)}"
                                                     data-renderimage="true"
@@ -171,120 +171,118 @@
                     <h:panelGroup
                         layout="block"
                         id="meSetPaginationBox"
-                        styleClass="module module__box module__box--gray module__box--collapsable">
+                        styleClass="pb-2">
                         <section:section
                             type="outline">
                             <section:header
                                 icon="bars"
                                 title="#{msgs.paginierungFestlegen}">
-                                <section:header-actions>
+                                <button
+                                    type="button"
+                                    class="btn btn-outline ms-auto"
+                                    aria-label="#{msgs.mets_treeCompress}"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#paginationDefinition"
+                                    aria-expanded="true"
+                                    aria-controls="paginationDefinition">
+                                    <span
+                                        class="collapse-caret fa fa-angle-up"
+                                        aria-hidden="true" />
+                                    <span
+                                        class="extend-caret fa fa-angle-down"
+                                        aria-hidden="true" />
+                                </button>
+                                <div
+                                    class="btn-group"
+                                    role="group">
                                     <button
                                         type="button"
-                                        class="btn btn-outline ms-auto"
-                                        aria-label="#{msgs.mets_treeCompress}"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#paginationDefinition"
-                                        aria-expanded="true"
-                                        aria-controls="paginationDefinition">
-                                        <span
-                                            class="collapse-caret fa fa-angle-up"
-                                            aria-hidden="true" />
-                                        <span
-                                            class="extend-caret fa fa-angle-down"
-                                            aria-hidden="true" />
+                                        id="paginationPagesPerImageGroup"
+                                        class="btn btn-outline dropdown-toggle"
+                                        data-bs-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <span class="fa fa-list" />
+                                        #{Metadaten.paginierungSeitenProImage}
                                     </button>
                                     <div
-                                        class="btn-group"
-                                        role="group">
+                                        class="dropdown-menu"
+                                        aria-labelledby="paginationPagesPerImageGroup">
                                         <button
-                                            type="button"
-                                            id="paginationPagesPerImageGroup"
-                                            class="btn btn--icon dropdown-toggle"
-                                            data-bs-toggle="dropdown"
-                                            aria-haspopup="true"
-                                            aria-expanded="false">
-                                            <span class="fa fa-list" />
-                                            #{Metadaten.paginierungSeitenProImage}
+                                            jsf:id="seitenzaehlung"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}">
+                                            <h:outputText value="1 - #{msgs.seitenzaehlung}" />
+                                            <x:updateActionListener
+                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                                value="1" />
+                                            <f:passThroughAttribute
+                                                name="data-bs-placement"
+                                                value="bottom" />
                                         </button>
-                                        <div
-                                            class="dropdown-menu"
-                                            aria-labelledby="paginationPagesPerImageGroup">
-                                            <button
-                                                jsf:id="seitenzaehlung"
-                                                class="dropdown-item"
-                                                jsf:action="#{NavigationForm.Reload}">
-                                                <h:outputText value="1 - #{msgs.seitenzaehlung}" />
-                                                <x:updateActionListener
-                                                    property="#{Metadaten.paginierungSeitenProImage}"
-                                                    value="1" />
-                                                <f:passThroughAttribute
-                                                    name="data-bs-placement"
-                                                    value="bottom" />
-                                            </button>
-                                            <button
-                                                jsf:id="spaltenzaehlung"
-                                                class="dropdown-item"
-                                                jsf:action="#{NavigationForm.Reload}"
-                                                title="#{msgs.spaltenzaehlung}">
-                                                <h:outputText value="2 - #{msgs.spaltenzaehlung}" />
-                                                <x:updateActionListener
-                                                    property="#{Metadaten.paginierungSeitenProImage}"
-                                                    value="2" />
-                                                <f:passThroughAttribute
-                                                    name="data-bs-placement"
-                                                    value="bottom" />
-                                            </button>
-                                            <button
-                                                jsf:id="blattzaehlung"
-                                                class="dropdown-item"
-                                                jsf:action="#{NavigationForm.Reload}">
-                                                <h:outputText value="3 - #{msgs.blattzaehlung}" />
-                                                <x:updateActionListener
-                                                    property="#{Metadaten.paginierungSeitenProImage}"
-                                                    value="3" />
-                                                <f:passThroughAttribute
-                                                    name="data-bs-placement"
-                                                    value="bottom" />
-                                            </button>
-                                            <button
-                                                jsf:id="blattzaehlungrectoverso"
-                                                class="dropdown-item"
-                                                jsf:action="#{NavigationForm.Reload}">
-                                                <h:outputText value="4 - #{msgs.blattzaehlungrectoverso}" />
-                                                <x:updateActionListener
-                                                    property="#{Metadaten.paginierungSeitenProImage}"
-                                                    value="4" />
-                                                <f:passThroughAttribute
-                                                    name="data-bs-placement"
-                                                    value="bottom" />
-                                            </button>
-                                            <button
-                                                jsf:id="seitenzaehlungrectoverso"
-                                                class="dropdown-item"
-                                                jsf:action="#{NavigationForm.Reload}">
-                                                <h:outputText value="5 - #{msgs.seitenzaehlungrectoverso}" />
-                                                <x:updateActionListener
-                                                    property="#{Metadaten.paginierungSeitenProImage}"
-                                                    value="5" />
-                                                <f:passThroughAttribute
-                                                    name="data-bs-placement"
-                                                    value="bottom" />
-                                            </button>
-                                            <button
-                                                jsf:id="doublepages"
-                                                class="dropdown-item"
-                                                jsf:action="#{NavigationForm.Reload}">
-                                                <h:outputText value="6 - #{msgs.doublepages}" />
-                                                <x:updateActionListener
-                                                    property="#{Metadaten.paginierungSeitenProImage}"
-                                                    value="6" />
-                                                <f:passThroughAttribute
-                                                    name="data-bs-placement"
-                                                    value="bottom" />
-                                            </button>
-                                        </div>
+                                        <button
+                                            jsf:id="spaltenzaehlung"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}"
+                                            title="#{msgs.spaltenzaehlung}">
+                                            <h:outputText value="2 - #{msgs.spaltenzaehlung}" />
+                                            <x:updateActionListener
+                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                                value="2" />
+                                            <f:passThroughAttribute
+                                                name="data-bs-placement"
+                                                value="bottom" />
+                                        </button>
+                                        <button
+                                            jsf:id="blattzaehlung"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}">
+                                            <h:outputText value="3 - #{msgs.blattzaehlung}" />
+                                            <x:updateActionListener
+                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                                value="3" />
+                                            <f:passThroughAttribute
+                                                name="data-bs-placement"
+                                                value="bottom" />
+                                        </button>
+                                        <button
+                                            jsf:id="blattzaehlungrectoverso"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}">
+                                            <h:outputText value="4 - #{msgs.blattzaehlungrectoverso}" />
+                                            <x:updateActionListener
+                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                                value="4" />
+                                            <f:passThroughAttribute
+                                                name="data-bs-placement"
+                                                value="bottom" />
+                                        </button>
+                                        <button
+                                            jsf:id="seitenzaehlungrectoverso"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}">
+                                            <h:outputText value="5 - #{msgs.seitenzaehlungrectoverso}" />
+                                            <x:updateActionListener
+                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                                value="5" />
+                                            <f:passThroughAttribute
+                                                name="data-bs-placement"
+                                                value="bottom" />
+                                        </button>
+                                        <button
+                                            jsf:id="doublepages"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}">
+                                            <h:outputText value="6 - #{msgs.doublepages}" />
+                                            <x:updateActionListener
+                                                property="#{Metadaten.paginierungSeitenProImage}"
+                                                value="6" />
+                                            <f:passThroughAttribute
+                                                name="data-bs-placement"
+                                                value="bottom" />
+                                        </button>
                                     </div>
-                                </section:header-actions>
+                                </div>
                             </section:header>
                             <div id="paginationDefinition" class="collapse show">
                                 <section:body padding="true">
@@ -315,10 +313,10 @@
                                         class="#{Metadaten.paginierungArt eq '3' ? 'hidden' : ''}">
                                         <div class="form-group form-group--flex">
                                             <div class="row justify-content-between">
-                                                <div class="col">
+                                                <div class="col ps-1">
                                                     <label
                                                         for="paginationPrefix"
-                                                        class="sr-only">#{msgs.Prefix}</label>
+                                                        class="visually-hidden">#{msgs.Prefix}</label>
                                                     <x:inputText
                                                         id="paginationPrefix"
                                                         styleClass="form-control"
@@ -336,10 +334,10 @@
                                                         forceId="true"
                                                         value="#{Metadaten.paginierungWert}" />
                                                 </div>
-                                                <div class="col">
+                                                <div class="col pe-1">
                                                     <label
                                                         for="paginationSuffix"
-                                                        class="sr-only">#{msgs.Suffix}</label>
+                                                        class="visually-hidden">#{msgs.Suffix}</label>
                                                     <x:inputText
                                                         id="paginationSuffix"
                                                         styleClass="form-control"
@@ -374,40 +372,34 @@
                                     </div>
                                 </section:body>
                                 <section:footer>
-                                    <ul role="list">
-                                        <li>
-                                            <button
-                                                jsf:id="paginationSelection"
-                                                class="btn btn--icon"
-                                                jsf:action="#{Metadaten.Paginierung}"
-                                                type="button">
-                                                <span class="fa fa-file-o fa-lg fa-with-bg" aria-hidden="true" />
-                                                <span>#{msgs.nurDieMarkiertenSeiten}</span>
-                                                <x:updateActionListener
-                                                    property="#{Metadaten.paginierungAbSeiteOderMarkierung}"
-                                                    value="2" />
-                                                <f:ajax
-                                                    execute="@form"
-                                                    render="pagePaginationList" />
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                jsf:id="paginationAll"
-                                                class="btn btn--icon"
-                                                jsf:action="#{Metadaten.Paginierung}"
-                                                type="button">
-                                                <span class="fa fa-files-o fa-lg fa-with-bg" aria-hidden="true" />
-                                                <span>#{msgs.abDerErstenMarkiertenSeite}</span>
-                                                <x:updateActionListener
-                                                    property="#{Metadaten.paginierungAbSeiteOderMarkierung}"
-                                                    value="1" />
-                                                <f:ajax
-                                                    execute="@form"
-                                                    render="pagePaginationList" />
-                                            </button>
-                                        </li>
-                                    </ul>
+                                    <button
+                                        jsf:id="paginationSelection"
+                                        class="btn btn-blank"
+                                        jsf:action="#{Metadaten.Paginierung}"
+                                        type="button">
+                                        <span class="fa fa-file-o" aria-hidden="true" />
+                                        <span>#{msgs.nurDieMarkiertenSeiten}</span>
+                                        <x:updateActionListener
+                                            property="#{Metadaten.paginierungAbSeiteOderMarkierung}"
+                                            value="2" />
+                                        <f:ajax
+                                            execute="@form"
+                                            render="pagePaginationList" />
+                                    </button>
+                                    <button
+                                        jsf:id="paginationAll"
+                                        class="btn btn-blank"
+                                        jsf:action="#{Metadaten.Paginierung}"
+                                        type="button">
+                                        <span class="fa fa-files-o" aria-hidden="true" />
+                                        <span>#{msgs.abDerErstenMarkiertenSeite}</span>
+                                        <x:updateActionListener
+                                            property="#{Metadaten.paginierungAbSeiteOderMarkierung}"
+                                            value="1" />
+                                        <f:ajax
+                                            execute="@form"
+                                            render="pagePaginationList" />
+                                    </button>
                                 </section:footer>
                             </div>
                         </section:section>
@@ -416,171 +408,228 @@
                     <!-- PAGE ORDER -->
                     <ui:fragment rendered="#{Metadaten.displayFileManipulation}">
                         <div
-                            id="mePageOrderBox"
-                            class="module module__box module__box--white module__box--collapsable">
-                            <div class="module__box-title">
-                                <h1>
-                                    <span
-                                        class="fa fa-bars"
-                                        aria-hidden="true" />
-                                    <span>#{msgs.pageOrder}</span>
+                            id="mePageOrderBox">
+                            <section:section type="outline">
+                                <section:header
+                                    icon="bars"
+                                    title="#{msgs.pageOrder}">
                                     <button
                                         type="button"
-                                        class="btn btn-outline"
-                                        aria-label="#{msgs.showBoxDetailsOff}"
-                                        data-bs-toggle="box-body">
+                                        class="btn btn-outline ms-auto"
+                                        aria-label="#{msgs.mets_treeCompress}"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#pageOrderBoxBody"
+                                        aria-expanded="true"
+                                        aria-controls="pageOrderBoxBody">
                                         <span
-                                            class="fa fa-angle-up"
+                                            class="collapse-caret fa fa-angle-up"
+                                            aria-hidden="true" />
+                                        <span
+                                            class="extend-caret fa fa-angle-down"
                                             aria-hidden="true" />
                                     </button>
-                                </h1>
-                            </div>
-                            <div class="module__box-body">
-                                <ul class="clean pagination__right-actions">
-                                    <li class="pagination__right-actions-steps">
-                                        <button
-                                            jsf:id="moveUp1"
-                                            class="btn btn--icon"
-                                            jsf:action="#{Metadaten.moveSelectedPages('up', 1)}"
-                                            title="#{msgs.moveSeltectedPagesUp}"
-                                            type="button">
-                                            <span class="fa fa-chevron-up fa-lg fa-with-bg" />
-                                            <!--                                             <span class="fa fa-chevron-up fa-lg" aria-hidden="true" /> -->
-                                            <span>#{msgs.moveSeltectedPagesUp}</span>
-                                            <f:passThroughAttribute
-                                                name="data-bs-toggle"
-                                                value="tooltip" />
-                                            <f:ajax
-                                                execute="@form"
-                                                render="pagePaginationList" />
-                                        </button>
+                                </section:header>
+                                <div id="pageOrderBoxBody" class="collapse show">
+                                    <section:body padding="true">
 
-                                        <div class="pagination__right-actions-steps-numbers">
-                                            <button
-                                                class="button-link-blue padding-6 underline"
-                                                jsf:id="moveUp10"
-                                                jsf:action="#{Metadaten.moveSelectedPages('up', 10)}">
-                                                10
-                                                <f:ajax
-                                                    execute="@form"
-                                                    render="pagePaginationList" />
-                                            </button>
-                                            <button
-                                                class="button-link-blue padding-6 underline"
-                                                jsf:id="moveUp50"
-                                                jsf:action="#{Metadaten.moveSelectedPages('up', 50)}">
-                                                50
-                                                <f:ajax
-                                                    execute="@form"
-                                                    render="pagePaginationList" />
-                                            </button>
-                                            <button
-                                                class="button-link-blue padding-6 underline"
-                                                jsf:id="moveUp100"
-                                                jsf:action="#{Metadaten.moveSelectedPages('up', 100)}">
-                                                100
-                                                <f:ajax
-                                                    execute="@form"
-                                                    render="pagePaginationList" />
-                                            </button>
-                                        </div>
+                                        <ul role="list" class="p-0 m-0">
+                                            <li class="pb-2">
+                                                <div class="btn-group">
+                                                    <button
+                                                        jsf:id="moveUp1"
+                                                        class="btn btn-blank"
+                                                        jsf:action="#{Metadaten.moveSelectedPages('up', 1)}"
+                                                        title="#{msgs.moveSeltectedPagesUp}"
+                                                        type="button">
+                                                        <span class="fa fa-chevron-up" aria-hidden="true" />
+                                                        <!--                                             <span class="fa fa-chevron-up fa-lg" aria-hidden="true" /> -->
+                                                        <span>#{msgs.moveSeltectedPagesUp}</span>
+                                                        <f:passThroughAttribute
+                                                            name="data-bs-toggle"
+                                                            value="tooltip" />
+                                                        <f:ajax
+                                                            execute="@form"
+                                                            render="pagePaginationList" />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-blank dropdown-toggle dropdown-toggle-split"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
+                                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                                    </button>
+                                                    <ol class="dropdown-menu">
+                                                        <li>
+                                                            <button
+                                                                class="dropdown-item"
+                                                                jsf:id="moveUp10"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('up', 10)}">
+                                                                10
+                                                                <f:ajax
+                                                                    execute="@form"
+                                                                    render="pagePaginationList" />
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button
+                                                                class="dropdown-item"
+                                                                jsf:id="moveUp50"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('up', 50)}">
+                                                                50
+                                                                <f:ajax
+                                                                    execute="@form"
+                                                                    render="pagePaginationList" />
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button
+                                                                class="dropdown-item"
+                                                                jsf:id="moveUp100"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('up', 100)}">
+                                                                100
+                                                                <f:ajax
+                                                                    execute="@form"
+                                                                    render="pagePaginationList" />
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button
+                                                                class="dropdown-item"
+                                                                jsf:id="moveUp1000"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('up', 1000)}">
+                                                                1000
+                                                                <f:ajax
+                                                                    execute="@form"
+                                                                    render="pagePaginationList" />
+                                                            </button>
+                                                        </li>
+                                                    </ol>
+                                                </div>
 
-                                    </li>
+                                            </li>
 
-                                    <li class="pagination__right-actions-steps">
-                                        <button
-                                            jsf:id="moveDown1"
-                                            class="btn btn--icon"
-                                            jsf:action="#{Metadaten.moveSelectedPages('down', 1)}"
-                                            title="#{msgs.moveSeltectedPagesDown}"
-                                            type="button">
-                                            <span class="fa fa-chevron-down fa-lg fa-with-bg" />
-                                            <!--                                             <span class="fa fa-chevron-down fa-lg" aria-hidden="true" /> -->
-                                            <span>#{msgs.moveSeltectedPagesDown}</span>
-                                            <f:passThroughAttribute
-                                                name="data-bs-toggle"
-                                                value="tooltip" />
-                                            <f:ajax
-                                                execute="@form"
-                                                render="pagePaginationList" />
-                                        </button>
+                                            <li class="pb-2">
+                                                <div class="btn-group">
+                                                    <button
+                                                        jsf:id="moveDown1"
+                                                        class="btn btn-blank"
+                                                        jsf:action="#{Metadaten.moveSelectedPages('down', 1)}"
+                                                        title="#{msgs.moveSeltectedPagesDown}"
+                                                        type="button">
+                                                        <span class="fa fa-chevron-down" aria-hidden="true" />
+                                                        <!--                                             <span class="fa fa-chevron-down fa-lg" aria-hidden="true" /> -->
+                                                        <span>#{msgs.moveSeltectedPagesDown}</span>
+                                                        <f:passThroughAttribute
+                                                            name="data-bs-toggle"
+                                                            value="tooltip" />
+                                                        <f:ajax
+                                                            execute="@form"
+                                                            render="pagePaginationList" />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-blank dropdown-toggle dropdown-toggle-split"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
+                                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                                    </button>
 
-                                        <div class="pagination__right-actions-steps-numbers">
-                                            <button
-                                                class="button-link-blue padding-6 underline"
-                                                jsf:id="moveDown10"
-                                                jsf:action="#{Metadaten.moveSelectedPages('down', 10)}">
-                                                10
-                                                <f:ajax
-                                                    execute="@form"
-                                                    render="pagePaginationList" />
-                                            </button>
-                                            <button
-                                                class="button-link-blue padding-6 underline"
-                                                jsf:id="moveDown50"
-                                                jsf:action="#{Metadaten.moveSelectedPages('down', 50)}">
-                                                50
-                                                <f:ajax
-                                                    execute="@form"
-                                                    render="pagePaginationList" />
-                                            </button>
-                                            <button
-                                                class="button-link-blue padding-6 underline"
-                                                jsf:id="moveDown100"
-                                                jsf:action="#{Metadaten.moveSelectedPages('down', 100)}">
-                                                100
-                                                <f:ajax
-                                                    execute="@form"
-                                                    render="pagePaginationList" />
-                                            </button>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <button
-                                            jsf:id="deletePages"
-                                            class="btn btn--icon"
-                                            jsf:action="#{Metadaten.deleteSeltectedPages}"
-                                            jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
-                                            title="#{msgs.deleteSeltectedPages}"
-                                            type="button">
-                                            <span class="fa fa-trash-o fa-lg fa-with-bg" />
-                                            <!--                                             <span class="fa fa-trash-o fa-lg" aria-hidden="true" /> -->
-                                            <span>#{msgs.deleteSeltectedPages}</span>
-                                            <f:passThroughAttribute
-                                                name="data-bs-toggle"
-                                                value="tooltip" />
-                                            <f:ajax
-                                                execute="@form"
-                                                render="@form :thumbnailsForm :openseadragonform :pageareas" />
-                                            <f:passThroughAttribute
-                                                name="data-renderimage"
-                                                value="true" />
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            jsf:id="reOrder"
-                                            class="btn btn--icon"
-                                            jsf:action="#{Metadaten.reOrderPagination}"
-                                            jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()"
-                                            title="#{msgs.reOrder}"
-                                            type="button">
-                                            <span class="fa fa-refresh fa-lg fa-with-bg" />
-                                            <!--                                             <span class="fa fa-refresh fa-lg" aria-hidden="true" /> -->
-                                            <span>#{msgs.reOrder}</span>
-                                            <f:passThroughAttribute
-                                                name="data-bs-toggle"
-                                                value="tooltip" />
-                                            <f:ajax
-                                                execute="@form"
-                                                render=":progressform :messages :thumbnailsForm :openseadragonform" />
-                                            <f:passThroughAttribute
-                                                name="data-renderimage"
-                                                value="true" />
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
+                                                    <ol class="dropdown-menu">
+                                                        <li>
+                                                            <button
+                                                                class="btn btn-outline"
+                                                                jsf:id="moveDown10"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('down', 10)}">
+                                                                10
+                                                                <f:ajax
+                                                                    execute="@form"
+                                                                    render="pagePaginationList" />
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button
+                                                                class="btn btn-outline"
+                                                                jsf:id="moveDown50"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('down', 50)}">
+                                                                50
+                                                                <f:ajax
+                                                                    execute="@form"
+                                                                    render="pagePaginationList" />
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button
+                                                                class="btn btn-outline"
+                                                                jsf:id="moveDown100"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('down', 100)}">
+                                                                100
+                                                                <f:ajax
+                                                                    execute="@form"
+                                                                    render="pagePaginationList" />
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button
+                                                                class="btn btn-outline"
+                                                                jsf:id="moveDown1000"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('down', 1000)}">
+                                                                1000
+                                                                <f:ajax
+                                                                    execute="@form"
+                                                                    render="pagePaginationList" />
+                                                            </button>
+                                                        </li>
+                                                    </ol>
+                                                </div>
+                                            </li>
+                                            <li class="pb-2">
+                                                <button
+                                                    jsf:id="deletePages"
+                                                    class="btn btn-blank"
+                                                    jsf:action="#{Metadaten.deleteSeltectedPages}"
+                                                    jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+                                                    title="#{msgs.deleteSeltectedPages}"
+                                                    type="button">
+                                                    <span class="fa fa-trash-o" aria-hidden="true" />
+                                                    <!--                                             <span class="fa fa-trash-o fa-lg" aria-hidden="true" /> -->
+                                                    <span>#{msgs.deleteSeltectedPages}</span>
+                                                    <f:passThroughAttribute
+                                                        name="data-bs-toggle"
+                                                        value="tooltip" />
+                                                    <f:ajax
+                                                        execute="@form"
+                                                        render="@form :thumbnailsForm :openseadragonform :pageareas" />
+                                                    <f:passThroughAttribute
+                                                        name="data-renderimage"
+                                                        value="true" />
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button
+                                                    jsf:id="reOrder"
+                                                    class="btn btn-blank"
+                                                    jsf:action="#{Metadaten.reOrderPagination}"
+                                                    jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()"
+                                                    title="#{msgs.reOrder}"
+                                                    type="button">
+                                                    <span class="fa fa-refresh" aria-hidden="true" />
+                                                    <!--                                             <span class="fa fa-refresh fa-lg" aria-hidden="true" /> -->
+                                                    <span>#{msgs.reOrder}</span>
+                                                    <f:passThroughAttribute
+                                                        name="data-bs-toggle"
+                                                        value="tooltip" />
+                                                    <f:ajax
+                                                        execute="@form"
+                                                        render=":progressform :messages :thumbnailsForm :openseadragonform" />
+                                                    <f:passThroughAttribute
+                                                        name="data-renderimage"
+                                                        value="true" />
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </section:body>
+                                </div>
+                            </section:section>
                         </div>
                     </ui:fragment>
                 </div>
