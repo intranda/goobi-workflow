@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="form-input">
                                     <h:inputText id="vorname" pt:aria-label="#{msgs.vorname}" styleClass="form-control" value="#{Metadaten.tempPersonVorname}" />
-                                    <x:message for="vorname" style="color: red" replaceIdWithLabel="true" />
+                                    <h:message for="vorname" style="color: red" />
                                 </div>
                             </div>
                             <div class="form-row">
@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="form-input">
                                     <h:inputText id="nachname" pt:aria-label="#{msgs.nachname}" styleClass="form-control" value="#{Metadaten.tempPersonNachname}" />
-                                    <x:message for="nachname" style="color: red" replaceIdWithLabel="true" />
+                                    <h:message for="nachname" style="color: red" />
                                 </div>
                             </div>
                             <div class="form-row">
@@ -66,7 +66,7 @@
                                         value="#{Metadaten.tempPersonRolle}">
                                         <f:selectItems value="#{Metadaten.addableRollen}" />
                                     </h:selectOneMenu>
-                                    <x:message for="Rolle" style="color: red" replaceIdWithLabel="true" />
+                                    <h:message for="Rolle" style="color: red" />
                                 </div>
                             </div>
                             <div class="p-3 d-flex justify-content-end gap-2">

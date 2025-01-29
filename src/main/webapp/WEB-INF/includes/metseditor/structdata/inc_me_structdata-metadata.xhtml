@@ -37,9 +37,9 @@
                     <section:body>
                         <h:panelGroup id="structMetadataEdit">
                             <h:outputText value="#{msgs.mets_no_metadata_assigned}" rendered="#{empty Metadaten.myMetadaten}" />
-                            <x:dataList var="Item" value="#{Metadaten.myMetadaten}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                                <intranda:formGroupMetadata metadata="#{Item}" index="#{rowIndex}" />
-                            </x:dataList>
+                            <ui:repeat var="Item" value="#{Metadaten.myMetadaten}" >
+                                <intranda:formGroupMetadata metadata="#{Item}" />
+                            </ui:repeat>
                         </h:panelGroup>
                     </section:body>
                 </div>

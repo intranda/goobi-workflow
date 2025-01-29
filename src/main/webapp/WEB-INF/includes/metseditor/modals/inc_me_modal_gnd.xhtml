@@ -76,7 +76,7 @@
                             </div>
 
                             <div class="col-7">
-                                <x:inputText
+                                <h:inputText
                                     id="gndSearchInput"
                                     pt:aria-label="#{msgs.suchbegriff}"
                                     styleClass="form-control"
@@ -104,12 +104,12 @@
 
                         <h:panelGroup id="gndSearchlist">
                             <div class="modal__gnd-list scrollable">
-                                <x:dataList
+                                <ui:repeat
                                     value="#{Metadaten.currentMetadataToPerformSearch.dataList}"
                                     var="normdataList">
                                     <div class="row">
                                         <div class="col-11">
-                                            <x:dataList
+                                            <ui:repeat
                                                 value="#{normdataList}"
                                                 var="normdata">
                                                 <div class="row">
@@ -118,7 +118,7 @@
                                                     </div>
 
                                                     <div class="col-8">
-                                                        <x:dataList
+                                                        <ui:repeat
                                                             value="#{normdata.values}"
                                                             var="value">
                                                             <div class="row">
@@ -138,10 +138,10 @@
                                                                         rendered="#{value.url == null}" />
                                                                 </div>
                                                             </div>
-                                                        </x:dataList>
+                                                        </ui:repeat>
                                                     </div>
                                                 </div>
-                                            </x:dataList>
+                                            </ui:repeat>
                                         </div>
 
                                         <div class="col-1">
@@ -166,7 +166,7 @@
                                     </div>
 
                                     <hr />
-                                </x:dataList>
+                                </ui:repeat>
 
                                 <p>
                                     <h:outputText

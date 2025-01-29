@@ -53,7 +53,7 @@
                         <div class="row">
                             <!-- GEONAMES SEARCH INPUT -->
                             <div class="col-10">
-                                <x:inputText
+                                <h:inputText
                                     id="geonamesSearch"
                                     styleClass="form-control"
                                     onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'geonamesSearchAction')"
@@ -103,7 +103,7 @@
                                 layout="block"
                                 styleClass="modal__geonames-list scrollable"
                                 rendered="#{Metadaten.currentMetadataToPerformSearch.resultList ne null and Metadaten.currentMetadataToPerformSearch.resultList.size() != 0}">
-                                <x:dataList
+                                <ui:repeat
                                     value="#{Metadaten.currentMetadataToPerformSearch.resultList}"
                                     var="geonames">
                                     <div class="form-group form-group--flex">
@@ -203,7 +203,7 @@
                                     </div>
 
                                     <hr />
-                                </x:dataList>
+                                </ui:repeat>
                             </h:panelGroup>
 
                             <h:outputText

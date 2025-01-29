@@ -62,7 +62,7 @@
                                 />
                             </div>
                             <div class="col-9">
-                                <x:inputText
+                                <h:inputText
                                         id="vocabularySearchInput"
                                         styleClass="form-control"
                                         value="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchQuery}"/>
@@ -116,7 +116,7 @@
                                         </div>
                                     </div>
                                     <hr/>
-                                    <x:dataList
+                                    <ui:repeat
                                             value="#{Metadaten.currentMetadataToPerformSearch.records}"
                                             var="record">
                                         <div class="row">
@@ -154,7 +154,7 @@
 
 
                                         <hr/>
-                                    </x:dataList>
+                                    </ui:repeat>
 
                                 </div>
                             </ui:fragment>

@@ -43,7 +43,7 @@
 
                         <div class="row">
                             <div class="col-10">
-                                <x:inputText
+                                <h:inputText
                                         id="kulturnavInput"
                                         styleClass="form-control"
                                         onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'kulturnavSearchAction')"
@@ -85,12 +85,12 @@
                                     rendered="#{Metadaten.currentMetadataToPerformSearch.normdataList != null
                                     and Metadaten.currentMetadataToPerformSearch.normdataList.size() != 0}">
 
-                                <x:dataList
+                                <ui:repeat
                                         value="#{Metadaten.currentMetadataToPerformSearch.normdataList}"
                                         var="normdataRecord">
                                     <div class="row">
                                         <div class="col-11">
-                                            <x:dataList
+                                            <ui:repeat
                                                     value="#{normdataRecord.normdataList}"
                                                     var="normdata">
                                                 <h:panelGroup
@@ -104,7 +104,7 @@
                                                     </div>
 
                                                     <div class="col-sm-8">
-                                                        <x:dataList
+                                                        <ui:repeat
                                                                 value="#{normdata.values}"
                                                                 var="value">
                                                             <div class="row">
@@ -124,10 +124,10 @@
                                                                             rendered="#{value.url == null}"/>
                                                                 </div>
                                                             </div>
-                                                        </x:dataList>
+                                                        </ui:repeat>
                                                     </div>
                                                 </h:panelGroup>
-                                            </x:dataList>
+                                            </ui:repeat>
                                         </div>
 
                                         <div class="col-1">
@@ -152,7 +152,7 @@
                                         </div>
                                     </div>
                                     <hr/>
-                                </x:dataList>
+                                </ui:repeat>
                             </h:panelGroup>
                             <h:panelGroup
                                     layout="block"

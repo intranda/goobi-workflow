@@ -44,18 +44,15 @@
                         value="#{msgs.mets_no_persons_assigned}"
                         rendered="#{empty Metadaten.myPersonen}" />
 
-                    <x:dataList
+                    <ui:repeat
                         id="personList"
                         var="currentPerson"
-                        value="#{Metadaten.myPersonen}"
-                        rowCountVar="rowCount"
-                        rowIndexVar="rowIndex">
+                        value="#{Metadaten.myPersonen}">
                         <intranda:formGroupPerson
                             id="person"
                             person="#{currentPerson}"
-                            renderDelete="true"
-                            index="#{rowIndex}" />
-                    </x:dataList>
+                            renderDelete="true" />
+                    </ui:repeat>
 
                     <ui:fragment rendered="#{Metadaten.sizeOfRoles!=0}">
                         <div class="p-3 d-flex justify-content-end gap-2">
