@@ -20,13 +20,12 @@ package org.goobi.api.rest.model;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.goobi.beans.Process;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 
 @XmlRootElement(name = "query")

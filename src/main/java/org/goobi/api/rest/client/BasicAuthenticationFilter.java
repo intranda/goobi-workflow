@@ -29,11 +29,10 @@ package org.goobi.api.rest.client;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import javax.xml.bind.DatatypeConverter;
-
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.xml.bind.DatatypeConverter;
 
 public class BasicAuthenticationFilter implements ClientRequestFilter {
 
