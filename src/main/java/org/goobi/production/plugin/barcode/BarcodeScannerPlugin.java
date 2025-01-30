@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.plugin.barcode.config.BarcodeFormat;
 import org.goobi.production.plugin.barcode.config.BarcodeScannerPluginConfiguration;
@@ -20,8 +21,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.FaceletContext;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 @Slf4j
 @Data
@@ -59,6 +63,51 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
     private UIComponent modal;
     private boolean showConfig;
     private BarcodeFormat selectedConfigFormat;
+    private List<BarcodeField> barcodeFields;
+    private String barcode;
+
+    @Data
+    public class BarcodeField {
+        private String label;
+        private String value;
+
+        public void setValue(String value) {
+            this.value = value;
+            updateBarcode();
+        }
+    }
+
+    public void setSelectedConfigFormat(BarcodeFormat selectedConfigFormat) {
+        this.selectedConfigFormat = selectedConfigFormat;
+        updateBarcodeFields();
+        updateBarcode();
+    }
+
+    private void updateBarcodeFields() {
+        if (this.selectedConfigFormat == null) {
+            return;
+        }
+        String p = this.selectedConfigFormat.getPattern();
+        int numberOfFields = StringUtils.countMatches(p, "(");
+        barcodeFields = new ArrayList<>(numberOfFields);
+        List<String> sampleValues = this.selectedConfigFormat.getSampleValues();
+        for (int i = 0; i < numberOfFields; i++) {
+            BarcodeField field = new BarcodeField();
+            field.setLabel("Value " + (i+1));
+            field.setValue(sampleValues.get(i));
+            barcodeFields.add(field);
+        }
+    }
+
+    private void updateBarcode() {
+        if (this.selectedConfigFormat == null) {
+            return;
+        }
+        this.barcode = this.selectedConfigFormat.getPattern();
+        for (int i = 0; i < this.barcodeFields.size(); i++) {
+            this.barcode = this.barcode.replaceFirst("\\(.*?\\)", this.barcodeFields.get(i).getValue());
+        }
+    }
 
     public static void main(String[] args) throws Exception {
         BarcodeScannerPlugin plugin = new BarcodeScannerPlugin();

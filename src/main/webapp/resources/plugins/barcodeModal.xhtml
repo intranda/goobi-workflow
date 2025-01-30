@@ -43,32 +43,48 @@
                                 <div class="d-flex flex-column gap-3 w-75 mx-auto">
                                     <!-- Config page -->
                                     <h:panelGroup rendered="#{cc.attrs.plugin.showConfig == true}">
-                                        <label>Barcode:
-                                            <h:selectOneMenu
-                                                id="barcodeSelection"
-                                                styleClass="form-select"
-                                                value="#{cc.attrs.plugin.selectedConfigFormat}"
-                                                converter="omnifaces.SelectItemsConverter"
-                                            >
-                                                <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" />
-                                                <f:selectItems
-                                                    value="#{cc.attrs.plugin.config.barcode}"
-                                                    var="barcode"
-                                                    itemLabel="#{barcode.descriptionTemplate}"
-                                                    itemValue="#{barcode}"
-                                                />
-                                                <f:ajax
-                                                    render="@form"
-                                                    onevent="(data) => {
-                                                        if (data.status === 'success') {
-                                                            showBarcode();
-                                                        }
-                                                    }"
-                                                />
-                                            </h:selectOneMenu>
-                                        </label>
+                                        <h:selectOneMenu
+                                            id="barcodeSelection"
+                                            label="Barcode:"
+                                            styleClass="form-select"
+                                            value="#{cc.attrs.plugin.selectedConfigFormat}"
+                                            converter="omnifaces.SelectItemsConverter"
+                                        >
+                                            <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" />
+                                            <f:selectItems
+                                                value="#{cc.attrs.plugin.config.barcode}"
+                                                var="barcode"
+                                                itemLabel="#{barcode.descriptionTemplate}"
+                                                itemValue="#{barcode}"
+                                            />
+                                            <f:ajax
+                                                render="@form"
+                                                onevent="(data) => {
+                                                    if (data.status === 'success') {
+                                                        showBarcode();
+                                                    }
+                                                }"
+                                            />
+                                        </h:selectOneMenu>
+                                        <ui:repeat value="#{cc.attrs.plugin.barcodeFields}" var="field">
+                                            <label>
+                                                <h:inputText
+                                                    label="#{field.label}"
+                                                    value="#{field.value}"
+                                                >
+                                                    <f:ajax
+                                                        render="@form"
+                                                        onevent="(data) => {
+                                                            if (data.status === 'success') {
+                                                                showBarcode();
+                                                            }
+                                                        }"
+                                                    />
+                                                </h:inputText>
+                                            </label>
+                                        </ui:repeat>
                                         <img class="barcode align-center"
-                                            jsbarcode-value="#{cc.attrs.plugin.selectedConfigFormat.pattern}">
+                                            jsbarcode-value="#{cc.attrs.plugin.barcode}">
                                         </img>
                                     </h:panelGroup>
                                     <!-- Barcode page page -->
