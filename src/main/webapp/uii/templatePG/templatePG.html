@@ -281,7 +281,7 @@
             </div>
             <layout:footer />
             <c:forEach
-                items="#{FooterBean.footerPlugins}"
+                items="#{DockableBean.dockablePlugins}"
                 var="plugin"
                 >
                 <c:if test="#{plugin.modal != null}">
