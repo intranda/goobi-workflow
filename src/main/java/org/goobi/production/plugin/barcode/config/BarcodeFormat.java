@@ -10,9 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.goobi.beans.Process;
 import org.goobi.production.plugin.barcode.BarcodeScannerPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +20,8 @@ import java.util.regex.Pattern;
 public class BarcodeFormat {
     @JacksonXmlProperty(isAttribute = true)
     private String pattern;
+    @JacksonXmlProperty(isAttribute = true)
+    private String sample;
     @JacksonXmlProperty(localName = "description", isAttribute = true)
     private String descriptionTemplate;
     @JacksonXmlText
@@ -40,7 +40,7 @@ public class BarcodeFormat {
     private transient String description;
 
     public boolean patternMatches(String barcode) {
-        return regexPattern().matcher(barcode).matches();
+        return getRegexPattern().matcher(barcode).matches();
     }
 
     public void activate(String barcode) {
@@ -71,7 +71,7 @@ public class BarcodeFormat {
     }
 
     private List<String> determineParameters(String barcode) {
-        Matcher m = regexPattern().matcher(barcode);
+        Matcher m = getRegexPattern().matcher(barcode);
         if (!m.matches()) {
             throw new IllegalStateException("Should not reach this code if barcode format is not applicable");
         }
@@ -83,10 +83,23 @@ public class BarcodeFormat {
         return parameters;
     }
 
-    private Pattern regexPattern() {
+    public Pattern getRegexPattern() {
         if (this.regexPattern == null) {
             this.regexPattern = Pattern.compile(this.pattern);
         }
         return this.regexPattern;
+    }
+
+    public List<String> getSampleValues() {
+        Matcher sampleMatcher = getRegexPattern().matcher(this.sample);
+        if (sampleMatcher.find()) {
+            List<String> result = new LinkedList<>();
+            for (int i = 0; i < sampleMatcher.groupCount(); i++) {
+                result.add(sampleMatcher.group(i + 1));
+            }
+            return result;
+        } else {
+            return Collections.emptyList();
+        }
     }
 }
