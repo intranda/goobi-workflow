@@ -19,52 +19,95 @@
 
     <composite:implementation>
         <div class="modal" id="pluginModal#{cc.attrs.plugin.id}">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary-400 text-white">
-                        <h3 class="modal-title h6">
-                            <span class="fa fa-barcode me-2"/>
-                            <span>#{cc.attrs.plugin.title}</span>
-                        </h3>
-                        <button type="button" class="btn ms-auto" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true" class="fa fa-times text-white"/>
-                        </button>
-                    </div>
-                    <div class="modal-body bg-primary-400 text-white">
-                        <div class="container-sm d-flex align-items-center" style="height: 80vh;">
-                            <h:form styleClass="d-flex flex-column gap-3 w-75 mx-auto">
-                                <h:panelGroup rendered="#{cc.attrs.plugin.activeFormats.size() > 0}">
-                                    <ul class="p-0" role="list">
-                                        <ui:repeat value="#{cc.attrs.plugin.activeFormats}" var="format">
-                                            <li class="alert alert-secondary bg-white">
-                                                <h:outputText value="#{format.description}"/>
-                                            </li>
-                                        </ui:repeat>
-                                    </ul>
-                                </h:panelGroup>
-                                <label class="w-100">
-										<span class="visually-hidden">
-											#{msgs.scanBarcode}
-										</span>
-                                    <h:inputText
-                                            id="barcodeInput"
-                                            autocomplete="off"
-                                            styleClass="form-control text-center"
-                                            value="#{cc.attrs.plugin.code}"
-                                    />
-                                </label>
-                                <h:commandButton
-                                        styleClass="btn btn-outline text-white border-white"
-                                        action="#{cc.attrs.plugin.scan()}"
-                                        value="Scannen!"
-                                />
-                                <input type="submit" hidden="true"/>
-                            </h:form>
+            <h:form>
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary-400 text-white">
+                            <h3 class="modal-title h6">
+                                <span class="fa fa-barcode me-2"/>
+                                <span>#{cc.attrs.plugin.title}</span>
+                            </h3>
+                            <button jsf:id="modalConfig" type="button" class="btn ms-auto text-white">
+                                <span class="fa fa-gears" />
+                                <f:setPropertyActionListener
+                                        target="#{cc.attrs.plugin.showConfig}"
+                                        value="#{not cc.attrs.plugin.showConfig}" />
+                                <f:ajax render="@form" execute="@form" />
+                            </button>
+                            <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" class="fa fa-times text-white"/>
+                            </button>
+                        </div>
+                        <div class="modal-body bg-primary-400 text-white">
+                            <div class="container-sm d-flex align-items-center" style="height: 80vh;">
+                                <div class="d-flex flex-column gap-3 w-75 mx-auto">
+                                    <!-- Config page -->
+                                    <h:panelGroup rendered="#{cc.attrs.plugin.showConfig == true}">
+                                        <label>Barcode:
+                                            <h:selectOneMenu
+                                                id="barcodeSelection"
+                                                styleClass="form-select"
+                                                value="#{cc.attrs.plugin.selectedConfigFormat}"
+                                                converter="omnifaces.SelectItemsConverter"
+                                            >
+                                                <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" />
+                                                <f:selectItems
+                                                    value="#{cc.attrs.plugin.config.barcode}"
+                                                    var="barcode"
+                                                    itemLabel="#{barcode.descriptionTemplate}"
+                                                    itemValue="#{barcode}"
+                                                />
+                                                <f:ajax
+                                                    render="@form"
+                                                    onevent="(data) => {
+                                                        if (data.status === 'success') {
+                                                            showBarcode();
+                                                        }
+                                                    }"
+                                                />
+                                            </h:selectOneMenu>
+                                        </label>
+                                        <img class="barcode align-center"
+                                            jsbarcode-value="#{cc.attrs.plugin.selectedConfigFormat.pattern}">
+                                        </img>
+                                    </h:panelGroup>
+                                    <!-- Barcode page page -->
+                                    <h:panelGroup rendered="#{cc.attrs.plugin.showConfig == false}">
+                                        <h:panelGroup rendered="#{cc.attrs.plugin.activeFormats.size() > 0}">
+                                            <ul class="p-0" role="list">
+                                                <ui:repeat value="#{cc.attrs.plugin.activeFormats}" var="format">
+                                                    <li class="alert alert-secondary bg-white">
+                                                        <h:outputText value="#{format.description}"/>
+                                                    </li>
+                                                </ui:repeat>
+                                            </ul>
+                                        </h:panelGroup>
+                                        <label class="w-100">
+                                            <span class="visually-hidden">
+                                                #{msgs.scanBarcode}
+                                            </span>
+                                            <h:inputText
+                                                    id="barcodeInput"
+                                                    autocomplete="off"
+                                                    styleClass="form-control text-center"
+                                                    value="#{cc.attrs.plugin.code}"
+                                            />
+                                        </label>
+                                        <h:commandButton
+                                                styleClass="btn btn-outline text-white border-white"
+                                                action="#{cc.attrs.plugin.scan()}"
+                                                value="Scannen!"
+                                        />
+                                        <input type="submit" hidden="true"/>
+                                    </h:panelGroup>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </h:form>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/barcodes/JsBarcode.code128.min.js"></script>
         <script>
             const modal = document.querySelector('#pluginModal#{cc.attrs.plugin.id}');
             const barcodeInput = modal.querySelector('[id$="barcodeInput"]');
@@ -75,11 +118,9 @@
             modalBody.addEventListener('click', function () {
                 barcodeInput.focus();
             });
+            function showBarcode() {
+                JsBarcode('.barcode').init();
+            }
         </script>
-<!--        &lt;!&ndash; Taglibs seems to be unable to include other pages &ndash;&gt;-->
-<!--        &lt;!&ndash;                    <h:panelGroup rendered="#{plugin.modal != null}">&ndash;&gt;-->
-<!--        &lt;!&ndash;                        <h:outputText value="#{plugin.modal}" />&ndash;&gt;-->
-<!--        &lt;!&ndash;                        <ui:include src="#{plugin.modal}" />&ndash;&gt;-->
-<!--        &lt;!&ndash;                    </h:panelGroup>&ndash;&gt;-->
     </composite:implementation>
 </ui:composition>
