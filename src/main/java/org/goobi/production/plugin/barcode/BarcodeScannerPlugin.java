@@ -5,10 +5,9 @@ import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.plugin.barcode.config.BarcodeFormat;
 import org.goobi.production.plugin.barcode.config.BarcodeScannerPluginConfiguration;
-import org.goobi.production.plugin.interfaces.IFooterPlugin;
+import org.goobi.production.plugin.interfaces.IDockablePlugin;
 
 import javax.annotation.ManagedBean;
 import javax.enterprise.context.RequestScoped;
@@ -23,15 +22,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
 
 @Slf4j
 @Data
 @ManagedBean
 @RequestScoped
-public class BarcodeScannerPlugin implements IFooterPlugin {
+public class BarcodeScannerPlugin implements IDockablePlugin {
     @Override
     public String getId() {
         return getTitle().replaceAll("\\s+", "");
@@ -43,8 +40,18 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
     }
 
     @Override
+    public boolean isMenuBarDockable() {
+        return true;
+    }
+
+    @Override
+    public boolean isFooterDockable () {
+        return true;
+    }
+
+    @Override
     public void execute() throws Exception {
-        success("Footer plugin \"" + getTitle() + "\" executed!");
+        success("Barcode plugin \"" + getTitle() + "\" executed!");
     }
 
     @Override

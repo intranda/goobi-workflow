@@ -27,26 +27,28 @@
                   </notification:area>
                 </ui:fragment>
                 <ui:repeat
-                    value="#{FooterBean.footerPlugins}"
+                    value="#{DockableBean.dockablePlugins}"
                     var="plugin"
                     >
-                    <li
-                        class="nav-item"
-                        data-bs-toggle="tooltip"
-                        title="#{plugin.title}">
-                        <button
-                            id="btn#{plugin.title}"
-                            class="nav-link"
-                            type="button"
-                            data-bs-toggle="modal"
-                            data-bs-target="#pluginModal#{plugin.id}"
-                            data-bs-placement="bottom"
-                        >
-                            <span
-                                aria-hidden="true"
-                                class="fa #{plugin.icon} fa-2x"/>
-                        </button>
-                    </li>
+                    <ui:fragment rendered="#{plugin.isMenuBarDockable()}">
+                        <li
+                            class="nav-item"
+                            data-bs-toggle="tooltip"
+                            title="#{plugin.title}">
+                            <button
+                                id="btn#{plugin.title}"
+                                class="nav-link"
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#pluginModal#{plugin.id}"
+                                data-bs-placement="bottom"
+                            >
+                                <span
+                                    aria-hidden="true"
+                                    class="fa #{plugin.icon} fa-2x"/>
+                            </button>
+                        </li>
+                    </ui:fragment>
                 </ui:repeat>
                 <!-- Icon to enable help texts -->
                 <button

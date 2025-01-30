@@ -22,8 +22,28 @@
             <a class="footer-text" href="https://community.goobi.io/" target="_blank">
                 Community
             </a>
+            <h:outputText styleClass="ms-auto" />
+            <ui:repeat
+                    value="#{DockableBean.dockablePlugins}"
+                    var="plugin"
+            >
+                <ui:fragment rendered="#{plugin.isFooterDockable()}">
+                        <button
+                                id="btn#{plugin.title}"
+                                class="nav-link"
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#pluginModal#{plugin.id}"
+                                data-bs-placement="bottom"
+                        >
+                                <span
+                                        aria-hidden="true"
+                                        class="fa #{plugin.icon} fa-2x"/>
+                        </button>
+                </ui:fragment>
+            </ui:repeat>
             <h:outputText
-                styleClass="ms-auto footer-text"
+                styleClass="footer-text"
                 value="#{msgs.version} #{HelperForm.version}" />
         </div>
     </footer>

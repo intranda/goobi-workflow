@@ -44,7 +44,7 @@ public enum PluginType {
     Administration(11, "administration", IAdministrationPlugin.class),
     Workflow(13, "workflow", IWorkflowPlugin.class),
     MetadataEditor(14, "metadata", IMetadataEditorExtension.class),
-    Footer(15, "footer", IFooterPlugin.class);
+    Dockable(15, "dockable", IDockablePlugin.class);
 
     @Getter
     private int id;
