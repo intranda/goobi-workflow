@@ -1,25 +1,16 @@
 package org.goobi.production.plugin.barcode;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.production.plugin.barcode.config.BarcodeFormat;
 import org.goobi.production.plugin.barcode.config.BarcodeScannerPluginConfiguration;
-import org.goobi.production.plugin.interfaces.IDockablePlugin;
+import org.goobi.production.plugin.interfaces.AbstractDockablePlugin;
 
 import javax.annotation.ManagedBean;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.Application;
-import javax.faces.application.Resource;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.html.HtmlPanelGroup;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +19,7 @@ import java.util.List;
 @Data
 @ManagedBean
 @RequestScoped
-public class BarcodeScannerPlugin implements IDockablePlugin {
+public class BarcodeScannerPlugin extends AbstractDockablePlugin {
     @Override
     public String getId() {
         return getTitle().replaceAll("\\s+", "");
@@ -67,7 +58,6 @@ public class BarcodeScannerPlugin implements IDockablePlugin {
     private String code;
     private BarcodeScannerPluginConfiguration config;
     private List<BarcodeFormat> activeFormats = Collections.emptyList();
-    private UIComponent modal;
     private boolean showConfig;
     private BarcodeFormat selectedConfigFormat;
     private List<BarcodeField> barcodeFields;
@@ -156,64 +146,5 @@ public class BarcodeScannerPlugin implements IDockablePlugin {
         return this.config.getBarcode().stream()
                 .filter(bf -> bf.patternMatches(code))
                 .toList();
-    }
-
-    public static void success(String message) {
-        log.debug(message);
-        Helper.setMeldung(message);
-    }
-
-    public static void warn(String message) {
-        log.warn(message);
-        Helper.setFehlerMeldung(message);
-    }
-
-    public static void error(String message) {
-        log.error(message);
-        Helper.setFehlerMeldung(message);
-    }
-
-    private UIComponent generateModalComponent() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        Application application = context.getApplication();
-        FaceletContext faceletContext = (FaceletContext) context.getAttributes().get(FaceletContext.FACELET_CONTEXT_KEY);
-
-        UIComponent parent = FacesContext.getCurrentInstance().getApplication().createComponent(HtmlPanelGroup.COMPONENT_TYPE);
-        parent.setId("pluginModal" + getId());
-
-        Resource componentResource = context.getApplication().getResourceHandler().createResource("barcodeModal.xhtml", "plugins");
-        UIComponent composite = application.createComponent(context, componentResource);
-        composite.setId("pluginModal" + getId());
-
-        // This basically creates <composite:implementation>.
-        UIComponent implementation = application.createComponent(UIPanel.COMPONENT_TYPE);
-        implementation.setRendererType("javax.faces.Group");
-        composite.getFacets().put(UIComponent.COMPOSITE_FACET_NAME, implementation);
-
-        parent.getChildren().add(composite);
-        parent.pushComponentToEL(context, composite); // This makes #{cc} available.
-        try {
-            faceletContext.includeFacelet(implementation, componentResource.getURL());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        parent.popComponentFromEL(context);
-
-        //add some attributes...
-        parent.getAttributes().put("plugin", this); // this might not be required..
-        composite.getAttributes().put("plugin", this);
-
-        return parent;
-    }
-
-    public void setModal(UIComponent c) {
-
-    }
-
-    public UIComponent getModal() {
-        if (this.modal == null && this.getModalPath() != null) {
-            this.modal = generateModalComponent();
-        }
-        return this.modal;
     }
 }
