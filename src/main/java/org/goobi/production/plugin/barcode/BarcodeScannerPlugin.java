@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.plugin.barcode.config.BarcodeFormat;
 import org.goobi.production.plugin.barcode.config.BarcodeScannerPluginConfiguration;
 import org.goobi.production.plugin.interfaces.IFooterPlugin;
@@ -56,6 +57,8 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
     private BarcodeScannerPluginConfiguration config;
     private List<BarcodeFormat> activeFormats = Collections.emptyList();
     private UIComponent modal;
+    private boolean showConfig;
+    private BarcodeFormat selectedConfigFormat;
 
     public static void main(String[] args) throws Exception {
         BarcodeScannerPlugin plugin = new BarcodeScannerPlugin();
@@ -67,20 +70,6 @@ public class BarcodeScannerPlugin implements IFooterPlugin {
     public void initialize() throws Exception {
         XmlMapper mapper = new XmlMapper();
         this.config = mapper.readValue(new File("/opt/digiverso/goobi/config/plugin_intranda_footer_barcodeScanner.xml"), BarcodeScannerPluginConfiguration.class);
-//        this.config = new BarcodeScannerPluginConfiguration();
-//        this.config.setBarcode(List.of(new BarcodeFormat("place_(.*)_(\\d+)", """
-//---
-//action: propertySet
-//name: {{1}}
-//value: {{2}}
-//"""),
-//                new BarcodeFormat("restauration_(.*)_(\\d+)", """
-//---
-//action: propertySet
-//name: {{1}}
-//value: {{2}}
-//""")));
-//        mapper.writeValue(System.err, this.config);
     }
 
     public void scan() {
