@@ -719,7 +719,7 @@ public class MassImportForm implements Serializable {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            String fileName = "batch_docket" + ".pdf";
+            String fileName = "batch_" + processList.get(0).getBatch().getBatchId() + ".pdf";
             ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
             String contentType = servletContext.getMimeType(fileName);
             response.setContentType(contentType);
