@@ -495,14 +495,14 @@ public class VariableReplacer {
             Optional<String> propertyTitleWithoutField = Optional.empty();
             Optional<String> fieldName = Optional.empty();
             if (propertyTitle.contains(".")) {
-                propertyTitleWithoutField = Optional.of(propertyTitle.substring(0, propertyTitle.indexOf('.')));
-                fieldName = Optional.of(propertyTitle.substring(propertyTitle.indexOf('.') + 1));
+                propertyTitleWithoutField = Optional.ofNullable(propertyTitle.substring(0, propertyTitle.indexOf('.')));
+                fieldName = Optional.ofNullable(propertyTitle.substring(propertyTitle.indexOf('.') + 1));
             }
             Optional<ProcessProperty> match = Optional.empty();
             List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
             for (ProcessProperty pe : ppList) {
                 if ((propertyTitleWithoutField.isPresent() && propertyTitleWithoutField.get().equalsIgnoreCase(pe.getName())) || pe.getName().equalsIgnoreCase(propertyTitle)) {
-                    match = Optional.of(pe);
+                    match = Optional.ofNullable(pe);
                     break;
                 }
             }
@@ -520,10 +520,10 @@ public class VariableReplacer {
                         }
                     }
                 }
-                Optional<String> newValue = Optional.of(value);
+                Optional<String> newValue = Optional.ofNullable(value);
                 if (!referencedRecords.isEmpty()) {
                     if (fieldName.isEmpty()) {
-                        newValue = Optional.of(referencedRecords.get(0).getMainValue());
+                        newValue = Optional.ofNullable(referencedRecords.get(0).getMainValue());
                     } else {
                         newValue = referencedRecords.get(0).getFieldValueForDefinitionName(fieldName.get());
                     }
@@ -537,14 +537,14 @@ public class VariableReplacer {
             Optional<String> propertyTitleWithoutField = Optional.empty();
             Optional<String> fieldName = Optional.empty();
             if (propertyTitle.contains(".")) {
-                propertyTitleWithoutField = Optional.of(propertyTitle.substring(0, propertyTitle.indexOf('.')));
-                fieldName = Optional.of(propertyTitle.substring(propertyTitle.indexOf('.') + 1));
+                propertyTitleWithoutField = Optional.ofNullable(propertyTitle.substring(0, propertyTitle.indexOf('.')));
+                fieldName = Optional.ofNullable(propertyTitle.substring(propertyTitle.indexOf('.') + 1));
             }
             Optional<ProcessProperty> match = Optional.empty();
             List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
             for (ProcessProperty pe : ppList) {
                 if ((propertyTitleWithoutField.isPresent() && propertyTitleWithoutField.get().equalsIgnoreCase(pe.getName())) || pe.getName().equalsIgnoreCase(propertyTitle)) {
-                    match = Optional.of(pe);
+                    match = Optional.ofNullable(pe);
                     break;
                 }
             }
