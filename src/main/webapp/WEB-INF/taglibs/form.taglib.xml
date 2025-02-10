@@ -113,4 +113,20 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    <tag>
+        <tag-name>message</tag-name>
+        <source>form/message.xhtml</source>
+        <attribute>
+            <description>The id of the relevant form input for which messages should be displayed</description>
+            <name>target</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
 </facelet-taglib>
