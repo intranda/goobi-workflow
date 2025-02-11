@@ -500,38 +500,54 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public void copyDirectory(final Path source, final Path target, boolean copyPermissions) throws IOException {
-        StorageType storageType = getPathStorageType(source);
-        if (storageType == StorageType.LOCAL) {
-            nio.copyDirectory(source, target, copyPermissions);
-            return;
-        }
-        String sourcePrefix = path2Prefix(source);
-        String targetPrefix = path2Prefix(target);
-        String nextContinuationToken = null;
-        Set<S3Object> objs = new HashSet<>();
-        // we can list max 1000 objects in one request, so we need to paginate through the results
-        do {
-            ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
-                    .bucket(getBucket())
-                    .delimiter("/")
-                    .prefix(sourcePrefix)
-                    .continuationToken(nextContinuationToken);
+        StorageType storageTypeSource = getPathStorageType(source);
+        StorageType storageTypeDestination = getPathStorageType(target);
 
-            CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
-            ListObjectsV2Response resp = response.toCompletableFuture().join();
+        // source is a local folder
+        if (storageTypeSource == StorageType.LOCAL) {
+            // destination is local, copy files
+            if (storageTypeDestination == StorageType.LOCAL) {
+                nio.copyDirectory(source, target, copyPermissions);
+            } else {
+                // destination is on s3, upload files
+                uploadDirectory(source, target);
+            }
+        } else // source is on s3
+        if (storageTypeDestination == StorageType.LOCAL) {
+            // destination is local, download files
+            downloadDirectory(source, target);
+        } else {
+            // copy files on s3
+            String sourcePrefix = path2Prefix(source);
+            String targetPrefix = path2Prefix(target);
+            String nextContinuationToken = null;
+            Set<S3Object> objs = new HashSet<>();
+            // we can list max 1000 objects in one request, so we need to paginate through the results
+            do {
+                ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                        .bucket(getBucket())
+                        .delimiter("/")
+                        .prefix(sourcePrefix)
+                        .continuationToken(nextContinuationToken);
 
-            nextContinuationToken = resp.nextContinuationToken();
+                CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+                ListObjectsV2Response resp = response.toCompletableFuture().join();
 
-            List<S3Object> contents = resp.contents();
-            for (S3Object obj : contents) {
-                objs.add(obj);
+                nextContinuationToken = resp.nextContinuationToken();
+
+                List<S3Object> contents = resp.contents();
+                for (S3Object obj : contents) {
+                    objs.add(obj);
+                }
+
+            } while (nextContinuationToken != null);
+
+            for (S3Object os : objs) {
+                copyS3Object(sourcePrefix, targetPrefix, os);
             }
 
-        } while (nextContinuationToken != null);
-
-        for (S3Object os : objs) {
-            copyS3Object(sourcePrefix, targetPrefix, os);
         }
+
     }
 
     @Override
