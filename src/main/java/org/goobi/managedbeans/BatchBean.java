@@ -285,7 +285,7 @@ public class BatchBean extends BasicBean implements Serializable {
         }
         if (!docket.isEmpty() && !facesContext.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            String fileName = "batch_docket" + ".pdf";
+            String fileName = "batch_" + this.selectedBatches.get(0).getBatchId() + ".pdf";
             ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
             String contentType = servletContext.getMimeType(fileName);
             response.setContentType(contentType);

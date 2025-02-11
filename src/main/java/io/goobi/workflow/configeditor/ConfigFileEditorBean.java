@@ -1,17 +1,17 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
@@ -239,7 +239,7 @@ public class ConfigFileEditorBean implements Serializable {
         this.setConfigFile(index);
         if (!this.currentConfigFile.isWritable()) {
             String key = "plugin_administration_config_file_editor_file_not_writable_check_permissions";
-            Helper.setMeldung("configFileEditor", Helper.getTranslation(key), "");
+            Helper.setMeldung(Helper.getTranslation(key), "");
         }
     }
 
@@ -285,8 +285,8 @@ public class ConfigFileEditorBean implements Serializable {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(this.currentConfigFileFileContent.getBytes(StandardCharsets.UTF_8))) {
             apacheProp.load(bais);
         } catch (ConfigurationException | ConfigurationRuntimeException e) {
-            Helper.setFehlerMeldung("configFileEditor", e.getMessage(), "");
-            Helper.setFehlerMeldung("configFileEditor", "File was not saved, because the properties format is not well-formed", "");
+            Helper.setFehlerMeldung(e.getMessage(), "");
+            Helper.setFehlerMeldung("File was not saved, because the properties format is not well-formed", "");
             return false;
         }
         return true;
@@ -297,7 +297,7 @@ public class ConfigFileEditorBean implements Serializable {
         List<XMLError> errors = checkXMLWellformed(this.currentConfigFileFileContent);
         if (!errors.isEmpty()) {
             for (XMLError error : errors) {
-                Helper.setFehlerMeldung("configFileEditor",
+                Helper.setFehlerMeldung(
                         String.format("Line %d column %d: %s", error.getLine(), error.getColumn(), error.getMessage()), "");
             }
             if (errors.stream().anyMatch(e -> "ERROR".equals(e.getSeverity()) || "FATAL".equals(e.getSeverity()))) {
@@ -305,7 +305,7 @@ public class ConfigFileEditorBean implements Serializable {
                 //this needs to be done, so the modal won't appear repeatedly and ask the user if he wants to save.
                 this.configFileIndexAfterSaveOrIgnore = -1;
                 this.configFileContentChanged = false;
-                Helper.setFehlerMeldung("configFileEditor", "File was not saved, because the XML is not well-formed", "");
+                Helper.setFehlerMeldung("File was not saved, because the XML is not well-formed", "");
                 ok = false;
             }
         } else {
@@ -373,9 +373,9 @@ public class ConfigFileEditorBean implements Serializable {
     }
 
     /**
-     * 
+     *
      * Download the selected configuration file
-     * 
+     *
      */
     public void downloadCurrentConfigFile() {
         Path file = Paths.get(currentConfigFile.getConfigDirectory().getDirectory(), currentConfigFile.getFileName());
@@ -384,7 +384,7 @@ public class ConfigFileEditorBean implements Serializable {
 
     /**
      * Download a file from the list
-     * 
+     *
      */
 
     public void downloadBackupFile() {
@@ -392,7 +392,7 @@ public class ConfigFileEditorBean implements Serializable {
     }
 
     /**
-     * 
+     *
      * Download selected file
      *
      * @param file
@@ -424,7 +424,7 @@ public class ConfigFileEditorBean implements Serializable {
 
     /**
      * get a list of all backup files for the selected file
-     * 
+     *
      */
 
     public List<Path> getDownloadFileAndBackups() {
