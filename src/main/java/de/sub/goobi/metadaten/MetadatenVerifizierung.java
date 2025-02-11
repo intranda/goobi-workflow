@@ -505,6 +505,9 @@ public class MetadatenVerifizierung {
                 ll = inStruct.getAllMetadataByType(mdt);
                 for (Metadata md : ll) {
                     String actualValue = md.getValue();
+                    if (StringUtils.isBlank(actualValue)) {
+                        continue;
+                    }
                     if (!allowedValues.contains(actualValue)) {
                         String errorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + ": "
                                 + Helper.getTranslation("VocabularySelectionInvalid", actualValue, allowedItems.get(0).getSource());

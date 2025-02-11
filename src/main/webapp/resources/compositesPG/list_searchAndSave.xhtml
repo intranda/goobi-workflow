@@ -98,7 +98,7 @@
 					styleClass="form-control searchfield"
 					value="#{cc.attrs.bean.filter}"
 					onkeypress="submitOnEnter(event);"
-				>
+					>
 					<f:passThroughAttribute name="placeholder" value="#{cc.attrs.label}" />
 					<c:if test="#{cc.attrs.bean.filter ne ''}">
 						<f:passThroughAttribute name="data-gw-focus-on-load" value="true" />
@@ -117,5 +117,6 @@
 			</div>
 			<h:commandButton type="submit" id="FilterAlle" forceId="true" style="display: none;" action="#{cc.attrs.bean.FilterAlleStart}" />
 		</div>
+
 	</composite:implementation>
 </ui:composition>
