@@ -1,0 +1,12 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:fragment rendered="#{label}">
+        <label class="input-group-text  py-0 align-self-stretch fs-400 #{styleClass}">
+            <ui:insert />
+        </label>
+    </ui:fragment>
+    <ui:fragment rendered="#{!label}">
+        <span class="input-group-text #{styleClass}">
+            <ui:insert />
+        </span>
+    </ui:fragment>
+</ui:composition>

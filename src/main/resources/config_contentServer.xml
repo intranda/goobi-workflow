@@ -46,7 +46,7 @@
         </type>
     	<type format="default" colorType="default" compression="default" embeddedColorProfile="both" minSize="0" maxSize="0">
     		<settings allowRenderWithJAI="false" allowSubSampling="true" scaleWithScalr="false" mergeWithJAI="false" 
-    		forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true" preferredImageReader="com.github.jaiimageio"></settings>
+    		forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true" preferredImageReader="com.twelvemonkeys"></settings>
     	</type>
     </imageTypeSettings>
     
@@ -175,7 +175,7 @@
 		
 	<pdfCache useCache="false" useShortFileNames="false" />
 
-	<memoryUsage maximalParallelRequests="0" lowMemoryThreshold="0"></memoryUsage>
+	<memoryUsage maximalParallelRequests="0" lowMemoryThreshold="500000000"></memoryUsage>
 	
     <S3>                                                                                                                                              
         <useCustom>true</useCustom>                                                                                                                   

@@ -10,7 +10,8 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:form="http://goobi.io/form">
 
     <ui:param
         name="myPageTitle"
@@ -150,110 +151,86 @@
                         <div class="tab-content">
 
                             <!-- TAB 1 -->
-                            <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6' and NavigationForm.uiStatus.user_config ne 'tab7'}">
-                                <intranda:formInputText
+                            <h:panelGroup layout="block" rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6' and NavigationForm.uiStatus.user_config ne 'tab7'}">
+                                <form:field
                                     label="#{msgs.vorname}"
-                                    id="firstname"
-                                    field="#{LoginForm.myBenutzer.vorname}"
-                                    help="#{msgs.helpVorname}"
-                                    name="vorname"
-                                    readonly="false" />
-
-                                <intranda:formInputText
+                                    required="true"
+                                    help="#{msgs.helpVorname}">
+                                    <h:inputText
+                                        id="firstname"
+                                        class="form-control"
+                                        value="#{LoginForm.myBenutzer.vorname}"
+                                        readonly="false"
+                                        required="true" />
+                                    <form:message target="firstname" />
+                                </form:field>
+                                <form:field
                                     label="#{msgs.nachname}"
-                                    id="lastname"
-                                    field="#{LoginForm.myBenutzer.nachname}"
-                                    help="#{msgs.helpNachname}"
-                                    name="nachname"
-                                    readonly="false" />
-
-                                <intranda:formInputText
+                                    required="true"
+                                    help="#{msgs.helpNachname}">
+                                    <h:inputText
+                                        id="lastname"
+                                        class="form-control"
+                                        value="#{LoginForm.myBenutzer.nachname}"
+                                        readonly="false" />
+                                    <form:message target="lastname" />
+                                </form:field>
+                                <form:field
                                     label="#{msgs.standort}"
-                                    id="location"
-                                    field="#{LoginForm.myBenutzer.standort}"
-                                    help="#{msgs.helpStandort}"
-                                    name="standort"
-                                    required="false"
-                                    readonly="true" />
-
-                                <intranda:formInputText
+                                    required="true"
+                                    help="#{msgs.helpStandort}">
+                                    <h:inputText
+                                        id="location"
+                                        class="form-control"
+                                        value="#{LoginForm.myBenutzer.standort}"
+                                        readonly="true" />
+                                    <form:message target="location" />
+                                </form:field>
+                                <form:field
                                     label="#{msgs.email}"
-                                    id="email"
-                                    field="#{LoginForm.myBenutzer.email}"
-                                    help="#{msgs.helpEmail}"
-                                    required="false"
-                                    name="emailName" />
-
-                                <div class="row">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{msgs.projekte}"
-                                            labelFor="up"
-                                            labelRequired="false" />
-                                    </div>
-
-                                    <div class="col-12 col-md-9">
-                                        <x:dataList
-                                            id="up"
+                                    help="#{msgs.helpEmail}">
+                                    <h:inputText
+                                        id="email"
+                                        class="form-control"
+                                        value="#{LoginForm.myBenutzer.email}"
+                                        readonly="true" />
+                                    <form:message target="email" />
+                                </form:field>
+                                <form:field
+                                    label="#{msgs.projekte}"
+                                    help="#{msgs.helpProjects}">
+                                    <div class="form-control bg-neutral-200">
+                                        <ui:repeat
                                             var="intern"
-                                            styleClass="form-control"
-                                            style=" background-color: #e9ecef;cursor: not-allowed;opacity: 1; height: auto; overflow: none"
                                             value="#{LoginForm.myBenutzer.projekte}"
-                                            layout="ordered list"
-                                            rowCountVar="rowCount"
-                                            rowIndexVar="rowIndex">
+                                            varStatus="row">
                                             <h:outputText value="#{intern.titel}" />
                                             <h:outputText
-                                                value=","
-                                                rendered="#{rowIndex + 1 lt rowCount}" />
-                                        </x:dataList>
-
-                                        <intranda:formHelp
-                                            content="#{msgs.helpProjects}"
-                                            msgFor="up" />
+                                                value=", "
+                                                rendered="#{!row.last}" />
+                                        </ui:repeat>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{msgs.benutzergruppen}"
-                                            labelFor="ug"
-                                            labelRequired="false" />
-                                    </div>
-
-                                    <div class="col-12 col-md-9">
-                                        <x:dataList
-                                            id="ug"
+                                </form:field>
+                                <form:field
+                                    label="#{msgs.benutzergruppen}"
+                                    help="#{msgs.helpUsergroups}">
+                                    <div class="form-control bg-neutral-200">
+                                        <ui:repeat
                                             var="intern"
-                                            styleClass="form-control"
-                                            style=" background-color: #e9ecef;cursor: not-allowed;opacity: 1; height: auto; overflow: none"
                                             value="#{LoginForm.myBenutzer.benutzergruppen}"
-                                            layout="ordered list"
-                                            rowCountVar="rowCount"
-                                            rowIndexVar="rowIndex">
+                                            varStatus="row">
                                             <h:outputText value="#{intern.titel}" />
                                             <h:outputText
-                                                value=","
-                                                rendered="#{rowIndex + 1 lt rowCount}" />
-                                        </x:dataList>
-
-                                        <intranda:formHelp
-                                            content="#{msgs.helpUsergroups}"
-                                            msgFor="ug" />
+                                                value=", "
+                                                rendered="#{!row.last}" />
+                                        </ui:repeat>
                                     </div>
-                                </div>
-
-
-                                <div class="row">
-                                    <div class="col-12 col-md-3">
-                                        <intranda:formLabel
-                                            label="#{msgs.usergroup_assignedRoles}"
-                                            labelFor="ur"
-                                            labelRequired="false" />
-                                    </div>
-
-                                    <div class="col-12 col-md-9">
+                                </form:field>
+                                <form:field
+                                    group="true"
+                                    label="#{msgs.usergroup_assignedRoles}"
+                                    help="#{msgs.helpUserRoles}">
+                                    <div>
                                         <ui:repeat
                                             var="role"
                                             value="#{LoginForm.myBenutzer.allUserRoles}"
@@ -261,25 +238,21 @@
                                             <h:outputText
                                                 value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}"
                                                 styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' :
-					                           		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
-					                           		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' :
-					                           		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' :
-					                           		fn:startsWith(role,'goobiscript_') ? 'badge-light-blue' :
-					                                            fn:startsWith(role,'Workflow_') ? 'badge-light-purple' :
-					                           		fn:startsWith(role,'Task_') ? 'badge-light-orange' :
-					                           		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' :
-					                           		'badge-light-greengrey'}">
+                                                    fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
+                                                    fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' :
+                                                    fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' :
+                                                    fn:startsWith(role,'goobiscript_') ? 'badge-light-blue' :
+                                                                fn:startsWith(role,'Workflow_') ? 'badge-light-purple' :
+                                                    fn:startsWith(role,'Task_') ? 'badge-light-orange' :
+                                                    fn:startsWith(role,'Plugin_') ? 'badge-light-lila' :
+                                                    'badge-light-greengrey'}">
                                                 <f:passThroughAttribute
                                                     name="tabindex"
                                                     value="-1" />
                                             </h:outputText>
                                         </ui:repeat>
-
-                                        <intranda:formHelp
-                                            content="#{msgs.helpUserRoles}"
-                                            msgFor="ur" />
                                     </div>
-                                </div>
+                                </form:field>
                             </h:panelGroup>
 
 

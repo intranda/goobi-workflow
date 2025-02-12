@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
+    version="2.0">
+    <namespace>http://goobi.io/form</namespace>
+    <tag>
+´        <tag-name>fieldset</tag-name>
+        <source>form/fieldSet.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>fieldset-content</tag-name>
+        <source>form/fieldSet-content.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>legend</tag-name>
+        <source>form/legend.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>field</tag-name>
+        <source>form/field.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Determine whether the field contains a form-group component</description>
+            <name>group</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>The label to be displayed for this component</description>
+            <name>label</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Determine whether the label should be displayed as required</description>
+            <name>required</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>label</tag-name>
+        <source>form/label.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Determine whether the label should be displayed as required</description>
+            <name>required</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>Determine whether the corresponding field contains a form-group component, resulting in producing either a label or legend HTML element</description>
+            <name>group</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>input</tag-name>
+        <source>form/input.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>input-group</tag-name>
+        <source>form/inputGroup.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>group-text</tag-name>
+        <source>form/groupText.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Determine whether the component should resolve to a label or a span (default)</description>
+            <name>label</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>help</tag-name>
+        <source>form/help.xhtml</source>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>message</tag-name>
+        <source>form/message.xhtml</source>
+        <attribute>
+            <description>The id of the relevant form input for which messages should be displayed</description>
+            <name>target</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+</facelet-taglib>

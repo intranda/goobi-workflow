@@ -1,0 +1,33 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:form="http://goobi.io/form">
+    <c:if test="#{group}">
+        <fieldset class="form-row">
+            <form:label required="#{required}" group="#{true}">
+                #{label}
+            </form:label>
+            <span class="form-input">
+                <span class="input-group #{styleClass}">
+                    <ui:insert />
+                    <form:help>
+                        #{help}
+                    </form:help>
+                </span>
+            </span>
+        </fieldset>
+    </c:if>
+    <c:if test="#{!group}">
+        <label class="form-row">
+            <form:label required="#{required}" group="#{false}">
+                #{label}
+            </form:label>
+            <span class="form-input #{styleClass}">
+                <ui:insert />
+				<form:help>
+					#{help}
+				</form:help>
+            </span>
+        </label>
+    </c:if>
+</ui:composition>
