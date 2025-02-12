@@ -37,6 +37,7 @@
         <param-value>
             /WEB-INF/taglibs/button.taglib.xml;
             /WEB-INF/taglibs/dialog.taglib.xml;
+            /WEB-INF/taglibs/form.taglib.xml;
             /WEB-INF/taglibs/layout.taglib.xml;
             /WEB-INF/taglibs/notification.taglib.xml;
             /WEB-INF/taglibs/properties.taglib.xml;

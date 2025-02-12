@@ -189,6 +189,7 @@ fieldSet:disabled .badge > a {
 .form-label {
   background: var(--clr-neutral-200);
   border-inline-end: 1px solid var(--clr-neutral-300);
+  font-size: 1em;
   > .btn{
     padding-block-start: 0;
     &:first-of-type {
@@ -199,6 +200,7 @@ fieldSet:disabled .badge > a {
 
 .form-input {
   background: var(--clr-white);
+  flex-wrap: wrap;
   &:has(.form-row) {
     padding: 0;
   }
@@ -217,6 +219,23 @@ fieldSet:disabled .badge > a {
   .form-label+.form-input {
     width: 75%;
   }
+}
+
+.form-label {
+  > * {
+    order: 2;
+  }
+  .form-label-required {
+    color: var(--clr-primary-400);
+    display: flex;
+    margin-inline: 0.25rem;
+    order: 1;
+  }
+}
+
+.form-help {
+  color: var(--clr-neutral-600);
+  margin-block-start: 0.25em;
 }
 
 .field-set {
@@ -423,7 +442,6 @@ fieldSet:disabled .badge > a {
 
 .field-set:has(.field-set) {
   padding: 0;
-  border-block-end: 0;
 }
 
 // input elements in box titles, should be mostly search/filter inputs
