@@ -3,12 +3,17 @@ package org.goobi.production.plugin.barcode.config;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import de.sub.goobi.helper.GoobiScript;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.goobi.beans.Batch;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Process;
+import org.goobi.beans.User;
 import org.goobi.production.plugin.barcode.BarcodeScannerPlugin;
+import org.goobi.production.plugin.interfaces.AbstractDockablePlugin;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -18,6 +23,8 @@ import java.util.regex.Pattern;
 @Getter
 @Setter
 public class BarcodeFormat {
+    private static final String BATCH_PREFIX = "batch:";
+
     @JacksonXmlProperty(isAttribute = true)
     private String pattern;
     @JacksonXmlProperty(isAttribute = true)
@@ -60,14 +67,27 @@ public class BarcodeFormat {
     }
 
     public void execute(String barcode) {
-        GoobiScript gs = new GoobiScript();
+        Optional<Batch> batch = findBatchForBarcode(barcode);
         Optional<Process> process = Optional.ofNullable(ProcessManager.getProcessByTitle(barcode.strip()));
 
-        process.ifPresentOrElse(p -> {
-            String concreteGoobiScript = this.goobiScript.replaceAll("\\{\\{\\?\\}\\}", p.getId().toString());
-            gs.execute(List.of(p.getId()), concreteGoobiScript);
-            BarcodeScannerPlugin.success("Barcode action \"" + this.description + "\" executed for process \"" + p.getTitel() + "\" [" + p.getId() + "].");
-        }, () -> BarcodeScannerPlugin.error("Process with title \"" + barcode.strip() + "\" not found!"));
+        if (batch.isPresent()) {
+            executeCurrentBarcodeForBatch(batch.get());
+        } else {
+            process.ifPresentOrElse(this::executeCurrentBarcodeForProcess, () -> AbstractDockablePlugin.error("Process with title \"" + barcode.strip() + "\" not found!"));
+        }
+    }
+
+    private Optional<Batch> findBatchForBarcode(String barcode) {
+        if (!barcode.startsWith(BATCH_PREFIX)) {
+            return Optional.empty();
+        }
+        try {
+            int batchId = Integer.parseInt(barcode.substring(BATCH_PREFIX.length()));
+            return Optional.ofNullable(ProcessManager.getBatchById(batchId));
+        } catch (NumberFormatException e) {
+            log.error("Wrong batch id format: \"{}\"", barcode, e);
+            return Optional.empty();
+        }
     }
 
     private List<String> determineParameters(String barcode) {
@@ -101,5 +121,25 @@ public class BarcodeFormat {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    // TODO: Move into lib
+    private void executeCurrentBarcodeForBatch(Batch batch) {
+        // TODO:  Don't duplicate processes per batch logic! (copied from BatchBean)
+        Institution inst = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            // limit result to institution of current user
+            inst = user.getInstitution();
+        }
+        ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + batch.getBatchId(), inst)
+                .forEach(this::executeCurrentBarcodeForProcess);
+    }
+
+    private void executeCurrentBarcodeForProcess(Process process) {
+        GoobiScript gs = new GoobiScript();
+        String concreteGoobiScript = this.goobiScript.replaceAll("\\{\\{\\?\\}\\}", process.getId().toString());
+        gs.execute(List.of(process.getId()), concreteGoobiScript);
+        BarcodeScannerPlugin.success("Barcode action \"" + this.description + "\" executed for process \"" + process.getTitel() + "\" [" + process.getId() + "].");
     }
 }
